@@ -5,8 +5,12 @@ version = '1.0'
 
 repositories {
     mavenCentral()
+    maven{ url "https://clojars.org/repo" }
 }
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile 'org.jsoup:jsoup:1.8.1'
+    compile group: 'com.google.guava', name: 'guava', version: '15.0'
+    compile "com.aliasi:lingpipe:4.0.1"
 }
