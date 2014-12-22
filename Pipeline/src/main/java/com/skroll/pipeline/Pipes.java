@@ -4,7 +4,9 @@ package com.skroll.pipeline;
  * Created by sagupta on 12/14/14.
  */
 public enum Pipes {
-
+    CSV_SPLIT_INTO_LIST_OF_STRING("com.skroll.pipeline.pipes.CSVSplitIntoListOfString"),
+    FILE_INTO_LIST_OF_STRING ("com.skroll.pipeline.pipes.files.ConvertFileIntoListOfStringsPipe"),
+    BINARY_NAIVE_BAYES_TRAINING ("com.skroll.analyzer.nb.BinaryNaiveBayesTrainingPipe"),
     LINE_REMOVE_NBSP_FILTER ("com.skroll.pipeline.pipes.LineRemoveNBSPPipe"),
     PARAGRAPH_NOT_STARTS_WITH_QUOTE_FILTER("com.skroll.pipeline.pipes.ParagraphsNotStartsWithQuotePipe"),
     PARAGRAPH_STARTS_WITH_QUOTE_FILTER("com.skroll.pipeline.pipes.ParagraphsStartsWithQuotePipe"),
