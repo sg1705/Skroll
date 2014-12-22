@@ -15,11 +15,13 @@ public class Main {
     public static void main(String[] args) {
 
         //String[] dataFiles = {"data/negativeSamples", "data/positiveSamples"};
-        String[] trainingFolder = {"data/negativeFolder", "data/positiveFolder"};
-        String testFolder = "data/testFolder";
+        String[] trainingFolder = {
+                "Pipeline/build/resources/generated-files/not-pdef",
+                "Pipeline/build/resources/generated-files/pdef"};
 
-        String testFile = "data/testData";
-        String testFile2 = "data/testData2";
+        String testFolder = "Analyzer/src/main/resources/testFolder";
+        String testFile = "Analyzer/src/main/resources/testData";
+        String testFile2 = "Analyzer/src/main/resources/testData2";
 
         BufferedReader br=null;
         String line;

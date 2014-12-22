@@ -93,7 +93,7 @@ public class BinaryNaiveBayesWithWordsFeatures {
         File folder = new File(folderName);
         File[] listOfFiles = folder.listFiles();
         for (File file:listOfFiles){
-            train(category, folderName+'\\'+file.getName());
+            train(category, folderName+'/'+file.getName());
         }
     }
 
@@ -101,7 +101,7 @@ public class BinaryNaiveBayesWithWordsFeatures {
         File folder = new File(folderName);
         File[] listOfFiles = folder.listFiles();
         for (File file:listOfFiles){
-            test(folderName+'\\'+file.getName());
+            test(folderName+'/'+file.getName());
         }
     }
 
