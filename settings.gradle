@@ -1,3 +1,5 @@
 rootProject.name = 'Skroll'
 include 'Pipeline'
 
+include 'Analyzer'
+
