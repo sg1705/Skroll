@@ -33,7 +33,7 @@ public class BinaryNaiveBayesTrainingPipeTest extends TestCase {
         List<String> fileStrings = fileIntoString.process(fileName);
         List<List<String>> csvStrings = csvSplitPipeline.process(fileStrings);
 
-        Object model = new BinaryNaiveBayesModel();
+        BinaryNaiveBayesModel model = new BinaryNaiveBayesModel();
 
 
         Pipeline<List<List<String>>,List<List<String>>> analyzer =
@@ -43,6 +43,7 @@ public class BinaryNaiveBayesTrainingPipeTest extends TestCase {
                     .build();
 
         analyzer.process(csvStrings);
-        System.out.println(model.toString());
+        //System.out.println(model.toString());
+        System.out.println(model.showWordsImportance());
     }
 }

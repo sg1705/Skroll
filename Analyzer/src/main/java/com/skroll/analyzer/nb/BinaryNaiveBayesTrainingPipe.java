@@ -11,7 +11,7 @@ import java.util.*;
 public class BinaryNaiveBayesTrainingPipe extends SyncPipe<List<List<String>>, List<List<String>>> {
 
 
-    private static final int MAX_SENTENCE_LENGTH = 12;
+    public static final int MAX_SENTENCE_LENGTH = 12;
 
     @Override
     public List<List<String>> process(List<List<String>> input) {
@@ -29,7 +29,7 @@ public class BinaryNaiveBayesTrainingPipe extends SyncPipe<List<List<String>>, L
             model.incrementCategory(categoryType);
 
             // make a unique set of first MAX_LENGTH words
-            Set<String> wordSet= new HashSet<String>(Lists.partition(eachLine, 12).get(0));
+            Set<String> wordSet= new HashSet<String>(Lists.partition(eachLine, MAX_SENTENCE_LENGTH).get(0));
 
             Iterator<String> wordIterator = wordSet.iterator();
             while (wordIterator.hasNext()) {

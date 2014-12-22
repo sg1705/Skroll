@@ -31,7 +31,7 @@ public class FilesBinaryNaiveBayesTrainerPipe extends SyncPipe<List<String>, Lis
             fileAnalyzer.process(name);
         }
 
-        System.out.println(model.toString());
+        //System.out.println(model.toString());
         return fileNames;
     }
 

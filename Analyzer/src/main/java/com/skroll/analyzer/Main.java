@@ -1,6 +1,10 @@
 package com.skroll.analyzer;
 
+import com.google.common.collect.Lists;
+import com.skroll.analyzer.nb.BinaryNaiveBayesModel;
 import com.skroll.analyzer.nb.BinaryNaiveBayesWithWordsFeatures;
+import com.skroll.pipeline.Pipeline;
+import com.skroll.pipeline.Pipes;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -8,52 +12,47 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        //String[] dataFiles = {"data/negativeSamples", "data/positiveSamples"};
         String[] trainingFolder = {
-                "Pipeline/build/resources/generated-files/not-pdef",
-                "Pipeline/build/resources/generated-files/pdef"};
+                "Pipeline/build/resources/generated-files/not-pdef-words",
+                "Pipeline/build/resources/generated-files/pdef-words"};
 
-        String testFolder = "Analyzer/src/main/resources/testFolder";
-        String testFile = "Analyzer/src/main/resources/testData";
-        String testFile2 = "Analyzer/src/main/resources/testData2";
+        String testingFolder =
+                "Analyzer/src/test/resources/testFolder";
 
-        BufferedReader br=null;
-        String line;
-        int lineCount=0;
-        Map<String,Integer> wordCount = new HashMap<String,Integer>();
-        BinaryNaiveBayesWithWordsFeatures NB = new BinaryNaiveBayesWithWordsFeatures();
-        //NB.train(0, dataFiles[0]);
-        //NB.train(1,dataFiles[1]);
-        NB.trainFolder(0, trainingFolder[0]);
-        NB.trainFolder(1,trainingFolder[1]);
-        //NB.showMap();
-        //NB.showInverseMap();
-        //NB.showMapSortedByValues();
-        NB.showWordsImportance();
-        NB.testFolder(testFolder);
-        //NB.showImportantWords();
+        BinaryNaiveBayesModel model = new BinaryNaiveBayesModel();
 
-        //System.out.println(NB);
-//
-        //NB.test(testFile2);
-        NB.testWords(testFile);
-//        System.out.println(NB.inferJointProbability(1,new String[]{"means"}));
-//        System.out.println(NB.inferCategoryProbability(new String[]{"pursuant"}));
-//        System.out.println(NB.inferCategoryProbability(new String[]{"sale","pursuant"}));
-//        System.out.println(NB.inferCategoryProbability(new String[]{"sale"}));
+        Pipeline<String, List<String>> analyzer =
+                new Pipeline.Builder<String, List<String>>()
+                        .add(Pipes.FOLDER_BINARY_NAIVE_BAYES_TRAINER,
+                                Lists.newArrayList(model, BinaryNaiveBayesModel.CATEGORY_NEGATIVE))
+                        .build();
 
-//        System.out.println(NB.inferCategoryProbability(new String[]{"abc"}));
-//        System.out.println(NB.inferCategoryProbabilityMoreStable(new String[]{"abc"}));
-        //System.out.println(NB.inferCategoryProbability(new String[]{"by"}));
-        //System.out.println(NB.inferCategoryProbabilityMoreStable(new String[]{"by"}));
+        analyzer.process(trainingFolder[0]);
+        analyzer =
+                new Pipeline.Builder<String, List<String>>()
+                        .add(Pipes.FOLDER_BINARY_NAIVE_BAYES_TRAINER,
+                                Lists.newArrayList(model, BinaryNaiveBayesModel.CATEGORY_POSITIVE))
+                        .build();
+
+        analyzer.process(trainingFolder[1]);
 
 
+        Pipeline<String, String> tester =
+                new Pipeline.Builder<String, String>()
+                        .add(Pipes.FOLDER_BINARY_NAIVE_BAYES_TESTER,
+                                Lists.newArrayList((Object)model))
+                        .build();
 
+        String output=tester.process(testingFolder);
+
+        System.out.println(output);
+        System.out.println(model.showWordsImportance());
     }
 }
