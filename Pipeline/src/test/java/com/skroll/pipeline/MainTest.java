@@ -8,4 +8,6 @@ public class MainTest extends TestCase {
         Main main  = new Main();
         main.setupDirectories();
     }
+
+
 }
