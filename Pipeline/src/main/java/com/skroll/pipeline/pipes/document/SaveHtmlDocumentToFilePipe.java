@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by sagupta on 12/16/14.
  */
-public class HtmlDocumentToFilePipe extends SyncPipe<HtmlDocument, HtmlDocument> {
+public class SaveHtmlDocumentToFilePipe extends SyncPipe<HtmlDocument, HtmlDocument> {
 
     @Override
     public HtmlDocument process(HtmlDocument input) {

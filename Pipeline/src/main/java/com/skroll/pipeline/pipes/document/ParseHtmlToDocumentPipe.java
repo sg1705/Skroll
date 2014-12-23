@@ -17,6 +17,8 @@ import java.util.List;
 /**
  * Takes a string and converts into a doc
  *
+ *  //TODO Fix bugs when the document has </pre> tag
+ *
  * Created by sagupta on 12/14/14.
  */
 public class ParseHtmlToDocumentPipe extends SyncPipe<HtmlDocument, HtmlDocument> {
@@ -43,28 +45,6 @@ public class ParseHtmlToDocumentPipe extends SyncPipe<HtmlDocument, HtmlDocument
         htmlDoc.setParagraphs(this.paragraphs);
         //TODO find out the Charset
         return this.target.process(htmlDoc);
-    }
-
-
-
-    public List<String> removeBlankRows(List<String> list) {
-        List<String> newList = new ArrayList<String>();
-        for(int ii = 0; ii < list.size(); ii++) {
-            String str = list.get(ii);
-            if (!StringUtil.isBlank(str.replace("\u00a0", ""))) {
-                newList.add(str);
-            }
-        }
-        return newList;
-
-    }
-
-
-    public void printPara(List<String> para) {
-        for (int ii = 0; ii < para.size(); ii++) {
-            System.out.println(para.get(ii));
-            System.out.println("------------");
-        }
     }
 
 
@@ -121,10 +101,13 @@ public class ParseHtmlToDocumentPipe extends SyncPipe<HtmlDocument, HtmlDocument
             Element element = (Element)node;
 
             if (!isNodeProhibhited(element)) {
+
                 element.prepend("<a name=\"" + this.paraId + "\"/>");
                 paraId++;
                 this.createPara();
                 lastParaId = paraId;
+
+                //check for pre
             }
         }
     }
@@ -140,9 +123,23 @@ public class ParseHtmlToDocumentPipe extends SyncPipe<HtmlDocument, HtmlDocument
         if (node instanceof TextNode) {
             text = ((TextNode) node).text();
         } else if (node instanceof Element) {
+            // check for pre
+            if (((Element)node).tag().getName().equals("pre")) {
+                String preText = ((Element) node).text();
+            }
             text = ((Element) node).text();
         }
         return text;
+    }
+
+    //TODO
+    // example doc - IBM Indenture from 1995
+    private void processPre(Element element) {
+        if (element.tag().getName().equals("pre")) {
+            String preText = element.text();
+            // split this into paragraphs and increment
+        }
+
     }
 
 
@@ -163,10 +160,6 @@ public class ParseHtmlToDocumentPipe extends SyncPipe<HtmlDocument, HtmlDocument
 
     private boolean isNodeProhibhited(Element element) {
         if (element.tag().getName().toLowerCase().equals("html")) {
-            return true;
-        }
-
-        if (element.tag().getName().toLowerCase().equals("body")) {
             return true;
         }
 
