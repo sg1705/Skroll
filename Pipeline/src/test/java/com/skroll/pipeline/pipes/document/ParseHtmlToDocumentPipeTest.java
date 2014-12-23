@@ -39,19 +39,17 @@ public class ParseHtmlToDocumentPipeTest extends TestCase {
         System.out.println(pgs.size());
 
 //        //compare strings
-//        for( int ii = 0; ii < pgs.size(); ii++) {
-//            String oldAlgo = pgs.get(ii);
-//            String newAlgo = doc.getParagraphs().get(ii).getText();
-//            if (!(oldAlgo.equals(newAlgo))) {
-//                System.out.println("Old: " + oldAlgo);
-//                System.out.println("-----------------");
-//                System.out.println("new: " + newAlgo);
-//                System.out.println("################");
-//            }
-//
-//        }
+        for( int ii = 0; ii < pgs.size(); ii++) {
+            String oldAlgo = pgs.get(ii);
+            String newAlgo = doc.getParagraphs().get(ii).getText();
+            if (!(oldAlgo.equals(newAlgo))) {
+                System.out.println("Old: " + oldAlgo);
+                System.out.println("-----------------");
+                System.out.println("new: " + newAlgo);
+                System.out.println("################");
+            }
 
-        assert (doc.getParagraphs().size() == 4691);
+        }
 
     }
 }
