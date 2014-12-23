@@ -4,6 +4,7 @@ package com.skroll.pipeline;
  * Created by sagupta on 12/14/14.
  */
 public enum Pipes {
+    FILE_BINARY_NAIVE_BAYES_TESTER_WITH_WORDS_IMPORTANCE("com.skroll.analyzer.pipes.FileBinaryNaiveBayesTesterWithWordsImportancePipe"),
     ASSIGN_PARA_IDS_TO_HTML("com.skroll.pipeline.pipes.AssignParagraphIdsToHTMLDocumentPipe"),
     FOLDER_BINARY_NAIVE_BAYES_TESTER("com.skroll.analyzer.pipes.FolderBinaryNaiveBayesTesterPipe"),
     FOLDER_BINARY_NAIVE_BAYES_TRAINER("com.skroll.analyzer.pipes.FolderBinaryNaiveBayesTrainerPipe"),

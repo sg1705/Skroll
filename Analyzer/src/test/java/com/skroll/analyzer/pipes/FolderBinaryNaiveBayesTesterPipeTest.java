@@ -1,34 +1,21 @@
-package com.skroll.analyzer;
+package com.skroll.analyzer.pipes;
 
 import com.google.common.collect.Lists;
 import com.skroll.analyzer.nb.BinaryNaiveBayesModel;
-import com.skroll.analyzer.nb.BinaryNaiveBayesWithWordsFeatures;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
+import junit.framework.TestCase;
+import org.junit.Test;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class Main {
-
-    public static void main(String[] args) {
+public class FolderBinaryNaiveBayesTesterPipeTest extends TestCase {
+    @Test
+    public void testProcess() throws Exception {
 
         String[] trainingFolder = {
-                "Pipeline/build/resources/generated-files/not-pdef-words",
-                "Pipeline/build/resources/generated-files/pdef-words"};
-
-        String testingFolder =
-                "Analyzer/src/test/resources/testFolder";
-
-        String testFile =
-                "Analyzer/src/test/resources/testData";
-
+                "../Pipeline/build/resources/generated-files/not-pdef-words",
+                "../Pipeline/build/resources/generated-files/pdef-words"};
         BinaryNaiveBayesModel model = new BinaryNaiveBayesModel();
 
         Pipeline<String, List<String>> analyzer =
@@ -46,6 +33,9 @@ public class Main {
 
         analyzer.process(trainingFolder[1]);
 
+        String testingFolder =
+                "src/test/resources/testFolder";
+        //BinaryNaiveBayesModel model = new BinaryNaiveBayesModel();
 
         Pipeline<String, String> tester =
                 new Pipeline.Builder<String, String>()
@@ -55,14 +45,9 @@ public class Main {
 
         String output=tester.process(testingFolder);
 
-        Pipeline<String, String> wordTester =
-                new Pipeline.Builder<String, String>()
-                        .add(Pipes.FILE_BINARY_NAIVE_BAYES_TESTER_WITH_WORDS_IMPORTANCE,
-                                Lists.newArrayList((Object)model))
-                        .build();
-        output += wordTester.process(testFile);
-        //String output=wordTester.process(testFile);
+        //System.out.println(model.showWordsImportance());
+
         System.out.println(output);
-        System.out.println(model.showWordsImportance());
     }
+
 }
