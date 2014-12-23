@@ -10,8 +10,10 @@ import org.junit.Test;
 import java.util.List;
 
 public class FolderBinaryNaiveBayesTesterPipeTest extends TestCase {
+
     @Test
     public void testProcess() throws Exception {
+        // depends on other tests
 
         String[] trainingFolder = {
                 "../Pipeline/build/resources/generated-files/not-pdef-words",
