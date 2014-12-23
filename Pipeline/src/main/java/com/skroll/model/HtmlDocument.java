@@ -10,6 +10,25 @@ public class HtmlDocument {
     private List<Paragraph> paragraphs;
     private String annotatedHtml;
 
+    public HtmlDocument() {
+    }
+
+    public HtmlDocument(String sourceHtml) {
+        this.sourceHtml = sourceHtml;
+    }
+
+    private String sourceHtml;
+
+
+
+    public String getSourceHtml() {
+        return sourceHtml;
+    }
+
+    public void setSourceHtml(String sourceHtml) {
+        this.sourceHtml = sourceHtml;
+    }
+
     public String getAnnotatedHtml() {
         return annotatedHtml;
     }

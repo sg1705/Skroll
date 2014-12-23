@@ -4,7 +4,10 @@ package com.skroll.pipeline;
  * Created by sagupta on 12/14/14.
  */
 public enum Pipes {
-    ASSIGN_PARA_IDS_TO_HTML("com.skroll.pipeline.pipes.AssignParagraphIdsToHTMLDocumentPipe"),
+
+    //HtmlDocumentPipes
+    PARSE_HTML_TO_DOC("com.skroll.pipeline.pipes.document.ParseHtmlToDocumentPipe"),
+    PERSIST_HTML_DOCUMENT_TO_FILE("com.skroll.pipeline.pipes.document.HtmlDocumentToFilePipe"),
     REPLACE_SPECIAL_QUOTES_WITH_QUOTES("com.skroll.pipeline.pipes.ReplaceSpecialQuotesWithQuotes"),
     FILE_BINARY_NAIVE_BAYES_TRAINER("com.skroll.analyzer.pipes.FileBinaryNaiveBayesTrainerPipe"),
     FILES_BINARY_NAIVE_BAYES_TRAINER("com.skroll.analyzer.pipes.FilesBinaryNaiveBayesTrainerPipe"),

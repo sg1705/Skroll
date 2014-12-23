@@ -1,5 +1,7 @@
-package com.skroll.pipeline.pipes;
+package com.skroll.pipeline.pipes.document;
 
+import com.skroll.model.HtmlDocument;
+import com.skroll.model.Paragraph;
 import com.skroll.pipeline.SyncPipe;
 import org.jsoup.Jsoup;
 import org.jsoup.helper.StringUtil;
@@ -13,40 +15,36 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * Takes a string and converts into a doc
+ *
  * Created by sagupta on 12/14/14.
  */
-public class AssignParagraphIdsToHTMLDocumentPipe extends SyncPipe<List<String>, List<String>> {
+public class ParseHtmlToDocumentPipe extends SyncPipe<HtmlDocument, HtmlDocument> {
 
     private String rollingTest;
     private List<String> paragraphChunks;
+    private List<Paragraph> paragraphs;
     private int paraId;
+    private int lastParaId = 0;
 
 
-    @Override
-    public List<String> process(List<String> input) {
-        // extract the first string
-        String htmlText = input.get(0);
-        List<String> para = split(htmlText);
-        // do something
-        return this.target.process(para);
-    }
-
-
-
-    public AssignParagraphIdsToHTMLDocumentPipe() {
+    public ParseHtmlToDocumentPipe() {
         this.rollingTest = "";
         paragraphChunks = new ArrayList<String>();
+        paragraphs = new ArrayList<Paragraph>();
         this.paraId = 1234;
     }
 
-
-    public List<String> split(String html) {
-        Document doc = Jsoup.parse(html);
+    @Override
+    public HtmlDocument process(HtmlDocument htmlDoc) {
+        Document doc = Jsoup.parse(htmlDoc.getSourceHtml());
         processNodes(doc);
-        System.out.println(doc.outerHtml());
+        htmlDoc.setAnnotatedHtml(doc.outerHtml());
+        htmlDoc.setParagraphs(this.paragraphs);
         //TODO find out the Charset
-        return this.paragraphChunks;
+        return this.target.process(htmlDoc);
     }
+
 
 
     public List<String> removeBlankRows(List<String> list) {
@@ -111,8 +109,9 @@ public class AssignParagraphIdsToHTMLDocumentPipe extends SyncPipe<List<String>,
      */
     private void createPara() {
         this.paragraphChunks.add(this.rollingTest);
+        Paragraph paragraph = new Paragraph(""+lastParaId, this.rollingTest);
+        this.paragraphs.add(paragraph);
         // move rolling html to html
-
         this.rollingTest = "";
 
     }
@@ -120,9 +119,13 @@ public class AssignParagraphIdsToHTMLDocumentPipe extends SyncPipe<List<String>,
     private void createPara(Node node) {
         if (node instanceof Element) {
             Element element = (Element)node;
-            element.prepend("<a name=\""+this.paraId+"\"/>");
-            paraId++;
-            this.createPara();
+
+            if (!isNodeProhibhited(element)) {
+                element.prepend("<a name=\"" + this.paraId + "\"/>");
+                paraId++;
+                this.createPara();
+                lastParaId = paraId;
+            }
         }
     }
 
@@ -158,5 +161,35 @@ public class AssignParagraphIdsToHTMLDocumentPipe extends SyncPipe<List<String>,
     }
 
 
+    private boolean isNodeProhibhited(Element element) {
+        if (element.tag().getName().toLowerCase().equals("html")) {
+            return true;
+        }
+
+        if (element.tag().getName().toLowerCase().equals("body")) {
+            return true;
+        }
+
+        if (element.tag().getName().toLowerCase().equals("head")) {
+            return true;
+        }
+
+        if (element.tag().getName().toLowerCase().equals("script")) {
+            return true;
+        }
+
+        if (element.tag().getName().toLowerCase().equals("meta")) {
+            return true;
+        }
+        if (element.tag().getName().toLowerCase().equals("link")) {
+            return true;
+        }
+
+        if (element.tag().getName().toLowerCase().equals("title")) {
+            return true;
+        }
+
+        return false;
+    }
 
 }
