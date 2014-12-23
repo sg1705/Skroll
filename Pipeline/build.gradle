@@ -13,4 +13,5 @@ dependencies {
     compile 'org.jsoup:jsoup:1.8.1'
     compile group: 'com.google.guava', name: 'guava', version: '15.0'
     compile "com.aliasi:lingpipe:4.0.1"
+    compile 'com.google.code.gson:gson:2.2.4'
 }
