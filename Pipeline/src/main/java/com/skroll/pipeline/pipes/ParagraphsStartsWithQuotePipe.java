@@ -16,7 +16,7 @@ public class ParagraphsStartsWithQuotePipe extends SyncPipe<List<String>, List<S
     @Override
     public List<String> process(List<String> input) {
         List<String> newList = new ArrayList<String>();
-        String quote = "“";
+        String quote = "\"";
         for(int ii = 0; ii < input.size(); ii++) {
             String str = input.get(ii);
             if (str.startsWith(quote)) {

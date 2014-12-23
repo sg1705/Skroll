@@ -126,8 +126,8 @@ public class Main {
                                 .add(Pipes.PARAGRAPH_CHUNKER)
                                 .add(Pipes.PARAGRAPH_REMOVE_BLANK)
                                 .add(Pipes.LINE_REMOVE_NBSP_FILTER)
-                                .add(Pipes.PARAGRAPH_NOT_STARTS_WITH_QUOTE_FILTER)
                                 .add(Pipes.REPLACE_SPECIAL_QUOTES_WITH_QUOTES)
+                                .add(Pipes.PARAGRAPH_NOT_STARTS_WITH_QUOTE_FILTER)
                                 .add(Pipes.LIST_TO_CSV_FILE, Lists.newArrayList(NOT_PARA_DEF + file.getName()))
                                 .build();
                 notParaDef.process(input);

@@ -19,5 +19,6 @@
     <orderEntry type="library" exported="" name="Gradle: org.jsoup:jsoup:1.8.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: com.google.guava:guava:15.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: com.aliasi:lingpipe:4.0.1" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: com.google.code.gson:gson:2.2.4" level="project" />
   </component>
 </module>

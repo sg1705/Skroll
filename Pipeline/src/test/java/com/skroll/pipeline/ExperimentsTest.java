@@ -1,6 +1,8 @@
 package com.skroll.pipeline;
 
 import com.google.common.collect.Lists;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.skroll.pipeline.util.Utils;
 import junit.framework.TestCase;
 import org.jsoup.Jsoup;
@@ -9,6 +11,7 @@ import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 import org.junit.Test;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,4 +73,27 @@ public class ExperimentsTest extends TestCase {
 
     }
 
+    public void testGson() {
+        Gson gson = new Gson();
+
+        Doc doc = new Doc("<div>123</div");
+        String jsonString = gson.toJson(doc);
+        Type docType = new TypeToken<Doc>() {}.getType();
+        Doc newDoc = gson.fromJson(jsonString, docType);
+        assert (newDoc.paragraph.size() == 2);
+
+    }
+
+    private class Doc {
+        String html;
+        String processedHtml;
+        List<String> paragraph;
+        List<String> paragraphIds;
+
+        public Doc(String html) {
+            this.html = html;
+            paragraph = Lists.newArrayList("aaa", "bbb");
+        }
+
+    }
 }
