@@ -8,11 +8,20 @@ public enum Pipes {
     //HtmlDocumentPipes
     PARSE_HTML_TO_DOC("com.skroll.pipeline.pipes.document.ParseHtmlToDocumentPipe"),
     PERSIST_HTML_DOCUMENT_TO_FILE("com.skroll.pipeline.pipes.document.HtmlDocumentToFilePipe"),
-    REPLACE_SPECIAL_QUOTES_WITH_QUOTES("com.skroll.pipeline.pipes.ReplaceSpecialQuotesWithQuotes"),
+
+    // analyzer pipes
+    FILE_BINARY_NAIVE_BAYES_TESTER_WITH_WORDS_IMPORTANCE("com.skroll.analyzer.pipes.FileBinaryNaiveBayesTesterWithWordsImportancePipe"),
+    FOLDER_BINARY_NAIVE_BAYES_TESTER("com.skroll.analyzer.pipes.FolderBinaryNaiveBayesTesterPipe"),
+    FOLDER_BINARY_NAIVE_BAYES_TRAINER("com.skroll.analyzer.pipes.FolderBinaryNaiveBayesTrainerPipe"),
+    FILE_BINARY_NAIVE_BAYES_TESTER("com.skroll.analyzer.pipes.FileBinaryNaiveBayesTesterPipe"),
     FILE_BINARY_NAIVE_BAYES_TRAINER("com.skroll.analyzer.pipes.FileBinaryNaiveBayesTrainerPipe"),
     FILES_BINARY_NAIVE_BAYES_TRAINER("com.skroll.analyzer.pipes.FilesBinaryNaiveBayesTrainerPipe"),
+
+    //parser pipes
+    REPLACE_SPECIAL_QUOTES_WITH_QUOTES("com.skroll.pipeline.pipes.ReplaceSpecialQuotesWithQuotes"),
     CSV_SPLIT_INTO_LIST_OF_STRING("com.skroll.pipeline.pipes.CSVSplitIntoListOfString"),
     FILE_INTO_LIST_OF_STRING ("com.skroll.pipeline.pipes.files.ConvertFileIntoListOfStringsPipe"),
+    BINARY_NAIVE_BAYES_TESTING ("com.skroll.analyzer.nb.BinaryNaiveBayesTestingPipe"),
     BINARY_NAIVE_BAYES_TRAINING ("com.skroll.analyzer.nb.BinaryNaiveBayesTrainingPipe"),
     LINE_REMOVE_NBSP_FILTER ("com.skroll.pipeline.pipes.LineRemoveNBSPPipe"),
     PARAGRAPH_NOT_STARTS_WITH_QUOTE_FILTER("com.skroll.pipeline.pipes.ParagraphsNotStartsWithQuotePipe"),

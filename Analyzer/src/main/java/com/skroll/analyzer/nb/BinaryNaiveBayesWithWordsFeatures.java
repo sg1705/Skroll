@@ -31,6 +31,7 @@ public class BinaryNaiveBayesWithWordsFeatures {
         if (c==null) c=0;
         wordCounts[category].put(word, c + 1);
     }
+
     double classProbability(int category){
         return (categoryCount[category]+PRIOR_COUNT)/(categoryCount[0]+categoryCount[1]+PRIOR_COUNT*2);
     }

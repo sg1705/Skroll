@@ -6,24 +6,18 @@ import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.SyncPipe;
 
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 /**
  *
  * Created by saurabh on 12/21/14.
  */
-public class FileBinaryNaiveBayesTrainerPipe extends SyncPipe<String, String> {
-
-
-    private static final int MAX_SENTENCE_LENGTH = 12;
+public class FileBinaryNaiveBayesTesterWithWordsImportancePipe extends SyncPipe<String, String> {
 
     @Override
     public String process(String fileName) {
         BinaryNaiveBayesModel model = (BinaryNaiveBayesModel)config.get(0);
-        int categoryType = (Integer)config.get(1);
+        //int categoryType = (Integer)config.get(1);
 
 
         Pipeline<String, List<String>> fileIntoString =
@@ -43,15 +37,22 @@ public class FileBinaryNaiveBayesTrainerPipe extends SyncPipe<String, String> {
         List<List<String>> csvStrings = csvSplitPipeline.process(fileStrings);
 
 
-        Pipeline<List<List<String>>,List<List<String>>> analyzer =
-                new Pipeline.Builder<List<List<String>>, List<List<String>>>()
-                        .add(Pipes.BINARY_NAIVE_BAYES_TRAINING,
-                                Lists.newArrayList(model, categoryType))
+        Pipeline<List<List<String>>,List<Double>> analyzer =
+                new Pipeline.Builder<List<List<String>>, List<Double>>()
+                        .add(Pipes.BINARY_NAIVE_BAYES_TESTING,
+                                Lists.newArrayList((Object)model))
                         .build();
 
-        analyzer.process(csvStrings);
+        List<Double> probabilities = analyzer.process(csvStrings);
+        String output="";
+        for (int i=0; i < probabilities.size(); i++){
+            output += probabilities.get(i) + fileStrings.get(i) + '\n';
+            for (String word: csvStrings.get(i))
+                output += model.showWordsImportance(word)+ " " ;
+            output += '\n';
+        }
         //System.out.println(model.toString());
-        return fileName;
+        return output;
     }
 
 

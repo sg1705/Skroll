@@ -37,6 +37,7 @@ public class StringStopWordTokenizerPipe extends SyncPipe<String, List<String>> 
         STOP_WORDS.add(".");
         STOP_WORDS.add("-");
         STOP_WORDS.add("shall");
+        STOP_WORDS.add("be");
 
     }
 

@@ -6,10 +6,9 @@ import com.skroll.pipeline.Pipes;
 import junit.framework.TestCase;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class BinaryNaiveBayesTrainingPipeTest extends TestCase {
+public class BinaryNaiveBayesTestingPipeTest extends TestCase {
 
     @Test
     public void testProcess() throws Exception {
@@ -33,17 +32,24 @@ public class BinaryNaiveBayesTrainingPipeTest extends TestCase {
         List<String> fileStrings = fileIntoString.process(fileName);
         List<List<String>> csvStrings = csvSplitPipeline.process(fileStrings);
 
-        BinaryNaiveBayesModel model = new BinaryNaiveBayesModel();
+        Object model = new BinaryNaiveBayesModel();
 
 
-        Pipeline<List<List<String>>,List<List<String>>> analyzer =
+        Pipeline<List<List<String>>,List<List<String>>> trainer =
                 new Pipeline.Builder<List<List<String>>, List<List<String>>>()
-                    .add(Pipes.BINARY_NAIVE_BAYES_TRAINING,
-                            Lists.newArrayList(model, BinaryNaiveBayesModel.CATEGORY_POSITIVE))
-                    .build();
+                        .add(Pipes.BINARY_NAIVE_BAYES_TRAINING,
+                                Lists.newArrayList(model, BinaryNaiveBayesModel.CATEGORY_POSITIVE))
+                        .build();
 
-        analyzer.process(csvStrings);
-        //System.out.println(model.toString());
-        System.out.println(model.showWordsImportance());
+        trainer.process(csvStrings);
+        Pipeline<List<List<String>>,List<Double>> tester =
+                new Pipeline.Builder<List<List<String>>, List<Double>>()
+                        .add(Pipes.BINARY_NAIVE_BAYES_TESTING,
+                                Lists.newArrayList(model))
+                        .build();
+
+        List<Double> output=tester.process(csvStrings);
+        System.out.println(output);
     }
+
 }
