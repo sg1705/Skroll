@@ -30,7 +30,7 @@ public class HtmlDocumentToFilePipeTest extends TestCase {
         Pipeline<HtmlDocument, HtmlDocument> pipeline =
                 new Pipeline.Builder()
                         .add(Pipes.PARSE_HTML_TO_DOC)
-                        .add(Pipes.PERSIST_HTML_DOCUMENT_TO_FILE, Lists.newArrayList(targetFile))
+                        .add(Pipes.SAVE_HTML_DOCUMENT_TO_FILE, Lists.newArrayList(targetFile))
                         .build();
 
         HtmlDocument doc = pipeline.process(htmlDoc);
@@ -55,7 +55,7 @@ public class HtmlDocumentToFilePipeTest extends TestCase {
         Pipeline<HtmlDocument, HtmlDocument> pipeline =
                 new Pipeline.Builder()
                         .add(Pipes.PARSE_HTML_TO_DOC)
-                        .add(Pipes.PERSIST_HTML_DOCUMENT_TO_FILE, Lists.newArrayList(targetFile))
+                        .add(Pipes.SAVE_HTML_DOCUMENT_TO_FILE, Lists.newArrayList(targetFile))
                         .build();
 
         htmlDoc = pipeline.process(htmlDoc);

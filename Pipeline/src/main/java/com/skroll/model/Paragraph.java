@@ -11,6 +11,16 @@ public class Paragraph {
     private String text;
     private List<String> words;
 
+    private boolean isDefinition;
+
+    public boolean isDefinition() {
+        return isDefinition;
+    }
+
+    public void setDefinition(boolean isDefinition) {
+        this.isDefinition = isDefinition;
+    }
+
     public String getId() {
         return id;
     }
