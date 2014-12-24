@@ -1,5 +1,7 @@
 package com.skroll.analyzer.hmm;
 
+import com.skroll.pipeline.pipes.StringStopWordTokenizerPipe;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,14 +30,14 @@ public class HiddenMarkovModel {
 
     boolean probabilitiesUpToDate=false;
 
-    public HiddenMarkovModel(int modelLength){
-        this();
-        this.modelLength = modelLength;
-    }
     public HiddenMarkovModel(){
+        this(DEFAULT_MODEL_LENGTH);
+    }
+    public HiddenMarkovModel(int modelLength){
+        this.modelLength = modelLength;
         transitionCounts = new int [numStateValues][numStateValues];
         totalStateValueCounts = new int [numStateValues];
-        stateNumberCounts = new int[modelLength][numStateValues];
+        stateNumberCounts = new int[numStateValues][modelLength];
         tokenCounts = new HashMap[numStateValues];
         nextTokenCounts = new HashMap[numStateValues];
 
@@ -43,7 +45,7 @@ public class HiddenMarkovModel {
         stateValueProbability = new double[numStateValues];
         tokenProbabilityGivenStateValue = new HashMap[numStateValues];
         nextTokenProbabilityGivenStateValue = new HashMap[numStateValues];
-        stateNumberProbabilityGivenStateValue = new double[modelLength][numStateValues];
+        stateNumberProbabilityGivenStateValue = new double[numStateValues][modelLength];
 
         for (int i=0; i<numStateValues; i++){
             tokenCounts[i] = new HashMap<String, Integer>();
@@ -97,7 +99,7 @@ public class HiddenMarkovModel {
                 tokenProbabilityGivenStateValue[i].put(k,
                         (tokenCounts[i].get(k) + priorCountPartI) /totalCountIWithPrior );
             }
-            for (String k: tokenCounts[i].keySet())
+            for (String k: nextTokenCounts[i].keySet())
                 nextTokenProbabilityGivenStateValue[i].put(k,
                         (nextTokenCounts[i].get(k) + priorCountPartI) /totalCountIWithPrior );
         }
@@ -121,7 +123,7 @@ public class HiddenMarkovModel {
 
             c = nextTokenCounts[stateValues[i]].get(tokens[i+1]);
             if (c==null) c=0;
-            nextTokenCounts[stateValues[i]].put(tokens[i], c + 1);
+            nextTokenCounts[stateValues[i]].put(tokens[i+1], c + 1);
         }
         probabilitiesUpToDate = false;
     }
@@ -136,9 +138,10 @@ public class HiddenMarkovModel {
         // double[] priorProb = stateValueProbabilities();
 
         Arrays.fill(priorProb,uniformProb);
-        for (int i=0;i<modelLength;i++){
+        for (int i=0;i<modelLength-1;i++){
             stateProbGivenPrevObservations[i] =  inferStateProbabilitiesGivenObservation(i,priorProb,tokens);
-            priorProb = inferNextStateProbabilities(stateProbGivenPrevObservations[i]); //last calculation is not used
+            priorProb = inferNextStateProbabilities(stateProbGivenPrevObservations[i]);
+            //last calculation is not used for now, because last token is used in the inference of the second last state.
         }
         return stateProbGivenPrevObservations;
     }
@@ -155,12 +158,30 @@ public class HiddenMarkovModel {
 
     }
 
+    // a helper method to add zero to the counts and update corresponding probabilities in the hashmap
+    void setZeroCountAndProbabilities(Map<String, Integer>[] countMap, Map<String, Double> []probMap, String token){
+        for (int i=0;i<numStateValues;i++) {
+            if (probMap[i].containsKey(token)) continue;
+            countMap[i].put(token,0);
+            double priorCountPartI = PRIOR_COUNT * stateValueProbability[i];
+            double totalCountIWithPrior = totalStateValueCounts[i] + PRIOR_COUNT;
+            probMap[i].put(token, priorCountPartI/totalCountIWithPrior);
+        }
+    }
+
     double[] inferJointProbabilitiesStateAndObservation(int stateNumber, double priorProb[], String[] tokens){
 
         double[] prob = new double[numStateValues];
         for (int i=0;i<numStateValues; i++){
-            prob[i] = priorProb[i]*tokenProbabilityGivenStateValue[i].get(tokens[stateNumber]) *
-                    nextTokenProbabilityGivenStateValue[i].get(tokens[stateNumber]) *
+
+            // initialize token entry in the maps if it's not seen before
+            if ( ! tokenProbabilityGivenStateValue[i].containsKey(tokens[stateNumber]))
+                setZeroCountAndProbabilities(tokenCounts, tokenProbabilityGivenStateValue, tokens[stateNumber]);
+            if ( ! nextTokenProbabilityGivenStateValue[i].containsKey(tokens[stateNumber+1]))
+                setZeroCountAndProbabilities(nextTokenCounts, nextTokenProbabilityGivenStateValue, tokens[stateNumber+1]);
+            Double test =tokenProbabilityGivenStateValue[i].get(tokens[stateNumber]);
+            prob[i] = priorProb[i] * tokenProbabilityGivenStateValue[i].get(tokens[stateNumber]) *
+                    nextTokenProbabilityGivenStateValue[i].get(tokens[stateNumber+1]) *
                     stateNumberProbabilityGivenStateValue[i][stateNumber];
         }
         return prob;
