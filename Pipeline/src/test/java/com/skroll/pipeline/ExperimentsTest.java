@@ -14,6 +14,8 @@ import org.junit.Test;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ExperimentsTest extends TestCase {
 
@@ -95,5 +97,15 @@ public class ExperimentsTest extends TestCase {
             paragraph = Lists.newArrayList("aaa", "bbb");
         }
 
+    }
+
+
+    public void testRegex() {
+        String in = "The quick brown fox \"jumped over\" the \"lazy\" dog";
+        Pattern p = Pattern.compile( "\"([^\"]*)\"" );
+        Matcher m = p.matcher( in );
+        while( m.find()) {
+            System.err.println( m.group( 1 ));
+        }
     }
 }

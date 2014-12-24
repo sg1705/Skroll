@@ -10,6 +10,15 @@ public class Paragraph {
     private String id;
     private String text;
     private List<String> words;
+    private List<String> definitions;
+
+    public List<String> getDefinitions() {
+        return definitions;
+    }
+
+    public void setDefinitions(List<String> definitions) {
+        this.definitions = definitions;
+    }
 
     private boolean isDefinition;
 

@@ -1,7 +1,10 @@
 package com.skroll.pipeline;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
+import com.skroll.model.HtmlDocument;
+import com.skroll.model.Paragraph;
 import com.skroll.pipeline.util.Utils;
 
 import java.io.File;
@@ -23,6 +26,7 @@ public class Main {
     private static final String PARA_DEF_WORDS = "Pipeline/build/resources/generated-files/pdef-words/pdef-words-";
     private static final String NOT_PARA_DEF = "Pipeline/build/resources/generated-files/not-pdef/not-pdef-";
     private static final String NOT_PARA_DEF_WORDS = "Pipeline/build/resources/generated-files/not-pdef-words/not-pdef-words-";
+    private static final String PARA_DEF_TERMS = "Pipeline/build/resources/generated-files/pdef-terms/pdef-terms-";
 
 
     public static void main(String[] args) throws Exception {
@@ -42,6 +46,7 @@ public class Main {
         Files.createParentDirs(new File(PARA_DEF_WORDS));
         Files.createParentDirs(new File(NOT_PARA_DEF));
         Files.createParentDirs(new File(NOT_PARA_DEF_WORDS));
+        Files.createParentDirs(new File(PARA_DEF_TERMS));
 
     }
 
@@ -145,6 +150,36 @@ public class Main {
                                 .build();
 
                 notParaDefWords.process(input);
+
+                HtmlDocument htmlDoc = new HtmlDocument(htmlText);
+
+                //create a pipeline
+                Pipeline<HtmlDocument, HtmlDocument> pipeline =
+                        new Pipeline.Builder()
+                                .add(Pipes.PARSE_HTML_TO_DOC)
+                                .add(Pipes.REMOVE_BLANK_PARAGRAPH_FROM_HTML_DOC)
+                                .add(Pipes.REMOVE_NBSP_IN_HTML_DOC)
+                                .add(Pipes.REPLACE_SPECIAL_QUOTE_IN_HTML_DOC)
+                                .add(Pipes.FILTER_STARTS_WITH_QUOTE_IN_HTML_DOC)
+                                .add(Pipes.TOKENIZE_PARAGRAPH_IN_HTML_DOC)
+                                .add(Pipes.EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC)
+                                .build();
+                htmlDoc = pipeline.process(htmlDoc);
+                List<String> defList = new ArrayList<String>();
+                int count = 0;
+                for(Paragraph paragraph : htmlDoc.getParagraphs()) {
+                    String words = Joiner.on(",").join(paragraph.getDefinitions());
+                    defList.add(words);
+                    System.out.println(words);
+                }
+
+                // defintiion only
+                Pipeline<List<String>, List<String>> pDefTerms =
+                        new Pipeline.Builder()
+                                .add(Pipes.LIST_TO_CSV_FILE, Lists.newArrayList(PARA_DEF_TERMS + file.getName()))
+                                .build();
+
+                pDefTerms.process(defList);
 
 
 

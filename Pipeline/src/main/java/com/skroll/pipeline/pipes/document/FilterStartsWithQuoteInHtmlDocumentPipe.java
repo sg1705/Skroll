@@ -3,7 +3,7 @@ package com.skroll.pipeline.pipes.document;
 import com.skroll.model.HtmlDocument;
 import com.skroll.model.Paragraph;
 import com.skroll.pipeline.SyncPipe;
-import org.jsoup.helper.StringUtil;
+import com.skroll.pipeline.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,16 +11,14 @@ import java.util.List;
 /**
  * Created by sagupta on 12/14/14.
  */
-public class RemoveBlankParagraphFromHtmlDocumentPipe extends SyncPipe<HtmlDocument, HtmlDocument> {
+public class FilterStartsWithQuoteInHtmlDocumentPipe extends SyncPipe<HtmlDocument, HtmlDocument> {
 
     @Override
     public HtmlDocument process(HtmlDocument input) {
-        //TODO some instance where there is just a blank like (maybe because of new line)
         List<Paragraph> newList = new ArrayList<Paragraph>();
         for(Paragraph paragraph : input.getParagraphs()) {
-            String str = paragraph.getText().replace("\u00a0", "");
-            if (!StringUtil.isBlank(str)) {
-                paragraph.setText(paragraph.getText().toLowerCase());
+            String str = paragraph.getText();
+            if (str.startsWith(Constants.QUOTE)) {
                 newList.add(paragraph);
             }
         }

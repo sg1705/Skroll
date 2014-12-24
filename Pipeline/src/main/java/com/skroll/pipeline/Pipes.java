@@ -12,6 +12,8 @@ public enum Pipes {
     REMOVE_NBSP_IN_HTML_DOC("com.skroll.pipeline.pipes.document.RemoveNBSPInHtmlDocumentPipe"),
     REPLACE_SPECIAL_QUOTE_IN_HTML_DOC("com.skroll.pipeline.pipes.document.ReplaceSpecialQuotesInHtmlDocumentPipe"),
     TOKENIZE_PARAGRAPH_IN_HTML_DOC("com.skroll.pipeline.pipes.document.TokenizeParagraphInHtmlDocumentPipe"),
+    EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC("com.skroll.pipeline.pipes.document.ExtractDefinitionsFromParagraphInHtmlDocumentPipe"),
+    FILTER_STARTS_WITH_QUOTE_IN_HTML_DOC("com.skroll.pipeline.pipes.document.FilterStartsWithQuoteInHtmlDocumentPipe"),
 
     // analyzer pipes
 
