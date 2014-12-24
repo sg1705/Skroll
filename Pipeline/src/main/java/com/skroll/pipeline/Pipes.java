@@ -15,7 +15,7 @@ public enum Pipes {
     EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC("com.skroll.pipeline.pipes.document.ExtractDefinitionsFromParagraphInHtmlDocumentPipe"),
     FILTER_STARTS_WITH_QUOTE_IN_HTML_DOC("com.skroll.pipeline.pipes.document.FilterStartsWithQuoteInHtmlDocumentPipe"),
 
-    // analyzer pipes
+    // NB analyzer pipes
 
     // testing pipes
     //added by saurabh@
@@ -32,6 +32,9 @@ public enum Pipes {
     FILES_BINARY_NAIVE_BAYES_TRAINER("com.skroll.analyzer.pipes.FilesBinaryNaiveBayesTrainerPipe"),
     FOLDER_BINARY_NAIVE_BAYES_TRAINER("com.skroll.analyzer.pipes.FolderBinaryNaiveBayesTrainerPipe"),
 
+
+    //HMM
+    HIDDEN_MARKOV_MODEL_TRAINING_PIPE("com.skroll.analyzer.hmm.HiddenMarkovModelTrainingPipe"),
 
     //parser pipes
     REPLACE_SPECIAL_QUOTES_WITH_QUOTES("com.skroll.pipeline.pipes.ReplaceSpecialQuotesWithQuotes"),
