@@ -12,7 +12,7 @@ import java.util.Map;
 public class HiddenMarkovModel {
     static final int DEFAULT_MODEL_LENGTH = 8;
     static final int DEFAULT_NUM_STATE_VALUES = 2;
-    static final int PRIOR_COUNT = 0;
+    static final int PRIOR_COUNT = 10;
 
     int[][] transitionCounts;
     int totalStateValueCounts[];
@@ -107,6 +107,10 @@ public class HiddenMarkovModel {
     }
 
     public void updateCounts(String[] tokens, int[] stateValues){
+
+        //skip samples that are too short
+        if (tokens.length < modelLength || stateValues.length<modelLength) return;
+
         // to make the totalStateValueCounts consistent,
         // we do not use the last values of the input arrays for updating the various counts,
         // except the last stateValues entry is used to update the transition counts.
@@ -138,7 +142,8 @@ public class HiddenMarkovModel {
         // double[] priorProb = stateValueProbabilities();
 
         Arrays.fill(priorProb,uniformProb);
-        for (int i=0;i<modelLength-1;i++){
+        int length = Math.min(modelLength, tokens.length);
+        for (int i=0;i<length-1;i++){
             stateProbGivenPrevObservations[i] =  inferStateProbabilitiesGivenObservation(i,priorProb,tokens);
             priorProb = inferNextStateProbabilities(stateProbGivenPrevObservations[i]);
             //last calculation is not used for now, because last token is used in the inference of the second last state.
@@ -179,10 +184,9 @@ public class HiddenMarkovModel {
                 setZeroCountAndProbabilities(tokenCounts, tokenProbabilityGivenStateValue, tokens[stateNumber]);
             if ( ! nextTokenProbabilityGivenStateValue[i].containsKey(tokens[stateNumber+1]))
                 setZeroCountAndProbabilities(nextTokenCounts, nextTokenProbabilityGivenStateValue, tokens[stateNumber+1]);
-            Double test =tokenProbabilityGivenStateValue[i].get(tokens[stateNumber]);
-            prob[i] = priorProb[i] * tokenProbabilityGivenStateValue[i].get(tokens[stateNumber]) *
-                    nextTokenProbabilityGivenStateValue[i].get(tokens[stateNumber+1]) *
-                    stateNumberProbabilityGivenStateValue[i][stateNumber];
+            prob[i] = priorProb[i] * tokenProbabilityGivenStateValue[i].get(tokens[stateNumber]);
+            prob[i] *= nextTokenProbabilityGivenStateValue[i].get(tokens[stateNumber+1]);
+            prob[i] *= stateNumberProbabilityGivenStateValue[i][stateNumber];
         }
         return prob;
     }

@@ -22,8 +22,15 @@ public class HiddenMarkovModelTrainingPipe extends SyncPipe<HtmlDocument, HtmlDo
 
         for( Paragraph paragraph : paragraphs) {
             List<String> tokens = paragraph.getWords();
-            List<String> definitions = Splitter.on(' ').splitToList(paragraph.getDefinitions().get(0));
-            HashSet<String> definitionsSet = new HashSet<String>(definitions);
+
+            HashSet<String> definitionsSet;
+            if (paragraph.getDefinitions().size()==0){
+                definitionsSet= new HashSet<String>();
+            } else {
+
+                List<String> definitions = Splitter.on(' ').splitToList(paragraph.getDefinitions().get(0));
+                definitionsSet = new HashSet<String>(definitions);
+            }
 
             int[] tokenType = new int[tokens.size()];
             int ii = 0;

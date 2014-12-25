@@ -8,6 +8,8 @@ import com.skroll.pipeline.util.Utils;
 import junit.framework.TestCase;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 public class HiddenMarkovModelTrainingPipeTest extends TestCase {
 
     @Test
@@ -20,7 +22,7 @@ public class HiddenMarkovModelTrainingPipeTest extends TestCase {
         htmlDoc.setSourceHtml(htmlString);
 
         // create HMM model
-        HiddenMarkovModel model = new HiddenMarkovModel();
+        HiddenMarkovModel model = new HiddenMarkovModel(16);
 
         //create a pipeline
         Pipeline<HtmlDocument, HtmlDocument> pipeline =
@@ -39,6 +41,15 @@ public class HiddenMarkovModelTrainingPipeTest extends TestCase {
         model.updateProbabilities();;
         System.out.println(model.showProbabilities());
         System.out.println(model.showCounts());
+
+        String[] token={"\"","Agreement","\"","has", "the", "meaning", "specified", "in", "the", "introductory", "paragraph", "hereof"};
+        String[] token2={"\"","affiliate","\"","means","respect"};
+        String[] token3={"affiliate","means","respect"};
+
+        System.out.println(Arrays.deepToString(model.inferForward(token)) );
+        System.out.println(Arrays.deepToString(model.inferForward(token2)) );
+        System.out.println(Arrays.deepToString(model.inferForward(token3)) );
+
 
     }
 }
