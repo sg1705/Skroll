@@ -10,6 +10,7 @@ public class HtmlDocument {
     private List<Paragraph> paragraphs;
     private String annotatedHtml;
 
+
     public HtmlDocument() {
     }
 

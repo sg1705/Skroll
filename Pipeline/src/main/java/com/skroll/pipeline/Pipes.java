@@ -5,6 +5,10 @@ package com.skroll.pipeline;
  */
 public enum Pipes {
 
+    //TRAINING PIPES
+    SAVE_TRAINED_DATA("com.skroll.pipeline.pipes.training.SaveTrainedData"),
+
+
     //HtmlDocumentPipes
     PARSE_HTML_TO_DOC("com.skroll.pipeline.pipes.document.ParseHtmlToDocumentPipe"),
     SAVE_HTML_DOCUMENT_TO_FILE("com.skroll.pipeline.pipes.document.SaveHtmlDocumentToFilePipe"),

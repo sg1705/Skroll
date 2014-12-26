@@ -28,6 +28,11 @@ public class ExtractDefinitionsFromParagraphInHtmlDocumentPipe extends SyncPipe<
                 }
             }
             paragraph.setDefinitions(newList);
+            if (newList.size() > 0) {
+                paragraph.setDefinition(true);
+            } else {
+                paragraph.setDefinition(false);
+            }
         }
         return this.target.process(input);
     }
