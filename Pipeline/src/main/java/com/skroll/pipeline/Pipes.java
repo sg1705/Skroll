@@ -38,7 +38,11 @@ public enum Pipes {
 
 
     //HMM
-    HIDDEN_MARKOV_MODEL_TRAINING_PIPE("com.skroll.analyzer.hmm.HiddenMarkovModelTrainingPipe"),
+    HTML_HIDDEN_MARKOV_MODEL_TRAINING_PIPE("com.skroll.analyzer.hmm.HTMLHiddenMarkovModelTrainingPipe"),
+    HTML_HIDDEN_MARKOV_MODEL_TESTING_PIPE("com.skroll.analyzer.hmm.HTMLHiddenMarkovModelTestingPipe"),
+    FOLDER_HTML_HIDDEN_MARKOV_MODEL_TRAINING_PIPE("com.skroll.analyzer.pipes.FolderHTMLHiddenMarkovModelTrainerPipe"),
+    FOLDER_HTML_HIDDEN_MARKOV_MODEL_TESTING_PIPE("com.skroll.analyzer.pipes.FolderHTMLHiddenMarkovModelTesterPipe"),
+
 
     //parser pipes
     REPLACE_SPECIAL_QUOTES_WITH_QUOTES("com.skroll.pipeline.pipes.ReplaceSpecialQuotesWithQuotes"),

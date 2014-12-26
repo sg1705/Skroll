@@ -1,0 +1,60 @@
+package com.skroll.analyzer.pipes;
+
+import com.google.common.collect.Lists;
+import com.skroll.analyzer.hmm.HiddenMarkovModel;
+import com.skroll.analyzer.nb.BinaryNaiveBayesModel;
+import com.skroll.model.HtmlDocument;
+import com.skroll.pipeline.Pipeline;
+import com.skroll.pipeline.Pipes;
+import com.skroll.pipeline.SyncPipe;
+import com.skroll.pipeline.util.Utils;
+
+import java.io.File;
+import java.util.List;
+
+/**
+ * Created by wei2learn on 12/26/2014.
+ */
+public class FolderHTMLHiddenMarkovModelTrainerPipe extends SyncPipe<String, List<String>> {
+
+    @Override
+    public List<String> process(String folderName) {
+        HiddenMarkovModel model = (HiddenMarkovModel)config.get(0);
+
+        File folder = new File(folderName);
+        File[] listOfFiles = folder.listFiles();
+        for (File file:listOfFiles){
+
+            String htmlString = null;
+            try {
+                htmlString = Utils.readStringFromFile(folderName + '/' + file.getName());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            HtmlDocument htmlDoc= new HtmlDocument();
+            htmlDoc.setSourceHtml(htmlString);
+
+            //create a pipeline
+            Pipeline<HtmlDocument, HtmlDocument> pipeline =
+                    new Pipeline.Builder()
+                            .add(Pipes.PARSE_HTML_TO_DOC)
+                            .add(Pipes.REMOVE_BLANK_PARAGRAPH_FROM_HTML_DOC)
+                            .add(Pipes.REMOVE_NBSP_IN_HTML_DOC)
+                            .add(Pipes.REPLACE_SPECIAL_QUOTE_IN_HTML_DOC)
+                            .add(Pipes.FILTER_STARTS_WITH_QUOTE_IN_HTML_DOC)
+                            .add(Pipes.TOKENIZE_PARAGRAPH_IN_HTML_DOC)
+                            .add(Pipes.EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC)
+                            .add(Pipes.HTML_HIDDEN_MARKOV_MODEL_TRAINING_PIPE,
+                                    Lists.newArrayList((Object) model))
+                            .build();
+            HtmlDocument doc = pipeline.process(htmlDoc);
+
+        }
+
+        //System.out.println(model.showWordsImportance());
+        return null;
+    }
+
+
+}

@@ -1,0 +1,81 @@
+package com.skroll.analyzer.pipes;
+
+import com.google.common.collect.Lists;
+import com.skroll.analyzer.hmm.HiddenMarkovModel;
+import com.skroll.model.HtmlDocument;
+import com.skroll.model.Paragraph;
+import com.skroll.pipeline.Pipeline;
+import com.skroll.pipeline.Pipes;
+import com.skroll.pipeline.SyncPipe;
+import com.skroll.pipeline.util.Utils;
+
+import java.io.File;
+import java.util.List;
+
+/**
+ * Created by wei2learn on 12/26/2014.
+ */
+public class FolderHTMLHiddenMarkovModelTesterPipe extends SyncPipe<String, String> {
+
+    @Override
+    public String process(String folderName) {
+        HiddenMarkovModel model = (HiddenMarkovModel)config.get(0);
+        String output="";
+
+        File folder = new File(folderName);
+        File[] listOfFiles = folder.listFiles();
+        for (File file:listOfFiles){
+            String htmlString = null;
+            try {
+                htmlString = Utils.readStringFromFile(folderName + '/' + file.getName());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            HtmlDocument htmlDoc= new HtmlDocument();
+            htmlDoc.setSourceHtml(htmlString);
+
+            //create a pipeline
+            Pipeline<HtmlDocument, HtmlDocument> testingDocPipe =
+                    new Pipeline.Builder()
+                            .add(Pipes.PARSE_HTML_TO_DOC)
+                            .add(Pipes.REMOVE_BLANK_PARAGRAPH_FROM_HTML_DOC)
+                            .add(Pipes.REMOVE_NBSP_IN_HTML_DOC)
+                            .add(Pipes.REPLACE_SPECIAL_QUOTE_IN_HTML_DOC)
+                            .add(Pipes.FILTER_STARTS_WITH_QUOTE_IN_HTML_DOC)
+                            .add(Pipes.TOKENIZE_PARAGRAPH_IN_HTML_DOC)
+                            .add(Pipes.EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC)
+                            .build();
+            HtmlDocument testDoc = testingDocPipe.process(htmlDoc);
+
+            Pipeline<HtmlDocument, List<double[][]>> testingPipe =
+                    new Pipeline.Builder()
+                            .add(Pipes.HTML_HIDDEN_MARKOV_MODEL_TESTING_PIPE,
+                                    Lists.newArrayList((Object) model))
+                            .build();
+
+
+            List<double[][]> probabilities = testingPipe.process(testDoc);
+            List<Paragraph> paragraphs = testDoc.getParagraphs();
+            for (int i=0; i<paragraphs.size();i++){
+                output +=( paragraphs.get(i).getText() + '\n');
+                //output +=( paragraphs.get(i).getWords().toString() + '\n');
+//                System.out.println(paragraphs.get(i).getWords().size()+", "+probabilities.get(i).length);
+                for (int j=0; j<Math.min(model.size(), paragraphs.get(i).getWords().size()); j++){
+//                    System.out.println(i+", "+j);
+                    output += String.format("%s=%.2f ", paragraphs.get(i).getWords().get(j), probabilities.get(i)[j][1]);
+                }
+//                for (double[] probs: probabilities.get(i)){
+//                    output += String.format("%.2f, ", probs[1]);
+//                }
+                output +='\n';
+            }
+
+        }
+
+        //System.out.println(model.showWordsImportance());
+        return output;
+    }
+
+
+}

@@ -54,6 +54,10 @@ public class HiddenMarkovModel {
             nextTokenProbabilityGivenStateValue[i] = new HashMap<String, Double>();
         }
     }
+
+    public int size(){
+        return modelLength;
+    }
     public String showProbabilities(){
         String s="";
         s+= "stateValueProbability " + Arrays.toString(stateValueProbability) +'\n';

@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
-public class HiddenMarkovModelTrainingPipeTest extends TestCase {
+public class HTMLHiddenMarkovModelTrainingPipeTest extends TestCase {
 
     @Test
     public void testProcess() throws Exception {
@@ -34,7 +34,7 @@ public class HiddenMarkovModelTrainingPipeTest extends TestCase {
                         .add(Pipes.FILTER_STARTS_WITH_QUOTE_IN_HTML_DOC)
                         .add(Pipes.TOKENIZE_PARAGRAPH_IN_HTML_DOC)
                         .add(Pipes.EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC)
-                        .add(Pipes.HIDDEN_MARKOV_MODEL_TRAINING_PIPE,
+                        .add(Pipes.HTML_HIDDEN_MARKOV_MODEL_TRAINING_PIPE,
                                 Lists.newArrayList((Object) model))
                         .build();
         HtmlDocument doc = pipeline.process(htmlDoc);

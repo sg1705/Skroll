@@ -12,7 +12,7 @@ import java.util.*;
 /**
  * Created by saurabh on 12/21/14.
  */
-public class HiddenMarkovModelTrainingPipe extends SyncPipe<HtmlDocument, HtmlDocument> {
+public class HTMLHiddenMarkovModelTrainingPipe extends SyncPipe<HtmlDocument, HtmlDocument> {
 
     @Override
     public HtmlDocument process(HtmlDocument input) {
