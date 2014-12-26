@@ -1,4 +1,4 @@
-package com.skroll.pipeline.pipes.document;
+package com.skroll.pipeline.pipes.training;
 
 import com.skroll.model.HtmlDocument;
 import com.skroll.model.Paragraph;
