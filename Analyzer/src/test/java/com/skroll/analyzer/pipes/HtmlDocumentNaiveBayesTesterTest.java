@@ -8,6 +8,7 @@ import com.skroll.model.ModelHelper;
 import com.skroll.model.Paragraph;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
+import com.skroll.pipeline.util.Constants;
 import com.skroll.pipeline.util.Utils;
 import junit.framework.TestCase;
 
@@ -24,14 +25,14 @@ public class HtmlDocumentNaiveBayesTesterTest extends TestCase {
         Pipeline<String, List<String>> analyzer =
                 new Pipeline.Builder<String, List<String>>()
                         .add(Pipes.FOLDER_BINARY_NAIVE_BAYES_TRAINER,
-                                Lists.newArrayList(model, BinaryNaiveBayesModel.CATEGORY_NEGATIVE))
+                                Lists.newArrayList(model, Constants.CATEGORY_NEGATIVE))
                         .build();
 
         analyzer.process(trainingFolder[0]);
         analyzer =
                 new Pipeline.Builder<String, List<String>>()
                         .add(Pipes.FOLDER_BINARY_NAIVE_BAYES_TRAINER,
-                                Lists.newArrayList(model, BinaryNaiveBayesModel.CATEGORY_POSITIVE))
+                                Lists.newArrayList(model, Constants.CATEGORY_POSITIVE))
                         .build();
 
         analyzer.process(trainingFolder[1]);

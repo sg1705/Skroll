@@ -3,6 +3,7 @@ package com.skroll.analyzer.nb;
 import com.google.common.collect.Lists;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
+import com.skroll.pipeline.util.Constants;
 import junit.framework.TestCase;
 import org.junit.Test;
 
@@ -38,7 +39,7 @@ public class BinaryNaiveBayesTestingPipeTest extends TestCase {
         Pipeline<List<List<String>>,List<List<String>>> trainer =
                 new Pipeline.Builder<List<List<String>>, List<List<String>>>()
                         .add(Pipes.BINARY_NAIVE_BAYES_TRAINING,
-                                Lists.newArrayList(model, BinaryNaiveBayesModel.CATEGORY_POSITIVE))
+                                Lists.newArrayList(model, Constants.CATEGORY_POSITIVE))
                         .build();
 
         trainer.process(csvStrings);

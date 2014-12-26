@@ -13,13 +13,17 @@ import java.io.File;
 import java.util.List;
 
 /**
+ *
+ * Trains a HMM model with all the html files in a given folder
+ *
  * Created by wei2learn on 12/26/2014.
  */
-public class FolderHTMLHiddenMarkovModelTrainerPipe extends SyncPipe<String, List<String>> {
+public class FolderHTMLHiddenMarkovModelTrainerPipe extends SyncPipe<String, String> {
 
     @Override
-    public List<String> process(String folderName) {
+    public String process(String folderName) {
         HiddenMarkovModel model = (HiddenMarkovModel)config.get(0);
+
 
         File folder = new File(folderName);
         File[] listOfFiles = folder.listFiles();
@@ -53,7 +57,7 @@ public class FolderHTMLHiddenMarkovModelTrainerPipe extends SyncPipe<String, Lis
         }
 
         //System.out.println(model.showWordsImportance());
-        return null;
+        return this.target.process(folderName);
     }
 
 

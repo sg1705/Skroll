@@ -7,8 +7,6 @@ import java.util.*;
  */
 public class BinaryNaiveBayesModel {
 
-    public static int CATEGORY_POSITIVE = 1;
-    public static int CATEGORY_NEGATIVE = 0;
     public static final double PRIOR_COUNT = 100;
     public static final boolean USE_FIRST_CHAR = true;
 

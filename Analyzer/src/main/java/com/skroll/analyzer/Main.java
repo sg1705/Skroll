@@ -5,6 +5,7 @@ import com.skroll.analyzer.nb.BinaryNaiveBayesModel;
 import com.skroll.analyzer.nb.BinaryNaiveBayesWithWordsFeatures;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
+import com.skroll.pipeline.util.Constants;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -34,14 +35,14 @@ public class Main {
         Pipeline<String, List<String>> analyzer =
                 new Pipeline.Builder<String, List<String>>()
                         .add(Pipes.FOLDER_BINARY_NAIVE_BAYES_TRAINER,
-                                Lists.newArrayList(model, BinaryNaiveBayesModel.CATEGORY_NEGATIVE))
+                                Lists.newArrayList(model, Constants.CATEGORY_NEGATIVE))
                         .build();
 
         analyzer.process(trainingFolder[0]);
         analyzer =
                 new Pipeline.Builder<String, List<String>>()
                         .add(Pipes.FOLDER_BINARY_NAIVE_BAYES_TRAINER,
-                                Lists.newArrayList(model, BinaryNaiveBayesModel.CATEGORY_POSITIVE))
+                                Lists.newArrayList(model, Constants.CATEGORY_POSITIVE))
                         .build();
 
         analyzer.process(trainingFolder[1]);

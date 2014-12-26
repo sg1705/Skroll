@@ -10,6 +10,8 @@ import com.skroll.pipeline.SyncPipe;
 import java.util.*;
 
 /**
+ * Trains a model with the given HtmlDocument
+ *
  * Created by saurabh on 12/21/14.
  */
 public class HTMLHiddenMarkovModelTrainingPipe extends SyncPipe<HtmlDocument, HtmlDocument> {
