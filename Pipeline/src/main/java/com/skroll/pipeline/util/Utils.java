@@ -24,6 +24,11 @@ public class Utils {
         return Files.toString(new File(fileName), Charset.forName(DEFAULT_CHARSET) );
     }
 
+    public static String readStringFromFile(File file) throws Exception {
+        return Files.toString(file, Charset.forName(DEFAULT_CHARSET) );
+    }
+
+
     public static void writeToFile(String fileName, String data)  {
         try {
             Files.write(data.getBytes(), new File(fileName));
