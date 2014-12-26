@@ -1,9 +1,10 @@
-package com.skroll.analyzer.hmm;
+package com.skroll.analyzer;
 
 import com.aliasi.classify.NaiveBayesClassifier;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.skroll.analyzer.hmm.HiddenMarkovModel;
 import com.skroll.analyzer.nb.BinaryNaiveBayesModel;
 import com.skroll.model.HtmlDocument;
 import com.skroll.model.Paragraph;
@@ -16,7 +17,7 @@ import junit.framework.TestCase;
 import java.util.HashSet;
 import java.util.List;
 
-public class HiddenMarkovModelSimpleTestingPipeTest extends TestCase {
+public class TrainingAndTestingTest extends TestCase {
 
     private HiddenMarkovModel hmmModel;
     private BinaryNaiveBayesModel nbModel;
