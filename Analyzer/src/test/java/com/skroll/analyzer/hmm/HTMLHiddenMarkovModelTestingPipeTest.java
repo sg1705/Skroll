@@ -8,6 +8,7 @@ import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
 import junit.framework.TestCase;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class HTMLHiddenMarkovModelTestingPipeTest extends TestCase {
@@ -21,7 +22,7 @@ public class HTMLHiddenMarkovModelTestingPipeTest extends TestCase {
         htmlDoc.setSourceHtml(htmlString);
 
         // create HMM model
-        HiddenMarkovModel model = new HiddenMarkovModel(16);
+        HiddenMarkovModel model = new HiddenMarkovModel(20);
 
         //create a pipeline
         Pipeline<HtmlDocument, HtmlDocument> pipeline =
@@ -66,18 +67,44 @@ public class HTMLHiddenMarkovModelTestingPipeTest extends TestCase {
                         .add(Pipes.HTML_HIDDEN_MARKOV_MODEL_TESTING_PIPE,
                                 Lists.newArrayList((Object) model))
                         .build();
-        List<double[][]> output = testingPipe.process(testDoc);
         List<Paragraph> paragraphs = testDoc.getParagraphs();
+
+        List<double[][]> probabilities = testingPipe.process(testDoc);
         for (int i=0; i<paragraphs.size();i++){
             System.out.println(paragraphs.get(i).getText());
-            System.out.println(paragraphs.get(i).getWords());
+//                System.out.println(paragraphs.get(i).getWords().size()+", "+probabilities.get(i).length);
+            int k=0;
+//            for (int j=0; j<Math.min(model.size(), paragraphs.get(i).getWords().size()); j++){
+            for (int j=0; j< paragraphs.get(i).getWords().size() && k < model.size(); j++){
 
-            for (double[] probs: output.get(i)){
-                System.out.printf("%.3f, ", probs[1]);
+//                    System.out.println(i+", "+j);
+                if (paragraphs.get(i).getWords().get(j).equals("\"")) continue; //skip quote
+                System.out.printf("%d %s=%.2f ", j,paragraphs.get(i).getWords().get(j), probabilities.get(i)[k++][1]);
             }
             System.out.println();
-            // System.out.println(Arrays.deepToString( output.get(i)));
         }
+        //String[] token2={"\"","affiliate","\"","means","respect"};
 
+//        String[] token={"\"","tt","&","c","\"","means","telemetry","tracking","control"};
+        //String[] token={"\"","indenture","trustee","\"","or","\"","institutional","trustee","\"","means"};
+//        String[] token={"\"","indenture","trustee","\"","or","\"","institutional","trustee","\"","means", "the"};
+//
+//
+//        //String[] token={"\"","tt","c","\""};
+//
+//        System.out.println(Arrays.deepToString(model.infer(token)) );
+//
+//
+//
+//
+//        double [] prob = {0.5,0.5};
+//        System.out.println(model.showProbabilities());
+//
+//        String[] newTokens = new String[token.length];
+//        int[][] features = new int[token.length][2];;
+//        int length = model.createFeatures(token, newTokens, features);
+//
+//        System.out.println("state prob "+Arrays.toString(prob)+'\n');
+//        System.out.println(Arrays.toString(model.inferJointProbabilitiesStateAndObservation(0, prob, newTokens, features)) );
     }
 }

@@ -59,17 +59,24 @@ public class FolderHTMLHiddenMarkovModelTesterPipe extends SyncPipe<String, Stri
             List<Paragraph> paragraphs = testDoc.getParagraphs();
             for (int i=0; i<paragraphs.size();i++){
                 output +=( paragraphs.get(i).getText() + '\n');
-                //output +=( paragraphs.get(i).getWords().toString() + '\n');
-//                System.out.println(paragraphs.get(i).getWords().size()+", "+probabilities.get(i).length);
-                for (int j=0; j<Math.min(model.size(), paragraphs.get(i).getWords().size()); j++){
-//                    System.out.println(i+", "+j);
-                    output += String.format("%s=%.2f ", paragraphs.get(i).getWords().get(j), probabilities.get(i)[j][1]);
+                int k=0;
+                for (int j=0; j< paragraphs.get(i).getWords().size() && k < model.size(); j++){
+                    if (paragraphs.get(i).getWords().get(j).equals("\"")) continue; //skip quote
+                    if (probabilities.get(i)[k][1]>0.1)
+                        output+=String.format("    %s=%.2f ", paragraphs.get(i).getWords().get(j), probabilities.get(i)[k++][1]);
+                    else
+                        output += String.format("%s=%.2f ", paragraphs.get(i).getWords().get(j), probabilities.get(i)[k++][1]);
+
+//                    if (probabilities.get(i)[k][1]>0.1)
+//                        output+=String.format(" -+- %d %s=%.2f", j,paragraphs.get(i).getWords().get(j), probabilities.get(i)[k++][1]);
+//                    else
+//                        output += String.format("%d %s=%.2f ", j,paragraphs.get(i).getWords().get(j), probabilities.get(i)[k++][1]);
                 }
-//                for (double[] probs: probabilities.get(i)){
-//                    output += String.format("%.2f, ", probs[1]);
-//                }
                 output +='\n';
+
             }
+
+
 
         }
 

@@ -14,7 +14,7 @@ public class FolderHTMLHiddenMarkovModelTesterPipeTest extends TestCase {
     public void testProcess() throws Exception {
 
         String trainingFolder = "src/test/resources/hmmTrainingDocs";
-        HiddenMarkovModel model = new HiddenMarkovModel();
+        HiddenMarkovModel model = new HiddenMarkovModel(12);
 
         Pipeline<String, List<String>> analyzer =
                 new Pipeline.Builder<String, List<String>>()

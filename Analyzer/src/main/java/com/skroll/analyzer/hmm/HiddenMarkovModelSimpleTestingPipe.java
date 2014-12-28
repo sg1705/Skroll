@@ -19,7 +19,7 @@ public class HiddenMarkovModelSimpleTestingPipe extends SyncPipe<List<String>, L
         int category = (Integer)config.get(1);
         List<Double> output = new ArrayList<Double>();
 
-        double[][] hmmTestResult = model.inferForward(input.toArray(new String[input.size()]));
+        double[][] hmmTestResult = model.infer(input.toArray(new String[input.size()]));
         output = Doubles.asList(hmmTestResult[category]);
 
         return output;

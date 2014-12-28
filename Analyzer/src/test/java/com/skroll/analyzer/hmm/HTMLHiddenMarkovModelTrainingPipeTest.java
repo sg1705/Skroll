@@ -45,10 +45,11 @@ public class HTMLHiddenMarkovModelTrainingPipeTest extends TestCase {
         String[] token={"\"","Agreement","\"","has", "the", "meaning", "specified", "in", "the", "introductory", "paragraph", "hereof"};
         String[] token2={"\"","affiliate","\"","means","respect"};
         String[] token3={"affiliate","means","respect"};
+        String[] token4={"\"","indenture","security", "holder","\"","means", "a", "holder", "of", "a", "note" };
 
-        System.out.println(Arrays.deepToString(model.inferForward(token)) );
-        System.out.println(Arrays.deepToString(model.inferForward(token2)) );
-        System.out.println(Arrays.deepToString(model.inferForward(token3)) );
+//        System.out.println(Arrays.deepToString(model.infer(token)) );
+        System.out.println(Arrays.deepToString(model.infer(token2)) );
+//        System.out.println(Arrays.deepToString(model.infer(token4)) );
 
 
     }

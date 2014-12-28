@@ -21,21 +21,14 @@ public class HTMLHiddenMarkovModelTestingPipe extends SyncPipe<HtmlDocument, Lis
     public List<double[][]> process(HtmlDocument input) {
         HiddenMarkovModel model = (HiddenMarkovModel)config.get(0);
 
-        Pipeline<List<String>, List<Double>> simplePipeline
-                = new Pipeline.Builder()
-                    .add(Pipes.HIDDEN_MARKOV_MODEL_SIMPLE_TESTING_PIPE)
-                    .build();
-
         List<double[][]> output = new ArrayList<double[][]>();
 
         List<Paragraph> paragraphs = input.getParagraphs();
 
         for( Paragraph paragraph : paragraphs) {
-            if (paragraph.isDefinition()) {
                 List<String> tokens = paragraph.getWords();
                 String[] tokensArray = tokens.toArray(new String[tokens.size()]);
-                output.add(model.inferForward(tokensArray));
-            }
+                output.add(model.infer(tokensArray));
         }
         return output;
     }
