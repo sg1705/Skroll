@@ -16,14 +16,11 @@ public class HiddenMarkovModel {
     static final int NUMBER_FEATURES =2;
     static final int[] FEATURE_VALUES={MAX_MODEL_LENGTH,2};
 
-//
     static final int STATE_NUMBER_FEATURE =0;
-//    static final int STATE_NUMBER_FEATURE_VALUES =0;
-//
+
+    static final boolean USE_QUOTE=false;
     static final int IN_QUOTE_FEATURE =1;
     static final int IN_QUOTE_FALSE=0;
-    static final int IN_QUOTE_TRUE=1;
-//    static final int IN_QUOTE_FEATURE_VALUES =2;
 
 
     int[][] transitionCounts;
@@ -203,7 +200,7 @@ public class HiddenMarkovModel {
             //todo: eventually we want to have this put in training data file instead of putting it here
             // handling quote feature
             if (token.equals("\"")) {
-                inQuote = 1 - inQuote;
+                if (USE_QUOTE) inQuote = 1 - inQuote;
                 continue;
             }
 
