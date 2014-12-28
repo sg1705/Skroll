@@ -18,7 +18,7 @@ public class HiddenMarkovModel {
 
     static final int STATE_NUMBER_FEATURE =0;
 
-    static final boolean USE_QUOTE=false;
+    static final boolean USE_QUOTE=true;
     static final int IN_QUOTE_FEATURE =1;
     static final int IN_QUOTE_FALSE=0;
 
@@ -246,9 +246,29 @@ public class HiddenMarkovModel {
         String[] newTokens = new String[tokens.length];
         int[][] features = new int[tokens.length][NUMBER_FEATURES];;
         int length = createFeatures( tokens, newTokens, features);
-        return inferForward(newTokens, features, length);
+        double[][] probs = inferForward(newTokens, features, length);
+
+        // added back quotes probabilities
+        length = Math.min(modelLength, tokens.length);
+        double[][] hackedResult = new double[length][NUMBER_FEATURES];
+        for (int i=0, k=0; i<length;i++){
+            if (tokens[i].equals("\"")) {
+                hackedResult[i] = new double[]{0,0};
+            }
+            else
+                hackedResult[i] = probs[k++];
+        }
+        return hackedResult;
     }
 
+    double[][] inferBackward(String tokens[], int[][] features, int length){
+        double [][] observationProbGivenState = new double[modelLength][numStateValues];
+
+        for (int i=length-2; i>=0; i--){
+
+        }
+        return observationProbGivenState;
+    }
     double[][] inferForward(String[] tokens, int[][] features, int length){
         double [][] stateProbGivenPrevObservations = new double[modelLength][numStateValues];
 
@@ -262,6 +282,8 @@ public class HiddenMarkovModel {
         //Arrays.fill(stateProbGivenPrevObservations[0], uniformProb);
 
         length = Math.min(modelLength, length);
+
+        // loop
         for (int i=0;i<length-1;i++){
             stateProbGivenPrevObservations[i] =  inferStateProbabilitiesGivenObservation(i,priorProb,tokens, features);
             priorProb = inferNextStateProbabilities(stateProbGivenPrevObservations[i]);
