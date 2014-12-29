@@ -23,29 +23,29 @@ public enum Pipes {
 
     // testing pipes
     //added by saurabh@
-    BINARY_SIMPLE_NAIVE_BAYES_TESTER("com.skroll.analyzer.nb.BinaryNaiveBayesSimpleTestingPipe"),
-    BINARY_NAIVE_BAYES_TESTING ("com.skroll.analyzer.nb.BinaryNaiveBayesTestingPipe"),
-    FILE_BINARY_NAIVE_BAYES_TESTER("com.skroll.analyzer.pipes.FileBinaryNaiveBayesTesterPipe"),
-    FILE_BINARY_NAIVE_BAYES_TESTER_WITH_WORDS_IMPORTANCE("com.skroll.analyzer.pipes.FileBinaryNaiveBayesTesterWithWordsImportancePipe"),
-    FOLDER_BINARY_NAIVE_BAYES_TESTER("com.skroll.analyzer.pipes.FolderBinaryNaiveBayesTesterPipe"),
-    HTML_DOC_BINARY_NAIVE_BAYES_TESTER("com.skroll.analyzer.pipes.HtmlDocumentNaiveBayesTester"),
+    BINARY_SIMPLE_NAIVE_BAYES_TESTER("com.skroll.analyzer.model.nb.BinaryNaiveBayesSimpleTestingPipe"),
+    BINARY_NAIVE_BAYES_TESTING ("com.skroll.analyzer.model.nb.BinaryNaiveBayesTestingPipe"),
+    FILE_BINARY_NAIVE_BAYES_TESTER("com.skroll.analyzer.evaluate.definition.FileBinaryNaiveBayesTesterPipe"),
+    FILE_BINARY_NAIVE_BAYES_TESTER_WITH_WORDS_IMPORTANCE("com.skroll.analyzer.evaluate.definition.FileBinaryNaiveBayesTesterWithWordsImportancePipe"),
+    FOLDER_BINARY_NAIVE_BAYES_TESTER("com.skroll.analyzer.evaluate.definition.FolderBinaryNaiveBayesTesterPipe"),
+    HTML_DOC_BINARY_NAIVE_BAYES_TESTER("com.skroll.analyzer.evaluate.definition.HtmlDocumentNaiveBayesTester"),
 
     // training pipes
-    BINARY_NAIVE_BAYES_TRAINING ("com.skroll.analyzer.nb.BinaryNaiveBayesTrainingPipe"),
-    FILE_BINARY_NAIVE_BAYES_TRAINER("com.skroll.analyzer.pipes.FileBinaryNaiveBayesTrainerPipe"),
-    FILES_BINARY_NAIVE_BAYES_TRAINER("com.skroll.analyzer.pipes.FilesBinaryNaiveBayesTrainerPipe"),
-    FOLDER_BINARY_NAIVE_BAYES_TRAINER("com.skroll.analyzer.pipes.FolderBinaryNaiveBayesTrainerPipe"),
+    BINARY_NAIVE_BAYES_TRAINING ("com.skroll.analyzer.model.nb.BinaryNaiveBayesTrainingPipe"),
+    FILE_BINARY_NAIVE_BAYES_TRAINER("com.skroll.analyzer.train.definition.FileBinaryNaiveBayesTrainerPipe"),
+    FILES_BINARY_NAIVE_BAYES_TRAINER("com.skroll.analyzer.train.definition.FilesBinaryNaiveBayesTrainerPipe"),
+    FOLDER_BINARY_NAIVE_BAYES_TRAINER("com.skroll.analyzer.train.definition.FolderBinaryNaiveBayesTrainerPipe"),
 
 
     //HMM
-    HTML_HIDDEN_MARKOV_MODEL_TRAINING_PIPE("com.skroll.analyzer.hmm.HTMLHiddenMarkovModelTrainingPipe"),
+    HTML_HIDDEN_MARKOV_MODEL_TRAINING_PIPE("com.skroll.analyzer.model.hmm.HTMLHiddenMarkovModelTrainingPipe"),
     //TODO remove this particular pipe
-    HTML_HIDDEN_MARKOV_MODEL_TESTING_PIPE("com.skroll.analyzer.hmm.HTMLHiddenMarkovModelTestingPipe"),
-    HTML_DOCUMENT_HIDDEN_MARKOV_MODEL_TESTING_PIPE("com.skroll.analyzer.pipes.HtmlDocumentHMMTester"),
+    HTML_HIDDEN_MARKOV_MODEL_TESTING_PIPE("com.skroll.analyzer.model.hmm.HTMLHiddenMarkovModelTestingPipe"),
+    HTML_DOCUMENT_HIDDEN_MARKOV_MODEL_TESTING_PIPE("com.skroll.analyzer.evaluate.definition.HtmlDocumentHMMTester"),
 
-    FOLDER_HTML_HIDDEN_MARKOV_MODEL_TRAINING_PIPE("com.skroll.analyzer.pipes.FolderHTMLHiddenMarkovModelTrainerPipe"),
-    FOLDER_HTML_HIDDEN_MARKOV_MODEL_TESTING_PIPE("com.skroll.analyzer.pipes.FolderHTMLHiddenMarkovModelTesterPipe"),
-    HIDDEN_MARKOV_MODEL_SIMPLE_TESTING_PIPE("com.skroll.analyzer.hmm.HiddenMarkovModelSimpleTestingPipe"),
+    FOLDER_HTML_HIDDEN_MARKOV_MODEL_TRAINING_PIPE("com.skroll.analyzer.train.definition.FolderHTMLHiddenMarkovModelTrainerPipe"),
+    FOLDER_HTML_HIDDEN_MARKOV_MODEL_TESTING_PIPE("com.skroll.analyzer.evaluate.definition.FolderHTMLHiddenMarkovModelTesterPipe"),
+    HIDDEN_MARKOV_MODEL_SIMPLE_TESTING_PIPE("com.skroll.analyzer.model.hmm.HiddenMarkovModelSimpleTestingPipe"),
 
 
     //parser pipes

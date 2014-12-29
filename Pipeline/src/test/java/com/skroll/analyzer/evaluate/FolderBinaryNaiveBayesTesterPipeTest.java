@@ -1,28 +1,24 @@
-package com.skroll.analyzer;
+package com.skroll.analyzer.evaluate;
 
 import com.google.common.collect.Lists;
 import com.skroll.analyzer.model.nb.BinaryNaiveBayesModel;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Constants;
+import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.util.List;
 
-public class Main {
+public class FolderBinaryNaiveBayesTesterPipeTest extends TestCase {
 
-    public static void main(String[] args) {
+    @Test
+    public void testProcess() throws Exception {
+        // depends on other tests
 
         String[] trainingFolder = {
-                "Pipeline/build/resources/generated-files/not-pdef-words",
-                "Pipeline/build/resources/generated-files/pdef-words"};
-
-        String testingFolder =
-                "Analyzer/src/test/resources/" +
-                        "parser.analyzer.testFolder";
-
-        String testFile =
-                "Analyzer/src/test/resources/testData";
-
+                "../Pipeline/build/resources/generated-files/not-pdef-words",
+                "../Pipeline/build/resources/generated-files/pdef-words"};
         BinaryNaiveBayesModel model = new BinaryNaiveBayesModel();
 
         Pipeline<String, List<String>> analyzer =
@@ -40,6 +36,9 @@ public class Main {
 
         analyzer.process(trainingFolder[1]);
 
+        String testingFolder =
+                "src/test/resources/analyzer/testFolder";
+        //BinaryNaiveBayesModel model = new BinaryNaiveBayesModel();
 
         Pipeline<String, String> tester =
                 new Pipeline.Builder<String, String>()
@@ -49,14 +48,9 @@ public class Main {
 
         String output=tester.process(testingFolder);
 
-        Pipeline<String, String> wordTester =
-                new Pipeline.Builder<String, String>()
-                        .add(Pipes.FILE_BINARY_NAIVE_BAYES_TESTER_WITH_WORDS_IMPORTANCE,
-                                Lists.newArrayList((Object)model))
-                        .build();
-        output += wordTester.process(testFile);
-        //String output=wordTester.process(testFile);
+        //System.out.println(model.showWordsImportance());
+
         System.out.println(output);
-        System.out.println(model.showWordsImportance());
     }
+
 }

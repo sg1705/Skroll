@@ -1,12 +1,15 @@
 package com.skroll.analyzer;
 
-import com.google.common.base.CaseFormat;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.skroll.analyzer.hmm.HiddenMarkovModel;
-import com.skroll.analyzer.nb.BinaryNaiveBayesModel;
+import com.skroll.analyzer.evaluate.Tester;
+import com.skroll.analyzer.model.Models;
+import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
+import com.skroll.analyzer.model.nb.BinaryNaiveBayesModel;
+import com.skroll.analyzer.train.Trainer;
 import com.skroll.model.HtmlDocument;
 import com.skroll.model.Paragraph;
+import com.skroll.parser.extractor.HtmlDocumentHelper;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Constants;
@@ -19,12 +22,12 @@ public class TrainingAndTestingTest extends TestCase {
 
     public void testProcess() throws Exception {
 
-        String trainingFolder = "src/test/resources/hmmTrainingDocs";
+        String trainingFolder = "src/test/resources/parser.analyzer.hmmTrainingDocs";
         trainNB();
         Trainer.trainHiddenMarkovModel(trainingFolder);
 
         // model has now been trained.
-        //String testingFile = "src/test/resources/hmmTestingDocs/random-indenture.html";
+        //String testingFile = "src/test/resources/parser.analyzer.hmmTestingDocs/random-indenture.html";
         String testingFile = "src/test/resources/html-docs/random-10k.html";
         HtmlDocument htmlDoc = Tester.testNaiveBayes(HtmlDocumentHelper.getHtmlDocumentFromHtmlFile(testingFile));
         htmlDoc = Tester.testHiddenMarketModel(htmlDoc, Constants.CATEGORY_POSITIVE);
