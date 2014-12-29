@@ -17,8 +17,8 @@ public class FolderBinaryNaiveBayesTesterPipeTest extends TestCase {
         // depends on other tests
 
         String[] trainingFolder = {
-                "../Pipeline/build/resources/generated-files/not-pdef-words",
-                "../Pipeline/build/resources/generated-files/pdef-words"};
+                "src/test/resources/analyzer/train/FolderBinaryNaiveBayesTrainerPipeTest/not-pdef-words",
+                "src/test/resources/analyzer/train/FolderBinaryNaiveBayesTrainerPipeTest/pdef-words"};
         BinaryNaiveBayesModel model = new BinaryNaiveBayesModel();
 
         Pipeline<String, List<String>> analyzer =
