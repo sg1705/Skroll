@@ -89,7 +89,7 @@ public class ParseHtmlToDocumentPipe extends SyncPipe<HtmlDocument, HtmlDocument
      */
     private void createPara() {
         this.paragraphChunks.add(this.rollingTest);
-        Paragraph paragraph = new Paragraph(""+lastParaId, this.rollingTest);
+        Paragraph paragraph = new Paragraph(new Integer(this.lastParaId).toString(), this.rollingTest);
         this.paragraphs.add(paragraph);
         // move rolling html to html
         this.rollingTest = "";
@@ -104,8 +104,9 @@ public class ParseHtmlToDocumentPipe extends SyncPipe<HtmlDocument, HtmlDocument
 
                 element.prepend("<a name=\"" + this.paraId + "\"/>");
                 paraId++;
-                this.createPara();
                 lastParaId = paraId;
+                this.createPara();
+
 
                 //check for pre
             }

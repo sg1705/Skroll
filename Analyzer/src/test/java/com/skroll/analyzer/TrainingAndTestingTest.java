@@ -1,9 +1,6 @@
 package com.skroll.analyzer;
 
-import com.aliasi.classify.NaiveBayesClassifier;
 import com.google.common.base.CaseFormat;
-import com.google.common.base.Joiner;
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.skroll.analyzer.hmm.HiddenMarkovModel;
@@ -17,12 +14,8 @@ import com.skroll.pipeline.util.Utils;
 import junit.framework.TestCase;
 
 import java.util.HashSet;
-import java.util.List;
 
 public class TrainingAndTestingTest extends TestCase {
-
-//    private HiddenMarkovModel hmmModel;
-//    private BinaryNaiveBayesModel nbModel;
 
     public void testProcess() throws Exception {
 
@@ -31,13 +24,11 @@ public class TrainingAndTestingTest extends TestCase {
         Trainer.trainHiddenMarkovModel(trainingFolder);
 
         // model has now been trained.
-        String testingFile = "src/test/resources/hmmTestingDocs/random-indenture.html";
-        String htmlText = Utils.readStringFromFile(testingFile);
-        HtmlDocument htmlDoc = this.prepareDoc(htmlText);
+        //String testingFile = "src/test/resources/hmmTestingDocs/random-indenture.html";
+        String testingFile = "src/test/resources/html-docs/random-10k.html";
+        HtmlDocument htmlDoc = Tester.testNaiveBayes(HtmlDocumentHelper.getHtmlDocumentFromHtmlFile(testingFile));
+        htmlDoc = Tester.testHiddenMarketModel(htmlDoc, Constants.CATEGORY_POSITIVE);
 
-
-        this.testNB(htmlDoc, Models.getBinaryNaiveBayesModel());
-        this.testHMM(htmlDoc, Models.getHmmModel());
         int count = 0;
         HashSet<String> terms = Sets.newHashSet();
         for(Paragraph paragraph : htmlDoc.getParagraphs()) {
@@ -47,24 +38,23 @@ public class TrainingAndTestingTest extends TestCase {
                 // get the paragraph id
                 String paraId = paragraph.getId();
                 System.out.println(paragraph.getDefinitions().get(0));
-                String upperCaseTerm =
-                        CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, paragraph.getDefinitions().get(0));
-                String htmlMarkup = "<a href=\"#" + paraId + "\">" + upperCaseTerm + "</a>";
-                if (Strings.isNullOrEmpty(upperCaseTerm)) {
-                    continue;
-                }
+
+                //process if definition is more than one term
+                //process exceptions
+
+                String term = paragraph.getDefinitions().get(0);
+//                String upperCaseTerm =
+//                        CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, paragraph.getDefinitions().get(0));
+                String htmlMarkup = "<a href=\"#" + paraId + "\">" + term + "</a>";
                 //search and replace in entire
-                htmlDoc.setAnnotatedHtml(htmlDoc.getAnnotatedHtml().replaceAll(upperCaseTerm, htmlMarkup));
+                htmlDoc.setAnnotatedHtml(htmlDoc.getAnnotatedHtml().replaceAll(term, htmlMarkup));
             }
         }
-        System.out.println(terms.size());
-        assert (terms.size() == 106);
         Utils.writeToFile("build/resources/test/TrainingAndTest.html", htmlDoc.getAnnotatedHtml());
+        System.out.println(terms.size());
+        assert (terms.size() == 162);
 
-    }
 
-    public void trainHMM(String folderName) {
-        Trainer.trainHiddenMarkovModel(folderName);
     }
 
     public void trainNB() {
@@ -75,22 +65,6 @@ public class TrainingAndTestingTest extends TestCase {
 
         Trainer.trainBinaryNaiveBayes(trainingFolder[0], Constants.CATEGORY_NEGATIVE);
         Trainer.trainBinaryNaiveBayes(trainingFolder[1], Constants.CATEGORY_POSITIVE);
-//        BinaryNaiveBayesModel model = Models.getBinaryNaiveBayesModel();
-//
-//        Pipeline<String, List<String>> analyzer =
-//                new Pipeline.Builder<String, List<String>>()
-//                        .add(Pipes.FOLDER_BINARY_NAIVE_BAYES_TRAINER,
-//                                Lists.newArrayList(model, Constants.CATEGORY_NEGATIVE))
-//                        .build();
-//
-//        analyzer.process(trainingFolder[0]);
-//        analyzer =
-//                new Pipeline.Builder<String, List<String>>()
-//                        .add(Pipes.FOLDER_BINARY_NAIVE_BAYES_TRAINER,
-//                                Lists.newArrayList(model, Constants.CATEGORY_POSITIVE))
-//                        .build();
-//
-//        analyzer.process(trainingFolder[1]);
 
     }
 

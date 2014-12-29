@@ -20,7 +20,8 @@ public class RemoveBlankParagraphFromHtmlDocumentPipe extends SyncPipe<HtmlDocum
         for(Paragraph paragraph : input.getParagraphs()) {
             String str = paragraph.getText().replace("\u00a0", "");
             if (!StringUtil.isBlank(str)) {
-                paragraph.setText(paragraph.getText().toLowerCase());
+                //paragraph.setText(paragraph.getText().toLowerCase());
+                paragraph.setText(paragraph.getText());
                 newList.add(paragraph);
             }
         }

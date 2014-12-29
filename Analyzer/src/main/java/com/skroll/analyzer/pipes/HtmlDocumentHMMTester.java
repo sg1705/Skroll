@@ -1,5 +1,6 @@
 package com.skroll.analyzer.pipes;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.skroll.analyzer.hmm.HiddenMarkovModel;
 import com.skroll.analyzer.nb.BinaryNaiveBayesModel;
@@ -30,25 +31,45 @@ public class HtmlDocumentHMMTester extends SyncPipe<HtmlDocument, HtmlDocument> 
                                 new Integer(Constants.CATEGORY_POSITIVE)))
                         .build();
 
+        List<Paragraph> newParagraphs = new ArrayList<Paragraph>();
         //assume that words are extracted
         for(Paragraph paragraph : input.getParagraphs()) {
             List<String> definitions = new ArrayList<String>();
             if (paragraph.isDefinition()) {
+                boolean isPreviousWordDefinition = false;
+                List<String> tempDefinitions = new ArrayList<String>();
                 // test for terms
                 List<Double> hmmResults = testPipeline.process(paragraph.getWords());
                 int ii = 0;
                 for (double prob : hmmResults) {
                     if (prob > Constants.DEF_THRESHOLD_PROBABILITY) {
-                        // chances are that this is a definition
-                        definitions.add(paragraph.getWords().get(ii));
+                        if (!isPreviousWordDefinition) {
+                            isPreviousWordDefinition = true;
+                            tempDefinitions.add(paragraph.getWords().get(ii));
+                        } else {
+                            tempDefinitions.add(paragraph.getWords().get(ii));
+                        }
+//                        // chances are that this is a definition
+//                        definitions.add(paragraph.getWords().get(ii));
+                    } else {
+                        isPreviousWordDefinition = false;
+                    }
+                    if (!isPreviousWordDefinition && (tempDefinitions.size() > 0)) {
+                        // add it to paragraph
+                        definitions.add(Joiner.on(" ").join(tempDefinitions));
+                        tempDefinitions = new ArrayList<String>();
                     }
                     ii++;
                 }
-
+                if (tempDefinitions.size() > 0) {
+                    // add it to paragraph
+                    definitions.add(Joiner.on(" ").join(tempDefinitions));
+                }
             }
             paragraph.setDefinitions(definitions);
+            newParagraphs.add(paragraph);
         }
-
+        input.setParagraphs(newParagraphs);
         return this.target.process(input);
     }
 }
