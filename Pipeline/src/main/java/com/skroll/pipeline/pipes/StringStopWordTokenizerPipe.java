@@ -47,7 +47,7 @@ public class StringStopWordTokenizerPipe extends SyncPipe<String, List<String>> 
         TokenizerFactory tokFactory = IndoEuropeanTokenizerFactory.INSTANCE;
         //tokFactory = new LowerCaseTokenizerFactory(tokFactory);
         tokFactory = new WhitespaceNormTokenizerFactory(tokFactory);
-        tokFactory = new StopTokenizerFactory(tokFactory, STOP_WORDS);
+        //tokFactory = new StopTokenizerFactory(tokFactory, STOP_WORDS);
         Tokenizer tokenizer = tokFactory.tokenizer(input.toCharArray(), 0, input.length());
         String token = null;
         while ((token = tokenizer.nextToken()) != null) {

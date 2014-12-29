@@ -147,4 +147,30 @@ public class HiddenMarkovModelTest extends TestCase {
         System.out.println(Arrays.deepToString(hmm.inferForward(newTokens, features, length)) );
 
     }
+
+    public void testInferBackward() throws Exception {
+        System.out.println("testInferForward");
+        double [] prob = {0.5,0.5};
+        HiddenMarkovModel hmm = new HiddenMarkovModel(5);
+        String[] token={"\"","affiliate","\"","means","respect"};
+        int[] tokenType={0,1,0,0,0};
+
+        hmm.updateCounts(token, tokenType);
+        System.out.println(hmm.showProbabilities());
+
+        hmm.updateProbabilities();
+        System.out.println(hmm.showProbabilities());
+
+        String[] newTokens = new String[token.length];
+        int[][] features = new int[token.length][2];;
+        int length = hmm.createFeatures(token, newTokens, features);
+
+        System.out.println("state prob "+Arrays.toString(prob)+'\n');
+        System.out.println("infer forward");
+        System.out.println(Arrays.deepToString(hmm.inferForward(newTokens, features, length)) );
+
+        System.out.println("state prob "+Arrays.toString(prob)+'\n');
+        System.out.println("infer backward");
+        System.out.println(Arrays.deepToString(hmm.inferBackward(newTokens, features, length)) );
+    }
 }

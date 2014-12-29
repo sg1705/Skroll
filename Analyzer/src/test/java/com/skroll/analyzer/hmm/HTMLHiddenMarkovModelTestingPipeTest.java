@@ -78,7 +78,7 @@ public class HTMLHiddenMarkovModelTestingPipeTest extends TestCase {
             for (int j=0; j< paragraphs.get(i).getWords().size() && k < model.size(); j++){
 
 //                    System.out.println(i+", "+j);
-                if (paragraphs.get(i).getWords().get(j).equals("\"")) continue; //skip quote
+//                if (paragraphs.get(i).getWords().get(j).equals("\"")) continue; //skip quote
                 System.out.printf("%d %s=%.2f ", j,paragraphs.get(i).getWords().get(j), probabilities.get(i)[k++][1]);
             }
             System.out.println();

@@ -3,7 +3,7 @@ package com.skroll.analyzer.hmm;
 import com.skroll.pipeline.pipes.StringStopWordTokenizerPipe;
 
 import java.util.*;
-
+//todo: think how to handle words with different type of cases
 /**
  * Created by wei2learn on 12/23/2014.
  */
@@ -242,11 +242,40 @@ public class HiddenMarkovModel {
         return length;
     }
 
+    // combine and normalize the probabilities
+    double[][] combine( double[][] forward, double[][] back){
+        double [][] prob = new double[modelLength][numStateValues];
+        for (int i=0; i<modelLength; i++){
+            double s=0;
+
+            // calculate joint probability
+            for (int j=0; j<numStateValues; j++){
+                prob[i][j] = forward[i][j]*back[i][j];
+                s += prob[i][j];
+            }
+
+            // normalize to get conditional probability given observations
+            for (int j=0; j<numStateValues;j++){
+                if (s==0)  // todo: convert probability calculations to log based to avoid problems of underflow
+                    prob[i][j] =0;
+                else
+                    prob[i][j] /= s;
+            }
+        }
+
+        return prob;
+    }
+
     public  double[][] infer(String[] tokens){
         String[] newTokens = new String[tokens.length];
         int[][] features = new int[tokens.length][NUMBER_FEATURES];;
         int length = createFeatures( tokens, newTokens, features);
-        double[][] probs = inferForward(newTokens, features, length);
+        length = Math.min(length, modelLength);
+        double[][] probsForward = inferForward(newTokens, features, length);
+        double[][] probsBack = inferBackward(newTokens, features, length);
+        //double[][] probs = combine(probsForward, probsBack);
+        double[][] probs = probsForward;
+
 
         // added back quotes probabilities
         length = Math.min(modelLength, tokens.length);
@@ -263,9 +292,22 @@ public class HiddenMarkovModel {
 
     double[][] inferBackward(String tokens[], int[][] features, int length){
         double [][] observationProbGivenState = new double[modelLength][numStateValues];
-
+        Arrays.fill(observationProbGivenState[length-1],1); // base case. The last index is not actually used.
         for (int i=length-2; i>=0; i--){
+            double [] probObservationGivenCurrState= new double[numStateValues];
+            double [] probObservationGivenNextState= new double[numStateValues];
 
+            for (int s = 0; s<numStateValues; s++){ // value of the next state
+                probObservationGivenNextState[s] = observationProbGivenState[i+1][s];
+                for (int f=0; f<NUMBER_FEATURES; f++){
+                    probObservationGivenNextState[s] *= featureValueProbabilityGivenState.get(s).get(f)[features[i][f]];
+                }
+            }
+            for (int t=0; t<numStateValues; t++) { // value of the current state
+                for (int s = 0; s < numStateValues; s++) {
+                    observationProbGivenState[i][t] += probObservationGivenNextState[s] * transitionProbability[t][s];
+                }
+            }
         }
         return observationProbGivenState;
     }
@@ -281,9 +323,8 @@ public class HiddenMarkovModel {
         Arrays.fill(priorProb,uniformProb);
         //Arrays.fill(stateProbGivenPrevObservations[0], uniformProb);
 
-        length = Math.min(modelLength, length);
-
-        // loop
+        // loop skips the last index, because the last state does not have the next token feature.
+        // if we remove the next token feature,
         for (int i=0;i<length-1;i++){
             stateProbGivenPrevObservations[i] =  inferStateProbabilitiesGivenObservation(i,priorProb,tokens, features);
             priorProb = inferNextStateProbabilities(stateProbGivenPrevObservations[i]);
