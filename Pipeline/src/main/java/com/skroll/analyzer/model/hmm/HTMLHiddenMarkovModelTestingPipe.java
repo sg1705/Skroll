@@ -1,7 +1,7 @@
 package com.skroll.analyzer.model.hmm;
 
-import com.skroll.model.HtmlDocument;
-import com.skroll.model.Paragraph;
+import com.skroll.document.HtmlDocument;
+import com.skroll.document.Paragraph;
 import com.skroll.pipeline.SyncPipe;
 
 import java.util.ArrayList;

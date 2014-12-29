@@ -2,8 +2,8 @@ package com.skroll.analyzer.evaluate.definition;
 
 import com.google.common.collect.Lists;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
-import com.skroll.model.HtmlDocument;
-import com.skroll.model.Paragraph;
+import com.skroll.document.HtmlDocument;
+import com.skroll.document.Paragraph;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.SyncPipe;
@@ -80,7 +80,7 @@ public class FolderHTMLHiddenMarkovModelTesterPipe extends SyncPipe<String, Stri
 
         }
 
-        //System.out.println(model.showWordsImportance());
+        //System.out.println(document.showWordsImportance());
         return output;
     }
 

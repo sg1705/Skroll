@@ -29,7 +29,7 @@ public class FolderBinaryNaiveBayesTesterPipe extends SyncPipe<String, String> {
             output += fileAnalyzer.process(folderName+'/'+file.getName());
         }
 
-        //System.out.println(model.showWordsImportance());
+        //System.out.println(document.showWordsImportance());
         return output;
     }
 

@@ -12,7 +12,7 @@ public class HiddenMarkovModelSimpleTestingPipe extends SyncPipe<List<String>, L
 
     @Override
     public List<Double> process(List<String> input) {
-        // fetch the model from config
+        // fetch the document from config
         HiddenMarkovModel model = (HiddenMarkovModel)config.get(0);
         // fetch the category type
         int category = (Integer)config.get(1);

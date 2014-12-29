@@ -1,9 +1,8 @@
 package com.skroll.analyzer.model.hmm;
 
 import com.google.common.collect.Lists;
-import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
-import com.skroll.model.HtmlDocument;
-import com.skroll.model.Paragraph;
+import com.skroll.document.HtmlDocument;
+import com.skroll.document.Paragraph;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
@@ -21,7 +20,7 @@ public class HTMLHiddenMarkovModelTestingPipeTest extends TestCase {
         HtmlDocument htmlDoc= new HtmlDocument();
         htmlDoc.setSourceHtml(htmlString);
 
-        // create HMM model
+        // create HMM document
         HiddenMarkovModel model = new HiddenMarkovModel(20);
 
         //create a pipeline
@@ -74,7 +73,7 @@ public class HTMLHiddenMarkovModelTestingPipeTest extends TestCase {
             System.out.println(paragraphs.get(i).getText());
 //                System.out.println(paragraphs.get(i).getWords().size()+", "+probabilities.get(i).length);
             int k=0;
-//            for (int j=0; j<Math.min(model.size(), paragraphs.get(i).getWords().size()); j++){
+//            for (int j=0; j<Math.min(document.size(), paragraphs.get(i).getWords().size()); j++){
             for (int j=0; j< paragraphs.get(i).getWords().size() && k < model.size(); j++){
 
 //                    System.out.println(i+", "+j);
@@ -92,19 +91,19 @@ public class HTMLHiddenMarkovModelTestingPipeTest extends TestCase {
 //
 //        //String[] token={"\"","tt","c","\""};
 //
-//        System.out.println(Arrays.deepToString(model.infer(token)) );
+//        System.out.println(Arrays.deepToString(document.infer(token)) );
 //
 //
 //
 //
 //        double [] prob = {0.5,0.5};
-//        System.out.println(model.showProbabilities());
+//        System.out.println(document.showProbabilities());
 //
 //        String[] newTokens = new String[token.length];
 //        int[][] features = new int[token.length][2];;
-//        int length = model.createFeatures(token, newTokens, features);
+//        int length = document.createFeatures(token, newTokens, features);
 //
 //        System.out.println("state prob "+Arrays.toString(prob)+'\n');
-//        System.out.println(Arrays.toString(model.inferJointProbabilitiesStateAndObservation(0, prob, newTokens, features)) );
+//        System.out.println(Arrays.toString(document.inferJointProbabilitiesStateAndObservation(0, prob, newTokens, features)) );
     }
 }

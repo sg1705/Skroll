@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  *
- * Class used for training a model.
+ * Class used for training a document.
  *
  * Created by saurabh on 12/28/14.
  */

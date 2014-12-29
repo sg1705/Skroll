@@ -47,7 +47,7 @@ public class FileBinaryNaiveBayesTrainerPipe extends SyncPipe<String, String> {
                         .build();
 
         analyzer.process(csvStrings);
-        //System.out.println(model.toString());
+        //System.out.println(document.toString());
         return fileName;
     }
 

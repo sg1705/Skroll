@@ -1,8 +1,7 @@
 package com.skroll.analyzer.model.hmm;
 
 import com.google.common.collect.Lists;
-import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
-import com.skroll.model.HtmlDocument;
+import com.skroll.document.HtmlDocument;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
@@ -22,7 +21,7 @@ public class HTMLHiddenMarkovModelTrainingPipeTest extends TestCase {
         HtmlDocument htmlDoc= new HtmlDocument();
         htmlDoc.setSourceHtml(htmlString);
 
-        // create HMM model
+        // create HMM document
         HiddenMarkovModel model = new HiddenMarkovModel(16);
 
         //create a pipeline
@@ -48,9 +47,9 @@ public class HTMLHiddenMarkovModelTrainingPipeTest extends TestCase {
         String[] token3={"affiliate","means","respect"};
         String[] token4={"\"","indenture","security", "holder","\"","means", "a", "holder", "of", "a", "note" };
 
-//        System.out.println(Arrays.deepToString(model.infer(token)) );
+//        System.out.println(Arrays.deepToString(document.infer(token)) );
         System.out.println(Arrays.deepToString(model.infer(token2)) );
-//        System.out.println(Arrays.deepToString(model.infer(token4)) );
+//        System.out.println(Arrays.deepToString(document.infer(token4)) );
 
 
     }

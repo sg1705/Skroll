@@ -1,14 +1,14 @@
 package com.skroll.analyzer.model.hmm;
 
 import com.google.common.base.Splitter;
-import com.skroll.model.HtmlDocument;
-import com.skroll.model.Paragraph;
+import com.skroll.document.HtmlDocument;
+import com.skroll.document.Paragraph;
 import com.skroll.pipeline.SyncPipe;
 
 import java.util.*;
 
 /**
- * Trains a model with the given HtmlDocument
+ * Trains a document with the given HtmlDocument
  *
  * Created by saurabh on 12/21/14.
  */

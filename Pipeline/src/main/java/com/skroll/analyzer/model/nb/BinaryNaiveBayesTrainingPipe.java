@@ -35,7 +35,7 @@ public class BinaryNaiveBayesTrainingPipe extends SyncPipe<List<List<String>>, L
                 wordSet.add(eachLine.get(MAX_SENTENCE_LENGTH));
             }
 
-            // increase the category count in the model
+            // increase the category count in the document
             model.incrementCategory(categoryType);
 
             Iterator<String> wordIterator = wordSet.iterator();

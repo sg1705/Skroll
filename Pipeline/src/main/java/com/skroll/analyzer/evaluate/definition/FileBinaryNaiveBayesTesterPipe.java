@@ -48,7 +48,7 @@ public class FileBinaryNaiveBayesTesterPipe extends SyncPipe<String, String> {
         for (int i=0; i < probabilities.size(); i++){
             output += probabilities.get(i) + fileStrings.get(i) + '\n';
         }
-        //System.out.println(model.toString());
+        //System.out.println(document.toString());
         return output;
     }
 

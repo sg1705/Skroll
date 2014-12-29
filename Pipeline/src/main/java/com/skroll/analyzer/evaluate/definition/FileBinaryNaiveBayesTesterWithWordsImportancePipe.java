@@ -51,7 +51,7 @@ public class FileBinaryNaiveBayesTesterWithWordsImportancePipe extends SyncPipe<
                 output += model.showWordsImportance(word)+ " " ;
             output += '\n';
         }
-        //System.out.println(model.toString());
+        //System.out.println(document.toString());
         return output;
     }
 

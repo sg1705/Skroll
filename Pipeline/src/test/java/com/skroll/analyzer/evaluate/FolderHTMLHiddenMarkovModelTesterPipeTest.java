@@ -32,7 +32,7 @@ public class FolderHTMLHiddenMarkovModelTesterPipeTest extends TestCase {
 
         String testingFolder =
                 "src/test/resources/analyzer/hmmTestingDocs";
-        //BinaryNaiveBayesModel model = new BinaryNaiveBayesModel();
+        //BinaryNaiveBayesModel document = new BinaryNaiveBayesModel();
 
         Pipeline<String, String> tester =
                 new Pipeline.Builder<String, String>()
@@ -42,7 +42,7 @@ public class FolderHTMLHiddenMarkovModelTesterPipeTest extends TestCase {
 
         String output=tester.process(testingFolder);
 
-        //System.out.println(model.showWordsImportance());
+        //System.out.println(document.showWordsImportance());
 
         System.out.println(output);
 

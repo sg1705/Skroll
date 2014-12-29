@@ -2,7 +2,7 @@ package com.skroll.analyzer.train.definition;
 
 import com.google.common.collect.Lists;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
-import com.skroll.model.HtmlDocument;
+import com.skroll.document.HtmlDocument;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.SyncPipe;
@@ -12,7 +12,7 @@ import java.io.File;
 
 /**
  *
- * Trains a HMM model with all the html files in a given folder
+ * Trains a HMM document with all the html files in a given folder
  *
  * Created by wei2learn on 12/26/2014.
  */

@@ -1,19 +1,12 @@
 package com.skroll.pipeline;
 
-import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
-import com.google.common.collect.TreeTraverser;
 import com.google.common.io.Files;
-import com.skroll.model.HtmlDocument;
-import com.skroll.model.Paragraph;
+import com.skroll.document.HtmlDocument;
 import com.skroll.pipeline.util.Utils;
 
-import javax.swing.plaf.basic.BasicTreeUI;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Created by sagupta on 12/12/14.

@@ -16,7 +16,7 @@ public class ConvertFileIntoListOfStringsPipeTest extends TestCase {
                 .add(Pipes.FILE_INTO_LIST_OF_STRING)
                 .build();
 
-        List<String> list = pipeline.process("src/test/resources/file-into-list-of-string-test.txt");
+        List<String> list = pipeline.process("src/test/resources/pipeline/files/file-into-list-of-string-test.txt");
         assert ( list.size() == 307);
     }
 }

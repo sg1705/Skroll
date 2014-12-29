@@ -25,7 +25,7 @@ public class FolderHTMLHiddenMarkovModelTrainerPipeTest extends TestCase {
         model.updateProbabilities();;
         System.out.println(model.showProbabilities());
         System.out.println(model.showCounts());
-        //System.out.println(model.toString());
+        //System.out.println(document.toString());
 
     }
 }

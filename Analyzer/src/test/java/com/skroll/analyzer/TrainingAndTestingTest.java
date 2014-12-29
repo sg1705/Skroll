@@ -7,9 +7,9 @@ import com.skroll.analyzer.model.Models;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
 import com.skroll.analyzer.model.nb.BinaryNaiveBayesModel;
 import com.skroll.analyzer.train.Trainer;
-import com.skroll.model.HtmlDocument;
-import com.skroll.model.Paragraph;
-import com.skroll.parser.extractor.HtmlDocumentHelper;
+import com.skroll.document.HtmlDocument;
+import com.skroll.document.Paragraph;
+import com.skroll.parser.Parser;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Constants;
@@ -26,10 +26,10 @@ public class TrainingAndTestingTest extends TestCase {
         trainNB();
         Trainer.trainHiddenMarkovModel(trainingFolder);
 
-        // model has now been trained.
+        // document has now been trained.
         //String testingFile = "src/test/resources/parser.analyzer.hmmTestingDocs/random-indenture.html";
         String testingFile = "src/test/resources/html-docs/random-10k.html";
-        HtmlDocument htmlDoc = Tester.testNaiveBayes(HtmlDocumentHelper.getHtmlDocumentFromHtmlFile(testingFile));
+        HtmlDocument htmlDoc = Tester.testNaiveBayes(Parser.getHtmlDocumentFromHtmlFile(testingFile));
         htmlDoc = Tester.testHiddenMarketModel(htmlDoc, Constants.CATEGORY_POSITIVE);
 
         int count = 0;

@@ -35,7 +35,7 @@ public class FolderBinaryNaiveBayesTrainerPipeTest extends TestCase {
         analyzer.process(trainingFolder[1]);
         System.out.println(model.showWordsImportance());
 
-        //System.out.println(model.toString());
+        //System.out.println(document.toString());
     }
 
 }

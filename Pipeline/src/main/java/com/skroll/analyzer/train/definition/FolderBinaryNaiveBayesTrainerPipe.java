@@ -31,7 +31,7 @@ public class FolderBinaryNaiveBayesTrainerPipe extends SyncPipe<String, List<Str
             fileAnalyzer.process(folderName+'/'+file.getName());
         }
 
-        //System.out.println(model.showWordsImportance());
+        //System.out.println(document.showWordsImportance());
         return null;
     }
 

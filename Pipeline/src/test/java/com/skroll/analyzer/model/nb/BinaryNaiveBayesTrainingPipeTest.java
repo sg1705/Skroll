@@ -44,7 +44,7 @@ public class BinaryNaiveBayesTrainingPipeTest extends TestCase {
                     .build();
 
         analyzer.process(csvStrings);
-        //System.out.println(model.toString());
+        //System.out.println(document.toString());
         System.out.println(model.showWordsImportance());
     }
 }

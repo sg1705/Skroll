@@ -38,7 +38,7 @@ public class FolderBinaryNaiveBayesTesterPipeTest extends TestCase {
 
         String testingFolder =
                 "src/test/resources/analyzer/testFolder";
-        //BinaryNaiveBayesModel model = new BinaryNaiveBayesModel();
+        //BinaryNaiveBayesModel document = new BinaryNaiveBayesModel();
 
         Pipeline<String, String> tester =
                 new Pipeline.Builder<String, String>()
@@ -48,7 +48,7 @@ public class FolderBinaryNaiveBayesTesterPipeTest extends TestCase {
 
         String output=tester.process(testingFolder);
 
-        //System.out.println(model.showWordsImportance());
+        //System.out.println(document.showWordsImportance());
 
         System.out.println(output);
     }
