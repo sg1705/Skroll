@@ -1,5 +1,6 @@
 package com.skroll.document;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -9,8 +10,15 @@ public class Paragraph {
 
     private String id;
     private String text;
-    private List<String> words;
+    private List<String> tokens;
     private List<String> definitions;
+
+    private HashMap<EntityType,NamedEntity> entities;
+
+    private class NamedEntity {
+        List<String> entityTokens;
+    }
+
 
     public List<String> getDefinitions() {
         return definitions;
@@ -46,12 +54,12 @@ public class Paragraph {
         this.text = text;
     }
 
-    public List<String> getWords() {
-        return words;
+    public List<String> getTokens() {
+        return tokens;
     }
 
-    public void setWords(List<String> words) {
-        this.words = words;
+    public void setTokens(List<String> tokens) {
+        this.tokens = tokens;
     }
 
     public Paragraph(String id, String text) {
@@ -59,5 +67,8 @@ public class Paragraph {
         this.text = text;
     }
 
+    public NamedEntity getEntity(EntityType type) {
+        return entities.get(type);
+    }
 
 }

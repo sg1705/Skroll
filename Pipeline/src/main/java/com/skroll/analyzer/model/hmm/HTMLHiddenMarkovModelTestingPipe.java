@@ -21,7 +21,7 @@ public class HTMLHiddenMarkovModelTestingPipe extends SyncPipe<HtmlDocument, Lis
         List<Paragraph> paragraphs = input.getParagraphs();
 
         for( Paragraph paragraph : paragraphs) {
-                List<String> tokens = paragraph.getWords();
+                List<String> tokens = paragraph.getTokens();
                 String[] tokensArray = tokens.toArray(new String[tokens.size()]);
                 output.add(model.infer(tokensArray));
         }

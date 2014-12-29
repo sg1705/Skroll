@@ -27,7 +27,7 @@ public class TokenizeParagraphInHtmlDocumentPipe extends SyncPipe<HtmlDocument, 
         for(Paragraph paragraph : input.getParagraphs()) {
             String paragraphText = paragraph.getText();
             List<String> words = pipeline.process(paragraphText);
-            paragraph.setWords(words);
+            paragraph.setTokens(words);
             if (words.size() > 0)
                newList.add(paragraph);
         }

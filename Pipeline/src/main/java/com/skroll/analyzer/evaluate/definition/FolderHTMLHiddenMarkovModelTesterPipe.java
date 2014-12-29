@@ -60,12 +60,12 @@ public class FolderHTMLHiddenMarkovModelTesterPipe extends SyncPipe<String, Stri
             for (int i=0; i<paragraphs.size();i++){
                 output +=( paragraphs.get(i).getText() + '\n');
                 int k=0;
-                for (int j=0; j< paragraphs.get(i).getWords().size() && k < model.size(); j++){
+                for (int j=0; j< paragraphs.get(i).getTokens().size() && k < model.size(); j++){
                     //if (paragraphs.get(i).getWords().get(j).equals("\"")) continue; //skip quote
                     if (probabilities.get(i)[k][1]>0.1)
-                        output+=String.format("    %s=%.2f ", paragraphs.get(i).getWords().get(j), probabilities.get(i)[k++][1]);
+                        output+=String.format("    %s=%.2f ", paragraphs.get(i).getTokens().get(j), probabilities.get(i)[k++][1]);
                     else
-                        output += String.format("%s=%.2f ", paragraphs.get(i).getWords().get(j), probabilities.get(i)[k++][1]);
+                        output += String.format("%s=%.2f ", paragraphs.get(i).getTokens().get(j), probabilities.get(i)[k++][1]);
 
 //                    if (probabilities.get(i)[k][1]>0.1)
 //                        output+=String.format(" -+- %d %s=%.2f", j,paragraphs.get(i).getWords().get(j), probabilities.get(i)[k++][1]);

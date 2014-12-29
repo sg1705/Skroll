@@ -33,7 +33,7 @@ public class DocumentAllPipesTest extends TestCase {
         HtmlDocument doc = pipeline.process(htmlDoc);
 
         for(Paragraph paragraph : htmlDoc.getParagraphs()) {
-            String words = Joiner.on(",").join(paragraph.getWords());
+            String words = Joiner.on(",").join(paragraph.getTokens());
             System.out.println(words);
         }
         System.out.println(htmlDoc.getParagraphs().size());

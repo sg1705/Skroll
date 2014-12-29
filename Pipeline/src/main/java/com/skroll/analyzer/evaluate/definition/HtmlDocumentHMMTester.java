@@ -38,15 +38,15 @@ public class HtmlDocumentHMMTester extends SyncPipe<HtmlDocument, HtmlDocument> 
                 boolean isPreviousWordDefinition = false;
                 List<String> tempDefinitions = new ArrayList<String>();
                 // test for terms
-                List<Double> hmmResults = testPipeline.process(paragraph.getWords());
+                List<Double> hmmResults = testPipeline.process(paragraph.getTokens());
                 int ii = 0;
                 for (double prob : hmmResults) {
                     if (prob > Constants.DEF_THRESHOLD_PROBABILITY) {
                         if (!isPreviousWordDefinition) {
                             isPreviousWordDefinition = true;
-                            tempDefinitions.add(paragraph.getWords().get(ii));
+                            tempDefinitions.add(paragraph.getTokens().get(ii));
                         } else {
-                            tempDefinitions.add(paragraph.getWords().get(ii));
+                            tempDefinitions.add(paragraph.getTokens().get(ii));
                         }
 //                        // chances are that this is a definition
 //                        definitions.add(paragraph.getWords().get(ii));
