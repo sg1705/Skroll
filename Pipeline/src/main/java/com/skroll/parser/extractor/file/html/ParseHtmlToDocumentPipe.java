@@ -1,10 +1,11 @@
 package com.skroll.parser.extractor.file.html;
 
+import com.skroll.document.Document;
+import com.skroll.document.Entity;
 import com.skroll.document.HtmlDocument;
 import com.skroll.document.Paragraph;
 import com.skroll.pipeline.SyncPipe;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
@@ -20,11 +21,11 @@ import java.util.List;
  *
  * Created by sagupta on 12/14/14.
  */
-public class ParseHtmlToDocumentPipe extends SyncPipe<HtmlDocument, HtmlDocument> {
+public class ParseHtmlToDocumentPipe extends SyncPipe<Document, Document> {
 
     private String rollingTest;
     private List<String> paragraphChunks;
-    private List<Paragraph> paragraphs;
+    private List<Entity> paragraphs;
     private int paraId;
     private int lastParaId = 0;
 
@@ -32,22 +33,24 @@ public class ParseHtmlToDocumentPipe extends SyncPipe<HtmlDocument, HtmlDocument
     public ParseHtmlToDocumentPipe() {
         this.rollingTest = "";
         paragraphChunks = new ArrayList<String>();
-        paragraphs = new ArrayList<Paragraph>();
+        paragraphs = new ArrayList<Entity>();
         this.paraId = 1234;
     }
 
     @Override
-    public HtmlDocument process(HtmlDocument htmlDoc) {
-        Document doc = Jsoup.parse(htmlDoc.getSourceHtml());
+    public com.skroll.document.Document process(com.skroll.document.Document document) {
+        org.jsoup.nodes.Document doc = Jsoup.parse(document.getSource());
         processNodes(doc);
-        htmlDoc.setAnnotatedHtml(doc.outerHtml());
-        htmlDoc.setParagraphs(this.paragraphs);
+        document.setTarget(doc.outerHtml());
+        document.setFragments(this.paragraphs);
+        //htmlDoc.setAnnotatedHtml(doc.outerHtml());
+        //htmlDoc.setParagraphs(this.paragraphs);
         //TODO find out the Charset
-        return this.target.process(htmlDoc);
+        return this.target.process(document);
     }
 
 
-    private void processNodes(Document doc) {
+    private void processNodes(org.jsoup.nodes.Document doc) {
         Iterator<Node> childNodes = doc.childNodes().iterator();
         while (childNodes.hasNext()) {
             Node childNode = childNodes.next();
@@ -88,7 +91,9 @@ public class ParseHtmlToDocumentPipe extends SyncPipe<HtmlDocument, HtmlDocument
      */
     private void createPara() {
         this.paragraphChunks.add(this.rollingTest);
-        Paragraph paragraph = new Paragraph(new Integer(this.lastParaId).toString(), this.rollingTest);
+        Entity paragraph = new Entity(new Integer(this.lastParaId).toString(), this.rollingTest);
+        //TODO remove this line
+        //Paragraph paragraph = new Paragraph(new Integer(this.lastParaId).toString(), this.rollingTest);
         this.paragraphs.add(paragraph);
         // move rolling html to html
         this.rollingTest = "";

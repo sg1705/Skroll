@@ -10,8 +10,19 @@ public class Entity {
 
     String id;
     String text;
+
+    public Entity(String id, String text) {
+        this.id = id;
+        this.text = text;
+    }
+
     List<Token> tokens;
     HashMap<EntityType, Entity> childEntities;
+
+
+    public Entity() {
+
+    }
 
     public HashMap<EntityType, Entity> getChildEntities() {
         return childEntities;

@@ -8,7 +8,27 @@ import java.util.List;
 public class Document {
 
     String id;
+    String source;
+    String target;
     List<Entity> fragments;
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public String getTarget() {
+        return target;
+    }
+
+    public void setTarget(String target) {
+        this.target = target;
+    }
+
+
 
     public String getId() {
         return id;
