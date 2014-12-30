@@ -21,7 +21,7 @@ public class BinaryNaiveBayesSimpleTestingPipe extends SyncPipe<List<String>, Do
         Set<String> wordSet= new HashSet<String>(
                 Lists.partition(input,
                 MAX_TESTING_SENTENCE_LENGTH).get(0));
-        Double output = (model.inferCategoryProbability(wordSet.toArray(new String[wordSet.size()])));
+        Double output = (model.inferCategoryProbabilityMoreStable(wordSet.toArray(new String[wordSet.size()])));
 
         return output;
     }
