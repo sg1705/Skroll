@@ -23,20 +23,20 @@ public class HtmlDocumentToFilePipeTest extends TestCase {
 
         String htmlText = Utils.readStringFromFile(fileName);
 
-        HtmlDocument htmlDoc = new HtmlDocument((htmlText));
+        Document htmlDoc = new Document((htmlText));
 
         //create a pipeline
-        Pipeline<HtmlDocument, HtmlDocument> pipeline =
+        Pipeline<Document, Document> pipeline =
                 new Pipeline.Builder()
                         .add(Pipes.PARSE_HTML_TO_DOC)
                         .add(Pipes.SAVE_HTML_DOCUMENT_TO_FILE, Lists.newArrayList(targetFile))
                         .build();
 
-        HtmlDocument doc = pipeline.process(htmlDoc);
+        Document doc = pipeline.process(htmlDoc);
 
         // read the file and recreate the doc
         String newJsonText = Utils.readStringFromFile(targetFile);
-        HtmlDocument newDoc = ModelHelper.getModel(newJsonText);
+        Document newDoc = ModelHelper.getModel(newJsonText);
 
         assert (newDoc.getParagraphs().size() == doc.getParagraphs().size());
     }
@@ -48,10 +48,10 @@ public class HtmlDocumentToFilePipeTest extends TestCase {
 
         String htmlText = Utils.readStringFromFile(targetFile);
 
-        HtmlDocument htmlDoc = ModelHelper.getModel(htmlText);
+        Document htmlDoc = ModelHelper.getModel(htmlText);
 
         //create a pipeline
-        Pipeline<HtmlDocument, HtmlDocument> pipeline =
+        Pipeline<Document, Document> pipeline =
                 new Pipeline.Builder()
                         .add(Pipes.PARSE_HTML_TO_DOC)
                         .add(Pipes.SAVE_HTML_DOCUMENT_TO_FILE, Lists.newArrayList(targetFile))
@@ -61,7 +61,7 @@ public class HtmlDocumentToFilePipeTest extends TestCase {
 
         // read the file and recreate the doc
         String newJsonText = Utils.readStringFromFile(targetFile);
-        HtmlDocument newDoc = ModelHelper.getModel(newJsonText);
+        Document newDoc = ModelHelper.getModel(newJsonText);
 
         //assert (newDoc.getSourceHtml().equals(htmlDoc.getSourceHtml()));
         assert (newDoc.getParagraphs().size() == htmlDoc.getParagraphs().size());

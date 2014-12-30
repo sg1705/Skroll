@@ -2,6 +2,7 @@ package com.skroll.analyzer.train.definition;
 
 import com.google.common.collect.Lists;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
+import com.skroll.document.Document;
 import com.skroll.document.HtmlDocument;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
@@ -45,11 +46,11 @@ public class FolderHTMLHiddenMarkovModelTrainerPipe extends SyncPipe<String, Str
             e.printStackTrace();
         }
 
-        HtmlDocument htmlDoc = new HtmlDocument();
-        htmlDoc.setSourceHtml(htmlString);
+        Document htmlDoc = new Document();
+        htmlDoc.setSource(htmlString);
 
         //create a pipeline
-        Pipeline<HtmlDocument, HtmlDocument> pipeline =
+        Pipeline<Document, Document> pipeline =
                 new Pipeline.Builder()
                         .add(Pipes.PARSE_HTML_TO_DOC)
                         .add(Pipes.REMOVE_BLANK_PARAGRAPH_FROM_HTML_DOC)
@@ -61,7 +62,7 @@ public class FolderHTMLHiddenMarkovModelTrainerPipe extends SyncPipe<String, Str
                         .add(Pipes.HTML_HIDDEN_MARKOV_MODEL_TRAINING_PIPE,
                                 Lists.newArrayList((Object) model))
                         .build();
-        HtmlDocument doc = pipeline.process(htmlDoc);
+        Document doc = pipeline.process(htmlDoc);
     }
 
 }

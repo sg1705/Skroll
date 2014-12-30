@@ -7,7 +7,7 @@ import java.util.List;
  */
 public class HtmlDocument {
 
-    private List<Paragraph> paragraphs;
+    private List<Entity> paragraphs;
     private String annotatedHtml;
 
 
@@ -38,11 +38,11 @@ public class HtmlDocument {
         this.annotatedHtml = annotatedHtml;
     }
 
-    public List<Paragraph> getParagraphs() {
+    public List<Entity> getParagraphs() {
         return paragraphs;
     }
 
-    public void setParagraphs(List<Paragraph> paragraphs) {
+    public void setParagraphs(List<Entity> paragraphs) {
         this.paragraphs = paragraphs;
     }
 }

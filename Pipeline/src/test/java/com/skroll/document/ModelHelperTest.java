@@ -16,11 +16,11 @@ public class ModelHelperTest extends TestCase {
         String fileName = "src/test/resources/document/experiment-jsoup-node-extraction.html";
         try {
             String htmlText = Utils.readStringFromFile(fileName);
-            HtmlDocument doc = new HtmlDocument();
-            doc.setAnnotatedHtml(htmlText);
+            Document doc = new Document();
+            doc.setTarget(htmlText);
             String jsonString = ModelHelper.getJson(doc);
-            HtmlDocument doc2 = ModelHelper.getModel(jsonString);
-            String newHtmlText = doc2.getAnnotatedHtml();
+            Document doc2 = ModelHelper.getModel(jsonString);
+            String newHtmlText = doc2.getTarget();
             assert (htmlText.equals(newHtmlText));
         } catch (Exception e) {
             e.printStackTrace();
@@ -33,7 +33,7 @@ public class ModelHelperTest extends TestCase {
         String fileName = "src/test/resources/document/experiment-jsoup-node-extraction.html";
         try {
             String htmlText = Utils.readStringFromFile(fileName);
-            HtmlDocument doc = new HtmlDocument();
+            Document doc = new Document();
 
             List<String> input = new ArrayList<String>();
             input.add(htmlText);
@@ -50,9 +50,9 @@ public class ModelHelperTest extends TestCase {
 
             // create fake paragraphs
             int ii = 0;
-            List<Paragraph> paras = new ArrayList<Paragraph>();
+            List<Entity> paras = new ArrayList<Entity>();
             for (String para :  paragraphs) {
-                Paragraph parag = new Paragraph(""+ii, para);
+                Entity parag = new Entity(""+ii, para);
                 paras.add(parag);
             }
 
@@ -60,8 +60,8 @@ public class ModelHelperTest extends TestCase {
 
 
             String jsonString = ModelHelper.getJson(doc);
-            HtmlDocument doc2 = ModelHelper.getModel(jsonString);
-            List<Paragraph> newParas = doc2.getParagraphs();
+            Document doc2 = ModelHelper.getModel(jsonString);
+            List<Entity> newParas = doc2.getParagraphs();
             System.out.println(newParas.size());
             assert (newParas.size() == paras.size());
             assert (newParas.size() != 0);

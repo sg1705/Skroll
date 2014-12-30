@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model.nb;
 
 import com.google.common.collect.Lists;
+import com.skroll.document.Document;
 import com.skroll.pipeline.SyncPipe;
 
 import java.util.*;
@@ -9,7 +10,7 @@ import java.util.*;
  * Created by saurabh on 12/21/14.
  */
 public class BinaryNaiveBayesSimpleTestingPipe extends SyncPipe<List<String>, Double> {
-    double output;
+    Document output;
 
     public static final int MAX_TESTING_SENTENCE_LENGTH = BinaryNaiveBayesTrainingPipe.MAX_SENTENCE_LENGTH;
 
@@ -20,7 +21,7 @@ public class BinaryNaiveBayesSimpleTestingPipe extends SyncPipe<List<String>, Do
         Set<String> wordSet= new HashSet<String>(
                 Lists.partition(input,
                 MAX_TESTING_SENTENCE_LENGTH).get(0));
-        output = (model.inferCategoryProbability(wordSet.toArray(new String[wordSet.size()])));
+        Double output = (model.inferCategoryProbability(wordSet.toArray(new String[wordSet.size()])));
 
         return output;
     }

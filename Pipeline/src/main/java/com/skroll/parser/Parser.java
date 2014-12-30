@@ -1,6 +1,7 @@
 package com.skroll.parser;
 
-import com.skroll.document.HtmlDocument;
+import com.skroll.document.Document;
+import com.skroll.document.Document;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
@@ -10,11 +11,11 @@ import com.skroll.pipeline.util.Utils;
  */
 public class Parser {
 
-    public static HtmlDocument parseDocumentFromHtml(String html) {
-        HtmlDocument htmlDoc = new HtmlDocument();
-        htmlDoc.setSourceHtml(html);
+    public static Document parseDocumentFromHtml(String html) {
+        Document doc = new Document();
+        doc.setSource(html);
         //create a pipeline
-        Pipeline<HtmlDocument, HtmlDocument> pipeline =
+        Pipeline<Document, Document> pipeline =
                 new Pipeline.Builder()
                         .add(Pipes.PARSE_HTML_TO_DOC)
                         .add(Pipes.REMOVE_BLANK_PARAGRAPH_FROM_HTML_DOC)
@@ -22,11 +23,11 @@ public class Parser {
                         .add(Pipes.REPLACE_SPECIAL_QUOTE_IN_HTML_DOC)
                         .add(Pipes.TOKENIZE_PARAGRAPH_IN_HTML_DOC)
                         .build();
-        htmlDoc = pipeline.process(htmlDoc);
-        return htmlDoc;
+        doc = pipeline.process(doc);
+        return doc;
     }
 
-    public static HtmlDocument parseDocumentFromHtmlFile(String fileName) {
+    public static Document parseDocumentFromHtmlFile(String fileName) {
 
         String htmlText = "";
         try {
@@ -34,8 +35,8 @@ public class Parser {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        HtmlDocument htmlDoc = parseDocumentFromHtml(htmlText);
-        return htmlDoc;
+        Document doc = parseDocumentFromHtml(htmlText);
+        return doc;
     }
 
 

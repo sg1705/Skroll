@@ -1,5 +1,6 @@
 package com.skroll.analyzer.train.definition.data;
 
+import com.skroll.document.Document;
 import com.skroll.document.HtmlDocument;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
@@ -15,11 +16,10 @@ public class SaveTrainedDataTest extends TestCase {
         String htmlText = Utils.readStringFromFile(fileName);
 
 
-
-        HtmlDocument htmlDoc = new HtmlDocument(htmlText);
+        Document htmlDoc = new Document(htmlText);
 
         //create a pipeline
-        Pipeline<HtmlDocument, HtmlDocument> pipeline =
+        Pipeline<Document, Document> pipeline =
                 new Pipeline.Builder()
                         .add(Pipes.PARSE_HTML_TO_DOC)
                         .add(Pipes.REMOVE_BLANK_PARAGRAPH_FROM_HTML_DOC)
@@ -31,7 +31,7 @@ public class SaveTrainedDataTest extends TestCase {
         htmlDoc = pipeline.process(htmlDoc);
 
         //create a pipeline
-        Pipeline<HtmlDocument, String> saveTrainedPipe =
+        Pipeline<Document, String> saveTrainedPipe =
                 new Pipeline.Builder()
                         .add(Pipes.SAVE_TRAINED_DATA)
                         .build();

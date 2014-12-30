@@ -3,8 +3,7 @@ package com.skroll.analyzer.evaluate.definition;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
-import com.skroll.document.HtmlDocument;
-import com.skroll.document.Paragraph;
+import com.skroll.document.*;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.SyncPipe;
@@ -17,10 +16,10 @@ import java.util.List;
  * This class assumes that there is a HtmlDocument available
  * Created by saurabh on 12/23/14.
  */
-public class HtmlDocumentHMMTester extends SyncPipe<HtmlDocument, HtmlDocument> {
+public class HtmlDocumentHMMTester extends SyncPipe<Document, Document> {
 
     @Override
-    public HtmlDocument process(HtmlDocument input) {
+    public Document process(Document input) {
         HiddenMarkovModel model = (HiddenMarkovModel)config.get(0);
         //chunk the document
         Pipeline<List<String>, List<Double>> testPipeline =
@@ -30,23 +29,23 @@ public class HtmlDocumentHMMTester extends SyncPipe<HtmlDocument, HtmlDocument> 
                                 new Integer(Constants.CATEGORY_POSITIVE)))
                         .build();
 
-        List<Paragraph> newParagraphs = new ArrayList<Paragraph>();
+        List<Entity> newParagraphs = new ArrayList<Entity>();
         //assume that words are extracted
-        for(Paragraph paragraph : input.getParagraphs()) {
+        for(Entity paragraph : input.getParagraphs()) {
             List<String> definitions = new ArrayList<String>();
-            if (paragraph.isDefinition()) {
+            if (paragraph.hasChildEntity(EntityType.DEFINITIONS)) {
                 boolean isPreviousWordDefinition = false;
                 List<String> tempDefinitions = new ArrayList<String>();
                 // test for terms
-                List<Double> hmmResults = testPipeline.process(paragraph.getTokens());
+                List<Double> hmmResults = testPipeline.process(DocumentHelper.getTokenString(paragraph.getTokens()));
                 int ii = 0;
                 for (double prob : hmmResults) {
                     if (prob > Constants.DEF_THRESHOLD_PROBABILITY) {
                         if (!isPreviousWordDefinition) {
                             isPreviousWordDefinition = true;
-                            tempDefinitions.add(paragraph.getTokens().get(ii));
+                            tempDefinitions.add(paragraph.getTokens().get(ii).getToken());
                         } else {
-                            tempDefinitions.add(paragraph.getTokens().get(ii));
+                            tempDefinitions.add(paragraph.getTokens().get(ii).getToken());
                         }
 //                        // chances are that this is a definition
 //                        definitions.add(paragraph.getWords().get(ii));
@@ -65,7 +64,7 @@ public class HtmlDocumentHMMTester extends SyncPipe<HtmlDocument, HtmlDocument> 
                     definitions.add(Joiner.on(" ").join(tempDefinitions));
                 }
             }
-            paragraph.setDefinitions(definitions);
+            paragraph.addChildEntity(EntityType.DEFINITIONS, DocumentHelper.createEntityFromTokens(definitions));
             newParagraphs.add(paragraph);
         }
         input.setParagraphs(newParagraphs);

@@ -1,5 +1,6 @@
 package com.skroll.analyzer.model.hmm;
 
+import com.skroll.document.Document;
 import com.skroll.pipeline.SyncPipe;
 
 import java.util.ArrayList;

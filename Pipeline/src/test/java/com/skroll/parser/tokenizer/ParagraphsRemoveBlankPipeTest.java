@@ -1,7 +1,8 @@
 package com.skroll.parser.tokenizer;
 
 import com.google.common.base.Joiner;
-import com.skroll.document.HtmlDocument;
+import com.skroll.document.Entity;
+import com.skroll.document.Document;
 import com.skroll.document.Paragraph;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
@@ -15,20 +16,20 @@ public class ParagraphsRemoveBlankPipeTest extends TestCase {
         String fileName = "src/test/resources/html-docs/random-indenture.html";
         String htmlString = Utils.readStringFromFile(fileName);
 
-        HtmlDocument htmlDoc= new HtmlDocument();
-        htmlDoc.setSourceHtml(htmlString);
+        Document htmlDoc= new Document();
+        htmlDoc.setSource(htmlString);
 
         //create a pipeline
-        Pipeline<HtmlDocument, HtmlDocument> pipeline =
+        Pipeline<Document, Document> pipeline =
                 new Pipeline.Builder()
                         .add(Pipes.PARSE_HTML_TO_DOC)
                         .add(Pipes.REMOVE_BLANK_PARAGRAPH_FROM_HTML_DOC)
                         .add(Pipes.REPLACE_SPECIAL_QUOTE_IN_HTML_DOC)
                         .add(Pipes.TOKENIZE_PARAGRAPH_IN_HTML_DOC)
                         .build();
-        HtmlDocument doc = pipeline.process(htmlDoc);
+        Document doc = pipeline.process(htmlDoc);
 
-        for(Paragraph paragraph : htmlDoc.getParagraphs()) {
+        for(Entity paragraph : htmlDoc.getParagraphs()) {
             System.out.println(Joiner.on(',').join(paragraph.getTokens()));
         }
         System.out.println(htmlDoc.getParagraphs().size());

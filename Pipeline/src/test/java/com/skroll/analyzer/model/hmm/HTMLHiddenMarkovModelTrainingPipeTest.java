@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model.hmm;
 
 import com.google.common.collect.Lists;
+import com.skroll.document.Document;
 import com.skroll.document.HtmlDocument;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
@@ -18,14 +19,14 @@ public class HTMLHiddenMarkovModelTrainingPipeTest extends TestCase {
         String fileName = "src/test/resources/analyzer/html-docs/random-indenture.html";
         String htmlString = Utils.readStringFromFile(fileName);
 
-        HtmlDocument htmlDoc= new HtmlDocument();
-        htmlDoc.setSourceHtml(htmlString);
+        Document htmlDoc= new Document();
+        htmlDoc.setSource(htmlString);
 
         // create HMM document
         HiddenMarkovModel model = new HiddenMarkovModel(16);
 
         //create a pipeline
-        Pipeline<HtmlDocument, HtmlDocument> pipeline =
+        Pipeline<Document, Document> pipeline =
                 new Pipeline.Builder()
                         .add(Pipes.PARSE_HTML_TO_DOC)
                         .add(Pipes.REMOVE_BLANK_PARAGRAPH_FROM_HTML_DOC)
@@ -37,7 +38,7 @@ public class HTMLHiddenMarkovModelTrainingPipeTest extends TestCase {
                         .add(Pipes.HTML_HIDDEN_MARKOV_MODEL_TRAINING_PIPE,
                                 Lists.newArrayList((Object) model))
                         .build();
-        HtmlDocument doc = pipeline.process(htmlDoc);
+        Document doc = pipeline.process(htmlDoc);
         model.updateProbabilities();;
         System.out.println(model.showProbabilities());
         System.out.println(model.showCounts());

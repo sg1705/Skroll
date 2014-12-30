@@ -1,5 +1,7 @@
 package com.skroll.pipeline;
 
+import com.skroll.document.Document;
+
 import java.util.List;
 
 /**

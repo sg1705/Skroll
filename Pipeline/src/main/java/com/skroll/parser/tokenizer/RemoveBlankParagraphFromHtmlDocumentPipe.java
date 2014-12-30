@@ -1,6 +1,8 @@
 package com.skroll.parser.tokenizer;
 
-import com.skroll.document.HtmlDocument;
+import com.skroll.document.Document;
+import com.skroll.document.Entity;
+import com.skroll.document.Document;
 import com.skroll.document.Paragraph;
 import com.skroll.pipeline.SyncPipe;
 import org.jsoup.helper.StringUtil;
@@ -11,13 +13,13 @@ import java.util.List;
 /**
  * Created by sagupta on 12/14/14.
  */
-public class RemoveBlankParagraphFromHtmlDocumentPipe extends SyncPipe<HtmlDocument, HtmlDocument> {
+public class RemoveBlankParagraphFromHtmlDocumentPipe extends SyncPipe<Document, Document> {
 
     @Override
-    public HtmlDocument process(HtmlDocument input) {
+    public Document process(Document input) {
         //TODO some instance where there is just a blank like (maybe because of new line)
-        List<Paragraph> newList = new ArrayList<Paragraph>();
-        for(Paragraph paragraph : input.getParagraphs()) {
+        List<Entity> newList = new ArrayList<Entity>();
+        for(Entity paragraph : input.getParagraphs()) {
             String str = paragraph.getText().replace("\u00a0", "");
             if (!StringUtil.isBlank(str)) {
                 //paragraph.setText(paragraph.getText().toLowerCase());

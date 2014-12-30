@@ -56,4 +56,27 @@ public class Entity {
         this.tokens = tokens;
     }
 
+    public boolean hasChildEntity(EntityType type) {
+        if (this.childEntities == null) {
+            return false;
+        }
+        Entity entity = childEntities.get(type);
+        if (entity != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void addChildEntity(EntityType type, Entity entity) {
+        if (this.childEntities == null) {
+            this.childEntities = new HashMap<EntityType, Entity>();
+        }
+        this.childEntities.put(type,entity);
+    }
+
+    public Entity getChildEntity(EntityType type) {
+        return childEntities.get(type);
+    }
+
 }

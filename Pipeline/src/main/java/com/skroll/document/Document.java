@@ -8,9 +8,27 @@ import java.util.List;
 public class Document {
 
     String id;
+
+
     String source;
     String target;
-    List<Entity> fragments;
+    List<Entity> paragraphs;
+
+
+    public Document() {
+
+    }
+    public Document(String source) {
+        this.source = source;
+    }
+
+    public List<Entity> getParagraphs() {
+        return paragraphs;
+    }
+
+    public void setParagraphs(List<Entity> paragraphs) {
+        this.paragraphs = paragraphs;
+    }
 
     public String getSource() {
         return source;
@@ -38,11 +56,4 @@ public class Document {
         this.id = id;
     }
 
-    public List<Entity> getFragments() {
-        return fragments;
-    }
-
-    public void setFragments(List<Entity> fragments) {
-        this.fragments = fragments;
-    }
 }

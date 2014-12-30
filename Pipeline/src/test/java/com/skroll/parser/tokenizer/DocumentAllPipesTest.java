@@ -1,8 +1,8 @@
 package com.skroll.parser.tokenizer;
 
 import com.google.common.base.Joiner;
-import com.skroll.document.HtmlDocument;
-import com.skroll.document.Paragraph;
+import com.skroll.document.Entity;
+import com.skroll.document.Document;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
@@ -19,10 +19,10 @@ public class DocumentAllPipesTest extends TestCase {
         String fileName = "src/test/resources/parser/tokenizer/experiment-jsoup-node-extraction.html";
         String htmlText = Utils.readStringFromFile(fileName);
 
-        HtmlDocument htmlDoc = new HtmlDocument(htmlText);
+        Document htmlDoc = new Document(htmlText);
 
         //create a pipeline
-        Pipeline<HtmlDocument, HtmlDocument> pipeline =
+        Pipeline<Document, Document> pipeline =
                 new Pipeline.Builder()
                         .add(Pipes.PARSE_HTML_TO_DOC)
                         .add(Pipes.REMOVE_BLANK_PARAGRAPH_FROM_HTML_DOC)
@@ -30,9 +30,9 @@ public class DocumentAllPipesTest extends TestCase {
                         .add(Pipes.REPLACE_SPECIAL_QUOTE_IN_HTML_DOC)
                         .add(Pipes.TOKENIZE_PARAGRAPH_IN_HTML_DOC)
                         .build();
-        HtmlDocument doc = pipeline.process(htmlDoc);
+        Document doc = pipeline.process(htmlDoc);
 
-        for(Paragraph paragraph : htmlDoc.getParagraphs()) {
+        for(Entity paragraph : htmlDoc.getParagraphs()) {
             String words = Joiner.on(",").join(paragraph.getTokens());
             System.out.println(words);
         }

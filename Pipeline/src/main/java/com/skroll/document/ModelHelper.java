@@ -12,24 +12,24 @@ import java.lang.reflect.Type;
  */
 public class ModelHelper {
 
-    public static String getJson(HtmlDocument doc) {
+    public static String getJson(Document doc) {
         Gson gson = new Gson();
         String jsonString = gson.toJson(doc);
         return jsonString;
     }
 
-    public static HtmlDocument getModel(String jsonString) {
+    public static Document getModel(String jsonString) {
         Gson gson = new Gson();
-        Type docType = new TypeToken<HtmlDocument>() {}.getType();
-        HtmlDocument newDoc = gson.fromJson(jsonString, docType);
+        Type docType = new TypeToken<Document>() {}.getType();
+        Document newDoc = gson.fromJson(jsonString, docType);
         return newDoc;
     }
 
-    public static HtmlDocument tokenizeModel(String html) {
-        HtmlDocument htmlDoc = new HtmlDocument();
-        htmlDoc.setSourceHtml(html);
+    public static Document tokenizeModel(String html) {
+        Document htmlDoc = new Document();
+        htmlDoc.setSource(html);
         //create a pipeline
-        Pipeline<HtmlDocument, HtmlDocument> pipeline =
+        Pipeline<Document, Document> pipeline =
                 new Pipeline.Builder()
                         .add(Pipes.PARSE_HTML_TO_DOC)
                         .add(Pipes.REMOVE_BLANK_PARAGRAPH_FROM_HTML_DOC)

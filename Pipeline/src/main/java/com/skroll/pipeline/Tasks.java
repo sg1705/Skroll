@@ -1,6 +1,7 @@
 package com.skroll.pipeline;
 
 import com.google.common.io.Files;
+import com.skroll.document.Document;
 import com.skroll.document.HtmlDocument;
 import com.skroll.pipeline.util.Utils;
 
@@ -46,10 +47,10 @@ public class Tasks {
             String htmlText = null;
             try {
                 htmlText = Utils.readStringFromFile(file);
-                HtmlDocument htmlDoc = new HtmlDocument(htmlText);
+                Document htmlDoc = new Document(htmlText);
 
                 //create a pipeline
-                Pipeline<HtmlDocument, HtmlDocument> pipeline =
+                Pipeline<Document, Document> pipeline =
                         new Pipeline.Builder()
                                 .add(Pipes.PARSE_HTML_TO_DOC)
                                 .add(Pipes.REMOVE_BLANK_PARAGRAPH_FROM_HTML_DOC)
@@ -63,7 +64,7 @@ public class Tasks {
 
 
                 //create a pipeline
-                Pipeline<HtmlDocument, String> saveTrainedPipe =
+                Pipeline<Document, String> saveTrainedPipe =
                         new Pipeline.Builder()
                                 .add(Pipes.SAVE_TRAINED_DATA)
                                 .build();

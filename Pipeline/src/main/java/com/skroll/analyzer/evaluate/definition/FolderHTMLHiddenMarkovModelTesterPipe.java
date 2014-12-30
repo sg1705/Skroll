@@ -2,6 +2,8 @@ package com.skroll.analyzer.evaluate.definition;
 
 import com.google.common.collect.Lists;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
+import com.skroll.document.Document;
+import com.skroll.document.Entity;
 import com.skroll.document.HtmlDocument;
 import com.skroll.document.Paragraph;
 import com.skroll.pipeline.Pipeline;
@@ -32,11 +34,11 @@ public class FolderHTMLHiddenMarkovModelTesterPipe extends SyncPipe<String, Stri
                 e.printStackTrace();
             }
 
-            HtmlDocument htmlDoc= new HtmlDocument();
-            htmlDoc.setSourceHtml(htmlString);
+            Document htmlDoc= new Document();
+            htmlDoc.setSource(htmlString);
 
             //create a pipeline
-            Pipeline<HtmlDocument, HtmlDocument> testingDocPipe =
+            Pipeline<Document, Document> testingDocPipe =
                     new Pipeline.Builder()
                             .add(Pipes.PARSE_HTML_TO_DOC)
                             .add(Pipes.REMOVE_BLANK_PARAGRAPH_FROM_HTML_DOC)
@@ -46,9 +48,9 @@ public class FolderHTMLHiddenMarkovModelTesterPipe extends SyncPipe<String, Stri
                             .add(Pipes.TOKENIZE_PARAGRAPH_IN_HTML_DOC)
                             .add(Pipes.EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC)
                             .build();
-            HtmlDocument testDoc = testingDocPipe.process(htmlDoc);
+            Document testDoc = testingDocPipe.process(htmlDoc);
 
-            Pipeline<HtmlDocument, List<double[][]>> testingPipe =
+            Pipeline<Document, List<double[][]>> testingPipe =
                     new Pipeline.Builder()
                             .add(Pipes.HTML_HIDDEN_MARKOV_MODEL_TESTING_PIPE,
                                     Lists.newArrayList((Object) model))
@@ -56,7 +58,7 @@ public class FolderHTMLHiddenMarkovModelTesterPipe extends SyncPipe<String, Stri
 
 
             List<double[][]> probabilities = testingPipe.process(testDoc);
-            List<Paragraph> paragraphs = testDoc.getParagraphs();
+            List<Entity> paragraphs = testDoc.getParagraphs();
             for (int i=0; i<paragraphs.size();i++){
                 output +=( paragraphs.get(i).getText() + '\n');
                 int k=0;

@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model.nb;
 
 import com.google.common.collect.Lists;
+import com.skroll.document.Document;
 import com.skroll.pipeline.SyncPipe;
 
 import java.util.*;
@@ -19,7 +20,6 @@ public class BinaryNaiveBayesTestingPipe extends SyncPipe<List<List<String>>, Li
 
         while(iterator.hasNext()) {
             List<String> eachLine = iterator.next();
-
             // make a unique set of first MAX_LENGTH words
             Set<String> wordSet= new HashSet<String>(Lists.partition(eachLine,
                     MAX_TESTING_SENTENCE_LENGTH).get(0));

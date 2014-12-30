@@ -3,8 +3,7 @@ package com.skroll.analyzer.train.definition.data;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
-import com.skroll.document.HtmlDocument;
-import com.skroll.document.Paragraph;
+import com.skroll.document.*;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
@@ -153,10 +152,10 @@ public class GenerateTrainingData {
 
                 notParaDefWords.process(input);
 
-                HtmlDocument htmlDoc = new HtmlDocument(htmlText);
+                Document htmlDoc = new Document(htmlText);
 
                 //create a pipeline
-                Pipeline<HtmlDocument, HtmlDocument> pipeline =
+                Pipeline<Document, Document> pipeline =
                         new Pipeline.Builder()
                                 .add(Pipes.PARSE_HTML_TO_DOC)
                                 .add(Pipes.REMOVE_BLANK_PARAGRAPH_FROM_HTML_DOC)
@@ -169,8 +168,9 @@ public class GenerateTrainingData {
                 htmlDoc = pipeline.process(htmlDoc);
                 List<String> defList = new ArrayList<String>();
                 int count = 0;
-                for(Paragraph paragraph : htmlDoc.getParagraphs()) {
-                    String words = Joiner.on(",").join(paragraph.getDefinitions());
+                for(Entity paragraph : htmlDoc.getParagraphs()) {
+                    String words = Joiner.on(",").join(DocumentHelper
+                            .getTokenString(paragraph.getChildEntity(EntityType.DEFINITIONS).getTokens()));
                     defList.add(words);
                     System.out.println(words);
                 }

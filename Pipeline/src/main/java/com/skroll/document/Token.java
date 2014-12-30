@@ -1,5 +1,6 @@
 package com.skroll.document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,4 +25,5 @@ public class Token {
     public void setTokenFeaturesList(List<TokenAttributes> tokenFeaturesList) {
         this.tokenFeaturesList = tokenFeaturesList;
     }
+
 }

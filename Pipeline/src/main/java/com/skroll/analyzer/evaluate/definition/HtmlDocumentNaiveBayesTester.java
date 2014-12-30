@@ -2,8 +2,7 @@ package com.skroll.analyzer.evaluate.definition;
 
 import com.google.common.collect.Lists;
 import com.skroll.analyzer.model.nb.BinaryNaiveBayesModel;
-import com.skroll.document.HtmlDocument;
-import com.skroll.document.Paragraph;
+import com.skroll.document.*;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.SyncPipe;
@@ -14,12 +13,12 @@ import java.util.List;
  * This class assumes that there is a HtmlDocument available
  * Created by saurabh on 12/23/14.
  */
-public class HtmlDocumentNaiveBayesTester extends SyncPipe<HtmlDocument, HtmlDocument> {
+public class HtmlDocumentNaiveBayesTester extends SyncPipe<Document, Document> {
 
     private static final double DEF_THRESHOLD_PROBABILITY = 0.85;
 
     @Override
-    public HtmlDocument process(HtmlDocument input) {
+    public Document process(Document input) {
         BinaryNaiveBayesModel model = (BinaryNaiveBayesModel)config.get(0);
         //chunk the document
         Pipeline<List<String>, Double> testPipeline =
@@ -29,11 +28,10 @@ public class HtmlDocumentNaiveBayesTester extends SyncPipe<HtmlDocument, HtmlDoc
                         .build();
 
         //assume that words are extracted
-        for(Paragraph paragraph : input.getParagraphs()) {
-            double isDefinition = testPipeline.process(paragraph.getTokens());
+        for(Entity paragraph : input.getParagraphs()) {
+            double isDefinition = testPipeline.process(DocumentHelper.getTokenString(paragraph.getTokens()));
             if (isDefinition > DEF_THRESHOLD_PROBABILITY)
-
-                paragraph.setDefinition(true);
+                paragraph.addChildEntity(EntityType.DEFINITIONS, new Entity());
         }
 
         return this.target.process(input);

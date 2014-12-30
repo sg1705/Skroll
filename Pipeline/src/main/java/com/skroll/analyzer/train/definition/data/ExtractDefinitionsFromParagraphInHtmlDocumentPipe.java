@@ -1,7 +1,6 @@
 package com.skroll.analyzer.train.definition.data;
 
-import com.skroll.document.HtmlDocument;
-import com.skroll.document.Paragraph;
+import com.skroll.document.*;
 import com.skroll.pipeline.SyncPipe;
 
 import java.util.ArrayList;
@@ -12,12 +11,12 @@ import java.util.regex.Pattern;
 /**
  * Created by sagupta on 12/14/14.
  */
-public class ExtractDefinitionsFromParagraphInHtmlDocumentPipe extends SyncPipe<HtmlDocument, HtmlDocument> {
+public class ExtractDefinitionsFromParagraphInHtmlDocumentPipe extends SyncPipe<Document, Document> {
 
     @Override
-    public HtmlDocument process(HtmlDocument input) {
+    public Document process(Document input) {
 
-        for(Paragraph paragraph : input.getParagraphs()) {
+        for(Entity paragraph : input.getParagraphs()) {
             List<String> newList = new ArrayList<String>();
             String str = paragraph.getText();
             Pattern p = Pattern.compile( "\"([^\"]*)\"" );
@@ -27,12 +26,13 @@ public class ExtractDefinitionsFromParagraphInHtmlDocumentPipe extends SyncPipe<
                     newList.add(m.group(1));
                 }
             }
-            paragraph.setDefinitions(newList);
-            if (newList.size() > 0) {
-                paragraph.setDefinition(true);
-            } else {
-                paragraph.setDefinition(false);
-            }
+            DocumentHelper.setDefinition(newList, paragraph);
+//            paragraph.setDefinitions(newList);
+//            if (newList.size() > 0) {
+//                paragraph.setDefinition(true);
+//            } else {
+//                paragraph.setDefinition(false);
+//            }
         }
         return this.target.process(input);
     }

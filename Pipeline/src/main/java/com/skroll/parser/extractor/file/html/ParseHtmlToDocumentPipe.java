@@ -2,7 +2,7 @@ package com.skroll.parser.extractor.file.html;
 
 import com.skroll.document.Document;
 import com.skroll.document.Entity;
-import com.skroll.document.HtmlDocument;
+import com.skroll.document.Document;
 import com.skroll.document.Paragraph;
 import com.skroll.pipeline.SyncPipe;
 import org.jsoup.Jsoup;
@@ -38,13 +38,12 @@ public class ParseHtmlToDocumentPipe extends SyncPipe<Document, Document> {
     }
 
     @Override
-    public com.skroll.document.Document process(com.skroll.document.Document document) {
+    public Document process(com.skroll.document.Document document) {
         org.jsoup.nodes.Document doc = Jsoup.parse(document.getSource());
         processNodes(doc);
         document.setTarget(doc.outerHtml());
-        document.setFragments(this.paragraphs);
         //htmlDoc.setAnnotatedHtml(doc.outerHtml());
-        //htmlDoc.setParagraphs(this.paragraphs);
+        document.setParagraphs(this.paragraphs);
         //TODO find out the Charset
         return this.target.process(document);
     }

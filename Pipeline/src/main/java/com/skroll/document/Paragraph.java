@@ -13,12 +13,7 @@ public class Paragraph {
     private List<String> tokens;
     private List<String> definitions;
 
-    private HashMap<EntityType,NamedEntity> entities;
-
-    private class NamedEntity {
-        List<String> entityTokens;
-    }
-
+    private HashMap<EntityType,Entity> entities;
 
     public List<String> getDefinitions() {
         return definitions;
@@ -67,7 +62,7 @@ public class Paragraph {
         this.text = text;
     }
 
-    public NamedEntity getEntity(EntityType type) {
+    public Entity getEntity(EntityType type) {
         return entities.get(type);
     }
 

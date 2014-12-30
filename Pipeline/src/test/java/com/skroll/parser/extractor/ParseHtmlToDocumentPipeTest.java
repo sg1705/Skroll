@@ -1,6 +1,6 @@
 package com.skroll.parser.extractor;
 
-import com.skroll.document.HtmlDocument;
+import com.skroll.document.Document;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
@@ -17,14 +17,14 @@ public class ParseHtmlToDocumentPipeTest extends TestCase {
         String fileName = "src/test/resources/parser/extractor/experiment-jsoup-node-extraction.html";
         String htmlText = Utils.readStringFromFile(fileName);
 
-        HtmlDocument htmlDoc = new HtmlDocument(htmlText);
+        Document htmlDoc = new Document(htmlText);
 
         //create a pipeline
-        Pipeline<HtmlDocument, HtmlDocument> pipeline =
+        Pipeline<Document, Document> pipeline =
                 new Pipeline.Builder()
                         .add(Pipes.PARSE_HTML_TO_DOC)
                         .build();
-        HtmlDocument doc = pipeline.process(htmlDoc);
+        Document doc = pipeline.process(htmlDoc);
         System.out.println(doc.getParagraphs().size());
 
         List<String> input = new ArrayList<String>();

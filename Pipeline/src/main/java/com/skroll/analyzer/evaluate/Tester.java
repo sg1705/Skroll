@@ -2,7 +2,7 @@ package com.skroll.analyzer.evaluate;
 
 import com.google.common.collect.Lists;
 import com.skroll.analyzer.model.Models;
-import com.skroll.document.HtmlDocument;
+import com.skroll.document.Document;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 
@@ -11,9 +11,9 @@ import com.skroll.pipeline.Pipes;
  */
 public class Tester {
 
-    public static HtmlDocument testNaiveBayes(HtmlDocument htmlDoc) {
+    public static Document testNaiveBayes(Document htmlDoc) {
         //create a pipeline
-        Pipeline<HtmlDocument, HtmlDocument> pipeline =
+        Pipeline<Document, Document> pipeline =
                 new Pipeline.Builder()
                         .add(Pipes.PARSE_HTML_TO_DOC)
                         .add(Pipes.REMOVE_BLANK_PARAGRAPH_FROM_HTML_DOC)
@@ -28,8 +28,8 @@ public class Tester {
     }
 
 
-    public static HtmlDocument testHiddenMarketModel(HtmlDocument htmlDoc, int category) {
-        Pipeline<HtmlDocument, HtmlDocument> pipeline =
+    public static Document testHiddenMarketModel(Document htmlDoc, int category) {
+        Pipeline<Document, Document> pipeline =
                 new Pipeline.Builder()
                         .add(Pipes.HTML_DOCUMENT_HIDDEN_MARKOV_MODEL_TESTING_PIPE,
                                 Lists.newArrayList((Object) Models.getHmmModel(), category))

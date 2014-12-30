@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model.nb;
 
 import com.google.common.collect.Lists;
+import com.skroll.document.Document;
 import com.skroll.pipeline.SyncPipe;
 
 import java.util.*;

@@ -1,8 +1,7 @@
 package com.skroll.analyzer.model.hmm;
 
 import com.google.common.base.Splitter;
-import com.skroll.document.HtmlDocument;
-import com.skroll.document.Paragraph;
+import com.skroll.document.*;
 import com.skroll.pipeline.SyncPipe;
 
 import java.util.*;
@@ -12,23 +11,23 @@ import java.util.*;
  *
  * Created by saurabh on 12/21/14.
  */
-public class HTMLHiddenMarkovModelTrainingPipe extends SyncPipe<HtmlDocument, HtmlDocument> {
+public class HTMLHiddenMarkovModelTrainingPipe extends SyncPipe<Document, Document> {
 
     @Override
-    public HtmlDocument process(HtmlDocument input) {
+    public Document process(Document input) {
         HiddenMarkovModel model = (HiddenMarkovModel)config.get(0);
 
-        List<Paragraph> paragraphs = input.getParagraphs();
+        List<Entity> paragraphs = input.getParagraphs();
 
-        for( Paragraph paragraph : paragraphs) {
-            List<String> tokens = paragraph.getTokens();
+        for( Entity paragraph : paragraphs) {
+            List<String> tokens = DocumentHelper.getTokenString(paragraph.getTokens());
 
             HashSet<String> definitionsSet;
-            if (paragraph.getDefinitions().size()==0){
+            if (paragraph.getChildEntity(EntityType.DEFINITIONS).getTokens().size() == 0){
                 definitionsSet= new HashSet<String>();
             } else {
-
-                List<String> definitions = Splitter.on(' ').splitToList(paragraph.getDefinitions().get(0));
+                List<Token> defTokens = paragraph.getChildEntity(EntityType.DEFINITIONS).getTokens();
+                List<String> definitions = Splitter.on(' ').splitToList(DocumentHelper.getTokenString(defTokens).get(0));
                 definitionsSet = new HashSet<String>(definitions);
             }
 
