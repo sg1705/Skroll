@@ -31,6 +31,16 @@ public class TrainingAndTestingTest extends TestCase {
         //String testingFile = "src/test/resources/parser.analyzer.hmmTestingDocs/random-indenture.html";
         String testingFile = "src/test/resources/html-docs/random-indenture.html";
         Document htmlDoc = Tester.testNaiveBayes(Parser.parseDocumentFromHtmlFile(testingFile));
+
+        int defCount = 0;
+        for(Entity paragraph : htmlDoc.getParagraphs()) {
+            if (DocumentHelper.isDefinition(paragraph)) {
+                defCount++;
+                System.out.println(paragraph.getText());
+            }
+        }
+        System.out.println(defCount);
+
         htmlDoc = Tester.testHiddenMarketModel(htmlDoc, Constants.CATEGORY_POSITIVE);
 
         int count = 0;

@@ -13,7 +13,7 @@ public class BinaryNaiveBayesTrainingPipe extends SyncPipe<List<List<String>>, L
 
 
     public static final int MAX_SENTENCE_LENGTH = 8;
-    public static final boolean USE_QUOTE = false;
+    public static final boolean USE_QUOTE = true;
 
     @Override
     public List<List<String>> process(List<List<String>> input) {
@@ -45,7 +45,7 @@ public class BinaryNaiveBayesTrainingPipe extends SyncPipe<List<List<String>>, L
                 String word = wordIterator.next();
                 //TODO collapse this into other pipes
                 word = word.replace("\u201c","\"");
-                if (USE_QUOTE && word.equals("\"")) continue;
+                if (!USE_QUOTE && word.equals("\"")) continue;
 
                 model.addWord(categoryType, word);
             }
