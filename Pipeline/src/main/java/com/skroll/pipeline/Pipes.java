@@ -39,12 +39,15 @@ public enum Pipes {
     HIDDEN_MARKOV_MODEL_SIMPLE_TESTING_PIPE("com.skroll.analyzer.model.hmm.HiddenMarkovModelSimpleTestingPipe"),
     HTML_HIDDEN_MARKOV_MODEL_TRAINING_PIPE("com.skroll.analyzer.model.hmm.HTMLHiddenMarkovModelTrainingPipe"),
     HTML_HIDDEN_MARKOV_MODEL_TESTING_PIPE("com.skroll.analyzer.model.hmm.HTMLHiddenMarkovModelTestingPipe"),
+    HTML_HIDDEN_MARKOV_MODEL_STATE_SEQUENCE_TESTING_PIPE("com.skroll.analyzer.model.hmm.HTMLHiddenMarkovModelStateSequenceTestingPipe"),
 
     //train.definition
     FILE_BINARY_NAIVE_BAYES_TRAINER("com.skroll.analyzer.train.definition.FileBinaryNaiveBayesTrainerPipe"),
     FILES_BINARY_NAIVE_BAYES_TRAINER("com.skroll.analyzer.train.definition.FilesBinaryNaiveBayesTrainerPipe"),
     FOLDER_BINARY_NAIVE_BAYES_TRAINER("com.skroll.analyzer.train.definition.FolderBinaryNaiveBayesTrainerPipe"),
     FOLDER_HTML_HIDDEN_MARKOV_MODEL_TRAINING_PIPE("com.skroll.analyzer.train.definition.FolderHTMLHiddenMarkovModelTrainerPipe"),
+    FOLDER_HTML_HIDDEN_MARKOV_MODEL_STATE_SEQUENCE_TESTING_PIPE("com.skroll.analyzer.evaluate.definition.FolderHTMLHiddenMarkovModelStateSequenceTesterPipe"),
+
 
     //train.definition.data
     EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC("com.skroll.analyzer.train.definition.data.ExtractDefinitionsFromParagraphInHtmlDocumentPipe"),

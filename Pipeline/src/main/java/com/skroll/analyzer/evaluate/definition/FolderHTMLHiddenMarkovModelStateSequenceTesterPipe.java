@@ -1,8 +1,12 @@
 package com.skroll.analyzer.evaluate.definition;
 
 import com.google.common.collect.Lists;
+
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
-import com.skroll.document.*;
+import com.skroll.document.Document;
+import com.skroll.document.DocumentHelper;
+import com.skroll.document.Entity;
+import com.skroll.document.HtmlDocument;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.SyncPipe;
@@ -14,7 +18,7 @@ import java.util.List;
 /**
  * Created by wei2learn on 12/26/2014.
  */
-public class FolderHTMLHiddenMarkovModelTesterPipe extends SyncPipe<String, String> {
+public class FolderHTMLHiddenMarkovModelStateSequenceTesterPipe extends SyncPipe<String, String> {
 
     @Override
     public String process(String folderName) {
@@ -47,26 +51,26 @@ public class FolderHTMLHiddenMarkovModelTesterPipe extends SyncPipe<String, Stri
                             .build();
             Document testDoc = testingDocPipe.process(htmlDoc);
 
-            Pipeline<Document, List<double[][]>> testingPipe =
+            Pipeline<Document, List<int[]>> testingPipe =
                     new Pipeline.Builder()
-                            .add(Pipes.HTML_HIDDEN_MARKOV_MODEL_TESTING_PIPE,
+                            .add(Pipes.HTML_HIDDEN_MARKOV_MODEL_STATE_SEQUENCE_TESTING_PIPE,
                                     Lists.newArrayList((Object) model))
                             .build();
 
 
-            List<double[][]> probabilities = testingPipe.process(testDoc);
+
+            List<int[]> states = testingPipe.process(testDoc);
             List<Entity> paragraphs = testDoc.getParagraphs();
             for (int i=0; i<paragraphs.size();i++){
                 output +=( paragraphs.get(i).getText() + '\n');
                 List<String> tokens = DocumentHelper.getTokenString(paragraphs.get(i).getTokens());
-
                 int k=0;
                 for (int j=0; j< paragraphs.get(i).getTokens().size() && k < model.size(); j++){
                     //if (paragraphs.get(i).getWords().get(j).equals("\"")) continue; //skip quote
-                    if (probabilities.get(i)[k][1]>0.1)
-                        output+=String.format("    %s=%.2f ", tokens.get(j), probabilities.get(i)[k++][1]);
+                    if (states.get(i)[k]==1)
+                        output+=String.format("    %s=%d ", tokens.get(j), states.get(i)[k++]);
                     else
-                        output += String.format("%s=%.2f ", tokens.get(j), probabilities.get(i)[k++][1]);
+                        output += String.format("%s=%d ", tokens.get(j), states.get(i)[k++]);
 
 //                    if (probabilities.get(i)[k][1]>0.1)
 //                        output+=String.format(" -+- %d %s=%.2f", j,paragraphs.get(i).getWords().get(j), probabilities.get(i)[k++][1]);
@@ -81,7 +85,7 @@ public class FolderHTMLHiddenMarkovModelTesterPipe extends SyncPipe<String, Stri
 
         }
 
-        //System.out.println(document.showWordsImportance());
+        //System.out.println(model.showWordsImportance());
         return output;
     }
 

@@ -2,6 +2,7 @@ package com.skroll.analyzer.model.hmm;
 
 import java.util.*;
 //todo: think how to handle words with different type of cases
+
 /**
  * Created by wei2learn on 12/23/2014.
  */
@@ -17,6 +18,8 @@ public class HiddenMarkovModel {
     static final int STATE_NUMBER_FEATURE =0;
 
     static final boolean USE_QUOTE=true;
+    static final boolean USE_NEXT_TOKEN=true; // it seems the next token is an important feature
+
     static final int IN_QUOTE_FEATURE =1;
     static final int IN_QUOTE_FALSE=0;
 
@@ -216,6 +219,7 @@ public class HiddenMarkovModel {
             if (c==null) c=0;
             tokenCounts[stateValues[i]].put(token, c + 1);
 
+            if (!USE_NEXT_TOKEN) continue;
             c = nextTokenCounts[stateValues[i]].get(nextToken);
             if (c==null) c=0;
             nextTokenCounts[stateValues[i]].put(nextToken, c + 1);
@@ -264,6 +268,27 @@ public class HiddenMarkovModel {
         return prob;
     }
 
+    public  int[] mostLikelyStateSequence(String[] tokens){
+        String[] newTokens = new String[tokens.length];
+        int[][] features = new int[tokens.length][NUMBER_FEATURES];;
+        int length = createFeatures( tokens, newTokens, features);
+        length = Math.min(length, modelLength);
+
+        int[] path = viterbi(newTokens, features, length);
+
+        // added back states
+        length = Math.min(modelLength, tokens.length);
+        int[] hackedResult = new int[length];
+        for (int i=0, k=0; i<length;i++){
+            if (tokens[i].equals("\"")) {
+                hackedResult[i] = 0;
+            }
+            else
+                hackedResult[i] = path[k++];
+        }
+        return hackedResult;
+    }
+
     public  double[][] infer(String[] tokens){
         String[] newTokens = new String[tokens.length];
         int[][] features = new int[tokens.length][NUMBER_FEATURES];;
@@ -271,8 +296,8 @@ public class HiddenMarkovModel {
         length = Math.min(length, modelLength);
         double[][] probsForward = inferForward(newTokens, features, length);
         double[][] probsBack = inferBackward(newTokens, features, length);
-        //double[][] probs = combine(probsForward, probsBack);
-        double[][] probs = probsForward;
+        double[][] probs = combine(probsForward, probsBack);
+        //double[][] probs = probsForward;
 
 
         // added back quotes probabilities
@@ -323,6 +348,7 @@ public class HiddenMarkovModel {
 
         // loop skips the last index, because the last state does not have the next token feature.
         // if we remove the next token feature,
+        // todo: remove the next token feature and make use of the last index to see what happens.
         for (int i=0;i<length-1;i++){
             stateProbGivenPrevObservations[i] =  inferStateProbabilitiesGivenObservation(i,priorProb,tokens, features);
             priorProb = inferNextStateProbabilities(stateProbGivenPrevObservations[i]);
@@ -331,6 +357,68 @@ public class HiddenMarkovModel {
         return stateProbGivenPrevObservations;
     }
 
+    public int [] viterbi(String[] tokens, int[][] features, int length){
+        int states[] = new int[length];
+
+        // for each next state value, stores the most likely state value leads to it
+        int [][] paths = new int[modelLength][numStateValues];
+
+        double [][] maxObservationProbGivenState = new double[modelLength][numStateValues];
+
+        //todo: need to check to see which prior is better
+        // initialize state probability uniformly
+        double uniformProb = 1.0/numStateValues;
+        double[] priorProb = new double[numStateValues];
+        // double[] priorProb = stateValueProbabilities();
+
+        Arrays.fill(priorProb,uniformProb);
+        //Arrays.fill(stateProbGivenPrevObservations[0], uniformProb);
+
+        // loop skips the last index, because the last state does not have the next token feature.
+        // if we remove the next token feature,
+        for (int s=0;s<length-1;s++){ // for each state
+            System.arraycopy(priorProb, 0 , maxObservationProbGivenState[s], 0, numStateValues);
+            for (int sv=0; sv<numStateValues; sv++){ // for each state value
+                // initialize token entry in the maps if it's not seen before
+                if ( ! tokenProbabilityGivenStateValue[sv].containsKey(tokens[s]))
+                    setZeroCountAndProbabilities(tokenCounts, tokenProbabilityGivenStateValue, tokens[s]);
+                if ( ! nextTokenProbabilityGivenStateValue[sv].containsKey(tokens[s+1]))
+                    setZeroCountAndProbabilities(nextTokenCounts, nextTokenProbabilityGivenStateValue, tokens[s+1]);
+                maxObservationProbGivenState[s][sv] *=  tokenProbabilityGivenStateValue[sv].get(tokens[s])*
+                        nextTokenProbabilityGivenStateValue[sv].get(tokens[s+1]);
+                for (int f=0; f<NUMBER_FEATURES; f++){ // for each feature
+                    maxObservationProbGivenState[s][sv] *=
+                            featureValueProbabilityGivenState.get(sv).get(f)[features[s][f]];
+                }
+            }
+            Arrays.fill(priorProb,0);
+            for (int sv=0; sv<numStateValues; sv++) { // for each state value
+                for (int svNext = 0; svNext < numStateValues; svNext++) { // for each next state value
+                    double p = maxObservationProbGivenState[s][sv] * transitionProbability[sv][svNext];
+                    if (p > priorProb[svNext]) {
+                        priorProb[svNext] = p;
+                        paths[s][svNext] = sv; //update the most likely state going to the next state svNext
+                    }
+                }
+            }
+            //last calculation is not used for now, because last token is used in the inference of the second last state.
+        }
+
+        int path[] = new int[length];
+        if (length<2) return path;
+
+        path[length-2] = maxIndex(maxObservationProbGivenState[length-2]);
+        for (int s=length - 3; s>=0; s--){
+            path[s] = paths[s] [path[s+1]];
+        }
+        return path;
+    }
+    int maxIndex(double[] vals){
+        int maxI=0;
+        for (int i=1; i<vals.length; i++)
+            if (vals[maxI] < vals[i]) maxI = i;
+        return maxI;
+    }
     public double[] inferNextStateProbabilities(double[] prevStateProb){
         double[] prob=new double[numStateValues];
         for (int i=0;i<numStateValues;i++){
@@ -384,4 +472,5 @@ public class HiddenMarkovModel {
         for (int i=0;i<numStateValues; i++) prob[i] /= sum;
         return prob;
     }
+
 }
