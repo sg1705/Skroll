@@ -4,6 +4,7 @@ import com.skroll.document.Document;
 import com.skroll.document.Entity;
 import com.skroll.document.Document;
 import com.skroll.document.Paragraph;
+import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.SyncPipe;
 
 import java.util.ArrayList;
@@ -19,8 +20,9 @@ public class RemoveNBSPInHtmlDocumentPipe extends SyncPipe<Document, Document> {
         List<Entity> newList = new ArrayList<Entity>();
         for(Entity paragraph : input.getParagraphs()) {
             String str = paragraph.getText();
-            str = str.replace("\u00a0", "");;
-            paragraph.setText(str);
+            str = str.replace("\u00a0", "");
+            paragraph.set(CoreAnnotations.TextAnnotation.class, str);
+
             newList.add(paragraph);
         }
         input.setParagraphs(newList);

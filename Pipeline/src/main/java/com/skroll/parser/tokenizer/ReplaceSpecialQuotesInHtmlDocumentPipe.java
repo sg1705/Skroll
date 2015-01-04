@@ -2,6 +2,7 @@ package com.skroll.parser.tokenizer;
 
 import com.skroll.document.Document;
 import com.skroll.document.Entity;
+import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.SyncPipe;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class ReplaceSpecialQuotesInHtmlDocumentPipe extends SyncPipe<Document,Do
             String str = paragraph.getText();
             str = str.replace("\u201c","\"");
             str = str.replace("\u201d","\"");
-            paragraph.setText(str);
+            paragraph.set(CoreAnnotations.TextAnnotation.class, str);
             newList.add(paragraph);
         }
         input.setParagraphs(newList);

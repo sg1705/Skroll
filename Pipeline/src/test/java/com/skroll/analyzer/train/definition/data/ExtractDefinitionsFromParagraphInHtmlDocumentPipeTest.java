@@ -2,6 +2,7 @@ package com.skroll.analyzer.train.definition.data;
 
 import com.google.common.base.Joiner;
 import com.skroll.document.*;
+import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
@@ -32,9 +33,11 @@ public class ExtractDefinitionsFromParagraphInHtmlDocumentPipeTest extends TestC
         int count = 0;
         for(Entity paragraph : htmlDoc.getParagraphs()) {
                 count++;
-                DocumentHelper.getTokenString(paragraph.getChildEntity(EntityType.DefinedTermsAnnotation).getTokens());
+                DocumentHelper.getTokenString(
+                        paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class));
                 String words = Joiner.on(",").join(DocumentHelper
-                        .getTokenString(paragraph.getChildEntity(EntityType.DefinedTermsAnnotation).getTokens()));
+                        .getTokenString(
+                                paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class)));
                 System.out.println(words);
         }
         System.out.println(count);

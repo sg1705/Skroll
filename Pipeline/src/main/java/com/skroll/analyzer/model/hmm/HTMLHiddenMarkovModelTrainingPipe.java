@@ -2,6 +2,7 @@ package com.skroll.analyzer.model.hmm;
 
 import com.google.common.base.Splitter;
 import com.skroll.document.*;
+import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.SyncPipe;
 
 import java.util.*;
@@ -20,21 +21,21 @@ public class HTMLHiddenMarkovModelTrainingPipe extends SyncPipe<Document, Docume
         List<Entity> paragraphs = input.getParagraphs();
 
         for( Entity paragraph : paragraphs) {
-            List<String> tokens = DocumentHelper.getTokenString(paragraph.getTokens());
+            List<Token> tokens = paragraph.get(CoreAnnotations.TokenAnnotation.class);
 
             HashSet<String> definitionsSet;
-            if (paragraph.getChildEntity(EntityType.DefinedTermsAnnotation).getTokens().size() == 0){
+            if (!paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
                 definitionsSet= new HashSet<String>();
             } else {
-                List<Token> defTokens = paragraph.getChildEntity(EntityType.DefinedTermsAnnotation).getTokens();
+                List<Token> defTokens = paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class);
                 List<String> definitions = Splitter.on(' ').splitToList(DocumentHelper.getTokenString(defTokens).get(0));
                 definitionsSet = new HashSet<String>(definitions);
             }
 
             int[] tokenType = new int[tokens.size()];
             int ii = 0;
-            for(String token : tokens) {
-                if (definitionsSet.contains(token)) {
+            for(Token token : tokens) {
+                if (definitionsSet.contains(token.getText())) {
                     tokenType[ii] = 1;
                 } else {
                     tokenType[ii] = 0;
@@ -43,8 +44,9 @@ public class HTMLHiddenMarkovModelTrainingPipe extends SyncPipe<Document, Docume
             }
 
 
-            model.updateCounts(tokens
-                    .toArray(new String[tokens.size()]), tokenType);
+            model.updateCounts(
+                    DocumentHelper.getTokenString(tokens).toArray(new String[tokens.size()]),
+                    tokenType);
         }
         return this.target.process(input);
     }

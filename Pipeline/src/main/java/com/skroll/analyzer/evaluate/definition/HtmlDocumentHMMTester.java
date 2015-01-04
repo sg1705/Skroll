@@ -4,6 +4,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
 import com.skroll.document.*;
+import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.SyncPipe;
@@ -33,19 +34,19 @@ public class HtmlDocumentHMMTester extends SyncPipe<Document, Document> {
         //assume that words are extracted
         for(Entity paragraph : input.getParagraphs()) {
             List<String> definitions = new ArrayList<String>();
-            if (paragraph.hasChildEntity(EntityType.DefinedTermsAnnotation)) {
+            if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
                 boolean isPreviousWordDefinition = false;
                 List<String> tempDefinitions = new ArrayList<String>();
                 // test for terms
-                List<Double> hmmResults = testPipeline.process(DocumentHelper.getTokenString(paragraph.getTokens()));
+                List<Double> hmmResults = testPipeline.process(DocumentHelper.getTokenString(paragraph.get(CoreAnnotations.TokenAnnotation.class)));
                 int ii = 0;
                 for (double prob : hmmResults) {
                     if (prob > Constants.DEF_THRESHOLD_PROBABILITY) {
                         if (!isPreviousWordDefinition) {
                             isPreviousWordDefinition = true;
-                            tempDefinitions.add(paragraph.getTokens().get(ii).getText());
+                            tempDefinitions.add(paragraph.get(CoreAnnotations.TokenAnnotation.class).get(ii).getText());
                         } else {
-                            tempDefinitions.add(paragraph.getTokens().get(ii).getText());
+                            tempDefinitions.add(paragraph.get(CoreAnnotations.TokenAnnotation.class).get(ii).getText());
                         }
 //                        // chances are that this is a definition
 //                        definitions.add(paragraph.getWords().get(ii));
@@ -64,7 +65,7 @@ public class HtmlDocumentHMMTester extends SyncPipe<Document, Document> {
                     definitions.add(Joiner.on(" ").join(tempDefinitions));
                 }
             }
-            paragraph.addChildEntity(EntityType.DefinedTermsAnnotation, DocumentHelper.createEntityFromTokens(definitions));
+            paragraph.set(CoreAnnotations.DefinedTermsAnnotation.class, DocumentHelper.createTokens(definitions));
             newParagraphs.add(paragraph);
         }
         input.setParagraphs(newParagraphs);

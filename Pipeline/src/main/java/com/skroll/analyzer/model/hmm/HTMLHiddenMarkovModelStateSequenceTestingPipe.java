@@ -2,6 +2,7 @@ package com.skroll.analyzer.model.hmm;
 
 import com.skroll.document.*;
 
+import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.SyncPipe;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ public class HTMLHiddenMarkovModelStateSequenceTestingPipe extends SyncPipe<Docu
         List<Entity> paragraphs = input.getParagraphs();
 
         for( Entity paragraph : paragraphs) {
-                List<String> tokens = DocumentHelper.getTokenString(paragraph.getTokens());
+                List<String> tokens = DocumentHelper.getTokenString(paragraph.get(CoreAnnotations.TokenAnnotation.class));
                 String[] tokensArray = tokens.toArray(new String[tokens.size()]);
                 output.add(model.mostLikelyStateSequence(tokensArray));
         }

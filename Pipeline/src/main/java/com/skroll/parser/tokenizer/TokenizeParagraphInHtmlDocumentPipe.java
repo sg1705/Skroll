@@ -1,6 +1,7 @@
 package com.skroll.parser.tokenizer;
 
 import com.skroll.document.*;
+import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.SyncPipe;
@@ -27,7 +28,7 @@ public class TokenizeParagraphInHtmlDocumentPipe extends SyncPipe<Document, Docu
             String paragraphText = paragraph.getText();
             List<String> words = pipeline.process(paragraphText);
             List<Token> tokens = DocumentHelper.getTokens(words);
-            paragraph.setTokens(tokens);
+            paragraph.set(CoreAnnotations.TokenAnnotation.class, tokens);
             if (tokens.size() > 0)
                newList.add(paragraph);
         }

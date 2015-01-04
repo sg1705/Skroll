@@ -4,6 +4,7 @@ import com.skroll.document.Document;
 import com.skroll.document.Entity;
 import com.skroll.document.Document;
 import com.skroll.document.Paragraph;
+import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.SyncPipe;
 import org.jsoup.helper.StringUtil;
 
@@ -23,7 +24,7 @@ public class RemoveBlankParagraphFromHtmlDocumentPipe extends SyncPipe<Document,
             String str = paragraph.getText().replace("\u00a0", "");
             if (!StringUtil.isBlank(str)) {
                 //paragraph.setText(paragraph.getText().toLowerCase());
-                paragraph.setText(paragraph.getText());
+                paragraph.set(CoreAnnotations.TextAnnotation.class, paragraph.getText());
                 newList.add(paragraph);
             }
         }

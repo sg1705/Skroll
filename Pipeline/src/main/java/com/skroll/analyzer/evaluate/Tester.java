@@ -5,6 +5,7 @@ import com.skroll.analyzer.model.Models;
 import com.skroll.document.Document;
 import com.skroll.document.Entity;
 import com.skroll.document.Token;
+import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 
@@ -61,7 +62,7 @@ public class Tester {
         List<Entity> paragraphs = doc.getParagraphs();
         Set<String> words = new HashSet<String>();
         for(Entity paragraph: paragraphs) {
-            List<Token> tokens = paragraph.getTokens();
+            List<Token> tokens = paragraph.get(CoreAnnotations.TokenAnnotation.class);
             for (Token token : tokens) {
                 words.add(token.getText());
             }
