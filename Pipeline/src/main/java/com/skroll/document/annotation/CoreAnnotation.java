@@ -1,7 +1,5 @@
 package com.skroll.document.annotation;
 
-import com.skroll.document.model.TypesafeMap;
-
 /**
  * Created by saurabh on 1/3/15.
  */
