@@ -18,12 +18,5 @@ public class Token {
         this.token = token;
     }
 
-    public List<TokenAttributes> getTokenFeaturesList() {
-        return tokenFeaturesList;
-    }
-
-    public void setTokenFeaturesList(List<TokenAttributes> tokenFeaturesList) {
-        this.tokenFeaturesList = tokenFeaturesList;
-    }
 
 }
