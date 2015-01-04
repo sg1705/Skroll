@@ -1,9 +1,7 @@
 package com.skroll.parser.tokenizer;
 
+import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
-import com.skroll.document.Entity;
-import com.skroll.document.Document;
-import com.skroll.document.Paragraph;
 import com.skroll.pipeline.SyncPipe;
 import com.skroll.pipeline.util.Constants;
 
@@ -17,8 +15,8 @@ public class FilterStartsWithQuoteInHtmlDocumentPipe extends SyncPipe<Document, 
 
     @Override
     public Document process(Document input) {
-        List<Entity> newList = new ArrayList<Entity>();
-        for(Entity paragraph : input.getParagraphs()) {
+        List<CoreMap> newList = new ArrayList<CoreMap>();
+        for(CoreMap paragraph : input.getParagraphs()) {
             String str = paragraph.getText();
             if (str.startsWith(Constants.QUOTE)) {
                 newList.add(paragraph);

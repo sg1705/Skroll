@@ -1,6 +1,7 @@
 package com.skroll.document.annotation;
 
-import com.skroll.document.model.CoreMap;
+import com.skroll.document.Token;
+import com.skroll.document.CoreMap;
 import com.skroll.pipeline.util.EraserUtils;
 
 import java.util.List;
@@ -68,6 +69,15 @@ public class CoreAnnotations {
         }
     }
 
+
+    public static class TokenAnnotation implements CoreAnnotation<List<Token>> {
+        public Class<List<Token>> getType() {
+            return EraserUtils.<Class<List<Token>>> uncheckedCast(List.class);
+        }
+    }
+
+
+
     /**
      * CoreMap key identifying the document id
      */
@@ -103,9 +113,9 @@ public class CoreAnnotations {
      *
      * </pre>
      */
-    public static class DefinedTermsAnnotation implements CoreAnnotation<List<CoreMap>> {
-        public Class<List<CoreMap>> getType() {
-            return EraserUtils.<Class<List<CoreMap>>> uncheckedCast(List.class);
+    public static class DefinedTermsAnnotation implements CoreAnnotation<List<Token>> {
+        public Class<List<Token>> getType() {
+            return EraserUtils.<Class<List<Token>>> uncheckedCast(List.class);
         }
     }
 

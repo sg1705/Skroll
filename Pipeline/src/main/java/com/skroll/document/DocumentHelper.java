@@ -1,5 +1,7 @@
 package com.skroll.document;
 
+import com.skroll.document.annotation.CoreAnnotations;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,31 +28,43 @@ public class DocumentHelper {
         return words;
     }
 
-    public static Entity createEntityFromTokens(List<String> tokens) {
-        Entity entity = new Entity();
+    public static CoreMap createEntityFromTokens(List<String> tokens) {
+        CoreMap coreMap = new CoreMap();
         List<Token> tokens1 = new ArrayList<Token>();
         for(String word : tokens) {
             Token token = new Token();
             token.setText(word);
             tokens1.add(token);
         }
-        entity.setTokens(tokens1);
-        return entity;
+        coreMap.set(CoreAnnotations.TokenAnnotation.class, tokens1);
+        return coreMap;
     }
 
-    public static boolean isDefinition(Entity entity) {
-        return entity.hasChildEntity(EntityType.DefinedTermsAnnotation);
+    public static boolean isDefinition(CoreMap coreMap) {
+        if (coreMap.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
+            return coreMap.get(CoreAnnotations.IsDefinitionAnnotation.class);
+        }
+        return false;
     }
 
-    public static List<String> getDefinedTerms(Entity entity) {
-        return DocumentHelper.getTokenString(entity.getChildEntity(EntityType.DefinedTermsAnnotation).getTokens());
+    public static List<String> getDefinedTerms(CoreMap coreMap) {
+        return DocumentHelper.getTokenString(
+                coreMap.get(CoreAnnotations.DefinedTermsAnnotation.class));
     }
 
-    public static void setDefinition(List<String> definitions, Entity paragraph) {
-        Entity defintion = createEntityFromTokens(definitions);
-        paragraph.addChildEntity(EntityType.DefinedTermsAnnotation, defintion);
+    public static void setDefinition(List<String> definitions, CoreMap paragraph) {
+        List<Token> tokens1 = DocumentHelper.createTokens(definitions);
+        paragraph.set(CoreAnnotations.DefinedTermsAnnotation.class, tokens1);
 
     }
 
+    public static List<Token> createTokens(List<String> strings) {
+        List<Token> tokens = new ArrayList<Token>();
+        for(String str: strings) {
+            Token token = new Token(str);
+            tokens.add(token);
+        }
+        return tokens;
+    }
 
 }

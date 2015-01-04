@@ -4,6 +4,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.skroll.document.*;
+import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
@@ -168,9 +169,10 @@ public class GenerateTrainingData {
                 htmlDoc = pipeline.process(htmlDoc);
                 List<String> defList = new ArrayList<String>();
                 int count = 0;
-                for(Entity paragraph : htmlDoc.getParagraphs()) {
+                for(CoreMap paragraph : htmlDoc.getParagraphs()) {
                     String words = Joiner.on(",").join(DocumentHelper
-                            .getTokenString(paragraph.getChildEntity(EntityType.DefinedTermsAnnotation).getTokens()));
+                            .getTokenString(
+                                    paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class)));
                     defList.add(words);
                     System.out.println(words);
                 }

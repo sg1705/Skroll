@@ -3,10 +3,9 @@ package com.skroll.analyzer.evaluate.definition;
 import com.google.common.collect.Lists;
 
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
+import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
-import com.skroll.document.Entity;
-import com.skroll.document.HtmlDocument;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.SyncPipe;
@@ -60,7 +59,7 @@ public class FolderHTMLHiddenMarkovModelStateSequenceTesterPipe extends SyncPipe
 
 
             List<int[]> states = testingPipe.process(testDoc);
-            List<Entity> paragraphs = testDoc.getParagraphs();
+            List<CoreMap> paragraphs = testDoc.getParagraphs();
             for (int i=0; i<paragraphs.size();i++){
                 output +=( paragraphs.get(i).getText() + '\n');
                 List<String> tokens = DocumentHelper.getTokenString(paragraphs.get(i).getTokens());

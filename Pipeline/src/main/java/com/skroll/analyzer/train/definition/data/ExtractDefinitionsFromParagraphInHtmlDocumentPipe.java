@@ -16,7 +16,7 @@ public class ExtractDefinitionsFromParagraphInHtmlDocumentPipe extends SyncPipe<
     @Override
     public Document process(Document input) {
 
-        for(Entity paragraph : input.getParagraphs()) {
+        for(CoreMap paragraph : input.getParagraphs()) {
             List<String> newList = new ArrayList<String>();
             String str = paragraph.getText();
             Pattern p = Pattern.compile( "\"([^\"]*)\"" );

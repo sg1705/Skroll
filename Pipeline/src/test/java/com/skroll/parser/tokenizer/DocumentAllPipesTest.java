@@ -1,7 +1,7 @@
 package com.skroll.parser.tokenizer;
 
 import com.google.common.base.Joiner;
-import com.skroll.document.Entity;
+import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
@@ -32,7 +32,7 @@ public class DocumentAllPipesTest extends TestCase {
                         .build();
         Document doc = pipeline.process(htmlDoc);
 
-        for(Entity paragraph : htmlDoc.getParagraphs()) {
+        for(CoreMap paragraph : htmlDoc.getParagraphs()) {
             String words = Joiner.on(",").join(paragraph.getTokens());
             System.out.println(words);
         }

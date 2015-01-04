@@ -27,8 +27,8 @@ public class SaveTrainedData extends SyncPipe<Document, String> {
     @Override
     public String process(Document input) {
         StringBuilder paragraphs = new StringBuilder();
-        List<Entity> paragraphList = input.getParagraphs();
-        for(Entity paragraph : paragraphList) {
+        List<CoreMap> paragraphList = input.getParagraphs();
+        for(CoreMap paragraph : paragraphList) {
             StringBuilder paraString = new StringBuilder();
             // first line is the actual text
             paraString.append(paragraph.getText()).append(Constants.TRAINING_MODEL_LINE_SEPARATOR);

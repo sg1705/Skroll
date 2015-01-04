@@ -50,9 +50,9 @@ public class ModelHelperTest extends TestCase {
 
             // create fake paragraphs
             int ii = 0;
-            List<Entity> paras = new ArrayList<Entity>();
+            List<CoreMap> paras = new ArrayList<CoreMap>();
             for (String para :  paragraphs) {
-                Entity parag = new Entity(""+ii, para);
+                CoreMap parag = new CoreMap(""+ii, para);
                 paras.add(parag);
             }
 
@@ -61,7 +61,7 @@ public class ModelHelperTest extends TestCase {
 
             String jsonString = ModelHelper.getJson(doc);
             Document doc2 = ModelHelper.getModel(jsonString);
-            List<Entity> newParas = doc2.getParagraphs();
+            List<CoreMap> newParas = doc2.getParagraphs();
             System.out.println(newParas.size());
             assert (newParas.size() == paras.size());
             assert (newParas.size() != 0);

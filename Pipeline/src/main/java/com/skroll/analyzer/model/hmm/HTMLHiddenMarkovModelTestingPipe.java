@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model.hmm;
 
 import com.skroll.document.*;
+import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.SyncPipe;
 
 import java.util.ArrayList;
@@ -17,10 +18,10 @@ public class HTMLHiddenMarkovModelTestingPipe extends SyncPipe<Document, List<do
 
         List<double[][]> output = new ArrayList<double[][]>();
 
-        List<Entity> paragraphs = input.getParagraphs();
+        List<CoreMap> paragraphs = input.getParagraphs();
 
-        for( Entity paragraph : paragraphs) {
-                List<String> tokens = DocumentHelper.getTokenString(paragraph.getTokens());
+        for( CoreMap paragraph : paragraphs) {
+                List<String> tokens = DocumentHelper.getTokenString(paragraph.get(CoreAnnotations.TokenAnnotation.class));
                 String[] tokensArray = tokens.toArray(new String[tokens.size()]);
                 output.add(model.infer(tokensArray));
         }

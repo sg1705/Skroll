@@ -2,8 +2,7 @@ package com.skroll.analyzer.model.hmm;
 
 import com.google.common.collect.Lists;
 import com.skroll.document.Document;
-import com.skroll.document.Entity;
-import com.skroll.document.HtmlDocument;
+import com.skroll.document.CoreMap;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
@@ -67,7 +66,7 @@ public class HTMLHiddenMarkovModelTestingPipeTest extends TestCase {
                         .add(Pipes.HTML_HIDDEN_MARKOV_MODEL_TESTING_PIPE,
                                 Lists.newArrayList((Object) model))
                         .build();
-        List<Entity> paragraphs = testDoc.getParagraphs();
+        List<CoreMap> paragraphs = testDoc.getParagraphs();
 
         List<double[][]> probabilities = testingPipe.process(testDoc);
         for (int i=0; i<paragraphs.size();i++){
