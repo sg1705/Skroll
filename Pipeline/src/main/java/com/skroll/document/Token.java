@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by saurabh on 12/29/14.
  */
-public class Token extends CoreMap {
+public class Token extends Entity {
     String token;
 
     public Token() {
