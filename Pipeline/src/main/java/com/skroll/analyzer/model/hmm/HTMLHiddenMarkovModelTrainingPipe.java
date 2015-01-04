@@ -23,10 +23,10 @@ public class HTMLHiddenMarkovModelTrainingPipe extends SyncPipe<Document, Docume
             List<String> tokens = DocumentHelper.getTokenString(paragraph.getTokens());
 
             HashSet<String> definitionsSet;
-            if (paragraph.getChildEntity(EntityType.DEFINITIONS).getTokens().size() == 0){
+            if (paragraph.getChildEntity(EntityType.DefinedTermsAnnotation).getTokens().size() == 0){
                 definitionsSet= new HashSet<String>();
             } else {
-                List<Token> defTokens = paragraph.getChildEntity(EntityType.DEFINITIONS).getTokens();
+                List<Token> defTokens = paragraph.getChildEntity(EntityType.DefinedTermsAnnotation).getTokens();
                 List<String> definitions = Splitter.on(' ').splitToList(DocumentHelper.getTokenString(defTokens).get(0));
                 definitionsSet = new HashSet<String>(definitions);
             }

@@ -77,6 +77,13 @@ public class CoreAnnotations {
         }
     }
 
+    public static class IsDefinitionAnnotation implements CoreAnnotation<Boolean> {
+        public Class<Boolean> getType() {
+            return Boolean.class;
+        }
+    }
+
+
 
     /**
      * CoreMap key identifying the definitions in paragraph. Each CoreMap in the list is
@@ -96,7 +103,7 @@ public class CoreAnnotations {
      *
      * </pre>
      */
-    public static class DefinedAnnotation implements CoreAnnotation<List<CoreMap>> {
+    public static class DefinedTermsAnnotation implements CoreAnnotation<List<CoreMap>> {
         public Class<List<CoreMap>> getType() {
             return EraserUtils.<Class<List<CoreMap>>> uncheckedCast(List.class);
         }

@@ -33,7 +33,7 @@ public class HtmlDocumentHMMTester extends SyncPipe<Document, Document> {
         //assume that words are extracted
         for(Entity paragraph : input.getParagraphs()) {
             List<String> definitions = new ArrayList<String>();
-            if (paragraph.hasChildEntity(EntityType.DEFINITIONS)) {
+            if (paragraph.hasChildEntity(EntityType.DefinedTermsAnnotation)) {
                 boolean isPreviousWordDefinition = false;
                 List<String> tempDefinitions = new ArrayList<String>();
                 // test for terms
@@ -64,7 +64,7 @@ public class HtmlDocumentHMMTester extends SyncPipe<Document, Document> {
                     definitions.add(Joiner.on(" ").join(tempDefinitions));
                 }
             }
-            paragraph.addChildEntity(EntityType.DEFINITIONS, DocumentHelper.createEntityFromTokens(definitions));
+            paragraph.addChildEntity(EntityType.DefinedTermsAnnotation, DocumentHelper.createEntityFromTokens(definitions));
             newParagraphs.add(paragraph);
         }
         input.setParagraphs(newParagraphs);

@@ -4,8 +4,7 @@ package com.skroll.document;
  * Created by saurabh on 12/29/14.
  */
 public enum EntityType {
-    DEFINITIONS(1),
-    TOC(2);
+    DefinedTermsAnnotation(1);
 
     private int value;
 

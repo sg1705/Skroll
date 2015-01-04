@@ -39,16 +39,16 @@ public class DocumentHelper {
     }
 
     public static boolean isDefinition(Entity entity) {
-        return entity.hasChildEntity(EntityType.DEFINITIONS);
+        return entity.hasChildEntity(EntityType.DefinedTermsAnnotation);
     }
 
     public static List<String> getDefinedTerms(Entity entity) {
-        return DocumentHelper.getTokenString(entity.getChildEntity(EntityType.DEFINITIONS).getTokens());
+        return DocumentHelper.getTokenString(entity.getChildEntity(EntityType.DefinedTermsAnnotation).getTokens());
     }
 
     public static void setDefinition(List<String> definitions, Entity paragraph) {
         Entity defintion = createEntityFromTokens(definitions);
-        paragraph.addChildEntity(EntityType.DEFINITIONS, defintion);
+        paragraph.addChildEntity(EntityType.DefinedTermsAnnotation, defintion);
 
     }
 
