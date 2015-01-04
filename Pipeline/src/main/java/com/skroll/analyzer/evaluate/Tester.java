@@ -63,7 +63,7 @@ public class Tester {
         for(Entity paragraph: paragraphs) {
             List<Token> tokens = paragraph.getTokens();
             for (Token token : tokens) {
-                words.add(token.getToken());
+                words.add(token.getText());
             }
         }
 

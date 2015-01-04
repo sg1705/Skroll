@@ -21,7 +21,7 @@ public class DocumentHelper {
     public static List<String> getTokenString(List<Token> tokens) {
         List<String> words = new ArrayList<String>();
         for(Token token : tokens) {
-            words.add(token.getToken());
+            words.add(token.getText());
         }
         return words;
     }

@@ -10,7 +10,7 @@ public class Token {
     String token;
     List<TokenAttributes> tokenFeaturesList;
 
-    public String getToken() {
+    public String getText() {
         return token;
     }
 
