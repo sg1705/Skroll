@@ -13,7 +13,7 @@ public class Token {
         return token;
     }
 
-    public void setToken(String token) {
+    public void setText(String token) {
         this.token = token;
     }
 

@@ -12,7 +12,7 @@ public class DocumentHelper {
         List<Token> tokens = new ArrayList<Token>();
         for(String word: words) {
             Token token = new Token();
-            token.setToken(word);
+            token.setText(word);
             tokens.add(token);
         }
         return tokens;
@@ -31,7 +31,7 @@ public class DocumentHelper {
         List<Token> tokens1 = new ArrayList<Token>();
         for(String word : tokens) {
             Token token = new Token();
-            token.setToken(word);
+            token.setText(word);
             tokens1.add(token);
         }
         entity.setTokens(tokens1);
