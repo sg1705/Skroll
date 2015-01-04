@@ -10,20 +10,20 @@ import java.util.Set;
 /**
  * Created by saurabh on 12/29/14.
  */
-public class Entity implements TypesafeMap {
+public class CoreMap implements TypesafeMap {
 
 
     String id;
     String text;
     HashMap map;
 
-    public Entity(String id, String text) {
+    public CoreMap(String id, String text) {
         map = new HashMap();
         this.id = id;
         this.set(CoreAnnotations.TextAnnotation.class, text);
     }
 
-    public Entity() {
+    public CoreMap() {
         map = new HashMap();
     }
 

@@ -3,7 +3,7 @@ package com.skroll.analyzer.evaluate;
 import com.google.common.collect.Lists;
 import com.skroll.analyzer.model.Models;
 import com.skroll.document.Document;
-import com.skroll.document.Entity;
+import com.skroll.document.CoreMap;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.Pipeline;
@@ -59,9 +59,9 @@ public class Tester {
 
         doc = pipeline.process(doc);
 
-        List<Entity> paragraphs = doc.getParagraphs();
+        List<CoreMap> paragraphs = doc.getParagraphs();
         Set<String> words = new HashSet<String>();
-        for(Entity paragraph: paragraphs) {
+        for(CoreMap paragraph: paragraphs) {
             List<Token> tokens = paragraph.get(CoreAnnotations.TokenAnnotation.class);
             for (Token token : tokens) {
                 words.add(token.getText());

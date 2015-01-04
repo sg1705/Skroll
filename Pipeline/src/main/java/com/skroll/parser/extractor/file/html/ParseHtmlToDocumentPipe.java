@@ -1,9 +1,7 @@
 package com.skroll.parser.extractor.file.html;
 
+import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
-import com.skroll.document.Entity;
-import com.skroll.document.Document;
-import com.skroll.document.Paragraph;
 import com.skroll.pipeline.SyncPipe;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -25,7 +23,7 @@ public class ParseHtmlToDocumentPipe extends SyncPipe<Document, Document> {
 
     private String rollingTest;
     private List<String> paragraphChunks;
-    private List<Entity> paragraphs;
+    private List<CoreMap> paragraphs;
     private int paraId;
     private int lastParaId = 0;
 
@@ -33,7 +31,7 @@ public class ParseHtmlToDocumentPipe extends SyncPipe<Document, Document> {
     public ParseHtmlToDocumentPipe() {
         this.rollingTest = "";
         paragraphChunks = new ArrayList<String>();
-        paragraphs = new ArrayList<Entity>();
+        paragraphs = new ArrayList<CoreMap>();
         this.paraId = 1234;
     }
 
@@ -90,7 +88,7 @@ public class ParseHtmlToDocumentPipe extends SyncPipe<Document, Document> {
      */
     private void createPara() {
         this.paragraphChunks.add(this.rollingTest);
-        Entity paragraph = new Entity(new Integer(this.lastParaId).toString(), this.rollingTest);
+        CoreMap paragraph = new CoreMap(new Integer(this.lastParaId).toString(), this.rollingTest);
         //TODO remove this line
         //Paragraph paragraph = new Paragraph(new Integer(this.lastParaId).toString(), this.rollingTest);
         this.paragraphs.add(paragraph);

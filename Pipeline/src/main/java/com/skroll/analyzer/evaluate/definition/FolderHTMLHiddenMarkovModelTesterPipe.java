@@ -55,7 +55,7 @@ public class FolderHTMLHiddenMarkovModelTesterPipe extends SyncPipe<String, Stri
 
 
             List<double[][]> probabilities = testingPipe.process(testDoc);
-            List<Entity> paragraphs = testDoc.getParagraphs();
+            List<CoreMap> paragraphs = testDoc.getParagraphs();
             for (int i=0; i<paragraphs.size();i++){
                 output +=( paragraphs.get(i).getText() + '\n');
                 List<String> tokens = DocumentHelper.getTokenString(paragraphs.get(i).getTokens());

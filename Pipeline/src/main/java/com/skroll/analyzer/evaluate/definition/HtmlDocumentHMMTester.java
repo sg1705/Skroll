@@ -30,9 +30,9 @@ public class HtmlDocumentHMMTester extends SyncPipe<Document, Document> {
                                 new Integer(Constants.CATEGORY_POSITIVE)))
                         .build();
 
-        List<Entity> newParagraphs = new ArrayList<Entity>();
+        List<CoreMap> newParagraphs = new ArrayList<CoreMap>();
         //assume that words are extracted
-        for(Entity paragraph : input.getParagraphs()) {
+        for(CoreMap paragraph : input.getParagraphs()) {
             List<String> definitions = new ArrayList<String>();
             if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
                 boolean isPreviousWordDefinition = false;

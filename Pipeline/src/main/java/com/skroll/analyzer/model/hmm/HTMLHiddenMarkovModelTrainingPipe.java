@@ -18,9 +18,9 @@ public class HTMLHiddenMarkovModelTrainingPipe extends SyncPipe<Document, Docume
     public Document process(Document input) {
         HiddenMarkovModel model = (HiddenMarkovModel)config.get(0);
 
-        List<Entity> paragraphs = input.getParagraphs();
+        List<CoreMap> paragraphs = input.getParagraphs();
 
-        for( Entity paragraph : paragraphs) {
+        for( CoreMap paragraph : paragraphs) {
             List<Token> tokens = paragraph.get(CoreAnnotations.TokenAnnotation.class);
 
             HashSet<String> definitionsSet;

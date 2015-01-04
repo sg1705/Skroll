@@ -33,7 +33,7 @@ public class TrainingAndTestingTest extends TestCase {
         Document htmlDoc = Tester.testNaiveBayes(Parser.parseDocumentFromHtmlFile(testingFile));
 
         int defCount = 0;
-        for(Entity paragraph : htmlDoc.getParagraphs()) {
+        for(CoreMap paragraph : htmlDoc.getParagraphs()) {
             if (DocumentHelper.isDefinition(paragraph)) {
                 defCount++;
                 System.out.println(paragraph.getText());
@@ -45,7 +45,7 @@ public class TrainingAndTestingTest extends TestCase {
 
         int count = 0;
         HashSet<String> terms = Sets.newHashSet();
-        for(Entity paragraph : htmlDoc.getParagraphs()) {
+        for(CoreMap paragraph : htmlDoc.getParagraphs()) {
             if (DocumentHelper.isDefinition(paragraph) && (DocumentHelper.getDefinedTerms(paragraph).size() > 0)) {
                 terms.add(DocumentHelper.getDefinedTerms(paragraph).get(0));
                         //paragraph.getDefinitions().get(0));

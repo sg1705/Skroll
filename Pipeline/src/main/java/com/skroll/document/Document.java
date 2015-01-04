@@ -12,7 +12,7 @@ public class Document {
 
     String source;
     String target;
-    List<Entity> paragraphs;
+    List<CoreMap> paragraphs;
 
 
     public Document() {
@@ -22,11 +22,11 @@ public class Document {
         this.source = source;
     }
 
-    public List<Entity> getParagraphs() {
+    public List<CoreMap> getParagraphs() {
         return paragraphs;
     }
 
-    public void setParagraphs(List<Entity> paragraphs) {
+    public void setParagraphs(List<CoreMap> paragraphs) {
         this.paragraphs = paragraphs;
     }
 

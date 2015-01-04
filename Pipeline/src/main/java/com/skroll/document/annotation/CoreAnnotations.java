@@ -1,7 +1,7 @@
 package com.skroll.document.annotation;
 
 import com.skroll.document.Token;
-import com.skroll.document.model.CoreMap;
+import com.skroll.document.CoreMap;
 import com.skroll.pipeline.util.EraserUtils;
 
 import java.util.List;

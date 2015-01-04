@@ -23,8 +23,8 @@ public class TokenizeParagraphInHtmlDocumentPipe extends SyncPipe<Document, Docu
                 .build();
 
 
-        List<Entity> newList = new ArrayList<Entity>();
-        for(Entity paragraph : input.getParagraphs()) {
+        List<CoreMap> newList = new ArrayList<CoreMap>();
+        for(CoreMap paragraph : input.getParagraphs()) {
             String paragraphText = paragraph.getText();
             List<String> words = pipeline.process(paragraphText);
             List<Token> tokens = DocumentHelper.getTokens(words);

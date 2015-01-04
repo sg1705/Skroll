@@ -29,7 +29,7 @@ public class HtmlDocumentNaiveBayesTester extends SyncPipe<Document, Document> {
                         .build();
 
         //assume that words are extracted
-        for(Entity paragraph : input.getParagraphs()) {
+        for(CoreMap paragraph : input.getParagraphs()) {
             double isDefinition = testPipeline.process(DocumentHelper.getTokenString(paragraph.getTokens()));
             if (isDefinition > DEF_THRESHOLD_PROBABILITY)
                 paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, new Boolean(true));

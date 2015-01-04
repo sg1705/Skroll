@@ -1,7 +1,7 @@
 package com.skroll.parser.tokenizer;
 
+import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
-import com.skroll.document.Entity;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.SyncPipe;
 
@@ -15,8 +15,8 @@ public class ReplaceSpecialQuotesInHtmlDocumentPipe extends SyncPipe<Document,Do
 
     @Override
     public Document process(Document input) {
-        List<Entity> newList = new ArrayList<Entity>();
-        for(Entity paragraph : input.getParagraphs()) {
+        List<CoreMap> newList = new ArrayList<CoreMap>();
+        for(CoreMap paragraph : input.getParagraphs()) {
             String str = paragraph.getText();
             str = str.replace("\u201c","\"");
             str = str.replace("\u201d","\"");

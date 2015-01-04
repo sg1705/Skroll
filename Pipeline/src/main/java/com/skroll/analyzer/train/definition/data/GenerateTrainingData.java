@@ -169,7 +169,7 @@ public class GenerateTrainingData {
                 htmlDoc = pipeline.process(htmlDoc);
                 List<String> defList = new ArrayList<String>();
                 int count = 0;
-                for(Entity paragraph : htmlDoc.getParagraphs()) {
+                for(CoreMap paragraph : htmlDoc.getParagraphs()) {
                     String words = Joiner.on(",").join(DocumentHelper
                             .getTokenString(
                                     paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class)));

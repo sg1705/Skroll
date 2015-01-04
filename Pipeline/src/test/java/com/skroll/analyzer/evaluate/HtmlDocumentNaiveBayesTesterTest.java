@@ -55,7 +55,7 @@ public class HtmlDocumentNaiveBayesTesterTest extends TestCase {
                         .build();
         Document doc = pipeline.process(htmlDoc);
         int defCount = 0;
-        for(Entity paragraph : htmlDoc.getParagraphs()) {
+        for(CoreMap paragraph : htmlDoc.getParagraphs()) {
             if (DocumentHelper.isDefinition(paragraph)) {
                 defCount++;
                 System.out.println(paragraph.getText());

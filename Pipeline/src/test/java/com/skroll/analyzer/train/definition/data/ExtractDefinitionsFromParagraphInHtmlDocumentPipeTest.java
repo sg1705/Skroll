@@ -31,7 +31,7 @@ public class ExtractDefinitionsFromParagraphInHtmlDocumentPipeTest extends TestC
                         .build();
         Document doc = pipeline.process(htmlDoc);
         int count = 0;
-        for(Entity paragraph : htmlDoc.getParagraphs()) {
+        for(CoreMap paragraph : htmlDoc.getParagraphs()) {
                 count++;
                 DocumentHelper.getTokenString(
                         paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class));

@@ -1,12 +1,7 @@
 package com.skroll.analyzer.train.docclassifier.data;
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
-import com.skroll.document.Document;
-import com.skroll.document.DocumentHelper;
-import com.skroll.document.Entity;
-import com.skroll.document.EntityType;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
