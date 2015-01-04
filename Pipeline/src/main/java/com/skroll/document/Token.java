@@ -8,7 +8,6 @@ import java.util.List;
  */
 public class Token {
     String token;
-    List<TokenAttributes> tokenFeaturesList;
 
     public String getText() {
         return token;
