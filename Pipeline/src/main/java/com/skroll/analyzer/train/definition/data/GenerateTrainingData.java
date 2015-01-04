@@ -170,7 +170,7 @@ public class GenerateTrainingData {
                 int count = 0;
                 for(Entity paragraph : htmlDoc.getParagraphs()) {
                     String words = Joiner.on(",").join(DocumentHelper
-                            .getTokenString(paragraph.getChildEntity(EntityType.DEFINITIONS).getTokens()));
+                            .getTokenString(paragraph.getChildEntity(EntityType.DefinedTermsAnnotation).getTokens()));
                     defList.add(words);
                     System.out.println(words);
                 }

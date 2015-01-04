@@ -32,9 +32,9 @@ public class ExtractDefinitionsFromParagraphInHtmlDocumentPipeTest extends TestC
         int count = 0;
         for(Entity paragraph : htmlDoc.getParagraphs()) {
                 count++;
-                DocumentHelper.getTokenString(paragraph.getChildEntity(EntityType.DEFINITIONS).getTokens());
+                DocumentHelper.getTokenString(paragraph.getChildEntity(EntityType.DefinedTermsAnnotation).getTokens());
                 String words = Joiner.on(",").join(DocumentHelper
-                        .getTokenString(paragraph.getChildEntity(EntityType.DEFINITIONS).getTokens()));
+                        .getTokenString(paragraph.getChildEntity(EntityType.DefinedTermsAnnotation).getTokens()));
                 System.out.println(words);
         }
         System.out.println(count);

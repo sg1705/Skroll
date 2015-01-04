@@ -31,7 +31,7 @@ public class HtmlDocumentNaiveBayesTester extends SyncPipe<Document, Document> {
         for(Entity paragraph : input.getParagraphs()) {
             double isDefinition = testPipeline.process(DocumentHelper.getTokenString(paragraph.getTokens()));
             if (isDefinition > DEF_THRESHOLD_PROBABILITY)
-                paragraph.addChildEntity(EntityType.DEFINITIONS, new Entity());
+                paragraph.addChildEntity(EntityType.DefinedTermsAnnotation, new Entity());
         }
 
         return this.target.process(input);
