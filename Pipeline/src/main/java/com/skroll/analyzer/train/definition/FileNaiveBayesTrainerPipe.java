@@ -44,52 +44,13 @@ public class FileNaiveBayesTrainerPipe extends SyncPipe<String, String> {
 
         List<String> fileStrings = fileIntoString.process(fileName);
         List<List<String>> csvStrings = csvSplitPipeline.process(fileStrings);
+        Pipeline<List<String>, DataTuple> stringsToTrainingTuple =
+                new Pipeline.Builder<List<String>, DataTuple>()
+                .add(Pipes.STRINGS_TO_NAIVE_BAYES_DATA_TUPLE, Lists.newArrayList(model, categoryType))
+                .build();
+
         for (List<String> line : csvStrings){
-            int length= Constants.DEFINITION_CLASSIFICATION_NAIVE_BAYES_NUMBER_TOKENS;
-            Set<String> tokenSet = new HashSet<String>();
-
-            // skip words inside the quotes for training
-            int indexAfterQuote=0;
-            int [] features = new int[2];
-            if (line.get(0).equals("\"")) {
-                features[0]=1;
-                indexAfterQuote=1;
-                while (indexAfterQuote<line.size() && !line.get(indexAfterQuote).equals("\""))
-                    indexAfterQuote++;
-                indexAfterQuote ++;
-            }
-            else features[0]=0;
-
-
-            for (;indexAfterQuote<line.size() && tokenSet.size()<length; indexAfterQuote++){
-                //if (line.get(i)==null || line.get(i).equals("")) continue;
-                if (line.get(indexAfterQuote).equals("\""))
-                    continue;
-
-                tokenSet.add(line.get(indexAfterQuote));
-            }
-//            if (tokenSet.contains("\""))
-//                System.out.println(line);
-//            //if (tokenSet.size()<length) continue;
-//            if (tokenSet.size()<3){
-//                //if (tokenSet.contains(null)) {
-//                if (tokenSet.size()==2) {
-//                    System.out.println(line);
-//                    System.out.println(tokenSet);
-//                }
-//
-//                //}
-//                continue;
-//            }
-            DataTuple tuple;
-
-            features[1] = tokenSet.size();
-
-
-            if (tokenSet.size()<Constants.DEFINITION_CLASSIFICATION_NAIVE_BAYES_NUMBER_TOKENS)
-                tuple =  new DataTuple(Constants.CATEGORY_NEGATIVE, tokenSet.toArray(new String[tokenSet.size()]),features);
-            else tuple =  new DataTuple(categoryType, tokenSet.toArray(new String[tokenSet.size()]),features);
-
+            DataTuple tuple = stringsToTrainingTuple.process(line);
             model.addSample(tuple);
         }
 

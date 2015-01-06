@@ -31,6 +31,9 @@ public enum Pipes {
     HTML_DOC_BINARY_NAIVE_BAYES_TESTER("com.skroll.analyzer.evaluate.definition.HtmlDocumentNaiveBayesTester"),
     HTML_DOCUMENT_HIDDEN_MARKOV_MODEL_TESTING_PIPE("com.skroll.analyzer.evaluate.definition.HtmlDocumentHMMTester"),
 
+    // data.definition
+    STRINGS_TO_NAIVE_BAYES_DATA_TUPLE("com.skroll.analyzer.data.definition.StringsToNaiveBayesDataTuplePipe"),
+
     // model.nb
     BINARY_SIMPLE_NAIVE_BAYES_TESTER("com.skroll.analyzer.model.nb.BinaryNaiveBayesSimpleTestingPipe"),
     BINARY_NAIVE_BAYES_TRAINING ("com.skroll.analyzer.model.nb.BinaryNaiveBayesTrainingPipe"),

@@ -42,41 +42,19 @@ public class FileNaiveBayesTesterPipe extends SyncPipe<String, String> {
         output +="-----------------------------\n";
         output +=fileName+"\n";
         output +="-----------------------------\n";
-        for (int i = 0; i < csvStrings.size(); i++) {
-            List<String> line = csvStrings.get(i);
-            int length = Math.min(line.size(), Constants.DEFINITION_CLASSIFICATION_NAIVE_BAYES_NUMBER_TOKENS);
 
-            Set<String> tokenSet = new HashSet<String>();
+        Pipeline<List<String>, DataTuple> stringsToTrainingTuple =
+                new Pipeline.Builder<List<String>, DataTuple>()
+                        .add(Pipes.STRINGS_TO_NAIVE_BAYES_DATA_TUPLE, Lists.newArrayList(model, -1))
+                        .build();
 
-
-            // skip words inside the quotes for training
-            int indexAfterQuote=0;
-            int [] features = new int[2];
-            if (line.get(0).equals("\"")) {
-                features[0]=1;
-                indexAfterQuote=1;
-                while (indexAfterQuote<line.size() && !line.get(indexAfterQuote).equals("\""))
-                    indexAfterQuote++;
-                indexAfterQuote ++;
-            }
-            else features[0]=0;
-
-
-
-            for (; indexAfterQuote<line.size() && tokenSet.size()<length; indexAfterQuote++){
-                //if (line.get(j)==null || line.get(j).equals("")) continue;
-                tokenSet.add(line.get(indexAfterQuote));
-            }
-            if (tokenSet.size()==0) continue;
-
-            features[1] = tokenSet.size();
-
-            DataTuple tuple = new DataTuple(-1, tokenSet.toArray(new String[length]), features);
+        for (List<String> line : csvStrings){
+            DataTuple tuple = stringsToTrainingTuple.process(line);
             output += String.format("%d %.2f %s\n", model.mostLikelyCategory(tuple) ,
                     model.inferCategoryProbabilityMoreStable(1, tuple.getTokens(), tuple.getFeatures()),
-                    fileStrings.get(i));
-            //output += model.mostLikelyCategory(tuple) +" "+model.inferCategoryProbabilityMoreStable(1, tuple.getTokens(), tuple.getFeatures())+" "+ fileStrings.get(i) + '\n';
+                    line);
         }
+
         return output;
     }
 }
