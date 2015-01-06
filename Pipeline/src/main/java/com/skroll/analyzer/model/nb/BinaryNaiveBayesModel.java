@@ -8,7 +8,6 @@ import java.util.*;
 public class BinaryNaiveBayesModel {
 
     public static final double PRIOR_COUNT = 100;
-    public static final boolean USE_FIRST_CHAR = true;
 
 
     int[] categoryCount;
@@ -115,7 +114,7 @@ public class BinaryNaiveBayesModel {
                     if (c==null) c=0;
                     count[i]= c+PRIOR_COUNT*classProb[i];
                 }
-                double score = (double)count[1]/count[0]*(categoryCount[0]+PRIOR_COUNT)/(categoryCount[1]+PRIOR_COUNT);
+                double score = (double)count[1]/count[0];//*(categoryCount[0]+PRIOR_COUNT)/(categoryCount[1]+PRIOR_COUNT);
                 sortedset.add(new AbstractMap.SimpleEntry<String, List<Double>>(k,Arrays.asList(score,(double)count[0],(double)count[1])));
             }
         }
@@ -131,7 +130,7 @@ public class BinaryNaiveBayesModel {
             if (c==null) c=0;
             count[i]= c+PRIOR_COUNT*classProb[i];
         }
-        double score = (double)count[1]/count[0]*(categoryCount[0]+PRIOR_COUNT)/(categoryCount[1]+PRIOR_COUNT);
+        double score = (double)count[1]/count[0];//*(categoryCount[0]+PRIOR_COUNT)/(categoryCount[1]+PRIOR_COUNT);
         return (new AbstractMap.SimpleEntry<String, List<Double>>(word, Arrays.asList(score, (double) count[0], (double) count[1])) + " ");
 
     }

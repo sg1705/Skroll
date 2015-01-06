@@ -18,6 +18,7 @@ public class Constants {
     public static final int CATEGORY_POSITIVE = 1;
     public static final int CATEGORY_NEGATIVE = 0;
 
+    public static final int DEFINITION_CLASSIFICATION_NAIVE_BAYES_NUMBER_TOKENS = 5;
 
     public static final double DEF_THRESHOLD_PROBABILITY = 0.85;
 }

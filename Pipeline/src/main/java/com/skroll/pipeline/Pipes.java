@@ -21,6 +21,8 @@ public enum Pipes {
 
 
     //evaluate.definition
+    FILE_NAIVE_BAYES_TESTER("com.skroll.analyzer.evaluate.definition.FileNaiveBayesTesterPipe"),
+    FOLDER_NAIVE_BAYES_TESTER("com.skroll.analyzer.evaluate.definition.FolderNaiveBayesTesterPipe"),
 
     FILE_BINARY_NAIVE_BAYES_TESTER("com.skroll.analyzer.evaluate.definition.FileBinaryNaiveBayesTesterPipe"),
     FILE_BINARY_NAIVE_BAYES_TESTER_WITH_WORDS_IMPORTANCE("com.skroll.analyzer.evaluate.definition.FileBinaryNaiveBayesTesterWithWordsImportancePipe"),
@@ -42,6 +44,9 @@ public enum Pipes {
     HTML_HIDDEN_MARKOV_MODEL_STATE_SEQUENCE_TESTING_PIPE("com.skroll.analyzer.model.hmm.HTMLHiddenMarkovModelStateSequenceTestingPipe"),
 
     //train.definition
+    FILE_NAIVE_BAYES_TRAINER("com.skroll.analyzer.train.definition.FileNaiveBayesTrainerPipe"),
+    FOLDER_NAIVE_BAYES_TRAINER("com.skroll.analyzer.train.definition.FolderNaiveBayesTrainerPipe"),
+
     FILE_BINARY_NAIVE_BAYES_TRAINER("com.skroll.analyzer.train.definition.FileBinaryNaiveBayesTrainerPipe"),
     FILES_BINARY_NAIVE_BAYES_TRAINER("com.skroll.analyzer.train.definition.FilesBinaryNaiveBayesTrainerPipe"),
     FOLDER_BINARY_NAIVE_BAYES_TRAINER("com.skroll.analyzer.train.definition.FolderBinaryNaiveBayesTrainerPipe"),
