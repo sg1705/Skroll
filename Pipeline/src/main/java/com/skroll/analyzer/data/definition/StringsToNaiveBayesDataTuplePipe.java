@@ -12,6 +12,7 @@ import java.util.*;
  */
 public class StringsToNaiveBayesDataTuplePipe extends SyncPipe<List<String>, DataTuple> {
     public static final int NUMBER_FEATURES=2;
+    public static final boolean USE_QUOTE=true;
 
     @Override
     public DataTuple process(List<String> input) {
@@ -26,14 +27,18 @@ public class StringsToNaiveBayesDataTuplePipe extends SyncPipe<List<String>, Dat
         // skip words inside the quotes for training
         int indexAfterQuote=0;
         int [] features = new int[NUMBER_FEATURES];
+        int featureNumber=0;
         if (input.get(0).equals("\"")) {
-            features[0]=1;
+            features[featureNumber]=1;
             indexAfterQuote=1;
             while (indexAfterQuote<input.size() && !input.get(indexAfterQuote).equals("\""))
                 indexAfterQuote++;
             indexAfterQuote ++;
         }
-        else features[0]=0;
+        else features[featureNumber]=0;
+        featureNumber++;
+
+        if (!USE_QUOTE) featureNumber--;
 
 
         for (;indexAfterQuote<input.size() && tokenSet.size()<length; indexAfterQuote++){
@@ -45,9 +50,9 @@ public class StringsToNaiveBayesDataTuplePipe extends SyncPipe<List<String>, Dat
 
         DataTuple tuple;
 
-        features[1] = tokenSet.size();
-
-        if (tokenSet.size()<Constants.DEFINITION_CLASSIFICATION_NAIVE_BAYES_NUMBER_TOKENS)
+        //features[featureNumber] = tokenSet.size();
+        features[featureNumber] = Math.min(input.size(), Constants.DEFINITION_CLASSIFICATION_NAIVE_BAYES_NUMBER_TOKENS);
+        if (input.size()<Constants.DEFINITION_CLASSIFICATION_NAIVE_BAYES_NUMBER_TOKENS)
             tuple =  new DataTuple(Constants.CATEGORY_NEGATIVE, tokenSet.toArray(new String[tokenSet.size()]),features);
         else tuple =  new DataTuple(categoryType, tokenSet.toArray(new String[tokenSet.size()]),features);
 
