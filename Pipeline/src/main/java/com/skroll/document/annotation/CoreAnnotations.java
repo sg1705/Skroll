@@ -41,7 +41,9 @@ public class CoreAnnotations {
     }
 
     /**
-     * CoreMap key identifying process html
+     * CoreMap key identifying process html . For example, in a document when
+     * definition has been identified, the document needs to be processed so that
+     * definitions can be linked across the document.
      */
     public static class ProcessedHTMLTextAnnotation implements CoreAnnotation<String> {
         public Class<String> getType() {
