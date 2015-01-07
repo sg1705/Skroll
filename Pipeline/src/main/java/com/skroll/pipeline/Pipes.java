@@ -21,6 +21,8 @@ public enum Pipes {
 
 
     //evaluate.definition
+    FILE_NAIVE_BAYES_TESTER("com.skroll.analyzer.evaluate.definition.FileNaiveBayesTesterPipe"),
+    FOLDER_NAIVE_BAYES_TESTER("com.skroll.analyzer.evaluate.definition.FolderNaiveBayesTesterPipe"),
 
     FILE_BINARY_NAIVE_BAYES_TESTER("com.skroll.analyzer.evaluate.definition.FileBinaryNaiveBayesTesterPipe"),
     FILE_BINARY_NAIVE_BAYES_TESTER_WITH_WORDS_IMPORTANCE("com.skroll.analyzer.evaluate.definition.FileBinaryNaiveBayesTesterWithWordsImportancePipe"),
@@ -28,6 +30,9 @@ public enum Pipes {
     FOLDER_HTML_HIDDEN_MARKOV_MODEL_TESTING_PIPE("com.skroll.analyzer.evaluate.definition.FolderHTMLHiddenMarkovModelTesterPipe"),
     HTML_DOC_BINARY_NAIVE_BAYES_TESTER("com.skroll.analyzer.evaluate.definition.HtmlDocumentNaiveBayesTester"),
     HTML_DOCUMENT_HIDDEN_MARKOV_MODEL_TESTING_PIPE("com.skroll.analyzer.evaluate.definition.HtmlDocumentHMMTester"),
+
+    // data.definition
+    STRINGS_TO_NAIVE_BAYES_DATA_TUPLE("com.skroll.analyzer.data.definition.StringsToNaiveBayesDataTuplePipe"),
 
     // model.nb
     BINARY_SIMPLE_NAIVE_BAYES_TESTER("com.skroll.analyzer.model.nb.BinaryNaiveBayesSimpleTestingPipe"),
@@ -42,6 +47,9 @@ public enum Pipes {
     HTML_HIDDEN_MARKOV_MODEL_STATE_SEQUENCE_TESTING_PIPE("com.skroll.analyzer.model.hmm.HTMLHiddenMarkovModelStateSequenceTestingPipe"),
 
     //train.definition
+    FILE_NAIVE_BAYES_TRAINER("com.skroll.analyzer.train.definition.FileNaiveBayesTrainerPipe"),
+    FOLDER_NAIVE_BAYES_TRAINER("com.skroll.analyzer.train.definition.FolderNaiveBayesTrainerPipe"),
+
     FILE_BINARY_NAIVE_BAYES_TRAINER("com.skroll.analyzer.train.definition.FileBinaryNaiveBayesTrainerPipe"),
     FILES_BINARY_NAIVE_BAYES_TRAINER("com.skroll.analyzer.train.definition.FilesBinaryNaiveBayesTrainerPipe"),
     FOLDER_BINARY_NAIVE_BAYES_TRAINER("com.skroll.analyzer.train.definition.FolderBinaryNaiveBayesTrainerPipe"),
