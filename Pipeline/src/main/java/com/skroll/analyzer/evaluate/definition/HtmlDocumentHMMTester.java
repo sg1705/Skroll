@@ -40,7 +40,9 @@ public class HtmlDocumentHMMTester extends SyncPipe<Document, Document> {
                 boolean isPreviousWordDefinition = false;
                 List<String> tempDefinitions = new ArrayList<String>();
                 // test for terms
-                List<Double> hmmResults = testPipeline.process(DocumentHelper.getTokenString(paragraph.get(CoreAnnotations.TokenAnnotation.class)));
+                List<String> tokens = DocumentHelper.getTokenString(
+                        paragraph.get(CoreAnnotations.TokenAnnotation.class));
+                List<Double> hmmResults = testPipeline.process(tokens);
                 int ii = 0;
                 for (double prob : hmmResults) {
                     if (prob > Constants.DEF_THRESHOLD_PROBABILITY) {
