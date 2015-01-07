@@ -1,9 +1,11 @@
 package com.skroll.analyzer.model.hmm;
 
-import com.skroll.document.*;
-
+import com.skroll.document.CoreMap;
+import com.skroll.document.Document;
+import com.skroll.document.DocumentHelper;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.SyncPipe;
+
 import java.util.ArrayList;
 import java.util.List;
 

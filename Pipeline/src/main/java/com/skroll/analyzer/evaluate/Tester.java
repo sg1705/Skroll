@@ -2,8 +2,8 @@ package com.skroll.analyzer.evaluate;
 
 import com.google.common.collect.Lists;
 import com.skroll.analyzer.model.Models;
-import com.skroll.document.Document;
 import com.skroll.document.CoreMap;
+import com.skroll.document.Document;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.Pipeline;

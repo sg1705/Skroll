@@ -5,7 +5,9 @@ import com.skroll.analyzer.model.nb.NaiveBayes;
 import com.skroll.pipeline.SyncPipe;
 import com.skroll.pipeline.util.Constants;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by wei2learn on 1/6/2015.

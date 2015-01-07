@@ -1,11 +1,15 @@
 package com.skroll.analyzer.model.hmm;
 
 import com.google.common.base.Splitter;
-import com.skroll.document.*;
+import com.skroll.document.CoreMap;
+import com.skroll.document.Document;
+import com.skroll.document.DocumentHelper;
+import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.SyncPipe;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * Trains a document with the given HtmlDocument

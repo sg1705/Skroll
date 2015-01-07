@@ -1,10 +1,9 @@
 package com.skroll.pipeline.pipes.files;
 
 
-import com.skroll.document.Document;
-import com.skroll.pipeline.SyncPipe;
-import com.skroll.pipeline.util.Utils;
 import com.google.common.io.Files;
+import com.skroll.pipeline.SyncPipe;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;

@@ -2,8 +2,6 @@ package com.skroll.document;
 
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
-import com.skroll.document.HtmlDocument;
-import com.skroll.document.ModelHelper;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;

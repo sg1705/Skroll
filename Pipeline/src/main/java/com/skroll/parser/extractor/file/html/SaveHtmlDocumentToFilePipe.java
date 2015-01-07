@@ -1,7 +1,6 @@
 package com.skroll.parser.extractor.file.html;
 
 import com.skroll.document.Document;
-import com.skroll.document.Document;
 import com.skroll.document.ModelHelper;
 import com.skroll.pipeline.SyncPipe;
 import com.skroll.pipeline.util.Utils;

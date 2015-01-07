@@ -1,7 +1,6 @@
 package com.skroll.analyzer.train.definition;
 
 import com.google.common.collect.Lists;
-import com.skroll.analyzer.model.nb.BinaryNaiveBayesModel;
 import com.skroll.analyzer.model.nb.NaiveBayes;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;

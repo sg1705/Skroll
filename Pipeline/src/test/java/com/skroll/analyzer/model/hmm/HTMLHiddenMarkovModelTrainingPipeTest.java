@@ -2,7 +2,6 @@ package com.skroll.analyzer.model.hmm;
 
 import com.google.common.collect.Lists;
 import com.skroll.document.Document;
-import com.skroll.document.HtmlDocument;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;

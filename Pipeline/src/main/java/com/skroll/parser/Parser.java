@@ -1,7 +1,6 @@
 package com.skroll.parser;
 
 import com.skroll.document.Document;
-import com.skroll.document.Document;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;

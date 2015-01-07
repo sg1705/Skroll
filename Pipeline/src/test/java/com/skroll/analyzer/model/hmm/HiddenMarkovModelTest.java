@@ -1,6 +1,5 @@
 package com.skroll.analyzer.model.hmm;
 
-import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
 import junit.framework.TestCase;
 
 import java.util.Arrays;
