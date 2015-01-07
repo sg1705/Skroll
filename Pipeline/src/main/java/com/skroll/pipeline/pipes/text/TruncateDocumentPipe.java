@@ -1,7 +1,6 @@
 package com.skroll.pipeline.pipes.text;
 
 import com.skroll.pipeline.SyncPipe;
-import org.jsoup.helper.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;

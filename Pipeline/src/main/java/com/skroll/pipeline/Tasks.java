@@ -2,7 +2,6 @@ package com.skroll.pipeline;
 
 import com.google.common.io.Files;
 import com.skroll.document.Document;
-import com.skroll.document.HtmlDocument;
 import com.skroll.pipeline.util.Utils;
 
 import java.io.File;

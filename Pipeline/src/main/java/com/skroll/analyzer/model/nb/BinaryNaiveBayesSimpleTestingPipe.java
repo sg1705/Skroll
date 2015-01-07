@@ -4,7 +4,9 @@ import com.google.common.collect.Lists;
 import com.skroll.document.Document;
 import com.skroll.pipeline.SyncPipe;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by saurabh on 12/21/14.

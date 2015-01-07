@@ -1,17 +1,13 @@
 package com.skroll.analyzer.evaluate.definition;
 
 import com.google.common.collect.Lists;
-import com.skroll.analyzer.model.nb.BinaryNaiveBayesModel;
 import com.skroll.analyzer.model.nb.DataTuple;
 import com.skroll.analyzer.model.nb.NaiveBayes;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.SyncPipe;
-import com.skroll.pipeline.util.Constants;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by wei2learn on 1/5/2015.

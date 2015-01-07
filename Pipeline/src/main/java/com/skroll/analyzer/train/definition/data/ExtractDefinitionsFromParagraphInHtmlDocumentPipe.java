@@ -1,6 +1,8 @@
 package com.skroll.analyzer.train.definition.data;
 
-import com.skroll.document.*;
+import com.skroll.document.CoreMap;
+import com.skroll.document.Document;
+import com.skroll.document.DocumentHelper;
 import com.skroll.pipeline.SyncPipe;
 
 import java.util.ArrayList;

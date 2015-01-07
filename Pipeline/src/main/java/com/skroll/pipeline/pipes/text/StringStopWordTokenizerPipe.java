@@ -1,6 +1,9 @@
 package com.skroll.pipeline.pipes.text;
 
-import com.aliasi.tokenizer.*;
+import com.aliasi.tokenizer.IndoEuropeanTokenizerFactory;
+import com.aliasi.tokenizer.Tokenizer;
+import com.aliasi.tokenizer.TokenizerFactory;
+import com.aliasi.tokenizer.WhitespaceNormTokenizerFactory;
 import com.skroll.pipeline.SyncPipe;
 
 import java.util.ArrayList;

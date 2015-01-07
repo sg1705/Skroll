@@ -2,7 +2,9 @@ package com.skroll.analyzer.evaluate.definition;
 
 import com.google.common.collect.Lists;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
-import com.skroll.document.*;
+import com.skroll.document.CoreMap;
+import com.skroll.document.Document;
+import com.skroll.document.DocumentHelper;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.SyncPipe;

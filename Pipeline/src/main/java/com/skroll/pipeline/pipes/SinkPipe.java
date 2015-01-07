@@ -1,6 +1,5 @@
 package com.skroll.pipeline.pipes;
 
-import com.skroll.document.Document;
 import com.skroll.pipeline.SyncPipe;
 
 /**

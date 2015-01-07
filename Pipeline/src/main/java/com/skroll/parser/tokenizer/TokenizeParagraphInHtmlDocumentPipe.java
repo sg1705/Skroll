@@ -1,6 +1,9 @@
 package com.skroll.parser.tokenizer;
 
-import com.skroll.document.*;
+import com.skroll.document.CoreMap;
+import com.skroll.document.Document;
+import com.skroll.document.DocumentHelper;
+import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
