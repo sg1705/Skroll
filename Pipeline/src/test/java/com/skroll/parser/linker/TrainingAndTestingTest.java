@@ -75,7 +75,7 @@ public class TrainingAndTestingTest extends TestCase {
         Files.createParentDirs(new File("build/resources/test/parser/linker/TrainingAndTest.html"));
         Utils.writeToFile("build/resources/test/parser/linker/TrainingAndTest.html", htmlDoc.getTarget());
         System.out.println(terms.size());
-        assert (terms.size() == 160);
+        assert (terms.size() == 161);
 
 
     }
