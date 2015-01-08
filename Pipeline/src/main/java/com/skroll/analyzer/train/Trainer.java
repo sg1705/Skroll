@@ -21,18 +21,18 @@ public class Trainer {
         File file = new File(fileName);
         if (file.isDirectory()) {
             Pipeline pipeline = new Pipeline.Builder<String, List<String>>()
-                    .add(Pipes.FOLDER_BINARY_NAIVE_BAYES_TRAINER,
+                    .add(Pipes.FOLDER_NAIVE_BAYES_TRAINER,
                             Lists.newArrayList(
-                                    Models.getBinaryNaiveBayesModel(),
+                                    Models.getNaiveBayesForDefinitionsModel(),
                                     category))
                     .build();
 
             pipeline.process(fileName);
         } else {
             Pipeline pipeline = new Pipeline.Builder<String, List<String>>()
-                    .add(Pipes.FILE_BINARY_NAIVE_BAYES_TRAINER,
+                    .add(Pipes.FILE_NAIVE_BAYES_TRAINER,
                             Lists.newArrayList(
-                                    Models.getBinaryNaiveBayesModel(),
+                                    Models.getNaiveBayesForDefinitionsModel(),
                                     category))
                     .build();
 

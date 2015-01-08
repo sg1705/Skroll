@@ -29,8 +29,8 @@ public class Tester {
                         .add(Pipes.REPLACE_SPECIAL_QUOTE_IN_HTML_DOC)
                         .add(Pipes.TOKENIZE_PARAGRAPH_IN_HTML_DOC)
                         .add(Pipes.HTML_DOC_BINARY_NAIVE_BAYES_TESTER,
-                                Lists.newArrayList((Object) Models.getBinaryNaiveBayesModel()))
-                        .build();
+                                        Lists.newArrayList((Object) Models.getNaiveBayesForDefinitionsModel()))
+                                .build();
         htmlDoc = pipeline.process(htmlDoc);
         return htmlDoc;
     }
