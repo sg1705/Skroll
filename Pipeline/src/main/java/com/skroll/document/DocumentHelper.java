@@ -55,6 +55,9 @@ public class DocumentHelper {
     public static void setDefinition(List<String> definitions, CoreMap paragraph) {
         List<Token> tokens1 = DocumentHelper.createTokens(definitions);
         paragraph.set(CoreAnnotations.DefinedTermsAnnotation.class, tokens1);
+        if (tokens1.size() > 0) {
+            paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
+        }
 
     }
 
