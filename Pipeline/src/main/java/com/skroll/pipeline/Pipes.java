@@ -38,7 +38,7 @@ public enum Pipes {
     BINARY_SIMPLE_NAIVE_BAYES_TESTER("com.skroll.analyzer.model.nb.BinaryNaiveBayesSimpleTestingPipe"),
     BINARY_NAIVE_BAYES_TRAINING ("com.skroll.analyzer.model.nb.BinaryNaiveBayesTrainingPipe"),
     BINARY_NAIVE_BAYES_TESTING ("com.skroll.analyzer.model.nb.BinaryNaiveBayesTestingPipe"),
-
+    NAIVES_BAYES_SIMPLE_TESTING("com.skroll.analyzer.model.nb.NaiveBayesSimpleTestingPipe"),
 
     //model.hmm
     HIDDEN_MARKOV_MODEL_SIMPLE_TESTING_PIPE("com.skroll.analyzer.model.hmm.HiddenMarkovModelSimpleTestingPipe"),
