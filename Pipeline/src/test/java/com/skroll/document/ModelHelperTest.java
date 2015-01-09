@@ -10,9 +10,9 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModelHelperTest extends TestCase {
+public class ModelHelperTest {
 
-    @Test
+
     public void testHtmlModel() {
         String fileName = "src/test/resources/document/experiment-jsoup-node-extraction.html";
         try {
@@ -28,7 +28,7 @@ public class ModelHelperTest extends TestCase {
         }
     }
 
-    @Test
+
     public void testHtmlModelParagraphs() {
 
         String fileName = "src/test/resources/document/experiment-jsoup-node-extraction.html";
@@ -74,7 +74,7 @@ public class ModelHelperTest extends TestCase {
 
     }
 
-    @Test
+
     public void testModelHelperWithAnnotations() throws Exception {
         String fileName = "src/test/resources/document/experiment-jsoup-node-extraction.html";
         Document doc = Parser.parseDocumentFromHtmlFile(fileName);
@@ -93,7 +93,7 @@ public class ModelHelperTest extends TestCase {
     }
 
 
-    @Test
+
     public void testModelHelperWithAnnotationsWithSimpleDocument() throws Exception {
         String fileName = "src/test/resources/document/simple-html-text.html";
         Document doc = Parser.parseDocumentFromHtmlFile(fileName);

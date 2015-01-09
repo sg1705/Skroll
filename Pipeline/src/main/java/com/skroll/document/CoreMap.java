@@ -13,25 +13,33 @@ import java.util.Set;
 public class CoreMap implements TypesafeMap {
 
 
-    String id;
+//    String id;
     String text;
     HashMap map;
 
     public CoreMap(String id, String text) {
-        map = new HashMap();
-        this.id = id;
+        initialize();
+//        this.id = id;
         this.set(CoreAnnotations.TextAnnotation.class, text);
+        this.set(CoreAnnotations.IdAnnotation.class, id);
     }
 
     public CoreMap() {
-        map = new HashMap();
+        initialize();
+    }
+
+    protected void initialize() {
+        this.map = new HashMap();
     }
 
 
     public String getId() {
-        return id;
+        return this.get(CoreAnnotations.IdAnnotation.class);
     }
 
+    public void setId(String id) {
+        this.set(CoreAnnotations.IdAnnotation.class, id);
+    }
 
     //two helper methods
     public String getText() {
@@ -50,7 +58,8 @@ public class CoreMap implements TypesafeMap {
 
     @Override
     public <VALUE> VALUE get(Class<? extends TypesafeMap.Key<VALUE>> key) {
-        return (VALUE)map.get(key);
+        VALUE value = (VALUE)(this.map.get(key));
+        return (VALUE)(this.map.get(key));
     }
 
     @Override

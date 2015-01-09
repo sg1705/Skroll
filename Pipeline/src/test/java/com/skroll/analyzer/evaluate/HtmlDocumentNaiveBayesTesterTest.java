@@ -2,6 +2,7 @@ package com.skroll.analyzer.evaluate;
 
 import com.google.common.collect.Lists;
 import com.skroll.analyzer.model.nb.BinaryNaiveBayesModel;
+import com.skroll.analyzer.model.nb.NaiveBayes;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
@@ -19,7 +20,7 @@ public class HtmlDocumentNaiveBayesTesterTest extends TestCase {
         String[] trainingFolder = {
                 "src/test/resources/analyzer/train/FolderBinaryNaiveBayesTrainerPipeTest/not-pdef-words",
                 "src/test/resources/analyzer/train/FolderBinaryNaiveBayesTrainerPipeTest/pdef-words"};
-        BinaryNaiveBayesModel model = new BinaryNaiveBayesModel();
+        NaiveBayes model = new NaiveBayes();
 
         Pipeline<String, List<String>> analyzer =
                 new Pipeline.Builder<String, List<String>>()
