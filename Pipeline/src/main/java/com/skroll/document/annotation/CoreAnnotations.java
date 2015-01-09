@@ -55,7 +55,7 @@ public class CoreAnnotations {
     /**
      * CoreMap key identifying the document id
      */
-    public static class DocumentIdAnnotation implements CoreAnnotation<String> {
+    public static class IdAnnotation implements CoreAnnotation<String> {
         public Class<String> getType() {
             return String.class;
         }

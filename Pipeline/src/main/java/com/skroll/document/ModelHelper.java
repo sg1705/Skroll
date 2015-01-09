@@ -1,6 +1,6 @@
 package com.skroll.document;
 
-import com.google.gson.Gson;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
@@ -13,13 +13,13 @@ import java.lang.reflect.Type;
 public class ModelHelper {
 
     public static String getJson(Document doc) {
-        Gson gson = new Gson();
+        Gson gson = getGson();
         String jsonString = gson.toJson(doc);
         return jsonString;
     }
 
     public static Document getModel(String jsonString) {
-        Gson gson = new Gson();
+        Gson gson = getGson();
         Type docType = new TypeToken<Document>() {}.getType();
         Document newDoc = gson.fromJson(jsonString, docType);
         return newDoc;
@@ -40,5 +40,30 @@ public class ModelHelper {
         htmlDoc = pipeline.process(htmlDoc);
         return htmlDoc;
     }
+
+    public static Gson getGson() {
+        Gson gson = new GsonBuilder().registerTypeAdapter(Class.class, new ModelHelper.ClassTypeAdapter()).create();
+        return gson;
+    }
+
+    public static class ClassTypeAdapter implements JsonSerializer<Class<?>>, JsonDeserializer<Class<?>> {
+
+        @Override
+        public JsonElement serialize(Class<?> src, Type typeOfSrc, JsonSerializationContext context) {
+            return new JsonPrimitive(src.getName());
+        }
+
+        @Override
+        public Class<?> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+                throws JsonParseException {
+            try {
+                return Class.forName(json.getAsString());
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+    }
+
 
 }
