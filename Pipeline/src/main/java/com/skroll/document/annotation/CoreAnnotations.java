@@ -143,6 +143,11 @@ public class CoreAnnotations {
         }
     }
 
+    public static class UnderlineAnnotation implements CoreAnnotation<Boolean> {
+        public Class<Boolean> getType() {
+            return Boolean.class;
+        }
+    }
 
 
 

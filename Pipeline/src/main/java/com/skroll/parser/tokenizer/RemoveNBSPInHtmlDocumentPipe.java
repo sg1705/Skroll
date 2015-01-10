@@ -18,7 +18,7 @@ public class RemoveNBSPInHtmlDocumentPipe extends SyncPipe<Document, Document> {
         List<CoreMap> newList = new ArrayList<CoreMap>();
         for(CoreMap paragraph : input.getParagraphs()) {
             String str = paragraph.getText();
-            str = str.replace("\u00a0", "");
+            str = str.replace("\u00a0", " ");
             paragraph.set(CoreAnnotations.TextAnnotation.class, str);
 
             newList.add(paragraph);
