@@ -48,10 +48,9 @@ public class HtmlDocumentHMMTester extends SyncPipe<Document, Document> {
                     if (prob > Constants.DEF_THRESHOLD_PROBABILITY) {
                         if (!isPreviousWordDefinition) {
                             isPreviousWordDefinition = true;
-                            tempDefinitions.add(paragraph.get(CoreAnnotations.TokenAnnotation.class).get(ii).getText());
-                        } else {
-                            tempDefinitions.add(paragraph.get(CoreAnnotations.TokenAnnotation.class).get(ii).getText());
                         }
+                        tempDefinitions.add(paragraph.get(CoreAnnotations.TokenAnnotation.class).get(ii).getText());
+                        paragraph.get(CoreAnnotations.TokenAnnotation.class).get(ii).set(CoreAnnotations.IsDefinitionAnnotation.class, true);
 //                        // chances are that this is a definition
 //                        definitions.add(paragraph.getWords().get(ii));
                     } else {
