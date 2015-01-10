@@ -22,7 +22,6 @@ public class Pipeline<I,O> {
 
         public Builder add(Pipes pipe) {
             pipeNames.add(pipe);
-
             return this;
         }
 
