@@ -42,27 +42,8 @@ public class ModelHelper {
     }
 
     public static Gson getGson() {
-        Gson gson = new GsonBuilder().registerTypeAdapter(Class.class, new ModelHelper.ClassTypeAdapter()).create();
+        Gson gson = new GsonBuilder().create();
         return gson;
-    }
-
-    public static class ClassTypeAdapter implements JsonSerializer<Class<?>>, JsonDeserializer<Class<?>> {
-
-        @Override
-        public JsonElement serialize(Class<?> src, Type typeOfSrc, JsonSerializationContext context) {
-            return new JsonPrimitive(src.getName());
-        }
-
-        @Override
-        public Class<?> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-                throws JsonParseException {
-            try {
-                return Class.forName(json.getAsString());
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
     }
 
 
