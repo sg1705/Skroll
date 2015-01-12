@@ -28,5 +28,5 @@ public interface Classifier {
 
     public int classify(Document doc, int numOfTokens);
 
-    int classify(String fileName, int numOfLines);
+    public int classify(String fileName, int numOfLines);
 }
