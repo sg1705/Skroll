@@ -11,6 +11,6 @@ public class CoreMapTest extends TestCase {
         System.out.println(CoreAnnotations.TextAnnotation.class.getSimpleName());
         System.out.println(CoreAnnotations.TextAnnotation.class.getEnclosingClass().getSimpleName());
         assert ( map.keyName(CoreAnnotations.TextAnnotation.class)
-                .equals("com.skroll.document.annotation.CoreAnnotations.TextAnnotation"));
+                .equals("TextAnnotation"));
     }
 }
