@@ -53,24 +53,24 @@ public class CoreMap implements TypesafeMap {
 
     @Override
     public <VALUE> boolean has(Class<? extends TypesafeMap.Key<VALUE>> key) {
-        return map.containsKey(key.getName());
+        return map.containsKey(key.getSimpleName());
     }
 
     @Override
     public <VALUE> VALUE get(Class<? extends TypesafeMap.Key<VALUE>> key) {
         VALUE value = (VALUE)(this.map.get(key.getName()));
-        return (VALUE)(this.map.get(key.getName()));
+        return (VALUE)(this.map.get(key.getSimpleName()));
     }
 
     @Override
     public <VALUE> VALUE set(Class<? extends TypesafeMap.Key<VALUE>> key, VALUE value) {
-        this.map.put(key.getName(), value);
+        this.map.put(key.getSimpleName(), value);
         return value;
     }
 
     @Override
     public <VALUE> VALUE remove(Class<? extends TypesafeMap.Key<VALUE>> key) {
-        VALUE value = (VALUE)this.map.get(key.getName());
+        VALUE value = (VALUE)this.map.get(key.getSimpleName());
         this.map.remove(key);
         return value;
     }
@@ -82,12 +82,16 @@ public class CoreMap implements TypesafeMap {
 
     @Override
     public <VALUE> boolean containsKey(Class<? extends TypesafeMap.Key<VALUE>> key) {
-        return this.map.containsKey(key.getName());
+        return this.map.containsKey(key.getSimpleName());
     }
 
     @Override
     public int size() {
         return this.map.size();
+    }
+
+    public <VALUE> String keyName(Class<? extends TypesafeMap.Key<VALUE>> key) {
+        return key.getSimpleName();
     }
 
 
