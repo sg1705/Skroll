@@ -79,7 +79,7 @@ public class DocumentTrainEvaluateClient {
 
         }
 
-    public static Map<String, Integer> classify(SECDocumentClassifier documentClassifier, String evaluateDir, int numOfLine) throws IOException {
+    public static Map<String, Integer> classify(SECDocumentClassifier documentClassifier, String evaluateDir, int numOfWords) throws IOException {
 
         //list directory first and their name will be category name and lookup their id in global categoy static class.
         FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(evaluateDir));
@@ -92,8 +92,21 @@ public class DocumentTrainEvaluateClient {
                 String htmlText = null;
                 try {
                     htmlText = Utils.readStringFromFile(fileName);
-                    Document doc = Parser.parseDocumentFromHtml(htmlText);
-                    probableCategory.put(fileName, documentClassifier.classify(fileName, numOfLine));
+                    Document doc = new Document();
+                    doc.setSource(htmlText);
+                    //create a pipeline
+                    Pipeline<Document, Document> pipeline =
+                            new Pipeline.Builder()
+                                    .add(Pipes.PARSE_HTML_TO_DOC)
+                                    .add(Pipes.REMOVE_BLANK_PARAGRAPH_FROM_HTML_DOC)
+                                    .add(Pipes.REMOVE_NBSP_IN_HTML_DOC)
+                                    .add(Pipes.REPLACE_SPECIAL_QUOTE_IN_HTML_DOC)
+                                    .add(Pipes.TOKENIZE_PARAGRAPH_IN_HTML_DOC)
+                                    .build();
+
+                    doc = pipeline.process(doc);
+                    //Document doc = Parser.parseDocumentFromHtml(htmlText);
+                    probableCategory.put(fileName, documentClassifier.classify(doc, numOfWords));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -111,7 +124,7 @@ public class DocumentTrainEvaluateClient {
         train(new Category(0, "Indentures"), documentClassifier, "/Users/saurabhagarwal/IdeaProjects/Skroll2015/Pipeline/src/test/resources/analyzer/train/docclassifier/pdef-words");
         train(new Category(1, "CreditAgreements"), documentClassifier, "/Users/saurabhagarwal/IdeaProjects/Skroll2015/Pipeline/src/test/resources/analyzer/train/docclassifier/not-pdef-words");
 
-        System.out.println(classify(documentClassifier, "/Users/saurabhagarwal/IdeaProjects/Skroll2015/Pipeline/src/test/resources/analyzer/evaluate/docclassifier", 3000));
+        System.out.println(classify(documentClassifier, "/Users/saurabhagarwal/IdeaProjects/Skroll2015/Pipeline/src/test/resources/analyzer/evaluate/docclassifier", 1000));
 
 
         // All documents in trainer folder, use pipeline.parse to parse it and train the model
