@@ -22,6 +22,7 @@ public class HtmlDocumentToFilePipeTest {
     public void testProcess() throws Exception {
         String fileName = "src/test/resources/document/experiment-jsoup-node-extraction.html";
         String targetFile = "build/resources/test/generated/document/experiment-jsoup-node-extraction.html";
+        String targetJsonFile = "build/resources/test/generated/document/documentModel.json";
 
         Files.createParentDirs(new File(targetFile));
 
@@ -42,6 +43,7 @@ public class HtmlDocumentToFilePipeTest {
         String newJsonText = Utils.readStringFromFile(targetFile);
         Document newDoc = ModelHelper.getModel(newJsonText);
 
+        Utils.writeToFile(targetJsonFile, newJsonText);
         System.out.println(doc.getParagraphs().size());
 
         assert (newDoc.getParagraphs().size() == doc.getParagraphs().size());
