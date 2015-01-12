@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * Created by saurabhagarwal on 1/11/15.
  */
-public class Model implements Serializable {
+public class PersistModelTestClass implements Serializable {
 
     public static final double PRIOR_COUNT = 100;
     public static final int DEFAULT_NUMBER_CATEGORIES = 2;
