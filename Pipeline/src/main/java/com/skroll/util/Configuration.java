@@ -37,7 +37,13 @@ public class Configuration {
     public String get(String key) {
         return confMap.get(key);
     }
-
+    public String get(String key, String defaultValue) {
+        if (confMap.get(key)==null) {
+            return defaultValue;
+        } else {
+            return confMap.get(key);
+        }
+    }
     public Properties getProperties (String fileName) throws IOException {
 
         InputStream inStream = null;
