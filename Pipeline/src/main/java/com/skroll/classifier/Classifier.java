@@ -1,7 +1,6 @@
-package com.skroll.classification;
+package com.skroll.classifier;
 
 import com.skroll.analyzer.model.nb.DataTuple;
-import com.skroll.classification.category.Category;
 import com.skroll.document.Document;
 
 import java.util.List;

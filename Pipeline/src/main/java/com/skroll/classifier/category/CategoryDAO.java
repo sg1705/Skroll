@@ -1,4 +1,6 @@
-package com.skroll.classification.category;
+package com.skroll.classifier.category;
+
+import com.skroll.classifier.Category;
 
 public interface CategoryDAO {
 
@@ -48,9 +50,7 @@ final class CategoryDAORelational implements CategoryDAO {
  XML file, and so on. The config is often read when the system initializes,
  perhaps using a static initializer.
  */
-final class DAOFactory {
-
-  /* some would implement all of the methods here as static methods */
+final class CategoryFactory {
 
     CategoryDAO getCategoryDAO(){
         return new CategoryDAORelational();

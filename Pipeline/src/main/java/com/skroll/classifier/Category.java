@@ -1,4 +1,4 @@
-package com.skroll.classification.category;
+package com.skroll.classifier;
 
 /**
  * Created by saurabhagarwal on 1/5/15.

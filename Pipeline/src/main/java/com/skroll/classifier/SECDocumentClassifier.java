@@ -1,9 +1,8 @@
-package com.skroll.classification;
+package com.skroll.classifier;
 
 import com.google.common.collect.Lists;
 import com.skroll.analyzer.model.nb.DataTuple;
 import com.skroll.analyzer.model.nb.NaiveBayes;
-import com.skroll.classification.category.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.Token;

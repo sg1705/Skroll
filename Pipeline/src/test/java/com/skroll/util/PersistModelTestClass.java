@@ -1,13 +1,12 @@
 package com.skroll.util;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Created by saurabhagarwal on 1/11/15.
  */
-public class PersistModelTestClass implements Serializable {
+public class PersistModelTestClass {
 
     public static final double PRIOR_COUNT = 100;
     public static final int DEFAULT_NUMBER_CATEGORIES = 2;
