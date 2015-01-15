@@ -88,8 +88,13 @@ public class ModelHelper {
         for(Map.Entry<String, JsonElement> entry : set) {
             JsonElement elmt = entry.getValue();
             if (elmt.isJsonPrimitive()) {
-                // add in the core map
-                coreMap.set(entry.getKey(), elmt.getAsString());
+                if (entry.getKey().startsWith("Is")) {
+                    //boolean
+                    coreMap.set(entry.getKey(), new Boolean(elmt.getAsBoolean()));
+                } else {
+                    // add in the core map
+                    coreMap.set(entry.getKey(), elmt.getAsString());
+                }
             } else if (elmt.isJsonArray()) {
                 coreMap.set(entry.getKey(), processArray(elmt));
             } else if (elmt.isJsonObject()) {
