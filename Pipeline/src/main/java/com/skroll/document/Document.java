@@ -10,7 +10,6 @@ import java.util.List;
  */
 public class Document extends CoreMap {
 
-    //String source;
     String target;
 
 
@@ -21,6 +20,10 @@ public class Document extends CoreMap {
     public Document(String source) {
         initialize();
         this.setSource(source);;
+    }
+
+    public Document(CoreMap map) {
+        this.map = map.map;
     }
 
     public List<CoreMap> getParagraphs() {
