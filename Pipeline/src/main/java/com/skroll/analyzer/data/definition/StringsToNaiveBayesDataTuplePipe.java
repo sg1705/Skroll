@@ -14,7 +14,7 @@ import java.util.Set;
  */
 public class StringsToNaiveBayesDataTuplePipe extends SyncPipe<List<String>, DataTuple> {
     public static final int NUMBER_FEATURES=2;
-    public static final boolean USE_QUOTE=true;
+    public static final boolean USE_QUOTE=Constants.DEFINITION_CLASSIFICATION_NAIVE_BAYES_USE_QUOTE;
 
     @Override
     public DataTuple process(List<String> input) {
@@ -23,7 +23,7 @@ public class StringsToNaiveBayesDataTuplePipe extends SyncPipe<List<String>, Dat
 
 
 
-        int length= Constants.DEFINITION_CLASSIFICATION_NAIVE_BAYES_NUMBER_TOKENS;
+        int length= Constants.DEFINITION_CLASSIFICATION_NAIVE_BAYES_NUMBER_TOKENS_USED;
         Set<String> tokenSet = new HashSet<String>();
 
         // skip words inside the quotes for training
@@ -53,8 +53,8 @@ public class StringsToNaiveBayesDataTuplePipe extends SyncPipe<List<String>, Dat
         DataTuple tuple;
 
         //features[featureNumber] = tokenSet.size();
-        features[featureNumber] = Math.min(input.size(), Constants.DEFINITION_CLASSIFICATION_NAIVE_BAYES_NUMBER_TOKENS);
-        if (input.size()<Constants.DEFINITION_CLASSIFICATION_NAIVE_BAYES_NUMBER_TOKENS)
+        features[featureNumber] = Math.min(input.size(), Constants.DEFINITION_CLASSIFICATION_NAIVE_BAYES_TOKENS_NUMBER_FEATURE_MAX);
+        if (input.size()<Constants.DEFINITION_CLASSIFICATION_NAIVE_BAYES_NEGATIVE_THRESHOLD)
             tuple =  new DataTuple(Constants.CATEGORY_NEGATIVE, tokenSet.toArray(new String[tokenSet.size()]),features);
         else tuple =  new DataTuple(categoryType, tokenSet.toArray(new String[tokenSet.size()]),features);
 

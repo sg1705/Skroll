@@ -18,7 +18,13 @@ public class Constants {
     public static final int CATEGORY_POSITIVE = 1;
     public static final int CATEGORY_NEGATIVE = 0;
 
-    public static final int DEFINITION_CLASSIFICATION_NAIVE_BAYES_NUMBER_TOKENS = 6;
+    public static final boolean DEFINITION_CLASSIFICATION_NAIVE_BAYES_USE_QUOTE=false;
+
+    public static final int DEFINITION_CLASSIFICATION_NAIVE_BAYES_NUMBER_TOKENS_USED = 5;
+    public static final int DEFINITION_CLASSIFICATION_NAIVE_BAYES_TOKENS_NUMBER_FEATURE_MAX = 10;
+    public static final int DEFINITION_CLASSIFICATION_NAIVE_BAYES_NEGATIVE_THRESHOLD = 10;
+    public static final int[] DEFINITION_CLASSIFICATION_NAIVE_BAYES_FEATURE_SIZES =
+            {DEFINITION_CLASSIFICATION_NAIVE_BAYES_TOKENS_NUMBER_FEATURE_MAX+1};
 
     public static final double DEF_THRESHOLD_PROBABILITY = 0.85;
 }

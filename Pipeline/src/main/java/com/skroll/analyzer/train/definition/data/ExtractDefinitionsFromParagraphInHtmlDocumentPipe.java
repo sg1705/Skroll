@@ -23,7 +23,9 @@ public class ExtractDefinitionsFromParagraphInHtmlDocumentPipe extends SyncPipe<
             String str = paragraph.getText();
             Pattern p = Pattern.compile( "\"([^\"]*)\"" );
             Matcher m = p.matcher( str );
-            if (paragraph.getText().startsWith("\"")) {
+            if (paragraph.getText()
+                    //.replaceFirst(" +","") //uncomment to ignore starting spaces
+                    .startsWith("\"")) {
                 while (m.find()) {
                     newList.add(m.group(1));
                 }

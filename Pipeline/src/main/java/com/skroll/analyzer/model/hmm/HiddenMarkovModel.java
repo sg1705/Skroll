@@ -17,7 +17,7 @@ public class HiddenMarkovModel {
 
     static final int STATE_NUMBER_FEATURE =0;
 
-    static final boolean USE_QUOTE=true;
+    static final boolean USE_QUOTE=false;
     static final boolean USE_NEXT_TOKEN=true; // it seems the next token is an important feature
 
     static final int IN_QUOTE_FEATURE =1;
@@ -138,8 +138,9 @@ public class HiddenMarkovModel {
 
         // update state value probability
         int total =0;
-        for (int n: totalStateValueCounts) total+=n;
-        for (int i=0; i<numStateValues; i++) stateValueProbability[i] = (double)totalStateValueCounts[i]/total;
+        for (int n: totalStateValueCounts) total += n+PRIOR_COUNT;
+        for (int i=0; i<numStateValues; i++)
+            stateValueProbability[i] = (double)(totalStateValueCounts[i]+PRIOR_COUNT)/total;
 
         for (int i=0; i<numStateValues; i++){
             double priorCountPartI = PRIOR_COUNT * stateValueProbability[i];
@@ -181,27 +182,27 @@ public class HiddenMarkovModel {
         int inQuote=0; // a flag toggles between 0 and 1 each time a quote is encountered
 
 
+        int length=modelLength;
 
-        // to make the totalStateValueCounts consistent,
-        // we do not use the last values of the input arrays for updating the various counts,
-        // except the last stateValues entry is used to update the transition counts.
-        // so when passing in input data,
-        // we would like to have stateValues contain at least non-definition words at the end.
-        for (int i=0;i<modelLength-1; i++){
+        for (int i=0;i<length && i < tokens.length; i++){
 
 
             String token = tokens[i];
             int inc=1; // inc is used to get the next token
-            if (tokens[i+inc].equals("\"")) {
+            if (i+inc <tokens.length && tokens[i+inc].equals("\"")) {
                 inc++;
-                if (i+inc >= tokens.length) return; // if the token is the last
+                //if (i+inc >= tokens.length) return; // if the token is the last
             }
-            String nextToken = tokens[i+inc];
+
+            // nextToken will be null if token is the last token
+            String nextToken=null;
+            if (i+inc < tokens.length) nextToken = tokens[i+inc];
 
             //todo: eventually we want to have this put in training data file instead of putting it here
             // handling quote feature
             if (token.equals("\"")) {
                 if (USE_QUOTE) inQuote = 1 - inQuote;
+                length++;
                 continue;
             }
 
@@ -213,13 +214,14 @@ public class HiddenMarkovModel {
 
 
             totalStateValueCounts[stateValues[i]]++;
-            transitionCounts[stateValues[i]][stateValues[i+inc]]++;
+            if (i+inc < tokens.length) // do not update if at the last state
+                transitionCounts[stateValues[i]][stateValues[i+inc]]++;
 
             Integer c = tokenCounts[stateValues[i]].get(token);
             if (c==null) c=0;
             tokenCounts[stateValues[i]].put(token, c + 1);
 
-            if (!USE_NEXT_TOKEN) continue;
+            if (!USE_NEXT_TOKEN || nextToken==null) continue;
             c = nextTokenCounts[stateValues[i]].get(nextToken);
             if (c==null) c=0;
             nextTokenCounts[stateValues[i]].put(nextToken, c + 1);
@@ -314,9 +316,9 @@ public class HiddenMarkovModel {
     }
 
     double[][] inferBackward(String tokens[], int[][] features, int length){
-        double [][] observationProbGivenState = new double[modelLength][numStateValues];
-        Arrays.fill(observationProbGivenState[length-1],1); // base case. The last index is not actually used.
-        for (int i=length-2; i>=0; i--){
+        double [][] observationProbGivenState = new double[modelLength+1][numStateValues];
+        Arrays.fill(observationProbGivenState[length],1); // base case.
+        for (int i=length-1; i>=0; i--){
             double [] probObservationGivenCurrState= new double[numStateValues];
             double [] probObservationGivenNextState= new double[numStateValues];
 
@@ -349,7 +351,7 @@ public class HiddenMarkovModel {
         // loop skips the last index, because the last state does not have the next token feature.
         // if we remove the next token feature,
         // todo: remove the next token feature and make use of the last index to see what happens.
-        for (int i=0;i<length-1;i++){
+        for (int i=0;i<length;i++){
             stateProbGivenPrevObservations[i] =  inferStateProbabilitiesGivenObservation(i,priorProb,tokens, features);
             priorProb = inferNextStateProbabilities(stateProbGivenPrevObservations[i]);
             //last calculation is not used for now, because last token is used in the inference of the second last state.
@@ -376,16 +378,17 @@ public class HiddenMarkovModel {
 
         // loop skips the last index, because the last state does not have the next token feature.
         // if we remove the next token feature,
-        for (int s=0;s<length-1;s++){ // for each state
+        for (int s=0;s<length;s++){ // for each state
             System.arraycopy(priorProb, 0 , maxObservationProbGivenState[s], 0, numStateValues);
             for (int sv=0; sv<numStateValues; sv++){ // for each state value
                 // initialize token entry in the maps if it's not seen before
-                if ( ! tokenProbabilityGivenStateValue[sv].containsKey(tokens[s]))
-                    setZeroCountAndProbabilities(tokenCounts, tokenProbabilityGivenStateValue, tokens[s]);
-                if ( ! nextTokenProbabilityGivenStateValue[sv].containsKey(tokens[s+1]))
-                    setZeroCountAndProbabilities(nextTokenCounts, nextTokenProbabilityGivenStateValue, tokens[s+1]);
-                maxObservationProbGivenState[s][sv] *=  tokenProbabilityGivenStateValue[sv].get(tokens[s])*
-                        nextTokenProbabilityGivenStateValue[sv].get(tokens[s+1]);
+//                if ( ! tokenProbabilityGivenStateValue[sv].containsKey(tokens[s]))
+//                    setZeroCountAndProbabilities(tokenCounts, tokenProbabilityGivenStateValue, tokens[s]);
+//                if ( ! nextTokenProbabilityGivenStateValue[sv].containsKey(tokens[s+1]))
+//                    setZeroCountAndProbabilities(nextTokenCounts, nextTokenProbabilityGivenStateValue, tokens[s+1]);
+                maxObservationProbGivenState[s][sv] *=tokenProbGivenStateValue(sv, tokens, s)*
+                        nextTokenProbGivenStateValue(sv, tokens, s);
+
                 for (int f=0; f<NUMBER_FEATURES; f++){ // for each feature
                     maxObservationProbGivenState[s][sv] *=
                             featureValueProbabilityGivenState.get(sv).get(f)[features[s][f]];
@@ -405,10 +408,10 @@ public class HiddenMarkovModel {
         }
 
         int path[] = new int[length];
-        if (length<2) return path;
+        if (length==0) return path;
 
-        path[length-2] = maxIndex(maxObservationProbGivenState[length-2]);
-        for (int s=length - 3; s>=0; s--){
+        path[length-1] = maxIndex(maxObservationProbGivenState[length-1]);
+        for (int s=length - 2; s>=0; s--){
             path[s] = paths[s] [path[s+1]];
         }
         return path;
@@ -442,18 +445,36 @@ public class HiddenMarkovModel {
         }
     }
 
+    double tokenProbGivenStateValue(int stateValue, String[] tokens, int stateNumber){
+        String token  = tokens[stateNumber];
+        if (! tokenProbabilityGivenStateValue[stateValue].containsKey(token)){
+            setZeroCountAndProbabilities(tokenCounts, tokenProbabilityGivenStateValue,token);
+        }
+        return tokenProbabilityGivenStateValue[stateValue].get(token);
+    }
+
+    double nextTokenProbGivenStateValue(int stateValue, String[] tokens, int stateNumber){
+        if (stateNumber+1 == tokens.length) return 1; //no more next token
+        String token = tokens[stateNumber+1];
+        if (! nextTokenProbabilityGivenStateValue[stateValue].containsKey(token)){
+            setZeroCountAndProbabilities(tokenCounts, nextTokenProbabilityGivenStateValue,token);
+        }
+        return nextTokenProbabilityGivenStateValue[stateValue].get(token);
+    }
+
     double[] inferJointProbabilitiesStateAndObservation(int stateNumber, double priorProb[], String[] tokens, int[][] features){
 
         double[] prob = new double[numStateValues];
         for (int i=0;i<numStateValues; i++){
 
             // initialize token entry in the maps if it's not seen before
-            if ( ! tokenProbabilityGivenStateValue[i].containsKey(tokens[stateNumber]))
-                setZeroCountAndProbabilities(tokenCounts, tokenProbabilityGivenStateValue, tokens[stateNumber]);
-            if ( ! nextTokenProbabilityGivenStateValue[i].containsKey(tokens[stateNumber+1]))
-                setZeroCountAndProbabilities(nextTokenCounts, nextTokenProbabilityGivenStateValue, tokens[stateNumber+1]);
-            prob[i] = priorProb[i] * tokenProbabilityGivenStateValue[i].get(tokens[stateNumber]);
-            prob[i] *= nextTokenProbabilityGivenStateValue[i].get(tokens[stateNumber+1]);
+//            if ( ! tokenProbabilityGivenStateValue[i].containsKey(tokens[stateNumber]))
+//                setZeroCountAndProbabilities(tokenCounts, tokenProbabilityGivenStateValue, tokens[stateNumber]);
+//            if ( ! nextTokenProbabilityGivenStateValue[i].containsKey(tokens[stateNumber+1]))
+//                setZeroCountAndProbabilities(nextTokenCounts, nextTokenProbabilityGivenStateValue, tokens[stateNumber+1]);
+            prob[i] = priorProb[i] * tokenProbGivenStateValue(i, tokens, stateNumber);
+            prob[i] *=  nextTokenProbGivenStateValue(i, tokens, stateNumber);
+            //prob[i] *= nextTokenProbabilityGivenStateValue[i].get(tokens[stateNumber+1]);
             //prob[i] *= stateNumberProbabilityGivenStateValue[i][stateNumber];
             for (int j=0; j<NUMBER_FEATURES; j++){
                 //prob[i] *= featureValueProbabilityGivenState.get(i).get(j)[stateNumber];

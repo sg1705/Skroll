@@ -189,31 +189,26 @@ public class NaiveBayes {
     }
 
     @Override
-    public String toString() {
-        return "NaiveBayes{" +
-                "numberCategories=" + numberCategories +
-                ", numberFeatures=" + numberFeatures +
-                ", featureSizes=" + Arrays.toString(featureSizes) +
-                ", categoryCount=" + Arrays.toString(categoryCount) +
-                ", totalCategoryCount=" + totalCategoryCount +
-                ", categoryFeatureValueCounts=" + categoryFeatureValueCounts +
-                ", wordCounts=" + Arrays.toString(wordCounts) +
-                '}';
+
+    public String toString(){
+        String s="";
+        s+= "totalCategoryCount: "+totalCategoryCount;
+        s+="\n";
+        for (int i=0;i<numberCategories;i++) {
+            s+=("category "+i+":\n");
+            s+="categoryCount: "+categoryCount[i]+"\n";
+            s+=("---------------------------------------------------------------------\n");
+            for (String word : wordCounts[i].keySet()) {
+                s+=(word + "=" + wordCounts[i].get(word) + " ");
+            }
+            s+="\n";
+            for (int[] featureValueCounts :categoryFeatureValueCounts.get(i)) {
+                s += "features: " + Arrays.toString(featureValueCounts);
+                s += "\n";
+            }
+        }
+        return s;
     }
-//    public String toString(){
-//        String s="";
-//        s+= "totalCategoryCount: "+totalCategoryCount;
-//        for (int i=0;i<numberCategories;i++) {
-//            s+=("category "+i+":\n");
-//            s+="categoryCount: "+categoryCount[i]+"\n";
-//            s+=("---------------------------------------------------------------------\n");
-//            for (String word : wordCounts[i].keySet()) {
-//                s+=(word + "=" + wordCounts[i].get(word) + " ");
-//            }
-//            s += "features:\n" + Arrays.toString(featureCounts[i]);
-//        }
-//        return s;
-//    }
 
 
 

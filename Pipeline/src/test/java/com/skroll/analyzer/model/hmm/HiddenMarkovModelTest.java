@@ -19,8 +19,8 @@ public class HiddenMarkovModelTest extends TestCase {
         System.out.println(hmm.showProbabilities());
 
         double[][] result = hmm.infer(token);
-        System.out.println(result[0][0]);
-        System.out.println(result[0][1]);
+        System.out.println(Arrays.deepToString((result)));
+
 
 //        assert(result[0][0] == PROBABILITY_CATEGORY_NEGATIVE);
 //        assert(result[0][1] == PROBABILITY_CATEGORY_POSITIVE);
@@ -137,7 +137,7 @@ public class HiddenMarkovModelTest extends TestCase {
     public void testInfer() throws Exception {
         System.out.println("testInfer");
         double [] prob = {0.5,0.5};
-        HiddenMarkovModel hmm = new HiddenMarkovModel(5);
+        HiddenMarkovModel hmm = new HiddenMarkovModel();
         String[] token={"\"","affiliate","\"","means","respect"};
         int[] tokenType={0,1,0,0,0};
 
@@ -160,8 +160,8 @@ public class HiddenMarkovModelTest extends TestCase {
         System.out.println("testInferForward");
         double [] prob = {0.5,0.5};
         HiddenMarkovModel hmm = new HiddenMarkovModel(5);
-        String[] token={"\"","affiliate","\"","means","respect"};
-        int[] tokenType={0,1,0,0,0};
+        String[] token={"\"","affiliate","\"","means","respect","test"};
+        int[] tokenType={0,1,0,0,0,0};
 
         hmm.updateCounts(token, tokenType);
         System.out.println(hmm.showProbabilities());

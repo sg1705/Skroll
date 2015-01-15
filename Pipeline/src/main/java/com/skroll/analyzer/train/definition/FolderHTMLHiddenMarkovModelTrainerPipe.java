@@ -55,7 +55,8 @@ public class FolderHTMLHiddenMarkovModelTrainerPipe extends SyncPipe<String, Str
                         .add(Pipes.REMOVE_BLANK_PARAGRAPH_FROM_HTML_DOC)
                         .add(Pipes.REMOVE_NBSP_IN_HTML_DOC)
                         .add(Pipes.REPLACE_SPECIAL_QUOTE_IN_HTML_DOC)
-                        .add(Pipes.FILTER_STARTS_WITH_QUOTE_IN_HTML_DOC)
+                        .add(Pipes.REMOVE_STARTING_SPACES_IN_HTML_DOC)
+                        //.add(Pipes.FILTER_STARTS_WITH_QUOTE_IN_HTML_DOC)
                         .add(Pipes.TOKENIZE_PARAGRAPH_IN_HTML_DOC)
                         .add(Pipes.EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC)
                         .add(Pipes.HTML_HIDDEN_MARKOV_MODEL_TRAINING_PIPE,

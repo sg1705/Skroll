@@ -21,7 +21,7 @@ public class HTMLHiddenMarkovModelTestingPipeTest extends TestCase {
         htmlDoc.setSource(htmlString);
 
         // create HMM document
-        HiddenMarkovModel model = new HiddenMarkovModel(20);
+        HiddenMarkovModel model = new HiddenMarkovModel(5);
 
         //create a pipeline
         Pipeline<Document, Document> pipeline =
@@ -30,7 +30,8 @@ public class HTMLHiddenMarkovModelTestingPipeTest extends TestCase {
                         .add(Pipes.REMOVE_BLANK_PARAGRAPH_FROM_HTML_DOC)
                         .add(Pipes.REMOVE_NBSP_IN_HTML_DOC)
                         .add(Pipes.REPLACE_SPECIAL_QUOTE_IN_HTML_DOC)
-                        .add(Pipes.FILTER_STARTS_WITH_QUOTE_IN_HTML_DOC)
+                        .add(Pipes.REMOVE_STARTING_SPACES_IN_HTML_DOC)
+                                //.add(Pipes.FILTER_STARTS_WITH_QUOTE_IN_HTML_DOC)
                         .add(Pipes.TOKENIZE_PARAGRAPH_IN_HTML_DOC)
                         .add(Pipes.EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC)
                         .add(Pipes.HTML_HIDDEN_MARKOV_MODEL_TRAINING_PIPE,
@@ -55,7 +56,7 @@ public class HTMLHiddenMarkovModelTestingPipeTest extends TestCase {
                         .add(Pipes.REMOVE_BLANK_PARAGRAPH_FROM_HTML_DOC)
                         .add(Pipes.REMOVE_NBSP_IN_HTML_DOC)
                         .add(Pipes.REPLACE_SPECIAL_QUOTE_IN_HTML_DOC)
-                        .add(Pipes.FILTER_STARTS_WITH_QUOTE_IN_HTML_DOC)
+                        //.add(Pipes.FILTER_STARTS_WITH_QUOTE_IN_HTML_DOC)
                         .add(Pipes.TOKENIZE_PARAGRAPH_IN_HTML_DOC)
                         .add(Pipes.EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC)
                         .build();
@@ -78,7 +79,7 @@ public class HTMLHiddenMarkovModelTestingPipeTest extends TestCase {
 
 //                    System.out.println(i+", "+j);
 //                if (paragraphs.get(i).getWords().get(j).equals("\"")) continue; //skip quote
-                System.out.printf("%d %s=%.2f ", j,paragraphs.get(i).getTokens().get(j), probabilities.get(i)[k++][1]);
+                System.out.printf("%d %s=%.2f ", j,paragraphs.get(i).getTokens().get(j).getText(), probabilities.get(i)[k++][1]);
             }
             System.out.println();
         }

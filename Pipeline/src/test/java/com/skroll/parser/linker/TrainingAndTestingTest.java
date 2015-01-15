@@ -44,7 +44,7 @@ public class TrainingAndTestingTest extends TestCase {
         for(CoreMap paragraph : htmlDoc.getParagraphs()) {
             if (DocumentHelper.isDefinition(paragraph)) {
                 defCount++;
-                //System.out.println(paragraph.getText());
+                System.out.println(paragraph.getText());
             }
         }
         System.out.println(defCount);
