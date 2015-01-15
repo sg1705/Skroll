@@ -38,7 +38,7 @@ public class FirstEightWordsFormatAnnotatorTest extends TestCase {
         int italicCount = 0;
         int underlineCount = 0;
         for(CoreMap paragraph : paragraphs) {
-            boolean isbold = paragraph.get(CoreAnnotations.BoldAnnotation.class);
+            boolean isbold = paragraph.get(CoreAnnotations.IsBoldAnnotation.class);
             if (isbold) {
                 System.out.println(paragraph.getText());
                 boldCount++;

@@ -2,6 +2,7 @@ package com.skroll.document;
 
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
+import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
@@ -12,6 +13,7 @@ import org.junit.Test;
 import java.io.File;
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class HtmlDocumentToFilePipeTest extends TestCase {
@@ -57,6 +59,11 @@ public class HtmlDocumentToFilePipeTest extends TestCase {
 
         System.out.println(htmlDoc.getParagraphs().size());
         assert (htmlDoc.getParagraphs().size() == 8);
+
+        List<CoreMap> fragments = htmlDoc.getParagraphs().get(5).get(CoreAnnotations.ParagraphFragmentAnnotation.class);
+        assert (fragments
+                .get(1)
+                .get(CoreAnnotations.IsBoldAnnotation.class) == true);
     }
 
 

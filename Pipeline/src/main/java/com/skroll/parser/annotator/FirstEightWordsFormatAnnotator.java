@@ -29,7 +29,7 @@ public class FirstEightWordsFormatAnnotator extends SyncPipe<Document, Document>
         List<CoreMap> paragraphs = input.getParagraphs();
         for(CoreMap paragraph : paragraphs) {
             boolean isBold = this.isFormat("b", paragraph);
-            paragraph.set(CoreAnnotations.BoldAnnotation.class, isBold);
+            paragraph.set(CoreAnnotations.IsBoldAnnotation.class, isBold);
 
             boolean isItalic = this.isFormat("i", paragraph);
             paragraph.set(CoreAnnotations.ItalicAnnotation.class, isItalic);

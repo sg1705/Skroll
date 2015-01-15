@@ -71,6 +71,13 @@ public class CoreAnnotations {
         }
     }
 
+    public static class ParagraphFragmentAnnotation implements CoreAnnotation<List<CoreMap>> {
+        public Class<List<CoreMap>> getType() {
+            return EraserUtils.<Class<List<CoreMap>>> uncheckedCast(List.class);
+        }
+    }
+
+
 
     public static class TokenAnnotation implements CoreAnnotation<List<Token>> {
         public Class<List<Token>> getType() {
@@ -88,6 +95,7 @@ public class CoreAnnotations {
             return String.class;
         }
     }
+
 
     public static class IsDefinitionAnnotation implements CoreAnnotation<Boolean> {
         public Class<Boolean> getType() {
@@ -125,7 +133,7 @@ public class CoreAnnotations {
     /**
      * Annotations for CoreLabel
      */
-    public static class BoldAnnotation implements CoreAnnotation<Boolean> {
+    public static class IsBoldAnnotation implements CoreAnnotation<Boolean> {
         public Class<Boolean> getType() {
             return Boolean.class;
         }
