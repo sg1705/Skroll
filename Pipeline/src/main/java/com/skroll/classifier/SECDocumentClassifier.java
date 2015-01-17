@@ -1,6 +1,7 @@
 package com.skroll.classifier;
 
 import com.google.common.collect.Lists;
+import com.google.gson.reflect.TypeToken;
 import com.skroll.analyzer.model.nb.DataTuple;
 import com.skroll.analyzer.model.nb.NaiveBayes;
 import com.skroll.document.CoreMap;
@@ -11,6 +12,7 @@ import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.util.ObjectPersistUtil;
 
+import java.lang.reflect.Type;
 import java.util.*;
 
 /**
@@ -22,28 +24,34 @@ public class SECDocumentClassifier implements Classifier {
     // Initialize the list of category this classifier support.
     private final ArrayList<Category> categories = new ArrayList<Category>();
     private  NaiveBayes nbModelForDoc;
-    ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil<NaiveBayes>();
+    ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil();
     String modelName = "com.skroll.analyzer.model.nb.NaiveBayes.secDocumentNB";
+    Type type = null;
 
-    public void persistModel(Object obj, String modelName){
-        if (obj!=null)
-            try {
-                objectPersistUtil.persistObject(obj, modelName);
-            } catch (ObjectPersistUtil.ObjectPersistException e) {
-                e.printStackTrace();
-            }
-
-    }
     public SECDocumentClassifier() {
         categories.add(new Category(0, "Indenture"));
         categories.add(new Category(1, "CreditAgreements"));
         categories.add(new Category(2, "Prospectus"));
+        try {
+            type = new TypeToken<NaiveBayes>() {}.getType();
+            nbModelForDoc = (NaiveBayes) objectPersistUtil.readObject(type,modelName); //"com.skroll.analyzer.model.nb.NaiveBayes.secDocumentNB.1");
+            System.out.println("nbModelForDoc" + nbModelForDoc);
 
-        nbModelForDoc = new NaiveBayes(categories.size(), new int[0]);
-        System.out.println("nbModelForDoc" + nbModelForDoc);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            nbModelForDoc=null;
+        }
+        if (nbModelForDoc==null) {
+
+            nbModelForDoc = new NaiveBayes(categories.size(), new int[0]);
+        }
 
     }
 
+    @Override
+    public void persistModel() throws ObjectPersistUtil.ObjectPersistException {
+        objectPersistUtil.persistObject(type,nbModelForDoc,modelName);
+    }
 
     @Override
     public void train(Category category, Document doc) {

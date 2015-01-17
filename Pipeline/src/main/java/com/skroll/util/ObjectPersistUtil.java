@@ -2,7 +2,6 @@ package com.skroll.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,7 +11,7 @@ import java.lang.reflect.Type;
 /**
  * Created by saurabhagarwal on 1/12/15.
  */
-public class ObjectPersistUtil<T> {
+public class ObjectPersistUtil {
 
     public static final Logger logger = LoggerFactory
             .getLogger(Configuration.class);
@@ -28,12 +27,10 @@ public class ObjectPersistUtil<T> {
     }
 
     // Persist the Object
-    public void persistObject(Object obj, String objectName) throws ObjectPersistException {
+    public  void persistObject(Type type, Object obj, String objectName) throws ObjectPersistException {
         // Write to disk with FileOutputStream
         FileOutputStream f_out = null;
-        Type type = new TypeToken<T>() {}.getType();
         File file = new File(configuration.get(MODEL_PERSIST_FOLDER) + "/" + objectName);
-        //TODO: delete if the file exist. will implement the versioning in the next iteration.
         if (file.exists()){
             file.delete();
         }
@@ -66,8 +63,8 @@ public class ObjectPersistUtil<T> {
         }
     }
 
-    public Object readObject(String objectName) throws ObjectPersistException {
-        Type type = new TypeToken<T>() {}.getType();
+    public Object readObject(Type type,String objectName) throws ObjectPersistException {
+
         // Read from disk using FileInputStream
         FileInputStream f_in = null;
         try {
