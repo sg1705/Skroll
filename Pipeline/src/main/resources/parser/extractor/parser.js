@@ -1,16 +1,16 @@
 var page = require('webpage').create();
 var system = require('system');
+var fs = require('fs');
+
 var args = system.args;
 
-var htmlText = args[1];
-htmlText = htmlText.substring(1, htmlText.length-1);
+var fileName = args[1];
+//htmlText = htmlText.substring(1, htmlText.length-1);
+var htmlText = fs.read(fileName);
 
 page.onConsoleMessage = function (msg) {
     console.log(msg);
 };
-
-var fs = require('fs');
-
 
 //page.settings.userAgent = 'SpecialAgent';
 page.content = htmlText;
