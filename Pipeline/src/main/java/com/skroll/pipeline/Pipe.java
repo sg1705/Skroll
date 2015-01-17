@@ -7,7 +7,7 @@ import java.util.List;
  */
 public interface Pipe<I,O> {
 
-    O process(I input);
+    public abstract O process(I input);
     public void setTarget(Pipe pipe);
 
     public void setConfig(List<Object> config);

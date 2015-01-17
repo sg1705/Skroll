@@ -29,4 +29,9 @@ public class Constants {
             {2, DEFINITION_CLASSIFICATION_NAIVE_BAYES_TOKENS_NUMBER_FEATURE_MAX+1};
 
     public static final double DEF_THRESHOLD_PROBABILITY = 0.85;
+
+
+    // extractor url
+    public static final String PHANTOM_JS_BIN = "src/main/resources/parser/extractor/phantomjs";
+    public static final String JQUERY_PARSER_JS = "src/main/resources/parser/extractor/parser.js";
 }

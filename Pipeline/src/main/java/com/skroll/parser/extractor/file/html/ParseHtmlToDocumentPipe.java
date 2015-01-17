@@ -3,6 +3,7 @@ package com.skroll.parser.extractor.file.html;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
+import com.skroll.parser.extractor.PhantomJsExtractor;
 import com.skroll.pipeline.SyncPipe;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -40,13 +41,24 @@ public class ParseHtmlToDocumentPipe extends SyncPipe<Document, Document> {
 
     @Override
     public Document process(com.skroll.document.Document document) {
-        org.jsoup.nodes.Document doc = Jsoup.parse(document.getSource());
-        processNodes(doc);
-        document.setTarget(doc.outerHtml());
-        //htmlDoc.setAnnotatedHtml(doc.outerHtml());
-        document.setParagraphs(this.paragraphs);
-        //TODO find out the Charset
-        return this.target.process(document);
+        document = processPhantomExtractor(document);
+//        org.jsoup.nodes.Document doc = Jsoup.parse(document.getSource());
+//        processNodes(doc);
+//        document.setTarget(doc.outerHtml());
+//        document.setParagraphs(this.paragraphs);
+//        //TODO find out the Charset
+         return this.target.process(document);
+    }
+
+
+    private Document processPhantomExtractor(com.skroll.document.Document document) {
+        PhantomJsExtractor phantomJsExtractor = new PhantomJsExtractor();
+        try {
+            document = phantomJsExtractor.process(document);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return document;
     }
 
 
