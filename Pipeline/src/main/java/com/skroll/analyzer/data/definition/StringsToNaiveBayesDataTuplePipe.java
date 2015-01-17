@@ -31,16 +31,16 @@ public class StringsToNaiveBayesDataTuplePipe extends SyncPipe<List<String>, Dat
         int [] features = new int[NUMBER_FEATURES];
         int featureNumber=0;
         if (input.get(0).equals("\"")) {
-            features[featureNumber]=1;
+            if (USE_QUOTE)  features[featureNumber]=1;
             indexAfterQuote=1;
-            while (indexAfterQuote<input.size() && !input.get(indexAfterQuote).equals("\""))
-                indexAfterQuote++;
-            indexAfterQuote ++;
+            //while (indexAfterQuote<input.size() && !input.get(indexAfterQuote).equals("\""))
+                //indexAfterQuote++;
+            //indexAfterQuote ++;
         }
         else features[featureNumber]=0;
         featureNumber++;
 
-        if (!USE_QUOTE) featureNumber--;
+        //if (!USE_QUOTE) featureNumber--;
 
 
         for (;indexAfterQuote<input.size() && tokenSet.size()<length; indexAfterQuote++){

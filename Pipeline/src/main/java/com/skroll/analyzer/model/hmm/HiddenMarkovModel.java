@@ -1,5 +1,7 @@
 package com.skroll.analyzer.model.hmm;
 
+import com.skroll.pipeline.util.Constants;
+
 import java.util.*;
 //todo: think how to handle words with different type of cases
 
@@ -17,7 +19,7 @@ public class HiddenMarkovModel {
 
     static final int STATE_NUMBER_FEATURE =0;
 
-    static final boolean USE_QUOTE=false;
+    static final boolean USE_QUOTE= Constants.DEFINITION_CLASSIFICATION_HMM_USE_QUOTE;
     static final boolean USE_NEXT_TOKEN=true; // it seems the next token is an important feature
 
     static final int IN_QUOTE_FEATURE =1;
