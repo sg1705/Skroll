@@ -101,6 +101,12 @@ var PARAGRAPH_FRAGMENT = "ParagraphFragmentAnnotation"
 
 
 function processNode(index, element) {
+
+    //ignore nodeName is "script"
+    if ($(element).is("script")) {
+        return;
+    }
+
     //check if a #text node
     if (element.nodeType == 3) {
         //create a chunk and add it to stack

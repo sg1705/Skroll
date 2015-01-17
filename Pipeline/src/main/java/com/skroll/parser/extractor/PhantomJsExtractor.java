@@ -1,7 +1,9 @@
 package com.skroll.parser.extractor;
 
+import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.ModelHelper;
+import com.skroll.document.annotation.CoreAnnotation;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.SyncPipe;
 import com.skroll.pipeline.util.Constants;
@@ -68,6 +70,7 @@ public class PhantomJsExtractor {
         if (newDoc.get(CoreAnnotations.ParagraphsAnnotation.class) == null) {
             throw new Exception("No paragraphs were identified:");
         }
+        newDoc = postExtraction(newDoc);
         return newDoc;
     }
 
@@ -76,6 +79,31 @@ public class PhantomJsExtractor {
         Path path = Files.createTempFile("phantom", ".html");
         Utils.writeToFile(path.toString(), htmlText);
         return path;
+    }
+
+    /**
+     * Process a given document for the following.
+     *
+     * Tokenize PragraphFragments
+     * Create TextAnnotation for Paragraph
+     *
+     * @param doc
+     * @return
+     */
+    private Document postExtraction(Document doc) {
+        //create TextAnnotation for paragraph
+        List<CoreMap> paragraphs = doc.getParagraphs();
+        for(CoreMap paragraph: paragraphs) {
+            StringBuffer buf = new StringBuffer();
+            List<CoreMap> fragments = paragraph.get(CoreAnnotations.ParagraphFragmentAnnotation.class);
+            for(CoreMap fragment : fragments) {
+                String text = fragment.get(CoreAnnotations.TextAnnotation.class);
+                buf.append(text);
+            }
+            paragraph.set(CoreAnnotations.TextAnnotation.class, buf.toString());
+        }
+
+        return doc;
     }
 }
 

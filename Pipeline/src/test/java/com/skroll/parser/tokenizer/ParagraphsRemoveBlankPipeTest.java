@@ -28,10 +28,7 @@ public class ParagraphsRemoveBlankPipeTest extends TestCase {
                         .build();
         Document doc = pipeline.process(htmlDoc);
 
-        for(CoreMap paragraph : htmlDoc.getParagraphs()) {
-            System.out.println(Joiner.on(',').join(paragraph.getTokens()));
-        }
-        System.out.println(htmlDoc.getParagraphs().size());
-        assert (htmlDoc.getParagraphs().size() == 1659);
+        System.out.println(doc.getParagraphs().size());
+        assert (doc.getParagraphs().size() == 1384);
     }
 }

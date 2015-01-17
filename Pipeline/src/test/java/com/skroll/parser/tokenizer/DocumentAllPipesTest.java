@@ -32,11 +32,11 @@ public class DocumentAllPipesTest extends TestCase {
                         .build();
         Document doc = pipeline.process(htmlDoc);
 
-        for(CoreMap paragraph : htmlDoc.getParagraphs()) {
+        for(CoreMap paragraph : doc.getParagraphs()) {
             String words = Joiner.on(",").join(paragraph.getTokens());
             System.out.println(words);
         }
-        System.out.println(htmlDoc.getParagraphs().size());
-        assert (htmlDoc.getParagraphs().size() == 1953);
+        System.out.println(doc.getParagraphs().size());
+        assert (doc.getParagraphs().size() == 1953);
     }
 }
