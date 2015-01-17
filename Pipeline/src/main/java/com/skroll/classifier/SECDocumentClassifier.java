@@ -9,6 +9,7 @@ import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
+import com.skroll.util.ObjectPersistUtil;
 
 import java.util.*;
 
@@ -20,14 +21,27 @@ public class SECDocumentClassifier implements Classifier {
 
     // Initialize the list of category this classifier support.
     private final ArrayList<Category> categories = new ArrayList<Category>();
-    private final NaiveBayes nbModelForDoc;
+    private  NaiveBayes nbModelForDoc;
+    ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil<NaiveBayes>();
+    String modelName = "com.skroll.analyzer.model.nb.NaiveBayes.secDocumentNB";
 
+    public void persistModel(Object obj, String modelName){
+        if (obj!=null)
+            try {
+                objectPersistUtil.persistObject(obj, modelName);
+            } catch (ObjectPersistUtil.ObjectPersistException e) {
+                e.printStackTrace();
+            }
+
+    }
     public SECDocumentClassifier() {
         categories.add(new Category(0, "Indenture"));
         categories.add(new Category(1, "CreditAgreements"));
         categories.add(new Category(2, "Prospectus"));
+
         nbModelForDoc = new NaiveBayes(categories.size(), new int[0]);
         System.out.println("nbModelForDoc" + nbModelForDoc);
+
     }
 
 
@@ -106,6 +120,9 @@ public class SECDocumentClassifier implements Classifier {
         return output;
 
     }
+
+
+
     @Override
     public void train(List<DataTuple> dataTuple) {
         for (DataTuple dt : dataTuple) {

@@ -7,6 +7,7 @@ import com.skroll.document.Document;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
+import com.skroll.util.ObjectPersistUtil;
 import org.junit.Test;
 
 import java.io.File;
@@ -115,14 +116,19 @@ public class SECDocumentClassifierTest {
     }
 
     @Test
-    public void testTrainClassify()  {
+     public void testTrainClassify() throws ObjectPersistUtil.ObjectPersistException {
 
-            SECDocumentClassifier documentClassifier = new SECDocumentClassifier();
-            //convertRawToProcessedCorpus(rawFolder, ProcessedFolder);
+        SECDocumentClassifier documentClassifier = new SECDocumentClassifier();
+        //convertRawToProcessedCorpus(rawFolder, ProcessedFolder);
         try {
-            train(new Category(0, "Indentures"), documentClassifier, "/Users/saurabhagarwal/IdeaProjects/Skroll2015/Pipeline/src/test/resources/analyzer/train/docclassifier/pdef-words");
-            train(new Category(1, "CreditAgreements"), documentClassifier, "/Users/saurabhagarwal/IdeaProjects/Skroll2015/Pipeline/src/test/resources/analyzer/train/docclassifier/not-pdef-words");
+            train(new Category(0, "Indentures"), documentClassifier, "src/test/resources/analyzer/train/docclassifier/pdef-words");
+            train(new Category(1, "CreditAgreements"), documentClassifier, "src/test/resources/analyzer/train/docclassifier/not-pdef-words");
 
+        } catch(Exception ex){
+            fail("failed testTrainClassify");
+        }
+
+        try {
             System.out.println(classify(documentClassifier, "/Users/saurabhagarwal/IdeaProjects/Skroll2015/Pipeline/src/test/resources/analyzer/evaluate/docclassifier", 1000));
         } catch(Exception ex){
             fail("failed testTrainClassify");

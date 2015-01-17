@@ -2,6 +2,7 @@ package com.skroll.classifier;
 
 import com.skroll.analyzer.model.nb.DataTuple;
 import com.skroll.document.Document;
+import com.skroll.util.ObjectPersistUtil;
 
 import java.util.List;
 import java.util.SortedMap;

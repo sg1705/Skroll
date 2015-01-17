@@ -1,11 +1,9 @@
 package com.skroll.util;
 
-import com.google.gson.reflect.TypeToken;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Type;
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
@@ -22,17 +20,18 @@ public class ObjectPersistUtilTest {
         persistModelTestClass.wordCounts[0] = new HashMap<String, Integer>();
         persistModelTestClass.wordCounts[0].put("awesome", 100000);
 
-        Type PersistModelTestClassType = new TypeToken<PersistModelTestClass>() {}.getType();
+
+        ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil<PersistModelTestClass>();
 
         try {
-            ObjectPersistUtil.persistObject(persistModelTestClass, "com.skroll.util.PersistModelTestClass.persistModelTestClass", PersistModelTestClassType);
+            objectPersistUtil.persistObject(persistModelTestClass, "com.skroll.util.PersistModelTestClass.persistModelTestClass");
         } catch (ObjectPersistUtil.ObjectPersistException e) {
             e.printStackTrace();
             fail("failed persist Object");
         }
         Object obj = null;
         try {
-            obj = ObjectPersistUtil.readObject("com.skroll.util.PersistModelTestClass.persistModelTestClass", PersistModelTestClassType);
+            obj = objectPersistUtil.readObject("com.skroll.util.PersistModelTestClass.persistModelTestClass");
         } catch (ObjectPersistUtil.ObjectPersistException e) {
             e.printStackTrace();
             fail("failed readObject");
