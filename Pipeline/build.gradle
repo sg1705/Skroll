@@ -15,4 +15,5 @@ dependencies {
     compile group: 'com.google.guava', name: 'guava', version: '15.0'
     compile "com.aliasi:lingpipe:4.0.1"
     compile 'com.google.code.gson:gson:2.2.4'
+    compile 'org.apache.commons:commons-exec:1.3'
 }
