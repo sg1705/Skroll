@@ -18,6 +18,8 @@ public interface Classifier {
     // The classifier objects based on our different classification need ( such as definition, document classification etc)
     // will be created in the main instances of our production installation.
 
+    void persistModel() throws ObjectPersistUtil.ObjectPersistException;
+
     public  void train(Category category, Document doc);
 
     void train(Category category, String fileName, int numOfLines);
