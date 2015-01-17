@@ -32,10 +32,10 @@ public class FirstEightWordsFormatAnnotator extends SyncPipe<Document, Document>
             paragraph.set(CoreAnnotations.IsBoldAnnotation.class, isBold);
 
             boolean isItalic = this.isFormat("i", paragraph);
-            paragraph.set(CoreAnnotations.ItalicAnnotation.class, isItalic);
+            paragraph.set(CoreAnnotations.IsItalicAnnotation.class, isItalic);
 
             boolean isUnderline = this.isFormat("u", paragraph);
-            paragraph.set(CoreAnnotations.UnderlineAnnotation.class, isUnderline);
+            paragraph.set(CoreAnnotations.IsUnderlineAnnotation.class, isUnderline);
 
         }
         return this.target.process(input);

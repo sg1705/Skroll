@@ -3,11 +3,15 @@ package com.skroll.parser.tokenizer;
 import com.google.common.base.Joiner;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
+import com.skroll.document.Token;
+import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
 import junit.framework.TestCase;
 import org.junit.Test;
+
+import java.util.List;
 
 /**
  * Created by saurabh on 12/23/14.
@@ -32,11 +36,18 @@ public class DocumentAllPipesTest extends TestCase {
                         .build();
         Document doc = pipeline.process(htmlDoc);
 
-        for(CoreMap paragraph : htmlDoc.getParagraphs()) {
-            String words = Joiner.on(",").join(paragraph.getTokens());
-            System.out.println(words);
+        //find out how many tokens have bold
+        List<Token> tokens = doc.get(CoreAnnotations.TokenAnnotation.class);
+        int count = 0;
+        for(Token token: tokens) {
+            if (token.containsKey(CoreAnnotations.IsBoldAnnotation.class)) {
+                System.out.println(token.getText());
+                count++;
+            }
         }
-        System.out.println(htmlDoc.getParagraphs().size());
-        assert (htmlDoc.getParagraphs().size() == 1953);
+        System.out.println("Total number of bold wors:" + count);
+
+        System.out.println(doc.getParagraphs().size());
+        assert (doc.getParagraphs().size() == 1953);
     }
 }

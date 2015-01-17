@@ -145,13 +145,13 @@ public class CoreAnnotations {
         }
     }
 
-    public static class ItalicAnnotation implements CoreAnnotation<Boolean> {
+    public static class IsItalicAnnotation implements CoreAnnotation<Boolean> {
         public Class<Boolean> getType() {
             return Boolean.class;
         }
     }
 
-    public static class UnderlineAnnotation implements CoreAnnotation<Boolean> {
+    public static class IsUnderlineAnnotation implements CoreAnnotation<Boolean> {
         public Class<Boolean> getType() {
             return Boolean.class;
         }

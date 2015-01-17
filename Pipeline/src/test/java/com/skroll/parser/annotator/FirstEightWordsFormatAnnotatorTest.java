@@ -44,13 +44,13 @@ public class FirstEightWordsFormatAnnotatorTest extends TestCase {
                 boldCount++;
             }
 
-            boolean isItalic = paragraph.get(CoreAnnotations.ItalicAnnotation.class);
+            boolean isItalic = paragraph.get(CoreAnnotations.IsItalicAnnotation.class);
             if (isItalic) {
                 System.out.println(paragraph.getText());
                 italicCount++;
             }
 
-            boolean isUnderline = paragraph.get(CoreAnnotations.UnderlineAnnotation.class);
+            boolean isUnderline = paragraph.get(CoreAnnotations.IsUnderlineAnnotation.class);
             if (isUnderline) {
                 System.out.println(paragraph.getText());
                 underlineCount++;
