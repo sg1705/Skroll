@@ -1,15 +1,17 @@
-package com.skroll.parser.extractor.file.html;
+package com.skroll.document.model;
 
+import com.skroll.document.Annotator;
 import com.skroll.document.CoreMap;
-import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
-import com.skroll.parser.extractor.PhantomJsExtractor;
-import com.skroll.pipeline.SyncPipe;
+import com.skroll.document.annotation.TypesafeMap;
+import com.skroll.parser.extractor.file.html.ParseHtmlToDocumentPipe;
+import com.skroll.pipeline.util.Utils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -21,7 +23,7 @@ import java.util.List;
  *
  * Created by sagupta on 12/14/14.
  */
-public class ParseHtmlToDocumentPipe extends SyncPipe<Document, Document> {
+public class HtmlToParagraphAnnotator implements Annotator {
 
     private String rollingTest;
     private String htmlText;
@@ -31,7 +33,7 @@ public class ParseHtmlToDocumentPipe extends SyncPipe<Document, Document> {
     private int lastParaId = 0;
 
 
-    public ParseHtmlToDocumentPipe() {
+    public HtmlToParagraphAnnotator() {
         this.rollingTest = "";
         this.htmlText = "";
         paragraphChunks = new ArrayList<String>();
@@ -39,26 +41,17 @@ public class ParseHtmlToDocumentPipe extends SyncPipe<Document, Document> {
         this.paraId = 1234;
     }
 
-    @Override
-    public Document process(com.skroll.document.Document document) {
-        document = processPhantomExtractor(document);
-//        org.jsoup.nodes.Document doc = Jsoup.parse(document.getSource());
-//        processNodes(doc);
-//        document.setTarget(doc.outerHtml());
-//        document.setParagraphs(this.paragraphs);
-//        //TODO find out the Charset
-         return this.target.process(document);
-    }
+    public void annotate(Annotation annotation) {
+        String text = annotation.get(CoreAnnotations.TextAnnotation.class);
+        org.jsoup.nodes.Document doc = Jsoup.parse(text);
+        processNodes(doc);
+        //document.setTarget(doc.outerHtml());
+        //htmlDoc.setAnnotatedHtml(doc.outerHtml());
+        annotation.set(CoreAnnotations.ParagraphsAnnotation.class, this.paragraphs);
+        //document.setParagraphs(this.paragraphs);
+        //TODO find out the Charset
+        //return this.target.process(document);
 
-
-    private Document processPhantomExtractor(com.skroll.document.Document document) {
-        PhantomJsExtractor phantomJsExtractor = new PhantomJsExtractor();
-        try {
-            document = phantomJsExtractor.process(document);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return document;
     }
 
 
@@ -104,11 +97,15 @@ public class ParseHtmlToDocumentPipe extends SyncPipe<Document, Document> {
      */
     private void createPara() {
         this.paragraphChunks.add(this.rollingTest);
-        CoreMap paragraph = new CoreMap(new Integer(this.lastParaId).toString(), this.rollingTest);
-        paragraph.set(CoreAnnotations.HTMLTextAnnotation.class, this.htmlText);
+        CoreMap para = new CoreMap();
+        para.set(CoreAnnotations.ParagraphIdAnnotation.class,new Integer(this.lastParaId).toString() );
+        para.set(CoreAnnotations.TextAnnotation.class, this.rollingTest);
+        para.set(CoreAnnotations.HTMLTextAnnotation.class, this.htmlText);
+        //Entity paragraph = new Entity(new Integer(this.lastParaId).toString(), this.rollingTest);
         //TODO remove this line
         //Paragraph paragraph = new Paragraph(new Integer(this.lastParaId).toString(), this.rollingTest);
-        this.paragraphs.add(paragraph);
+        //this.paragraphs.add(paragraph);
+        this.paragraphs.add(para);
         // move rolling html to html
         this.rollingTest = "";
         this.htmlText = "";
@@ -120,10 +117,14 @@ public class ParseHtmlToDocumentPipe extends SyncPipe<Document, Document> {
             Element element = (Element)node;
 
             if (!isNodeProhibhited(element)) {
+
                 element.prepend("<a name=\"" + this.paraId + "\"/>");
                 paraId++;
                 lastParaId = paraId;
                 this.createPara();
+
+
+                //check for pre
             }
         }
     }
@@ -148,12 +149,34 @@ public class ParseHtmlToDocumentPipe extends SyncPipe<Document, Document> {
         return text;
     }
 
+
+    /**
+     * Extracts html from node.
+     *
+     * @param node
+     * @return
+     */
+    private String getHtmlFromNode(Node node) {
+        String text = "";
+        String parentHtml = "";
+        if (node instanceof TextNode) {
+
+            if (isTextNodeMarkedUp(node.parent())) {
+                text = node.parent().outerHtml();
+            } else {
+                text = ((TextNode) node).outerHtml();
+            }
+        }
+        return text;
+    }
+
+
+
     //TODO
     // example doc - IBM Indenture from 1995
     private void processPre(Element element) {
         if (element.tag().getName().equals("pre")) {
             String preText = element.text();
-            // split this into paragraphs and increment
         }
 
     }
@@ -201,26 +224,6 @@ public class ParseHtmlToDocumentPipe extends SyncPipe<Document, Document> {
         return false;
     }
 
-    /**
-     * Extracts html from node.
-     *
-     * @param node
-     * @return
-     */
-    private String getHtmlFromNode(Node node) {
-        String text = "";
-        String parentHtml = "";
-        if (node instanceof TextNode) {
-
-            if (isTextNodeMarkedUp(node.parent())) {
-                text = node.parent().outerHtml();
-            } else {
-                text = ((TextNode) node).outerHtml();
-            }
-        }
-        return text;
-    }
-
     private boolean isTextNodeMarkedUp(Node node) {
         if (node.nodeName().equals("b"))
             return true;
@@ -237,4 +240,23 @@ public class ParseHtmlToDocumentPipe extends SyncPipe<Document, Document> {
 
 
 
+
+    public static void main(String[] args) throws Exception {
+        String text = Utils.readStringFromFile(new File("Pipeline/src/test/resources/html-docs/random-indenture.html"));
+        HtmlToParagraphAnnotator annt = new HtmlToParagraphAnnotator();
+        Annotation annotation = new Annotation(text);
+        annt.annotate(annotation);
+        List<CoreMap> paragraphs = annotation.get(CoreAnnotations.ParagraphsAnnotation.class);
+        for(CoreMap para: paragraphs) {
+            System.out.println(para.get(CoreAnnotations.HTMLTextAnnotation.class));
+        }
+        System.out.println(annotation);
+
+        ParseHtmlToDocumentPipe pipe = new ParseHtmlToDocumentPipe();
+    }
+
+    @Override
+    public List<Class<? extends TypesafeMap.Key>> requirements() {
+        return null;
+    }
 }
