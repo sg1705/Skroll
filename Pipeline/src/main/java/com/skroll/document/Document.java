@@ -1,5 +1,6 @@
 package com.skroll.document;
 
+import com.skroll.document.annotation.CoreAnnotation;
 import com.skroll.document.annotation.CoreAnnotations;
 
 import java.util.List;
@@ -9,10 +10,7 @@ import java.util.List;
  */
 public class Document extends CoreMap {
 
-//    String id;
-    String source;
     String target;
-//    List<CoreMap> paragraphs;
 
 
     public Document() {
@@ -20,9 +18,12 @@ public class Document extends CoreMap {
     }
 
     public Document(String source) {
-        this.source = source;
         initialize();
+        this.setSource(source);;
+    }
 
+    public Document(CoreMap map) {
+        this.map = map.map;
     }
 
     public List<CoreMap> getParagraphs() {
@@ -32,15 +33,14 @@ public class Document extends CoreMap {
 
     public void setParagraphs(List<CoreMap> paragraphs) {
         this.set(CoreAnnotations.ParagraphsAnnotation.class, paragraphs);
-        //this.paragraphs = paragraphs;
     }
 
     public String getSource() {
-        return source;
+        return getText();
     }
 
     public void setSource(String source) {
-        this.source = source;
+        this.set(CoreAnnotations.TextAnnotation.class, source);
     }
 
     public String getTarget() {
@@ -51,15 +51,5 @@ public class Document extends CoreMap {
         this.target = target;
     }
 
-
-
-//    public String getId() {
-//        return this.map.get(CoreAnnotations.DocumentIdAnnotation.class);
-//        return id;
-//    }
-
-//    public void setId(String id) {
-//        this.id = id;
-//    }
 
 }

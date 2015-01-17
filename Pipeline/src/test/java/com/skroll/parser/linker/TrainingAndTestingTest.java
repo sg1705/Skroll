@@ -77,7 +77,6 @@ public class TrainingAndTestingTest extends TestCase {
         System.out.println(terms.size());
         assert (terms.size() == 161);
 
-
     }
 
     public void trainNB() {

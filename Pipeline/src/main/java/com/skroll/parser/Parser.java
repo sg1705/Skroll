@@ -18,9 +18,10 @@ public class Parser {
                 new Pipeline.Builder()
                         .add(Pipes.PARSE_HTML_TO_DOC)
                         .add(Pipes.REMOVE_BLANK_PARAGRAPH_FROM_HTML_DOC)
-                        .add(Pipes.REMOVE_NBSP_IN_HTML_DOC)
+                        //.add(Pipes.REMOVE_NBSP_IN_HTML_DOC)
                         .add(Pipes.REPLACE_SPECIAL_QUOTE_IN_HTML_DOC)
                         .add(Pipes.TOKENIZE_PARAGRAPH_IN_HTML_DOC)
+                        .add(Pipes.FIRST_EIGHT_WORDS_FORMAT_ANNOTATOR)
                         .build();
         doc = pipeline.process(doc);
         return doc;

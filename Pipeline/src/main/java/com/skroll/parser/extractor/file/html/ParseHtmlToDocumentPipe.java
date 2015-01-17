@@ -2,6 +2,7 @@ package com.skroll.parser.extractor.file.html;
 
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
+import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.SyncPipe;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -22,6 +23,7 @@ import java.util.List;
 public class ParseHtmlToDocumentPipe extends SyncPipe<Document, Document> {
 
     private String rollingTest;
+    private String htmlText;
     private List<String> paragraphChunks;
     private List<CoreMap> paragraphs;
     private int paraId;
@@ -30,6 +32,7 @@ public class ParseHtmlToDocumentPipe extends SyncPipe<Document, Document> {
 
     public ParseHtmlToDocumentPipe() {
         this.rollingTest = "";
+        this.htmlText = "";
         paragraphChunks = new ArrayList<String>();
         paragraphs = new ArrayList<CoreMap>();
         this.paraId = 1234;
@@ -76,6 +79,7 @@ public class ParseHtmlToDocumentPipe extends SyncPipe<Document, Document> {
             }
         } else {
             this.rollingTest = this.rollingTest + getTextFromNode(node);
+            this.htmlText = this.htmlText + getHtmlFromNode(node);
         }
     }
 
@@ -89,11 +93,13 @@ public class ParseHtmlToDocumentPipe extends SyncPipe<Document, Document> {
     private void createPara() {
         this.paragraphChunks.add(this.rollingTest);
         CoreMap paragraph = new CoreMap(new Integer(this.lastParaId).toString(), this.rollingTest);
+        paragraph.set(CoreAnnotations.HTMLTextAnnotation.class, this.htmlText);
         //TODO remove this line
         //Paragraph paragraph = new Paragraph(new Integer(this.lastParaId).toString(), this.rollingTest);
         this.paragraphs.add(paragraph);
         // move rolling html to html
         this.rollingTest = "";
+        this.htmlText = "";
 
     }
 
@@ -102,14 +108,10 @@ public class ParseHtmlToDocumentPipe extends SyncPipe<Document, Document> {
             Element element = (Element)node;
 
             if (!isNodeProhibhited(element)) {
-
                 element.prepend("<a name=\"" + this.paraId + "\"/>");
                 paraId++;
                 lastParaId = paraId;
                 this.createPara();
-
-
-                //check for pre
             }
         }
     }
@@ -186,5 +188,41 @@ public class ParseHtmlToDocumentPipe extends SyncPipe<Document, Document> {
 
         return false;
     }
+
+    /**
+     * Extracts html from node.
+     *
+     * @param node
+     * @return
+     */
+    private String getHtmlFromNode(Node node) {
+        String text = "";
+        String parentHtml = "";
+        if (node instanceof TextNode) {
+
+            if (isTextNodeMarkedUp(node.parent())) {
+                text = node.parent().outerHtml();
+            } else {
+                text = ((TextNode) node).outerHtml();
+            }
+        }
+        return text;
+    }
+
+    private boolean isTextNodeMarkedUp(Node node) {
+        if (node.nodeName().equals("b"))
+            return true;
+
+
+        if (node.nodeName().equals("i"))
+            return true;
+
+        if (node.nodeName().equals("u"))
+            return true;
+
+        return false;
+    }
+
+
 
 }
