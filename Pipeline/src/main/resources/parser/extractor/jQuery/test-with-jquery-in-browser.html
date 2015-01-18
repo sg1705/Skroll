@@ -57,5 +57,8 @@
     createPara();
     docObject.set(PARAGRAPH_ANNOTATION, paragraphs);
 
-    console.log(JSON.stringify(docObject, null, 2));
+    console.log(
+        JSON.stringify(docObject, null, 2)
+       + ";---------------SKROLL---------------------;" + $(":root").html()
+    );
 </script>
