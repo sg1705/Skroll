@@ -1,6 +1,7 @@
 package com.skroll.parser;
 
 import com.skroll.document.Document;
+import com.skroll.parser.tokenizer.PostExtractionPipe;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
@@ -10,23 +11,32 @@ import com.skroll.pipeline.util.Utils;
  */
 public class Parser {
 
-    public static Document parseDocumentFromHtml(String html) {
-        Document doc = new Document();
-        doc.setSource(html);
+    /**
+     * Returns the parsed document from Html file.
+     *
+     * @param htmlText
+     * @return document
+     */
+    public static Document parseDocumentFromHtml(String htmlText) {
+        Document document = new Document();
+        document.setSource(htmlText);
         //create a pipeline
         Pipeline<Document, Document> pipeline =
                 new Pipeline.Builder()
                         .add(Pipes.PARSE_HTML_TO_DOC)
-                        .add(Pipes.REMOVE_BLANK_PARAGRAPH_FROM_HTML_DOC)
-                        //.add(Pipes.REMOVE_NBSP_IN_HTML_DOC)
-                        .add(Pipes.REPLACE_SPECIAL_QUOTE_IN_HTML_DOC)
+                        .add(Pipes.POST_EXTRACTION_PIPE)
                         .add(Pipes.TOKENIZE_PARAGRAPH_IN_HTML_DOC)
-                        .add(Pipes.FIRST_EIGHT_WORDS_FORMAT_ANNOTATOR)
                         .build();
-        doc = pipeline.process(doc);
-        return doc;
+        document = pipeline.process(document);
+        return document;
     }
 
+    /**
+     * Returns a parsed document from a file
+     *
+     * @param fileName
+     * @return document
+     */
     public static Document parseDocumentFromHtmlFile(String fileName) {
 
         String htmlText = "";
@@ -35,11 +45,8 @@ public class Parser {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Document doc = parseDocumentFromHtml(htmlText);
-        return doc;
+        Document document = parseDocumentFromHtml(htmlText);
+        return document;
     }
 
-
 }
-
-
