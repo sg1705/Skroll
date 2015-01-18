@@ -12,13 +12,13 @@ import org.junit.Test;
 
 import java.util.List;
 
-public class FirstEightWordsFormatAnnotatorTest extends TestCase {
+public class FirstNTokenFormatAnnotatorTest extends TestCase {
 
     @Test
     public void testCheckRequirements() throws Exception {
         String fileName = "src/test/resources/parser/extractor/experiment-jsoup-node-extraction.html";
         //create annotator
-        Annotator annotator = new FirstEightWordsFormatAnnotator();
+        Annotator annotator = new FirstNTokenFormatAnnotator();
         //get a document
         Document doc = Parser.parseDocumentFromHtmlFile(fileName);
         List<Class<? extends TypesafeMap.Key>> req = annotator.requirements();
@@ -28,7 +28,7 @@ public class FirstEightWordsFormatAnnotatorTest extends TestCase {
     public void testIsParagraphBold() throws Exception {
         String fileName = "src/test/resources/html-docs/random-indenture.html";
         //create annotator
-        Pipe<Document, Document> annotator = new FirstEightWordsFormatAnnotator();
+        Pipe<Document, Document> annotator = new FirstNTokenFormatAnnotator();
         //get a document
         Document doc = Parser.parseDocumentFromHtmlFile(fileName);
         annotator.process(doc);

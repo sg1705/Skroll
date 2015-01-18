@@ -16,9 +16,11 @@ import java.util.List;
 /**
  * Created by sagupta on 12/14/14.
  */
-public class FirstEightWordsFormatAnnotator extends SyncPipe<Document, Document> implements Annotator {
+public class FirstNTokenFormatAnnotator extends SyncPipe<Document, Document> implements Annotator {
 
-    public FirstEightWordsFormatAnnotator() {
+    private static int FIRST_N_TOKEN = 8;
+
+    public FirstNTokenFormatAnnotator() {
         this.setTarget(new SinkPipe<Document, Document>());
     }
 
