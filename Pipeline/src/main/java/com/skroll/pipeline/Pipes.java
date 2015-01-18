@@ -12,6 +12,7 @@ public enum Pipes {
     //HtmlDocumentPipes
     PARSE_HTML_TO_DOC("com.skroll.parser.extractor.file.html.ParseHtmlToDocumentPipe"),
     SAVE_HTML_DOCUMENT_TO_FILE("com.skroll.parser.extractor.file.html.SaveHtmlDocumentToFilePipe"),
+    POST_EXTRACTION_PIPE("com.skroll.parser.tokenizer.PostExtractionPipe"),
     REMOVE_BLANK_PARAGRAPH_FROM_HTML_DOC("com.skroll.parser.tokenizer.RemoveBlankParagraphFromHtmlDocumentPipe"),
     REMOVE_NBSP_IN_HTML_DOC("com.skroll.parser.tokenizer.RemoveNBSPInHtmlDocumentPipe"),
     REPLACE_SPECIAL_QUOTE_IN_HTML_DOC("com.skroll.parser.tokenizer.ReplaceSpecialQuotesInHtmlDocumentPipe"),
