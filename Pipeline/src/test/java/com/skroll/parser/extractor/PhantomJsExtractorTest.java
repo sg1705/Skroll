@@ -40,7 +40,8 @@ public class PhantomJsExtractorTest extends TestCase {
 
     @Test
     public void testPhantomJsExtractHtmlFile() throws Exception {
-        String fileName = "src/test/resources/parser/extractor/experiment-jsoup-node-extraction.html";
+        //String fileName = "src/test/resources/parser/extractor/experiment-jsoup-node-extraction.html";
+        String fileName = "src/test/resources/analyzer/hmmTrainingDocs/Tribune CA 2.html";
         String htmlText = Utils.readStringFromFile(fileName);
         PhantomJsExtractor phantomJsExtractor = new PhantomJsExtractor();
         Document doc = new Document(htmlText);

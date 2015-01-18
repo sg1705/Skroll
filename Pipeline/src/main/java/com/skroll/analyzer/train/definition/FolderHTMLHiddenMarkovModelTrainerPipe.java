@@ -3,6 +3,7 @@ package com.skroll.analyzer.train.definition;
 import com.google.common.collect.Lists;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
 import com.skroll.document.Document;
+import com.skroll.parser.Parser;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.SyncPipe;
@@ -46,17 +47,16 @@ public class FolderHTMLHiddenMarkovModelTrainerPipe extends SyncPipe<String, Str
         }
 
         Document htmlDoc = new Document();
-        htmlDoc.setSource(htmlString);
-
+        htmlDoc = Parser.parseDocumentFromHtml(htmlString);
         //create a pipeline
         Pipeline<Document, Document> pipeline =
                 new Pipeline.Builder()
-                        .add(Pipes.PARSE_HTML_TO_DOC)
-                        .add(Pipes.REMOVE_BLANK_PARAGRAPH_FROM_HTML_DOC)
-                        .add(Pipes.REMOVE_NBSP_IN_HTML_DOC)
-                        .add(Pipes.REPLACE_SPECIAL_QUOTE_IN_HTML_DOC)
+//                        .add(Pipes.PARSE_HTML_TO_DOC)
+//                        .add(Pipes.REMOVE_BLANK_PARAGRAPH_FROM_HTML_DOC)
+//                        .add(Pipes.REMOVE_NBSP_IN_HTML_DOC)
+//                        .add(Pipes.REPLACE_SPECIAL_QUOTE_IN_HTML_DOC)
                         .add(Pipes.FILTER_STARTS_WITH_QUOTE_IN_HTML_DOC)
-                        .add(Pipes.TOKENIZE_PARAGRAPH_IN_HTML_DOC)
+//                        .add(Pipes.TOKENIZE_PARAGRAPH_IN_HTML_DOC)
                         .add(Pipes.EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC)
                         .add(Pipes.HTML_HIDDEN_MARKOV_MODEL_TRAINING_PIPE,
                                 Lists.newArrayList((Object) model))
