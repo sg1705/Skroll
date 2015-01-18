@@ -46,7 +46,7 @@ public class PhantomJsExtractor {
         DefaultExecutor executor = new DefaultExecutor();
         executor.setExitValue(1);
         executor.setStreamHandler(psh);
-        ExecuteWatchdog watchdog = new ExecuteWatchdog(60000);
+        ExecuteWatchdog watchdog = new ExecuteWatchdog(120000);
         executor.setWatchdog(watchdog);
         int exitValue = 0;
         try {
