@@ -76,7 +76,7 @@ public enum Pipes {
     STOP_WORD_FILTER ("com.skroll.pipeline.pipes.text.StringStopWordTokenizerPipe"),
     PARAGRAPH_STOP_WORDS_FILTER ("com.skroll.pipeline.pipes.text.ParagraphStopWordTokenizerPipe"),
     TRUNCATE_DOCUMENT("com.skroll.pipeline.pipes.text.TruncateDocumentPipe"),
-    PARAGRAPH_REMOVE_BLANK ("com.skroll.pipeline.pipes.text.ParagraphsRemoveBlankPipe"),
+    PARAGRAPH_REMOVE_BLANK ("com.skroll.pipeline.pipes.text.ParagraphsRemoveBlankPipe");
 
     //parser.annotator
 
