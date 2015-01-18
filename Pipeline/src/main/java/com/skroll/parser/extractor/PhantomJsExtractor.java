@@ -33,8 +33,13 @@ public class PhantomJsExtractor {
 
         ByteArrayOutputStream stdout = new ByteArrayOutputStream();
         PumpStreamHandler psh = new PumpStreamHandler( stdout );
-
+        //default command line is linux
         CommandLine cmdLine = CommandLine.parse(Constants.PHANTOM_JS_BIN);
+        if (System.getProperty("os.name").contains("windows")) {
+            cmdLine = CommandLine.parse(Constants.PHANTOM_JS_BIN_WINDOWS);
+        } else if (System.getProperty("os.name").contains("windows")) {
+            cmdLine = CommandLine.parse(Constants.PHANTOM_JS_BIN_MAC);
+        }
         cmdLine.addArgument(Constants.JQUERY_PARSER_JS);
         cmdLine.addArgument(fileName);
         DefaultExecutor executor = new DefaultExecutor();
