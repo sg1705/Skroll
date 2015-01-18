@@ -79,7 +79,6 @@ public enum Pipes {
     PARAGRAPH_REMOVE_BLANK ("com.skroll.pipeline.pipes.text.ParagraphsRemoveBlankPipe"),
 
     //parser.annotator
-    FIRST_EIGHT_WORDS_FORMAT_ANNOTATOR("com.skroll.parser.annotator.FirstEightWordsFormatAnnotator");
 
 
     private final String className;
