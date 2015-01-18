@@ -33,6 +33,7 @@ public class PhantomJsExtractor {
 
         ByteArrayOutputStream stdout = new ByteArrayOutputStream();
         PumpStreamHandler psh = new PumpStreamHandler( stdout );
+
         //default command line is linux
         CommandLine cmdLine = CommandLine.parse(Constants.PHANTOM_JS_BIN);
         if (System.getProperty("os.name").contains("windows")) {
@@ -59,11 +60,14 @@ public class PhantomJsExtractor {
             throw new Exception("Cannot parse the file. Phantom exited with the return code:" + exitValue);
         }
 
-        String result = stdout.toString();
+        String[] result = stdout.toString().split(";---------------SKROLL---------------------;");
+        // split the result into linkedHtml and json
+
         ModelHelper helper = new ModelHelper();
         Document newDoc = new Document();
         try {
-            newDoc = helper.fromJson(result);
+            newDoc = helper.fromJson(result[0]);
+            newDoc.setTarget(result[1]);
         } catch (Exception e) {
             // error TODO needs to be logged
             e.printStackTrace();
