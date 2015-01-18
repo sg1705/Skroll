@@ -25,5 +25,7 @@ public class Constants {
 
     // extractor url
     public static final String PHANTOM_JS_BIN = "src/main/resources/parser/extractor/phantomjs";
+    public static final String PHANTOM_JS_BIN_WINDOWS = "src/main/resources/parser/extractor/phantomjs.exe";
+    public static final String PHANTOM_JS_BIN_MAC = "src/main/resources/parser/extractor/phantomjs_mac";
     public static final String JQUERY_PARSER_JS = "src/main/resources/parser/extractor/parser.js";
 }
