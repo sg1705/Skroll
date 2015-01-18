@@ -34,10 +34,14 @@ public class TokenizeParagraphInHtmlDocumentPipe extends SyncPipe<Document, Docu
             List<CoreMap> fragments = paragraph.get(CoreAnnotations.ParagraphFragmentAnnotation.class);
             //create an empty list of tokens
             List<Token> tokens = new ArrayList<Token>();
+            //create an empty string buffer
+            StringBuffer buf = new StringBuffer();
             //iterate over each fragment
             for(CoreMap fragment : fragments ) {
                 //get text of fragment
                 String fragmentText = fragment.get(CoreAnnotations.TextAnnotation.class);
+                //append to buffer to saving in paragraph annotation the entire text
+                buf.append(fragmentText);
                 //find if bold, italic or underline
                 boolean isFragmentBold = fragment.containsKey(CoreAnnotations.IsBoldAnnotation.class);
                 boolean isFragmentItalic = fragment.containsKey(CoreAnnotations.IsItalicAnnotation.class);
@@ -60,6 +64,8 @@ public class TokenizeParagraphInHtmlDocumentPipe extends SyncPipe<Document, Docu
                     tokens.add(token);
                 }
             }
+            //add concatenated string to paragraph
+            paragraph.set(CoreAnnotations.TextAnnotation.class, buf.toString());
             //add tokens for the paragraph
             paragraph.set(CoreAnnotations.TokenAnnotation.class, tokens);
             //add tokens to master list

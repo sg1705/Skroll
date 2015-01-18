@@ -1,0 +1,64 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="test.css"/>
+</head>
+
+<body>
+
+<script src="../jquery.min.js"></script>
+<script src="../jQueryParser.js"></script>
+
+<div class="mystyle">
+    My is first paragraph
+</div>
+
+
+
+<div>
+    This is second paragraph
+</div>
+
+<div>
+    <p>This is third &nbsp; paragraph <b> this <i>is</i> bold</b></p>
+</div>
+
+<table>
+    <tr>
+        <td>First column</td>
+        <td>Second column</td>
+    </tr>
+
+    <tr>
+        <td>First column</td>
+        <td>Second column</td>
+    </tr>
+
+</table>
+
+
+
+<div style="line-height:120%;text-align:right;font-size:12pt;">
+    <font style="font-family:inherit;font-size:12pt;font-style: italic;">
+        xyz <b>Execution Version</b>
+    </font>
+</div>
+</body>
+
+<script>
+    var DEBUG = true;
+
+
+    $(":root").contents().each(function(index, element) {
+        processNode(index, element);
+    });
+
+
+    // done
+    //move chunks to paragraphs
+    createPara();
+    docObject.set(PARAGRAPH_ANNOTATION, paragraphs);
+
+    console.log(
+        JSON.stringify(docObject, null, 2)
+       + ";---------------SKROLL---------------------;" + $(":root").html()
+    );
+</script>

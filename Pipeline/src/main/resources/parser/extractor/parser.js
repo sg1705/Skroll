@@ -33,7 +33,8 @@ var parsedJson = page.evaluate(function() {
     createPara();
     docObject.set(PARAGRAPH_ANNOTATION, paragraphs);
 
-    return JSON.stringify(docObject, null, 2);
+    return ( JSON.stringify(docObject, null, 2)
+       + ";---------------SKROLL---------------------;" + $(":root").html() );
 });
 console.log(parsedJson);
 //write the file

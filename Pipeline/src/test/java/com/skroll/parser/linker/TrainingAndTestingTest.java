@@ -79,7 +79,7 @@ public class TrainingAndTestingTest extends TestCase {
 
     }
 
-    public void trainNB() {
+    public static void trainNB() {
 
         String[] trainingFolder = {
                 "src/test/resources/analyzer/train/FolderBinaryNaiveBayesTrainerPipeTest/not-pdef-words",

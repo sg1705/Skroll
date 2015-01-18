@@ -66,7 +66,7 @@ var chunkStack = new Array();
 var count = 0;
 var paragraphId = 1234;
 var chunkId = 5000;
-
+var DEBUG = false;
 
 
 // core annotations
@@ -78,8 +78,6 @@ var IS_BOLD_ANNOTATION = "IsBoldAnnotation";
 var IS_ITALIC_ANNOTATION = "IsItalicAnnotation";
 var IS_UNDERLINE_ANNOTATION = "IsUnderlineAnnotation";
 var PARAGRAPH_FRAGMENT = "ParagraphFragmentAnnotation"
-
-
 
  function CoreMap(chunkId, text) {
 
@@ -101,11 +99,11 @@ var PARAGRAPH_FRAGMENT = "ParagraphFragmentAnnotation"
 
 
 function processNode(index, element) {
-
     //ignore nodeName is "script"
     if ($(element).is("script")) {
         return;
     }
+
 
     //check if a #text node
     if (element.nodeType == 3) {
@@ -117,42 +115,46 @@ function processNode(index, element) {
         //var newChunk = new CoreMap(chunkId, chunkText);
         if (isBold(element.parentNode)) {
             newChunk[IS_BOLD_ANNOTATION] = true;
-            //newChunk.set(IS_BOLD_ANNOTATION, true);
         }
 
         if (isItalic(element.parentNode)) {
             newChunk[IS_ITALIC_ANNOTATION] = true;
-            //newChunk.set(IS_ITALIC_ANNOTATION, true);
         }
         chunkStack.push(newChunk);
         chunkId++;
-        //printNodes(index, element, $(element).css("display"));
+
+        if (DEBUG) {
+            printNodes(index, element, $(element).css("display"));
+        }
     }
 
     // check to see if the node is a block type
     if (isNodeBlock(element)) {
         // create a paragraph
-        createPara();
+        createPara(element);
     }
-
 
     $(element).contents().each(function(index, element) {
         processNode(index, element);
     });
 }
 
-function createPara() {
-    //var newParagraph = new CoreMap(paragraphId, "");
+function createPara(element) {
     var newParagraph = new Object();
     newParagraph[ID_ANNOTATION] = paragraphId;
     newParagraph[TEXT_ANNOTATION] = "";
     newParagraph[PARAGRAPH_FRAGMENT] = chunkStack;
-    //newParagraph.set(PARAGRAPH_FRAGMENT, chunkStack);
     paragraphs.push(newParagraph);
+    insertMarker(paragraphId, element);
     chunkStack = new Array();
+    //$(element).prepend("<a name=\"" + (paragraphId) + "\"/>");
     paragraphId++;
 }
 
+
+function insertMarker(paragraphId, element) {
+    $(element).prepend("<a name=\"" + (paragraphId+1) + "\"/>");
+}
 
 function printNodes(index, element, block) {
 

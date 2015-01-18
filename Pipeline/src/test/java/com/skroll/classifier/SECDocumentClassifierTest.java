@@ -123,13 +123,15 @@ public class SECDocumentClassifierTest {
         try {
             train(new Category(0, "Indentures"), documentClassifier, "src/test/resources/analyzer/train/docclassifier/pdef-words");
             train(new Category(1, "CreditAgreements"), documentClassifier, "src/test/resources/analyzer/train/docclassifier/not-pdef-words");
-
-        } catch(Exception ex){
+            documentClassifier.persistModel();
+        } catch (Exception ex) {
+            ex.printStackTrace();
             fail("failed testTrainClassify");
         }
 
-        try {
-            System.out.println(classify(documentClassifier, "/Users/saurabhagarwal/IdeaProjects/Skroll2015/Pipeline/src/test/resources/analyzer/evaluate/docclassifier", 1000));
+        SECDocumentClassifier documentClassifier1 = new SECDocumentClassifier();
+            try {
+            System.out.println(classify(documentClassifier1, "src/test/resources/analyzer/evaluate/docclassifier", 1000));
         } catch(Exception ex){
             fail("failed testTrainClassify");
         }

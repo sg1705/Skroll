@@ -19,15 +19,17 @@ import java.util.Set;
  */
 public class Tester {
 
+    /**
+     * Evaluates the document for NaiveBayes. If paragraph is a definition, then it
+     * annotates the paragraph with CoreAnnotations.IsDefinition
+     *
+     * @param htmlDoc
+     * @return
+     */
     public static Document testNaiveBayes(Document htmlDoc) {
         //create a pipeline
         Pipeline<Document, Document> pipeline =
                 new Pipeline.Builder()
-                        .add(Pipes.PARSE_HTML_TO_DOC)
-                        .add(Pipes.REMOVE_BLANK_PARAGRAPH_FROM_HTML_DOC)
-                        .add(Pipes.REMOVE_NBSP_IN_HTML_DOC)
-                        .add(Pipes.REPLACE_SPECIAL_QUOTE_IN_HTML_DOC)
-                        .add(Pipes.TOKENIZE_PARAGRAPH_IN_HTML_DOC)
                         .add(Pipes.HTML_DOC_BINARY_NAIVE_BAYES_TESTER,
                                         Lists.newArrayList((Object) Models.getNaiveBayesForDefinitionsModel()))
                                 .build();
