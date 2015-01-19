@@ -8,6 +8,8 @@ import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.SyncPipe;
 import com.skroll.pipeline.util.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
@@ -18,6 +20,11 @@ import java.io.File;
  * Created by wei2learn on 12/26/2014.
  */
 public class FolderHTMLHiddenMarkovModelTrainerPipe extends SyncPipe<String, String> {
+
+    public static final Logger logger = LoggerFactory
+            .getLogger(FolderHTMLHiddenMarkovModelTrainerPipe.class);
+
+
 
     @Override
     public String process(String folderName) {
@@ -44,24 +51,25 @@ public class FolderHTMLHiddenMarkovModelTrainerPipe extends SyncPipe<String, Str
             htmlString = Utils.readStringFromFile(file);
         } catch (Exception e) {
             e.printStackTrace();
+            logger.error("Error reading file", e);
         }
 
-        Document htmlDoc = new Document();
-        htmlDoc = Parser.parseDocumentFromHtml(htmlString);
-        //create a pipeline
-        Pipeline<Document, Document> pipeline =
-                new Pipeline.Builder()
-//                        .add(Pipes.PARSE_HTML_TO_DOC)
-//                        .add(Pipes.REMOVE_BLANK_PARAGRAPH_FROM_HTML_DOC)
-//                        .add(Pipes.REMOVE_NBSP_IN_HTML_DOC)
-//                        .add(Pipes.REPLACE_SPECIAL_QUOTE_IN_HTML_DOC)
-                        .add(Pipes.FILTER_STARTS_WITH_QUOTE_IN_HTML_DOC)
-//                        .add(Pipes.TOKENIZE_PARAGRAPH_IN_HTML_DOC)
-                        .add(Pipes.EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC)
-                        .add(Pipes.HTML_HIDDEN_MARKOV_MODEL_TRAINING_PIPE,
-                                Lists.newArrayList((Object) model))
-                        .build();
-        Document doc = pipeline.process(htmlDoc);
+        try {
+            Document htmlDoc = new Document();
+            htmlDoc = Parser.parseDocumentFromHtml(htmlString);
+            //create a pipeline
+            Pipeline<Document, Document> pipeline =
+                    new Pipeline.Builder()
+                            .add(Pipes.FILTER_STARTS_WITH_QUOTE_IN_HTML_DOC)
+                            .add(Pipes.EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC)
+                            .add(Pipes.HTML_HIDDEN_MARKOV_MODEL_TRAINING_PIPE,
+                                    Lists.newArrayList((Object) model))
+                            .build();
+            Document doc = pipeline.process(htmlDoc);
+
+        } catch(Exception e) {
+            logger.error("Error processing doc",e);
+        }
     }
 
 }

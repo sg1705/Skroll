@@ -8,6 +8,8 @@ var fileName = args[1];
 //htmlText = htmlText.substring(1, htmlText.length-1);
 var htmlText = fs.read(fileName);
 
+page.settings.resourceTimeout = 200;
+page.settings.loadImages = false;
 page.onConsoleMessage = function (msg) {
     console.log(msg);
 };
