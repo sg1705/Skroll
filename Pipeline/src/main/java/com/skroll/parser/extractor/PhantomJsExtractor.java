@@ -3,18 +3,17 @@ package com.skroll.parser.extractor;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.ModelHelper;
-import com.skroll.document.annotation.CoreAnnotation;
 import com.skroll.document.annotation.CoreAnnotations;
-import com.skroll.pipeline.SyncPipe;
 import com.skroll.pipeline.util.Constants;
 import com.skroll.pipeline.util.Utils;
-import org.apache.commons.exec.*;
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.ExecuteWatchdog;
+import org.apache.commons.exec.PumpStreamHandler;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -38,7 +37,7 @@ public class PhantomJsExtractor {
         CommandLine cmdLine = CommandLine.parse(Constants.PHANTOM_JS_BIN);
         if (System.getProperty("os.name").contains("windows")) {
             cmdLine = CommandLine.parse(Constants.PHANTOM_JS_BIN_WINDOWS);
-        } else if (System.getProperty("os.name").contains("windows")) {
+        } else if (System.getProperty("os.name").toLowerCase().contains("mac")) {
             cmdLine = CommandLine.parse(Constants.PHANTOM_JS_BIN_MAC);
         }
         cmdLine.addArgument(Constants.JQUERY_PARSER_JS);

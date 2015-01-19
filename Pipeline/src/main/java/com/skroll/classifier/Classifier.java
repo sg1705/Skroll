@@ -31,4 +31,6 @@ public interface Classifier {
     public int classify(Document doc, int numOfTokens);
 
     public int classify(String fileName, int numOfLines);
+
+    public void train(Document doc);
 }

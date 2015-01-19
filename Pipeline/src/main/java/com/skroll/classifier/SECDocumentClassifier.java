@@ -18,7 +18,7 @@ import java.util.*;
 /**
  * Created by saurabhagarwal on 1/5/15.
  */
-public class SECDocumentClassifier implements Classifier {
+public class SECDocumentClassifier extends ClassifierImpl {
 
 
     // Initialize the list of category this classifier support.
@@ -129,6 +129,10 @@ public class SECDocumentClassifier implements Classifier {
 
     }
 
+    @Override
+    public void train(Document doc) {
+
+    }
 
 
     @Override
