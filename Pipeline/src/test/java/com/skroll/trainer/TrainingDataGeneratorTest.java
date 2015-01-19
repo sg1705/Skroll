@@ -10,11 +10,11 @@ public class TrainingDataGeneratorTest {
 
 
     @Test
-    public void testGenerateFilesForOverwrite()  {
+    public void testGenerateFilesForOverride()  {
         String folderName = "src/main/resources/trainingDocuments/indentures/";
 
         try {
-            TrainingDataGenerator.generateFilesForOverwrite(folderName);
+            TrainingDataGenerator.generateFilesForOverride(folderName);
         } catch (IOException e) {
             e.printStackTrace();
             fail(" failed to create overwrite files");
@@ -22,12 +22,11 @@ public class TrainingDataGeneratorTest {
     }
 
     @Test
-    public void testGenerateFileForOverwrite() {
+    public void testGenerateFileForOverride() {
 
         String fileName = "src/main/resources/trainingDocuments/indentures/AMC Networks Indenture.html";
-
         try {
-            TrainingDataGenerator.generateFileForOverwrite(fileName);
+            TrainingDataGenerator.generateFileForOverride(fileName);
         } catch (IOException e) {
             e.printStackTrace();
             fail(" failed to create overwrite files");

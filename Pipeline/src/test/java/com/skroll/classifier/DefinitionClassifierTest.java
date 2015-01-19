@@ -4,6 +4,7 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.io.Files;
 import com.skroll.document.Document;
 import com.skroll.parser.Parser;
+import com.skroll.parser.extractor.ParserException;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
@@ -42,7 +43,13 @@ public class DefinitionClassifierTest {
                     fail("failed to read the file");
                 }
                 //parse the file into document
-                Document doc = Parser.parseDocumentFromHtml(htmlText);
+                Document doc = null;
+                try {
+                    doc = Parser.parseDocumentFromHtml(htmlText);
+                } catch (ParserException e) {
+                    e.printStackTrace();
+                    fail("failed to parse the file");
+                }
 
                 // extract the definition from paragraph from html doc.
                 Pipeline<Document, Document> pipeline =
@@ -82,7 +89,13 @@ public class DefinitionClassifierTest {
             fail("failed to read file");
         }
         //parse the file into document
-        Document doc = Parser.parseDocumentFromHtml(htmlText);
+        Document doc = null;
+        try {
+            doc = Parser.parseDocumentFromHtml(htmlText);
+        } catch (ParserException e) {
+            e.printStackTrace();
+            fail("failed to parse the file");
+        }
 
         // extract the definition from paragraph from html doc.
         Pipeline<Document, Document> pipeline =

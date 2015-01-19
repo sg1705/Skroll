@@ -4,7 +4,6 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
-import com.skroll.classifier.DefinitionClassifier;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
@@ -26,24 +25,23 @@ import java.util.List;
 public class TrainingDataGenerator {
 
 
-    public static void generateFilesForOverwrite(String folderName) throws IOException {
+    public static void generateFilesForOverride(String folderName) throws IOException {
 
-        Configuration configuration = new Configuration();
-        DefinitionClassifier documentClassifier = new DefinitionClassifier();
        // folderName = "src/main/resources/trainingDocuments/";
 
         FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(folderName));
         for (File f : iterable) {
             if (f.isFile()) {
                 String fileName = f.getPath();
-                TrainingDataGenerator.generateFileForOverwrite(fileName);
+                TrainingDataGenerator.generateFileForOverride(fileName);
             }
         }
     }
-    public static void generateFileForOverwrite(String fileName) throws  IOException {
+
+    public static void generateFileForOverride(String fileName) throws  IOException {
 
         Configuration configuration = new Configuration();
-        String folderName = "src/main/resources/trainingDocuments/";
+        String targetFolder = configuration.get("hrfFolder","hrf/");
         try {
             System.out.println(fileName);
             //read the file
@@ -77,10 +75,11 @@ public class TrainingDataGenerator {
 
             fileName = fileName.replaceAll("\\.", "_");
 
-            Files.createParentDirs(new File(configuration.get("model.persist.folder") + fileName + "_hrf.txt"));
+            String fQFileName = configuration.get("model.persist.folder") + targetFolder + fileName + "_hrf.txt";
+            Files.createParentDirs(new File(fQFileName));
             Pipeline<List<String>, List<String>> pDefTerms =
                     new Pipeline.Builder()
-                            .add(Pipes.LIST_TO_CSV_FILE, Lists.newArrayList(configuration.get("model.persist.folder") + fileName + "_hrf.txt"))
+                            .add(Pipes.LIST_TO_CSV_FILE, Lists.newArrayList(fQFileName))
                             .build();
 
             pDefTerms.process(defList);
@@ -88,7 +87,5 @@ public class TrainingDataGenerator {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
     }
-
 }
