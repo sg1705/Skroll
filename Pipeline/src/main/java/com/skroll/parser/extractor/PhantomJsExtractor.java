@@ -35,7 +35,6 @@ public class PhantomJsExtractor {
 
         //default command line is linux
         CommandLine cmdLine = CommandLine.parse(Constants.PHANTOM_JS_BIN);
-        System.out.println(" System.getProperty(\"os.name\"):"+ System.getProperty("os.name"));
         if (System.getProperty("os.name").contains("windows")) {
             cmdLine = CommandLine.parse(Constants.PHANTOM_JS_BIN_WINDOWS);
         } else if (System.getProperty("os.name").toLowerCase().contains("mac")) {
