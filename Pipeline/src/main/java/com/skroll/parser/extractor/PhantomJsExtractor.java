@@ -57,7 +57,9 @@ public class PhantomJsExtractor {
         }
 
         if (exitValue != 1) {
-            throw new Exception("Cannot parse the file. Phantom exited with the return code:" + exitValue);
+            ParserException ps =  new ParserException("Cannot parse the file. Phantom exited with the return code:" + exitValue);
+            ps.setReturnValue(exitValue);
+            throw ps;
         }
 
         byte[] output = stdout.toByteArray();

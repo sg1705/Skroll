@@ -14,7 +14,7 @@ import java.util.Iterator;
 public class IndentureDocClassiferTest extends TestCase {
 
     @Test
-    public void testIndentureClassification() {
+    public void testIndentureClassification() throws Exception {
         //train the model
         String DOC_POSITIVE_FOLDER = "src/test/resources/analyzer/train/docclassifier/pdef-words";
         String DOC_NEGATIVE_FOLDER = "src/test/resources/analyzer/train/docclassifier/not-pdef-words";
