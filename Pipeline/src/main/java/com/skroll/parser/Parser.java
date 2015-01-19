@@ -1,6 +1,7 @@
 package com.skroll.parser;
 
 import com.skroll.document.Document;
+import com.skroll.parser.extractor.ParserException;
 import com.skroll.parser.tokenizer.PostExtractionPipe;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
@@ -17,7 +18,7 @@ public class Parser {
      * @param htmlText
      * @return document
      */
-    public static Document parseDocumentFromHtml(String htmlText) {
+    public static Document parseDocumentFromHtml(String htmlText) throws ParserException {
         Document document = new Document();
         document.setSource(htmlText);
         //create a pipeline
@@ -37,7 +38,7 @@ public class Parser {
      * @param fileName
      * @return document
      */
-    public static Document parseDocumentFromHtmlFile(String fileName) {
+    public static Document parseDocumentFromHtmlFile(String fileName) throws ParserException {
 
         String htmlText = "";
         try {
