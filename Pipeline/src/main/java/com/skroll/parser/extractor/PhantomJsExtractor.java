@@ -60,7 +60,8 @@ public class PhantomJsExtractor {
             throw new Exception("Cannot parse the file. Phantom exited with the return code:" + exitValue);
         }
 
-        String[] result = stdout.toString().split(";---------------SKROLL---------------------;");
+        byte[] output = stdout.toByteArray();
+        String[] result = new String(output, Constants.DEFAULT_CHARSET).split(";---------------SKROLL---------------------;");
         // split the result into linkedHtml and json
 
         ModelHelper helper = new ModelHelper();

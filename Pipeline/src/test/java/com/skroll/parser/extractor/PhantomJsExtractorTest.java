@@ -40,7 +40,6 @@ public class PhantomJsExtractorTest extends TestCase {
 
     @Test
     public void testPhantomJsExtractHtmlFile() throws Exception {
-        //String fileName = "src/test/resources/parser/extractor/experiment-jsoup-node-extraction.html";
         String fileName = "src/test/resources/analyzer/hmmTrainingDocs/Tribune CA 2.html";
         String htmlText = Utils.readStringFromFile(fileName);
         PhantomJsExtractor phantomJsExtractor = new PhantomJsExtractor();
@@ -48,7 +47,7 @@ public class PhantomJsExtractorTest extends TestCase {
         doc = phantomJsExtractor.process(doc);
         System.out.println(doc.getParagraphs().size());
         assert (doc.getParagraphs() != null);
-        assert (doc.getParagraphs().size() == 3286);
+        assert (doc.getParagraphs().size() == 7594);
     }
 
     @Test

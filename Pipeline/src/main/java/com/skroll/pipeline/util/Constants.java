@@ -1,6 +1,8 @@
 package com.skroll.pipeline.util;
 
 
+import java.nio.charset.Charset;
+
 /**
  * Created by saurabh on 12/23/14.
  */
@@ -28,4 +30,6 @@ public class Constants {
     public static final String PHANTOM_JS_BIN_WINDOWS = "src/main/resources/parser/extractor/phantomjs.exe";
     public static final String PHANTOM_JS_BIN_MAC = "src/main/resources/parser/extractor/phantomjs_mac";
     public static final String JQUERY_PARSER_JS = "src/main/resources/parser/extractor/parser.js";
+
+    public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 }
