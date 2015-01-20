@@ -3,6 +3,7 @@ package com.skroll.parser.extractor;
 import com.google.common.collect.TreeTraverser;
 import com.google.common.html.HtmlEscapers;
 import com.google.common.io.Files;
+import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.pipeline.util.Constants;
 import com.skroll.pipeline.util.Utils;
@@ -49,6 +50,23 @@ public class PhantomJsExtractorTest extends TestCase {
         assert (doc.getParagraphs() != null);
         assert (doc.getParagraphs().size() == 7594);
     }
+
+    @Test
+    public void testPhantomJsSpace() throws Exception {
+        String fileName = "src/main/resources/trainingDocuments/indentures/AMC Networks Indenture.html";
+        String htmlText = Utils.readStringFromFile(fileName);
+        PhantomJsExtractor phantomJsExtractor = new PhantomJsExtractor();
+        Document doc = new Document(htmlText);
+        doc = phantomJsExtractor.process(doc);
+        for(CoreMap paragraph : doc.getParagraphs()) {
+            System.out.println(paragraph.getText());
+        }
+        System.out.println(doc.getParagraphs().size());
+        //assert (doc.getParagraphs() != null);
+        //assert (doc.getParagraphs().size() == 7594);
+    }
+
+
 
     @Test
     public void testPhantomJSExtractorFromFolder() throws Exception {
