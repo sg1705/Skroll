@@ -32,4 +32,7 @@ public class Constants {
     public static final String JQUERY_PARSER_JS = "src/main/resources/parser/extractor/parser.js";
 
     public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
+
+    // Logging markers
+    public static final String LINKER_MARKER = "LINK_MARKER";
 }

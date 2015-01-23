@@ -90,4 +90,9 @@ public class TrainingAndTestingTest extends TestCase {
 
     }
 
+    public static void trainHMM() {
+        String trainingFolder = "src/test/resources/analyzer/hmmTrainingDocs";
+        Trainer.trainHiddenMarkovModel(trainingFolder);
+    }
+
 }
