@@ -1,5 +1,7 @@
 package com.skroll.parser.tokenizer;
 
+import com.google.common.base.CharMatcher;
+import com.google.common.base.Strings;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
@@ -35,7 +37,8 @@ public class PostExtractionPipe extends SyncPipe<Document, Document> {
 
                 //remove blanks from fragment text
                 fragmentText = fragmentText.replace("\u00a0", "");
-                fragmentText = fragmentText.replaceFirst("\u0020+","");
+                //fragmentText = fragmentText.replaceFirst("\u0020+","");
+                fragmentText = CharMatcher.BREAKING_WHITESPACE.trimLeadingFrom(fragmentText);
 
                 //replace special quotes with single quote
                 fragmentText = fragmentText.replace("\u201c","\"");
