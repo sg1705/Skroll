@@ -1,14 +1,18 @@
 package com.skroll.parser.linker;
 
+import com.google.common.io.Files;
+import com.skroll.analyzer.evaluate.Tester;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.Parser;
+import com.skroll.pipeline.util.Constants;
 import com.skroll.pipeline.util.Utils;
 import junit.framework.TestCase;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -16,12 +20,21 @@ import java.util.regex.Pattern;
 
 public class DefinitionLinkerTest extends TestCase {
 
-//    @Test
-//    public void testLinkDefinition() throws Exception {
-//        TrainingAndTestingTest.trainNB();
-//        TrainingAndTestingTest.trainHMM();
-//
-//    }
+    @Test
+    public void testLinkDefinition() throws Exception {
+        TrainingAndTestingTest.trainNB();
+        TrainingAndTestingTest.trainHMM();
+
+        //String testingFile = "src/test/resources/html-docs/random-indenture.html";
+        String testingFile = "src/test/resources/parser/linker/test-linker-random.html";
+        Document document = Tester.testNaiveBayes(Parser.parseDocumentFromHtmlFile(testingFile));
+        document = Tester.testHiddenMarketModel(document, Constants.CATEGORY_POSITIVE);
+        DefinitionLinker linker = new DefinitionLinker();
+        document = linker.linkDefinition(document);
+        Utils.writeToFile("/tmp/TrainingAndTest.html", document.getTarget());
+
+
+    }
 
     @Test
     public void testLinkRandomDocument() throws Exception {
