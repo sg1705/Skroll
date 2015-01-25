@@ -1,6 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'war'
-apply plugin: 'jetty'
+//apply plugin: 'jetty'
+apply from: 'https://raw.github.com/akhikhl/gretty/master/pluginScripts/gretty.plugin'
 
 version = '1.0'
 sourceCompatibility = JavaVersion.VERSION_1_7
@@ -20,9 +21,26 @@ dependencies {
     compile 'org.slf4j:slf4j-api:1.7.10'
     compile 'org.slf4j:slf4j-log4j12:1.7.10'
     compile 'org.apache.commons:commons-exec:1.3'
-    compile "javax.servlet:servlet-api:2.5"
+    compile "javax.servlet:javax.servlet-api:3.0.1"
+}
+
+gretty{
+    List<String> jvmArgs = []
+    jvmArgs.add("-Dcom.skroll.LEVEL=DEBUG")
+    managedClassReload=true
+    servletContainer = "jetty9"
+    fastReload = true
+    scanInterval = 1
+}
+/**
+jettyRun {
+    httpPort = 8080
+    reload = 'automatic'
+    scanIntervalSeconds = 2
+    daemon = false
 }
 
 httpPort = 8080
 stopPort = 9080
 stopKey = "stopKey"
+**/

@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>jQuery File Upload Example</title>
+</head>
+<body>
+<div id = "uploadForm">
+    <input id="fileupload" type="file" name="files[]" data-url="upload" multiple/>
+</div>
+<div id = "targetDoc" style="display:none">
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.js"></script>
+<script src="js/jquery.fileupload.js"></script>
+<script>
+$(function () {
+    $('#fileupload').fileupload({
+        //dataType: 'json',
+        always: function (e, data) {
+            //console.log(e);
+            console.log("Something got done");
+            //console.log(data.jqXHR.responseText);
+        },
+        done: function (e, data) {
+            $("#targetDoc").html(data.result).show();
+            console.log("Success.. done");
+        },
+        fail: function (e, data) {
+            console.log("failed");
+            console.log(e);
+        }
+    }).bind('fileuploadfail', function (e, data) {
+            console.log("File drop failed");
+            //console.log(data.result.status.length);
+    });
+
+});
+</script>
+</body>
+</html>
