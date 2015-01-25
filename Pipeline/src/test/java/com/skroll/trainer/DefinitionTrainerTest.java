@@ -1,12 +1,13 @@
 package com.skroll.trainer;
 
+import com.skroll.util.ObjectPersistUtil;
 import org.junit.Test;
 
 import java.io.IOException;
 
 import static org.junit.Assert.fail;
 
-public class TrainingDataGeneratorTest {
+public class DefinitionTrainerTest {
 
 
     @Test
@@ -14,7 +15,7 @@ public class TrainingDataGeneratorTest {
         String folderName = "src/main/resources/trainingDocuments/indentures/";
 
         try {
-            TrainingDataGenerator.generateFilesForOverride(folderName);
+            DefinitionTrainer.generateHRFs(folderName);
         } catch (IOException e) {
             e.printStackTrace();
             fail(" failed to create overwrite files");
@@ -26,10 +27,24 @@ public class TrainingDataGeneratorTest {
 
         String fileName = "src/main/resources/trainingDocuments/indentures/AMC Networks Indenture.html";
         try {
-            TrainingDataGenerator.generateFileForOverride(fileName);
+            DefinitionTrainer.generateHRF(fileName);
         } catch (IOException e) {
             e.printStackTrace();
             fail(" failed to create overwrite files");
+        }
+    }
+
+    @Test
+    public void TestTrainWithOverride(){
+        String fileName = "src/main/resources/trainingDocuments/indentures/Dish Indenture.html";
+        try {
+            DefinitionTrainer.trainWithOverride(fileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail(" failed to create overwrite files");
+        } catch (ObjectPersistUtil.ObjectPersistException e) {
+            e.printStackTrace();
+            fail(" failed to persist the model");
         }
     }
 }

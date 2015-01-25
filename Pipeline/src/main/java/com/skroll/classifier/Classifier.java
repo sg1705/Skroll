@@ -1,10 +1,9 @@
 package com.skroll.classifier;
 
-import com.skroll.analyzer.model.nb.DataTuple;
 import com.skroll.document.Document;
+import com.skroll.parser.extractor.ParserException;
 import com.skroll.util.ObjectPersistUtil;
 
-import java.util.List;
 import java.util.SortedMap;
 
 /**
@@ -18,19 +17,21 @@ public interface Classifier {
     // The classifier objects based on our different classification need ( such as definition, document classification etc)
     // will be created in the main instances of our production installation.
 
-    void persistModel() throws ObjectPersistUtil.ObjectPersistException;
+    //TODO: rationalize the  training functions
+    public void train(Document doc);
 
     public  void train(Category category, Document doc);
 
-    void train(Category category, String fileName, int numOfLines);
+    public void train(Category category, String fileName, int numOfLines) throws ParserException;
 
-    public  void train(List<DataTuple> dataTuple);
+    public void persistModel() throws ObjectPersistUtil.ObjectPersistException;
 
-    public  SortedMap<Category,Double> classifyDetailed(Document doc, int numOfTokens);
+    //TODO: rationalize the  classify functions
+    public Object classify(Document doc) throws Exception;
 
-    public int classify(Document doc, int numOfTokens);
+    public Object classify(Document doc, int numOfTokens) throws Exception;
 
-    public int classify(String fileName, int numOfLines);
+    public Object classify(String fileName, int numOfLines) throws Exception;
 
-    public void train(Document doc);
+    public SortedMap<Category,Double> classifyDetailed(Document doc, int numOfTokens);
 }

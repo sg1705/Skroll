@@ -11,6 +11,8 @@ import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.util.ObjectPersistUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Type;
 import java.util.*;
@@ -21,12 +23,13 @@ import java.util.*;
 public class SECDocumentClassifier extends ClassifierImpl {
 
 
+    public static final Logger logger = LoggerFactory
+            .getLogger(SECDocumentClassifier.class);
+
     // Initialize the list of category this classifier support.
-    private final ArrayList<Category> categories = new ArrayList<Category>();
-    private  NaiveBayes nbModelForDoc;
-    ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil();
-    String modelName = "com.skroll.analyzer.model.nb.NaiveBayes.secDocumentNB";
-    Type type = null;
+    private NaiveBayes nbModelForDoc;
+    private String modelName = "com.skroll.analyzer.model.nb.NaiveBayes.secDocumentNB";
+    private Type type = null;
 
     public SECDocumentClassifier() {
         categories.add(new Category(0, "Indenture"));
@@ -35,7 +38,7 @@ public class SECDocumentClassifier extends ClassifierImpl {
         try {
             type = new TypeToken<NaiveBayes>() {}.getType();
             nbModelForDoc = (NaiveBayes) objectPersistUtil.readObject(type,modelName); //"com.skroll.analyzer.model.nb.NaiveBayes.secDocumentNB.1");
-            System.out.println("nbModelForDoc" + nbModelForDoc);
+            logger.debug("nbModelForDoc" + nbModelForDoc);
 
         } catch (Throwable e) {
             e.printStackTrace();
@@ -90,7 +93,7 @@ public class SECDocumentClassifier extends ClassifierImpl {
     }
 
     @Override
-    public int classify(String fileName, int numOfLines ) {
+    public Object classify(String fileName, int numOfLines ) {
 
         Pipeline<String, List<String>> fileIntoString =
                 new Pipeline.Builder<String, List<String>>()
@@ -123,7 +126,7 @@ public class SECDocumentClassifier extends ClassifierImpl {
             double prob =nbModelForDoc.inferCategoryProbabilityMoreStable(category.getId(),words.toArray(new String[words.size()]),new int[0]);
             probableCategory.put(category,prob);
         }
-        System.out.println("probableCategory:" + probableCategory);
+        logger.info("probableCategory:" + probableCategory);
 
         return output;
 
@@ -134,13 +137,11 @@ public class SECDocumentClassifier extends ClassifierImpl {
 
     }
 
-
     @Override
-    public void train(List<DataTuple> dataTuple) {
-        for (DataTuple dt : dataTuple) {
-            nbModelForDoc.addSample(dt);
-        }
+    public Object classify(Document document) {
+        return classify(document,-1);
     }
+
 
     @Override
     public SortedMap<Category, Double> classifyDetailed(Document doc, int numOfTokens) {
@@ -149,20 +150,26 @@ public class SECDocumentClassifier extends ClassifierImpl {
         List<String> tokens = extractTokenFromDoc(doc);
         List<String> partitionTokens = (List<String>) Lists.partition(new ArrayList(tokens), tokens.size()<numOfTokens?tokens.size():numOfTokens).get(0);
         DataTuple tuple = new DataTuple(-1, partitionTokens.toArray(new String[partitionTokens.size()]), new int[0]);
-        
+
+
         for ( Category category: categories){
             double prob =nbModelForDoc.inferCategoryProbabilityMoreStable(category.getId(),partitionTokens.toArray(new String[partitionTokens.size()]),new int[0]);
             probableCategory.put(category,prob);
         }
-        System.out.println("probableCategory:" + probableCategory);
+        logger.info("probableCategory:" + probableCategory);
         return null;
     }
 
     @Override
-    public int classify(Document doc, int numOfTokens ) {
-
+    public Object classify(Document doc, int numOfTokens) {
         List<String> tokens = extractTokenFromDoc(doc);
-        List<String> partitionTokens = (List<String>) Lists.partition(new ArrayList(tokens), tokens.size()<numOfTokens?tokens.size():numOfTokens).get(0);
+        List<String> partitionTokens =null;
+        if (numOfTokens==-1) {
+            partitionTokens = tokens;
+         } else {
+            partitionTokens= (List<String>) Lists.partition(new ArrayList(tokens), tokens.size()<numOfTokens?tokens.size():numOfTokens).get(0);
+         }
+
         DataTuple tuple = new DataTuple(-1, partitionTokens.toArray(new String[partitionTokens.size()]), new int[0]);
         Integer output = nbModelForDoc.mostLikelyCategory(tuple);
 
@@ -173,7 +180,7 @@ public class SECDocumentClassifier extends ClassifierImpl {
             double prob =nbModelForDoc.inferCategoryProbabilityMoreStable(category.getId(),partitionTokens.toArray(new String[partitionTokens.size()]),new int[0]);
             probableCategory.put(category,prob);
         }
-        System.out.println("probableCategory:" + probableCategory);
+        logger.info("probableCategory:" + probableCategory);
 
         return output;
 

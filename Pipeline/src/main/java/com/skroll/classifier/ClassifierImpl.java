@@ -6,7 +6,6 @@ import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.util.ObjectPersistUtil;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -19,7 +18,7 @@ public abstract class ClassifierImpl implements Classifier {
     // Initialize the list of category this classifier support.
     protected final ArrayList<Category> categories = new ArrayList<Category>();
     protected ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil();
-    protected Type type = null;
+
 
     public List<String> extractTokenFromDoc(Document doc) {
         List<CoreMap> paragraphs = doc.getParagraphs();
@@ -33,7 +32,4 @@ public abstract class ClassifierImpl implements Classifier {
         return new ArrayList<String>(words);
     }
 
-    public void train(Document doc){
-
-    }
 }

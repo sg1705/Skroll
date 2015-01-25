@@ -106,7 +106,7 @@ public class SECDocumentClassifierTest {
 
                     doc = pipeline.process(doc);
                     //Document doc = Parser.parseDocumentFromHtml(htmlText);
-                    probableCategory.put(fileName, documentClassifier.classify(doc, numOfWords));
+                    probableCategory.put(fileName, (Integer) documentClassifier.classify(doc, numOfWords));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
