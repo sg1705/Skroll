@@ -3,19 +3,18 @@ package com.skroll.parser.extractor;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.ModelHelper;
-import com.skroll.document.annotation.CoreAnnotation;
 import com.skroll.document.annotation.CoreAnnotations;
-import com.skroll.pipeline.SyncPipe;
 import com.skroll.pipeline.util.Constants;
 import com.skroll.pipeline.util.Utils;
-import org.apache.commons.exec.*;
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.ExecuteWatchdog;
+import org.apache.commons.exec.PumpStreamHandler;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.nio.charset.Charset;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -39,7 +38,7 @@ public class PhantomJsExtractor {
         CommandLine cmdLine = CommandLine.parse(Constants.PHANTOM_JS_BIN);
         if (System.getProperty("os.name").contains("windows")) {
             cmdLine = CommandLine.parse(Constants.PHANTOM_JS_BIN_WINDOWS);
-        } else if (System.getProperty("os.name").contains("windows")) {
+        } else if (System.getProperty("os.name").toLowerCase().contains("mac")) {
             cmdLine = CommandLine.parse(Constants.PHANTOM_JS_BIN_MAC);
         }
         cmdLine.addArgument(Constants.JQUERY_PARSER_JS);
@@ -47,7 +46,7 @@ public class PhantomJsExtractor {
         DefaultExecutor executor = new DefaultExecutor();
         executor.setExitValue(1);
         executor.setStreamHandler(psh);
-        ExecuteWatchdog watchdog = new ExecuteWatchdog(60000);
+        ExecuteWatchdog watchdog = new ExecuteWatchdog(120000);
         executor.setWatchdog(watchdog);
         int exitValue = 0;
         try {
@@ -58,12 +57,14 @@ public class PhantomJsExtractor {
         }
 
         if (exitValue != 1) {
-            throw new Exception("Cannot parse the file. Phantom exited with the return code:" + exitValue);
+            ParserException ps =  new ParserException("Cannot parse the file. Phantom exited with the return code:" + exitValue);
+            ps.setReturnValue(exitValue);
+            throw ps;
         }
-        byte[] outs = stdout.toByteArray();
-        String outss = new String(outs, Charset.forName("UTF-8"));
-        String[] result = outss.split(";---------------SKROLL---------------------;");
-        //String[] result = stdout.toString().split(";---------------SKROLL---------------------;");
+
+
+        byte[] output = stdout.toByteArray();
+        String[] result = new String(output, Constants.DEFAULT_CHARSET).split(";---------------SKROLL---------------------;");
         // split the result into linkedHtml and json
 
         ModelHelper helper = new ModelHelper();

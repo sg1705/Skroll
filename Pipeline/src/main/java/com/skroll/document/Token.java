@@ -1,12 +1,12 @@
 package com.skroll.document;
 
+import com.google.common.base.Strings;
 import com.skroll.document.annotation.CoreAnnotations;
 
 /**
  * Created by saurabh on 12/29/14.
  */
 public class Token extends CoreMap {
-    String token;
 
     public Token() {
         super();
@@ -24,6 +24,10 @@ public class Token extends CoreMap {
 
     public void setText(String text) {
         this.set(CoreAnnotations.TextAnnotation.class, text);
+    }
+
+    public String toString() {
+        return getText();
     }
 
 

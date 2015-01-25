@@ -12,20 +12,26 @@ import java.util.List;
  */
 public class Utils {
 
-    private static final String DEFAULT_CHARSET = "CP1252";
-    public static void prettyPrintList(List<String> strs) {
-        for (int ii = 0; ii < strs.size(); ii++) {
-            System.out.println(strs.get(ii));
-            System.out.println("------------");
-        }
+    /**
+     * Reads from a given pipeline name
+     *
+     * @param fileName
+     * @return
+     * @throws Exception
+     */
+    public static String readStringFromFile(String fileName) throws Exception {
+        return Files.toString(new File(fileName), Constants.DEFAULT_CHARSET);
     }
 
-    public static String readStringFromFile(String fileName) throws Exception {
-        return Files.toString(new File(fileName), Charset.forName(DEFAULT_CHARSET) );
-    }
+    /**
+     * Reads a text file from a given File object
+     * @param file
+     * @return string
+     * @throws Exception
+     */
 
     public static String readStringFromFile(File file) throws Exception {
-        return Files.toString(file, Charset.forName(DEFAULT_CHARSET) );
+        return Files.toString(file, Constants.DEFAULT_CHARSET );
     }
 
 
@@ -37,8 +43,5 @@ public class Utils {
             e.printStackTrace();
         }
     }
-
-
-
 
 }
