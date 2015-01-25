@@ -12,6 +12,7 @@ import org.apache.commons.exec.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedList;
@@ -59,8 +60,10 @@ public class PhantomJsExtractor {
         if (exitValue != 1) {
             throw new Exception("Cannot parse the file. Phantom exited with the return code:" + exitValue);
         }
-
-        String[] result = stdout.toString().split(";---------------SKROLL---------------------;");
+        byte[] outs = stdout.toByteArray();
+        String outss = new String(outs, Charset.forName("UTF-8"));
+        String[] result = outss.split(";---------------SKROLL---------------------;");
+        //String[] result = stdout.toString().split(";---------------SKROLL---------------------;");
         // split the result into linkedHtml and json
 
         ModelHelper helper = new ModelHelper();
