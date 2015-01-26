@@ -106,7 +106,7 @@ public class SECDocumentClassifierTest {
 
                     doc = pipeline.process(doc);
                     //Document doc = Parser.parseDocumentFromHtml(htmlText);
-                    probableCategory.put(fileName, documentClassifier.classify(doc, numOfWords));
+                    probableCategory.put(fileName, (Integer) documentClassifier.classify(doc, numOfWords));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -131,7 +131,7 @@ public class SECDocumentClassifierTest {
 
         SECDocumentClassifier documentClassifier1 = new SECDocumentClassifier();
             try {
-            System.out.println(classify(documentClassifier1, "src/test/resources/analyzer/evaluate/docclassifier", 1000));
+            System.out.println(classify(documentClassifier1, "src/test/resources/analyzer/evaluate/docclassifier/random-indenture.html", 1000));
         } catch(Exception ex){
             fail("failed testTrainClassify");
         }

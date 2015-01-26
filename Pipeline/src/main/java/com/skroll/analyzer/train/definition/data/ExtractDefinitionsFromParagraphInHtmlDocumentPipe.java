@@ -4,6 +4,7 @@ import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.pipeline.SyncPipe;
+import com.skroll.pipeline.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ public class ExtractDefinitionsFromParagraphInHtmlDocumentPipe extends SyncPipe<
             String str = paragraph.getText();
             Pattern p = Pattern.compile( "\"([^\"]*)\"" );
             Matcher m = p.matcher( str );
-            if (paragraph.getText().startsWith("\"")) {
+            if (paragraph.getText().startsWith(Constants.QUOTE)) {
                 while (m.find()) {
                     newList.add(m.group(1));
                 }

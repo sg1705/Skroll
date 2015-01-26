@@ -13,7 +13,7 @@ import static org.junit.Assert.fail;
 
 public class ObjectPersistUtilTest {
     public static final Logger logger = LoggerFactory
-            .getLogger(Configuration.class);
+            .getLogger(ObjectPersistUtilTest.class);
     @Test
     public void testPersistReadObject() throws Exception {
 

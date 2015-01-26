@@ -11,6 +11,8 @@ import com.skroll.pipeline.util.Utils;
 import com.skroll.util.Configuration;
 import com.skroll.util.ObjectPersistUtil;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,8 +21,53 @@ import static org.junit.Assert.fail;
 
 public class DefinitionClassifierTest {
 
+    //The following line needs to be added to enable log4j
+    public static final Logger logger = LoggerFactory
+            .getLogger(DefinitionClassifierTest.class);
     @Test
-     public void testTrainFolders() {
+    public void testTrainClassify() {
+
+        Classifier documentClassifier = new DefinitionClassifier();
+        //convertRawToProcessedCorpus(rawFolder, ProcessedFolder);
+        try {
+            testTrainFolders("src/test/resources/analyzer/hmmTrainingDocs");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            fail("failed training");
+        }
+        String testingFile = "src/test/resources/parser/linker/test-linker-random.html";
+        try {
+            Document document = (Document)documentClassifier.classify(Parser.parseDocumentFromHtmlFile(testingFile));
+            Utils.writeToFile("build/classes/test/test-linker-random.html", document.getTarget());
+        } catch(Exception ex){
+            fail("failed testClassify");
+        }
+    }
+
+    @Test
+    public void testClassify() {
+
+        Classifier documentClassifier = new DefinitionClassifier();
+        // String testingFile = "src/test/resources/parser/linker/test-linker-random.html";
+        String testingFile = "src/main/resources/trainingDocuments/indentures/AMC Networks Indenture.html";
+
+        Document document = null;
+        try {
+            document = (Document)documentClassifier.classify(Parser.parseDocumentFromHtmlFile(testingFile));
+        } catch (ParserException e) {
+            e.printStackTrace();
+            fail("failed to parse document");
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(" failed to find a Model");
+        }
+        logger.debug ("Number fo Paragraphs returned: " + document.getParagraphs().size());
+            Utils.writeToFile("build/classes/test/test-linker-random.html", document.getTarget());
+
+    }
+
+    //@Test
+     public void testTrainFolders(String folderName) {
 
         try {
             Configuration configuration = new Configuration();
@@ -29,7 +76,7 @@ public class DefinitionClassifierTest {
             fail("failed to read configuration");
         }
         DefinitionClassifier documentClassifier = new DefinitionClassifier();
-        String folderName = "src/main/resources/trainingDocuments/indentures";
+        //String folderName = "src/main/resources/trainingDocuments/indentures";
 
         FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(folderName));
         for (File f : iterable) {
@@ -69,7 +116,7 @@ public class DefinitionClassifierTest {
         }
     }
 
-    @Test
+    //@Test
     public void testTrainFile()  {
 
         try {
@@ -111,5 +158,4 @@ public class DefinitionClassifierTest {
             fail("failed to persist the model");
         }
     }
-
 }
