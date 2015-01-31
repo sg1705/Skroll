@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.skroll.analyzer.evaluate.Tester;
 import com.skroll.analyzer.train.Trainer;
+import com.skroll.classifier.DefinitionClassifier;
 import com.skroll.document.Document;
 import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.ParserException;
@@ -42,9 +43,6 @@ public class FileUploadServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        //trainNB();
-       // trainHMM();
-
         //Get all parts
         Collection<Part> parts = request.getParts();
         logger.debug("Number of Files upload {}", parts.size());
@@ -61,15 +59,16 @@ public class FileUploadServlet extends HttpServlet {
             try {
                 //parse the document
                 Document document = Parser.parseDocumentFromHtml(content);
+                //create a classifier
+                DefinitionClassifier classifier = new DefinitionClassifier();
                 //test the document
-                document = Tester.testHiddenMarketModel(document, Constants.CATEGORY_POSITIVE);
+                document = (Document)classifier.classify(document);
                 //link the document
-                DefinitionLinker linker = new DefinitionLinker();
-                document = linker.linkDefinition(document);
-                //write to response
                 response.getOutputStream().write(document.getTarget().getBytes(Constants.DEFAULT_CHARSET));
             } catch (ParserException e) {
                 logger.error("Error while parsing the uploaded file", e);
+            } catch (Exception e) {
+                logger.error("Error while classifying", e);
             }
         } else {
             //TODO figure out error
