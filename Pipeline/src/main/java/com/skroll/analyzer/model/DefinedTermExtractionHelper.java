@@ -4,6 +4,8 @@ import com.skroll.analyzer.model.nb.DataTuple;
 import com.skroll.document.CoreMap;
 import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
+import com.skroll.document.annotation.CoreAnnotations;
+import com.skroll.util.WordHelper;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -15,8 +17,49 @@ import java.util.Set;
  */
 public class DefinedTermExtractionHelper {
 
-    static final int PFS_TOKENS_NUMBER_FEATURE_MAX = 10;
 
+    //PARAGRAPH_NUMBER_TOKENS can be from 0 to PFS_TOKENS_NUMBER_FEATURE_MAX,
+    //so number of possibilities is one more than PFS_TOKENS_NUMBER_FEATURE_MAX
+    static final int PFS_TOKENS_NUMBER_FEATURE_MAX =
+            RandomVariableType.PARAGRAPH_NUMBER_TOKENS.getFeatureSize()-1;
+
+    // create a copy of paragraph and annotate it further for training
+    static CoreMap makeTrainingParagraph(CoreMap paragraph){
+        CoreMap trainingParagraph = new CoreMap();
+        List<Token> tokens = paragraph.getTokens();
+        List<Token> newTokens = new ArrayList<>();
+        Set<String> wordSet = new HashSet<>();
+        if (tokens.size()>0 && WordHelper.isQuote(tokens.get(0).getText()))
+            trainingParagraph.set(CoreAnnotations.StartsWithQuote.class, true);
+
+        boolean inQuotes=false; // flag for annotating if a token is in quotes or not
+        int i=0;
+        for (Token token: tokens){
+            if (WordHelper.isQuote(token.getText())) {
+                inQuotes = !inQuotes;
+                continue;
+            }
+            if (inQuotes){
+                token.set(CoreAnnotations.InQuotesAnnotation.class, true);
+            }
+            token.set(CoreAnnotations.Index.class, i++);
+            wordSet.add(token.getText());
+            newTokens.add(token);
+        }
+        trainingParagraph.set(CoreAnnotations.WordSetForTrainingAnnotation.class, wordSet);
+        trainingParagraph.set(CoreAnnotations.TokenAnnotation.class, newTokens);
+
+        // put defined terms from paragraph in trainingParagraph
+        // todo: may remove this later if trainer creates a training paragraph and put defined terms there directly
+        List<Token> definedTokens = paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class);
+        if (definedTokens != null && definedTokens.size()>0) {
+            trainingParagraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
+        }
+        trainingParagraph.set(CoreAnnotations.DefinedTermsAnnotation.class,
+                paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class));
+
+        return trainingParagraph;
+    }
 
     static DataTuple makeNBDataTuple(CoreMap paragraph){
         int category = (DocumentHelper.isDefinition(paragraph)) ? 1:0;
@@ -25,7 +68,7 @@ public class DefinedTermExtractionHelper {
         RandomVariableType[] features = DefinedTermExtractionModel.PARAGRAPH_FEATURES;
         int [] featureValues = new int[features.length];
         for (int i=0; i<featureValues.length;i++){
-            featureValues[i] = getParagraphFeature(paragraph, features[i], tokens);
+            featureValues[i] = getParagraphFeature(paragraph, features[i]);
         }
 
         return new DataTuple(category,tokens,featureValues);
@@ -44,14 +87,37 @@ public class DefinedTermExtractionHelper {
         return  wordSet.toArray(new String[wordSet.size()]);
     }
 
-    static int getParagraphFeature(CoreMap paragraph, RandomVariableType feature, String[] words){
+    static int getParagraphFeature(CoreMap paragraph, RandomVariableType feature){
         switch (feature){
             case PARAGRAPH_HAS_DEFINITION: return (DocumentHelper.isDefinition(paragraph)) ?1:0;
-           // case PARAGRAPH_STARTS_WITH_QUOTE: return (DocumentHelper.startsWithQuote(paragraph)) ?1:0;
-            case PARAGRAPH_NUMBER_TOKENS: return Math.min(words.length, PFS_TOKENS_NUMBER_FEATURE_MAX);
+            case PARAGRAPH_STARTS_WITH_QUOTE: return (DocumentHelper.startsWithQuote(paragraph)) ?1:0;
+            case PARAGRAPH_NUMBER_TOKENS:
+                Set<String> words = paragraph.get(CoreAnnotations.WordSetForTrainingAnnotation.class);
+                int num=0;
+                if (words!=null) num = words.size();
+                return Math.min(num, PFS_TOKENS_NUMBER_FEATURE_MAX);
         }
         return -1;
     }
+
+    /**
+     * todo: consider removing paragraph parameter, and store info in just word tokens.
+     * @param paragraph
+     * @param word
+     * @param feature
+     * @return
+     */
+    static int getWordFeature(CoreMap paragraph, Token word, RandomVariableType feature){
+        switch (feature){
+            case WORD_IS_DEFINED_TERM: return DocumentHelper.getDefinedTermTokensInParagraph(paragraph).contains(word) ?1:0;
+            case WORD_IN_QUOTES:
+                Boolean inQuotes = word.get(CoreAnnotations.InQuotesAnnotation.class );
+                return (inQuotes!=null && inQuotes==true) ?1:0;
+            case WORD_INDEX:  return word.get(CoreAnnotations.Index.class );
+        }
+        return -1;
+    }
+
 
     static List<Token> getTokensWithoutQuotes(CoreMap paragraph){
         int length = DefinedTermExtractionModel.HMM_MODEL_LENGTH;
@@ -69,4 +135,7 @@ public class DefinedTermExtractionHelper {
         }
         return -1;
     }
+
+
+
 }

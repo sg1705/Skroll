@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model;
 
 import com.google.common.base.Splitter;
+import com.google.common.collect.ObjectArrays;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
 import com.skroll.analyzer.model.nb.DataTuple;
 import com.skroll.analyzer.model.nb.NaiveBayes;
@@ -84,14 +85,56 @@ public class DefinedTermExtractionModel {
 //
 //    }
 
-    public DefinedTermExtractionModel(int[] nbFeatureSizes, int[] hmmFeatureSizes, int hmmModelLength){
-        //nbCategoryToHmmState1 = new int[];
+    DefinedTermExtractionModel(){
+
+        int [] paragraphFeatureSizes = new int[PARAGRAPH_FEATURES.length];
+        for (int i=0; i<paragraphFeatureSizes.length;i++)
+            paragraphFeatureSizes[i] = PARAGRAPH_FEATURES[i].getFeatureSize();
+        nb = new NaiveBayes(RandomVariableType.PARAGRAPH_HAS_DEFINITION.getFeatureSize(), paragraphFeatureSizes);
+
+        int []wordFeatureSizes = new int[WORD_FEATURES.length]; // include state at the feature index 0.
+        for (int i=0; i<wordFeatureSizes.length;i++)
+            wordFeatureSizes[i] =  WORD_FEATURES[i].getFeatureSize();
+        hmm = new HiddenMarkovModel(HMM_MODEL_LENGTH,
+                RandomVariableType.WORD_IS_DEFINED_TERM.getFeatureSize(), wordFeatureSizes);
+    }
+
+    public void annotateDefinedTermsInParagraph(CoreMap paragraph){
+        CoreMap trainingParagraph = DefinedTermExtractionHelper.makeTrainingParagraph(paragraph);
+        DataTuple nbDataTuple = DefinedTermExtractionHelper.makeNBDataTuple(trainingParagraph);
+        int[] states;
+        if (nb.mostLikelyCategory(nbDataTuple) == 1){
+            //DocumentHelper.setDefinition(paragraph);
+            List<Token> tokens = trainingParagraph.getTokens();
+            List<String> words = DocumentHelper.getTokenString(tokens);
+            String[] wordsArray = words.toArray(new String[words.size()]);
+            states = hmm.mostLikelyStateSequence(wordsArray);
+            List<Token> definedTerms = new ArrayList<>();
+
+            for (int i=0; i<states.length;i++){
+                if (states[i]==1) definedTerms.add(tokens.get(i));
+            }
+            DocumentHelper.setDefinedTermTokensInParagraph(definedTerms, paragraph);
+
+        };
+
+
     }
 
     void updateWithParagraph(CoreMap paragraph) {
-        updateNBWithParagraph(paragraph);
-        updateHMMWithParagraphOld(paragraph);
+        CoreMap trainingParagraph = DefinedTermExtractionHelper.makeTrainingParagraph(paragraph);
+        updateNBWithParagraph(trainingParagraph);
+        //updateHMMWithParagraphOld(trainingParagraph);
+        updateHMMWithParagraph(trainingParagraph);
+
         //int paraType = DefinedTermExtractionHelper.getParagraphFeature(paragraph, RandomVariableType.PARAGRAPH_HAS_DEFINITION);
+    }
+
+    /**
+     * This is required after training the model to convert the frequency counts to probabilities used for inferences.
+     */
+    void compile(){
+        hmm.updateProbabilities();
     }
 
     void updateNBWithParagraph(CoreMap paragraph){
@@ -99,40 +142,71 @@ public class DefinedTermExtractionModel {
         nb.addSample(nbDataTuple);
 
     }
+    void updateHMMWithParagraph(CoreMap paragraph){
+        List<Token> tokens = paragraph.get(CoreAnnotations.TokenAnnotation.class);
 
-    void updateHMMWithParagraphOld(CoreMap paragraph){
-            List<Token> tokens = paragraph.get(CoreAnnotations.TokenAnnotation.class);
+        HashSet<String> definitionsSet;
+        if (!paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
+            definitionsSet= new HashSet<String>();
+        } else {
+            List<Token> defTokens = paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class);
+            List<String> definitions = Splitter.on(' ').splitToList(DocumentHelper.getTokenString(defTokens).get(0));
+            definitionsSet = new HashSet<String>(definitions);
+        }
 
-            HashSet<String> definitionsSet;
-            if (!paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
-                definitionsSet= new HashSet<String>();
+        int[] tokenType = new int[tokens.size()];
+        int ii = 0;
+        for(Token token : tokens) {
+            if (definitionsSet.contains(token.getText())) {
+                tokenType[ii] = 1;
             } else {
-                List<Token> defTokens = paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class);
-                List<String> definitions = Splitter.on(' ').splitToList(DocumentHelper.getTokenString(defTokens).get(0));
-                definitionsSet = new HashSet<String>(definitions);
+                tokenType[ii] = 0;
             }
+            ii++;
+        }
 
-            int[] tokenType = new int[tokens.size()];
-            int ii = 0;
-            for(Token token : tokens) {
-                if (definitionsSet.contains(token.getText())) {
-                    tokenType[ii] = 1;
-                } else {
-                    tokenType[ii] = 0;
-                }
-                ii++;
+        int length = Math.min(hmm.size(), tokens.size());
+        int[][] features = new int[length][WORD_FEATURES.length];
+        for (int i=0; i<length ;i++){
+            for (int f=0; f<WORD_FEATURES.length;f++){
+                features[i][f] = DefinedTermExtractionHelper.getWordFeature(paragraph, tokens.get(i), WORD_FEATURES[f]);
             }
+        }
 
-
-            hmm.updateCounts(
-                    DocumentHelper.getTokenString(tokens).toArray(new String[tokens.size()]),
-                    tokenType);
+        hmm.updateCounts(
+                DocumentHelper.getTokenString(tokens).toArray(new String[tokens.size()]),
+                tokenType, features);
 
     }
+
     void updateWithDocument(Document doc){
+        List<CoreMap> paragraphs = doc.getParagraphs();
 
+        for( CoreMap paragraph : paragraphs) {
+            updateWithParagraph(paragraph);
+        }
     }
-    void updateWithDocuments(List<Document> docs){
 
+
+    void annotateDefinedTermsInDocument(Document doc){
+        List<CoreMap> paragraphs = doc.getParagraphs();
+
+        for( CoreMap paragraph : paragraphs) {
+            annotateDefinedTermsInParagraph(paragraph);
+        }
     }
+
+
+    @Override
+    public String toString() {
+        return "DefinedTermExtractionModel{" +
+                "hmm=" + hmm +
+                ", nb=" + nb +
+                ", nbCategoryToHmmState1=" + Arrays.toString(nbCategoryToHmmState1) +
+                '}';
+    }
+
+    //    void updateWithDocuments(List<Document> docs){
+//
+//    }
 }

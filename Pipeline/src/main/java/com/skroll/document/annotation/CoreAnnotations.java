@@ -5,6 +5,7 @@ import com.skroll.document.Token;
 import com.skroll.pipeline.util.EraserUtils;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by saurabh on 1/3/15.
@@ -84,6 +85,19 @@ public class CoreAnnotations {
             return EraserUtils.<Class<List<Token>>> uncheckedCast(List.class);
         }
     }
+    public static class WordSetForTrainingAnnotation implements CoreAnnotation<Set<String>> {
+        public Class<Set<String>> getType() {
+            return EraserUtils.<Class<Set<String>>> uncheckedCast(Set.class);
+        }
+    }
+
+
+    // annotation for paragraphs start with quotes
+    public static class StartsWithQuote implements CoreAnnotation<Boolean> {
+        public Class<Boolean> getType() {
+            return Boolean.class;
+        }
+    }
 
 
 
@@ -156,5 +170,13 @@ public class CoreAnnotations {
             return Boolean.class;
         }
     }
+
+
+    public static class Index implements CoreAnnotation<Integer> {
+        public Class<Integer> getType() {
+            return Integer.class;
+        }
+    }
+
 
 }

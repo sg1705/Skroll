@@ -9,7 +9,7 @@ package com.skroll.analyzer.model;
  * Created by wei2learn on 1/24/2015.
  */
 public enum RandomVariableType {
-    PARAGRAPH_HAS_DEFINITION(2, new String[]{"yes","no"}),
+    PARAGRAPH_HAS_DEFINITION(2, new String[]{"no","yes"}),
     PARAGRAPH_STARTS_WITH_QUOTE(2),
     PARAGRAPH_NUMBER_TOKENS(10),
     WORD_IS_DEFINED_TERM (2),

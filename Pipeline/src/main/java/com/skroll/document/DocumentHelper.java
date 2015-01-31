@@ -4,6 +4,7 @@ import com.skroll.document.annotation.CoreAnnotations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by saurabh on 12/29/14.
@@ -47,9 +48,18 @@ public class DocumentHelper {
         return false;
     }
 
+    public static boolean startsWithQuote(CoreMap coreMap) {
+        if (coreMap.containsKey(CoreAnnotations.StartsWithQuote.class)) {
+            return coreMap.get(CoreAnnotations.StartsWithQuote.class);
+        }
+        return false;
+    }
+
     public static List<String> getDefinedTerms(CoreMap coreMap) {
-        return DocumentHelper.getTokenString(
-                coreMap.get(CoreAnnotations.DefinedTermsAnnotation.class));
+        List<Token> tokens = coreMap.get(CoreAnnotations.DefinedTermsAnnotation.class);
+        List<String> strings = new ArrayList<>();
+        if (tokens!=null) strings =DocumentHelper.getTokenString(tokens);
+        return strings;
     }
 
     public static void setDefinition(List<String> definitions, CoreMap paragraph) {
@@ -61,6 +71,17 @@ public class DocumentHelper {
 
     }
 
+    public static void setDefinedTermTokensInParagraph(List<Token> definitions, CoreMap paragraph) {
+        paragraph.set(CoreAnnotations.DefinedTermsAnnotation.class, definitions);
+        if (definitions.size() > 0) {
+            paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
+        }
+    }
+
+    public static List<Token> getDefinedTermTokensInParagraph(CoreMap paragraph) {
+        return paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class);
+    }
+
     public static List<Token> createTokens(List<String> strings) {
         List<Token> tokens = new ArrayList<Token>();
         for(String str: strings) {
@@ -68,6 +89,14 @@ public class DocumentHelper {
             tokens.add(token);
         }
         return tokens;
+    }
+
+    public static List<CoreMap> getDefinitionParagraphs(Document doc){
+        List<CoreMap> definitionParagraphs= new ArrayList<>();
+        for (CoreMap paragraph: doc.getParagraphs()){
+            if (isDefinition(paragraph)) definitionParagraphs.add(paragraph);
+        }
+        return definitionParagraphs;
     }
 
 }
