@@ -6,6 +6,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
+import com.skroll.classifier.Classifier;
 import com.skroll.classifier.DefinitionClassifier;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -13,9 +14,11 @@ import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.Parser;
+import com.skroll.parser.extractor.ParserException;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Constants;
+import com.skroll.pipeline.util.Utils;
 import com.skroll.util.Configuration;
 import com.skroll.util.ObjectPersistUtil;
 import org.slf4j.Logger;
@@ -44,6 +47,9 @@ public class DefinitionTrainer {
         }
         if (args[0].equals("--trainWithOverride")) {
             DefinitionTrainer.trainWithOverride(args[1]);
+        }
+        if (args[0].equals("--classify")){
+            DefinitionTrainer.classify(args[1]);
         }
 
     }
@@ -187,6 +193,27 @@ public class DefinitionTrainer {
                 }
             }
             documentClassifier.persistModel();
+    }
+
+    public static void classify(String testingFile) {
+
+        Classifier documentClassifier = new DefinitionClassifier();
+        // String testingFile = "src/test/resources/parser/linker/test-linker-random.html";
+        //String testingFile = "src/main/resources/trainingDocuments/indentures/AMC Networks Indenture.html";
+
+        Document document = null;
+        try {
+            document = (Document)documentClassifier.classify(Parser.parseDocumentFromHtmlFile(testingFile));
+        } catch (ParserException e) {
+            e.printStackTrace();
+           logger.debug("failed to parse document");
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.debug(" failed to find a Model");
+        }
+        logger.debug ("Number fo Paragraphs returned: " + document.getParagraphs().size());
+        Utils.writeToFile("build/classes/test/test-linker-random.html", document.getTarget());
+
     }
 
 }
