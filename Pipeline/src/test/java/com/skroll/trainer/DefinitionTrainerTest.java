@@ -12,7 +12,7 @@ public class DefinitionTrainerTest {
 
     @Test
     public void testGenerateFilesForOverride()  {
-        String folderName = "src/main/resources/trainingDocuments/indentures/AMC Networks Indenture.html";
+        String folderName = "src/main/resources/trainingDocuments/indentures/";
 
         try {
             DefinitionTrainer.generateHRFs(folderName);
