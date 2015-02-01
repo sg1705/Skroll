@@ -134,7 +134,10 @@ public class DefinitionTrainer {
             fileName = fileName.replaceAll("\\.", "_").concat("_override.txt");
             String fQFileName = configuration.get("model.persist.folder") + overrideFolder + fileName;
             logger.debug("Override File Name: "+ fQFileName);
-
+            if (!(new File(fQFileName).exists())){
+                logger.debug("No Override File Name found, return the doc without overrides");
+                return doc;
+            }
             List<String> lines = Files.readLines(new File(fQFileName), Constants.DEFAULT_CHARSET);
             List<String> defList = new ArrayList<String>();
 

@@ -36,7 +36,7 @@ public class DefinitionTrainerTest {
 
     @Test
     public void TestTrainWithOverride(){
-        String fileName = "src/main/resources/trainingDocuments/indentures/Dish Indenture.html";
+        String fileName = "src/main/resources/trainingDocuments/indentures/";
         try {
             DefinitionTrainer.trainWithOverride(fileName);
         } catch (IOException e) {
