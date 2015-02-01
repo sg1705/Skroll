@@ -3,7 +3,8 @@
     var documentModel = {
             targetHtml: "",
             isDocAvailable: false,
-            isProcessing: false
+            isProcessing: false,
+            fileName: ""
     };
 
     var skrollApp = angular.module('SkrollApp', ['ngMaterial','ngSanitize' ]);
@@ -24,6 +25,8 @@
                         scope.$apply(function() {
                             scope.isProcessing = true;
                             documentModel.isProcessing = true;
+                            documentModel.fileName = data.files[0].name;
+                            scope.fileName = data.files[0].name;
                         })
                         data.submit();
                     },
@@ -56,6 +59,7 @@
                     function(documentModel, $scope, $mdSidenav, $http){
         $scope.targetHtml = documentModel.targetHtml;
         $scope.isDocAvailable = documentModel.isDocAvailable;
+        $scope.fileName = documentModel.fileName;
         $scope.isProcessing = documentModel.isProcessing;
         $scope.definitions = [ ];
         $scope.toggleSidenav = function(menuId) {
