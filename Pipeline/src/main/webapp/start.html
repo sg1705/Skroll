@@ -6,7 +6,8 @@
 
 <body ng-controller="ContentController">
 
-<div id = "uploadForm" ng-show="!isDocAvailable && !isProcessing" style="height: 600px; display:flex; align-items: center; justify-content:center">
+<div layout="column" id = "uploadForm" ng-show="!isDocAvailable && !isProcessing" style="height: 600px; display:flex; align-items: center; justify-content:center">
+
     <input file-upload id="fileupload" type="file" name="files[]" data-url="upload" multiple/>
 
 </div>
@@ -32,8 +33,8 @@
         <md-sidenav layout="column" class="md-sidenav-left hide-gt-smmd-whiteframe-z1"
                     md-component-id="left" md-is-locked-open="false">
 
-            <md-list ng-repeat="definition in definitions">
-                <md-item>
+            <md-list>
+                <md-item  ng-repeat="definition in definitions">
                     <md-item-content>
                         <span class="md-tile-content"><a href="#{{definition.paragraphId}}">{{definition.definition}}</a></span>
                     </md-item-content>
