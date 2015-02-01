@@ -100,8 +100,20 @@ public class API {
     @GET
     @Path("/getDefinition")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getDefinition(@QueryParam("documentId") String documentId) {
+    public Response getDefinition(@QueryParam("documentId") String documentId, @Context HttpHeaders hh) {
+
+        if(documentId==null) {
+            MultivaluedMap<String, String> headerParams = hh.getRequestHeaders();
+            Map<String, Cookie> pathParams = hh.getCookies();
+            logger.debug("getDocumentId: Cookie: {}", pathParams);
+            if ( pathParams.get("documentId")==null) {
+                return Response.status(Response.Status.EXPECTATION_FAILED).entity("documentId is missing from Cookie").type(MediaType.TEXT_HTML).build();
+
+            }
+             documentId = pathParams.get("documentId").getValue();
+        }
         logger.info("getDefinition- DocumentId:" + documentId.toString());
+
         Document doc = documentMap.get(documentId);
         if (doc==null) {
             return Response.status(Response.Status.NOT_FOUND).entity("Failed to find the document in Map" ).type(MediaType.TEXT_PLAIN).build();

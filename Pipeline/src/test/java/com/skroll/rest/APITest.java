@@ -38,6 +38,16 @@ public class APITest {
         }
     }
     @Test
+    public void startServer() throws Exception {
+        Client restClient = ClientBuilder.newClient();
+        WebTarget target = restClient.target("http://localhost:8888/restServices/jsonAPI");
+        WebTarget resourceTarget = target.path("/test"); //change the URI without affecting a root URI
+        String responseString = resourceTarget.request("text/plain").get(String.class);
+        System.out.println("Here is the response: "+responseString);
+        assert(responseString.equals("Test"));
+    }
+
+    @Test
     public void testTest() throws Exception {
             Client restClient = ClientBuilder.newClient();
             WebTarget target = restClient.target("http://localhost:8888/restServices/jsonAPI");
