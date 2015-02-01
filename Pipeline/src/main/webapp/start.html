@@ -6,12 +6,13 @@
 
 <body ng-controller="ContentController">
 
-<div id = "uploadForm" ng-show="!isDocAvailable && !isProcessing">
+<div id = "uploadForm" ng-show="!isDocAvailable && !isProcessing" style="height: 600px; display:flex; align-items: center; justify-content:center">
     <input file-upload id="fileupload" type="file" name="files[]" data-url="upload" multiple/>
+
 </div>
 
 <div layout="row" layout-sm="column" layout-align="space-around" ng-show="isProcessing">
-    <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+    <md-progress-circular md-mode="indeterminate" ng-show="isProcessing"></md-progress-circular>
 </div>
 
 
