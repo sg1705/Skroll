@@ -22,12 +22,8 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Path("/jsonAPI")
 public class API {
@@ -36,38 +32,6 @@ public class API {
             .getLogger(API.class);
 
     public static Map<String,Document> documentMap = new HashMap<String,Document>();
-
-
-    @GET
-    @Path("/getDefinition")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getDefinition(@QueryParam("documentId") String documentId) {
-        logger.info("DocumentId:" + documentId.toString());
-        Document doc = documentMap.get(documentId);
-        if (doc==null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Failed to find the document in Map" ).type(MediaType.TEXT_PLAIN).build();
-        }
-        Map<String, List<String>> definitionMap = new HashMap<String, List<String>>();
-
-        for (CoreMap paragraph : doc.getParagraphs()) {
-            if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
-                List<String> definition = DocumentHelper
-                        .getTokenString(
-                                paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class));
-
-                logger.debug(paragraph.getId() + "\t" + "DEFINITION" + "\t" + definition);
-                definitionMap.put(paragraph.getId(), definition);
-            }
-        }
-        if (definitionMap.isEmpty()) {
-            return Response.status(Response.Status.NO_CONTENT).entity("Failed to find the document in Map" ).type(MediaType.TEXT_PLAIN).build();
-        }
-        Gson gson = new GsonBuilder().create();
-        String definitionJson = gson.toJson(definitionMap);
-        logger.debug("definitionJson" + "\t" + definitionJson);
-        Response r = Response.ok().status(Response.Status.OK).entity(definitionJson).build();
-        return r;
-    }
 
 
     @POST
@@ -83,11 +47,6 @@ public class API {
         MultivaluedMap<String, String> headerParams = hh.getRequestHeaders();
         Map<String, Cookie> pathParams = hh.getCookies();
         logger.debug("pathParams:" +pathParams);
-        if ( pathParams.get("documentId")==null) {
-            return Response.status(Response.Status.EXPECTATION_FAILED).entity("documentId is missing from Cookie").type(MediaType.TEXT_HTML).build();
-
-        }
-        String documentId = pathParams.get("documentId").getValue();
 
         for (BodyPart bodyPart : bodyParts) {
             BodyPartEntity bpe = (BodyPartEntity) bodyPart.getEntity();
@@ -95,22 +54,22 @@ public class API {
             String content = null;
             try {
                 content = CharStreams.toString(reader);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+                String documentId = String.valueOf(content.hashCode());
 
-            try {
                 //parse the document
                 Document document = Parser.parseDocumentFromHtml(content);
                 //create a classifier
                 DefinitionClassifier classifier = new DefinitionClassifier();
                 //test the document
                 document = (Document) classifier.classify(document);
-                logger.debug("document:" + document.getTarget());
+                //logger.debug("document:" + document.getTarget());
                 //link the document
-                documentMap.put(documentId,document);
-                logger.debug("Added document into the documentMap:"+ documentMap);
-                return Response.status(Response.Status.ACCEPTED).entity(document.getTarget().getBytes(Constants.DEFAULT_CHARSET)).type(MediaType.TEXT_HTML_TYPE).build();
+                documentMap.put(documentId, document);
+                logger.debug("Added document into the documentMap with a generated hash key:"+ documentMap.keySet());
+
+                NewCookie documentIdCookie = new NewCookie("documentId", documentId);
+
+                return Response.status(Response.Status.ACCEPTED).cookie(documentIdCookie).entity(document.getTarget().getBytes(Constants.DEFAULT_CHARSET)).type(MediaType.TEXT_HTML_TYPE).build();
 
             } catch (ParserException e) {
                 logger.error("Error while parsing the uploaded file", e);
@@ -120,6 +79,55 @@ public class API {
         }
         return Response.status(Response.Status.BAD_REQUEST).entity("Failed to process attachments. Reason : " + message).type(MediaType.TEXT_HTML).build();
 
+    }
+
+    @GET
+    @Path("/getDocumentId")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getDocumentId(@Context HttpHeaders hh) {
+        MultivaluedMap<String, String> headerParams = hh.getRequestHeaders();
+        Map<String, Cookie> pathParams = hh.getCookies();
+        logger.debug("getDocumentId: Cookie: {}", pathParams);
+        if ( pathParams.get("documentId")==null) {
+            return Response.status(Response.Status.EXPECTATION_FAILED).entity("documentId is missing from Cookie").type(MediaType.TEXT_HTML).build();
+
+        }
+        String documentId = pathParams.get("documentId").getValue();
+        return Response.status(Response.Status.OK).entity(documentId).type(MediaType.APPLICATION_JSON).build();
+
+    }
+
+    @GET
+    @Path("/getDefinition")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getDefinition(@QueryParam("documentId") String documentId) {
+        logger.info("getDefinition- DocumentId:" + documentId.toString());
+        Document doc = documentMap.get(documentId);
+        if (doc==null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Failed to find the document in Map" ).type(MediaType.TEXT_PLAIN).build();
+        }
+        List<Paragraph> definedTermParagraphList = new ArrayList<>();
+
+        for (CoreMap paragraph : doc.getParagraphs()) {
+            if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
+                List<String> definition = DocumentHelper
+                        .getTokenString(
+                                paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class));
+
+                logger.debug(paragraph.getId() + "\t" + "DEFINITION" + "\t" + definition);
+                if (definition.isEmpty())
+                    continue;
+                definedTermParagraphList.add(new Paragraph(paragraph.getId(), definition));
+            }
+        }
+        if (definedTermParagraphList.isEmpty()) {
+            return Response.status(Response.Status.NO_CONTENT).entity("Failed to find the document in Map" ).type(MediaType.TEXT_PLAIN).build();
+        }
+        Gson gson = new GsonBuilder().create();
+        String definitionJson = gson.toJson(definedTermParagraphList);
+        logger.debug("definitionJson" + "\t" + definitionJson);
+        Response r = Response.ok().status(Response.Status.OK).entity(definitionJson).build();
+        return r;
     }
 
     @GET
