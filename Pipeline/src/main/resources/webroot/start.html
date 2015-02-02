@@ -6,7 +6,16 @@
 
 <body ng-controller="ContentController">
 
-<div id = "uploadForm" ng-show="!isDocAvailable && !isProcessing" style="height: 600px; display:flex; align-items: center; justify-content:center">
+<div layout="column" id = "uploadForm" ng-show="!isDocAvailable && !isProcessing" style="height: 600px; display:flex; align-items: center; justify-content:center">
+
+    <md-toolbar layout="row">
+        <h1>Welcome to Skroll!</h1>
+    </md-toolbar>
+
+    <br/>
+    <br/>
+    <br/>
+    
     <input file-upload id="fileupload" type="file" name="files[]" data-url="/restServices/jsonAPI/upload" multiple/>
 
 </div>
@@ -33,7 +42,7 @@
                     md-component-id="left" md-is-locked-open="false">
 
             <md-list>
-                <md-item ng-repeat="definition in definitions">
+                <md-item  ng-repeat="definition in definitions">
                     <md-item-content>
                         <span class="md-tile-content"><a href="#{{definition.paragraphId}}">{{definition.definition}}</a></span>
                     </md-item-content>
