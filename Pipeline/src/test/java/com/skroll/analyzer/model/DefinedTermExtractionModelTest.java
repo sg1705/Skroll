@@ -30,12 +30,13 @@ public class DefinedTermExtractionModelTest extends TestCase {
         String testingFolderName = "src/test/resources/analyzer/definedTermExtractionTesting";
         Document doc = processFolder(testingFolderName, model,FileProcess.ANNOTATE);
 
+
+        System.out.println("definitions after annotate");
+
         for (CoreMap para:DocumentHelper.getDefinitionParagraphs(doc)){
             System.out.println(para.getText());
             System.out.println(DocumentHelper.getDefinedTermTokensInParagraph(para));
         }
-
-
     }
 
     public void testUpdateWithDocument() throws Exception {
@@ -89,6 +90,13 @@ public class DefinedTermExtractionModelTest extends TestCase {
                     return null;
 
                 case ANNOTATE:
+                    // output before annotate:
+                    System.out.println("definitions before annotate");
+                    for (CoreMap para:DocumentHelper.getDefinitionParagraphs(htmlDoc)){
+                        System.out.println(para.getText());
+                        System.out.println(DocumentHelper.getDefinedTermTokensInParagraph(para));
+                    }
+
                     model.annotateDefinedTermsInDocument(htmlDoc);
                     return htmlDoc;
 

@@ -28,6 +28,7 @@ public class DefinedTermExtractionHelper {
         CoreMap trainingParagraph = new CoreMap();
         List<Token> tokens = paragraph.getTokens();
         List<Token> newTokens = new ArrayList<>();
+
         Set<String> wordSet = new HashSet<>();
         if (tokens.size()>0 && WordHelper.isQuote(tokens.get(0).getText()))
             trainingParagraph.set(CoreAnnotations.StartsWithQuote.class, true);
@@ -46,6 +47,7 @@ public class DefinedTermExtractionHelper {
             wordSet.add(token.getText());
             newTokens.add(token);
         }
+
         trainingParagraph.set(CoreAnnotations.WordSetForTrainingAnnotation.class, wordSet);
         trainingParagraph.set(CoreAnnotations.TokenAnnotation.class, newTokens);
 
@@ -76,21 +78,29 @@ public class DefinedTermExtractionHelper {
 
     // remove quotes and duplicate words
     static String[] getNBWords(CoreMap paragraph){
-        List<String> wordList = DocumentHelper.getTokenString(paragraph.getTokens());
-        Set<String> wordSet = new HashSet<>();
-        int maxLength = PFS_TOKENS_NUMBER_FEATURE_MAX;
-        for (int i=0;i<wordList.size() && wordSet.size()<=maxLength; i++){
-            if (wordList.get(i).equals("\""))
-                continue;
-            wordSet.add(wordList.get(i));
-        }
-        return  wordSet.toArray(new String[wordSet.size()]);
+        Set<String> wordSet = paragraph.get(CoreAnnotations.WordSetForTrainingAnnotation.class);
+        return wordSet.toArray(new String[wordSet.size()]);
+//        List<String> wordList = DocumentHelper.getTokenString(paragraph.getTokens());
+//        Set<String> wordSet = new HashSet<>();
+//        int maxLength = PFS_TOKENS_NUMBER_FEATURE_MAX;
+//        for (int i=0;i<wordList.size() && wordSet.size()<=maxLength; i++){
+//            if (wordList.get(i).equals("\""))
+//                continue;
+//            wordSet.add(wordList.get(i));
+//        }
+//        return  wordSet.toArray(new String[wordSet.size()]);
     }
 
     static int getParagraphFeature(CoreMap paragraph, RandomVariableType feature){
         switch (feature){
             case PARAGRAPH_HAS_DEFINITION: return (DocumentHelper.isDefinition(paragraph)) ?1:0;
             case PARAGRAPH_STARTS_WITH_QUOTE: return (DocumentHelper.startsWithQuote(paragraph)) ?1:0;
+            case PARAGRAPH_STARTS_WITH_SPECIAL_FORMAT:
+                if (paragraph==null) return 0;
+                List<Token> tokens = paragraph.getTokens();
+                if (tokens==null || tokens.size()==0) return 0;
+                return booleanToInt(tokens.get(0).get(CoreAnnotations.InQuotesAnnotation.class )) |
+                        booleanToInt(tokens.get(0).get(CoreAnnotations.IsUnderlineAnnotation.class ));
             case PARAGRAPH_NUMBER_TOKENS:
                 Set<String> words = paragraph.get(CoreAnnotations.WordSetForTrainingAnnotation.class);
                 int num=0;
@@ -101,6 +111,14 @@ public class DefinedTermExtractionHelper {
     }
 
     /**
+     * returns 0 if input parameter false, 1 if true
+     * @param b
+     * @return
+     */
+    static int booleanToInt(Boolean b){
+        return (b!=null && b) ? 1:0;
+    }
+    /**
      * todo: consider removing paragraph parameter, and store info in just word tokens.
      * @param paragraph
      * @param word
@@ -109,10 +127,15 @@ public class DefinedTermExtractionHelper {
      */
     static int getWordFeature(CoreMap paragraph, Token word, RandomVariableType feature){
         switch (feature){
-            case WORD_IS_DEFINED_TERM: return DocumentHelper.getDefinedTermTokensInParagraph(paragraph).contains(word) ?1:0;
+            case WORD_IS_DEFINED_TERM:
+                List<Token> tokens =  DocumentHelper.getDefinedTermTokensInParagraph(paragraph);
+                return (tokens!=null &&tokens.contains(word)) ?1:0;
             case WORD_IN_QUOTES:
                 Boolean inQuotes = word.get(CoreAnnotations.InQuotesAnnotation.class );
                 return (inQuotes!=null && inQuotes==true) ?1:0;
+            case WORD_HAS_SPECIAL_FORMAT:
+                return booleanToInt(word.get(CoreAnnotations.InQuotesAnnotation.class )) |
+                        booleanToInt(word.get(CoreAnnotations.IsUnderlineAnnotation.class ));
             case WORD_INDEX:  return word.get(CoreAnnotations.Index.class );
         }
         return -1;

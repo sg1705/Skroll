@@ -75,15 +75,18 @@ public class DefinedTermExtractionModel {
     //      and makes the model more complicated and expensive.
 
     static final RandomVariableType[] PARAGRAPH_FEATURES = {
-            RandomVariableType.PARAGRAPH_STARTS_WITH_QUOTE, RandomVariableType.PARAGRAPH_NUMBER_TOKENS};
+            //RandomVariableType.PARAGRAPH_STARTS_WITH_QUOTE,
+            RandomVariableType.PARAGRAPH_STARTS_WITH_SPECIAL_FORMAT,
+            RandomVariableType.PARAGRAPH_NUMBER_TOKENS};
+
+    //todo: if needed, can add a feature to indicated if a word is used as camel case in the document.
     static final RandomVariableType[] WORD_FEATURES = {
-            RandomVariableType.WORD_IN_QUOTES, RandomVariableType.WORD_INDEX};
+            //RandomVariableType.WORD_IN_QUOTES,
+            RandomVariableType.WORD_HAS_SPECIAL_FORMAT,
+            //RandomVariableType.WORD_INDEX
+    };
 
     int[][] nbCategoryToHmmState1;
-
-//    public DefinedTermExtractionModel(){
-//
-//    }
 
     DefinedTermExtractionModel(){
 
@@ -102,29 +105,72 @@ public class DefinedTermExtractionModel {
     public void annotateDefinedTermsInParagraph(CoreMap paragraph){
         CoreMap trainingParagraph = DefinedTermExtractionHelper.makeTrainingParagraph(paragraph);
         DataTuple nbDataTuple = DefinedTermExtractionHelper.makeNBDataTuple(trainingParagraph);
-        int[] states;
-        if (nb.mostLikelyCategory(nbDataTuple) == 1){
-            //DocumentHelper.setDefinition(paragraph);
-            List<Token> tokens = trainingParagraph.getTokens();
-            List<String> words = DocumentHelper.getTokenString(tokens);
-            String[] wordsArray = words.toArray(new String[words.size()]);
-            states = hmm.mostLikelyStateSequence(wordsArray);
-            List<Token> definedTerms = new ArrayList<>();
 
-            for (int i=0; i<states.length;i++){
-                if (states[i]==1) definedTerms.add(tokens.get(i));
+        // using NB category as the prior prob to the input of HMM.
+        // This means the HMM output state sequence gives the highest p(HMM observations | given NB observations)
+        double[] logPrioProbs =
+                nb.inferCategoryProbabilitiesMoreStable(nbDataTuple.getTokens(),nbDataTuple.getFeatures());
+            //nb.inferLogJointFeaturesProbabilityGivenCategories(nbDataTuple.getTokens(), nbDataTuple.getFeatures());
+
+        // can check for NB classification to see if we want to keep checking the words.
+        // check here to make it more efficient, or keep going to be more accurate.
+
+        List<Token> tokens = trainingParagraph.getTokens();
+        List<String> words = DocumentHelper.getTokenString(tokens);
+
+        String[] wordsArray = words.toArray(new String[words.size()]);
+
+        int length = Math.min(hmm.size(), tokens.size());
+        int[][] features = new int[length][WORD_FEATURES.length];
+        for (int i=0; i<length ;i++){
+            for (int f=0; f<WORD_FEATURES.length;f++){
+                features[i][f] = DefinedTermExtractionHelper.getWordFeature(paragraph, tokens.get(i), WORD_FEATURES[f]);
             }
-            DocumentHelper.setDefinedTermTokensInParagraph(definedTerms, paragraph);
+        }
+        int[] states = hmm.mostLikelyStateSequence(wordsArray, features, logPrioProbs);
 
-        };
+        //assume a definition paragraph always has the first word being a defined term.
+        // can do this check after naive bayes to make it faster.
+        if (states[0]==0) return;
+
+        List<Token> definedTerms = new ArrayList<>();
+
+        for (int i=0; i<states.length;i++){
+            if (states[i]==1) definedTerms.add(tokens.get(i));
+        }
+        DocumentHelper.setDefinedTermTokensInParagraph(definedTerms, paragraph);
 
 
+//        int[] states = hmm.mostLikelyStateSequence()
+//
+//        if (nb.mostLikelyCategory(nbDataTuple) == 1){
+//            List<Token> tokens = trainingParagraph.getTokens();
+//            List<String> words = DocumentHelper.getTokenString(tokens);
+//
+//            String[] wordsArray = words.toArray(new String[words.size()]);
+//
+//            int length = Math.min(hmm.size(), tokens.size());
+//            int[][] features = new int[length][WORD_FEATURES.length];
+//            for (int i=0; i<length ;i++){
+//                for (int f=0; f<WORD_FEATURES.length;f++){
+//                    features[i][f] = DefinedTermExtractionHelper.getWordFeature(paragraph, tokens.get(i), WORD_FEATURES[f]);
+//                }
+//            }
+//            states = hmm.mostLikelyStateSequence(wordsArray, features);
+//
+//            List<Token> definedTerms = new ArrayList<>();
+//
+//            for (int i=0; i<states.length;i++){
+//                if (states[i]==1) definedTerms.add(tokens.get(i));
+//            }
+//            DocumentHelper.setDefinedTermTokensInParagraph(definedTerms, paragraph);
+//
+//        };
     }
 
     void updateWithParagraph(CoreMap paragraph) {
         CoreMap trainingParagraph = DefinedTermExtractionHelper.makeTrainingParagraph(paragraph);
         updateNBWithParagraph(trainingParagraph);
-        //updateHMMWithParagraphOld(trainingParagraph);
         updateHMMWithParagraph(trainingParagraph);
 
         //int paraType = DefinedTermExtractionHelper.getParagraphFeature(paragraph, RandomVariableType.PARAGRAPH_HAS_DEFINITION);
@@ -155,14 +201,9 @@ public class DefinedTermExtractionModel {
         }
 
         int[] tokenType = new int[tokens.size()];
-        int ii = 0;
-        for(Token token : tokens) {
-            if (definitionsSet.contains(token.getText())) {
-                tokenType[ii] = 1;
-            } else {
-                tokenType[ii] = 0;
-            }
-            ii++;
+        for (int i = 0; i < tokenType.length; i++) {
+            tokenType[i] =  DefinedTermExtractionHelper.getWordFeature(
+                    paragraph, tokens.get(i), RandomVariableType.WORD_IS_DEFINED_TERM);
         }
 
         int length = Math.min(hmm.size(), tokens.size());
@@ -206,7 +247,4 @@ public class DefinedTermExtractionModel {
                 '}';
     }
 
-    //    void updateWithDocuments(List<Document> docs){
-//
-//    }
 }

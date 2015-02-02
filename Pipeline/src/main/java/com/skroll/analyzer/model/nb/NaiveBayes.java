@@ -105,9 +105,17 @@ public class NaiveBayes {
     }
 
 
+    // return joint probabilities for each category
+    public double[] inferLogJointProbability(String[] words, int[] features){
+        double[] logProbs = new double[numberCategories];
+        for (int i=0; i<numberCategories;i++){
+            logProbs[i] = inferLogJointProbability(i, words, features);
+        }
+        return logProbs;
+    }
 
-    public double inferLogJointProbability(int category, String[] words, int[] features){
-        double logp = Math.log(categoryCount[category])- Math.log(totalCategoryCount);
+    public double inferLogJointFeaturesProbabilityGivenCategory(int category, String[] words, int[] features){
+        double logp = 0;
 
         for (String w:words) logp += Math.log(wordCount(category, w));
         logp -= words.length * Math.log(categoryCount[category]);
@@ -120,6 +128,21 @@ public class NaiveBayes {
         //for (int f: features) logp = logp* Math.log(featureCount(category, f));
         logp -= features.length * Math.log(categoryCount[category]);
 
+        return logp;
+    }
+
+    public double[] inferLogJointFeaturesProbabilityGivenCategories(String[] words, int[] features){
+        double [] logProbs = new double[numberCategories];
+        for (int c=0;c<numberCategories;c++){
+            logProbs[c] = inferLogJointFeaturesProbabilityGivenCategory(c, words, features);
+        }
+        return logProbs;
+    }
+
+    public double inferLogJointProbability(int category, String[] words, int[] features){
+        double logp = Math.log(categoryCount[category])- Math.log(totalCategoryCount);
+
+        logp += inferLogJointFeaturesProbabilityGivenCategory(category, words, features);
         return logp;
     }
 
@@ -153,13 +176,9 @@ public class NaiveBayes {
     }
 
     // for stability, use the formula
-    // p0 / (p0+...+pn) = 1/(1+ p1/p0 + p2/p0 + ... + pn/p0)
+    // p0 / (p0+...+pn) = 1/(p0/p0+ p1/p0 + p2/p0 + ... + pn/p0)
     public double inferCategoryProbabilityMoreStable(int category, String[] words, int[] features){
-        double[] logProbs = new double[numberCategories];
-        double logJointProbOfFeatures=0;
-        for (int c =0; c < numberCategories; c++){
-            logProbs[c] = inferLogJointProbability(c, words, features);
-        }
+        double[] logProbs = inferLogJointProbability(words, features);
 
         double denominator=0;
         for (int c=0; c < numberCategories; c++) {
@@ -167,6 +186,23 @@ public class NaiveBayes {
         }
 
         return 1/denominator;
+
+    }
+
+    public double[] inferCategoryProbabilitiesMoreStable(String[] words, int[] features){
+        double[] logProbs = inferLogJointProbability(words, features);
+        double[] result = new double[numberCategories];
+
+        double denominator=0;
+        for (int category=0; category<numberCategories; category++){
+            for (int c=0; c < numberCategories; c++) {
+                result[category] += Math.exp(logProbs[c] - logProbs[category]);
+            }
+            result[category] = 1/result[category];
+        }
+
+
+        return result;
 
     }
 

@@ -352,13 +352,20 @@ public class HiddenMarkovModel {
         return prob;
     }
 
-    public  int[] mostLikelyStateSequence(String[] tokens){
+
+    // todo: should probably remove this method or remove the part that creats features
+    public  int[] mostLikelyStateSequence(String[] tokens) {
+        double logUniformProb = -Math.log(numStateValues);
+        double[] logPriorProb = new double[numStateValues];
+        Arrays.fill(logPriorProb,logUniformProb);
+
         String[] newTokens = new String[tokens.length];
         int[][] features = new int[tokens.length][numberFeatures];;
         int length = createFeatures( tokens, newTokens, features);
         length = Math.min(length, modelLength);
 
-        int[] path = viterbi(newTokens, features, length);
+        int[] path = viterbiLog(newTokens, features, logPriorProb);
+        //int[] path = viterbi(newTokens, features, length);
 
         // added back states
         length = Math.min(modelLength, tokens.length);
@@ -371,6 +378,21 @@ public class HiddenMarkovModel {
                 hackedResult[i] = path[k++];
         }
         return hackedResult;
+    }
+
+    public  int[] mostLikelyStateSequence(String[] tokens, int [][] features){
+        double logUniformProb = -Math.log(numStateValues);
+        double[] logPriorProb = new double[numStateValues];
+        Arrays.fill(logPriorProb,logUniformProb);
+        return viterbiLog(tokens, features, logPriorProb);
+
+    }
+
+    public  int[] mostLikelyStateSequence(String[] tokens, int [][] features, double[] logPriorProb){
+
+        return viterbiLog(tokens, features, logPriorProb);
+
+
     }
 
     public  double[][] infer(String[] tokens){
@@ -441,6 +463,53 @@ public class HiddenMarkovModel {
         return stateProbGivenPrevObservations;
     }
 
+    public int [] viterbiLog(String[] tokens, int[][] features, double[] logPriorProb){
+        double[] logProb= logPriorProb;
+
+        // for each next state value, stores the most likely state value leads to it
+        int [][] paths = new int[modelLength][numStateValues];
+
+        //highest possible probabilities of the observation produced by a state sequence
+        double [][] logMaxObservationProbGivenState = new double[modelLength][numStateValues];
+
+        int length = Math.min(modelLength, features.length);
+
+        for (int s=0;s<length;s++){ // for each state
+            System.arraycopy(logProb, 0 , logMaxObservationProbGivenState[s], 0, numStateValues);
+            for (int sv=0; sv<numStateValues; sv++){ // for each state value
+
+                //todo: to improve efficiency, should avoid store log probabilities afte update probabilities with frequency counts, instead of calculating it here
+                logMaxObservationProbGivenState[s][sv] += Math.log(tokenProbGivenStateValue(sv, tokens, s))+
+                        Math.log(nextTokenProbGivenStateValue(sv, tokens, s));
+
+                for (int f=0; f<numberFeatures; f++){ // for each feature
+                    logMaxObservationProbGivenState[s][sv] +=
+                            Math.log(featureValueProbabilityGivenState.get(sv).get(f)[features[s][f]]);
+                }
+            }
+            Arrays.fill(logProb,Double.NEGATIVE_INFINITY);
+            for (int sv=0; sv<numStateValues; sv++) { // for each state value
+                for (int svNext = 0; svNext < numStateValues; svNext++) { // for each next state value
+                    double p = logMaxObservationProbGivenState[s][sv] + Math.log(transitionProbability[sv][svNext]);
+                    if (p > logProb[svNext]) {
+                        logProb[svNext] = p;
+                        paths[s][svNext] = sv; //update the most likely state going to the next state svNext
+                    }
+                }
+            }
+            //last calculation is not used for now, because last token is used in the inference of the second last state.
+        }
+
+        int path[] = new int[length];
+        if (length==0) return path;
+
+        path[length-1] = maxIndex(logMaxObservationProbGivenState[length-1]);
+        for (int s=length - 2; s>=0; s--){
+            path[s] = paths[s] [path[s+1]];
+        }
+        return path;
+    }
+
     public int [] viterbi(String[] tokens, int[][] features, int length){
         int states[] = new int[length];
 
@@ -458,16 +527,9 @@ public class HiddenMarkovModel {
         Arrays.fill(priorProb,uniformProb);
         //Arrays.fill(stateProbGivenPrevObservations[0], uniformProb);
 
-        // loop skips the last index, because the last state does not have the next token feature.
-        // if we remove the next token feature,
         for (int s=0;s<length;s++){ // for each state
             System.arraycopy(priorProb, 0 , maxObservationProbGivenState[s], 0, numStateValues);
             for (int sv=0; sv<numStateValues; sv++){ // for each state value
-                // initialize token entry in the maps if it's not seen before
-//                if ( ! tokenProbabilityGivenStateValue[sv].containsKey(tokens[s]))
-//                    setZeroCountAndProbabilities(tokenCounts, tokenProbabilityGivenStateValue, tokens[s]);
-//                if ( ! nextTokenProbabilityGivenStateValue[sv].containsKey(tokens[s+1]))
-//                    setZeroCountAndProbabilities(nextTokenCounts, nextTokenProbabilityGivenStateValue, tokens[s+1]);
                 maxObservationProbGivenState[s][sv] *=tokenProbGivenStateValue(sv, tokens, s)*
                         nextTokenProbGivenStateValue(sv, tokens, s);
 

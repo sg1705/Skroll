@@ -11,9 +11,11 @@ package com.skroll.analyzer.model;
 public enum RandomVariableType {
     PARAGRAPH_HAS_DEFINITION(2, new String[]{"no","yes"}),
     PARAGRAPH_STARTS_WITH_QUOTE(2),
+    PARAGRAPH_STARTS_WITH_SPECIAL_FORMAT(2),
     PARAGRAPH_NUMBER_TOKENS(10),
     WORD_IS_DEFINED_TERM (2),
     WORD_IN_QUOTES (2),
+    WORD_HAS_SPECIAL_FORMAT(2),
     WORD_INDEX (DefinedTermExtractionModel.HMM_MODEL_LENGTH);
 
     private int featureSize;
