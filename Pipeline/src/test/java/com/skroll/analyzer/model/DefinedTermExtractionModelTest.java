@@ -37,6 +37,8 @@ public class DefinedTermExtractionModelTest extends TestCase {
             System.out.println(para.getText());
             System.out.println(DocumentHelper.getDefinedTermTokensInParagraph(para));
         }
+        System.out.println(DocumentHelper.getDefinitionParagraphs(doc).size());
+        assert(DocumentHelper.getDefinitionParagraphs(doc).size()==174);
     }
 
     public void testUpdateWithDocument() throws Exception {
