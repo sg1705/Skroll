@@ -24,7 +24,6 @@ public class APITest {
 
         try {
                 jettyServer.start();
-                jettyServer.waitForInterrupt();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -70,8 +69,8 @@ public class APITest {
     @Test
     public void test_SetCookie_UploadFile_GetDefinition() throws Exception {
         testSetCookie();
-        testFileUpload();
-        testGetDefinition();
+        String cookie = testFileUpload();
+        testGetDefinition(cookie);
     }
 
 
@@ -84,7 +83,7 @@ public class APITest {
         assert(responseString.equals("Test"));
     }
 
-    public void testFileUpload() throws Exception {
+    public String testFileUpload() throws Exception {
         String TARGET_URL = "http://localhost:8888/restServices/jsonAPI/upload";
         Client client = ClientBuilder.newBuilder().register(MultiPartFeature.class).build();
         WebTarget webTarget = client.target(TARGET_URL);
@@ -92,25 +91,28 @@ public class APITest {
         multiPart.setMediaType(MediaType.MULTIPART_FORM_DATA_TYPE);
 
         FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file",
-                new File("/Users/saurabhagarwal/hackathon/_Indenture/SIX FLAGS_ex4-1.html"),
+                new File("src/test/resources/analyzer/evaluate/docclassifier/SIX FLAGS_ex4-1.html"),
                 MediaType.APPLICATION_OCTET_STREAM_TYPE);
         //byte[] bytes = new byte[10];
         multiPart.
                 bodyPart(fileDataBodyPart);
 
-        Response response = webTarget.request(MediaType.TEXT_HTML).cookie(new NewCookie("documentId", "101"))
+        Response response = webTarget.request(MediaType.TEXT_HTML)
                 .post(Entity.entity(multiPart, MediaType.MULTIPART_FORM_DATA));
 
+        System.out.println("Cookies:" + response.getCookies().get("documentId").getValue());
+
         System.out.println(response.readEntity(String.class));
+
+        return response.getCookies().get("documentId").getValue();
     }
 
-    @Test
-    public void testGetDefinition() throws Exception {
-        String TARGET_URL = "http://localhost:8888/restServices/jsonAPI/getDefinition?documentId=101";
+    public void testGetDefinition(String documentId) throws Exception {
+        String TARGET_URL = "http://localhost:8888/restServices/jsonAPI/getDefinition";
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
 
-        String responseString = webTarget.request(MediaType.APPLICATION_JSON).get(String.class);
+        String responseString = webTarget.request(MediaType.APPLICATION_JSON).cookie(new  NewCookie("documentId", documentId)).get(String.class);
         System.out.println("Here is the response: "+responseString);
     }
 }
