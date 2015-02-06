@@ -13,11 +13,12 @@ import com.skroll.pipeline.util.Utils;
 import junit.framework.TestCase;
 
 import java.io.File;
-enum FileProcess{
-    TRAIN,ANNOTATE
-}
+
 
 public class DefinedTermExtractionModelTest extends TestCase {
+    enum FileProcess{
+        TRAIN,ANNOTATE
+    }
 
     public void testAnnotateDefinedTermsInParagraph() throws Exception {
         DefinedTermExtractionModel model = new DefinedTermExtractionModel();
