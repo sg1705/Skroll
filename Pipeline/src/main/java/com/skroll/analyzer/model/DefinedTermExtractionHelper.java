@@ -80,15 +80,6 @@ public class DefinedTermExtractionHelper {
     static String[] getNBWords(CoreMap paragraph){
         Set<String> wordSet = paragraph.get(CoreAnnotations.WordSetForTrainingAnnotation.class);
         return wordSet.toArray(new String[wordSet.size()]);
-//        List<String> wordList = DocumentHelper.getTokenString(paragraph.getTokens());
-//        Set<String> wordSet = new HashSet<>();
-//        int maxLength = PFS_TOKENS_NUMBER_FEATURE_MAX;
-//        for (int i=0;i<wordList.size() && wordSet.size()<=maxLength; i++){
-//            if (wordList.get(i).equals("\""))
-//                continue;
-//            wordSet.add(wordList.get(i));
-//        }
-//        return  wordSet.toArray(new String[wordSet.size()]);
     }
 
     static int getParagraphFeature(CoreMap paragraph, RandomVariableType feature){

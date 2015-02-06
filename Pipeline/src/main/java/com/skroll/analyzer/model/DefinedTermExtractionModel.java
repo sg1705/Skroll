@@ -24,51 +24,11 @@ import java.util.*;
 
 public class DefinedTermExtractionModel {
 
-    //static final int PFS_TOKENS_NUMBER_FEATURE_MAX = 11;
     static final int HMM_MODEL_LENGTH = 12;
-    static final int WFS_NUMBER_TOKENS_USED = 10;
-    //static final PARAGRAPH_FEATURES;
+
 
     HiddenMarkovModel hmm;
     NaiveBayes nb;
-
-//    // random variables at the paragraph level
-//    RandomVariableOld paragraphHasDefinition = new RandomVariableOld("paragraphHasDefinition",2);
-//    RandomVariableOld paragraphHasQuote = new RandomVariableOld("paragraphHasQuote",2);
-//    RandomVariableOld paragraphNumberTokens = new RandomVariableOld("paragraphNumberTokens",PFS_TOKENS_NUMBER_FEATURE_MAX);
-//
-//    // randome variables at the word level
-//    RandomVariableOld wordIsDefinedTerm = new RandomVariableOld("wordIsDefinedTerm",2);
-//    RandomVariableOld wordIsInQuotes = new RandomVariableOld("wordIsInQuotes",2);
-//    RandomVariableOld wordIndexInParagraph = new RandomVariableOld("wordIndexInParagraph",HMM_MODEL_LENGTH);
-//
-//
-//
-//    // features used at the paragraph
-//    EnumMap<ParagraphFeatures, RandomVariableOld> features=
-//            new EnumMap<ParagraphFeatures, RandomVariableOld>(ParagraphFeatures.class){{
-//                put(ParagraphFeatures.HAS_DEFINITION, paragraphHasDefinition);
-//                put(ParagraphFeatures.HAS_QUOTE, paragraphHasQuote);
-//                put(ParagraphFeatures.NUMBER_TOKENS, paragraphNumberTokens);
-//    }};
-
-
-//    Set<RandomVariable> PARAGRAPH_FEATURES = new HashSet<RandomVariable>(Arrays.asList(
-//            paragraphHasQuote, paragraphNumberTokens
-//    ));
-//
-//    // features used at the word level
-//    Set<RandomVariable> WORD_FEATURES = new HashSet<RandomVariable>(Arrays.asList(
-//            wordIsInQuote, wordIndexInParagraph
-//    ));
-
-//    EnumMap<WordFeatures, RandomVariableOld> features=
-//            new EnumMap<WordFeatures, RandomVariableOld>(WordFeatures.class){{
-//                put(WordFeatures.IS_DEFINED_TERM, wordIsDefinedTerm);
-//                put(WordFeatures.IN_QUOTES, wordIsInQuotes);
-//                put(WordFeatures.INDEX, paragraphNumberTokens);
-//            }};
-//
 
     // the link between paragraph category to the state of the first word in the paragraph
     // the links from paragraph category to the remaining states should not be significant,
@@ -140,40 +100,12 @@ public class DefinedTermExtractionModel {
         }
         DocumentHelper.setDefinedTermTokensInParagraph(definedTerms, paragraph);
 
-
-//        int[] states = hmm.mostLikelyStateSequence()
-//
-//        if (nb.mostLikelyCategory(nbDataTuple) == 1){
-//            List<Token> tokens = trainingParagraph.getTokens();
-//            List<String> words = DocumentHelper.getTokenString(tokens);
-//
-//            String[] wordsArray = words.toArray(new String[words.size()]);
-//
-//            int length = Math.min(hmm.size(), tokens.size());
-//            int[][] features = new int[length][WORD_FEATURES.length];
-//            for (int i=0; i<length ;i++){
-//                for (int f=0; f<WORD_FEATURES.length;f++){
-//                    features[i][f] = DefinedTermExtractionHelper.getWordFeature(paragraph, tokens.get(i), WORD_FEATURES[f]);
-//                }
-//            }
-//            states = hmm.mostLikelyStateSequence(wordsArray, features);
-//
-//            List<Token> definedTerms = new ArrayList<>();
-//
-//            for (int i=0; i<states.length;i++){
-//                if (states[i]==1) definedTerms.add(tokens.get(i));
-//            }
-//            DocumentHelper.setDefinedTermTokensInParagraph(definedTerms, paragraph);
-//
-//        };
     }
 
     void updateWithParagraph(CoreMap paragraph) {
         CoreMap trainingParagraph = DefinedTermExtractionHelper.makeTrainingParagraph(paragraph);
         updateNBWithParagraph(trainingParagraph);
         updateHMMWithParagraph(trainingParagraph);
-
-        //int paraType = DefinedTermExtractionHelper.getParagraphFeature(paragraph, RandomVariableType.PARAGRAPH_HAS_DEFINITION);
     }
 
     /**
