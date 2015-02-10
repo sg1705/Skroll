@@ -23,8 +23,9 @@ public class HTMLHiddenMarkovModelStateSequenceTestingPipe extends SyncPipe<Docu
         List<CoreMap> paragraphs = input.getParagraphs();
 
         for( CoreMap paragraph : paragraphs) {
-                List<String> tokens = DocumentHelper.getTokenString(paragraph.get(CoreAnnotations.TokenAnnotation.class));
-                String[] tokensArray = tokens.toArray(new String[tokens.size()]);
+            //List<String> tokens = DocumentHelper.getTokenString(paragraph.get(CoreAnnotations.TokenAnnotation.class));
+            List<String> tokens = DocumentHelper.getDefinedTerms(paragraph);
+            String[] tokensArray = tokens.toArray(new String[tokens.size()]);
                 output.add(model.mostLikelyStateSequence(tokensArray));
         }
         return output;

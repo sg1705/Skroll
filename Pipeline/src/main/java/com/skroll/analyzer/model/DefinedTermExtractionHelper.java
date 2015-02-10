@@ -53,12 +53,12 @@ public class DefinedTermExtractionHelper {
 
         // put defined terms from paragraph in trainingParagraph
         // todo: may remove this later if trainer creates a training paragraph and put defined terms there directly
-        List<Token> definedTokens = paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class);
+        List<List<Token>> definedTokens = paragraph.get(CoreAnnotations.DefinedTermListAnnotation.class);
         if (definedTokens != null && definedTokens.size()>0) {
             trainingParagraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
         }
-        trainingParagraph.set(CoreAnnotations.DefinedTermsAnnotation.class,
-                paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class));
+        trainingParagraph.set(CoreAnnotations.DefinedTermListAnnotation.class,
+                paragraph.get(CoreAnnotations.DefinedTermListAnnotation.class));
 
         return trainingParagraph;
     }
@@ -119,8 +119,11 @@ public class DefinedTermExtractionHelper {
     static int getWordFeature(CoreMap paragraph, Token word, RandomVariableType feature){
         switch (feature){
             case WORD_IS_DEFINED_TERM:
-                List<Token> tokens =  DocumentHelper.getDefinedTermTokensInParagraph(paragraph);
-                return (tokens!=null &&tokens.contains(word)) ?1:0;
+                List<List<Token>> tokens =  DocumentHelper.getDefinedTermTokensInParagraph(paragraph);
+                if (tokens==null) return 0;
+                for (List<Token> list: tokens)
+                    if (list.contains(word)) return 1;
+                return 0;
             case WORD_IN_QUOTES:
                 Boolean inQuotes = word.get(CoreAnnotations.InQuotesAnnotation.class );
                 return (inQuotes!=null && inQuotes==true) ?1:0;

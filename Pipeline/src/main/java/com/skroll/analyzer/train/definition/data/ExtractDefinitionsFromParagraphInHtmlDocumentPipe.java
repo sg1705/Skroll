@@ -31,24 +31,7 @@ public class ExtractDefinitionsFromParagraphInHtmlDocumentPipe extends SyncPipe<
                 DocumentHelper.setDefinedTermTokensInParagraph(definedTerms, paragraph);
             }
 
-//            List<String> newList = new ArrayList<String>();
-//            String str = paragraph.getText();
-//            Pattern p = Pattern.compile( "\"([^\"]*)\"" );
-//            Matcher m = p.matcher( str );
-//            if (paragraph.getText()
-//                    //.replaceFirst(" +","") //uncomment to ignore starting spaces
-//                    .startsWith("\"")) {
-//                while (m.find()) {
-//                    newList.add(m.group(1));
-//                }
-//            }
-//            DocumentHelper.setDefinition(newList, paragraph);
-//            paragraph.setDefinitions(newList);
-//            if (newList.size() > 0) {
-//                paragraph.setDefinition(true);
-//            } else {
-//                paragraph.setDefinition(false);
-//            }
+
         }
         return this.target.process(input);
     }

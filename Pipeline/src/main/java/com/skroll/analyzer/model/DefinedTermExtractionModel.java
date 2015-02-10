@@ -97,9 +97,17 @@ public class DefinedTermExtractionModel {
 
         for (int i=0; i<states.length;i++){
             if (states[i]==1) definedTerms.add(tokens.get(i));
-        }
-        DocumentHelper.setDefinedTermTokensInParagraph(definedTerms, paragraph);
+            else {
+                if (definedTerms.size()>0){
+                    DocumentHelper.addDefinedTermTokensInParagraph(definedTerms, paragraph);
+                    definedTerms = new ArrayList<>();
+                }
 
+            }
+        }
+        if (definedTerms.size()>0){
+            DocumentHelper.addDefinedTermTokensInParagraph(definedTerms, paragraph);
+        }
     }
 
     void updateWithParagraph(CoreMap paragraph) {
@@ -120,6 +128,8 @@ public class DefinedTermExtractionModel {
         nb.addSample(nbDataTuple);
 
     }
+
+    //todo: this method should be changed. Definitions should be annotated with good training data.
     void updateHMMWithParagraph(CoreMap paragraph){
         List<Token> tokens = paragraph.get(CoreAnnotations.TokenAnnotation.class);
 
@@ -127,8 +137,9 @@ public class DefinedTermExtractionModel {
         if (!paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
             definitionsSet= new HashSet<String>();
         } else {
-            List<Token> defTokens = paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class);
-            List<String> definitions = Splitter.on(' ').splitToList(DocumentHelper.getTokenString(defTokens).get(0));
+//            List<Token> defTokens = paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class);
+//            List<String> definitions = Splitter.on(' ').splitToList(DocumentHelper.getTokenString(defTokens).get(0));
+            List<String> definitions = DocumentHelper.getDefinedTerms(paragraph);
             definitionsSet = new HashSet<String>(definitions);
         }
 

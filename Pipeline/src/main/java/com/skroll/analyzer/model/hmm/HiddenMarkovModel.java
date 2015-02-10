@@ -255,6 +255,7 @@ public class HiddenMarkovModel {
         probabilitiesUpToDate = false;
     }
 
+    // todo: this method should be removed. But it's still used in some places
     public void updateCounts(String[] tokens, int[] stateValues){
 
         //skip samples that are too short
