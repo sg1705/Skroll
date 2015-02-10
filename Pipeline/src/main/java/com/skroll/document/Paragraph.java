@@ -1,4 +1,4 @@
-package com.skroll.rest;
+package com.skroll.document;
 
 import java.util.Collections;
 import java.util.List;

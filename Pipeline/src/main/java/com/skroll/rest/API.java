@@ -10,6 +10,7 @@ import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.document.annotation.CoreAnnotations;
+import com.skroll.document.Paragraph;
 import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.ParserException;
 import com.skroll.pipeline.util.Constants;

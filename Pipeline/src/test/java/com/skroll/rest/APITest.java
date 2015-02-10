@@ -93,7 +93,7 @@ public class APITest {
 
         System.out.println("Cookies:" + response.getCookies().get("documentId").getValue());
 
-        System.out.println(response.readEntity(String.class));
+        //System.out.println(response.readEntity(String.class));
         return response.getCookies().get("documentId").getValue();
     }
 
