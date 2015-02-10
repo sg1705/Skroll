@@ -12,7 +12,7 @@ public class DefinitionTrainerTest {
 
     @Test
     public void testGenerateFilesForOverride()  {
-        String folderName = "src/main/resources/trainingDocuments/indentures/";
+        String folderName = "src/main/resources/trainingDocuments/indentures/AMC Networks Indenture.html";
 
         try {
             DefinitionTrainer.generateHRFs(folderName);
@@ -36,7 +36,7 @@ public class DefinitionTrainerTest {
 
     @Test
     public void TestTrainWithOverride(){
-        String fileName = "src/main/resources/trainingDocuments/indentures/";
+        String fileName = "src/main/resources/trainingDocuments/indentures/Dish Indenture.html";
         try {
             DefinitionTrainer.trainWithOverride(fileName);
         } catch (IOException e) {
