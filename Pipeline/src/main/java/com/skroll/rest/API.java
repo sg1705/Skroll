@@ -65,6 +65,7 @@ public class API {
                 //logger.debug("document:" + document.getTarget());
                 //link the document
                 documentMap.put(documentId, document);
+
                 logger.debug("Added document into the documentMap with a generated hash key:"+ documentMap.keySet());
 
                 NewCookie documentIdCookie = new NewCookie("documentId", documentId);
@@ -142,26 +143,6 @@ public class API {
         return r;
     }
 
-    @GET
-    @Path("/print/{name}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Person produceJSON(@PathParam("name") String name, @Context HttpHeaders hh) {
-        Person st = new Person(name, "Joe", 22, 1);
-        MultivaluedMap<String, String> headerParams = hh.getRequestHeaders();
-        Map<String, Cookie> pathParams = hh.getCookies();
-        System.out.println("Cookie:" + pathParams);
-        return st;
-    }
-
-    @POST
-    @Path("/send")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response consumeJSON(Person person) {
-
-        String output = person.toString();
-
-        return Response.status(200).entity(output).build();
-    }
 
     @GET
     @Path("/test")
@@ -203,83 +184,4 @@ public class API {
 
         return Response.status(Response.Status.BAD_REQUEST).entity("Failed to process attachments. Reason : " + message).type(MediaType.APPLICATION_JSON_TYPE).build();
     }
-
-    /*
-    @POST
-    @Path("/upload")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response getContext(@Context HttpServletRequest request, @Context HttpServletResponse response)throws Exception
-    {
-        System.out.println("Context Path is:"+request.getRequestURL().toString());
-        Collection<Part> parts = request.getParts();
-        logger.debug("Number of Files upload {}", parts.size());
-        // set response types
-        response.setContentType("text/html");
-        //since we are assuming that only one file will be uplaoded
-        Part part = parts.iterator().next();
-        if(part.getContentType() != null){
-            logger.debug(part.getName());
-            logger.debug(part.getContentType());
-            InputStreamReader reader = new InputStreamReader(part.getInputStream());
-            String content = CharStreams.toString(reader);
-
-            try {
-                //parse the document
-                Document document = Parser.parseDocumentFromHtml(content);
-                //create a classifier
-                DefinitionClassifier classifier = new DefinitionClassifier();
-                //test the document
-                document = (Document)classifier.classify(document);
-                //link the document
-                response.getOutputStream().write(document.getTarget().getBytes(Constants.DEFAULT_CHARSET));
-            } catch (ParserException e) {
-                logger.error("Error while parsing the uploaded file", e);
-            } catch (Exception e) {
-                logger.error("Error while classifying", e);
-            }
-        } else {
-            //TODO figure out error
-            logger.error("Uploaded part is null");
-        }
-        response.getOutputStream().close();
-
-        return Response.status(200).entity(result).build();
-    }
-*/
-/*
-    @POST
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response uploadFile(
-            @FormDataParam("file") InputStream aUploadedInputStream,
-            @FormDataParam("file") FormDataContentDisposition aFileDetail) {
-
-        logger.info("File Name:" + aFileDetail.getFileName());
-        logger.info("File Size:" + aFileDetail.getSize());
-        boolean isProcessed = false;
-        String id = UUID.randomUUID().toString();
-        String message = null;
-        try {
-            //InputStream source = bpe.getInputStream();
-            File file = new File("/tmp/" + id + ".png");
-            byte[] text = IOUtils.readFully(aUploadedInputStream, 0, true);
-            Files.write(text, file);
-
-            isProcessed = true;
-
-        } catch (Exception e) {
-            message = e.getMessage();
-
-            isProcessed = true;
-            message = e.getMessage();
-        }
-    if (isProcessed) {
-        return Response.status(Response.Status.ACCEPTED).entity("Attachements processed successfully.").type(MediaType.TEXT_PLAIN).build();
-    }
-
-    return Response.status(Response.Status.BAD_REQUEST).entity("Failed to process attachments. Reason : " + message).type(MediaType.TEXT_PLAIN).build();
-}
-*/
-
-
 }

@@ -1,7 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'war'
 //apply plugin: 'jetty'
-//apply from: 'https://raw.github.com/akhikhl/gretty/master/pluginScripts/gretty.plugin'
+apply from: 'https://raw.github.com/akhikhl/gretty/master/pluginScripts/gretty.plugin'
 
 version = '1.0'
 sourceCompatibility = JavaVersion.VERSION_1_7
@@ -40,8 +40,9 @@ dependencies {
     compile 'org.glassfish.jersey.media:jersey-media-moxy:2.15'
     compile 'org.glassfish.jersey.media:jersey-media-multipart:2.15'
 }
-/**
+
 gretty{
+    port = 8080
     List<String> jvmArgs = []
     jvmArgs.add("-Dcom.skroll.LEVEL=DEBUG")
     managedClassReload=true
@@ -49,7 +50,7 @@ gretty{
     fastReload = true
     scanInterval = 1
 }
-
+/*
 jettyRun {
     httpPort = 8080
     reload = 'automatic'
@@ -60,5 +61,6 @@ jettyRun {
 httpPort = 8080
 stopPort = 9080
 stopKey = "stopKey"
-**/
+*/
+
 

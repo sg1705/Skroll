@@ -36,15 +36,6 @@ public class APITest {
             e.printStackTrace();
         }
     }
-    @Test
-    public void startServer() throws Exception {
-        Client restClient = ClientBuilder.newClient();
-        WebTarget target = restClient.target("http://localhost:8888/restServices/jsonAPI");
-        WebTarget resourceTarget = target.path("/test"); //change the URI without affecting a root URI
-        String responseString = resourceTarget.request("text/plain").get(String.class);
-        System.out.println("Here is the response: "+responseString);
-        assert(responseString.equals("Test"));
-    }
 
     @Test
     public void testTest() throws Exception {
@@ -103,7 +94,6 @@ public class APITest {
         System.out.println("Cookies:" + response.getCookies().get("documentId").getValue());
 
         System.out.println(response.readEntity(String.class));
-
         return response.getCookies().get("documentId").getValue();
     }
 
@@ -114,5 +104,6 @@ public class APITest {
 
         String responseString = webTarget.request(MediaType.APPLICATION_JSON).cookie(new  NewCookie("documentId", documentId)).get(String.class);
         System.out.println("Here is the response: "+responseString);
+        assert(responseString.contains("Accredited Investor"));
     }
 }

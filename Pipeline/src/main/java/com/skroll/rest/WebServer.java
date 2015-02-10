@@ -98,12 +98,16 @@ public class WebServer {
 
     private URI getWebRootResourceUri() throws FileNotFoundException, URISyntaxException
     {
+        //File indexUri = new File (System.getProperty("user.dir") + "/Pipeline/src/main/webapp");
+
         URL indexUri = this.getClass().getResource(WEBROOT_INDEX);
+
         if (indexUri == null)
         {
             throw new FileNotFoundException("Unable to find resource " + WEBROOT_INDEX);
         }
         // Points to wherever /webroot/ (the resource) is
+        LOG.info("indexUri:" +indexUri.toURI());
         return indexUri.toURI();
     }
 
@@ -143,8 +147,6 @@ public class WebServer {
         context.setClassLoader(getUrlClassLoader());
 
         context.addServlet(jspServletHolder(), "*.jsp");
-        // Add Application Servlets
-        //context.addServlet(DateServlet.class, "/date/");
 
         context.addServlet(exampleJspFileMappedServletHolder(), "/test/foo/");
         context.addServlet(defaultServletHolder(baseUri), "/");
@@ -153,19 +155,11 @@ public class WebServer {
         ServletHolder jerseyServlet = context.addServlet(
                 org.glassfish.jersey.servlet.ServletContainer.class, "/restServices/*");
         jerseyServlet.setInitOrder(0);
-        //jerseyServlet.getRegistration().setMultipartConfig(new MultipartConfigElement("yourTempLocation", 1048576, 1048576, 262144));
-        // Tells the Jersey Servlet which REST service/class to load.
-        /* jerseyServlet.setInitParameter(
-                "jersey.config.server.provider.classnames",
-                API.class.getCanonicalName());
-        */
-        //final ResourceConfig resourceConfig = new ResourceConfig(API.class);
-        //resourceConfig.register(MultiPartFeature.class);
+
         jerseyServlet.setInitParameter(
                 "javax.ws.rs.Application",
                 MultiPartApplication.class.getCanonicalName());
-        //new ResourceConfig()
-        //        .register(MultiPartFeature.class);
+
         return context;
     }
 
