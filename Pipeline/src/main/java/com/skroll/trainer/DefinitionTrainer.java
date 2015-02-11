@@ -46,6 +46,7 @@ public class DefinitionTrainer {
             DefinitionTrainer.generateHRFs(args[1]);
         }
         if (args[0].equals("--trainWithOverride")) {
+            logger.debug("folder Name :" + args[1]);
             DefinitionTrainer.trainWithOverride(args[1]);
         }
         if (args[0].equals("--classify")){
