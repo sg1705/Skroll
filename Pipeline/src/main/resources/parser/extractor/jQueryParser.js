@@ -112,13 +112,14 @@ function processNode(index, element) {
         var newChunk = new Object();
         newChunk[ID_ANNOTATION] = chunkId;
         newChunk[TEXT_ANNOTATION] = chunkText;
-        //var newChunk = new CoreMap(chunkId, chunkText);
         if (isBold(element.parentNode)) {
             newChunk[IS_BOLD_ANNOTATION] = true;
         }
-
         if (isItalic(element.parentNode)) {
             newChunk[IS_ITALIC_ANNOTATION] = true;
+        }
+        if (isUnderLine(element.parentNode)) {
+            newChunk[IS_UNDERLINE_ANNOTATION] = true;
         }
         chunkStack.push(newChunk);
         chunkId++;
@@ -147,7 +148,6 @@ function createPara(element) {
     paragraphs.push(newParagraph);
     insertMarker(paragraphId, element);
     chunkStack = new Array();
-    //$(element).prepend("<a name=\"" + (paragraphId) + "\"/>");
     paragraphId++;
 }
 
@@ -160,7 +160,6 @@ function printNodes(index, element, block) {
 
     if (element.nodeType == 3) {
         count++;
-        //console.log($(element).text().substring(0,10));
         if (isUnderLine(element.parentNode)) {
             console.log(count+":"+element.parentNode.nodeName + ":underline");
         }
