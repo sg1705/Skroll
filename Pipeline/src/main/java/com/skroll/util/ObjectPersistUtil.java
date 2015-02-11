@@ -72,7 +72,7 @@ public class ObjectPersistUtil {
                     FileInputStream(configuration.get(MODEL_PERSIST_FOLDER) + "/" + objectName);
             logger.info("reading object from file: " + configuration.get(MODEL_PERSIST_FOLDER) + "/" + objectName);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            logger.error("Object Persistence file not found: " + configuration.get(MODEL_PERSIST_FOLDER) + "/" + objectName);
             throw new ObjectPersistException("Object Persistence directory not found ");
         }
 
