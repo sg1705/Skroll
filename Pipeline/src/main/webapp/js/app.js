@@ -64,7 +64,7 @@
         $scope.definitions = [ ];
         $scope.toggleSidenav = function(menuId) {
             //get json
-            $http.get('test.json').success(function(data) {
+            $http.get('restServices/jsonAPI/getDefinition').success(function(data) {
                 $scope.definitions = [ ];
                 for(var ii = 0; ii < data.length; ii++) {
                     //get all definitions
