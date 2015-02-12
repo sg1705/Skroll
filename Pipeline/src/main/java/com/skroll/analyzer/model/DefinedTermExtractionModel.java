@@ -35,14 +35,14 @@ public class DefinedTermExtractionModel {
     //      and makes the model more complicated and expensive.
 
     static final RandomVariableType[] PARAGRAPH_FEATURES = {
-            //RandomVariableType.PARAGRAPH_STARTS_WITH_QUOTE,
-            RandomVariableType.PARAGRAPH_STARTS_WITH_SPECIAL_FORMAT,
+            RandomVariableType.PARAGRAPH_STARTS_WITH_QUOTE,
+            //RandomVariableType.PARAGRAPH_STARTS_WITH_SPECIAL_FORMAT,
             RandomVariableType.PARAGRAPH_NUMBER_TOKENS};
 
     //todo: if needed, can add a feature to indicated if a word is used as camel case in the document.
     static final RandomVariableType[] WORD_FEATURES = {
-            //RandomVariableType.WORD_IN_QUOTES,
-            RandomVariableType.WORD_HAS_SPECIAL_FORMAT,
+            RandomVariableType.WORD_IN_QUOTES,
+            //RandomVariableType.WORD_HAS_SPECIAL_FORMAT,
             //RandomVariableType.WORD_INDEX
     };
 

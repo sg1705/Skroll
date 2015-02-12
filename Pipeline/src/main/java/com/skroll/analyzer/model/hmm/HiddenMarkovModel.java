@@ -396,11 +396,13 @@ public class HiddenMarkovModel {
 
     }
 
+    //todo:  change this to avoid using createFeatures
     public  double[][] infer(String[] tokens){
         String[] newTokens = new String[tokens.length];
         int[][] features = new int[tokens.length][numberFeatures];;
         int length = createFeatures( tokens, newTokens, features);
         length = Math.min(length, modelLength);
+        newTokens = Arrays.copyOfRange(tokens, 0, length);
         double[][] probsForward = inferForward(newTokens, features, length);
         double[][] probsBack = inferBackward(newTokens, features, length);
         double[][] probs = combine(probsForward, probsBack);

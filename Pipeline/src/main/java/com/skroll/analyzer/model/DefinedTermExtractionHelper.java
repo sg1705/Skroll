@@ -20,7 +20,7 @@ public class DefinedTermExtractionHelper {
 
     //PARAGRAPH_NUMBER_TOKENS can be from 0 to PFS_TOKENS_NUMBER_FEATURE_MAX,
     //so number of possibilities is one more than PFS_TOKENS_NUMBER_FEATURE_MAX
-    static final int PFS_TOKENS_NUMBER_FEATURE_MAX =
+    public static final int PFS_TOKENS_NUMBER_FEATURE_MAX =
             RandomVariableType.PARAGRAPH_NUMBER_TOKENS.getFeatureSize()-1;
 
     // create a copy of paragraph and annotate it further for training

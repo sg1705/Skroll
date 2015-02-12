@@ -1,5 +1,6 @@
 package com.skroll.analyzer.data.definition;
 
+import com.skroll.analyzer.model.DefinedTermExtractionHelper;
 import com.skroll.analyzer.model.nb.DataTuple;
 import com.skroll.analyzer.model.nb.NaiveBayes;
 import com.skroll.pipeline.SyncPipe;
@@ -53,7 +54,7 @@ public class StringsToNaiveBayesDataTuplePipe extends SyncPipe<List<String>, Dat
         DataTuple tuple;
 
         //features[featureNumber] = tokenSet.size();
-        features[featureNumber] = Math.min(input.size(), Constants.DEFINITION_CLASSIFICATION_NAIVE_BAYES_TOKENS_NUMBER_FEATURE_MAX);
+        features[featureNumber] = Math.min(input.size(), DefinedTermExtractionHelper.PFS_TOKENS_NUMBER_FEATURE_MAX);
         if (input.size()<Constants.DEFINITION_CLASSIFICATION_NAIVE_BAYES_NEGATIVE_THRESHOLD)
             tuple =  new DataTuple(Constants.CATEGORY_NEGATIVE, tokenSet.toArray(new String[tokenSet.size()]),features);
         else tuple =  new DataTuple(categoryType, tokenSet.toArray(new String[tokenSet.size()]),features);
