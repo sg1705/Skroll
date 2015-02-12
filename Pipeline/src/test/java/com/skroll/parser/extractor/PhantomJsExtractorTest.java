@@ -23,7 +23,7 @@ public class PhantomJsExtractorTest extends TestCase {
     @Test
     public void testPhantomJsExtract() throws Exception {
         PhantomJsExtractor phantomJsExtractor = new PhantomJsExtractor();
-        Document doc = new Document("<div>this is a awesome</div>");
+        Document doc = new Document("<div><u>this is a awesome</u></div>");
         doc = phantomJsExtractor.process(doc);
         System.out.println(doc.getParagraphs().size());
     }
