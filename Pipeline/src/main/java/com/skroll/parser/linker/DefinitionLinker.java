@@ -63,6 +63,10 @@ public class DefinitionLinker {
                         "Found a definition paragraph but didn't find defined terms");
                 continue;
             }
+            //if only one token and its size is 1 then ignore
+            if ((tokens.size() == 1) & (tokens.get(0).getText().length() == 1)) {
+                continue;
+            }
             //combine tokens into a regex
             //List<String> tokenStrings = DocumentHelper.getTokenString(tokens);
             String regex = Joiner.on(REGEX_TOKEN_SEPARATOR).join(tokens);
