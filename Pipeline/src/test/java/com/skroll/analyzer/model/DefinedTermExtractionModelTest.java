@@ -13,6 +13,8 @@ import com.skroll.pipeline.util.Utils;
 import junit.framework.TestCase;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class DefinedTermExtractionModelTest extends TestCase {
@@ -29,17 +31,13 @@ public class DefinedTermExtractionModelTest extends TestCase {
 
 
         String testingFolderName = "src/test/resources/analyzer/definedTermExtractionTesting";
-        Document doc = processFolder(testingFolderName, model,FileProcess.ANNOTATE);
+        List<Document> docs = processFolder(testingFolderName, model, FileProcess.ANNOTATE);
 
+        assert(DocumentHelper.getDefinitionParagraphs(docs.get(0)).size()==174);
+        assert(DocumentHelper.getDefinedTermTokensInParagraph(
+                DocumentHelper.getDefinitionParagraphs(docs.get(0)).get(172))
+                .get(1).get(1).toString().equals("trustee"));
 
-        System.out.println("definitions after annotate");
-
-        for (CoreMap para:DocumentHelper.getDefinitionParagraphs(doc)){
-            System.out.println(para.getText());
-            System.out.println(DocumentHelper.getDefinedTermTokensInParagraph(para));
-        }
-        System.out.println(DocumentHelper.getDefinitionParagraphs(doc).size());
-        assert(DocumentHelper.getDefinitionParagraphs(doc).size()==174);
     }
 
     public void testUpdateWithDocument() throws Exception {
@@ -54,18 +52,19 @@ public class DefinedTermExtractionModelTest extends TestCase {
         model.compile();
     }
 
-    private Document processFolder(String folderName, DefinedTermExtractionModel model, FileProcess action){
+    private List<Document> processFolder(String folderName, DefinedTermExtractionModel model, FileProcess action){
         File folder = new File(folderName);
-        Document doc=null;
+        List<Document> docs= new ArrayList<>();
+
         if (folder.isDirectory()) {
             File[] listOfFiles = folder.listFiles();
             for (File file:listOfFiles) {
-                doc =processFile(file, model,action);
+                docs.add( processFile(file, model,action) );
             }
         } else {
-            doc =processFile(folder, model, action);
+            docs.add( processFile(folder, model, action));
         }
-        return doc;
+        return docs;
     }
 
     private Document processFile(File file, DefinedTermExtractionModel model, FileProcess action) {
@@ -101,6 +100,14 @@ public class DefinedTermExtractionModelTest extends TestCase {
                     }
 
                     model.annotateDefinedTermsInDocument(htmlDoc);
+
+                    System.out.println("definitions after annotate");
+                    for (CoreMap para:DocumentHelper.getDefinitionParagraphs(htmlDoc)){
+                        System.out.println(para.getText());
+                        System.out.println(DocumentHelper.getDefinedTermTokensInParagraph(para));
+                    }
+                    System.out.println(DocumentHelper.getDefinitionParagraphs(htmlDoc).size());
+
                     return htmlDoc;
 
             }
