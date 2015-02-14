@@ -3,4 +3,5 @@ build/
 .idea/workspace.xml
 .idea/tasks.xml
 .idea/uiDesigner.xml
+.idea/libraries
 
