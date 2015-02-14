@@ -31,8 +31,9 @@ public class HTMLHiddenMarkovModelTrainingPipe extends SyncPipe<Document, Docume
             if (!paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
                 definitionsSet= new HashSet<String>();
             } else {
-                List<Token> defTokens = paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class);
-                List<String> definitions = Splitter.on(' ').splitToList(DocumentHelper.getTokenString(defTokens).get(0));
+                //List<Token> defTokens = paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class);
+                //List<String> definitions = Splitter.on(' ').splitToList(DocumentHelper.getTokenString(defTokens).get(0));
+                List<String> definitions = DocumentHelper.getDefinedTerms(paragraph);
                 definitionsSet = new HashSet<String>(definitions);
             }
 

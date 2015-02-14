@@ -15,6 +15,8 @@ public enum Pipes {
     POST_EXTRACTION_PIPE("com.skroll.parser.tokenizer.PostExtractionPipe"),
     REMOVE_BLANK_PARAGRAPH_FROM_HTML_DOC("com.skroll.parser.tokenizer.RemoveBlankParagraphFromHtmlDocumentPipe"),
     REMOVE_NBSP_IN_HTML_DOC("com.skroll.parser.tokenizer.RemoveNBSPInHtmlDocumentPipe"),
+    REMOVE_STARTING_SPACES_IN_HTML_DOC("com.skroll.parser.tokenizer.RemoveStartingSpacesInHtmlDocumentPipe"),
+
     REPLACE_SPECIAL_QUOTE_IN_HTML_DOC("com.skroll.parser.tokenizer.ReplaceSpecialQuotesInHtmlDocumentPipe"),
     TOKENIZE_PARAGRAPH_IN_HTML_DOC("com.skroll.parser.tokenizer.TokenizeParagraphInHtmlDocumentPipe"),
     FILTER_STARTS_WITH_QUOTE_IN_HTML_DOC("com.skroll.parser.tokenizer.FilterStartsWithQuoteInHtmlDocumentPipe"),

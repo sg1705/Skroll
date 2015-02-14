@@ -54,7 +54,7 @@ public class DefinitionClassifier extends ClassifierImpl{
         }
         if (nbModelForDefinitions==null) {
 
-            nbModelForDefinitions = new NaiveBayes(2, new int[]{2, Constants.DEFINITION_CLASSIFICATION_NAIVE_BAYES_NUMBER_TOKENS+1});
+            nbModelForDefinitions = new NaiveBayes(2, new int[]{2, Constants.DEFINITION_CLASSIFICATION_NAIVE_BAYES_NUMBER_TOKENS_USED+1});
         }
         try {
             hmmType = new TypeToken<HiddenMarkovModel>() {}.getType();

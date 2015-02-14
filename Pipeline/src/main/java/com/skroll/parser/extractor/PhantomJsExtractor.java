@@ -12,6 +12,7 @@ import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.PumpStreamHandler;
 
 import java.io.ByteArrayOutputStream;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -60,6 +61,7 @@ public class PhantomJsExtractor {
             ps.setReturnValue(exitValue);
             throw ps;
         }
+
 
         byte[] output = stdout.toByteArray();
         String[] result = new String(output, Constants.DEFAULT_CHARSET).split(";---------------SKROLL---------------------;");

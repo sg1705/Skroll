@@ -13,7 +13,7 @@ import com.skroll.pipeline.util.Constants;
 public class Models {
 
     private static BinaryNaiveBayesModel bnbModel = new BinaryNaiveBayesModel();
-    private static NaiveBayes nbModelForDefinitions = new NaiveBayes(2, new int[]{2, Constants.DEFINITION_CLASSIFICATION_NAIVE_BAYES_NUMBER_TOKENS+1});
+    private static NaiveBayes nbModelForDefinitions = new NaiveBayes(2, Constants.DEFINITION_CLASSIFICATION_NAIVE_BAYES_FEATURE_SIZES);
     private static HiddenMarkovModel hmmModel = new HiddenMarkovModel();
 
     public static HiddenMarkovModel getHmmModel() {

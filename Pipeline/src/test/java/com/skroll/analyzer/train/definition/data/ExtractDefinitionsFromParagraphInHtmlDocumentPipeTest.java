@@ -33,11 +33,10 @@ public class ExtractDefinitionsFromParagraphInHtmlDocumentPipeTest extends TestC
         int count = 0;
         for(CoreMap paragraph : htmlDoc.getParagraphs()) {
                 count++;
-                DocumentHelper.getTokenString(
-                        paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class));
-                String words = Joiner.on(",").join(DocumentHelper
-                        .getTokenString(
-                                paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class)));
+                DocumentHelper.getDefinedTerms(paragraph);
+//                DocumentHelper.getTokenString(
+//                        paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class));
+                String words = Joiner.on(",").join(DocumentHelper.getDefinedTerms(paragraph));
                 System.out.println(words);
         }
         System.out.println(count);

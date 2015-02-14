@@ -5,6 +5,7 @@ import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
+import com.skroll.parser.Parser;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.SyncPipe;
@@ -34,21 +35,13 @@ public class FolderHTMLHiddenMarkovModelStateSequenceTesterPipe extends SyncPipe
             }
 
             Document htmlDoc= new Document();
-            htmlDoc.setSource(htmlString);
 
-            //create a pipeline
-            Pipeline<Document, Document> testingDocPipe =
-                    new Pipeline.Builder()
-                            .add(Pipes.PARSE_HTML_TO_DOC)
-                            .add(Pipes.REMOVE_BLANK_PARAGRAPH_FROM_HTML_DOC)
-                            .add(Pipes.REMOVE_NBSP_IN_HTML_DOC)
-                            .add(Pipes.REPLACE_SPECIAL_QUOTE_IN_HTML_DOC)
-                            .add(Pipes.FILTER_STARTS_WITH_QUOTE_IN_HTML_DOC)
-                            .add(Pipes.TOKENIZE_PARAGRAPH_IN_HTML_DOC)
-                            .add(Pipes.EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC)
-                            .build();
-            Document testDoc = testingDocPipe.process(htmlDoc);
-
+            try {
+                htmlDoc = Parser.parseDocumentFromHtml(htmlString);
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.err.println("Error reading file");
+            }
             Pipeline<Document, List<int[]>> testingPipe =
                     new Pipeline.Builder()
                             .add(Pipes.HTML_HIDDEN_MARKOV_MODEL_STATE_SEQUENCE_TESTING_PIPE,
@@ -57,8 +50,8 @@ public class FolderHTMLHiddenMarkovModelStateSequenceTesterPipe extends SyncPipe
 
 
 
-            List<int[]> states = testingPipe.process(testDoc);
-            List<CoreMap> paragraphs = testDoc.getParagraphs();
+            List<int[]> states = testingPipe.process(htmlDoc);
+            List<CoreMap> paragraphs = htmlDoc.getParagraphs();
             for (int i=0; i<paragraphs.size();i++){
                 output +=( paragraphs.get(i).getText() + '\n');
                 List<String> tokens = DocumentHelper.getTokenString(paragraphs.get(i).getTokens());

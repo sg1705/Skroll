@@ -20,7 +20,7 @@ public class FolderNaiveBayesTesterPipeTest extends TestCase {
                 "src/test/resources/analyzer/train/FolderBinaryNaiveBayesTrainerPipeTest/not-pdef-words",
                 "src/test/resources/analyzer/train/FolderBinaryNaiveBayesTrainerPipeTest/pdef-words"};
         //BinaryNaiveBayesModel model = new BinaryNaiveBayesModel();
-        NaiveBayes model = new NaiveBayes(2, new int[]{2, Constants.DEFINITION_CLASSIFICATION_NAIVE_BAYES_NUMBER_TOKENS+1});
+        NaiveBayes model = new NaiveBayes(2, Constants.DEFINITION_CLASSIFICATION_NAIVE_BAYES_FEATURE_SIZES);
 
         Pipeline<String, List<String>> analyzer =
                 new Pipeline.Builder<String, List<String>>()
@@ -52,6 +52,8 @@ public class FolderNaiveBayesTesterPipeTest extends TestCase {
         System.out.println(model.showWordsImportance(Constants.CATEGORY_POSITIVE));
 
         System.out.println(output);
+        System.out.println(model);
+
     }
 
 }
