@@ -6,10 +6,11 @@ import com.google.common.io.Files;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
-import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +33,9 @@ public class GenerateTrainingData {
     private static final String NOT_PARA_DEF_WORDS = "Pipeline/build/resources/generated-files/not-pdef-words/not-pdef-words-";
     private static final String PARA_DEF_TERMS = "Pipeline/build/resources/generated-files/pdef-terms/pdef-terms-";
 
+
+    public static final Logger logger = LoggerFactory
+            .getLogger(GenerateTrainingData.class);
 
     public static void main(String[] args) throws Exception {
 
@@ -172,11 +176,13 @@ public class GenerateTrainingData {
                 List<String> defList = new ArrayList<String>();
                 int count = 0;
                 for(CoreMap paragraph : htmlDoc.getParagraphs()) {
-                    String words = Joiner.on(",").join(DocumentHelper
-                            .getTokenString(
-                                    paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class)));
-                    defList.add(words);
-                    System.out.println(words);
+                    List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(
+                            paragraph);
+                    for (List<String> definition: definitionList) {
+                        String words = Joiner.on(",").join(definition);
+                        defList.add(words);
+                        logger.debug(words);
+                    }
                 }
 
                 // defintiion only

@@ -1,6 +1,5 @@
 package com.skroll.parser.linker;
 
-import com.google.common.io.Files;
 import com.skroll.analyzer.evaluate.Tester;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -12,7 +11,6 @@ import com.skroll.pipeline.util.Utils;
 import junit.framework.TestCase;
 import org.junit.Test;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -56,7 +54,9 @@ public class DefinitionLinkerTest extends TestCase {
                 definedTokens.add(paragraph.getTokens().get(2));
                 definedTokens.add(paragraph.getTokens().get(3));
                 definedTokens.add(paragraph.getTokens().get(4));
-                paragraph.set(CoreAnnotations.DefinedTermsAnnotation.class, definedTokens);
+                List<List<Token>> definedTokenList = new ArrayList();
+                definedTokenList.add(definedTokens);
+                paragraph.set(CoreAnnotations.DefinedTermListAnnotation.class,definedTokenList);
                 // perform all the linking
                 DefinitionLinker linker = new DefinitionLinker();
                 document = linker.linkDefinition(document);

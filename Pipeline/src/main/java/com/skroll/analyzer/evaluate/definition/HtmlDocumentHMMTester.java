@@ -6,6 +6,7 @@ import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
+import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
@@ -68,7 +69,9 @@ public class HtmlDocumentHMMTester extends SyncPipe<Document, Document> {
                     definitions.add(Joiner.on(" ").join(tempDefinitions));
                 }
             }
-            paragraph.set(CoreAnnotations.DefinedTermsAnnotation.class, DocumentHelper.createTokens(definitions));
+            List<List<Token>> definedTokensList = new ArrayList();
+            definedTokensList.add(DocumentHelper.createTokens(definitions));
+            paragraph.set(CoreAnnotations.DefinedTermListAnnotation.class, definedTokensList);
             newParagraphs.add(paragraph);
         }
         input.setParagraphs(newParagraphs);

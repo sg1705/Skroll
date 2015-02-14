@@ -3,7 +3,6 @@ package com.skroll.parser.linker;
 import com.google.common.base.Joiner;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
-import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.util.Constants;
@@ -11,11 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
-import org.slf4j.helpers.BasicMarker;
-import org.slf4j.helpers.BasicMarkerFactory;
 
 import java.util.List;
-import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,24 +51,33 @@ public class DefinitionLinker {
                 continue;
             }
             //get all the defined terms
-            List<Token> tokens = paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class);
-            //if tokens.size is 0 then there is a problem
-            if (tokens.size() == 0) {
+            List<List<Token>> tokensList = paragraph.get(CoreAnnotations.DefinedTermListAnnotation.class);
+
+            if (tokensList.size() == 0) {
                 Marker linkMarker = MarkerFactory.getMarker(Constants.LINKER_MARKER);
-                logger.error(linkMarker,"Inconsistency in linker. " +
+                logger.error(linkMarker, "Inconsistency in linker. " +
                         "Found a definition paragraph but didn't find defined terms");
                 continue;
             }
-            //if only one token and its size is 1 then ignore
-            if ((tokens.size() == 1) & (tokens.get(0).getText().length() == 1)) {
-                continue;
+            for (List<Token> tokens : tokensList) {
+                //if tokens.size is 0 then there is a problem
+                if (tokens.size() == 0) {
+                    Marker linkMarker = MarkerFactory.getMarker(Constants.LINKER_MARKER);
+                    logger.error(linkMarker, "Inconsistency in linker. " +
+                            "Found a definition paragraph but didn't find defined terms");
+                    continue;
+                }
+                //if only one token and its size is 1 then ignore
+                if ((tokens.size() == 1) & (tokens.get(0).getText().length() == 1)) {
+                    continue;
+                }
+                //combine tokens into a regex
+                //List<String> tokenStrings = DocumentHelper.getTokenString(tokens);
+                String regex = Joiner.on(REGEX_TOKEN_SEPARATOR).join(tokens);
+                //search and replace
+                String text = searchAndReplace(document.getTarget(), regex, paragraph.getId());
+                document.setTarget(text);
             }
-            //combine tokens into a regex
-            //List<String> tokenStrings = DocumentHelper.getTokenString(tokens);
-            String regex = Joiner.on(REGEX_TOKEN_SEPARATOR).join(tokens);
-            //search and replace
-            String text = searchAndReplace(document.getTarget(),regex, paragraph.getId());
-            document.setTarget(text);
         }
         return document;
     }
