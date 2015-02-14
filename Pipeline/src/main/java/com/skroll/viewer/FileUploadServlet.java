@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * Created by saurabh on 1/24/15.
  */
-@WebServlet("/upload")
+//@WebServlet("/upload")
 @MultipartConfig
 public class FileUploadServlet extends HttpServlet {
 
