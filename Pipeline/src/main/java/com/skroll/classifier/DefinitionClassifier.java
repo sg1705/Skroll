@@ -24,12 +24,6 @@ public class DefinitionClassifier extends ClassifierImpl{
             .getLogger(DefinitionClassifier.class);
 
     private DefinedTermExtractionModel definedTermExtractionModel = null;
-    //private NaiveBayes nbModelForDefinitions = null;
-    //private  HiddenMarkovModel hmmModel = null;
-    //private  String nbModelName = "com.skroll.analyzer.model.nb.NaiveBayes.DefinitionNB";
-    //private  String hmmModelName = "com.skroll.analyzer.model.hmm.HiddenMarkovModel.DefinitionHMM";
-    //private  Type nbType = null;
-    //private  Type hmmType = null;
     private  Type dtemType = null;
     private  String dtemModelName = "com.skroll.analyzer.model.DefinedTermExtractionModel.DefinitionDTEM";
 

@@ -72,7 +72,6 @@ public class DefinitionLinker {
                     continue;
                 }
                 //combine tokens into a regex
-                //List<String> tokenStrings = DocumentHelper.getTokenString(tokens);
                 String regex = Joiner.on(REGEX_TOKEN_SEPARATOR).join(tokens);
                 //search and replace
                 String text = searchAndReplace(document.getTarget(), regex, paragraph.getId());

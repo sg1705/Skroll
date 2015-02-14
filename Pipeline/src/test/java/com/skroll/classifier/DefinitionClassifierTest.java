@@ -67,19 +67,6 @@ public class DefinitionClassifierTest {
                 DocumentHelper.getDefinitionParagraphs(document).get(172))
                 .get(1).get(1).toString().equals("trustee"));
 
-        // String testingFile = "src/test/resources/parser/linker/test-linker-random.html";
-
-        /*
-        try {
-            document = (Document)documentClassifier.classify(Parser.parseDocumentFromHtmlFile(testingFile));
-        } catch (ParserException e) {
-            e.printStackTrace();
-            fail("failed to parse document");
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail(" failed to find a Model");
-        }
-        */
         logger.debug ("Number fo Paragraphs returned: " + document.getParagraphs().size());
             Utils.writeToFile("build/classes/test/test-linker-random.html", document.getTarget());
 
