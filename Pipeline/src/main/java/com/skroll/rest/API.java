@@ -1,5 +1,6 @@
 package com.skroll.rest;
 
+import com.google.common.base.Joiner;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Files;
@@ -124,14 +125,14 @@ public class API {
 
         for (CoreMap paragraph : doc.getParagraphs()) {
             if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
-                List<String> definition = DocumentHelper
-                        .getTokenString(
-                                paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class));
-
-                logger.debug(paragraph.getId() + "\t" + "DEFINITION" + "\t" + definition);
-                if (definition.isEmpty())
-                    continue;
-                definedTermParagraphList.add(new Paragraph(paragraph.getId(), definition));
+                List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(
+                        paragraph);
+                for (List<String> definition: definitionList) {
+                    logger.debug(paragraph.getId() + "\t" + "DEFINITION" + "\t" + definition);
+                    if (definition.isEmpty())
+                        continue;
+                    definedTermParagraphList.add(new Paragraph(paragraph.getId(), Joiner.on(" ").join(definition)));
+                }
             }
         }
         if (definedTermParagraphList.isEmpty()) {

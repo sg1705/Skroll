@@ -23,7 +23,7 @@ public class APITest {
     public void setup () {
 
         try {
-                jettyServer.start();
+            jettyServer.start();
         } catch (Exception e) {
             e.printStackTrace();
         }

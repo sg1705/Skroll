@@ -87,15 +87,17 @@ public class DefinitionTrainer {
             int count = 0;
             for (CoreMap paragraph : doc.getParagraphs()) {
                 if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
-                    String words = Joiner.on(",").join(DocumentHelper
-                            .getTokenString(
-                                    paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class)));
 
-                    defList.add(paragraph.getId() + "\t" + "DEFINITION" + "\t" + words + "\t" + paragraph.getText());
-
+                    List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(
+                            paragraph);
+                    for (List<String> definition: definitionList) {
+                        String words = Joiner.on(",").join(definition);
+                        defList.add(paragraph.getId() + "\t" + "DEFINITION" + "\t" + words + "\t" + paragraph.getText());
+                    }
                 } else {
                     defList.add(paragraph.getId() + "\t" + "NOT_DEFINITION" + "\t" + " " + "\t" + paragraph.getText());
                 }
+
             }
 
             fileName = fileName.replaceAll("\\.", "_");
@@ -166,11 +168,14 @@ public class DefinitionTrainer {
                             while (definedTermIterator.hasNext()) {
                                 definedTokens.add(new Token(definedTermIterator.next()));
                             }
-                            paragraph.set(CoreAnnotations.DefinedTermsAnnotation.class, definedTokens);
+                            //TODO: only one definition per paragraph supported right now.
+                            List<List<Token>> definedTokensList = new ArrayList();
+                            definedTokensList.add(definedTokens);
+                            paragraph.set(CoreAnnotations.DefinedTermListAnnotation.class, definedTokensList);
                             defList.add(paragraph.getId() + "\t" + "DEFINITION" + "\t" + definedTokens + "\t" + paragraph.getText());
                         } else {
                             paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, false);
-                            paragraph.set(CoreAnnotations.DefinedTermsAnnotation.class, null);
+                            paragraph.set(CoreAnnotations.DefinedTermListAnnotation.class, null);
                             defList.add(paragraph.getId() + "\t" + "NOT_DEFINITION" + "\t" + " " + "\t" + paragraph.getText());
                         }
                     }

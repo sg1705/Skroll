@@ -3,6 +3,7 @@ package com.skroll.classifier;
 import com.google.common.collect.FluentIterable;
 import com.google.common.io.Files;
 import com.skroll.document.Document;
+import com.skroll.document.DocumentHelper;
 import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.ParserException;
 import com.skroll.pipeline.Pipeline;
@@ -48,9 +49,8 @@ public class DefinitionClassifierTest {
     public void testClassify() {
 
         Classifier documentClassifier = new DefinitionClassifier();
-        // String testingFile = "src/test/resources/parser/linker/test-linker-random.html";
-        String testingFile = "src/main/resources/trainingDocuments/indentures/AMC Networks Indenture.html";
 
+        String testingFile = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
         Document document = null;
         try {
             document = (Document)documentClassifier.classify(Parser.parseDocumentFromHtmlFile(testingFile));
@@ -61,6 +61,12 @@ public class DefinitionClassifierTest {
             e.printStackTrace();
             fail(" failed to find a Model");
         }
+
+        assert(DocumentHelper.getDefinitionParagraphs(document).size()==174);
+        assert(DocumentHelper.getDefinedTermTokensInParagraph(
+                DocumentHelper.getDefinitionParagraphs(document).get(172))
+                .get(1).get(1).toString().equals("trustee"));
+
         logger.debug ("Number fo Paragraphs returned: " + document.getParagraphs().size());
             Utils.writeToFile("build/classes/test/test-linker-random.html", document.getTarget());
 

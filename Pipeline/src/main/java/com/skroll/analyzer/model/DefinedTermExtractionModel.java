@@ -1,7 +1,5 @@
 package com.skroll.analyzer.model;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.ObjectArrays;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
 import com.skroll.analyzer.model.nb.DataTuple;
 import com.skroll.analyzer.model.nb.NaiveBayes;
@@ -11,8 +9,10 @@ import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * DefinitionExtractionModel has both a NB and a HMM substructures,
@@ -48,7 +48,7 @@ public class DefinedTermExtractionModel {
 
     int[][] nbCategoryToHmmState1;
 
-    DefinedTermExtractionModel(){
+    public DefinedTermExtractionModel(){
 
         int [] paragraphFeatureSizes = new int[PARAGRAPH_FEATURES.length];
         for (int i=0; i<paragraphFeatureSizes.length;i++)
@@ -119,7 +119,7 @@ public class DefinedTermExtractionModel {
     /**
      * This is required after training the model to convert the frequency counts to probabilities used for inferences.
      */
-    void compile(){
+    public void compile(){
         hmm.updateProbabilities();
     }
 
@@ -163,7 +163,7 @@ public class DefinedTermExtractionModel {
 
     }
 
-    void updateWithDocument(Document doc){
+    public void updateWithDocument(Document doc){
         List<CoreMap> paragraphs = doc.getParagraphs();
 
         for( CoreMap paragraph : paragraphs) {
@@ -172,7 +172,7 @@ public class DefinedTermExtractionModel {
     }
 
 
-    void annotateDefinedTermsInDocument(Document doc){
+    public void annotateDefinedTermsInDocument(Document doc){
         List<CoreMap> paragraphs = doc.getParagraphs();
 
         for( CoreMap paragraph : paragraphs) {

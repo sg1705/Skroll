@@ -137,12 +137,6 @@ public class CoreAnnotations {
      *
      * </pre>
      */
-    //todo: this should be removed. but it's used at some places.
-    public static class DefinedTermsAnnotation implements CoreAnnotation<List<Token>> {
-        public Class<List<Token>> getType() {
-            return EraserUtils.<Class<List<Token>>> uncheckedCast(List.class);
-        }
-    }
 
     public static class DefinedTermListAnnotation implements CoreAnnotation<List<List<Token>>> {
         public Class<List<List<Token>>> getType() {

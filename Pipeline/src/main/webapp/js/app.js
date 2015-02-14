@@ -68,15 +68,11 @@
             $http.get('restServices/jsonAPI/getDefinition').success(function(data) {
                 $scope.definitions = [ ];
                 for(var ii = 0; ii < data.length; ii++) {
-                    //get all definitions
-                    for(var jj =0; jj < data[ii].definedTerms.length; jj++) {
-                        if (data[ii].definedTerms[jj] != '') {
-                            var def = {};
-                            def.paragraphId = data[ii].paragraphId;
-                            def.definition = data[ii].definedTerms[jj];
-                            $scope.definitions.push(def);
-                        }
-                    }
+                    var def = {};
+                    def.paragraphId = data[ii].paragraphId;
+                    def.definition = data[ii].definedTerm;
+                    $scope.definitions.push(def);
+
                 }
             }).error(function(data, status) {
                 console.log(status);

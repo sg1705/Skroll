@@ -1,23 +1,25 @@
 package com.skroll.document;
 
-import java.util.Collections;
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Paragraph {
+    public static final Logger logger = LoggerFactory
+            .getLogger(Paragraph.class);
 
     private String paragraphId;
-    private List<String> definedTerms;
+    private String definedTerm;
 
 
-    public Paragraph(String paragraphId, List<String> definedTerms) {
+    public Paragraph(String paragraphId, String definedTerm) {
         this.paragraphId = paragraphId;
-        this.definedTerms = Collections.unmodifiableList(definedTerms);
+        this.definedTerm = definedTerm;
     }
 
     @Override
     public String toString() {
         return new StringBuffer(" paragraphId : ").append(this.paragraphId)
-                .append(" definedTerms : ").append(this.definedTerms)
+                .append(",").append(" definedTerm : ").append(definedTerm)
                .toString();
     }
 

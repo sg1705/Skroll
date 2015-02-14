@@ -4,7 +4,6 @@ import com.skroll.document.annotation.CoreAnnotations;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by saurabh on 12/29/14.
@@ -57,6 +56,7 @@ public class DocumentHelper {
 
 
     //todo: this method should be removed. but it's used at some places.
+
     public static List<String> getDefinedTerms(CoreMap coreMap) {
         List<List<Token>> definiitonList = coreMap.get(CoreAnnotations.DefinedTermListAnnotation.class);
         List<String> strings = new ArrayList<>();
@@ -66,10 +66,10 @@ public class DocumentHelper {
     }
 
     public static List<List<String>> getDefinedTermLists(CoreMap coreMap) {
-        List<List<Token>> definiitonList = coreMap.get(CoreAnnotations.DefinedTermListAnnotation.class);
+        List<List<Token>> definitionList = coreMap.get(CoreAnnotations.DefinedTermListAnnotation.class);
         List<List<String>> strings = new ArrayList<>();
-        if (definiitonList==null) return strings;
-        for (List<Token> list: definiitonList){
+        if (definitionList==null) return strings;
+        for (List<Token> list: definitionList){
             strings.add(DocumentHelper.getTokenString(list));
         }
         return strings;
@@ -78,6 +78,7 @@ public class DocumentHelper {
 
 
     //todo: this method should be deleted. but it's used at some places.
+
     public static void setDefinedTermTokensInParagraph(List<Token> definitions, CoreMap paragraph) {
         List<List<Token>> list = new ArrayList<>();
         list.add(definitions);
