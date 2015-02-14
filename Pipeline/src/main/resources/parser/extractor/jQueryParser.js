@@ -101,6 +101,8 @@ var PARAGRAPH_FRAGMENT = "ParagraphFragmentAnnotation"
 function processNode(index, element) {
     //ignore nodeName is "script"
     if ($(element).is("script")) {
+        // remove the script element
+        $(element).remove();
         return;
     }
 
