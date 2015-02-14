@@ -62,6 +62,8 @@
         $scope.fileName = documentModel.fileName;
         $scope.isProcessing = documentModel.isProcessing;
         $scope.definitions = [ ];
+
+        //toggle side navigation
         $scope.toggleSidenav = function(menuId) {
             //get json
             //TODO add a line for failure
@@ -81,7 +83,47 @@
             $mdSidenav(menuId).toggle();
         };
 
+        //### hack for iPhone
+        //this code is a hack to get it working on iPhone
+        angular.element(document).ready(function() {
+            if (navigator.platform.indexOf("iPhone") != -1) {
+                $scope.isProcessing = true;
+                $http.get('test/AMC-Networks-CA.html')
+                .success(function(data, status, headers, config) {
+
+                    //create a multiple part request
+                    // I got help from here http://goo.gl/Z8WYlQ
+                    var boundary = (new Date()).getTime();
+                    var bodyParts = new Array();
+                    bodyParts.push(
+                          '--' + boundary,
+                          'Content-Disposition: form-data; name="files[]"; filename="random"',
+                          'Content-Type: text/html',
+                          '',
+                          data);
+                    bodyParts.push('--' + boundary + '--');
+                    var bodyString = bodyParts.join('\r\n');
+
+                    //post
+                    $http.post('restServices/jsonAPI/upload', bodyString, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data; boundary=' + boundary
+                        }
+                    }).success(function(data) {
+                            $scope.targetHtml = data;
+                            $scope.isDocAvailable = true;
+                            $scope.isProcessing = false;
+                            $("#content").html(data);
+                    });
+
+                    // this callback will be called asynchronously
+                    // when the response is available
+                })
+            }
+        });
+
 
     }]);
+
 
 })();
