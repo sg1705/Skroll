@@ -47,22 +47,36 @@
     <md-sidenav layout="column" class="md-sidenav-left hide-gt-smmd-whiteframe-z1"
                 md-component-id="left" md-is-locked-open="false">
 
-        <md-list>
-            <md-item  ng-repeat="definition in definitions">
-                <md-item-content>
-                    <span class="md-tile-content"><a href="#{{definition.paragraphId}}">{{definition.definition}}</a></span>
-                </md-item-content>
-            </md-item>
+        <div layout="column" flex>
+            <md-toolbar class="skroll-toolbar">
+                <div layout="row" flex>
+                    <button ng-click="toggleSidenav('left')" class="backButton">
+                        <span class="visuallyhidden">Menu</span>
+                    </button>
+                </div>
+            </md-toolbar>
 
-        </md-list>
+            <md-content md-scroll-y flex class="md-padding">
+                <md-list>
+                    <md-item  ng-repeat="definition in definitions">
+                        <md-item-content>
+                            <span class="md-tile-content"><a href="#{{definition.paragraphId}}">{{definition.definition}}</a></span>
+                        </md-item-content>
+                    </md-item>
+
+                </md-list>
+            </md-content>
+        </div>
     </md-sidenav>
 
     <div layout="column" ng-show="isDocAvailable" flex>
-        <md-toolbar>
-            <button ng-click="toggleSidenav('left')" class="menuBtn">
-                <span class="visuallyhidden">Menu</span>
-            </button>
-            <h1>{{fileName}}</h1>
+        <md-toolbar class="skroll-toolbar">
+            <div layout="row" flex>
+                <button ng-click="toggleSidenav('left')" class="menuBtn">
+                    <span class="visuallyhidden">Menu</span>
+                </button>
+                <h1>{{fileName}}</h1>
+            </div>
         </md-toolbar>
 
         <md-content md-scroll-y flex class="md-padding" id="content">
