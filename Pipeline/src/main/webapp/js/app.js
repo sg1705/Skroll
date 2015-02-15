@@ -7,7 +7,7 @@
             fileName: ""
     };
 
-    var skrollApp = angular.module('SkrollApp', ['ngMaterial','ngSanitize' ]);
+    var skrollApp = angular.module('SkrollApp', ['ngMaterial','ngSanitize', 'ngTouch' ]);
 
     skrollApp.factory('documentModel', function () {
         return documentModel;
@@ -65,21 +65,23 @@
 
         //toggle side navigation
         $scope.toggleSidenav = function(menuId) {
-            //get json
-            //TODO add a line for failure
-            $http.get('restServices/jsonAPI/getDefinition').success(function(data) {
-                $scope.definitions = [ ];
-                for(var ii = 0; ii < data.length; ii++) {
-                    var def = {};
-                    def.paragraphId = data[ii].paragraphId;
-                    def.definition = data[ii].definedTerm;
-                    $scope.definitions.push(def);
+            //check to see if we need to get json
+            if ($scope.definitions.length == 0) {
+                //get json
+                //TODO add a line for failure
+                $http.get('restServices/jsonAPI/getDefinition').success(function(data) {
+                    $scope.definitions = [ ];
+                    for(var ii = 0; ii < data.length; ii++) {
+                        var def = {};
+                        def.paragraphId = data[ii].paragraphId;
+                        def.definition = data[ii].definedTerm;
+                        $scope.definitions.push(def);
 
-                }
-            }).error(function(data, status) {
-                console.log(status);
-            })
-
+                    }
+                }).error(function(data, status) {
+                    console.log(status);
+                });
+            }
             $mdSidenav(menuId).toggle();
         };
 
