@@ -16,6 +16,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.6/angular-animate.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.6/angular-aria.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.7.0/angular-material.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.6/angular-touch.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.3/angular-sanitize.js"></script>
     <script src="js/app.js"></script>
     <script src="js/jquery.fileupload.js"></script>
@@ -45,7 +46,7 @@
 
 
     <md-sidenav layout="column" class="md-sidenav-left hide-gt-smmd-whiteframe-z1"
-                md-component-id="left" md-is-locked-open="false">
+                md-component-id="left" md-is-locked-open="false" ng-swipe-left="toggleSidenav('left')">
 
         <div layout="column" flex>
             <md-toolbar class="skroll-toolbar">
@@ -69,7 +70,7 @@
         </div>
     </md-sidenav>
 
-    <div layout="column" ng-show="isDocAvailable" flex>
+    <div layout="column" ng-show="isDocAvailable" flex ng-swipe-right="toggleSidenav('left')">
         <md-toolbar class="skroll-toolbar">
             <div layout="row" flex>
                 <button ng-click="toggleSidenav('left')" class="menuBtn">

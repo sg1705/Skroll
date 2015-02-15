@@ -7,7 +7,7 @@
             fileName: ""
     };
 
-    var skrollApp = angular.module('SkrollApp', ['ngMaterial','ngSanitize' ]);
+    var skrollApp = angular.module('SkrollApp', ['ngMaterial','ngSanitize', 'ngTouch' ]);
 
     skrollApp.factory('documentModel', function () {
         return documentModel;
