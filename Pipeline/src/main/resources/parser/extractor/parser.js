@@ -10,6 +10,7 @@ var htmlText = fs.read(fileName);
 
 page.settings.resourceTimeout = 200;
 page.settings.loadImages = false;
+
 page.onConsoleMessage = function (msg) {
     console.log(msg);
 };
@@ -23,6 +24,8 @@ page.injectJs('./jQueryParser.js', function() {
     console.log('parser included...');
 });
 
+
+
 var parsedJson = page.evaluate(function() {
 
     $(":root").contents().each(function(index, element) {
@@ -35,8 +38,10 @@ var parsedJson = page.evaluate(function() {
     createPara();
     docObject.set(PARAGRAPH_ANNOTATION, paragraphs);
 
-    return ( JSON.stringify(docObject, null, 2)
-       + ";---------------SKROLL---------------------;" + $(":root").html() );
+    return ( ";---------------SKROLLJSON---------------------;"
+             + JSON.stringify(docObject, null, 2)
+             + ";---------------SKROLL---------------------;"
+             + $(":root").html() );
 });
 console.log(parsedJson);
 //write the file

@@ -47,7 +47,8 @@ public class PostExtractionPipe extends SyncPipe<Document, Document> {
                 fragment.set(CoreAnnotations.TextAnnotation.class, fragmentText);
                 newFragments.add(fragment);
             }
-            if (newFragments.size() > 0) {
+            // even if there are no fragments, a paragraph could still be an indication of pagebreak
+            if ((newFragments.size() > 0) || (paragraph.containsKey(CoreAnnotations.IsPageBreakAnnotation.class))) {
                 paragraph.set(CoreAnnotations.ParagraphFragmentAnnotation.class, newFragments);
                 newParagraph.add(paragraph);
             }

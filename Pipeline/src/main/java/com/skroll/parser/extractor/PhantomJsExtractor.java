@@ -64,7 +64,9 @@ public class PhantomJsExtractor {
 
 
         byte[] output = stdout.toByteArray();
-        String[] result = new String(output, Constants.DEFAULT_CHARSET).split(";---------------SKROLL---------------------;");
+        String[] parserOutput = new String(output, Constants.DEFAULT_CHARSET).split(";---------------SKROLLJSON---------------------;");
+        String[] result = parserOutput[1].split(";---------------SKROLL---------------------;");
+        //String[] result = new String(output, Constants.DEFAULT_CHARSET).split(";---------------SKROLL---------------------;");
         // split the result into linkedHtml and json
 
         ModelHelper helper = new ModelHelper();

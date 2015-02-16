@@ -70,13 +70,21 @@ public class TokenizeParagraphInHtmlDocumentPipe extends SyncPipe<Document, Docu
             paragraph.set(CoreAnnotations.TokenAnnotation.class, tokens);
             //add tokens to master list
             documentTokens.addAll(tokens);
-            if (tokens.size() > 0)
+            // check to see if it is a page break
+            if ((tokens.size() > 0) || exceptions(paragraph))
                 newList.add(paragraph);
 
         }
         input.setParagraphs(newList);
         input.set(CoreAnnotations.TokenAnnotation.class, documentTokens);
         return this.target.process(input);
+    }
+
+    private boolean exceptions(CoreMap paragraph) {
+        if (paragraph.containsKey(CoreAnnotations.IsPageBreakAnnotation.class)) {
+            return true;
+        }
+        return false;
     }
 
 }
