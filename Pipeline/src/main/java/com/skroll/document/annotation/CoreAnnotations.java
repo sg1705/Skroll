@@ -171,6 +171,15 @@ public class CoreAnnotations {
         }
     }
 
+    /**
+     * Annotation to indicate that this is a page break paragraph
+     */
+    public static class IsPageBreakAnnotation implements CoreAnnotation<Boolean> {
+        public Class<Boolean> getType() {
+            return Boolean.class;
+        }
+    }
+
 
     /**
      * Annotation for training. It specifies the index of a word token in the paragraph.

@@ -66,6 +66,7 @@ var chunkStack = new Array();
 var count = 0;
 var paragraphId = 1234;
 var chunkId = 5000;
+var pageBreak = false;
 var DEBUG = false;
 
 
@@ -78,6 +79,7 @@ var IS_BOLD_ANNOTATION = "IsBoldAnnotation";
 var IS_ITALIC_ANNOTATION = "IsItalicAnnotation";
 var IS_UNDERLINE_ANNOTATION = "IsUnderlineAnnotation";
 var PARAGRAPH_FRAGMENT = "ParagraphFragmentAnnotation"
+var IS_PAGE_BREAK_ANNOTATION = "IsPageBreakAnnotation";
 
  function CoreMap(chunkId, text) {
 
@@ -106,6 +108,13 @@ function processNode(index, element) {
         return;
     }
 
+    // does the element have page break
+    if (isPageBreak(element)) {
+       pageBreak = true;
+       if (DEBUG) {
+         console.log("--- page -- break:" + paragraphId);
+       }
+    }
 
     //check if a #text node
     if (element.nodeType == 3) {
@@ -147,10 +156,15 @@ function createPara(element) {
     newParagraph[ID_ANNOTATION] = paragraphId;
     newParagraph[TEXT_ANNOTATION] = "";
     newParagraph[PARAGRAPH_FRAGMENT] = chunkStack;
+    //insert page break annotation
+    if (pageBreak) {
+      newParagraph[IS_PAGE_BREAK_ANNOTATION] = true;
+    }
     paragraphs.push(newParagraph);
     insertMarker(paragraphId, element);
     chunkStack = new Array();
     paragraphId++;
+    pageBreak = false;
 }
 
 
@@ -205,6 +219,15 @@ function isItalic(element) {
     return false;
 }
 
+function isPageBreak(element) {
+    if ($(element).css("page-break-after") == "always")
+        return true;
+
+    if ($(element).css("page-break-before") == "always")
+            return true;
+
+    return false;
+}
 
 
 
