@@ -63,6 +63,9 @@ public class DefinedTermExtractionModel {
     }
 
     public void annotateDefinedTermsInParagraph(CoreMap paragraph){
+
+        if (paragraph.getTokens().size() == 0)
+            return;
         CoreMap trainingParagraph = DefinedTermExtractionHelper.makeTrainingParagraph(paragraph);
         DataTuple nbDataTuple = DefinedTermExtractionHelper.makeNBDataTuple(trainingParagraph);
 
