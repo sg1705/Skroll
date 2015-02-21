@@ -19,32 +19,16 @@ import java.util.regex.Pattern;
 public class DefinitionLinkerTest extends TestCase {
 
     @Test
-    public void testLinkDefinition() throws Exception {
-        TrainingAndTestingTest.trainNB();
-        TrainingAndTestingTest.trainHMM();
-
-        //String testingFile = "src/test/resources/html-docs/random-indenture.html";
-        String testingFile = "src/test/resources/parser/linker/test-linker-random.html";
-        Document document = Tester.testNaiveBayes(Parser.parseDocumentFromHtmlFile(testingFile));
-        document = Tester.testHiddenMarketModel(document, Constants.CATEGORY_POSITIVE);
-        DefinitionLinker linker = new DefinitionLinker();
-        document = linker.linkDefinition(document);
-        Utils.writeToFile("/tmp/TrainingAndTest.html", document.getTarget());
-
-
-    }
-
-    @Test
     public void testLinkRandomDocument() throws Exception {
         //search for regex
-        String validateString = "<a href=\"#1355\">";
+        String validateString = "<a href=\"#2240\">";
         //load up a doc
         Document document = Parser.parseDocumentFromHtmlFile("src/test/resources/parser/linker/test-linker-random.html");
         // the paragraph for Agent's group is 2240
         //setup fake definition and tokens
         int linkCount = 0;
         for(CoreMap paragraph : document.getParagraphs()) {
-            if (paragraph.getId().equals("1355")) {
+            if (paragraph.getId().equals("2240")) {
                 //artificially make it a definition
                 paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
                 //iterate over each token and set these as defined terms

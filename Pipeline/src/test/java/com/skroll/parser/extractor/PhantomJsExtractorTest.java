@@ -50,7 +50,7 @@ public class PhantomJsExtractorTest extends TestCase {
         CoreMap para = doc.getParagraphs().get(totalPara - 1);
         System.out.println(doc.getParagraphs().size());
         assert (doc.getParagraphs() != null);
-        assert (doc.getParagraphs().size() == 6497);
+        assert (doc.getParagraphs().size() == 7594);
     }
 
     @Test
