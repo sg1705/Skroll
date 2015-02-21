@@ -68,6 +68,11 @@ public class TokenizeParagraphInHtmlDocumentPipe extends SyncPipe<Document, Docu
             paragraph.set(CoreAnnotations.TextAnnotation.class, buf.toString());
             //add tokens for the paragraph
             paragraph.set(CoreAnnotations.TokenAnnotation.class, tokens);
+            //check to see if it is all upper case
+            if (buf.toString().equals(buf.toString().toUpperCase())) {
+                //this is all upper case
+                paragraph.set(CoreAnnotations.IsUpperCaseAnnotation.class, true);
+            }
             //add tokens to master list
             documentTokens.addAll(tokens);
             // check to see if it is a page break

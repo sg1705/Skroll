@@ -37,14 +37,14 @@ public class DefinitionLinkerTest extends TestCase {
     @Test
     public void testLinkRandomDocument() throws Exception {
         //search for regex
-        String validateString = "<a href=\"#2240\">";
+        String validateString = "<a href=\"#1355\">";
         //load up a doc
         Document document = Parser.parseDocumentFromHtmlFile("src/test/resources/parser/linker/test-linker-random.html");
         // the paragraph for Agent's group is 2240
         //setup fake definition and tokens
         int linkCount = 0;
         for(CoreMap paragraph : document.getParagraphs()) {
-            if (paragraph.getId().equals("2240")) {
+            if (paragraph.getId().equals("1355")) {
                 //artificially make it a definition
                 paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
                 //iterate over each token and set these as defined terms
