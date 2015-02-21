@@ -35,7 +35,7 @@ public class ParagraphsRemoveBlankPipeTest extends TestCase {
         Document doc = pipeline.process(htmlDoc);
 
         System.out.println(doc.getParagraphs().size());
-        assert (doc.getParagraphs().size() == 1384);
+        assert (doc.getParagraphs().size() == 1130);
     }
 
     public void testPageBreak() throws Exception {

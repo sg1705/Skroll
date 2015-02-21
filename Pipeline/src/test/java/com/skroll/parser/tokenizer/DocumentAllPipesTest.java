@@ -35,8 +35,8 @@ public class DocumentAllPipesTest extends TestCase {
         }
         System.out.println("Total number of bold words:" + count);
         System.out.println("Total number of paragraphs:" + doc.getParagraphs().size());
-        assert (count == 581);
+        assert (count == 682);
         System.out.println(doc.getParagraphs().size());
-        assert (doc.getParagraphs().size() == 1953);
+        assert (doc.getParagraphs().size() == 1450);
     }
 }

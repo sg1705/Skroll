@@ -172,6 +172,16 @@ public class CoreAnnotations {
     }
 
     /**
+     * Annotation to indicate if it is all uppercase
+     */
+    public static class IsUpperCaseAnnotation implements CoreAnnotation<Boolean> {
+        public Class<Boolean> getType() {
+            return Boolean.class;
+        }
+    }
+
+
+    /**
      * Annotation to indicate that this is a page break paragraph
      */
     public static class IsPageBreakAnnotation implements CoreAnnotation<Boolean> {
@@ -179,6 +189,7 @@ public class CoreAnnotations {
             return Boolean.class;
         }
     }
+
 
 
     /**

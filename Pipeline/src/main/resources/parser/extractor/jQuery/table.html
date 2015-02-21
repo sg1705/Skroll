@@ -1,0 +1,51 @@
+<div>
+    This is second paragraph
+</div>
+
+<div>
+    <p>This is third &nbsp; paragraph <b> this <i>is</i> bold</b></p>
+</div>
+
+<table>
+    <tr>
+        <td>First column</td>
+        <td>Second column<table><tr><td>my row</td></tr></table></td>
+    </tr>
+
+    <tr>
+        <td><div>First <b>aaaa</b>column</div></td>
+        <td>Second column</td>
+    </tr>
+
+    <tr>
+        <td>First column</td>
+        <td>Second <i>dddd</i> column</td>
+    </tr>
+
+</table>
+
+<div>
+    <p>This is third &nbsp; paragraph <b> this <i>is</i> bold</b></p>
+</div>
+
+
+
+<script src="../jquery.min.js"></script>
+<script src="../jQueryParser.js"></script>
+
+<script>
+    var DEBUG = true;
+
+
+    $(":root").contents().each(function(index, element) {
+        processNode(index, element);
+    });
+
+
+    // done
+    //move chunks to paragraphs
+    createPara();
+    docObject.set(PARAGRAPH_ANNOTATION, paragraphs);
+
+    console.log(JSON.stringify(docObject, null, 2));
+</script>
