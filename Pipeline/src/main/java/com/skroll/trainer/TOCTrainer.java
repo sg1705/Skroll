@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.skroll.classifier.Classifier;
 import com.skroll.classifier.DefinitionClassifier;
+import com.skroll.classifier.TOCClassifier;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
@@ -35,29 +36,28 @@ import java.util.List;
  * Created by saurabhagarwal on 1/19/15.
  */
 
-
-/* current arguments for testing:
---trainWithOverride src/main/resources/trainingDocuments/indentures
+/* arguments to use for testing
+--trainWithOverride src/main/resources/trainingDocuments/TOC
 --classify src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html
-*/
 
-public class DefinitionTrainer {
+ */
+public class TOCTrainer {
     //The following line needs to be added to enable log4j
     public static final Logger logger = LoggerFactory
-            .getLogger(DefinitionTrainer.class);
+            .getLogger(TOCTrainer.class);
 
     public static void main(String[] args) throws IOException, ObjectPersistUtil.ObjectPersistException {
 
         //ToDO: use the apache common commandline
         if (args[0].equals("--generateHRFs")) {
-            DefinitionTrainer.generateHRFs(args[1]);
+            TOCTrainer.generateHRFs(args[1]);
         }
         if (args[0].equals("--trainWithOverride")) {
             logger.debug("folder Name :" + args[1]);
-            DefinitionTrainer.trainWithOverride(args[1]);
+            TOCTrainer.trainWithOverride(args[1]);
         }
         if (args[0].equals("--classify")){
-            DefinitionTrainer.classify(args[1]);
+            TOCTrainer.classify(args[1]);
         }
 
     }
@@ -68,7 +68,7 @@ public class DefinitionTrainer {
         for (File f : iterable) {
             if (f.isFile()) {
                 String fileName = f.getPath();
-                DefinitionTrainer.generateHRF(fileName);
+                TOCTrainer.generateHRF(fileName);
             }
         }
     }
@@ -83,11 +83,11 @@ public class DefinitionTrainer {
             Document doc = Parser.parseDocumentFromHtmlFile(fileName);
 
             // extract the definition from paragraph from html doc.
-            Pipeline<Document, Document> pipeline =
-                    new Pipeline.Builder()
-                            .add(Pipes.EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC)
-                            .build();
-            doc = pipeline.process(doc);
+//            Pipeline<Document, Document> pipeline =
+//                    new Pipeline.Builder()
+//                            .add(Pipes.EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC)
+//                            .build();
+//            doc = pipeline.process(doc);
 
             // Build the contents for csv file
             List<String> defList = new ArrayList<String>();
@@ -135,11 +135,11 @@ public class DefinitionTrainer {
             doc = Parser.parseDocumentFromHtmlFile(fileName);
 
             // extract the definition from paragraph from html doc.
-            Pipeline<Document, Document> pipeline =
-                    new Pipeline.Builder()
-                            .add(Pipes.EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC)
-                            .build();
-            doc = pipeline.process(doc);
+//            Pipeline<Document, Document> pipeline =
+//                    new Pipeline.Builder()
+//                            .add(Pipes.EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC)
+//                            .build();
+//            doc = pipeline.process(doc);
 
             fileName = fileName.replaceAll("\\.", "_").concat("_override.txt");
             String fQFileName = configuration.get("model.persist.folder") + overrideFolder + fileName;
@@ -162,7 +162,7 @@ public class DefinitionTrainer {
                     if (definition.trim().equals("DEFINITION")) {
                         isDefinition = true;
                         String definedTerms = splitIterator.next();
-                        definedTermIterator = Splitter.on(',').split(definedTerms).iterator();
+                        definedTermIterator = Splitter.on(' ').split(definedTerms).iterator();
                     }
                 }
                 logger.debug("paragraphID to override:" + paragraphID);
@@ -199,12 +199,12 @@ public class DefinitionTrainer {
     }
 
     public static void  trainWithOverride(String folderName) throws IOException, ObjectPersistUtil.ObjectPersistException {
-            DefinitionClassifier documentClassifier = new DefinitionClassifier();
+            TOCClassifier documentClassifier = new TOCClassifier(true); // passing the flag to always create new model for testing purpose
             FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(folderName));
             for (File f : iterable) {
                 if (f.isFile()) {
                     String fileName = f.getPath();
-                    Document doc = DefinitionTrainer.modifyDocWithOverride(fileName);
+                    Document doc = TOCTrainer.modifyDocWithOverride(fileName);
                     documentClassifier.train(doc);
 
                 }
@@ -214,7 +214,7 @@ public class DefinitionTrainer {
 
     public static void classify(String testingFile) {
 
-        Classifier documentClassifier = new DefinitionClassifier();
+        Classifier documentClassifier = new TOCClassifier();
         // String testingFile = "src/test/resources/parser/linker/test-linker-random.html";
         //String testingFile = "src/main/resources/trainingDocuments/indentures/AMC Networks Indenture.html";
 

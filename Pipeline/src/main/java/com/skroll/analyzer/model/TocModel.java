@@ -15,14 +15,9 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
- * DefinitionExtractionModel has both a NB and a HMM substructures,
- * and has a link from the class node of NB to the first state of HMM.
- *
- * Created by wei2learn on 1/18/2015.
+ * Created by wei2learn on 2/16/2015.
  */
-
-
-public class DefinedTermExtractionModel {
+public class TOCModel {
 
     static final int HMM_MODEL_LENGTH = 12;
 
@@ -35,24 +30,25 @@ public class DefinedTermExtractionModel {
     //      and makes the model more complicated and expensive.
 
     static final RandomVariableType[] PARAGRAPH_FEATURES = {
-            RandomVariableType.PARAGRAPH_STARTS_WITH_QUOTE,
-//            RandomVariableType.PARAGRAPH_STARTS_WITH_SPECIAL_FORMAT,
+//            RandomVariableType.PARAGRAPH_STARTS_WITH_QUOTE,
 //            RandomVariableType.PARAGRAPH_STARTS_WITH_BOLD,
 //            RandomVariableType.PARAGRAPH_STARTS_WITH_UNDERLINE,
-//            RandomVariableType.PARAGRAPH_STARTS_WITH_UNDERLINE,
+//            RandomVariableType.PARAGRAPH_STARTS_WITH_SPECIAL_FORMAT,
 
             RandomVariableType.PARAGRAPH_NUMBER_TOKENS};
 
     //todo: if needed, can add a feature to indicated if a word is used as camel case in the document.
     static final RandomVariableType[] WORD_FEATURES = {
-            RandomVariableType.WORD_IN_QUOTES,
+//            RandomVariableType.WORD_IN_QUOTES,
+//            RandomVariableType.WORD_IS_UNDERLINED,
+//            RandomVariableType.WORD_IS_BOLD
 //            RandomVariableType.WORD_HAS_SPECIAL_FORMAT,
             //RandomVariableType.WORD_INDEX
     };
 
     int[][] nbCategoryToHmmState1;
 
-    public DefinedTermExtractionModel(){
+    public TOCModel(){
 
         int [] paragraphFeatureSizes = new int[PARAGRAPH_FEATURES.length];
         for (int i=0; i<paragraphFeatureSizes.length;i++)
@@ -82,7 +78,7 @@ public class DefinedTermExtractionModel {
         // This means the HMM output state sequence gives the highest p(HMM observations | given NB observations)
         double[] logPrioProbs =
                 nb.inferCategoryProbabilitiesMoreStable(nbDataTuple.getTokens(),nbDataTuple.getFeatures());
-            //nb.inferLogJointFeaturesProbabilityGivenCategories(nbDataTuple.getTokens(), nbDataTuple.getFeatures());
+        //nb.inferLogJointFeaturesProbabilityGivenCategories(nbDataTuple.getTokens(), nbDataTuple.getFeatures());
 
         // can check for NB classification to see if we want to keep checking the words.
         // check here to make it more efficient, or keep going to be more accurate.

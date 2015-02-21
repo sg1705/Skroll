@@ -23,6 +23,7 @@ public class ExtractDefinitionsFromParagraphInHtmlDocumentPipe extends SyncPipe<
 
         for(CoreMap paragraph : input.getParagraphs()) {
             List<Token> tokens = paragraph.getTokens();
+            if (tokens.size()==0) continue; // skip empty paragraphs
             if (WordHelper.isQuote(tokens.get(0).getText())){
                 List<Token> definedTerms = new ArrayList<>();
                 for (int i = 1; i < tokens.size() && !WordHelper.isQuote(tokens.get(i).getText()); i++) {
