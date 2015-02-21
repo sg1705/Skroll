@@ -4,7 +4,7 @@
             targetHtml: "",
             isDocAvailable: false,
             isProcessing: false,
-            fileName: ""
+            fileName: "",
     };
 
     var skrollApp = angular.module('SkrollApp', ['ngMaterial','ngSanitize', 'ngTouch' ]);
@@ -62,6 +62,7 @@
         $scope.fileName = documentModel.fileName;
         $scope.isProcessing = documentModel.isProcessing;
         $scope.definitions = [ ];
+        $scope.isEdit = false;
 
         //toggle side navigation
         $scope.toggleSidenav = function(menuId) {
@@ -83,6 +84,11 @@
                 });
             }
             $mdSidenav(menuId).toggle();
+        };
+
+        //click on edit button
+        $scope.toggleEdit = function() {
+            $scope.isEdit = !$scope.isEdit;
         };
 
         //### hack for iPhone
@@ -124,8 +130,13 @@
             }
         });
 
-
     }]);
 
+    //** when newer version of material comes out
+    //this is lifted from http://goo.gl/mrWZ0F
+    skrollApp.config(function($mdIconProvider) {
+        $mdIconProvider
+          .iconSet('viewer', 'img/icons/sets/viewer-24.svg', 24);
+    });
 
 })();

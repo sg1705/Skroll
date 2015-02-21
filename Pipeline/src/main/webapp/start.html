@@ -1,7 +1,12 @@
 <html lang="en" ng-app="SkrollApp">
 
 <head>
+    <link rel="stylesheet" href="material/default-theme.css">
+    <link rel="stylesheet" href="material/angular-material.css">
+    <!--
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.7.0/angular-material.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.7.0/angular-material.min.js"></script>
+    -->
     <link rel="stylesheet" href="css/skroll.css"/>
     <!-- Set the view on mobile -->
     <meta name="viewport" content="initial-scale=1, maximum-scale=1" />
@@ -15,7 +20,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.6/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.6/angular-animate.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.6/angular-aria.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.7.0/angular-material.min.js"></script>
+    <script src="material/angular-material.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.6/angular-touch.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.3/angular-sanitize.js"></script>
     <script src="js/app.js"></script>
@@ -51,9 +56,21 @@
         <div layout="column" flex>
             <md-toolbar class="skroll-toolbar">
                 <div layout="row" flex>
-                    <button ng-click="toggleSidenav('left')" class="backButton">
-                        <span class="visuallyhidden">Menu</span>
-                    </button>
+                    <md-button md-no-ink>
+                        <md-icon md-svg-icon="img/icons/ic_arrow_back_24px.svg" ng-click="toggleSidenav('left')">
+                        </md-icon>
+                    </md-button>
+                    <md-button ng-show="!isEdit" md-no-ink>
+                        <md-icon md-svg-icon="img/icons/ic_mode_edit_24px.svg" ng-click="toggleEdit()">
+                        </md-icon>
+                    </md-button>
+
+                    <md-button md-no-ink>
+                        <md-icon ng-click="toggleEdit()" ng-show="isEdit" md-svg-icon="img/icons/ic_check_24px.svg" ng-click="toggleSidenav('left')">
+                        </md-icon>
+                    </md-button>
+
+
                 </div>
             </md-toolbar>
 
@@ -61,9 +78,13 @@
                 <md-list>
                     <md-item  ng-repeat="definition in definitions">
                         <md-item-content>
-                            <span class="md-tile-content"><a href="#{{definition.paragraphId}}">{{definition.definition}}</a></span>
+                            <md-button ng-href="#{{definition.paragraphId}}">{{definition.definition}}</md-button>
+                                <md-icon ng-show="isEdit" md-svg-icon="img/icons/ic_close_24px.svg" ng-click="toggleSidenav('left')" style="color:red">
+                                </md-icon>
                         </md-item-content>
+                        <md-divider></md-divider>
                     </md-item>
+
 
                 </md-list>
             </md-content>
