@@ -1,13 +1,6 @@
 package com.skroll.parser.linker;
 
-import com.google.common.collect.Sets;
-import com.google.common.io.Files;
-import com.skroll.analyzer.evaluate.Tester;
 import com.skroll.analyzer.train.Trainer;
-import com.skroll.document.CoreMap;
-import com.skroll.document.Document;
-import com.skroll.document.DocumentHelper;
-import com.skroll.parser.Parser;
 import com.skroll.pipeline.util.Constants;
 import com.skroll.pipeline.util.Utils;
 import junit.framework.TestCase;

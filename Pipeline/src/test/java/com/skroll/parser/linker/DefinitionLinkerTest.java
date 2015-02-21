@@ -1,12 +1,10 @@
 package com.skroll.parser.linker;
 
-import com.skroll.analyzer.evaluate.Tester;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.Parser;
-import com.skroll.pipeline.util.Constants;
 import com.skroll.pipeline.util.Utils;
 import junit.framework.TestCase;
 import org.junit.Test;
