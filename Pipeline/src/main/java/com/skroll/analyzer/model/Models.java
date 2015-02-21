@@ -1,7 +1,6 @@
 package com.skroll.analyzer.model;
 
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
-import com.skroll.analyzer.model.nb.BinaryNaiveBayesModel;
 import com.skroll.analyzer.model.nb.NaiveBayes;
 import com.skroll.pipeline.util.Constants;
 
@@ -12,7 +11,6 @@ import com.skroll.pipeline.util.Constants;
  */
 public class Models {
 
-    private static BinaryNaiveBayesModel bnbModel = new BinaryNaiveBayesModel();
     private static NaiveBayes nbModelForDefinitions = new NaiveBayes(2, Constants.DEFINITION_CLASSIFICATION_NAIVE_BAYES_FEATURE_SIZES);
     private static HiddenMarkovModel hmmModel = new HiddenMarkovModel();
 
@@ -21,8 +19,5 @@ public class Models {
     }
 
     public static NaiveBayes getNaiveBayesForDefinitionsModel() {return nbModelForDefinitions;}
-    public static BinaryNaiveBayesModel getBinaryNaiveBayesModel() {
-        return bnbModel;
-    }
 
 }
