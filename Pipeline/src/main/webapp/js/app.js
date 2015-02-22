@@ -55,6 +55,27 @@
     }]);
 
 
+    skrollApp.directive('scrollToParagraph', ['documentModel', function(documentModel) {
+        return {
+            restricted: 'A',
+            link: function(scope, element, attrs) {
+                var paragraphId = attrs.scrollToParagraph;
+                var para =
+                $(element).click(function() {
+                    var para = $("#"+paragraphId);
+                    if (para != null) {
+                        $("#content").animate({scrollTop: ($("#content").scrollTop() - 200 + $(para).offset().top)}, "slow");
+                        $(para).parent().css("background-color","yellow");
+                        scope.toggleSidenav('left');
+                    }
+                });
+            }
+
+        }
+
+    }]);
+
+
     skrollApp.controller('ContentController', ['documentModel', '$scope', '$mdSidenav', "$http",
                     function(documentModel, $scope, $mdSidenav, $http){
         $scope.targetHtml = documentModel.targetHtml;
@@ -89,6 +110,16 @@
         //click on edit button
         $scope.toggleEdit = function() {
             $scope.isEdit = !$scope.isEdit;
+        };
+
+        $scope.contentClicked = function($event) {
+            var ids = $($event.target).find("a");
+            for(var ii = 0; ii < ids.length; ii++) {
+                if ($(ids[ii]).attr("name") != null) {
+                    $(ids[ii]).parent().addClass("blurry-text");
+                    console.log($(ids[ii]).attr("name"));
+                }
+            }
         };
 
         //### hack for iPhone
