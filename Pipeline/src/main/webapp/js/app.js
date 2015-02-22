@@ -91,6 +91,29 @@
             $scope.isEdit = !$scope.isEdit;
         };
 
+        $scope.highlightPara = function(paragraphId) {
+            $scope.toggleSidenav('left');
+            var ids = $("#content").find("a");
+            for(var ii = 0; ii < ids.length; ii++) {
+               if ($(ids[ii]).attr("name") == paragraphId) {
+                    var parent = $(ids[ii]).parent().css("background-color","yellow");
+                    console.log(paragraphId);
+                }
+            }
+
+        }
+
+
+        $scope.contentClicked = function($event) {
+            var ids = $($event.target).find("a");
+            for(var ii = 0; ii < ids.length; ii++) {
+                if ($(ids[ii]).attr("name") != null) {
+                    $(ids[ii]).parent().addClass("blurry-text");
+                    console.log($(ids[ii]).attr("name"));
+                }
+            }
+        };
+
         //### hack for iPhone
         //this code is a hack to get it working on iPhone
         angular.element(document).ready(function() {

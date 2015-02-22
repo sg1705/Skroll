@@ -56,3 +56,11 @@ md-toolbar .skroll-toolbar {
 }
 
 
+/**
+create a blur effect
+**/
+.blurry-text {
+   color: transparent;
+   text-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
