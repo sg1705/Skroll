@@ -94,9 +94,9 @@
     <div layout="column" ng-show="isDocAvailable" flex ng-swipe-right="toggleSidenav('left')">
         <md-toolbar class="skroll-toolbar">
             <div layout="row" flex>
-                <button ng-click="toggleSidenav('left')" class="menuBtn">
-                    <span class="visuallyhidden">Menu</span>
-                </button>
+                <md-button ng-click="toggleSidenav('left')" >
+                        <md-icon md-svg-icon="img/icons/ic_menu_24px.svg"></md-icon>
+                </md-button>
                 <h1>{{fileName}}</h1>
             </div>
         </md-toolbar>
