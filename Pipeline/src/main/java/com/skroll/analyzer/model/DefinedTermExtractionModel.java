@@ -34,34 +34,34 @@ public class DefinedTermExtractionModel {
     // the links from paragraph category to the remaining states should not be significant,
     //      and makes the model more complicated and expensive.
 
-    static final RandomVariableType[] PARAGRAPH_FEATURES = {
+    static final List<RandomVariableType> PARAGRAPH_FEATURES = Arrays.asList(
             RandomVariableType.PARAGRAPH_STARTS_WITH_QUOTE,
 //            RandomVariableType.PARAGRAPH_STARTS_WITH_SPECIAL_FORMAT,
 //            RandomVariableType.PARAGRAPH_STARTS_WITH_BOLD,
 //            RandomVariableType.PARAGRAPH_STARTS_WITH_UNDERLINE,
 //            RandomVariableType.PARAGRAPH_STARTS_WITH_UNDERLINE,
 
-            RandomVariableType.PARAGRAPH_NUMBER_TOKENS};
+            RandomVariableType.PARAGRAPH_NUMBER_TOKENS);
 
     //todo: if needed, can add a feature to indicated if a word is used as camel case in the document.
-    static final RandomVariableType[] WORD_FEATURES = {
-            RandomVariableType.WORD_IN_QUOTES,
+    static final List<RandomVariableType> WORD_FEATURES = Arrays.asList(
+            RandomVariableType.WORD_IN_QUOTES
 //            RandomVariableType.WORD_HAS_SPECIAL_FORMAT,
             //RandomVariableType.WORD_INDEX
-    };
+    );
 
     int[][] nbCategoryToHmmState1;
 
     public DefinedTermExtractionModel(){
 
-        int [] paragraphFeatureSizes = new int[PARAGRAPH_FEATURES.length];
+        int [] paragraphFeatureSizes = new int[PARAGRAPH_FEATURES.size()];
         for (int i=0; i<paragraphFeatureSizes.length;i++)
-            paragraphFeatureSizes[i] = PARAGRAPH_FEATURES[i].getFeatureSize();
+            paragraphFeatureSizes[i] = PARAGRAPH_FEATURES.get(i).getFeatureSize();
         nb = new NaiveBayes(RandomVariableType.PARAGRAPH_HAS_DEFINITION.getFeatureSize(), paragraphFeatureSizes);
 
-        int []wordFeatureSizes = new int[WORD_FEATURES.length]; // include state at the feature index 0.
+        int []wordFeatureSizes = new int[WORD_FEATURES.size()]; // include state at the feature index 0.
         for (int i=0; i<wordFeatureSizes.length;i++)
-            wordFeatureSizes[i] =  WORD_FEATURES[i].getFeatureSize();
+            wordFeatureSizes[i] =  WORD_FEATURES.get(i).getFeatureSize();
         hmm = new HiddenMarkovModel(HMM_MODEL_LENGTH,
                 RandomVariableType.WORD_IS_DEFINED_TERM.getFeatureSize(), wordFeatureSizes);
     }
@@ -72,6 +72,8 @@ public class DefinedTermExtractionModel {
             return;
         CoreMap trainingParagraph = DefinedTermExtractionHelper.makeTrainingParagraph(paragraph);
         DataTuple nbDataTuple = DefinedTermExtractionHelper.makeNBDataTuple(trainingParagraph, PARAGRAPH_FEATURES);
+        //DataTuple nbDataTuple = DefinedTermExtractionHelper.makeNBDataTuple(trainingParagraph);
+
 
         //hack. should be removed.
 //        if (nb.mostLikelyCategory(nbDataTuple)==1) {
@@ -95,10 +97,10 @@ public class DefinedTermExtractionModel {
         String[] wordsArray = words.toArray(new String[words.size()]);
 
         int length = Math.min(hmm.size(), tokens.size());
-        int[][] features = new int[length][WORD_FEATURES.length];
+        int[][] features = new int[length][WORD_FEATURES.size()];
         for (int i=0; i<length ;i++){
-            for (int f=0; f<WORD_FEATURES.length;f++){
-                features[i][f] = DefinedTermExtractionHelper.getWordFeature(paragraph, tokens.get(i), WORD_FEATURES[f]);
+            for (int f=0; f<WORD_FEATURES.size();f++){
+                features[i][f] = DefinedTermExtractionHelper.getWordFeature(paragraph, tokens.get(i), WORD_FEATURES.get(f));
             }
         }
         int[] states = hmm.mostLikelyStateSequence(wordsArray, features, logPrioProbs);
@@ -164,10 +166,10 @@ public class DefinedTermExtractionModel {
         }
 
         int length = Math.min(hmm.size(), tokens.size());
-        int[][] features = new int[length][WORD_FEATURES.length];
+        int[][] features = new int[length][WORD_FEATURES.size()];
         for (int i=0; i<length ;i++){
-            for (int f=0; f<WORD_FEATURES.length;f++){
-                features[i][f] = DefinedTermExtractionHelper.getWordFeature(paragraph, tokens.get(i), WORD_FEATURES[f]);
+            for (int f=0; f<WORD_FEATURES.size();f++){
+                features[i][f] = DefinedTermExtractionHelper.getWordFeature(paragraph, tokens.get(i), WORD_FEATURES.get(f));
             }
         }
 

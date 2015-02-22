@@ -62,6 +62,18 @@ public class DefinedTermExtractionHelper {
 
         return trainingParagraph;
     }
+//    static DataTuple makeNBDataTuple(CoreMap paragraph){
+//        int category = (DocumentHelper.isDefinition(paragraph)) ? 1:0;
+//        String []tokens = getNBWords(paragraph);
+//
+//        RandomVariableType[] features = DefinedTermExtractionModel.PARAGRAPH_FEATURES;
+//        int [] featureValues = new int[features.length];
+//        for (int i=0; i<featureValues.length;i++){
+//            featureValues[i] = getParagraphFeature(paragraph, features[i]);
+//        }
+//
+//        return new DataTuple(category,tokens,featureValues);
+//    }
 
     static DataTuple makeNBDataTuple(CoreMap paragraph, RandomVariableType[] features){
         int category = (DocumentHelper.isDefinition(paragraph)) ? 1:0;
@@ -76,6 +88,18 @@ public class DefinedTermExtractionHelper {
         return new DataTuple(category,tokens,featureValues);
     }
 
+    static DataTuple makeNBDataTuple(CoreMap paragraph, List<RandomVariableType> features){
+        int category = (DocumentHelper.isDefinition(paragraph)) ? 1:0;
+        String []tokens = getNBWords(paragraph);
+
+        //RandomVariableType[] features = DefinedTermExtractionModel.PARAGRAPH_FEATURES;
+        int [] featureValues = new int[features.size()];
+        for (int i=0; i<featureValues.length;i++){
+            featureValues[i] = getParagraphFeature(paragraph, features.get(i));
+        }
+
+        return new DataTuple(category,tokens,featureValues);
+    }
     // remove quotes and duplicate words
     static String[] getNBWords(CoreMap paragraph){
         Set<String> wordSet = paragraph.get(CoreAnnotations.WordSetForTrainingAnnotation.class);
