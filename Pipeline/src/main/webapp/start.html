@@ -56,16 +56,16 @@
         <div layout="column" flex>
             <md-toolbar class="skroll-toolbar">
                 <div layout="row" flex>
-                    <md-button md-no-ink>
+                    <md-button aria-label="Back" md-no-ink>
                         <md-icon md-svg-icon="img/icons/ic_arrow_back_24px.svg" ng-click="toggleSidenav('left')">
                         </md-icon>
                     </md-button>
-                    <md-button ng-show="!isEdit" md-no-ink>
+                    <md-button aria-label="Edit" ng-show="!isEdit" md-no-ink>
                         <md-icon md-svg-icon="img/icons/ic_mode_edit_24px.svg" ng-click="toggleEdit()">
                         </md-icon>
                     </md-button>
 
-                    <md-button md-no-ink>
+                    <md-button aria-label="Done" md-no-ink>
                         <md-icon ng-click="toggleEdit()" ng-show="isEdit" md-svg-icon="img/icons/ic_check_24px.svg" ng-click="toggleSidenav('left')">
                         </md-icon>
                     </md-button>
