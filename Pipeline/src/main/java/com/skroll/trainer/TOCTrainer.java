@@ -7,7 +7,6 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.skroll.classifier.Classifier;
-import com.skroll.classifier.DefinitionClassifier;
 import com.skroll.classifier.TOCClassifier;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -39,6 +38,7 @@ import java.util.List;
 /* arguments to use for testing
 --trainWithOverride src/main/resources/trainingDocuments/TOC
 --classify src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html
+--working path C:\Users\wei2learn\IdeaProjects\Skroll3\Pipeline
 
  */
 public class TOCTrainer {
