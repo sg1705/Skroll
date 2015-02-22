@@ -203,7 +203,7 @@ function processTextNode(index, element) {
 
 
 function insertMarker(paragraphId, element) {
-    $(element).prepend("<a name=\"" + (paragraphId+1) + "\"/>");
+    $(element).prepend("<a id=\""+(paragraphId+1)+"\" name=\"" + (paragraphId+1) + "\"/>");
 }
 
 function printNodes(index, element, block) {

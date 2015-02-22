@@ -78,7 +78,7 @@
                 <md-list>
                     <md-item  ng-repeat="definition in definitions">
                         <md-item-content>
-                            <md-button ng-click="highlightPara({{definition.paragraphId}})"ng-href="#{{definition.paragraphId}}">{{definition.definition}}</md-button>
+                            <md-button scroll-to-paragraph="{{definition.paragraphId}}">{{definition.definition}}</md-button>
                                 <md-icon ng-show="isEdit" md-svg-icon="img/icons/ic_close_24px.svg" ng-click="toggleSidenav('left')" style="color:red">
                                 </md-icon>
                         </md-item-content>
