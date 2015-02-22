@@ -158,7 +158,6 @@ public class ParseHtmlToDocumentPipe extends SyncPipe<Document, Document> {
 
     }
 
-
     /**
      * Finds out if a given node is a block element.
      *
@@ -225,7 +224,6 @@ public class ParseHtmlToDocumentPipe extends SyncPipe<Document, Document> {
         if (node.nodeName().equals("b"))
             return true;
 
-
         if (node.nodeName().equals("i"))
             return true;
 
@@ -234,7 +232,4 @@ public class ParseHtmlToDocumentPipe extends SyncPipe<Document, Document> {
 
         return false;
     }
-
-
-
 }

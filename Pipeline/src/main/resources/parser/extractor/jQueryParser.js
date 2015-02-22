@@ -101,43 +101,21 @@ var IS_PAGE_BREAK_ANNOTATION = "IsPageBreakAnnotation";
 
 
 function processNode(index, element) {
+
     //ignore nodeName is "script"
     if ($(element).is("script")) {
-        // remove the script element
-        $(element).remove();
+        processScriptTag(index, element);
         return;
     }
 
     // does the element have page break
     if (isPageBreak(element)) {
-       pageBreak = true;
-       if (DEBUG) {
-         console.log("--- page -- break:" + paragraphId);
-       }
+        processPageBreak(index, element);
     }
 
     //check if a #text node
     if (element.nodeType == 3) {
-        //create a chunk and add it to stack
-        var chunkText = $(element).text();
-        var newChunk = new Object();
-        newChunk[ID_ANNOTATION] = chunkId;
-        newChunk[TEXT_ANNOTATION] = chunkText;
-        if (isBold(element.parentNode)) {
-            newChunk[IS_BOLD_ANNOTATION] = true;
-        }
-        if (isItalic(element.parentNode)) {
-            newChunk[IS_ITALIC_ANNOTATION] = true;
-        }
-        if (isUnderLine(element.parentNode)) {
-            newChunk[IS_UNDERLINE_ANNOTATION] = true;
-        }
-        chunkStack.push(newChunk);
-        chunkId++;
-
-        if (DEBUG) {
-            printNodes(index, element, $(element).css("display"));
-        }
+        processTextNode(index, element);
     }
 
     // check to see if the node is a block type
@@ -165,6 +143,62 @@ function createPara(element) {
     chunkStack = new Array();
     paragraphId++;
     pageBreak = false;
+}
+
+
+/**
+*  Processes an element if it is a row
+**/
+function processTableRow(index, element) {
+    //process each child
+    console.log("Table row:"+$(element).children().length);
+}
+
+
+/**
+*  Processes script tag
+**/
+function processScriptTag(index, element) {
+    // remove the script element
+    $(element).remove();
+}
+
+
+/**
+*  Processes a page break
+**/
+function processPageBreak(index, element) {
+    pageBreak = true;
+    if (DEBUG) {
+     console.log("--- page -- break:" + paragraphId);
+    }
+}
+
+
+/**
+  Process any given node as a text node and chunks it based on formatting
+**/
+function processTextNode(index, element) {
+    //create a chunk and add it to stack
+    var chunkText = $(element).text();
+    var newChunk = new Object();
+    newChunk[ID_ANNOTATION] = chunkId;
+    newChunk[TEXT_ANNOTATION] = chunkText;
+    if (isBold(element.parentNode)) {
+        newChunk[IS_BOLD_ANNOTATION] = true;
+    }
+    if (isItalic(element.parentNode)) {
+        newChunk[IS_ITALIC_ANNOTATION] = true;
+    }
+    if (isUnderLine(element.parentNode)) {
+        newChunk[IS_UNDERLINE_ANNOTATION] = true;
+    }
+    chunkStack.push(newChunk);
+    chunkId++;
+
+    if (DEBUG) {
+        printNodes(index, element, $(element).css("display"));
+    }
 }
 
 
@@ -230,4 +264,22 @@ function isPageBreak(element) {
 }
 
 
+// table methods
+function treeDepth(element) {
+    var $children = $( element ).children();
+    var depth = 0;
 
+    while ( $children.length > 0 ) {
+        $children = $children.children();
+        depth += 1;
+    }
+
+    return depth;
+};
+
+function isTableInTable(table) {
+    var elements = $(table).find("table").length;
+    if (elements > 0)
+      return true;
+    return false;
+}
