@@ -147,6 +147,38 @@ public class API {
 
 
     @GET
+    @Path("/getParagraphJson")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getParagraphJson(@QueryParam("paragraphId") String paragraphId, @Context HttpHeaders hh) {
+
+        MultivaluedMap<String, String> headerParams = hh.getRequestHeaders();
+        Map<String, Cookie> pathParams = hh.getCookies();
+        logger.debug("getDocumentId: Cookie: {}", pathParams);
+        if ( pathParams.get("documentId")==null) {
+            return Response.status(Response.Status.EXPECTATION_FAILED).entity("documentId is missing from Cookie").type(MediaType.TEXT_HTML).build();
+
+        }
+        String documentId = pathParams.get("documentId").getValue();
+
+        Document doc = documentMap.get(documentId);
+        if (doc==null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Failed to find the document in Map" ).type(MediaType.TEXT_PLAIN).build();
+        }
+
+        for (CoreMap paragraph : doc.getParagraphs()) {
+            if (paragraph.getId().equals(paragraphId)) {
+                //found it
+                Gson gson = new GsonBuilder().create();
+                String json = gson.toJson(paragraph);
+                return Response.ok().status(Response.Status.OK).entity(json).build();
+            }
+        }
+        return Response.ok().status(Response.Status.OK).entity("").build();
+    }
+
+
+
+    @GET
     @Path("/test")
     @Produces(MediaType.TEXT_PLAIN)
     public Response test() {
