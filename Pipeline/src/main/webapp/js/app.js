@@ -113,13 +113,43 @@
         };
 
         $scope.contentClicked = function($event) {
+            var foundId = false;
+            var paraId;
+            //find the paragraph element
+            //children
             var ids = $($event.target).find("a");
             for(var ii = 0; ii < ids.length; ii++) {
                 if ($(ids[ii]).attr("name") != null) {
-                    $(ids[ii]).parent().addClass("blurry-text");
-                    console.log($(ids[ii]).attr("name"));
+                    foundId = true;
+                    $(ids[ii]).parent().css("background-color","yellow");
+                    paraId = $(ids[ii]).attr("name");
+                    $("#rightPanel").html()
                 }
             }
+
+            //now try siblings
+            //TODO need to refactor this properly
+
+            if (!foundId) {
+                ids = $($event.target).prevAll("a");
+            }
+
+            for(var ii = 0; ii < ids.length; ii++) {
+                if ($(ids[ii]).attr("name") != null) {
+                    foundId = true;
+                    $(ids[ii]).parent().css("background-color","yellow");
+                    paraId = $(ids[ii]).attr("name");
+                }
+            }
+
+            if (foundId) {
+                $http.get('restServices/jsonAPI/getParagraphJson?paragraphId=' + paraId).success(function(data) {
+                    $("#rightPane").html(JSON.stringify(data, null, 2));
+                }).error(function(data, status) {
+                    console.log(status);
+                });
+            }
+
         };
 
         //### hack for iPhone
