@@ -41,6 +41,10 @@ public class TokenizeParagraphInHtmlDocumentPipe extends SyncPipe<Document, Docu
             //figure out font size
             String paraFontSize = "";
             String prevFontSize = "";
+            //paragraph level bold, underline, italic
+            boolean isParaBold = true;
+            boolean isParaItalic = true;
+            boolean isParaUnderline = true;
             //iterate over each fragment
             for(CoreMap fragment : fragments ) {
                 //get text of fragment
@@ -49,8 +53,11 @@ public class TokenizeParagraphInHtmlDocumentPipe extends SyncPipe<Document, Docu
                 buf.append(fragmentText);
                 //find if bold, italic or underline
                 boolean isFragmentBold = fragment.containsKey(CoreAnnotations.IsBoldAnnotation.class);
+                isParaBold = isParaBold && isFragmentBold;
                 boolean isFragmentItalic = fragment.containsKey(CoreAnnotations.IsItalicAnnotation.class);
+                isParaItalic = isParaItalic && isFragmentItalic;
                 boolean isFragmentUnderline = fragment.containsKey(CoreAnnotations.IsUnderlineAnnotation.class);
+                isParaUnderline = isParaUnderline && isFragmentUnderline;
                 isCenterAligned = isCenterAligned &&  fragment.containsKey(CoreAnnotations.IsCenterAlignedAnnotation.class);
                 //process fontsize
                 if (paraFontSize.equals("")) {
@@ -97,6 +104,16 @@ public class TokenizeParagraphInHtmlDocumentPipe extends SyncPipe<Document, Docu
             }
             // set paragraph level font finger print
             paragraph.set(CoreAnnotations.FontSizeAnnotation.class, paraFontSize);
+            //set annotation for bold, italic, underline
+            if (isParaBold) {
+                paragraph.set(CoreAnnotations.IsBoldAnnotation.class, true);
+            }
+            if (isParaItalic) {
+                paragraph.set(CoreAnnotations.IsItalicAnnotation.class, true);
+            }
+            if (isParaUnderline) {
+                paragraph.set(CoreAnnotations.IsUnderlineAnnotation.class, true);
+            }
             //add tokens to master list
             documentTokens.addAll(tokens);
             // check to see if it is a page break
