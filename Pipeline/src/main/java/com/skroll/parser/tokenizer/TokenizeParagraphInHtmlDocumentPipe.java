@@ -36,6 +36,8 @@ public class TokenizeParagraphInHtmlDocumentPipe extends SyncPipe<Document, Docu
             List<Token> tokens = new ArrayList<Token>();
             //create an empty string buffer
             StringBuffer buf = new StringBuffer();
+            //boolean to see if each fragment is center
+            boolean isCenterAligned = true;
             //iterate over each fragment
             for(CoreMap fragment : fragments ) {
                 //get text of fragment
@@ -46,6 +48,7 @@ public class TokenizeParagraphInHtmlDocumentPipe extends SyncPipe<Document, Docu
                 boolean isFragmentBold = fragment.containsKey(CoreAnnotations.IsBoldAnnotation.class);
                 boolean isFragmentItalic = fragment.containsKey(CoreAnnotations.IsItalicAnnotation.class);
                 boolean isFragmentUnderline = fragment.containsKey(CoreAnnotations.IsUnderlineAnnotation.class);
+                isCenterAligned = isCenterAligned &&  fragment.containsKey(CoreAnnotations.IsCenterAlignedAnnotation.class);
                 //token the fragment
                 List<String> words = pipeline.process(fragmentText);
                 //iterate over each identified token
@@ -72,6 +75,10 @@ public class TokenizeParagraphInHtmlDocumentPipe extends SyncPipe<Document, Docu
             if (buf.toString().equals(buf.toString().toUpperCase())) {
                 //this is all upper case
                 paragraph.set(CoreAnnotations.IsUpperCaseAnnotation.class, true);
+            }
+            //set annotation for center aligned
+            if (isCenterAligned) {
+                paragraph.set(CoreAnnotations.IsCenterAlignedAnnotation.class, true);
             }
             //add tokens to master list
             documentTokens.addAll(tokens);
