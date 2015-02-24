@@ -81,6 +81,7 @@ var IS_UNDERLINE_ANNOTATION = "IsUnderlineAnnotation";
 var PARAGRAPH_FRAGMENT = "ParagraphFragmentAnnotation"
 var IS_PAGE_BREAK_ANNOTATION = "IsPageBreakAnnotation";
 var IS_CENTER_ALIGNED_ANNOTATION = "IsCenterAlignedAnnotation";
+var FONTSIZE_ANNOTATION = "FontSizeAnnotation";
 
  function CoreMap(chunkId, text) {
 
@@ -197,6 +198,7 @@ function processTextNode(index, element) {
     if (isCenterAligned(element.parentNode)) {
         newChunk[IS_CENTER_ALIGNED_ANNOTATION] = true;
     }
+    newChunk[FONTSIZE_ANNOTATION] = $(element.parentNode).css("font-size");
 
     chunkStack.push(newChunk);
     chunkId++;
