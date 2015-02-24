@@ -38,6 +38,9 @@ public class TokenizeParagraphInHtmlDocumentPipe extends SyncPipe<Document, Docu
             StringBuffer buf = new StringBuffer();
             //boolean to see if each fragment is center
             boolean isCenterAligned = true;
+            //figure out font size
+            String paraFontSize = "";
+            String prevFontSize = "";
             //iterate over each fragment
             for(CoreMap fragment : fragments ) {
                 //get text of fragment
@@ -49,6 +52,18 @@ public class TokenizeParagraphInHtmlDocumentPipe extends SyncPipe<Document, Docu
                 boolean isFragmentItalic = fragment.containsKey(CoreAnnotations.IsItalicAnnotation.class);
                 boolean isFragmentUnderline = fragment.containsKey(CoreAnnotations.IsUnderlineAnnotation.class);
                 isCenterAligned = isCenterAligned &&  fragment.containsKey(CoreAnnotations.IsCenterAlignedAnnotation.class);
+                //process fontsize
+                if (paraFontSize.equals("")) {
+                    paraFontSize = fragment.get(CoreAnnotations.FontSizeAnnotation.class);
+                    prevFontSize = fragment.get(CoreAnnotations.FontSizeAnnotation.class);
+                } else {
+                    if (!prevFontSize.equals(fragment.get(CoreAnnotations.FontSizeAnnotation.class))) {
+                        paraFontSize = paraFontSize + fragment.get(CoreAnnotations.FontSizeAnnotation.class);
+
+                    }
+                    prevFontSize = fragment.get(CoreAnnotations.FontSizeAnnotation.class);
+                }
+
                 //token the fragment
                 List<String> words = pipeline.process(fragmentText);
                 //iterate over each identified token
@@ -80,6 +95,8 @@ public class TokenizeParagraphInHtmlDocumentPipe extends SyncPipe<Document, Docu
             if (isCenterAligned) {
                 paragraph.set(CoreAnnotations.IsCenterAlignedAnnotation.class, true);
             }
+            // set paragraph level font finger print
+            paragraph.set(CoreAnnotations.FontSizeAnnotation.class, paraFontSize);
             //add tokens to master list
             documentTokens.addAll(tokens);
             // check to see if it is a page break
