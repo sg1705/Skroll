@@ -5,6 +5,7 @@
             isDocAvailable: false,
             isProcessing: false,
             fileName: "",
+            selectedParagraphId: ""
     };
 
     var skrollApp = angular.module('SkrollApp', ['ngMaterial','ngSanitize', 'ngTouch' ]);
@@ -84,6 +85,7 @@
         $scope.isProcessing = documentModel.isProcessing;
         $scope.definitions = [ ];
         $scope.isEdit = false;
+        $scope.similarPara = [ ];
 
         //toggle side navigation
         $scope.toggleSidenav = function(menuId) {
@@ -106,6 +108,27 @@
             }
             $mdSidenav(menuId).toggle();
         };
+
+
+        //toggle side navigation
+        $scope.showSimilar = function() {
+            console.log($scope.selectedParagraphId);
+            $http.get('restServices/jsonAPI/getSimilarPara?paragraphId='+$scope.selectedParagraphId).success(function(data) {
+                $scope.definitions = [ ];
+                for(var ii = 0; ii < data.length; ii++) {
+                    var def = {};
+                    def.paragraphId = data[ii].map.IdAnnotation;
+                    def.definition = data[ii].map.TextAnnotation.substr(0,12);
+                    $scope.definitions.push(def);
+                }
+            }).error(function(data, status) {
+                console.log(status);
+            });
+            $mdSidenav('left').toggle();
+        };
+
+
+
 
         //click on edit button
         $scope.toggleEdit = function() {
@@ -145,6 +168,8 @@
             if (foundId) {
                 $http.get('restServices/jsonAPI/getParagraphJson?paragraphId=' + paraId).success(function(data) {
                     $("#rightPane").html(JSON.stringify(data, null, 2));
+                    $scope.selectedParagraphId = paraId;
+                    documentModel.selectedParagraphId = paraId;
                 }).error(function(data, status) {
                     console.log(status);
                 });
