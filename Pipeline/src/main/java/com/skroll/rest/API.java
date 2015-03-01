@@ -152,7 +152,7 @@ public class API {
     @Path("/addDefinition")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateDefinition(String definedTermParagraphList, @Context HttpHeaders hh) {
+    public Response addDefinition(String definedTermParagraphList, @Context HttpHeaders hh) {
 
         logger.debug("updateDefinition- DefinedTermParagraphList:{}", definedTermParagraphList);
         if (definedTermParagraphList.isEmpty()) {
@@ -215,28 +215,7 @@ public class API {
 
         Utils.writeToFile(preEvaluatedFolder + documentId, doc.getTarget());
         logger.debug("updated document is stored in {}", preEvaluatedFolder + documentId);
-        // train the model
-        /*
-        definitionClassifier.train(doc);
 
-        try {
-            // persist the model
-            definitionClassifier.persistModel();
-        } catch (ObjectPersistUtil.ObjectPersistException e) {
-            logger.error("Failed to persist the model");
-            e.printStackTrace();
-        }
-        // classify again against the updated model
-        try {
-            doc = (Document)definitionClassifier.classify(doc);
-        } catch (Exception e) {
-            logger.error("Failed to classify the doc");
-            e.printStackTrace();
-        }
-        logger.debug ("Number fo Paragraphs returned: " + doc.getParagraphs().size());
-
-        return Response.ok().status(Response.Status.OK).entity(doc.getTarget()).type(MediaType.APPLICATION_JSON).build();
-        */
         return Response.ok().status(Response.Status.OK).entity("").type(MediaType.APPLICATION_JSON).build();
     }
 
