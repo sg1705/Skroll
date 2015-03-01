@@ -26,22 +26,6 @@ public class ModelHelper {
         return newDoc;
     }
 
-    public static Document tokenizeModel(String html) {
-        Document htmlDoc = new Document();
-        htmlDoc.setSource(html);
-        //create a pipeline
-        Pipeline<Document, Document> pipeline =
-                new Pipeline.Builder()
-                        .add(Pipes.PARSE_HTML_TO_DOC)
-                        .add(Pipes.REMOVE_BLANK_PARAGRAPH_FROM_HTML_DOC)
-                        .add(Pipes.REMOVE_NBSP_IN_HTML_DOC)
-                        .add(Pipes.REPLACE_SPECIAL_QUOTE_IN_HTML_DOC)
-                        .add(Pipes.TOKENIZE_PARAGRAPH_IN_HTML_DOC)
-                        .build();
-        htmlDoc = pipeline.process(htmlDoc);
-        return htmlDoc;
-    }
-
     private static Gson getGson() {
         Gson gson = new GsonBuilder()
                         .create();
