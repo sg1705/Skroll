@@ -15,16 +15,8 @@ public class ObjectPersistUtil {
 
     public static final Logger logger = LoggerFactory
             .getLogger(Configuration.class);
-    public static Configuration configuration = null;
+    public static Configuration configuration = new Configuration();
     public static String MODEL_PERSIST_FOLDER = "model.persist.folder";
-
-    static {
-        try {
-            configuration = new Configuration();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
 
     // Persist the Object
     public  void persistObject(Type type, Object obj, String objectName) throws ObjectPersistException {

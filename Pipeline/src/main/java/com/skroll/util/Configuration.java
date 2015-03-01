@@ -20,18 +20,23 @@ public class Configuration {
     public static final Logger logger = LoggerFactory
            .getLogger(Configuration.class);
 
-    public Configuration() throws IOException {
+    public Configuration() {
          this("skroll.properties");
     }
 
-    public Configuration(String fileName) throws IOException {
-        Properties prop = getProperties (fileName);
+    public Configuration(String fileName)  {
+        Properties prop = null;
+        try {
+            prop = getProperties (fileName);
+        } catch (IOException e) {
+            logger.debug("Configuration is empty. unable to read property file");
+        }
         Enumeration<Object> keys = prop.keys();
         while (keys.hasMoreElements()) {
             String key = (String) keys.nextElement();
             confMap.put(key, prop.getProperty(key));
         }
-        System.out.println("ConfMap:"+confMap);
+        logger.debug("ConfMap:"+confMap);
     }
 
     public String get(String key) {
