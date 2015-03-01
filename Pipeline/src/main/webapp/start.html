@@ -56,16 +56,16 @@
         <div layout="column" flex>
             <md-toolbar class="skroll-toolbar">
                 <div layout="row" flex>
-                    <md-button md-no-ink>
+                    <md-button aria-label="Back" md-no-ink>
                         <md-icon md-svg-icon="img/icons/ic_arrow_back_24px.svg" ng-click="toggleSidenav('left')">
                         </md-icon>
                     </md-button>
-                    <md-button ng-show="!isEdit" md-no-ink>
+                    <md-button aria-label="Edit" ng-show="!isEdit" md-no-ink>
                         <md-icon md-svg-icon="img/icons/ic_mode_edit_24px.svg" ng-click="toggleEdit()">
                         </md-icon>
                     </md-button>
 
-                    <md-button md-no-ink>
+                    <md-button aria-label="Done" md-no-ink>
                         <md-icon ng-click="toggleEdit()" ng-show="isEdit" md-svg-icon="img/icons/ic_check_24px.svg" ng-click="toggleSidenav('left')">
                         </md-icon>
                     </md-button>
@@ -78,7 +78,7 @@
                 <md-list>
                     <md-item  ng-repeat="definition in definitions">
                         <md-item-content>
-                            <md-button ng-href="#{{definition.paragraphId}}">{{definition.definition}}</md-button>
+                            <md-button scroll-to-paragraph="{{definition.paragraphId}}">{{definition.definition}}</md-button>
                                 <md-icon ng-show="isEdit" md-svg-icon="img/icons/ic_close_24px.svg" ng-click="toggleSidenav('left')" style="color:red">
                                 </md-icon>
                         </md-item-content>
@@ -94,16 +94,36 @@
     <div layout="column" ng-show="isDocAvailable" flex ng-swipe-right="toggleSidenav('left')">
         <md-toolbar class="skroll-toolbar">
             <div layout="row" flex>
-                <button ng-click="toggleSidenav('left')" class="menuBtn">
-                    <span class="visuallyhidden">Menu</span>
-                </button>
+                <md-button ng-click="toggleSidenav('left')" aria-label="menu">
+                        <md-icon md-svg-icon="img/icons/ic_menu_24px.svg"></md-icon>
+                </md-button>
                 <h1>{{fileName}}</h1>
+                <md-button ng-click="toggleSidenav('right')" aria-label="annotation">
+                    <md-icon md-svg-icon="img/icons/ic_text_format_24px.svg"></md-icon>
+                </md-button>
+                <md-button ng-click="showSimilar()" aria-label="annotation">
+                    <md-icon md-svg-icon="img/icons/ic_visibility_24px.svg"></md-icon>
+                </md-button>
+
             </div>
         </md-toolbar>
 
-        <md-content md-scroll-y flex class="md-padding" id="content">
+
+
+        <md-content md-scroll-y flex class="md-padding" id="content" ng-click="contentClicked($event)">
         </md-content>
+
     </div>
+
+    <md-sidenav layout="column" class="md-sidenav-right "
+                md-component-id="right" md-is-locked-open="false" ng-swipe-left="toggleSidenav('left')">
+
+        <md-content>
+            <pre id="rightPane"></pre>
+        </md-content>
+
+    </md-sidenav>
+
 
 </body>
 

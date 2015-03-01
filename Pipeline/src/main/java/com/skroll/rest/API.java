@@ -10,6 +10,7 @@ import com.skroll.classifier.DefinitionClassifier;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
+import com.skroll.document.annotation.CoreAnnotation;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.document.Paragraph;
 import com.skroll.parser.Parser;
@@ -144,6 +145,114 @@ public class API {
         Response r = Response.ok().status(Response.Status.OK).entity(definitionJson).build();
         return r;
     }
+
+
+    @GET
+    @Path("/getParagraphJson")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getParagraphJson(@QueryParam("paragraphId") String paragraphId, @Context HttpHeaders hh) {
+
+        MultivaluedMap<String, String> headerParams = hh.getRequestHeaders();
+        Map<String, Cookie> pathParams = hh.getCookies();
+        logger.debug("getDocumentId: Cookie: {}", pathParams);
+        if ( pathParams.get("documentId")==null) {
+            return Response.status(Response.Status.EXPECTATION_FAILED).entity("documentId is missing from Cookie").type(MediaType.TEXT_HTML).build();
+
+        }
+        String documentId = pathParams.get("documentId").getValue();
+
+        Document doc = documentMap.get(documentId);
+        if (doc==null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Failed to find the document in Map" ).type(MediaType.TEXT_PLAIN).build();
+        }
+
+        for (CoreMap paragraph : doc.getParagraphs()) {
+            if (paragraph.getId().equals(paragraphId)) {
+                //found it
+                Gson gson = new GsonBuilder().create();
+                String json = gson.toJson(paragraph);
+                return Response.ok().status(Response.Status.OK).entity(json).build();
+            }
+        }
+        return Response.ok().status(Response.Status.OK).entity("").build();
+    }
+
+
+    @GET
+    @Path("/getSimilarPara")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSimilarParagraph(@QueryParam("paragraphId") String paragraphId, @Context HttpHeaders hh) {
+
+        MultivaluedMap<String, String> headerParams = hh.getRequestHeaders();
+        Map<String, Cookie> pathParams = hh.getCookies();
+        logger.debug("getDocumentId: Cookie: {}", pathParams);
+        if ( pathParams.get("documentId")==null) {
+            return Response.status(Response.Status.EXPECTATION_FAILED).entity("documentId is missing from Cookie").type(MediaType.TEXT_HTML).build();
+
+        }
+        String documentId = pathParams.get("documentId").getValue();
+
+        Document doc = documentMap.get(documentId);
+        if (doc==null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Failed to find the document in Map" ).type(MediaType.TEXT_PLAIN).build();
+        }
+
+        //find paragraph annotation
+        CoreMap para = null;
+        for (CoreMap paragraph : doc.getParagraphs()) {
+            if (paragraph.getId().equals(paragraphId)) {
+                //found it
+                para = paragraph;
+            }
+        }
+
+        if (para == null) {
+            return Response
+                    .status(Response.Status.NOT_FOUND)
+                    .entity("Failed to find the document in Map")
+                    .type(MediaType.TEXT_PLAIN)
+                    .build();
+        }
+
+        //find similar para now
+        boolean isBold = para.containsKey(CoreAnnotations.IsBoldAnnotation.class);
+        boolean isItalic = para.containsKey(CoreAnnotations.IsItalicAnnotation.class);
+        boolean isUnderline = para.containsKey(CoreAnnotations.IsUnderlineAnnotation.class);
+        boolean isUpperCase = para.containsKey(CoreAnnotations.IsUpperCaseAnnotation.class);
+        boolean isCenterAligned = para.containsKey(CoreAnnotations.IsCenterAlignedAnnotation.class);
+        String fontSize = para.get(CoreAnnotations.FontSizeAnnotation.class);
+
+        List<CoreMap> similarPara = new ArrayList<>();
+        for (CoreMap paragraph : doc.getParagraphs()) {
+            if (!paragraph.getId().equals(paragraphId)) {
+                //check to see if it matches
+                boolean isParaBold = paragraph.containsKey(CoreAnnotations.IsBoldAnnotation.class);
+                boolean isParaItalic = paragraph.containsKey(CoreAnnotations.IsItalicAnnotation.class);
+                boolean isParaUnderline = paragraph.containsKey(CoreAnnotations.IsUnderlineAnnotation.class);
+                boolean isParaUpperCase = paragraph.containsKey(CoreAnnotations.IsUpperCaseAnnotation.class);
+                boolean isParaCenterAligned = paragraph.containsKey(CoreAnnotations.IsCenterAlignedAnnotation.class);
+                String paraFontSize = paragraph.get(CoreAnnotations.FontSizeAnnotation.class);
+
+
+                if ((isBold == isParaBold)
+                        && (isItalic == isParaItalic)
+                        && (isUnderline == isParaUnderline)
+                        && (isUpperCase == isParaUpperCase)
+                        && (isCenterAligned == isParaCenterAligned)
+                        && (fontSize.equals(paraFontSize))) {
+                    //everything is similar
+                    similarPara.add(paragraph);
+                }
+            }
+        }
+
+        Gson gson = new GsonBuilder().create();
+        String json = gson.toJson(similarPara);
+        return Response.ok().status(Response.Status.OK).entity(json).build();
+    }
+
+
+
 
 
     @GET

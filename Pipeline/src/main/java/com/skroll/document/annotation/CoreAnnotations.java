@@ -182,6 +182,15 @@ public class CoreAnnotations {
 
 
     /**
+     * Annotation to indicate that this is center aligned
+     */
+    public static class IsCenterAlignedAnnotation implements CoreAnnotation<Boolean> {
+        public Class<Boolean> getType() {
+            return Boolean.class;
+        }
+    }
+
+    /**
      * Annotation to indicate that this is a page break paragraph
      */
     public static class IsPageBreakAnnotation implements CoreAnnotation<Boolean> {
@@ -191,13 +200,23 @@ public class CoreAnnotations {
     }
 
 
-
     /**
      * Annotation for training. It specifies the index of a word token in the paragraph.
      */
     public static class Index implements CoreAnnotation<Integer> {
         public Class<Integer> getType() {
             return Integer.class;
+        }
+    }
+
+
+
+    /**
+     * Annotation for font size
+     */
+    public static class FontSizeAnnotation implements CoreAnnotation<String> {
+        public Class<String> getType() {
+            return String.class;
         }
     }
 

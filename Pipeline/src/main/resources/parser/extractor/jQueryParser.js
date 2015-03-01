@@ -80,6 +80,8 @@ var IS_ITALIC_ANNOTATION = "IsItalicAnnotation";
 var IS_UNDERLINE_ANNOTATION = "IsUnderlineAnnotation";
 var PARAGRAPH_FRAGMENT = "ParagraphFragmentAnnotation"
 var IS_PAGE_BREAK_ANNOTATION = "IsPageBreakAnnotation";
+var IS_CENTER_ALIGNED_ANNOTATION = "IsCenterAlignedAnnotation";
+var FONTSIZE_ANNOTATION = "FontSizeAnnotation";
 
  function CoreMap(chunkId, text) {
 
@@ -193,6 +195,11 @@ function processTextNode(index, element) {
     if (isUnderLine(element.parentNode)) {
         newChunk[IS_UNDERLINE_ANNOTATION] = true;
     }
+    if (isCenterAligned(element.parentNode)) {
+        newChunk[IS_CENTER_ALIGNED_ANNOTATION] = true;
+    }
+    newChunk[FONTSIZE_ANNOTATION] = $(element.parentNode).css("font-size");
+
     chunkStack.push(newChunk);
     chunkId++;
 
@@ -203,7 +210,7 @@ function processTextNode(index, element) {
 
 
 function insertMarker(paragraphId, element) {
-    $(element).prepend("<a name=\"" + (paragraphId+1) + "\"/>");
+    $(element).prepend("<a id=\""+(paragraphId+1)+"\" name=\"" + (paragraphId+1) + "\"/>");
 }
 
 function printNodes(index, element, block) {
@@ -252,6 +259,20 @@ function isItalic(element) {
 
     return false;
 }
+
+function isCenterAligned(element) {
+    var textCenter = $(element).css("text-align");
+    if (textCenter == null) {
+        return false;
+    }
+    if (textCenter.indexOf("center") > -1) {
+        return true;
+    } else {
+        return false;
+    }
+
+}
+
 
 function isPageBreak(element) {
     if ($(element).css("page-break-after") == "always")
