@@ -8,8 +8,8 @@
  * Controller of the SkrollApp
  */
 angular.module('SkrollApp')
-    .controller('ContentCtrl', ['documentModel', '$scope', '$mdSidenav', "$http",
-                        function(documentModel, $scope, $mdSidenav, $http){
+.controller('ContentCtrl', ['documentModel','documentService', '$scope', '$mdSidenav', "$http",
+  function(documentModel, documentService, $scope, $mdSidenav, $http){
             $scope.targetHtml = documentModel.targetHtml;
             $scope.isDocAvailable = documentModel.isDocAvailable;
             $scope.fileName = documentModel.fileName;
@@ -22,44 +22,27 @@ angular.module('SkrollApp')
             $scope.toggleSidenav = function(menuId) {
                 //check to see if we need to get json
                 if ($scope.definitions.length == 0) {
-                    //get json
-                    //TODO add a line for failure
-                    $http.get('restServices/jsonAPI/getDefinition').success(function(data) {
-                        $scope.definitions = [ ];
-                        for(var ii = 0; ii < data.length; ii++) {
-                            var def = {};
-                            def.paragraphId = data[ii].paragraphId;
-                            def.definition = data[ii].definedTerm;
-                            $scope.definitions.push(def);
-
-                        }
-                    }).error(function(data, status) {
-                        console.log(status);
+                    //get defintions from service
+                    documentService.getDefinition().then(function(definitions){
+                        $scope.definitions = definitions;
+                    }, function(msg) {
+                        console.log(msg);
                     });
                 }
                 $mdSidenav(menuId).toggle();
             };
 
-
             //toggle side navigation
             $scope.showSimilar = function() {
-                console.log($scope.selectedParagraphId);
-                $http.get('restServices/jsonAPI/getSimilarPara?paragraphId='+$scope.selectedParagraphId).success(function(data) {
-                    $scope.definitions = [ ];
-                    for(var ii = 0; ii < data.length; ii++) {
-                        var def = {};
-                        def.paragraphId = data[ii].map.IdAnnotation;
-                        def.definition = data[ii].map.TextAnnotation.substr(0,12);
-                        $scope.definitions.push(def);
-                    }
-                }).error(function(data, status) {
-                    console.log(status);
+                var selectedParagraphId = $scope.selectedParagraphId;
+                documentService.getSimilarPara(selectedParagraphId).then(function(paragraphs){
+                    $scope.definitions = paragraphs;
+
+                }, function(errMsg){
+                    console.log(errMsg);
                 });
                 $mdSidenav('left').toggle();
             };
-
-
-
 
             //click on edit button
             $scope.toggleEdit = function() {
@@ -97,15 +80,16 @@ angular.module('SkrollApp')
                 }
 
                 if (foundId) {
-                    $http.get('restServices/jsonAPI/getParagraphJson?paragraphId=' + paraId).success(function(data) {
+                    documentService
+                    .getParagraphJson(paraId)
+                    .then(function(data) {
                         $("#rightPane").html(JSON.stringify(data, null, 2));
                         $scope.selectedParagraphId = paraId;
                         documentModel.selectedParagraphId = paraId;
-                    }).error(function(data, status) {
+                    },function(data, status) {
                         console.log(status);
                     });
                 }
-
             };
 
             //### hack for iPhone
