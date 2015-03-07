@@ -209,14 +209,21 @@ public class CoreAnnotations {
         }
     }
 
-
-
     /**
      * Annotation for font size
      */
     public static class FontSizeAnnotation implements CoreAnnotation<String> {
         public Class<String> getType() {
             return String.class;
+        }
+    }
+
+    /**
+     * Annotation for training. It specifies the index of a word token in the paragraph.
+     */
+    public static class TokenStartsWithUpperCaseCount implements CoreAnnotation<Integer> {
+        public Class<Integer> getType() {
+            return Integer.class;
         }
     }
 
