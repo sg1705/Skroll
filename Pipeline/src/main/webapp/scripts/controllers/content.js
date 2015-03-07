@@ -24,13 +24,13 @@ angular.module('SkrollApp')
                 if ($scope.definitions.length == 0) {
                     //get defintions from service
                     documentService.getDefinition().then(function(definitions){
-                        $scope.definitions = definitions;
+                      $scope.definitions = definitions;
                     }, function(msg) {
-                        console.log(msg);
+                      console.log(msg);
                     });
-                }
-                $mdSidenav(menuId).toggle();
-            };
+                  }
+                  $mdSidenav(menuId).toggle();
+              };
 
             //toggle side navigation
             $scope.showSimilar = function() {
