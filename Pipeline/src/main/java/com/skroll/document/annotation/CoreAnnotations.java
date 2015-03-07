@@ -227,5 +227,14 @@ public class CoreAnnotations {
         }
     }
 
+    /**
+     * Annotation to indicate that this paragraph has an anchor tag
+     */
+    public static class IsAnchorAnnotation implements CoreAnnotation<Boolean> {
+        public Class<Boolean> getType() {
+            return Boolean.class;
+        }
+    }
+
 
 }
