@@ -9,8 +9,6 @@ import com.skroll.util.WordHelper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * todo: need to replace this with good training data.
@@ -23,14 +21,15 @@ public class ExtractDefinitionsFromParagraphInHtmlDocumentPipe extends SyncPipe<
 
         for(CoreMap paragraph : input.getParagraphs()) {
             List<Token> tokens = paragraph.getTokens();
-            if (WordHelper.isQuote(tokens.get(0).getText())){
-                List<Token> definedTerms = new ArrayList<>();
-                for (int i = 1; i < tokens.size() && !WordHelper.isQuote(tokens.get(i).getText()); i++) {
-                     definedTerms.add(tokens.get(i));
+            if(!tokens.isEmpty()) {
+                if (WordHelper.isQuote(tokens.get(0).getText())) {
+                    List<Token> definedTerms = new ArrayList<>();
+                    for (int i = 1; i < tokens.size() && !WordHelper.isQuote(tokens.get(i).getText()); i++) {
+                        definedTerms.add(tokens.get(i));
+                    }
+                    DocumentHelper.setDefinedTermTokensInParagraph(definedTerms, paragraph);
                 }
-                DocumentHelper.setDefinedTermTokensInParagraph(definedTerms, paragraph);
             }
-
 
         }
         return this.target.process(input);
