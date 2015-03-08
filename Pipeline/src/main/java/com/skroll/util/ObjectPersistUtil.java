@@ -15,20 +15,24 @@ public class ObjectPersistUtil {
 
     public static final Logger logger = LoggerFactory
             .getLogger(Configuration.class);
-    public static Configuration configuration = new Configuration();
-    public static String MODEL_PERSIST_FOLDER = "model.persist.folder";
+   // public Configuration configuration = new Configuration();
+    public String objectPersistFolder = "/tmp";
+
+    public ObjectPersistUtil(String persistFolder){
+        objectPersistFolder = persistFolder;
+    }
 
     // Persist the Object
     public  void persistObject(Type type, Object obj, String objectName) throws ObjectPersistException {
         // Write to disk with FileOutputStream
         FileOutputStream f_out = null;
-        File file = new File(configuration.get(MODEL_PERSIST_FOLDER) + "/" + objectName);
+        File file = new File(objectPersistFolder + "/" + objectName);
         if (file.exists()){
             file.delete();
         }
         try {
-            f_out = new FileOutputStream(configuration.get(MODEL_PERSIST_FOLDER) + "/" + objectName);
-            logger.info("writing object to file: " + configuration.get(MODEL_PERSIST_FOLDER) + "/" + objectName);
+            f_out = new FileOutputStream(objectPersistFolder + "/" + objectName);
+            logger.info("writing object to file: " + objectPersistFolder + "/" + objectName);
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -61,10 +65,10 @@ public class ObjectPersistUtil {
         FileInputStream f_in = null;
         try {
             f_in = new
-                    FileInputStream(configuration.get(MODEL_PERSIST_FOLDER) + "/" + objectName);
-            logger.info("reading object from file: " + configuration.get(MODEL_PERSIST_FOLDER) + "/" + objectName);
+                    FileInputStream(objectPersistFolder + "/" + objectName);
+            logger.info("reading object from file: " + objectPersistFolder + "/" + objectName);
         } catch (FileNotFoundException e) {
-            logger.error("Object Persistence file not found: " + configuration.get(MODEL_PERSIST_FOLDER) + "/" + objectName);
+            logger.error("Object Persistence file not found: " + objectPersistFolder + "/" + objectName);
             throw new ObjectPersistException("Object Persistence directory not found ");
         }
 

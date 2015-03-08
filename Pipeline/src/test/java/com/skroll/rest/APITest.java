@@ -1,11 +1,19 @@
 package com.skroll.rest;
 
+import com.google.common.io.Files;
+import com.google.gson.reflect.TypeToken;
+import com.skroll.document.Document;
+import com.skroll.document.ModelHelper;
+import com.skroll.util.Configuration;
+import com.skroll.util.ObjectPersistUtil;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -15,9 +23,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import java.io.File;
+import java.lang.reflect.Type;
+import java.nio.charset.Charset;
 
 public class APITest {
-
+    public static final Logger logger = LoggerFactory
+            .getLogger(APITest.class);
     WebServer jettyServer = new WebServer(8888);
     @Before
     public void setup () {
@@ -108,13 +119,21 @@ public class APITest {
     }
 
     @Test
-    public void test_UploadFile_AddDefinition() throws Exception {
+    public void test_UploadFile_OverwriteAnnotation() throws Exception, ObjectPersistUtil.ObjectPersistException {
         String documentId = testFileUpload();
-        testAddDefinition(documentId);
+        testOverwriteAnnotation(documentId);
+        Configuration configuration = new Configuration();
+        String preEvaluatedFolder = configuration.get("preEvaluatedFolder","/tmp/");
+        ObjectPersistUtil docPersistUtil = new ObjectPersistUtil(preEvaluatedFolder);
+        Type type = new TypeToken<Document>() {}.getType();
+        Document doc = ModelHelper.getModel(Files.toString(new File(preEvaluatedFolder + documentId), Charset.defaultCharset()));
+        testUpdateBNI(documentId);
+        testUpdateModel(documentId);
+        Thread.sleep(1000);
     }
 
-    public void testAddDefinition(String documentId) throws Exception {
-        String TARGET_URL = "http://localhost:8888/restServices/jsonAPI/addDefinition";
+    public void testOverwriteAnnotation(String documentId) throws Exception {
+        String TARGET_URL = "http://localhost:8888/restServices/jsonAPI/overwriteAnnotation";
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
 
@@ -128,6 +147,25 @@ public class APITest {
         assert(response.getStatus()==(200));
     }
 
+    public void testUpdateModel(String documentId) throws Exception {
+        String TARGET_URL = "http://localhost:8888/restServices/jsonAPI/updateModel";
+        Client client = ClientBuilder.newClient();
+        WebTarget webTarget = client.target(TARGET_URL);
+
+        String response = webTarget.request(MediaType.APPLICATION_JSON).cookie(new  NewCookie("documentId", documentId)).get(String.class);
+        //System.out.println("Here is the response: "+response);
+        //assert(response.equals("ok"));
+    }
+
+    public void testUpdateBNI(String documentId) throws Exception {
+        String TARGET_URL = "http://localhost:8888/restServices/jsonAPI/updateBNI";
+        Client client = ClientBuilder.newClient();
+        WebTarget webTarget = client.target(TARGET_URL);
+
+        String response = webTarget.request(MediaType.APPLICATION_JSON).cookie(new  NewCookie("documentId", documentId)).get(String.class);
+        //System.out.println("Here is the response: "+response);
+       // assert(response.equals("ok"));
+    }
     @Test
     public void test_UploadFile_DeleteDefinition() throws Exception {
         String documentId = testFileUpload();

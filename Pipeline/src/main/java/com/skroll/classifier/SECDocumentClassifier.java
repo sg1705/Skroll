@@ -10,6 +10,7 @@ import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
+import com.skroll.util.Configuration;
 import com.skroll.util.ObjectPersistUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,9 @@ public class SECDocumentClassifier extends ClassifierImpl {
     // Initialize the list of category this classifier support.
     private NaiveBayes nbModelForDoc;
     private String modelName = "com.skroll.analyzer.model.nb.NaiveBayes.secDocumentNB";
+    Configuration configuration = new Configuration();
+    private String modelFolderName = configuration.get("modelFolder","/tmp");
+    protected ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil(modelFolderName);
     private Type type = null;
 
     public SECDocumentClassifier() {

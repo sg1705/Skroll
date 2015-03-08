@@ -117,8 +117,31 @@ public class CoreAnnotations {
         }
     }
 
+    // annotation for user observation
+    public static class UserObservationAnnotation implements CoreAnnotation<Boolean> {
+        public Class<Boolean> getType() {
+            return Boolean.class;
+        }
+    }
 
+    public static class IsUserObservationAnnotation implements CoreAnnotation<Boolean> {
+        public Class<Boolean> getType() {
+            return Boolean.class;
+        }
+    }
 
+    // annotation for user training weight
+    public static class TrainingWeightAnnotation implements CoreAnnotation<List<Float>> {
+        public Class<List<Float>> getType() {
+            return EraserUtils.<Class<List<Float>>> uncheckedCast(List.class);
+        }
+    }
+
+    public static class IsTrainingWeightAnnotation implements CoreAnnotation<Boolean> {
+        public Class<Boolean> getType() {
+            return Boolean.class;
+        }
+    }
     /**
      * CoreMap key identifying the definitions in paragraph. Each CoreMap in the list is
      * a definition. A definition can be accessed using TextAnnotation.
@@ -220,5 +243,15 @@ public class CoreAnnotations {
         }
     }
 
-
+   // TOC Annotation
+   public static class TOCListAnnotation implements CoreAnnotation<List<Token>> {
+       public Class<List<Token>> getType() {
+           return EraserUtils.<Class<List<Token>>> uncheckedCast(List.class);
+       }
+   }
+    public static class IsTOCAnnotation implements CoreAnnotation<Boolean> {
+        public Class<Boolean> getType() {
+            return Boolean.class;
+        }
+    }
 }
