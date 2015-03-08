@@ -2,6 +2,8 @@ package com.skroll.pipeline.util;
 
 
 import java.nio.charset.Charset;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by saurabh on 12/23/14.
@@ -43,4 +45,49 @@ public class Constants {
 
     // Logging markers
     public static final String LINKER_MARKER = "LINK_MARKER";
+
+
+    public static Set<String> SPECIAL_STOP_WORDS = new HashSet<String>();
+
+    static {
+        SPECIAL_STOP_WORDS.add(">");
+        SPECIAL_STOP_WORDS.add("<");
+        SPECIAL_STOP_WORDS.add("&");
+        SPECIAL_STOP_WORDS.add("\"");
+        SPECIAL_STOP_WORDS.add("\t");
+        SPECIAL_STOP_WORDS.add("!");
+        SPECIAL_STOP_WORDS.add("#");
+        SPECIAL_STOP_WORDS.add("$");
+        SPECIAL_STOP_WORDS.add("%");
+        SPECIAL_STOP_WORDS.add("'");
+        SPECIAL_STOP_WORDS.add("(");
+        SPECIAL_STOP_WORDS.add(")");
+        SPECIAL_STOP_WORDS.add("*");
+        SPECIAL_STOP_WORDS.add("+");
+        SPECIAL_STOP_WORDS.add(",");
+        SPECIAL_STOP_WORDS.add("-");
+        SPECIAL_STOP_WORDS.add(".");
+        SPECIAL_STOP_WORDS.add("/");
+        SPECIAL_STOP_WORDS.add(":");
+        SPECIAL_STOP_WORDS.add(";");
+        SPECIAL_STOP_WORDS.add("=");
+
+        SPECIAL_STOP_WORDS.add("?");
+        SPECIAL_STOP_WORDS.add("@");
+        SPECIAL_STOP_WORDS.add("[");
+        SPECIAL_STOP_WORDS.add("/");
+        SPECIAL_STOP_WORDS.add("]");
+        SPECIAL_STOP_WORDS.add("^");
+
+        SPECIAL_STOP_WORDS.add("_");
+        SPECIAL_STOP_WORDS.add("`");
+        SPECIAL_STOP_WORDS.add("{");
+        SPECIAL_STOP_WORDS.add("|");
+        SPECIAL_STOP_WORDS.add("}");
+        SPECIAL_STOP_WORDS.add("~");
+
+
+
+    }
+
 }

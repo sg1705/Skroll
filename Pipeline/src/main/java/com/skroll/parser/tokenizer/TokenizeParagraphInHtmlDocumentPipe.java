@@ -1,5 +1,6 @@
 package com.skroll.parser.tokenizer;
 
+import com.google.common.base.Strings;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
@@ -9,11 +10,14 @@ import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.SyncPipe;
+import com.skroll.pipeline.util.Constants;
+import com.skroll.pipeline.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Tokenzies parsed document
  * Created by sagupta on 12/14/14.
  */
 public class TokenizeParagraphInHtmlDocumentPipe extends SyncPipe<Document, Document> {
@@ -45,6 +49,8 @@ public class TokenizeParagraphInHtmlDocumentPipe extends SyncPipe<Document, Docu
             boolean isParaBold = true;
             boolean isParaItalic = true;
             boolean isParaUnderline = true;
+            //count tokens that starts with upper case
+            int startsWithUppercaseCount = 0;
             //iterate over each fragment
             for(CoreMap fragment : fragments ) {
                 //get text of fragment
@@ -87,6 +93,15 @@ public class TokenizeParagraphInHtmlDocumentPipe extends SyncPipe<Document, Docu
                         token.set(CoreAnnotations.IsItalicAnnotation.class, true);
                     }
                     tokens.add(token);
+                    //count token for starts with upper case
+                    //is token a special character
+                    if (!Constants.SPECIAL_STOP_WORDS.contains(token.getText())) {
+                        //now that we know it is not a special character
+                        if (Character.isUpperCase(token.getText().charAt(0))) {
+                            startsWithUppercaseCount++;
+                        }
+
+                    }
                 }
             }
             //add concatenated string to paragraph
@@ -114,6 +129,8 @@ public class TokenizeParagraphInHtmlDocumentPipe extends SyncPipe<Document, Docu
             if (isParaUnderline) {
                 paragraph.set(CoreAnnotations.IsUnderlineAnnotation.class, true);
             }
+            //set the count of tokens that start with uppercase
+            paragraph.set(CoreAnnotations.TokenStartsWithUpperCaseCount.class, startsWithUppercaseCount);
             //add tokens to master list
             documentTokens.addAll(tokens);
             // check to see if it is a page break

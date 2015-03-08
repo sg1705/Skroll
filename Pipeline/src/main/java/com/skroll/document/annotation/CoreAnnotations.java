@@ -232,8 +232,6 @@ public class CoreAnnotations {
         }
     }
 
-
-
     /**
      * Annotation for font size
      */
@@ -243,12 +241,30 @@ public class CoreAnnotations {
         }
     }
 
-   // TOC Annotation
-   public static class TOCListAnnotation implements CoreAnnotation<List<Token>> {
-       public Class<List<Token>> getType() {
-           return EraserUtils.<Class<List<Token>>> uncheckedCast(List.class);
-       }
-   }
+    /**
+     * Annotation for training. It specifies the index of a word token in the paragraph.
+     */
+    public static class TokenStartsWithUpperCaseCount implements CoreAnnotation<Integer> {
+        public Class<Integer> getType() {
+            return Integer.class;
+        }
+    }
+
+    /**
+     * Annotation to indicate that this paragraph has an anchor tag
+     */
+    public static class IsAnchorAnnotation implements CoreAnnotation<Boolean> {
+        public Class<Boolean> getType() {
+            return Boolean.class;
+        }
+    }
+
+    // TOC Annotation
+    public static class TOCListAnnotation implements CoreAnnotation<List<Token>> {
+        public Class<List<Token>> getType() {
+            return EraserUtils.<Class<List<Token>>> uncheckedCast(List.class);
+        }
+    }
     public static class IsTOCAnnotation implements CoreAnnotation<Boolean> {
         public Class<Boolean> getType() {
             return Boolean.class;
