@@ -110,6 +110,11 @@ function processNode(index, element) {
         return;
     }
 
+    //ignore these tags
+    if ($(element).is("meta") || $(element).is("link") || $(element).is("comment")) {
+        return;
+    }
+
     //is element an anchor
     if (isAnchorElement(element)) {
         isAnchor = true;
@@ -242,8 +247,9 @@ function printNodes(index, element, block) {
 }
 
 function isNodeBlock(element) {
-    if (element.nodeType == 3)
-        return;
+
+    if (element.nodeType != 1)
+        return false;
 
     var displayStyle = $(element).css("display")
     if ((displayStyle == "block") || (displayStyle == "table")) {
@@ -307,14 +313,16 @@ function isCenterAligned(element) {
 
 
 function isPageBreak(element) {
-    if (element.jQuery) {
-        if ($(element).css("page-break-after") == "always")
+
+    if (element.nodeType != 1)
+        return false;
+
+    if ($(element).css("page-break-after") == "always")
+        return true;
+
+    if ($(element).css("page-break-before") == "always")
             return true;
 
-        if ($(element).css("page-break-before") == "always")
-                return true;
-
-    }
     return false;
 }
 
