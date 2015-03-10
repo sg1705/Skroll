@@ -62,37 +62,11 @@ public class DefinedTermExtractionHelper {
 
         return trainingParagraph;
     }
-//    static DataTuple makeNBDataTuple(CoreMap paragraph){
-//        int category = (DocumentHelper.isDefinition(paragraph)) ? 1:0;
-//        String []tokens = getNBWords(paragraph);
-//
-//        RandomVariableType[] features = DefinedTermExtractionModel.PARAGRAPH_FEATURES;
-//        int [] featureValues = new int[features.length];
-//        for (int i=0; i<featureValues.length;i++){
-//            featureValues[i] = getParagraphFeature(paragraph, features[i]);
-//        }
-//
-//        return new DataTuple(category,tokens,featureValues);
-//    }
-
-    static DataTuple makeNBDataTuple(CoreMap paragraph, RandomVariableType[] features){
-        int category = (DocumentHelper.isDefinition(paragraph)) ? 1:0;
-        String []tokens = getNBWords(paragraph);
-
-        //RandomVariableType[] features = DefinedTermExtractionModel.PARAGRAPH_FEATURES;
-        int [] featureValues = new int[features.length];
-        for (int i=0; i<featureValues.length;i++){
-            featureValues[i] = getParagraphFeature(paragraph, features[i]);
-        }
-
-        return new DataTuple(category,tokens,featureValues);
-    }
 
     static DataTuple makeNBDataTuple(CoreMap paragraph, List<RandomVariableType> features){
         int category = (DocumentHelper.isDefinition(paragraph)) ? 1:0;
         String []tokens = getNBWords(paragraph);
 
-        //RandomVariableType[] features = DefinedTermExtractionModel.PARAGRAPH_FEATURES;
         int [] featureValues = new int[features.size()];
         for (int i=0; i<featureValues.length;i++){
             featureValues[i] = getParagraphFeature(paragraph, features.get(i));
@@ -160,8 +134,7 @@ public class DefinedTermExtractionHelper {
                     //if (list.contains(word)) return 1;
                 return 0;
             case WORD_IN_QUOTES:
-//                Boolean inQuotes = word.get(CoreAnnotations.InQuotesAnnotation.class );
-//                return (inQuotes!=null && inQuotes==true) ?1:0;
+
                 return booleanToInt(word.get(CoreAnnotations.InQuotesAnnotation.class ));
             case WORD_IS_BOLD:
                 return booleanToInt(word.get(CoreAnnotations.IsBoldAnnotation.class ));

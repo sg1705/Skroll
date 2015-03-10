@@ -2,7 +2,7 @@ package com.skroll.analyzer.model;
 
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
 import com.skroll.analyzer.model.nb.DataTuple;
-import com.skroll.analyzer.model.nb.NaiveBayes;
+import com.skroll.analyzer.model.nb.NaiveBayesOld;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
@@ -23,7 +23,7 @@ public class TOCModel {
 
 
     HiddenMarkovModel hmm;
-    NaiveBayes nb;
+    NaiveBayesOld nb;
 
     // the link between paragraph category to the state of the first word in the paragraph
     // the links from paragraph category to the remaining states should not be significant,
@@ -53,7 +53,7 @@ public class TOCModel {
         int [] paragraphFeatureSizes = new int[PARAGRAPH_FEATURES.size()];
         for (int i=0; i<paragraphFeatureSizes.length;i++)
             paragraphFeatureSizes[i] = PARAGRAPH_FEATURES.get(i).getFeatureSize();
-        nb = new NaiveBayes(RandomVariableType.PARAGRAPH_HAS_DEFINITION.getFeatureSize(), paragraphFeatureSizes);
+        nb = new NaiveBayesOld(RandomVariableType.PARAGRAPH_HAS_DEFINITION.getFeatureSize(), paragraphFeatureSizes);
 
         int []wordFeatureSizes = new int[WORD_FEATURES.size()]; // include state at the feature index 0.
         for (int i=0; i<wordFeatureSizes.length;i++)
@@ -67,12 +67,7 @@ public class TOCModel {
         CoreMap trainingParagraph = DefinedTermExtractionHelper.makeTrainingParagraph(paragraph);
         DataTuple nbDataTuple = DefinedTermExtractionHelper.makeNBDataTuple(trainingParagraph, PARAGRAPH_FEATURES);
 
-        //hack. should be removed.
-//        if (nb.mostLikelyCategory(nbDataTuple)==1) {
-//            paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
-//            return;
-//        }
-//        else if (true) return;
+
 
         // using NB category as the prior prob to the input of HMM.
         // This means the HMM output state sequence gives the highest p(HMM observations | given NB observations)
