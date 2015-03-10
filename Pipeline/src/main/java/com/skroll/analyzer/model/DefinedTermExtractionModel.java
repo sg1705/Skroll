@@ -2,7 +2,7 @@ package com.skroll.analyzer.model;
 
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
 import com.skroll.analyzer.model.nb.DataTuple;
-import com.skroll.analyzer.model.nb.NaiveBayesOld;
+import com.skroll.analyzer.model.nb.NaiveBayes;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
@@ -28,7 +28,7 @@ public class DefinedTermExtractionModel {
 
 
     HiddenMarkovModel hmm;
-    NaiveBayesOld nb;
+    NaiveBayes nb;
 
     // the link between paragraph category to the state of the first word in the paragraph
     // the links from paragraph category to the remaining states should not be significant,
@@ -57,7 +57,7 @@ public class DefinedTermExtractionModel {
         int [] paragraphFeatureSizes = new int[PARAGRAPH_FEATURES.size()];
         for (int i=0; i<paragraphFeatureSizes.length;i++)
             paragraphFeatureSizes[i] = PARAGRAPH_FEATURES.get(i).getFeatureSize();
-        nb = new NaiveBayesOld(RandomVariableType.PARAGRAPH_HAS_DEFINITION.getFeatureSize(), paragraphFeatureSizes);
+        nb = new NaiveBayes(RandomVariableType.PARAGRAPH_HAS_DEFINITION.getFeatureSize(), paragraphFeatureSizes);
 
         int []wordFeatureSizes = new int[WORD_FEATURES.size()]; // include state at the feature index 0.
         for (int i=0; i<wordFeatureSizes.length;i++)

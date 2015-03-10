@@ -9,8 +9,6 @@ public class NaiveBayes {
 
     public static final double PRIOR_COUNT = 100;
     public static final int DEFAULT_NUMBER_CATEGORIES = 2;
-    public static final int DEFAULT_NUMBER_FEATURES = 0;
-
 
     int numberCategories;
     int numberFeatures;
@@ -20,8 +18,6 @@ public class NaiveBayes {
     int totalCategoryCount; // do we need to use long instead of int?
     // int or long is better than double for increment by 1's used to update counts
 
-
-    //int [][] featureCounts; // count
     List<List<int[]>> categoryFeatureValueCounts;
     Map<String,Integer>[] wordCounts;
 
@@ -29,7 +25,7 @@ public class NaiveBayes {
         this(DEFAULT_NUMBER_CATEGORIES, new int[0]);
     }
 
-    public NaiveBayes(int numCategories, int []featureSizes) {
+    public NaiveBayes(int numCategories, int[] featureSizes) {
         this.featureSizes = featureSizes;
         this.numberCategories = numCategories;
         this.numberFeatures = featureSizes.length;
