@@ -111,7 +111,8 @@ function processNode(index, element) {
     }
 
     //ignore these tags
-    if ($(element).is("meta") || $(element).is("link") || $(element).is("comment")) {
+    if ($(element).is("meta") || $(element).is("link") || $(element).is("comment") ||
+        $(element).is("style") || $(element).is("iframe")) {
         return;
     }
 
@@ -143,7 +144,7 @@ function processNode(index, element) {
 
 function createPara(element) {
     var newParagraph = new Object();
-    newParagraph[ID_ANNOTATION] = paragraphId;
+    newParagraph[ID_ANNOTATION] = 'p_'+paragraphId;
     newParagraph[TEXT_ANNOTATION] = "";
     newParagraph[PARAGRAPH_FRAGMENT] = chunkStack;
     //insert page break annotation
@@ -225,7 +226,11 @@ function processTextNode(index, element) {
 
 
 function insertMarker(paragraphId, element) {
-    $(element).prepend("<a id=\""+(paragraphId+1)+"\" name=\"" + (paragraphId+1) + "\"/>");
+    //original marker
+    //$(element).prepend("<a id=\""+(paragraphId+1)+"\" name=\"" + (paragraphId+1) + "\"/>");
+    //tried with web components.. need to figure out background
+    //$(element ).wrap( "<skroll-id id=\""+(paragraphId+1)+"\"></skroll-id>");
+    $(element ).wrap( "<div id=\"p_"+(paragraphId+1)+"\"></div>");
 }
 
 function printNodes(index, element, block) {

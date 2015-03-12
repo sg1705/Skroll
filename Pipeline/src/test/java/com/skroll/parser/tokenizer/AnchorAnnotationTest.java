@@ -59,5 +59,4 @@ public class AnchorAnnotationTest extends TestCase {
         System.out.println(countAnchorTags);
         assert ( countAnchorTags == 29);
     }
-
 }
