@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Analyzer/Analyzer.iml" filepath="$PROJECT_DIR$/Analyzer/Analyzer.iml" />
       <module fileurl="file://$PROJECT_DIR$/Pipeline/Pipeline.iml" filepath="$PROJECT_DIR$/Pipeline/Pipeline.iml" />
       <module fileurl="file://$PROJECT_DIR$/Skroll.iml" filepath="$PROJECT_DIR$/Skroll.iml" />
     </modules>

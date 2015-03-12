@@ -5,7 +5,7 @@ import java.util.*;
 /**
  * Created by wei2learn on 1/3/2015.
  */
-public class NaiveBayes {
+public class NaiveBayesOld {
 
     public static final double PRIOR_COUNT = 100;
     public static final int DEFAULT_NUMBER_CATEGORIES = 2;
@@ -21,11 +21,11 @@ public class NaiveBayes {
     List<List<int[]>> categoryFeatureValueCounts;
     Map<String,Integer>[] wordCounts;
 
-    public NaiveBayes() {
+    public NaiveBayesOld() {
         this(DEFAULT_NUMBER_CATEGORIES, new int[0]);
     }
 
-    public NaiveBayes(int numCategories, int[] featureSizes) {
+    public NaiveBayesOld(int numCategories, int[] featureSizes) {
         this.featureSizes = featureSizes;
         this.numberCategories = numCategories;
         this.numberFeatures = featureSizes.length;

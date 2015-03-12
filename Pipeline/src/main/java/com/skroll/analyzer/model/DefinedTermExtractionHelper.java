@@ -63,19 +63,17 @@ public class DefinedTermExtractionHelper {
         return trainingParagraph;
     }
 
-    static DataTuple makeNBDataTuple(CoreMap paragraph){
+    static DataTuple makeNBDataTuple(CoreMap paragraph, List<RandomVariableType> features){
         int category = (DocumentHelper.isDefinition(paragraph)) ? 1:0;
         String []tokens = getNBWords(paragraph);
 
-        RandomVariableType[] features = DefinedTermExtractionModel.PARAGRAPH_FEATURES;
-        int [] featureValues = new int[features.length];
+        int [] featureValues = new int[features.size()];
         for (int i=0; i<featureValues.length;i++){
-            featureValues[i] = getParagraphFeature(paragraph, features[i]);
+            featureValues[i] = getParagraphFeature(paragraph, features.get(i));
         }
 
         return new DataTuple(category,tokens,featureValues);
     }
-
     // remove quotes and duplicate words
     static String[] getNBWords(CoreMap paragraph){
         Set<String> wordSet = paragraph.get(CoreAnnotations.WordSetForTrainingAnnotation.class);
@@ -83,20 +81,29 @@ public class DefinedTermExtractionHelper {
     }
 
     static int getParagraphFeature(CoreMap paragraph, RandomVariableType feature){
+        if (paragraph==null) return 0;
+        List<Token> tokens = paragraph.getTokens();
+        if (tokens==null || tokens.size()==0) return 0;
         switch (feature){
             case PARAGRAPH_HAS_DEFINITION: return (DocumentHelper.isDefinition(paragraph)) ?1:0;
-            case PARAGRAPH_STARTS_WITH_QUOTE: return (DocumentHelper.startsWithQuote(paragraph)) ?1:0;
-            case PARAGRAPH_STARTS_WITH_SPECIAL_FORMAT:
-                if (paragraph==null) return 0;
-                List<Token> tokens = paragraph.getTokens();
-                if (tokens==null || tokens.size()==0) return 0;
-                return booleanToInt(tokens.get(0).get(CoreAnnotations.InQuotesAnnotation.class )) |
-                        booleanToInt(tokens.get(0).get(CoreAnnotations.IsUnderlineAnnotation.class ));
             case PARAGRAPH_NUMBER_TOKENS:
                 Set<String> words = paragraph.get(CoreAnnotations.WordSetForTrainingAnnotation.class);
                 int num=0;
                 if (words!=null) num = words.size();
                 return Math.min(num, PFS_TOKENS_NUMBER_FEATURE_MAX);
+            case PARAGRAPH_STARTS_WITH_SPECIAL_FORMAT:
+                return booleanToInt(tokens.get(0).get(CoreAnnotations.InQuotesAnnotation.class )) |
+                        booleanToInt(tokens.get(0).get(CoreAnnotations.IsUnderlineAnnotation.class ))|
+                        booleanToInt(tokens.get(0).get(CoreAnnotations.IsBoldAnnotation.class ))|
+                        booleanToInt(tokens.get(0).get(CoreAnnotations.IsItalicAnnotation.class ));
+            case PARAGRAPH_STARTS_WITH_QUOTE:
+                return (DocumentHelper.startsWithQuote(paragraph)) ?1:0;
+            case PARAGRAPH_STARTS_WITH_BOLD:
+                return booleanToInt(tokens.get(0).get(CoreAnnotations.IsBoldAnnotation.class ));
+            case PARAGRAPH_STARTS_WITH_UNDERLINE:
+                return booleanToInt(tokens.get(0).get(CoreAnnotations.IsUnderlineAnnotation.class ));
+            case PARAGRAPH_STARTS_WITH_ITALIC:
+                return booleanToInt(tokens.get(0).get(CoreAnnotations.IsItalicAnnotation.class ));
         }
         return -1;
     }
@@ -122,14 +129,24 @@ public class DefinedTermExtractionHelper {
                 List<List<Token>> tokens =  DocumentHelper.getDefinedTermTokensInParagraph(paragraph);
                 if (tokens==null) return 0;
                 for (List<Token> list: tokens)
-                    if (list.contains(word)) return 1;
+                    for (Token t:list) // matching string instead of matching token reference is a hack here.
+                        if (t.getText().equals(word.getText())) return 1;
+                    //if (list.contains(word)) return 1;
                 return 0;
             case WORD_IN_QUOTES:
-                Boolean inQuotes = word.get(CoreAnnotations.InQuotesAnnotation.class );
-                return (inQuotes!=null && inQuotes==true) ?1:0;
+
+                return booleanToInt(word.get(CoreAnnotations.InQuotesAnnotation.class ));
+            case WORD_IS_BOLD:
+                return booleanToInt(word.get(CoreAnnotations.IsBoldAnnotation.class ));
+            case WORD_IS_UNDERLINED:
+                return booleanToInt(word.get(CoreAnnotations.IsUnderlineAnnotation.class ));
+            case WORD_IS_ITALIC:
+                return booleanToInt(word.get(CoreAnnotations.IsItalicAnnotation.class ));
             case WORD_HAS_SPECIAL_FORMAT:
                 return booleanToInt(word.get(CoreAnnotations.InQuotesAnnotation.class )) |
-                        booleanToInt(word.get(CoreAnnotations.IsUnderlineAnnotation.class ));
+                        booleanToInt(word.get(CoreAnnotations.IsUnderlineAnnotation.class ))|
+                        booleanToInt(word.get(CoreAnnotations.IsBoldAnnotation.class ))|
+                        booleanToInt(word.get(CoreAnnotations.IsItalicAnnotation.class ));
             case WORD_INDEX:  return word.get(CoreAnnotations.Index.class );
         }
         return -1;
