@@ -68,7 +68,7 @@ var paragraphId = 1234;
 var chunkId = 5000;
 var pageBreak = false;
 var DEBUG = false;
-
+var isAnchor = false;
 
 // core annotations
 var ID_ANNOTATION = "IdAnnotation";
@@ -82,6 +82,7 @@ var PARAGRAPH_FRAGMENT = "ParagraphFragmentAnnotation"
 var IS_PAGE_BREAK_ANNOTATION = "IsPageBreakAnnotation";
 var IS_CENTER_ALIGNED_ANNOTATION = "IsCenterAlignedAnnotation";
 var FONTSIZE_ANNOTATION = "FontSizeAnnotation";
+var IS_ANCHOR_ANNOTATION = "IsAnchorAnnotation";
 
  function CoreMap(chunkId, text) {
 
@@ -95,7 +96,6 @@ var FONTSIZE_ANNOTATION = "FontSizeAnnotation";
         return this.CoreMap[annotation];
     }
 
-
     this.set(ID_ANNOTATION, chunkId);
     this.set(TEXT_ANNOTATION, text);
 
@@ -108,6 +108,17 @@ function processNode(index, element) {
     if ($(element).is("script")) {
         processScriptTag(index, element);
         return;
+    }
+
+    //ignore these tags
+    if ($(element).is("meta") || $(element).is("link") || $(element).is("comment") ||
+        $(element).is("style") || $(element).is("iframe")) {
+        return;
+    }
+
+    //is element an anchor
+    if (isAnchorElement(element)) {
+        isAnchor = true;
     }
 
     // does the element have page break
@@ -133,18 +144,22 @@ function processNode(index, element) {
 
 function createPara(element) {
     var newParagraph = new Object();
-    newParagraph[ID_ANNOTATION] = paragraphId;
+    newParagraph[ID_ANNOTATION] = 'p_'+paragraphId;
     newParagraph[TEXT_ANNOTATION] = "";
     newParagraph[PARAGRAPH_FRAGMENT] = chunkStack;
     //insert page break annotation
     if (pageBreak) {
       newParagraph[IS_PAGE_BREAK_ANNOTATION] = true;
     }
+    if (isAnchor) {
+      newParagraph[IS_ANCHOR_ANNOTATION] = true;
+    }
     paragraphs.push(newParagraph);
     insertMarker(paragraphId, element);
     chunkStack = new Array();
     paragraphId++;
     pageBreak = false;
+    isAnchor = false;
 }
 
 
@@ -204,13 +219,18 @@ function processTextNode(index, element) {
     chunkId++;
 
     if (DEBUG) {
-        printNodes(index, element, $(element).css("display"));
+        if (element.jquery)
+            printNodes(index, element, $(element).css("display"));
     }
 }
 
 
 function insertMarker(paragraphId, element) {
-    $(element).prepend("<a id=\""+(paragraphId+1)+"\" name=\"" + (paragraphId+1) + "\"/>");
+    //original marker
+    //$(element).prepend("<a id=\""+(paragraphId+1)+"\" name=\"" + (paragraphId+1) + "\"/>");
+    //tried with web components.. need to figure out background
+    //$(element ).wrap( "<skroll-id id=\""+(paragraphId+1)+"\"></skroll-id>");
+    $(element ).wrap( "<div id=\"p_"+(paragraphId+1)+"\"></div>");
 }
 
 function printNodes(index, element, block) {
@@ -232,6 +252,10 @@ function printNodes(index, element, block) {
 }
 
 function isNodeBlock(element) {
+
+    if (element.nodeType != 1)
+        return false;
+
     var displayStyle = $(element).css("display")
     if ((displayStyle == "block") || (displayStyle == "table")) {
         return true;
@@ -260,6 +284,25 @@ function isItalic(element) {
     return false;
 }
 
+function isAnchorElement(element) {
+    if ($(element).is("a")) {
+        //get name
+        var anchorName = $(element).attr('name');
+        var anchorId = $(element).attr('id');
+        //hack - if anchorId == anchorName, this is probably ours
+        if (anchorName != null) {
+            if (anchorName != '') {
+                if (!(anchorName == anchorId))
+                    return true;
+            }
+        }
+
+    }
+    return false;
+}
+
+
+
 function isCenterAligned(element) {
     var textCenter = $(element).css("text-align");
     if (textCenter == null) {
@@ -275,6 +318,10 @@ function isCenterAligned(element) {
 
 
 function isPageBreak(element) {
+
+    if (element.nodeType != 1)
+        return false;
+
     if ($(element).css("page-break-after") == "always")
         return true;
 

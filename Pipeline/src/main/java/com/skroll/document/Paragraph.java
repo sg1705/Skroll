@@ -7,6 +7,14 @@ public class Paragraph {
     public static final Logger logger = LoggerFactory
             .getLogger(Paragraph.class);
 
+    public String getParagraphId() {
+        return paragraphId;
+    }
+
+    public String getDefinedTerm() {
+        return definedTerm;
+    }
+
     private String paragraphId;
     private String definedTerm;
 

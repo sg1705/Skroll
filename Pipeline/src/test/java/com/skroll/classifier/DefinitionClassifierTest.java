@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
 
 import static org.junit.Assert.fail;
 
@@ -74,13 +73,8 @@ public class DefinitionClassifierTest {
 
     //@Test
      public void testTrainFolders(String folderName) {
-
-        try {
             Configuration configuration = new Configuration();
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("failed to read configuration");
-        }
+
         DefinitionClassifier documentClassifier = new DefinitionClassifier();
         //String folderName = "src/main/resources/trainingDocuments/indentures";
 
@@ -124,13 +118,8 @@ public class DefinitionClassifierTest {
 
     //@Test
     public void testTrainFile()  {
-
-        try {
             Configuration configuration = new Configuration();
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail(" failed to read configuration");
-        }
+
         DefinitionClassifier documentClassifier = new DefinitionClassifier();
         String fileName = "src/main/resources/trainingDocuments/indentures/AMC Networks Indenture.html";
 

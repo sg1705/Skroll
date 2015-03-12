@@ -1,129 +1,147 @@
-<html lang="en" ng-app="SkrollApp">
+<!doctype html>
+<html>
 
 <head>
-    <link rel="stylesheet" href="material/default-theme.css">
-    <link rel="stylesheet" href="material/angular-material.css">
-    <!--
-    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.7.0/angular-material.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.7.0/angular-material.min.js"></script>
-    -->
-    <link rel="stylesheet" href="css/skroll.css"/>
-    <!-- Set the view on mobile -->
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1" />
-
-    <!-- jquery file upload -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.js"></script>
-
-    <!-- Angular Material Dependencies -->
-    <script src="https://cdn.jsdelivr.net/hammerjs/2.0.4/hammer.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.6/angular.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.6/angular-animate.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.6/angular-aria.min.js"></script>
-    <script src="material/angular-material.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.6/angular-touch.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.3/angular-sanitize.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/jquery.fileupload.js"></script>
+  <meta charset="utf-8">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+  <!-- build:css(.) styles/vendor.css -->
+  <!-- bower:css -->
+  <link rel="stylesheet" href="bower_components/angular-material/angular-material.min.css">
+  <!-- endbower -->
+  <!-- endbuild -->
+  <!-- build:css(.tmp) styles/main.css -->
+  <link rel="stylesheet" href="styles/main.css"/>
+  <!-- endbuild -->
 
 </head>
 
 
-<body layout="column" ng-controller="ContentController" style="overflow-y: scroll; -webkit-overflow-scrolling: touch;">
+<body ng-app="SkrollApp"
+      ng-controller="ContentCtrl"
+      layout="column"
+      style="overflow-y: scroll; -webkit-overflow-scrolling: touch;">
 
-    <div layout="column" id = "uploadForm" ng-show="!isDocAvailable && !isProcessing" style="height: 600px; display:flex; align-items: center; justify-content:center">
+<div layout="column" id="uploadForm" ng-show="!isDocAvailable && !isProcessing"
+     style="height: 600px; display:flex; align-items: center; justify-content:center">
 
-        <md-toolbar layout="row">
-            <h1>Welcome to Skroll!</h1>
-        </md-toolbar>
+  <md-toolbar layout="row">
+    <h1>Welcome to Skroll!</h1>
+  </md-toolbar>
 
-        <br/>
-        <br/>
-        <br/>
+  <br/>
+  <br/>
+  <br/>
 
-        <input file-upload id="fileupload" type="file" name="files[]" data-url="restServices/jsonAPI/upload" multiple/>
+  <input file-upload id="fileupload" type="file" name="files[]" data-url="restServices/jsonAPI/upload" multiple/>
 
-    </div>
+</div>
 
-    <div layout="row" layout-sm="column" layout-align="space-around" ng-show="isProcessing">
-        <md-progress-circular md-mode="indeterminate" ng-show="isProcessing"></md-progress-circular>
-    </div>
-
-
-    <md-sidenav layout="column" class="md-sidenav-left hide-gt-smmd-whiteframe-z1"
-                md-component-id="left" md-is-locked-open="false" ng-swipe-left="toggleSidenav('left')">
-
-        <div layout="column" flex>
-            <md-toolbar class="skroll-toolbar">
-                <div layout="row" flex>
-                    <md-button aria-label="Back" md-no-ink>
-                        <md-icon md-svg-icon="img/icons/ic_arrow_back_24px.svg" ng-click="toggleSidenav('left')">
-                        </md-icon>
-                    </md-button>
-                    <md-button aria-label="Edit" ng-show="!isEdit" md-no-ink>
-                        <md-icon md-svg-icon="img/icons/ic_mode_edit_24px.svg" ng-click="toggleEdit()">
-                        </md-icon>
-                    </md-button>
-
-                    <md-button aria-label="Done" md-no-ink>
-                        <md-icon ng-click="toggleEdit()" ng-show="isEdit" md-svg-icon="img/icons/ic_check_24px.svg" ng-click="toggleSidenav('left')">
-                        </md-icon>
-                    </md-button>
+<div layout="row" layout-sm="column" layout-align="space-around" ng-show="isProcessing">
+  <md-progress-circular md-mode="indeterminate" ng-show="isProcessing"></md-progress-circular>
+</div>
 
 
-                </div>
-            </md-toolbar>
+<md-sidenav layout="column" class="md-sidenav-left hide-gt-smmd-whiteframe-z1"
+            md-component-id="left" md-is-locked-open="false" ng-swipe-left="toggleSidenav('left')">
 
-            <md-content md-scroll-y flex class="md-padding">
-                <md-list>
-                    <md-item  ng-repeat="definition in definitions">
-                        <md-item-content>
-                            <md-button scroll-to-paragraph="{{definition.paragraphId}}">{{definition.definition}}</md-button>
-                                <md-icon ng-show="isEdit" md-svg-icon="img/icons/ic_close_24px.svg" ng-click="toggleSidenav('left')" style="color:red">
-                                </md-icon>
-                        </md-item-content>
-                        <md-divider></md-divider>
-                    </md-item>
+  <div layout="column" flex>
+    <md-toolbar class="skroll-toolbar">
+      <div layout="row" flex>
+        <md-button aria-label="Back" md-no-ink>
+          <md-icon md-svg-icon="images/icons/ic_arrow_back_24px.svg" ng-click="toggleSidenav('left')">
+          </md-icon>
+        </md-button>
+        <md-button aria-label="Edit" ng-show="!isEdit" md-no-ink>
+          <md-icon md-svg-icon="images/icons/ic_mode_edit_24px.svg" ng-click="toggleEdit()">
+          </md-icon>
+        </md-button>
 
-
-                </md-list>
-            </md-content>
-        </div>
-    </md-sidenav>
-
-    <div layout="column" ng-show="isDocAvailable" flex ng-swipe-right="toggleSidenav('left')">
-        <md-toolbar class="skroll-toolbar">
-            <div layout="row" flex>
-                <md-button ng-click="toggleSidenav('left')" aria-label="menu">
-                        <md-icon md-svg-icon="img/icons/ic_menu_24px.svg"></md-icon>
-                </md-button>
-                <h1>{{fileName}}</h1>
-                <md-button ng-click="toggleSidenav('right')" aria-label="annotation">
-                    <md-icon md-svg-icon="img/icons/ic_text_format_24px.svg"></md-icon>
-                </md-button>
-                <md-button ng-click="showSimilar()" aria-label="annotation">
-                    <md-icon md-svg-icon="img/icons/ic_visibility_24px.svg"></md-icon>
-                </md-button>
-
-            </div>
-        </md-toolbar>
+        <md-button aria-label="Done" md-no-ink>
+          <md-icon ng-click="toggleEdit()" ng-show="isEdit" md-svg-icon="images/icons/ic_check_24px.svg"
+                   ng-click="toggleSidenav('left')">
+          </md-icon>
+        </md-button>
 
 
+      </div>
+    </md-toolbar>
 
-        <md-content md-scroll-y flex class="md-padding" id="content" ng-click="contentClicked($event)">
-        </md-content>
+    <md-content md-scroll-y flex class="md-padding">
+      <md-list>
+        <md-item ng-repeat="definition in definitions">
+          <md-item-content>
+            <md-button scroll-to-paragraph="{{definition.paragraphId}}">{{definition.definition}}</md-button>
+            <md-icon ng-show="isEdit" md-svg-icon="images/icons/ic_close_24px.svg" ng-click="toggleSidenav('left')"
+                     style="color:red">
+            </md-icon>
+          </md-item-content>
+          <md-divider></md-divider>
+        </md-item>
+
+
+      </md-list>
+    </md-content>
+  </div>
+</md-sidenav>
+
+<div layout="column" ng-show="isDocAvailable" flex ng-swipe-right="toggleSidenav('left')">
+  <md-toolbar class="skroll-toolbar">
+    <div layout="row" flex>
+      <md-button ng-click="toggleSidenav('left')" aria-label="menu">
+        <md-icon md-svg-icon="images/icons/ic_menu_24px.svg"></md-icon>
+      </md-button>
+      <h1>{{fileName}}</h1>
+      <md-button ng-click="toggleSidenav('right')" aria-label="annotation">
+        <md-icon md-svg-icon="images/icons/ic_text_format_24px.svg"></md-icon>
+      </md-button>
+      <md-button ng-click="showSimilar()" aria-label="annotation">
+        <md-icon md-svg-icon="images/icons/ic_visibility_24px.svg"></md-icon>
+      </md-button>
 
     </div>
+  </md-toolbar>
 
-    <md-sidenav layout="column" class="md-sidenav-right "
-                md-component-id="right" md-is-locked-open="false" ng-swipe-left="toggleSidenav('left')">
 
-        <md-content>
-            <pre id="rightPane"></pre>
-        </md-content>
+  <md-content md-scroll-y flex class="md-padding" id="content" ng-click="paraClicked($event)">
+  </md-content>
 
-    </md-sidenav>
+</div>
 
+<md-sidenav layout="column" class="md-sidenav-right "
+            md-component-id="right" md-is-locked-open="false" ng-swipe-left="toggleSidenav('left')">
+
+  <md-content>
+    <pre id="rightPane"></pre>
+  </md-content>
+
+</md-sidenav>
+
+<!-- build:js(.) scripts/vendor.js -->
+<!-- bower:js -->
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
+<script src="bower_components/angular/angular.min.js"></script>
+<script src="bower_components/angular-aria/angular-aria.min.js"></script>
+<script src="bower_components/angular-animate/angular-animate.min.js"></script>
+<script src="bower_components/angular-touch/angular-touch.min.js"></script>
+<script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
+<script src="bower_components/angular-material/angular-material.min.js"></script>
+<!-- endbower -->
+<!-- endbuild -->
+
+<!-- build:js({.tmp,app}) scripts/scripts.js -->
+<script src="scripts/app.js"></script>
+<script src="scripts/jquery.fileupload.js"></script>
+<script src="scripts/controllers/content.js"></script>
+<script src="scripts/directives/fileupload.js"></script>
+<script src="scripts/directives/scrolltoparagraph.js"></script>
+<script src="scripts/services/documentmodel.js"></script>
+<script src="scripts/services/documentservice.js"></script>
+<!-- endbuild -->
 
 </body>
+</html>
 

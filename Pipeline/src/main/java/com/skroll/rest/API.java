@@ -1,21 +1,22 @@
 package com.skroll.rest;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.skroll.classifier.DefinitionClassifier;
-import com.skroll.document.CoreMap;
-import com.skroll.document.Document;
-import com.skroll.document.DocumentHelper;
-import com.skroll.document.annotation.CoreAnnotation;
+import com.skroll.document.*;
 import com.skroll.document.annotation.CoreAnnotations;
-import com.skroll.document.Paragraph;
 import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.ParserException;
 import com.skroll.pipeline.util.Constants;
+import com.skroll.pipeline.util.Utils;
+import com.skroll.util.Configuration;
 import org.glassfish.jersey.media.multipart.BodyPart;
 import org.glassfish.jersey.media.multipart.BodyPartEntity;
 import org.glassfish.jersey.media.multipart.MultiPart;
@@ -26,6 +27,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.util.*;
 
 @Path("/jsonAPI")
@@ -34,8 +36,10 @@ public class API {
     public static final Logger logger = LoggerFactory
             .getLogger(API.class);
 
-    public static Map<String,Document> documentMap = new HashMap<String,Document>();
-
+    private static Map<String,Document> documentMap = new HashMap<String,Document>();
+    private DefinitionClassifier definitionClassifier = new DefinitionClassifier();
+    private Configuration configuration = new Configuration();
+    String preEvaluatedFolder = configuration.get("preEvaluatedFolder","/tmp/");
 
     @POST
     @Path("/upload")
@@ -61,10 +65,8 @@ public class API {
 
                 //parse the document
                 Document document = Parser.parseDocumentFromHtml(content);
-                //create a classifier
-                DefinitionClassifier classifier = new DefinitionClassifier();
                 //test the document
-                document = (Document) classifier.classify(document);
+                document = (Document) definitionClassifier.classify(document);
                 //logger.debug("document:" + document.getTarget());
                 //link the document
                 documentMap.put(documentId, document);
@@ -146,6 +148,156 @@ public class API {
         return r;
     }
 
+    @POST
+    @Path("/addDefinition")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addDefinition(String definedTermParagraphList, @Context HttpHeaders hh) {
+
+        logger.debug("updateDefinition- DefinedTermParagraphList:{}", definedTermParagraphList);
+        if (definedTermParagraphList.isEmpty()) {
+            return Response.status(Response.Status.NO_CONTENT).entity("NO input data in post request" ).type(MediaType.APPLICATION_JSON).build();
+        }
+        MultivaluedMap<String, String> headerParams = hh.getRequestHeaders();
+            Map<String, Cookie> pathParams = hh.getCookies();
+            logger.debug("getDocumentId: Cookie: {}", pathParams);
+            if ( pathParams.get("documentId")==null) {
+                logger.error("documentId is missing from Cookie");
+                return Response.status(Response.Status.EXPECTATION_FAILED).entity("documentId is missing from Cookie").type(MediaType.APPLICATION_JSON).build();
+
+            }
+        String documentId = pathParams.get("documentId").getValue();
+        Document doc = documentMap.get(documentId);
+        if (doc==null){
+            return Response.status(Response.Status.NO_CONTENT).entity("document cannot be found for document id: "+ documentId).type(MediaType.APPLICATION_JSON).build();
+        }
+        List<Paragraph> definitionJson =null;
+    try {
+        Gson gson = new GsonBuilder().create();
+        Type type = new TypeToken<List<Paragraph>>() {
+        }.getType();
+        definitionJson = gson.fromJson(definedTermParagraphList, type);
+
+        logger.info("updateDefinition- definitionJson:{}", definitionJson);
+
+    } catch(Exception ex) {
+           logger.error("Failed to parse the json document: {}", ex);
+        return Response.status(Response.Status.BAD_REQUEST).entity("Failed to parse the json document" ).type(MediaType.APPLICATION_JSON).build();
+        }
+        for (Paragraph modifiedParagraph: definitionJson) {
+            for (CoreMap paragraph : doc.getParagraphs()) {
+                 if(paragraph.getId().equals(modifiedParagraph.getParagraphId())) {
+
+                     // log the existing definitions
+                     if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
+                         List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(
+                                 paragraph);
+                         for (List<String> definition : definitionList) {
+                             logger.debug(paragraph.getId() + "\t" + "existing definition:" + "\t" + definition);
+                         }
+                     }
+
+                     List<String> addedDefinition = Lists.newArrayList( Splitter.on(" ").split(modifiedParagraph.getDefinedTerm()));
+                     List<Token> tokens = DocumentHelper.getTokens(addedDefinition);
+                     DocumentHelper.addDefinedTermTokensInParagraph(tokens, paragraph);
+
+
+                     // log the updated definitions
+                     List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(
+                             paragraph);
+                     for (List<String> definition : definitionList) {
+                         logger.debug(paragraph.getId() + "\t" + "updated definition:" + "\t" + definition);
+
+                     }
+                 }
+            }
+        }
+
+        Utils.writeToFile(preEvaluatedFolder + documentId, doc.getTarget());
+        logger.debug("updated document is stored in {}", preEvaluatedFolder + documentId);
+
+        return Response.ok().status(Response.Status.OK).entity("").type(MediaType.APPLICATION_JSON).build();
+    }
+
+    @POST
+    @Path("/deleteDefinition")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteDefinition(String definedTermParagraphList, @Context HttpHeaders hh) {
+
+        logger.debug("updateDefinition- DefinedTermParagraphList:{}", definedTermParagraphList);
+        if (definedTermParagraphList.isEmpty()) {
+            return Response.status(Response.Status.NO_CONTENT).entity("NO input data in post request" ).type(MediaType.APPLICATION_JSON).build();
+        }
+        MultivaluedMap<String, String> headerParams = hh.getRequestHeaders();
+        Map<String, Cookie> pathParams = hh.getCookies();
+        logger.debug("getDocumentId: Cookie: {}", pathParams);
+        if ( pathParams.get("documentId")==null) {
+            logger.error("documentId is missing from Cookie");
+            return Response.status(Response.Status.EXPECTATION_FAILED).entity("documentId is missing from Cookie").type(MediaType.APPLICATION_JSON).build();
+
+        }
+        String documentId = pathParams.get("documentId").getValue();
+        Document doc = documentMap.get(documentId);
+        if (doc==null){
+            return Response.status(Response.Status.NO_CONTENT).entity("document cannot be found for document id: "+ documentId).type(MediaType.APPLICATION_JSON).build();
+        }
+        List<Paragraph> definitionJson =null;
+        try {
+            Gson gson = new GsonBuilder().create();
+            Type type = new TypeToken<List<Paragraph>>() {
+            }.getType();
+            definitionJson = gson.fromJson(definedTermParagraphList, type);
+
+            logger.info("updateDefinition- definitionJson:{}", definitionJson);
+
+        } catch(Exception ex) {
+            logger.error("Failed to parse the json document: {}", ex);
+            return Response.status(Response.Status.BAD_REQUEST).entity("Failed to parse the json document" ).type(MediaType.APPLICATION_JSON).build();
+        }
+        for (Paragraph modifiedParagraph: definitionJson) {
+            for (CoreMap paragraph : doc.getParagraphs()) {
+                if(paragraph.getId().equals(modifiedParagraph.getParagraphId())) {
+
+                    // log the existing definitions
+                    if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
+                        List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(
+                                paragraph);
+                        if (definitionList.size()==1){
+                            paragraph.set(CoreAnnotations.DefinedTermListAnnotation.class, null);
+                            paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, false);
+                            logger.debug("removed DefinedTermListAnnotation for paragraph :{}", modifiedParagraph);
+                        } else {
+                            List<String> defTermParagraphList = new ArrayList<>();
+                            List<List<String>> defList = DocumentHelper.getDefinedTermLists(
+                                    paragraph);
+                            for (List<String> definition: definitionList) {
+                                logger.debug(paragraph.getId() + "\t" + "existing definition" + "\t" + definition);
+                                if (definition.isEmpty())
+                                    continue;
+                                if (Joiner.on(" ").join(definition).equals(modifiedParagraph.getDefinedTerm())){
+                                    defList.remove(definition);
+                                }
+                            }
+                        }
+                    }
+
+                    // log the updated definitions
+                    List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(
+                            paragraph);
+                    for (List<String> definition : definitionList) {
+                        logger.debug(paragraph.getId() + "\t" + "updated definition:" + "\t" + definition);
+
+                    }
+                }
+            }
+        }
+
+        Utils.writeToFile(preEvaluatedFolder + documentId, doc.getTarget());
+        logger.debug("updated document is stored in {}",preEvaluatedFolder + documentId);
+
+        return Response.ok().status(Response.Status.OK).entity("").type(MediaType.APPLICATION_JSON).build();
+    }
 
     @GET
     @Path("/getParagraphJson")
