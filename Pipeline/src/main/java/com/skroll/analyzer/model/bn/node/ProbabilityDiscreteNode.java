@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model.bn.node;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by wei2learn on 3/1/2015.
@@ -18,7 +19,7 @@ public class ProbabilityDiscreteNode extends DiscreteNode {
      * parents, children will be generated outside
      * @param trainingNode
      */
-    ProbabilityDiscreteNode (TrainingDiscreteNode trainingNode){
+    public ProbabilityDiscreteNode (TrainingDiscreteNode trainingNode){
         this.familyVariables = trainingNode.familyVariables;
 
         probabilityFunction =parameters= trainingNode.getProbabilities();
@@ -29,7 +30,7 @@ public class ProbabilityDiscreteNode extends DiscreteNode {
      * copy constructor
      * @param probabilityNode
      */
-    ProbabilityDiscreteNode (ProbabilityDiscreteNode probabilityNode){
+    public ProbabilityDiscreteNode (ProbabilityDiscreteNode probabilityNode){
         this.familyVariables = probabilityNode.familyVariables;
         probabilityFunction =parameters= probabilityNode.getProbabilities().clone();
     }
@@ -56,6 +57,46 @@ public class ProbabilityDiscreteNode extends DiscreteNode {
 
         return newProbs;
     }
+
+    /**
+     * return the probabilities after all variables except the variable in the specified indexList are summed out
+     * observations are taken into consideration here.
+     * @param index the variable index to be left out
+     * @return
+     */
+    public double[] sumOutNodesWithObservationExcept(int index){
+        double[] probs = new double[ familyVariables[index].getFeatureSize() ];
+        int sizeUnder = sizeUpTo(index);
+
+        for (int i=0; i<parameters.length;i++){
+            // skip if observed some other value
+            if (observedValue >0 && observedValue != i%familyVariables[0].getFeatureSize()) continue;
+            probs[ (i/sizeUnder) % probs.length] += parameters[i];
+        }
+
+        return probs;
+    }
+    public double[] sumOutNodesWithObservationExcept(ProbabilityDiscreteNode parentNode){
+        return sumOutNodesWithObservationExcept( getParentNodeIndex(parentNode));
+    }
+
+
+//    public double[] messageTo(int index){
+//        double[] message = ((ProbabilityDiscreteNode) (parents[index])).getProbabilities();
+//        int newSize = probabilityFunction.length / parentProbs.length;
+//        double[] newProbs = new double[newSize];
+//        int sizeUnder = sizeUpTo(index);
+//        int sizeAbove = newSize/sizeUnder;
+//        for (int i=0; i<sizeUnder; i++){
+//            for (int j=0; j<newSize; j+=sizeUnder){
+//                for (int k=0; k<parentProbs.length; k++){
+//                    newProbs[i+j] += probabilityFunction[i + k*sizeUnder + j*parentProbs.length];
+//                }
+//            }
+//        }
+//
+//        return newProbs;
+//    }
 
     public double getProbability(int index){
         return probabilityFunction[index];

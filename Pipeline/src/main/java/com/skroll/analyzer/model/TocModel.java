@@ -25,7 +25,7 @@ public class TOCModel {
     HiddenMarkovModel hmm;
     NaiveBayes nb;
 
-    // the link between paragraph category to the state of the first word in the paragraph
+    //  the link between paragraph category to the state of the first word in the paragraph,
     // the links from paragraph category to the remaining states should not be significant,
     //      and makes the model more complicated and expensive.
 
