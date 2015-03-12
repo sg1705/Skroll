@@ -24,16 +24,6 @@ public class TrainingDocumentAnnotatingModel {
     ProbabilityNaiveBayesWithFeatureConditions pnbfModel;
     HiddenMarkovModel hmm;
 
-    //
-//    /** for each document to be analyzed, two arrays of NBs are used
-//     *  paragraphClassNBList is to infer paragraph classes
-//     *  and documentFeatureNBList is used to infer the hidden document level features
-//     *  We do approximate inference that iteratively refine the probabilities of
-//     *  paragraph classes and document level features.
-//     */
-//    List<NaiveBayes> paragraphClassNBList = new ArrayList<>();
-//    List<NaiveBayes> documentFeatureNBList = new ArrayList<>();
-//
     static final List<RandomVariableType> DOCUMENT_FEATURES = Arrays.asList(
             RandomVariableType.DOCUMENT_DEFINITIONS_IN_QUOTES
 //            RandomVariableType.PARAGRAPH_STARTS_WITH_SPECIAL_FORMAT,
@@ -80,87 +70,13 @@ static final List<RandomVariableType> PARAGRAPH_FEATURES = Arrays.asList(
         hmm = new HiddenMarkovModel(HMM_MODEL_LENGTH,
                 RandomVariableType.WORD_IS_DEFINED_TERM.getFeatureSize(), wordFeatureSizes);
     }
-//
-//    /**
-//     * use a iterative process to alternatively infer paragraph classes and document features.
-//     * @param doc
-//     */
-//    void analyzeDocument(Document doc){
-//        NaiveBayesNew paragraphClassificationNB;
-//        NaiveBayesNew documentFeatureNB;
-//
-//
-//    }
-//
-//    public void annotateDefinedTermsInParagraph(CoreMap paragraph){
-//        if (paragraph.getTokens().size()==0) return;
-//        CoreMap trainingParagraph = DefinedTermExtractionHelper.makeTrainingParagraph(paragraph);
-//        DataTuple nbDataTuple = DefinedTermExtractionHelper.makeNBDataTuple(trainingParagraph, PARAGRAPH_FEATURES);
-//
-//        //hack. should be removed.
-////        if (nb.mostLikelyCategory(nbDataTuple)==1) {
-////            paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
-////            return;
-////        }
-////        else if (true) return;
-//
-//        // using NB category as the prior prob to the input of HMM.
-//        // This means the HMM output state sequence gives the highest p(HMM observations | given NB observations)
-//        double[] logPrioProbs =
-//                nb.inferCategoryProbabilitiesMoreStable(nbDataTuple.getTokens(),nbDataTuple.getFeatures());
-//        //nb.inferLogJointFeaturesProbabilityGivenCategories(nbDataTuple.getTokens(), nbDataTuple.getFeatures());
-//
-//        // can check for NB classification to see if we want to keep checking the words.
-//        // check here to make it more efficient, or keep going to be more accurate.
-//
-//        List<Token> tokens = trainingParagraph.getTokens();
-//        List<String> words = DocumentHelper.getTokenString(tokens);
-//
-//        String[] wordsArray = words.toArray(new String[words.size()]);
-//
-//        int length = Math.min(hmm.size(), tokens.size());
-//        int[][] features = new int[length][WORD_FEATURES.size()];
-//        for (int i=0; i<length ;i++){
-//            for (int f=0; f<WORD_FEATURES.size();f++){
-//                features[i][f] = DefinedTermExtractionHelper.getWordFeature(paragraph, tokens.get(i), WORD_FEATURES.get(f));
-//            }
-//        }
-//        int[] states = hmm.mostLikelyStateSequence(wordsArray, features, logPrioProbs);
-//
-//        //assume a definition paragraph always has the first word being a defined term.
-//        // can do this check after naive bayes to make it faster.
-//        if (states[0]==0) return;
-//
-//        List<Token> definedTerms = new ArrayList<>();
-//
-//        for (int i=0; i<states.length;i++){
-//            if (states[i]==1) definedTerms.add(tokens.get(i));
-//            else {
-//                if (definedTerms.size()>0){
-//                    DocumentHelper.addDefinedTermTokensInParagraph(definedTerms, paragraph);
-//                    definedTerms = new ArrayList<>();
-//                }
-//
-//            }
-//        }
-//        if (definedTerms.size()>0){
-//            DocumentHelper.addDefinedTermTokensInParagraph(definedTerms, paragraph);
-//        }
-//    }
-//
+
     void updateWithParagraph(CoreMap paragraph, int[] docFeatures) {
         CoreMap trainingParagraph = DefinedTermExtractionHelper.makeTrainingParagraph(paragraph);
         updateTNBFWithParagraph(trainingParagraph, docFeatures);
         updateHMMWithParagraph(trainingParagraph);
     }
-//
-//    /**
-//     * This is required after training the model to convert the frequency counts to probabilities used for inferences.
-//     */
-//    public void compile(){
-//        hmm.updateProbabilities();
-//    }
-//
+
     void updateTNBFWithParagraph(CoreMap paragraph, int[] docFeatures){
         SimpleDataTuple dataTuple = DocumentAnnotatingHelper.makeDataTuple(paragraph, PARAGRAPH_FEATURES, docFeatures);
         tnbfModel.addSample(dataTuple);

@@ -25,13 +25,12 @@ public abstract class NaiveBayes {
 
     // this NaiveBayes is not really instantiated, so may not need this constructor.
     // assuming there is a documentFeature for each feature, so the sizes of the two lists passed in should match.
-    public NaiveBayes(RandomVariableType categoryVar, List<RandomVariableType> featureVarList,
-                      List<RandomVariableType> documentFeatureVarList) {
+    public NaiveBayes(RandomVariableType categoryVar, List<RandomVariableType> featureVarList) {
         categoryNode = new DiscreteNode(Arrays.asList(categoryVar));
         featureNodeArray = new DiscreteNode[ featureVarList.size()];
         for (int i=0; i<featureVarList.size(); i++) {
             featureNodeArray[i] = new DiscreteNode(
-                    Arrays.asList(featureVarList.get(i), categoryVar, documentFeatureVarList.get(i)));
+                    Arrays.asList(featureVarList.get(i), categoryVar));
         }
 
         wordNode = new WordNode(categoryNode);
