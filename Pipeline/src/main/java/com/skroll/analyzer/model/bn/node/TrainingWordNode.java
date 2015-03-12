@@ -14,7 +14,7 @@ public class TrainingWordNode extends WordNode {
 
     Map<String, double[]> wordCount;
 
-    TrainingWordNode(TrainingDiscreteNode parent){
+    public TrainingWordNode(TrainingDiscreteNode parent){
         super(parent);
         wordCount = parameters;
     }

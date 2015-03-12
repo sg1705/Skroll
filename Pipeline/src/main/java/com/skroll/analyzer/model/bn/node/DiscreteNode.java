@@ -43,6 +43,11 @@ public class DiscreteNode{
     public DiscreteNode(){
     }
 
+    int getParentNodeIndex(DiscreteNode parentNode){
+        for (int i=0; i<parents.length; i++)
+            if (parents[i] == parentNode) return i;
+        return -1;
+    }
 
     public DiscreteNode(List<RandomVariableType> randomVariables){
         this.familyVariables =  randomVariables.toArray(new RandomVariableType[randomVariables.size()]);
