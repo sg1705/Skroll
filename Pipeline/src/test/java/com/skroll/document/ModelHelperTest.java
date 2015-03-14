@@ -74,15 +74,17 @@ public class ModelHelperTest {
 
     }
 
-
+    @Test
     public void testModelHelperWithAnnotations() throws Exception {
         String fileName = "src/test/resources/document/experiment-jsoup-node-extraction.html";
         Document doc = Parser.parseDocumentFromHtmlFile(fileName);
 
         List<CoreMap> paragraphs = doc.getParagraphs();
-
+        doc.setTarget("");
+        doc.setSource("");
         // now get a Json string of the document
         String jsonString = ModelHelper.getJson(doc);
+        Utils.writeToFile("/tmp/myjson.json", jsonString);
         Document doc2 = ModelHelper.getModel(jsonString);
         List<CoreMap> newParas = doc2.getParagraphs();
         System.out.println(newParas.size());

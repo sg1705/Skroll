@@ -85,6 +85,10 @@ public class CoreAnnotations {
             return EraserUtils.<Class<List<Token>>> uncheckedCast(List.class);
         }
     }
+
+    /**
+     * This is a temporary annotation used during training
+     */
     public static class WordSetForTrainingAnnotation implements CoreAnnotation<Set<String>> {
         public Class<Set<String>> getType() {
             return EraserUtils.<Class<Set<String>>> uncheckedCast(Set.class);
