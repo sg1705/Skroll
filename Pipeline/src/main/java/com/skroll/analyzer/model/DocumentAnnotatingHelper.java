@@ -1,5 +1,8 @@
 package com.skroll.analyzer.model;
 
+import com.skroll.analyzer.model.DefinedTermExtractionModel;
+import com.skroll.analyzer.model.RandomVariableType;
+import com.skroll.analyzer.model.bn.SimpleDataTuple;
 import com.skroll.analyzer.model.nb.DataTuple;
 import com.skroll.document.CoreMap;
 import com.skroll.document.DocumentHelper;
@@ -15,7 +18,7 @@ import java.util.Set;
 /**
  * Created by wei2learn on 1/24/2015.
  */
-public class DefinedTermExtractionHelper {
+public class DocumentAnnotatingHelper {
 
 
     //PARAGRAPH_NUMBER_TOKENS can be from 0 to PFS_TOKENS_NUMBER_FEATURE_MAX,
@@ -61,6 +64,21 @@ public class DefinedTermExtractionHelper {
                 paragraph.get(CoreAnnotations.DefinedTermListAnnotation.class));
 
         return trainingParagraph;
+    }
+    public static SimpleDataTuple makeDataTuple(CoreMap paragraph, List<RandomVariableType> features, int[] documentFeatures){
+        String []tokens = getNBWords(paragraph);
+
+        int [] featureValues = new int[features.size() + documentFeatures.length];
+        int index=0;
+        featureValues[index++] = (DocumentHelper.isDefinition(paragraph)) ? 1:0;
+
+        for (int i=0; i<featureValues.length;i++){
+            featureValues[index++] = getParagraphFeature(paragraph, features.get(i));
+        }
+        for (int i=0; i<documentFeatures.length; i++)
+            featureValues[index++] = documentFeatures[i];
+
+        return new SimpleDataTuple(tokens,featureValues);
     }
 
     static DataTuple makeNBDataTuple(CoreMap paragraph, List<RandomVariableType> features){
