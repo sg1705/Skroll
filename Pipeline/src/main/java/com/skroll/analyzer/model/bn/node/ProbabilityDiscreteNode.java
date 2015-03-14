@@ -58,6 +58,7 @@ public class ProbabilityDiscreteNode extends DiscreteNode {
         return newProbs;
     }
 
+
     /**
      * return the probabilities after all variables except the variable in the specified indexList are summed out
      * observations are taken into consideration here.
@@ -80,6 +81,68 @@ public class ProbabilityDiscreteNode extends DiscreteNode {
         return sumOutNodesWithObservationExcept( getParentNodeIndex(parentNode));
     }
 
+    /**
+     * get updated belief after receiving message from a single parent
+     *
+     * @param index
+     * @param message
+     * @return
+     */
+    public double[] getBelief(int index, double[] message){
+        double[] belief = new double[parameters.length];
+        int sizeUnderIndexFrom = sizeUpTo(index);
+        for (int i=0,k=0,messageIndex=0; i<parameters.length; i++,k++){
+            if (k == sizeUnderIndexFrom){
+                k=0;
+                messageIndex ++;
+                if (messageIndex == message.length) messageIndex = 0;
+            }
+            belief[i] = parameters[i] * message[messageIndex];
+        }
+        return belief;
+    }
+
+    public double[] sumOutOtherNodesWithObservationAndBelief(double[] belief, int indexTo ){
+        double[] probs = new double[ familyVariables[indexTo].getFeatureSize() ];
+        int sizeUnder = sizeUpTo(indexTo);
+
+        for (int i=0,k=0,probsIndex=0; i<belief.length;i++,k++){
+            // skip if observed some other value
+            if (observedValue >0 && observedValue != i%familyVariables[0].getFeatureSize()) continue;
+            //probs[ (i/sizeUnder) % probs.length] += parameters[i];
+            //the following calculation might be slightly more efficient than the line above.
+            if (k == sizeUnder){
+                k=0;
+                probsIndex ++;
+                if (probsIndex == probs.length) probsIndex = 0;
+            }
+            probs[probsIndex] += belief[i];
+        }
+
+        return probs;
+    }
+
+
+    // specialized message passing from a single parent to another.
+    public double[] sumOutOtherNodesWithObservationAndMessage(int indexFrom, double[] message, int indexTo ){
+        double[] belief = getBelief(indexFrom, message);
+        double[] probs = sumOutOtherNodesWithObservationAndBelief(belief, indexTo);
+        return probs;
+    }
+
+    public double[] sumOutOtherNodesWithObservationAndMessage(ProbabilityDiscreteNode nodeFrom, double[] message,
+                                                              ProbabilityDiscreteNode nodeTo ){
+        return sumOutOtherNodesWithObservationAndMessage( getParentNodeIndex(nodeFrom), message, getParentNodeIndex(nodeTo));
+    }
+
+    public double[] sumOutOtherNodesWithObservation(int indexTo ){
+        double[] probs = sumOutOtherNodesWithObservationAndBelief(parameters, indexTo);
+        return probs;
+    }
+
+    public double[] sumOutOtherNodesWithObservation (ProbabilityDiscreteNode parentNode){
+        return sumOutOtherNodesWithObservation( getParentNodeIndex(parentNode));
+    }
 
 //    public double[] messageTo(int index){
 //        double[] message = ((ProbabilityDiscreteNode) (parents[index])).getProbabilities();
@@ -105,20 +168,6 @@ public class ProbabilityDiscreteNode extends DiscreteNode {
     public double[] getProbabilities(){
         return probabilityFunction;
     }
-
-    /**
-     * convert counts to probabilities
-     */
-//    public void updateProbabilities(){
-//        int parentsMultiIndex = 0;
-//        int numValues = familyVariables[0].getFeatureSize();
-//        for (int i=0; i<counts.length; i+=numValues){
-//            double sum=0;
-//            for (int j=0; j<numValues; j++) sum += counts[j+i];
-//            for (int j=0; j<numValues; j++) probabilityFunction[i+j] = counts[i+j]/sum;
-//        }
-//    }
-
 
     @Override
     public String toString() {

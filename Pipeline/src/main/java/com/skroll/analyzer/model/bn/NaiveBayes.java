@@ -52,7 +52,7 @@ public abstract class NaiveBayes {
         }
     }
 
-    void setObservation(SimpleDataTuple tuple){
+    public void setObservation(SimpleDataTuple tuple){
         int[] values = tuple.getDiscreteValues();
         for (int i=0; i<values.length; i++){
             discreteNodeArray[i].setObservation(values[i]);
@@ -60,7 +60,7 @@ public abstract class NaiveBayes {
         wordNode.setObservation( tuple.getWords());
     }
 
-    void clearObservation(){
+    public void clearObservation(){
         for (DiscreteNode node:discreteNodeArray){
             node.clearObservation();
         }

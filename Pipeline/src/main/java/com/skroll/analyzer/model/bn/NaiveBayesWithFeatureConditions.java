@@ -1,5 +1,6 @@
 package com.skroll.analyzer.model.bn;
 
+import com.google.common.collect.ObjectArrays;
 import com.skroll.analyzer.model.bn.node.DiscreteNode;
 import com.skroll.analyzer.model.RandomVariableType;
 import com.skroll.analyzer.model.bn.node.TrainingDiscreteNode;
@@ -14,28 +15,30 @@ import java.util.*;
 public class NaiveBayesWithFeatureConditions extends NaiveBayes{
 
     DiscreteNode[]  documentFeatureNodeArray;
+    DiscreteNode[] featureExistAtDocLevelArray;
 
     public  NaiveBayesWithFeatureConditions(){
 
     }
 
     void generateParentsAndChildren(){
-        categoryNode.setChildren(featureNodeArray);
-        int i=0;
-        for (; i<documentFeatureNodeArray.length; i++){
-            featureNodeArray[i].setParents(Arrays.asList(categoryNode, documentFeatureNodeArray[i]).
+        categoryNode.setChildren( ObjectArrays.concat
+                (featureExistAtDocLevelArray, documentFeatureNodeArray, DiscreteNode.class));
+        for (int i=0; i<documentFeatureNodeArray.length; i++){
+            featureExistAtDocLevelArray[i].setParents(Arrays.asList(categoryNode, documentFeatureNodeArray[i]).
                     toArray(new DiscreteNode[documentFeatureNodeArray.length]));
-            documentFeatureNodeArray[i].setChildren( Arrays.asList( documentFeatureNodeArray[i]).
+            documentFeatureNodeArray[i].setChildren( Arrays.asList( featureExistAtDocLevelArray[i]).
                     toArray( new DiscreteNode[1]));
         }
-        for (; i<featureNodeArray.length; i++)
-            featureNodeArray[i].setParents(Arrays.asList(categoryNode).
-                    toArray(new DiscreteNode[documentFeatureNodeArray.length]));
+        for (int i=0; i<featureNodeArray.length; i++)
+            featureNodeArray[i].setParents(Arrays.asList(categoryNode).toArray(new DiscreteNode[1]));
     }
 
     public DiscreteNode[] getDocumentFeatureNodeArray() {
         return documentFeatureNodeArray;
     }
 
-
+    public DiscreteNode[] getFeatureExistAtDocLevelArray() {
+        return featureExistAtDocLevelArray;
+    }
 }
