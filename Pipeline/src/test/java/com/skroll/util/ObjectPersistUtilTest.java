@@ -24,7 +24,7 @@ public class ObjectPersistUtilTest {
         Type type = new TypeToken<PersistModelTestClass>() {}.getType();
 
 
-        ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil();
+        ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil("/tmp");
 
         try {
             objectPersistUtil.persistObject(type, persistModelTestClass, "com.skroll.util.PersistModelTestClass.persistModelTestClass");

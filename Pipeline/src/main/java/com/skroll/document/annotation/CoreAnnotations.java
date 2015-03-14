@@ -117,7 +117,31 @@ public class CoreAnnotations {
         }
     }
 
+    /**
+     * annotation to indicate that a paragraph has a user observation
+     */
+    public static class IsUserObservationAnnotation implements CoreAnnotation<Boolean> {
+        public Class<Boolean> getType() {
+            return Boolean.class;
+        }
+    }
 
+    /**
+     * annotation to indicate that a paragraph is trained by trainer
+     */
+    public static class IsTrainerFeedbackAnnotation implements CoreAnnotation<Boolean> {
+        public Class<Boolean> getType() {
+            return Boolean.class;
+        }
+    }
+    /**
+     * annotation for keeping the user training weight for a paragraph
+     */
+    public static class TrainingWeightAnnotation implements CoreAnnotation<List<Float>> {
+        public Class<List<Float>> getType() {
+            return EraserUtils.<Class<List<Float>>> uncheckedCast(List.class);
+        }
+    }
 
     /**
      * CoreMap key identifying the definitions in paragraph. Each CoreMap in the list is
@@ -236,5 +260,15 @@ public class CoreAnnotations {
         }
     }
 
-
+    // TOC Annotation
+    public static class TOCListAnnotation implements CoreAnnotation<List<Token>> {
+        public Class<List<Token>> getType() {
+            return EraserUtils.<Class<List<Token>>> uncheckedCast(List.class);
+        }
+    }
+    public static class IsTOCAnnotation implements CoreAnnotation<Boolean> {
+        public Class<Boolean> getType() {
+            return Boolean.class;
+        }
+    }
 }
