@@ -82,8 +82,6 @@ public class ObjectPersistUtil {
         Gson gson = new GsonBuilder().create();
         Object obj = gson.fromJson(reader, type);
 
-        logger.info("Object:" + obj);
-
         try {
             reader.close();
              f_in.close();

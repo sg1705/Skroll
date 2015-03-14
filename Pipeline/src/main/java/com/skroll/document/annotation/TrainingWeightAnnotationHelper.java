@@ -20,8 +20,6 @@ public class TrainingWeightAnnotationHelper {
             paragraph.set(CoreAnnotations.TrainingWeightAnnotation.class, userWeightList);
         }
         userWeightList.set(index, userWeightList.get(index) + userWeight);
-        if (userWeightList.size() > 0) {
-            paragraph.set(CoreAnnotations.IsTrainingWeightAnnotation.class, true);
-        }
+
     }
 }

@@ -8,7 +8,6 @@ import com.skroll.document.DocumentHelper;
 import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.ParserException;
 import com.skroll.parser.linker.DefinitionLinker;
-import com.skroll.util.Configuration;
 import com.skroll.util.ObjectPersistUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,15 +27,12 @@ public class DefinitionClassifier extends ClassifierImpl{
     private  Type dtemType = null;
     private  String dtemModelName = "com.skroll.analyzer.model.DefinedTermExtractionModel.DefinitionDTEM";
 
-    Configuration configuration = new Configuration();
-    private String modelFolderName = configuration.get("modelFolder","/tmp");
-    protected ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil(modelFolderName);
 
     public DefinitionClassifier() {
         try {
             dtemType = new TypeToken<DefinedTermExtractionModel>() {}.getType();
             definedTermExtractionModel = (DefinedTermExtractionModel) objectPersistUtil.readObject(dtemType,dtemModelName);
-            logger.debug("definedTermExtractionModel:" + definedTermExtractionModel);
+            logger.trace("definedTermExtractionModel:" + definedTermExtractionModel);
 
         } catch (Throwable e) {
             logger.warn("definedTermExtractionModel is not found. creating new one" );
