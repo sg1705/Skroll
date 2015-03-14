@@ -25,7 +25,6 @@
     <orderEntry type="library" exported="" name="Gradle: org.slf4j:slf4j-log4j12:1.7.10" level="project" />
     <orderEntry type="library" exported="" name="Gradle: log4j:log4j:1.2.17" level="project" />
     <orderEntry type="library" exported="" name="Gradle: commons-cli:commons-cli:1.2" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: javax.servlet:javax.servlet-api:3.1.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.jetty:jetty-server:9.2.7.v20150116" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.jetty:jetty-servlet:9.2.7.v20150116" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.jetty:jetty-annotations:9.2.7.v20150116" level="project" />
@@ -74,5 +73,6 @@
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.persistence:org.eclipse.persistence.core:2.5.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: javax.inject:javax.inject:1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.eclipse.persistence:org.eclipse.persistence.asm:2.5.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: javax.servlet:javax.servlet-api:3.1.0" level="project" />
   </component>
 </module>

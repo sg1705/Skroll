@@ -27,11 +27,12 @@ public class DefinitionClassifier extends ClassifierImpl{
     private  Type dtemType = null;
     private  String dtemModelName = "com.skroll.analyzer.model.DefinedTermExtractionModel.DefinitionDTEM";
 
+
     public DefinitionClassifier() {
         try {
             dtemType = new TypeToken<DefinedTermExtractionModel>() {}.getType();
             definedTermExtractionModel = (DefinedTermExtractionModel) objectPersistUtil.readObject(dtemType,dtemModelName);
-            logger.debug("definedTermExtractionModel:" + definedTermExtractionModel);
+            logger.trace("definedTermExtractionModel:" + definedTermExtractionModel);
 
         } catch (Throwable e) {
             logger.warn("definedTermExtractionModel is not found. creating new one" );

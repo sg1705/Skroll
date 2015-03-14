@@ -4,6 +4,7 @@ import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
+import com.skroll.util.Configuration;
 import com.skroll.util.ObjectPersistUtil;
 
 import java.util.ArrayList;
@@ -17,8 +18,9 @@ import java.util.Set;
 public abstract class ClassifierImpl implements Classifier {
     // Initialize the list of category this classifier support.
     protected final ArrayList<Category> categories = new ArrayList<Category>();
-    protected ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil();
-
+    Configuration configuration = new Configuration();
+    private String modelFolderName = configuration.get("modelFolder","/tmp");
+    protected ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil(modelFolderName);
 
     public List<String> extractTokenFromDoc(Document doc) {
         List<CoreMap> paragraphs = doc.getParagraphs();

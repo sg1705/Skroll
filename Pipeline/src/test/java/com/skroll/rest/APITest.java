@@ -1,11 +1,18 @@
 package com.skroll.rest;
 
+import com.google.common.io.Files;
+import com.skroll.document.Document;
+import com.skroll.document.ModelHelper;
+import com.skroll.util.Configuration;
+import com.skroll.util.ObjectPersistUtil;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -15,9 +22,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import java.io.File;
+import java.nio.charset.Charset;
 
 public class APITest {
-
+    public static final Logger logger = LoggerFactory
+            .getLogger(APITest.class);
     WebServer jettyServer = new WebServer(8888);
     @Before
     public void setup () {
@@ -58,8 +67,7 @@ public class APITest {
     }
 
     @Test
-    public void test_SetCookie_UploadFile_GetDefinition() throws Exception {
-        testSetCookie();
+    public void test_UploadFile_GetDefinition() throws Exception {
         String cookie = testFileUpload();
         testGetDefinition(cookie);
     }
@@ -87,11 +95,14 @@ public class APITest {
         //byte[] bytes = new byte[10];
         multiPart.
                 bodyPart(fileDataBodyPart);
-
-        Response response = webTarget.request(MediaType.TEXT_HTML)
-                .post(Entity.entity(multiPart, MediaType.MULTIPART_FORM_DATA));
-
-        System.out.println("Cookies:" + response.getCookies().get("documentId").getValue());
+        Response response =null;
+        try {
+            response = webTarget.request(MediaType.TEXT_HTML)
+                    .post(Entity.entity(multiPart, MediaType.MULTIPART_FORM_DATA));
+        } catch(Throwable ex) {
+            logger.error("SEVERE: An I/O error has occurred while writing a response message entity to the container output stream.");
+        }
+        logger.debug("Cookies:" + response.getCookies().get("documentId").getValue());
 
         //System.out.println(response.readEntity(String.class));
         return response.getCookies().get("documentId").getValue();
@@ -108,13 +119,19 @@ public class APITest {
     }
 
     @Test
-    public void test_UploadFile_AddDefinition() throws Exception {
+    public void test_UploadFile_OverwriteAnnotation() throws Exception, ObjectPersistUtil.ObjectPersistException {
         String documentId = testFileUpload();
-        testAddDefinition(documentId);
+        testOverwriteAnnotation(documentId);
+        Configuration configuration = new Configuration();
+        String preEvaluatedFolder = configuration.get("preEvaluatedFolder","/tmp/");
+        Document doc = ModelHelper.getModel(Files.toString(new File(preEvaluatedFolder + documentId), Charset.defaultCharset()));
+        assert(doc.getTarget().contains("Accredited Investor"));
+        testUpdateBNI(documentId);
+        testUpdateModel(documentId);
     }
 
-    public void testAddDefinition(String documentId) throws Exception {
-        String TARGET_URL = "http://localhost:8888/restServices/jsonAPI/addDefinition";
+    public void testOverwriteAnnotation(String documentId) throws Exception {
+        String TARGET_URL = "http://localhost:8888/restServices/jsonAPI/overwriteAnnotation";
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
 
@@ -123,29 +140,30 @@ public class APITest {
         Response response = webTarget.request(MediaType.APPLICATION_JSON).cookie(new  NewCookie("documentId", documentId))
                 .post(Entity.entity(jsonString, MediaType.APPLICATION_JSON));
 
-        System.out.println("Here is the response: "+response.getEntity().toString());
-        System.out.println("Here is the response status: "+response.getStatus());
+        //logger.debug("Here is the response: "+response.getEntity().toString());
+        logger.debug("Here is the response status: " + response.getStatus());
         assert(response.getStatus()==(200));
+        client.close();
     }
 
-    @Test
-    public void test_UploadFile_DeleteDefinition() throws Exception {
-        String documentId = testFileUpload();
-        testDeleteDefinition(documentId);
-    }
-
-    public void testDeleteDefinition(String documentId) throws Exception {
-        String TARGET_URL = "http://localhost:8888/restServices/jsonAPI/deleteDefinition";
+    public void testUpdateModel(String documentId) throws Exception {
+        String TARGET_URL = "http://localhost:8888/restServices/jsonAPI/updateModel";
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
 
-        String jsonString = "[{\"paragraphId\":\"1854\",\"definedTerm\":\"144A Global Note\"},\n" +
-                "{\"paragraphId\":\"1856\",\"definedTerm\":\"Accredited Investor\"}]\n";
-        Response response = webTarget.request(MediaType.APPLICATION_JSON).cookie(new  NewCookie("documentId", documentId))
-                .post(Entity.entity(jsonString, MediaType.APPLICATION_JSON));
+        String response = webTarget.request(MediaType.APPLICATION_JSON).cookie(new  NewCookie("documentId", documentId)).get(String.class);
+        logger.debug("Here is the response: " + response);
+        assert(response.contains("ok"));
+        client.close();
+    }
 
-        System.out.println("Here is the response: "+response.getEntity().toString());
-        System.out.println("Here is the response status: "+response.getStatus());
-        assert(response.getStatus()==(200));
+    public void testUpdateBNI(String documentId) throws Exception {
+        String TARGET_URL = "http://localhost:8888/restServices/jsonAPI/updateBNI";
+        Client client = ClientBuilder.newClient();
+        WebTarget webTarget = client.target(TARGET_URL);
+
+        String response = webTarget.request(MediaType.APPLICATION_JSON).cookie(new  NewCookie("documentId", documentId)).get(String.class);
+        assert(response.contains("ok"));
+        client.close();
     }
 }
