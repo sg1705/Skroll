@@ -8,8 +8,8 @@
  * Controller of the SkrollApp
  */
 angular.module('SkrollApp')
-.controller('ContentCtrl', ['documentModel','documentService', '$scope', '$mdSidenav', "$http",
-  function(documentModel, documentService, $scope, $mdSidenav, $http){
+.controller('ContentCtrl', ['documentModel','documentService', '$scope', '$mdSidenav', '$http', '$mdMedia',
+  function(documentModel, documentService, $scope, $mdSidenav, $http) {
             $scope.targetHtml = documentModel.targetHtml;
             $scope.isDocAvailable = documentModel.isDocAvailable;
             $scope.fileName = documentModel.fileName;

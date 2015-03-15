@@ -16,8 +16,10 @@ angular.module('SkrollApp')
         $(element).click(function() {
             var para = $("#"+paragraphId);
             if (para != null) {
-                $("#content").animate({scrollTop: ($("#content").scrollTop() - 200 + $(para).offset().top)}, "slow");
-                $(para).parent().css("background-color","yellow");
+                var contentDiv = $("#skrollport");
+                console.log(contentDiv.scrollTop());
+                $("#skrollport").animate({scrollTop: ($("#skrollport").scrollTop() - 200 + $(para).offset().top)}, "slow");
+                $(para).css("background-color","yellow");
                 scope.toggleSidenav('left');
             }
           });
