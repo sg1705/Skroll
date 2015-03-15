@@ -2,16 +2,16 @@
 
 /**
  * @ngdoc directive
- * @name myappApp.directive:skTrainerToolbar
+ * @name myappApp.directive:skToolbar
  * @description
  * # skTrainerToolbar
  */
 angular.module('SkrollApp')
-  .directive('skTrainerToolbar', function () {
+  .directive('skToolbar', function () {
     return {
-      templateUrl: 'partials/trainerToolbar.tmpl.html',
+      templateUrl: 'partials/toolbar.tmpl.html',
       restrict: 'E',
-      controller: TrainerCtrl,
+      controller: ToolbarCtrl,
       controllerAs: 'ctrl'
     };
   });

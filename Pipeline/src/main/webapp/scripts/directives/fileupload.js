@@ -7,7 +7,7 @@
  * # fileUpload
  */
 angular.module('SkrollApp')
-  .directive('fileUpload', ['documentModel', function(documentModel) {
+  .directive('fileUpload', ['documentModel', 'ToolbarModel', function(documentModel, ToolbarModel) {
       return {
           restricted: 'A',
           link: function(scope, element, attrs) {
@@ -20,10 +20,11 @@ angular.module('SkrollApp')
                           documentModel.fileName = data.files[0].name;
                           scope.fileName = data.files[0].name;
                       })
+                      ToolbarModel.toolbarInfo.title = data.files[0].name;
                       data.submit();
                   },
                   done: function (e, data) {
-                      console.log("Done setting");
+                      console.log("Done setting")
                       $("#content").html(data.result);
                       scope.$apply(function() {
                           scope.targetHtml = data.result;

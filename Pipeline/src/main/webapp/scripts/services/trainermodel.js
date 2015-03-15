@@ -8,14 +8,19 @@
  * Factory in the SkrollApp.
  */
 
-var TrainerModel = {
+var ToolbarModel = {
 	trainerToolbar : {
 		isTrainerMode: false
+	},
+
+	toolbarInfo : {
+		title: ""		
 	}
+
 };
 
 
 angular.module('SkrollApp')
-  .factory('TrainerModel', function () {
-    return TrainerModel;
+  .factory('ToolbarModel', function () {
+    return ToolbarModel;
   });
