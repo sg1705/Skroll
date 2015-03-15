@@ -9,8 +9,7 @@
  * Main module of the application.
  */
 
-angular
-  .module('SkrollApp', ['ngMaterial','ngSanitize', 'ngTouch' ]);
+angular.module('SkrollApp', ['ngMaterial','ngSanitize', 'ngTouch' ]);
 
 //** when newer version of material comes out
 //this is lifted from http://goo.gl/mrWZ0F
@@ -19,4 +18,3 @@ angular.module('SkrollApp')
     $mdIconProvider
     .iconSet('viewer', 'img/icons/sets/viewer-24.svg', 24);
   });
-

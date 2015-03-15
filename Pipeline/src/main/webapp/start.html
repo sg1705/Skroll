@@ -98,12 +98,9 @@
           <md-icon md-svg-icon="images/icons/ic_menu_24px.svg"></md-icon>
         </md-button>
         <h1>{{fileName}}</h1>
-        <md-button ng-click="toggleSidenav('right')" aria-label="annotation">
-          <md-icon md-svg-icon="images/icons/ic_text_format_24px.svg"></md-icon>
-        </md-button>
-        <md-button ng-click="showSimilar()" aria-label="annotation">
-          <md-icon md-svg-icon="images/icons/ic_visibility_24px.svg"></md-icon>
-        </md-button>
+
+        <sk-trainer-toolbar layout="row" layout-align="center center"/>
+        
 
       </div>
     </md-toolbar>
@@ -111,7 +108,7 @@
     <md-content md-scroll-y id="skrollport">
 
     <div layout="row">
-      <div>
+      <div flex="85">
           <md-whiteframe class="md-whiteframe-z3">
             <md-content flex class="md-padding" id="content" ng-click="paraClicked($event)">
             </md-content>
@@ -156,9 +153,12 @@
 <script src="scripts/app.js"></script>
 <script src="scripts/jquery.fileupload.js"></script>
 <script src="scripts/controllers/content.js"></script>
+<script src="scripts/controllers/trainer.js"></script>
 <script src="scripts/directives/fileupload.js"></script>
 <script src="scripts/directives/scrolltoparagraph.js"></script>
+<script src="scripts/directives/sktrainertoolbar.js"></script>
 <script src="scripts/services/documentmodel.js"></script>
+<script src="scripts/services/trainermodel.js"></script>
 <script src="scripts/services/documentservice.js"></script>
 <!-- endbuild -->
 
