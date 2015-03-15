@@ -32,3 +32,9 @@ create a blur effect
    text-shadow: 0 0 5px rgba(0,0,0,0.5);
 }
 
+
+md-sidenav.md-locked-open {
+    width: 200px;
+    min-width: 200px;
+    max-width: 300px;
+}
