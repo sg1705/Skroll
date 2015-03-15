@@ -2,6 +2,7 @@ package com.skroll.rest;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Files;
@@ -19,6 +20,7 @@ import com.skroll.util.Configuration;
 import com.skroll.util.ObjectPersistUtil;
 import org.glassfish.jersey.media.multipart.BodyPart;
 import org.glassfish.jersey.media.multipart.BodyPartEntity;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +45,7 @@ public class API {
     // documentMap is defined as concurrent hashmap
     // as we would like to share this hashmap between multiple requests from multiple clients
     // It provides the construct to synchronize only block of map not the whole hashmap.
+
     private static Map<String,Document> documentMap = new ConcurrentHashMap<String,Document>();
     private static DefinitionClassifier definitionClassifier = new DefinitionClassifier();
     private static Configuration configuration = new Configuration();
@@ -59,6 +62,7 @@ public class API {
     public Response upload(MultiPart multiPart, @Context HttpHeaders hh) {
 
         List<BodyPart> bodyParts = multiPart.getBodyParts();
+        logger.debug("BodyParts:"+ bodyParts);
         // get the second part which is the project logo
         boolean isProcessed = false;
         String message = null;
@@ -68,12 +72,14 @@ public class API {
         logger.debug("pathParams:" +pathParams);
 
         for (BodyPart bodyPart : bodyParts) {
+            String fileName = ((FormDataBodyPart)bodyPart).getContentDisposition().getFileName();
+            logger.debug("FileName:" +fileName);
             BodyPartEntity bpe = (BodyPartEntity) bodyPart.getEntity();
             InputStreamReader reader = new InputStreamReader(bpe.getInputStream());
             String content = null;
             try {
                 content = CharStreams.toString(reader);
-                String documentId = String.valueOf(content.hashCode());
+                //String documentId = String.valueOf(content.hashCode());
 
                 //parse the document
                 Document document = Parser.parseDocumentFromHtml(content);
@@ -81,13 +87,20 @@ public class API {
                 document = (Document) definitionClassifier.classify(document);
                 //logger.debug("document:" + document.getTarget());
                 //link the document
-                documentMap.put(documentId, document);
+                documentMap.put(fileName, document);
 
                 logger.debug("Added document into the documentMap with a generated hash key:"+ documentMap.keySet());
 
-                NewCookie documentIdCookie = new NewCookie("documentId", documentId);
+                NewCookie documentIdCookie = new NewCookie("documentId", fileName);
                 reader.close();
-
+                // persist the document using document id. Let's use the file name
+                try {
+                    Files.createParentDirs(new File(preEvaluatedFolder + fileName));
+                    Files.write(ModelHelper.getJson(document), new File(preEvaluatedFolder + fileName), Charset.defaultCharset());
+                } catch (Exception e) {
+                    logger.error("Failed to persist the document object: {}", e);
+                    return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to persist the document object" ).type(MediaType.APPLICATION_JSON).build();
+                }
                 return Response.status(Response.Status.ACCEPTED).cookie(documentIdCookie).entity(document.getTarget().getBytes(Constants.DEFAULT_CHARSET)).type(MediaType.TEXT_HTML).build();
 
             } catch (ParserException e) {
@@ -101,6 +114,60 @@ public class API {
     }
 
     @GET
+    @Path("/listDocs")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response listDocs(@Context HttpHeaders hh) {
+        MultivaluedMap<String, String> headerParams = hh.getRequestHeaders();
+        FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(preEvaluatedFolder));
+        List<String> docLists = new ArrayList<String>();
+        for (File f : iterable) {
+            if (f.isFile()) {
+                docLists.add(f.getName());
+            }
+        }
+        Gson gson = new GsonBuilder().create();
+        String docsJson = gson.toJson(docLists);
+        return Response.status(Response.Status.OK).entity(docsJson).type(MediaType.APPLICATION_JSON).build();
+
+    }
+    @GET
+    @Path("/getDoc")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getDoc(@QueryParam("documentId") String documentId, @Context HttpHeaders hh) {
+
+        if(documentId==null) {
+            MultivaluedMap<String, String> headerParams = hh.getRequestHeaders();
+            Map<String, Cookie> pathParams = hh.getCookies();
+            logger.debug("getDocumentId: Cookie: {}", pathParams);
+            if ( pathParams.get("documentId")==null) {
+                return Response.status(Response.Status.EXPECTATION_FAILED).entity("documentId is missing from Cookie").type(MediaType.TEXT_HTML).build();
+
+            }
+            documentId = pathParams.get("documentId").getValue();
+        }
+        logger.info("getDoc- DocumentId:" + documentId.toString());
+
+        Document doc = documentMap.get(documentId);
+        String jsonString = null;
+        if (doc==null) {
+            logger.debug("Not found in documentMap, fetching from corpus:" + documentId.toString());
+            try {
+                jsonString = Files.toString(new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
+            } catch (Exception e) {
+                logger.error("Failed to read document from Corpus:" + e.toString());
+                e.printStackTrace();
+                return Response.status(Response.Status.EXPECTATION_FAILED).entity("Failed to read document from Corpus").type(MediaType.TEXT_HTML).build();
+
+            }
+            doc = ModelHelper.getModel(jsonString);
+            documentMap.put(documentId,doc);
+            logger.debug("Doc:" + doc.getParagraphs().toString());
+        }
+        NewCookie documentIdCookie = new NewCookie("documentId", documentId);
+        return Response.status(Response.Status.OK).cookie(documentIdCookie).entity(doc.getTarget().getBytes(Constants.DEFAULT_CHARSET)).type(MediaType.TEXT_HTML).build();
+    }
+
+    @GET
     @Path("/getDocumentId")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getDocumentId(@Context HttpHeaders hh) {
@@ -108,6 +175,7 @@ public class API {
         Map<String, Cookie> pathParams = hh.getCookies();
         logger.debug("getDocumentId: Cookie: {}", pathParams);
         if ( pathParams.get("documentId")==null) {
+            logger.warn("documentId is missing from Cookie");
             return Response.status(Response.Status.EXPECTATION_FAILED).entity("documentId is missing from Cookie").type(MediaType.TEXT_HTML).build();
 
         }
@@ -126,6 +194,7 @@ public class API {
             Map<String, Cookie> pathParams = hh.getCookies();
             logger.debug("getDocumentId: Cookie: {}", pathParams);
             if ( pathParams.get("documentId")==null) {
+                logger.warn("documentId is missing from Cookie");
                 return Response.status(Response.Status.EXPECTATION_FAILED).entity("documentId is missing from Cookie").type(MediaType.TEXT_HTML).build();
 
             }
@@ -135,6 +204,7 @@ public class API {
 
         Document doc = documentMap.get(documentId);
         if (doc==null) {
+            logger.error("Failed to find the document in Map");
             return Response.status(Response.Status.NOT_FOUND).entity("Failed to find the document in Map" ).type(MediaType.TEXT_PLAIN).build();
         }
         List<Paragraph> definedTermParagraphList = new ArrayList<>();
@@ -152,7 +222,8 @@ public class API {
             }
         }
         if (definedTermParagraphList.isEmpty()) {
-            return Response.status(Response.Status.NO_CONTENT).entity("Failed to find the document in Map" ).type(MediaType.TEXT_PLAIN).build();
+            logger.warn("Defined Term Paragraph is empty");
+            return Response.status(Response.Status.NO_CONTENT).entity("Defined Term Paragraph is empty" ).type(MediaType.TEXT_PLAIN).build();
         }
         Gson gson = new GsonBuilder().create();
         String definitionJson = gson.toJson(definedTermParagraphList);
@@ -169,19 +240,21 @@ public class API {
 
         logger.debug("changeAnnotation- DefinedTermParagraphList:{}", definedTermParagraphList);
         if (definedTermParagraphList.isEmpty()) {
+            logger.warn("NO input data in post request");
             return Response.status(Response.Status.NO_CONTENT).entity("NO input data in post request" ).type(MediaType.APPLICATION_JSON).build();
         }
         MultivaluedMap<String, String> headerParams = hh.getRequestHeaders();
             Map<String, Cookie> pathParams = hh.getCookies();
             logger.debug("getDocumentId: Cookie: {}", pathParams);
             if ( pathParams.get("documentId")==null) {
-                logger.error("documentId is missing from Cookie");
+                logger.warn("documentId is missing from Cookie");
                 return Response.status(Response.Status.EXPECTATION_FAILED).entity("documentId is missing from Cookie").type(MediaType.APPLICATION_JSON).build();
 
             }
         String documentId = pathParams.get("documentId").getValue();
         Document doc = documentMap.get(documentId);
         if (doc==null){
+            logger.warn("document cannot be found for document id: "+ documentId);
             return Response.status(Response.Status.NO_CONTENT).entity("document cannot be found for document id: "+ documentId).type(MediaType.APPLICATION_JSON).build();
         }
         List<Paragraph> definitionJson =null;
@@ -256,13 +329,14 @@ public class API {
         Map<String, Cookie> pathParams = hh.getCookies();
         logger.debug("getDocumentId: Cookie: {}", pathParams);
         if ( pathParams.get("documentId")==null) {
-            logger.error("documentId is missing from Cookie");
+            logger.warn("documentId is missing from Cookie");
             return Response.status(Response.Status.EXPECTATION_FAILED).entity("documentId is missing from Cookie").type(MediaType.APPLICATION_JSON).build();
 
         }
         String documentId = pathParams.get("documentId").getValue();
         Document doc = documentMap.get(documentId);
         if (doc==null){
+            logger.warn("document cannot be found for document id: "+ documentId);
             return Response.status(Response.Status.NO_CONTENT).entity("document cannot be found for document id: "+ documentId).type(MediaType.APPLICATION_JSON).build();
         }
 
@@ -283,13 +357,14 @@ public class API {
         Map<String, Cookie> pathParams = hh.getCookies();
         logger.debug("getDocumentId: Cookie: {}", pathParams);
         if ( pathParams.get("documentId")==null) {
-            logger.error("documentId is missing from Cookie");
+            logger.warn("documentId is missing from Cookie");
             return Response.status(Response.Status.EXPECTATION_FAILED).entity("documentId is missing from Cookie").type(MediaType.APPLICATION_JSON).build();
 
         }
         String documentId = pathParams.get("documentId").getValue();
         Document doc = documentMap.get(documentId);
         if (doc==null){
+            logger.warn("document cannot be found for document id: "+ documentId);
             return Response.status(Response.Status.NO_CONTENT).entity("document cannot be found for document id: "+ documentId).type(MediaType.APPLICATION_JSON).build();
         }
         // persist the document using document id. Let's use the file name
@@ -329,6 +404,7 @@ public class API {
 
         Document doc = documentMap.get(documentId);
         if (doc==null) {
+            logger.warn("document cannot be found for document id: "+ documentId);
             return Response.status(Response.Status.NOT_FOUND).entity("Failed to find the document in Map" ).type(MediaType.TEXT_PLAIN).build();
         }
 
@@ -353,6 +429,7 @@ public class API {
         Map<String, Cookie> pathParams = hh.getCookies();
         logger.debug("getDocumentId: Cookie: {}", pathParams);
         if ( pathParams.get("documentId")==null) {
+            logger.warn("documentId is missing from Cookie");
             return Response.status(Response.Status.EXPECTATION_FAILED).entity("documentId is missing from Cookie").type(MediaType.TEXT_HTML).build();
 
         }
@@ -360,6 +437,7 @@ public class API {
 
         Document doc = documentMap.get(documentId);
         if (doc==null) {
+            logger.warn("document cannot be found for document id: "+ documentId);
             return Response.status(Response.Status.NOT_FOUND).entity("Failed to find the document in Map" ).type(MediaType.TEXT_PLAIN).build();
         }
 
