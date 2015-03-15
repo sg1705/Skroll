@@ -10,7 +10,7 @@ import java.util.Set;
 /**
  * Created by saurabh on 12/29/14.
  */
-public class CoreMap implements TypesafeMap {
+public class CoreMap implements TypesafeMap  {
 
     HashMap map;
 

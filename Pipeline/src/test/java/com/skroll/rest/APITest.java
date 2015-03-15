@@ -40,6 +40,7 @@ public class APITest {
     @After
     public void shutdown() {
         try {
+            Thread.sleep(1000);
             jettyServer.stop();
         } catch (Exception e) {
             e.printStackTrace();
@@ -126,8 +127,6 @@ public class APITest {
         String preEvaluatedFolder = configuration.get("preEvaluatedFolder","/tmp/");
         Document doc = ModelHelper.getModel(Files.toString(new File(preEvaluatedFolder + documentId), Charset.defaultCharset()));
         assert(doc.getTarget().contains("Accredited Investor"));
-        testUpdateBNI(documentId);
-        testUpdateModel(documentId);
     }
 
     public void testOverwriteAnnotation(String documentId) throws Exception {
@@ -165,5 +164,29 @@ public class APITest {
         String response = webTarget.request(MediaType.APPLICATION_JSON).cookie(new  NewCookie("documentId", documentId)).get(String.class);
         assert(response.contains("ok"));
         client.close();
+    }
+
+    @Test
+    public void testListDocs() throws Exception {
+        String TARGET_URL = "http://localhost:8888/restServices/jsonAPI/listDocs";
+        Client client = ClientBuilder.newClient();
+        WebTarget webTarget = client.target(TARGET_URL);
+        String response = webTarget.request(MediaType.APPLICATION_JSON).get(String.class);
+        logger.debug("Here is the response: "+response);
+        //assert(response.contains(""));
+        client.close();
+    }
+
+    @Test
+    public void testGetDoc() throws Exception {
+        String TARGET_URL = "http://localhost:8888/restServices/jsonAPI/getDoc";
+        Client client = ClientBuilder.newClient();
+        WebTarget webTarget = client.target(TARGET_URL);
+        String documentId = "SIX FLAGS_ex4-1.html";
+        WebTarget webTargetWithQueryParam =
+                webTarget.queryParam("documentId", documentId);
+        Response response = webTargetWithQueryParam.request(MediaType.APPLICATION_JSON).get();
+        logger.debug("Here is the response: "+response.getEntity().toString());
+        assert(response.getStatus()==(200));
     }
 }
