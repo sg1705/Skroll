@@ -29,7 +29,6 @@ public class DefinedTermExtractionModelTest extends TestCase {
         trainingTest(trainingFolderName, model);
         System.out.println("DefinitionExtractionModel: \n" + model);
 
-
         String testingFolderName = "src/test/resources/analyzer/definedTermExtractionTesting";
         List<Document> docs = processFolder(testingFolderName, model, FileProcess.ANNOTATE);
 

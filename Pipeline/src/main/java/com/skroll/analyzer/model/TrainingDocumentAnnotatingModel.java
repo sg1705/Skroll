@@ -5,10 +5,12 @@ import com.skroll.analyzer.model.bn.SimpleDataTuple;
 import com.skroll.analyzer.model.bn.TrainingNaiveBayesWithFeatureConditions;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
 import com.skroll.document.CoreMap;
+import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -18,9 +20,10 @@ import java.util.List;
 public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
     TrainingNaiveBayesWithFeatureConditions tnbfModel;
-    ProbabilityNaiveBayesWithFeatureConditions pnbfModel;
 
     public TrainingDocumentAnnotatingModel(){
+        super();
+        //this.doc = doc;
 
         tnbfModel = new TrainingNaiveBayesWithFeatureConditions(RandomVariableType.PARAGRAPH_HAS_DEFINITION,
                 PARAGRAPH_FEATURES, PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL, DOCUMENT_FEATURES);
@@ -30,29 +33,34 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
             wordFeatureSizes[i] =  WORD_FEATURES.get(i).getFeatureSize();
         hmm = new HiddenMarkovModel(HMM_MODEL_LENGTH,
                 RandomVariableType.WORD_IS_DEFINED_TERM.getFeatureSize(), wordFeatureSizes);
-        initialize();
+        //initialize();
+
 
     }
 
     public TrainingDocumentAnnotatingModel(TrainingNaiveBayesWithFeatureConditions tnbfModel){
+        super();
+
         this.tnbfModel = tnbfModel;
+        //this.doc = doc;
 
         int []wordFeatureSizes = new int[WORD_FEATURES.size()]; // include state at the feature index 0.
         for (int i=0; i<wordFeatureSizes.length;i++)
             wordFeatureSizes[i] =  WORD_FEATURES.get(i).getFeatureSize();
         hmm = new HiddenMarkovModel(HMM_MODEL_LENGTH,
                 RandomVariableType.WORD_IS_DEFINED_TERM.getFeatureSize(), wordFeatureSizes);
-        generateDocumentFeatures();
+        //initialize();
+
 
     }
 
-    void updateWithParagraph(CoreMap paragraph) {
-        CoreMap trainingParagraph = DefinedTermExtractionHelper.makeTrainingParagraph(paragraph);
-        updateTNBFWithParagraph(trainingParagraph);
+    void updateWithParagraph(CoreMap trainingParagraph, int[] docFeatureValues) {
+        //CoreMap trainingParagraph = DefinedTermExtractionHelper.makeTrainingParagraph(paragraph);
+        updateTNBFWithParagraph(trainingParagraph, docFeatureValues);
         updateHMMWithParagraph(trainingParagraph);
     }
 
-    void updateTNBFWithParagraph(CoreMap paragraph){
+    void updateTNBFWithParagraph(CoreMap paragraph, int[] docFeatureValues){
         SimpleDataTuple dataTuple = DocumentAnnotatingHelper.makeDataTuple(paragraph, allParagraphFeatures, docFeatureValues);
         tnbfModel.addSample(dataTuple);
     }
@@ -91,13 +99,19 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
     }
     /**
+     * todo: to reduce memory usage at the cost of more computation, can process training paragraph one by one later instead of process all and store them now
     * training involves updating Fij for each paragraph i and feature j.
     */
-    public void updateWithDocument(){
+    public void updateWithDocument(Document doc){
+        List<CoreMap> paragraphs = new ArrayList<>();
+        for( CoreMap paragraph : doc.getParagraphs())
+            paragraphs.add(DocumentAnnotatingHelper.processParagraph(paragraph));
+        int[] docFeatureValues = DocumentAnnotatingHelper.generateDocumentFeatures(paragraphs,DOCUMENT_FEATURES,
+                PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL);
 
-        List<CoreMap> paragraphs = doc.getParagraphs();
+
         for( CoreMap paragraph : paragraphs)
-            updateWithParagraph(paragraph);
+            updateWithParagraph(paragraph, docFeatureValues);
     }
 }
 

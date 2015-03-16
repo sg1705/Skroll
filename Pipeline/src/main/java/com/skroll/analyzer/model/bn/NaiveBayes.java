@@ -46,9 +46,11 @@ public abstract class NaiveBayes {
 
     void generateParentsAndChildren(){
         categoryNode.setChildren(featureNodeArray);
+        categoryNode.setParents(new DiscreteNode[0]);
         for (int i=0; i<featureNodeArray.length; i++){
             featureNodeArray[i].setParents(Arrays.asList(categoryNode).
                     toArray(new DiscreteNode[1]));
+            featureNodeArray[i].setChildren(new DiscreteNode[0]);
         }
     }
 

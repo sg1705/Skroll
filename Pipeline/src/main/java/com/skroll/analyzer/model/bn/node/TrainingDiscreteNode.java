@@ -21,8 +21,8 @@ public class TrainingDiscreteNode extends DiscreteNode {
 
     public TrainingDiscreteNode(List<RandomVariableType> randomVariables){
         super(randomVariables);
-        Arrays.fill(counts, PRIOR_COUNT);
         counts = parameters;
+        Arrays.fill(counts, PRIOR_COUNT);
     }
 
     public void updateCount(){
@@ -61,11 +61,11 @@ public class TrainingDiscreteNode extends DiscreteNode {
 
      @Override
     public String toString() {
-        return "BNNode{" +
+        return "TrainingDiscreteNode{" +
                 "familyVariables=" + Arrays.toString(familyVariables) +
                 ", counts=" + Arrays.toString(counts) +
-                ", parents=" + Arrays.toString(parents) +
-                ", children=" + Arrays.toString(children) +
+//                ", parents=" + Arrays.toString(parents) +
+//                ", children=" + Arrays.toString(children) +
                 ", observedValue=" + observedValue +
                 '}';
     }

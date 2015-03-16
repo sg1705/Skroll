@@ -32,27 +32,15 @@ public class TrainingNaiveBayesWithFeatureConditions extends NaiveBayesWithFeatu
         }
 
         for (int i=0; i<featureVarList.size(); i++) {
-            if (i>=documentFeatureVarList.size()){
-                featureNodeArray[i] = new TrainingDiscreteNode(
-                        Arrays.asList(featureVarList.get(i), categoryVar));
-                continue;
-            }
+            featureNodeArray[i] = new TrainingDiscreteNode(
+                    Arrays.asList(featureVarList.get(i), categoryVar));
         }
 
         wordNode = new TrainingWordNode((TrainingDiscreteNode)categoryNode);
         generateParentsAndChildren();
 
-        // put all nodes in a single array for simpler update.
-        int i=0;
-        discreteNodeArray[i++] = categoryNode;
-        for (DiscreteNode node: featureNodeArray){
-            discreteNodeArray[i++] = node;
-        }
-        for (DiscreteNode node: documentFeatureNodeArray){
-            discreteNodeArray[i++] = node;
-        }
-        for (DiscreteNode node: featureExistAtDocLevelArray)
-            discreteNodeArray[i++] = node;
+        putAllNodesInOneList();
+
 
     }
 

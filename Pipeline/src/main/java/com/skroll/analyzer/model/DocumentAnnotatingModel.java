@@ -10,14 +10,18 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * todo: for training, can pass in a doc object instead of store it
+ * todo: for using the model, after initializing in constructor, can store just the features exist at doc level for each paragraph
  * Created by wei2learn on 2/16/2015.
  */
 public abstract class DocumentAnnotatingModel {
     static final int HMM_MODEL_LENGTH = 12;
 
-    NaiveBayesWithFeatureConditions nbfModel;
+    //NaiveBayesWithFeatureConditions nbfModel;
     HiddenMarkovModel hmm;
-    Document doc;
+    //Document doc;
+    //List<CoreMap> paragraphs = new ArrayList<CoreMap>();
+
 
     static final List<RandomVariableType> DOCUMENT_FEATURES = Arrays.asList(
             RandomVariableType.DOCUMENT_DEFINITIONS_IN_QUOTES
@@ -58,28 +62,23 @@ public abstract class DocumentAnnotatingModel {
             //RandomVariableType.WORD_INDEX
     );
 
-    int[] docFeatureValues = new int[DOCUMENT_FEATURES.size()];
+    //int[] docFeatureValues = new int[DOCUMENT_FEATURES.size()];
 
 
     public DocumentAnnotatingModel() {
-
-
-    }
-    public void initialize(){
         allParagraphFeatures = new ArrayList<>(PARAGRAPH_FEATURES);
         allParagraphFeatures.addAll(PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL);
-        generateDocumentFeatures();
-    }
 
-    public void generateDocumentFeatures(){
-        Arrays.fill(docFeatureValues, 1);
-        List<CoreMap> paragraphs = doc.getParagraphs();
-        for( CoreMap paragraph : paragraphs) {
-            for (int f=0; f< docFeatureValues.length; f++){
-                docFeatureValues[f] *=
-                        DefinedTermExtractionHelper.getParagraphFeature(paragraph, PARAGRAPH_FEATURES.get(f));
-            }
-        }
     }
+//    public void initialize(){
+//        allParagraphFeatures = new ArrayList<>(PARAGRAPH_FEATURES);
+//        allParagraphFeatures.addAll(PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL);
+////        for( CoreMap paragraph : doc.getParagraphs())
+////            paragraphs.add(DocumentAnnotatingHelper.processParagraph(paragraph));
+//        //generateDocumentFeatures();
+//    }
+
+
+
 }
 

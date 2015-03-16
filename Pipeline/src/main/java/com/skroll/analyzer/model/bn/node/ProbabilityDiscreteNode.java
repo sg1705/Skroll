@@ -65,7 +65,7 @@ public class ProbabilityDiscreteNode extends DiscreteNode {
      * @param index the variable index to be left out
      * @return
      */
-    public double[] sumOutNodesWithObservationExcept(int index){
+    double[] sumOutNodesWithObservationExcept(int index){
         double[] probs = new double[ familyVariables[index].getFeatureSize() ];
         int sizeUnder = sizeUpTo(index);
 
@@ -77,7 +77,7 @@ public class ProbabilityDiscreteNode extends DiscreteNode {
 
         return probs;
     }
-    public double[] sumOutNodesWithObservationExcept(ProbabilityDiscreteNode parentNode){
+    double[] sumOutNodesWithObservationExcept(ProbabilityDiscreteNode parentNode){
         return sumOutNodesWithObservationExcept( getParentNodeIndex(parentNode));
     }
 
@@ -88,7 +88,7 @@ public class ProbabilityDiscreteNode extends DiscreteNode {
      * @param message
      * @return
      */
-    public double[] getBelief(int index, double[] message){
+    double[] getBelief(int index, double[] message){
         double[] belief = new double[parameters.length];
         int sizeUnderIndexFrom = sizeUpTo(index);
         for (int i=0,k=0,messageIndex=0; i<parameters.length; i++,k++){
@@ -102,7 +102,7 @@ public class ProbabilityDiscreteNode extends DiscreteNode {
         return belief;
     }
 
-    public double[] sumOutOtherNodesWithObservationAndBelief(double[] belief, int indexTo ){
+     double[] sumOutOtherNodesWithObservationAndBelief(double[] belief, int indexTo ){
         double[] probs = new double[ familyVariables[indexTo].getFeatureSize() ];
         int sizeUnder = sizeUpTo(indexTo);
 
@@ -124,7 +124,7 @@ public class ProbabilityDiscreteNode extends DiscreteNode {
 
 
     // specialized message passing from a single parent to another.
-    public double[] sumOutOtherNodesWithObservationAndMessage(int indexFrom, double[] message, int indexTo ){
+    double[] sumOutOtherNodesWithObservationAndMessage(int indexFrom, double[] message, int indexTo ){
         double[] belief = getBelief(indexFrom, message);
         double[] probs = sumOutOtherNodesWithObservationAndBelief(belief, indexTo);
         return probs;
@@ -135,7 +135,7 @@ public class ProbabilityDiscreteNode extends DiscreteNode {
         return sumOutOtherNodesWithObservationAndMessage( getParentNodeIndex(nodeFrom), message, getParentNodeIndex(nodeTo));
     }
 
-    public double[] sumOutOtherNodesWithObservation(int indexTo ){
+    double[] sumOutOtherNodesWithObservation(int indexTo ){
         double[] probs = sumOutOtherNodesWithObservationAndBelief(parameters, indexTo);
         return probs;
     }
@@ -161,7 +161,7 @@ public class ProbabilityDiscreteNode extends DiscreteNode {
 //        return newProbs;
 //    }
 
-    public double getProbability(int index){
+    double getProbability(int index){
         return probabilityFunction[index];
     }
 
@@ -174,8 +174,8 @@ public class ProbabilityDiscreteNode extends DiscreteNode {
         return "BNNode{" +
                 "familyVariables=" + Arrays.toString(familyVariables) +
                 ", probabilityFunction=" + Arrays.toString(probabilityFunction) +
-                ", parents=" + Arrays.toString(parents) +
-                ", children=" + Arrays.toString(children) +
+//                ", parents=" + Arrays.toString(parents) +
+//                ", children=" + Arrays.toString(children) +
                 ", observedValue=" + observedValue +
                 '}';
     }

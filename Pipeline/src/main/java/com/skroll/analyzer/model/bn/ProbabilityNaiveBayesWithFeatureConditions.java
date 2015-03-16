@@ -26,18 +26,7 @@ public class ProbabilityNaiveBayesWithFeatureConditions extends NaiveBayesWithFe
 
         wordNode = new ProbabilityWordNode((TrainingWordNode) tnb.getWordNode());
         generateParentsAndChildren();
-
-        // put all nodes in a single array for simpler update.
-        int i=0;
-        discreteNodeArray[i++] = categoryNode;
-        for (DiscreteNode node: featureNodeArray){
-            discreteNodeArray[i++] = node;
-        }
-        for (DiscreteNode node: documentFeatureNodeArray){
-            discreteNodeArray[i++] = node;
-        }
-        for (DiscreteNode node: featureExistAtDocLevelArray)
-            discreteNodeArray[i++] = node;
+        putAllNodesInOneList();
     }
 
     /**
@@ -63,16 +52,6 @@ public class ProbabilityNaiveBayesWithFeatureConditions extends NaiveBayesWithFe
         wordNode = new ProbabilityWordNode((ProbabilityWordNode) pnb.getWordNode());
         generateParentsAndChildren();
 
-        // put all nodes in a single array for simpler update.
-        int i=0;
-        discreteNodeArray[i++] = categoryNode;
-        for (DiscreteNode node: featureNodeArray){
-            discreteNodeArray[i++] = node;
-        }
-        for (DiscreteNode node: documentFeatureNodeArray){
-            discreteNodeArray[i++] = node;
-        }
-        for (DiscreteNode node: featureExistAtDocLevelArray)
-            discreteNodeArray[i++] = node;
+        putAllNodesInOneList();
     }
 }
