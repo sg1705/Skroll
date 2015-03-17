@@ -7,7 +7,12 @@
  * # fileUpload
  */
 angular.module('SkrollApp')
-  .directive('fileUpload', ['documentModel', 'ToolbarModel', function(documentModel, ToolbarModel) {
+  .directive('fileUpload', 
+    ['documentModel', 
+    'ToolbarModel', 
+    'documentService',
+    'LHSModel',
+    function(documentModel, ToolbarModel, documentService, LHSModel) {
       return {
           restricted: 'A',
           link: function(scope, element, attrs) {
@@ -26,6 +31,24 @@ angular.module('SkrollApp')
                   done: function (e, data) {
                       console.log("Done setting")
                       $("#content").html(data.result);
+                      //populate definitions
+                      documentService.getDefinition().then(function(definitions){
+                        //create new LHS model items
+                        var items = [];
+                        for(var ii = 0; ii < definitions.length; ii++) {
+                          var item = {
+                            itemId: definitions[ii].paragraphId,
+                            text: definitions[ii].definition
+                          }
+                          items.push(item);
+                        }
+                        LHSModel.sections[0].items = items;
+                        console.log('items:' + items.length);
+                      }, function(msg) {
+                        console.log(msg);
+                      });
+
+
                       scope.$apply(function() {
                           scope.targetHtml = data.result;
                           scope.isDocAvailable = true;

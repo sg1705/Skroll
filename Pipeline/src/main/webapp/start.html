@@ -54,18 +54,9 @@
       <md-toolbar class="skroll-toolbar">
       </md-toolbar>
 
-      <md-content md-scroll-y flex class="md-padding">
-        <md-list>
-          <md-item ng-repeat="definition in definitions">
-            <md-item-content>
-              <md-button scroll-to-paragraph="{{definition.paragraphId}}">{{definition.definition}}</md-button>
-              <md-icon ng-show="isEdit" md-svg-icon="images/icons/ic_close_24px.svg" ng-click="toggleSidenav('left')"
-                       style="color:red">
-              </md-icon>
-            </md-item-content>
-            <md-divider></md-divider>
-          </md-item>
-        </md-list>
+      <md-content md-scroll-y flex class="md-padding" ng-controller="LHSCtrl as ctrl">
+        <sk-lhs/>
+
       </md-content>
     </div>
   </md-sidenav>
@@ -129,11 +120,13 @@
 <script src="scripts/controllers/viewport.js"></script>
 <script src="scripts/directives/fileupload.js"></script>
 <script src="scripts/directives/scrolltoparagraph.js"></script>
-<script src="scripts/directives/sktrainertoolbar.js"></script>
+<script src="scripts/directives/sktoolbar.js"></script>
+<script src="scripts/directives/sklhs.js"></script>
 <script src="scripts/services/documentmodel.js"></script>
 <script src="scripts/services/trainermodel.js"></script>
 <script src="scripts/services/selectionmodel.js"></script>
 <script src="scripts/services/documentservice.js"></script>
+<script src="scripts/services/lhsmodel.js"></script>
 <!-- endbuild -->
 
 </body>
