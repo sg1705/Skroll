@@ -1,5 +1,8 @@
 package com.skroll.analyzer.model.bn.node;
 
+import org.eclipse.persistence.internal.jaxb.many.MapEntry;
+
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,10 +39,22 @@ public class WordNode                                                           
     public WordNode(){
     }
 
+    String mapToString(){
+        String s="";
+        for (Map.Entry<String, double[]> e: parameters.entrySet()){
+            s+=e.getKey()+ "=" + Arrays.toString( e.getValue() )+" ";
+        }
+        return s;
+    }
+
+    public void setParent(DiscreteNode parent) {
+        this.parent = parent;
+    }
+
     @Override
     public String toString() {
-        return "WordNodes{" +
-                "parameters=" + parameters +
+        return "WordNode{" +
+                "parameters=" + mapToString() +
                 ", parent=" + parent +
                 '}';
     }

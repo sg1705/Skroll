@@ -52,6 +52,7 @@ public abstract class NaiveBayes {
                     toArray(new DiscreteNode[1]));
             featureNodeArray[i].setChildren(new DiscreteNode[0]);
         }
+        wordNode.setParent(categoryNode);
     }
 
     public void setObservation(SimpleDataTuple tuple){

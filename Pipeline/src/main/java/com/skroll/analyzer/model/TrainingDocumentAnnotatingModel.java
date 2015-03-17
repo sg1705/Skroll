@@ -113,6 +113,13 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
         for( CoreMap paragraph : paragraphs)
             updateWithParagraph(paragraph, docFeatureValues);
     }
+
+    @Override
+    public String toString() {
+        return "TrainingDocumentAnnotatingModel{" +
+                "tnbfModel=" + tnbfModel +
+                '}';
+    }
 }
 
 

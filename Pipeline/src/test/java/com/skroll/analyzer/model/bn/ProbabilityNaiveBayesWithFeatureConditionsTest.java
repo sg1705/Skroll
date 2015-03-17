@@ -18,7 +18,7 @@ public class ProbabilityNaiveBayesWithFeatureConditionsTest extends TestCase {
         System.out.println("initial model");
         System.out.println(nb);
         // variables are in the order of category, feature, features exist at doc level, document feature
-        SimpleDataTuple tuple = new SimpleDataTuple(new String[0], new int[]{0,0,1});
+        SimpleDataTuple tuple = new SimpleDataTuple(new String[]{"a"}, new int[]{0,0,1});
         nb.addSample(tuple);
         System.out.println("model after");
         System.out.println(nb);

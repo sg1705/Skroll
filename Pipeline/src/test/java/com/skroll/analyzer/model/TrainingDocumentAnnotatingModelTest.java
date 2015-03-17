@@ -17,6 +17,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TrainingDocumentAnnotatingModelTest extends TestCase {
+    String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining/AMC Networks CA.html";
+
     TrainingNaiveBayesWithFeatureConditions tnbf = new TrainingNaiveBayesWithFeatureConditions(
             RandomVariableType.PARAGRAPH_HAS_DEFINITION,
             DocumentAnnotatingModel.PARAGRAPH_FEATURES,
@@ -40,7 +42,6 @@ public class TrainingDocumentAnnotatingModelTest extends TestCase {
         System.out.println("initial model: \n" + tnbf);
 
         //String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining";
-        String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining/AMC Networks CA.html";
         TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel(tnbf);
 
 
@@ -59,7 +60,7 @@ public class TrainingDocumentAnnotatingModelTest extends TestCase {
             model.updateWithDocument(doc);
         }
 
-        System.out.println("trained model: \n" + tnbf);
+        System.out.println("trained model: \n" + model);
     }
 
     public void testGenerateDocumentFeatures() throws Exception {
@@ -107,33 +108,8 @@ public class TrainingDocumentAnnotatingModelTest extends TestCase {
         }
         return null;
     }
-//
-//    void processFile(File file, TrainingNaiveBayesWithFeatureConditions tnbf) {
-//        String htmlString = null;
-//        try {
-//            htmlString = Utils.readStringFromFile(file);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            System.err.println("Error reading file");
-//        }
-//
-//        try {
-//            Document htmlDoc = new Document();
-//            htmlDoc = Parser.parseDocumentFromHtml(htmlString);
-//            //create a pipeline
-//
-//            Pipeline<Document, Document> pipeline =
-//                    new Pipeline.Builder()
-//                            .add(Pipes.EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC)
-//                            .build();
-//            Document doc = pipeline.process(htmlDoc);
-//            TrainingDocumentAnnotatingModel docModel = new TrainingDocumentAnnotatingModel(doc, tnbf);
-//
-//            docModel.updateWithDocument();
-//        } catch(Exception e) {
-//            e.printStackTrace();
-//            System.err.println("Error reading file");
-//        }
-//
-//    }
+
+    public TrainingNaiveBayesWithFeatureConditions getTnbf() {
+        return tnbf;
+    }
 }

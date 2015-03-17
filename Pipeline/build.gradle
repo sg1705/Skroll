@@ -1,6 +1,6 @@
 apply plugin: 'java'
 apply plugin: 'war'
-apply from: 'https://raw.github.com/akhikhl/gretty/master/pluginScripts/gretty.plugin'
+//apply from: 'https://raw.github.com/akhikhl/gretty/master/pluginScripts/gretty.plugin'
 
 version = '1.0'
 sourceCompatibility = JavaVersion.VERSION_1_7
@@ -40,15 +40,15 @@ dependencies {
     compile 'org.glassfish.jersey.media:jersey-media-multipart:2.15'
 }
 
-gretty{
-    port = 8080
-    List<String> jvmArgs = []
-    jvmArgs.add("-Dcom.skroll.LEVEL=DEBUG")
-    managedClassReload=true
-    servletContainer = "jetty9"
-    fastReload = true
-    scanInterval = 1
-}
+//gretty{
+//    port = 8080
+//    List<String> jvmArgs = []
+//    jvmArgs.add("-Dcom.skroll.LEVEL=DEBUG")
+//    managedClassReload=true
+//    servletContainer = "jetty9"
+//    fastReload = true
+//    scanInterval = 1
+//}
 
 
 task trainWithOverride(type: JavaExec) {

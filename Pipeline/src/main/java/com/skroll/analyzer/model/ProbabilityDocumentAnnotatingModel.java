@@ -4,6 +4,7 @@ import com.skroll.analyzer.model.bn.ProbabilityNaiveBayesWithFeatureConditions;
 import com.skroll.analyzer.model.bn.SimpleDataTuple;
 import com.skroll.analyzer.model.bn.TrainingNaiveBayesWithFeatureConditions;
 import com.skroll.analyzer.model.bn.node.ProbabilityDiscreteNode;
+import com.skroll.analyzer.model.bn.node.ProbabilityWordNode;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -75,8 +76,12 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
         // compute initial believes
         ProbabilityDiscreteNode[] documentFeatureNodeArray =
                 (ProbabilityDiscreteNode[]) pnbfModel.getDocumentFeatureNodeArray();
-        Arrays.fill(messagesToDocumentFeature,1);
-        Arrays.fill(messagesToParagraphCategory,1);
+
+        for (int p=0; p<numParagraphs; p++)
+            for (int f=0; f<DOCUMENT_FEATURES.size(); f++){
+                Arrays.fill(messagesToDocumentFeature[p][f], 1);
+                Arrays.fill(messagesToParagraphCategory[p][f], 1);
+            }
         for (int f=0; f<PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL.size(); f++)
             documentFeatureBelief[f] = documentFeatureNodeArray[f].getParameters().clone();
 
@@ -93,6 +98,12 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
                 for (int j=0; j<message.length; j++)
                     paragraphCategoryBelief[p][j] *= message[j];
             }
+
+            // incorporate word information
+            ProbabilityWordNode wordNode = (ProbabilityWordNode)pnbfModel.getWordNode();
+            double[] message = wordNode.sumOutWordsWithObservation();
+            for (int j=0; j<message.length; j++)
+                paragraphCategoryBelief[p][j] *= message[j];
         }
 
     }
@@ -153,6 +164,8 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
         passMessagesToParagraphCategories();
     }
 
+
+
     void normalize(double[] probs){
         double sum=0;
         for (int i=0; i<probs.length; i++) sum+= probs[i];
@@ -173,8 +186,23 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
     }
 
+    public double[][] getParagraphCategoryBelief() {
+        return paragraphCategoryBelief;
+    }
 
+    public double[][] getDocumentFeatureBelief() {
+        return documentFeatureBelief;
+    }
 
+    @Override
+    public String toString() {
+        return "ProbabilityDocumentAnnotatingModel{" +
+                "\npnbfModel=\n" + pnbfModel +
+                ", \nparaFeatureValsExistAtDocLevel=\n" + Arrays.deepToString(paraFeatureValsExistAtDocLevel) +
+                ", \nparagraphCategoryBelief=\n" + Arrays.deepToString(paragraphCategoryBelief) +
+                ", \ndocumentFeatureBelief=\n" + Arrays.deepToString(documentFeatureBelief) +
+                '}';
+    }
 }
 
 
