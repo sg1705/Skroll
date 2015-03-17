@@ -27,8 +27,7 @@ public class ModelHelper {
     }
 
     private static Gson getGson() {
-        Gson gson = new GsonBuilder()
-                        .create();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
         return gson;
     }
 
