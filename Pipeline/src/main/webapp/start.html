@@ -80,9 +80,9 @@
 
     <md-content md-scroll-y id="skrollport">
       <div layout="row">
-        <div flex="85">
+        <div ng-controller="ViewPortCtrl as ctrl" flex="85">
             <md-whiteframe class="md-whiteframe-z3">
-              <md-content flex class="md-padding" id="content" ng-click="paraClicked($event)">
+              <md-content flex class="md-padding" id="content" ng-click="ctrl.paraClicked($event)">
               </md-content>
             </md-whiteframe>  
         </div>
@@ -126,11 +126,13 @@
 <script src="scripts/jquery.fileupload.js"></script>
 <script src="scripts/controllers/content.js"></script>
 <script src="scripts/controllers/toolbar.js"></script>
+<script src="scripts/controllers/viewport.js"></script>
 <script src="scripts/directives/fileupload.js"></script>
 <script src="scripts/directives/scrolltoparagraph.js"></script>
 <script src="scripts/directives/sktrainertoolbar.js"></script>
 <script src="scripts/services/documentmodel.js"></script>
 <script src="scripts/services/trainermodel.js"></script>
+<script src="scripts/services/selectionmodel.js"></script>
 <script src="scripts/services/documentservice.js"></script>
 <!-- endbuild -->
 

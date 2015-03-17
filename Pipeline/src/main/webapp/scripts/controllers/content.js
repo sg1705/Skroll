@@ -95,36 +95,6 @@ angular.module('SkrollApp')
                 }
             };
 
-            $scope.paraClicked = function($event) {
-                var foundId = false;
-                var paraId;
-
-                var parents = $($event.target).parents("div[id^='p_']");
-                console.log(parents.length);
-                for(var ii = 0; ii < parents.length; ii++ ) {
-                    console.log($(parents[ii]).attr('id'));
-                }
-
-                if (parents.length > 1) {
-                    $(parents[0]).css("background-color","yellow");
-                    foundId = true;
-                    paraId = $(parents[0]).attr('id');
-                }
-
-                if (foundId) {
-                    documentService
-                    .getParagraphJson(paraId)
-                    .then(function(data) {
-                        $("#rightPane").html(JSON.stringify(data, null, 2));
-                        $scope.selectedParagraphId = paraId;
-                        documentModel.selectedParagraphId = paraId;
-                    },function(data, status) {
-                        console.log(status);
-                    });
-                }
-
-            }
-
             //### hack for iPhone
             //this code is a hack to get it working on iPhone
             angular.element(document).ready(function() {
