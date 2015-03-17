@@ -64,8 +64,7 @@ public class TrainingDiscreteNode extends DiscreteNode {
         return "TrainingDiscreteNode{" +
                 "familyVariables=" + Arrays.toString(familyVariables) +
                 ", counts=" + Arrays.toString(counts) +
-//                ", parents=" + Arrays.toString(parents) +
-//                ", children=" + Arrays.toString(children) +
+
                 ", observedValue=" + observedValue +
                 '}';
     }

@@ -10,10 +10,6 @@ import com.skroll.analyzer.model.bn.node.ProbabilityDiscreteNode;
 public class BNInference {
     ProbabilityDiscreteNode[] nodes;
 
-//    double[] messageToCategoryNode(ProbabilityDiscreteNode fNode, ProbabilityDiscreteNode cNode){
-//        return fNode.sumOutNodesWithObservationExcept(cNode);
-//    }
-
     /**
      * specialized method for updating beliefs with messages of the same sizes
      * @param originalBelief

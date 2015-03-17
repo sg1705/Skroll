@@ -21,7 +21,6 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
     ProbabilityNaiveBayesWithFeatureConditions pnbfModel;
 
     int [][] paraFeatureValsExistAtDocLevel;
-//    int[] docFeatureValues;
 
     double[][][] messagesToParagraphCategory; //From feature ij to paragraph i category
     double[][][] messagesToDocumentFeature; //From feature ij to documentFeature j
@@ -49,8 +48,6 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
         for( CoreMap paragraph : doc.getParagraphs())
             paragraphs.add(DocumentAnnotatingHelper.processParagraph(paragraph));
 
-//        docFeatureValues = DocumentAnnotatingHelper.generateDocumentFeatures(paragraphs,DOCUMENT_FEATURES,
-//                PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL);
 
         // store feature values for later probability updates
         paraFeatureValsExistAtDocLevel = new int[paragraphs.size()][PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL.size()];
@@ -90,7 +87,6 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
         for (int p=0; p<paragraphs.size(); p++){
             SimpleDataTuple tuple = DocumentAnnotatingHelper.makeDataTupleWithOnlyFeaturesObserved(
                     paragraphs.get(p), allParagraphFeatures, DOCUMENT_FEATURES.size());
-            //pnbfModel.setObservationOfFeatureNodesExistAtDocLevel(paraFeatureValsExistAtDocLevel[p]);
             pnbfModel.setObservation(tuple);
             paragraphCategoryBelief[p] = categoryNode.getProbabilities().clone();
             for (int i=0; i<fna.length; i++){
@@ -114,10 +110,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
         ProbabilityDiscreteNode[] fedna = (ProbabilityDiscreteNode[]) pnbfModel.getFeatureExistAtDocLevelArray();
 
         for (int p=0; p<paragraphCategoryBelief.length; p++){
-//            SimpleDataTuple tuple =
-//                    DocumentAnnotatingHelper.makeDataTuple(paragraphs.get(p), allParagraphFeatures, docFeatureValues);
-//            SimpleDataTuple tuple = new SimpleDataTuple(new String[0], )
-//            pnbfModel.setObservation(tuple );
+
             pnbfModel.setObservationOfFeatureNodesExistAtDocLevel(paraFeatureValsExistAtDocLevel[p]);
 
             for (int f=0; f<PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL.size(); f++){
@@ -137,9 +130,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
         ProbabilityDiscreteNode[] fedna = (ProbabilityDiscreteNode[]) pnbfModel.getFeatureExistAtDocLevelArray();
 
         for (int p=0; p<paragraphCategoryBelief.length; p++){
-//            SimpleDataTuple tuple =
-//                    DocumentAnnotatingHelper.makeDataTuple(paragraphs.get(p), allParagraphFeatures, docFeatureValues);
-//            pnbfModel.setObservation(tuple );
+
             pnbfModel.setObservationOfFeatureNodesExistAtDocLevel(paraFeatureValsExistAtDocLevel[p]);
 
             for (int f=0; f<PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL.size(); f++){

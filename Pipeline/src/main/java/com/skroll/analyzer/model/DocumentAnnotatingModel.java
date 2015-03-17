@@ -17,10 +17,8 @@ import java.util.List;
 public abstract class DocumentAnnotatingModel {
     static final int HMM_MODEL_LENGTH = 12;
 
-    //NaiveBayesWithFeatureConditions nbfModel;
     HiddenMarkovModel hmm;
-    //Document doc;
-    //List<CoreMap> paragraphs = new ArrayList<CoreMap>();
+
 
 
     static final List<RandomVariableType> DOCUMENT_FEATURES = Arrays.asList(
@@ -62,7 +60,6 @@ public abstract class DocumentAnnotatingModel {
             //RandomVariableType.WORD_INDEX
     );
 
-    //int[] docFeatureValues = new int[DOCUMENT_FEATURES.size()];
 
 
     public DocumentAnnotatingModel() {
@@ -70,14 +67,6 @@ public abstract class DocumentAnnotatingModel {
         allParagraphFeatures.addAll(PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL);
 
     }
-//    public void initialize(){
-//        allParagraphFeatures = new ArrayList<>(PARAGRAPH_FEATURES);
-//        allParagraphFeatures.addAll(PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL);
-////        for( CoreMap paragraph : doc.getParagraphs())
-////            paragraphs.add(DocumentAnnotatingHelper.processParagraph(paragraph));
-//        //generateDocumentFeatures();
-//    }
-
 
 
 }

@@ -59,10 +59,6 @@ public class TrainingWordNode extends WordNode {
         return probs;
     }
 
-//    double getProbability(String word, int parentValue){
-//        return probabilityFunction.get(word) [parentValue];
-//    }
-
 
 
 }
