@@ -1,0 +1,14 @@
+<div ng-repeat="section in ctrl.sections">
+	<md-list>
+		<md-button ng-click="ctrl.toggleSection($index)">
+			<h4>{{section.name}}</h4>
+		</md-button>
+    <md-item ng-show="section.isSelected" ng-repeat="item in section.items">
+      <md-item-content>
+        <md-button scroll-to-paragraph="{{item.itemId}}">{{item.text}}</md-button>
+      </md-item-content>
+      <md-divider></md-divider>
+    </md-item>
+	</md-list>
+	<md-divider></md-divider>
+</div>
