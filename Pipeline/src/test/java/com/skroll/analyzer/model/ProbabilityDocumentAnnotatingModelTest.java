@@ -27,31 +27,42 @@ public class ProbabilityDocumentAnnotatingModelTest {
         model= new ProbabilityDocumentAnnotatingModel( traingTest.getTnbf(), doc);
         System.out.println(model);
 
-        List<CoreMap> paraList = doc.getParagraphs();
 
-        System.out.print("initial document level feature believes\n");
+        System.out.println("initial believes\n");
+        printBelieves();
+
+    }
+
+    void printBelieves(){
+        System.out.print("document level feature believes\n");
         double[][] dBelieves = model.getDocumentFeatureBelief();
         for (int i=0; i<dBelieves.length; i++){
             System.out.println(model.DOCUMENT_FEATURES);
             System.out.println(Arrays.toString(dBelieves[i]));
         }
 
-        System.out.print("initial document level feature believes\n");
+        List<CoreMap> paraList = doc.getParagraphs();
+
+        System.out.print("document level feature believes\n");
         double[][] pBelieves = model.getParagraphCategoryBelief();
 
         for (int i=0; i<paraList.size(); i++){
             System.out.println(paraList.get(i).getText());
             System.out.println(Arrays.toString(pBelieves[i]));
         }
-
     }
 
     public void testComputeInitalBelieves() throws Exception {
 
     }
 
+    @Test
     public void testPassMessagesToParagraphCategories() throws Exception {
-
+        traingTest.testUpdateWithDocument();
+        model= new ProbabilityDocumentAnnotatingModel( traingTest.getTnbf(), doc);
+        model.passMessagesToParagraphCategories();
+        System.out.println("After passing message to paragraphCategory once:\n");
+        printBelieves();
     }
 
     public void testPassMessageToDocumentFeatures() throws Exception {
@@ -81,4 +92,5 @@ public class ProbabilityDocumentAnnotatingModelTest {
     public void testGetDocumentFeatureBelief() throws Exception {
 
     }
+
 }

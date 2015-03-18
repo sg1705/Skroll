@@ -41,6 +41,7 @@ public class ExtractDefinitionsFromParagraphInHtmlDocumentPipeTest extends TestC
         }
         System.out.println(count);
         assert (count == 307);
+        assert (DocumentHelper.getDefinedTerms( htmlDoc.getParagraphs().get(306)).get(0).equals("property"));
 
     }
 }

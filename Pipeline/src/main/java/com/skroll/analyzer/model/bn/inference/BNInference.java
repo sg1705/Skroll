@@ -24,4 +24,12 @@ public class BNInference {
         }
         return newBelief;
     }
+
+    public static double[] normalize(double[] vals, double weight){
+        double[] probs = new double[vals.length];
+        double sum=0;
+        for (double p:vals) sum+=p;
+        for (int i=0;i<probs.length;i++) probs[i]= vals[i]/sum*weight;
+        return probs;
+    }
 }

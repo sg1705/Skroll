@@ -118,7 +118,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
                 for (int i=0; i<messageFromDocFeature.length; i++) messageFromDocFeature[i] /= messagesToDocumentFeature[p][f][i];
                 messagesToParagraphCategory[p][f] = fedna[f].sumOutOtherNodesWithObservationAndMessage(dfna[f],
                         messageFromDocFeature, (ProbabilityDiscreteNode)pnbfModel.getCategoryNode());
-                for (int i=0; i<documentFeatureBelief[p].length; i++){
+                for (int i=0; i<paragraphCategoryBelief[p].length; i++){
                     paragraphCategoryBelief[p][i] *= messagesToParagraphCategory[p][f][i];
                 }
             }
@@ -139,7 +139,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
                 messagesToDocumentFeature[p][f] = fedna[f].sumOutOtherNodesWithObservationAndMessage(
                         (ProbabilityDiscreteNode)pnbfModel.getCategoryNode(),
                         messageFromParaCategory, dfna[f]);
-                for (int i=0; i<documentFeatureBelief[p].length; i++){
+                for (int i=0; i<documentFeatureBelief[f].length; i++){
                     documentFeatureBelief[f][i] *= messagesToDocumentFeature[p][f][i];
                 }
             }

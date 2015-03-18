@@ -10,7 +10,7 @@ import java.util.Map;
  * Created by wei2learn on 3/1/2015.
  */
 public class TrainingWordNode extends WordNode {
-    private static final double PRIOR_COUNT = 100;
+    private static final double PRIOR_COUNT = 1;
 
     Map<String, double[]> wordCount;
 
@@ -47,13 +47,16 @@ public class TrainingWordNode extends WordNode {
      * convert counts to probabilities
      */
     public Map<String, double[]> getProbabilities(){
+        //double [] priorCounts = ((TrainingDiscreteNode) parent).getPriorCount();
         Map<String, double[]> probs = new HashMap<>();
         int numValues = parent.getVariable().getFeatureSize();
+
         for (String w: wordCount.keySet()){
             double[] p = new double[ parent.getVariable().getFeatureSize()  ];
             //double sum=0;
             //for (int j=0; j<numValues; j++) sum += wordCount.get(w)[j];
-            for (int j=0; j<numValues; j++) p[j] = wordCount.get(w)[j]/ parent.getParameter(j);
+            for (int j=0; j<numValues; j++) p[j] = (//priorCounts[j] +
+                    wordCount.get(w)[j])/ parent.getParameter(j);
             probs.put(w,p);
         }
         return probs;

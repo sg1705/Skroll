@@ -37,6 +37,10 @@ public class TrainingDiscreteNode extends DiscreteNode {
         updateCount(multiIndex, weight);
     }
 
+    double[] getPriorCount(){
+        return normalize(PRIOR_COUNT*parameters.length);
+    }
+
     void updateCount(int[] multiIndex){
         updateCount(multiIndex, 1);
     }
@@ -49,6 +53,8 @@ public class TrainingDiscreteNode extends DiscreteNode {
      * convert counts to probabilities
      */
     public double[] getProbabilities(){
+        //double [] priorCounts = ((TrainingDiscreteNode) parent).getPriorCount();
+
         double[] probs = new double[counts.length];
         int numValues = familyVariables[0].getFeatureSize();
         for (int i=0; i<counts.length; i+=numValues){

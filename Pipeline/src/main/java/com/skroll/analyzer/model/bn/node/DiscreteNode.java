@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model.bn.node;
 
 import com.skroll.analyzer.model.RandomVariableType;
+import com.skroll.analyzer.model.bn.inference.BNInference;
 
 import java.util.Arrays;
 import java.util.List;
@@ -71,6 +72,10 @@ public class DiscreteNode{
             index += multiIndex[i];
         }
         return index;
+    }
+
+    double[] normalize(double weight){
+        return BNInference.normalize(parameters, weight);
     }
 
     public double getParameter(int index){
