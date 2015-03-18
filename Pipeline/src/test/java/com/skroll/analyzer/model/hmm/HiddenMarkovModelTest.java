@@ -1,11 +1,13 @@
 package com.skroll.analyzer.model.hmm;
 
 import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.util.Arrays;
 
-public class HiddenMarkovModelTest extends TestCase {
+public class HiddenMarkovModelTest {
 
+    @Test
     public void testUpdateProbabilities() throws Exception {
         HiddenMarkovModel hmm = new HiddenMarkovModel(3);
 //        String[] token={"a","b","c"};

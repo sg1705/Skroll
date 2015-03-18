@@ -10,13 +10,14 @@ import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
 import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TrainingDocumentAnnotatingModelTest extends TestCase {
+public class TrainingDocumentAnnotatingModelTest{
     String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining/AMC Networks CA.html";
 
     TrainingNaiveBayesWithFeatureConditions tnbf = new TrainingNaiveBayesWithFeatureConditions(
@@ -37,6 +38,7 @@ public class TrainingDocumentAnnotatingModelTest extends TestCase {
 
     }
 
+    @Test
     public void testUpdateWithDocument() throws Exception {
 
         System.out.println("initial model: \n" + tnbf);
@@ -63,6 +65,7 @@ public class TrainingDocumentAnnotatingModelTest extends TestCase {
         System.out.println("trained model: \n" + model);
     }
 
+    @Test
     public void testGenerateDocumentFeatures() throws Exception {
         String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining/AMC Networks CA.html";
         File file = new File(trainingFolderName);

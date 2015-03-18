@@ -9,7 +9,7 @@ import java.util.List;
  * Created by wei2learn on 3/1/2015.
  */
 public class TrainingDiscreteNode extends DiscreteNode {
-    private static final double PRIOR_COUNT = 1;
+    private static final double PRIOR_COUNT = 100;
 
     // store the counts and probability values in a one dimensional array.
     // convert multi-index to the index of the one dimensional array

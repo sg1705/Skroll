@@ -51,9 +51,9 @@ public class TrainingWordNode extends WordNode {
         int numValues = parent.getVariable().getFeatureSize();
         for (String w: wordCount.keySet()){
             double[] p = new double[ parent.getVariable().getFeatureSize()  ];
-            double sum=0;
-            for (int j=0; j<numValues; j++) sum += wordCount.get(w)[j];
-            for (int j=0; j<numValues; j++) p[j] = wordCount.get(w)[j]/sum;
+            //double sum=0;
+            //for (int j=0; j<numValues; j++) sum += wordCount.get(w)[j];
+            for (int j=0; j<numValues; j++) p[j] = wordCount.get(w)[j]/ parent.getParameter(j);
             probs.put(w,p);
         }
         return probs;

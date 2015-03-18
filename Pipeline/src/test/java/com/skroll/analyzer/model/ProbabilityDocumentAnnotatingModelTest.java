@@ -1,12 +1,16 @@
 package com.skroll.analyzer.model;
 
 import com.skroll.analyzer.model.bn.TrainingNaiveBayesWithFeatureConditions;
+import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
-public class ProbabilityDocumentAnnotatingModelTest extends TestCase {
+public class ProbabilityDocumentAnnotatingModelTest {
     String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining/AMC Networks CA.html";
     File file = new File(trainingFolderName);
     TrainingDocumentAnnotatingModelTest traingTest = new TrainingDocumentAnnotatingModelTest();
@@ -17,10 +21,28 @@ public class ProbabilityDocumentAnnotatingModelTest extends TestCase {
     public void test() throws  Exception{
     }
 
+    @Test
     public void testInitialize() throws Exception {
         traingTest.testUpdateWithDocument();
         model= new ProbabilityDocumentAnnotatingModel( traingTest.getTnbf(), doc);
         System.out.println(model);
+
+        List<CoreMap> paraList = doc.getParagraphs();
+
+        System.out.print("initial document level feature believes\n");
+        double[][] dBelieves = model.getDocumentFeatureBelief();
+        for (int i=0; i<dBelieves.length; i++){
+            System.out.println(model.DOCUMENT_FEATURES);
+            System.out.println(Arrays.toString(dBelieves[i]));
+        }
+
+        System.out.print("initial document level feature believes\n");
+        double[][] pBelieves = model.getParagraphCategoryBelief();
+
+        for (int i=0; i<paraList.size(); i++){
+            System.out.println(paraList.get(i).getText());
+            System.out.println(Arrays.toString(pBelieves[i]));
+        }
 
     }
 

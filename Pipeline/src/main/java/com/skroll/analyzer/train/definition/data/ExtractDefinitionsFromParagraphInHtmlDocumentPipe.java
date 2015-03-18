@@ -27,6 +27,7 @@ public class ExtractDefinitionsFromParagraphInHtmlDocumentPipe extends SyncPipe<
                 for (int i = 1; i < tokens.size() && !WordHelper.isQuote(tokens.get(i).getText()); i++) {
                      definedTerms.add(tokens.get(i));
                 }
+                DocumentHelper.setDefinedTermTokensInParagraph(definedTerms, paragraph);
             }
 
         }

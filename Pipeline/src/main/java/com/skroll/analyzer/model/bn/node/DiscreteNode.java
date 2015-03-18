@@ -81,6 +81,10 @@ public class DiscreteNode{
         return parameters;
     }
 
+    public void setParameters(double[] parameters) {
+        this.parameters = parameters;
+    }
+
     public void setChildren(DiscreteNode[] children) {
         this.children = children;
     }
