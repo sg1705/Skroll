@@ -1,5 +1,6 @@
 package com.skroll.analyzer.model.bn.node;
 
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -19,6 +20,16 @@ public class ProbabilityWordNode extends WordNode{
         probabilityFunction = parameters = trainingNode.getProbabilities();
     }
 
+    public double[] sumOutWordsWithObservation(){
+        double[] message = new double[parent.getVariable().getFeatureSize()];
+        Arrays.fill(message, 1);
+        for (String w:observedWords){
+            for (int i=0; i<message.length; i++)
+                message[i] *= parameters.get(w)[i];
+        }
+        return message;
+    }
+
 //    double getProbability(String word, int parentValue){
 //        return probabilityFunction.get(word) [parentValue];
 //    }
@@ -29,11 +40,5 @@ public class ProbabilityWordNode extends WordNode{
     }
 
 
-    @Override
-    public String toString() {
-        return "WordNodes{" +
-                ", probabilityFunction=" + probabilityFunction +
-                ", parent=" + parent +
-                '}';
-    }
+
 }

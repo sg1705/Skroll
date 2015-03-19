@@ -10,10 +10,7 @@ import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.util.WordHelper;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by wei2learn on 1/24/2015.
@@ -27,7 +24,7 @@ public class DocumentAnnotatingHelper {
             RandomVariableType.PARAGRAPH_NUMBER_TOKENS.getFeatureSize()-1;
 
     // create a copy of paragraph and annotate it further for training
-    static CoreMap makeTrainingParagraph(CoreMap paragraph){
+    static CoreMap processParagraph(CoreMap paragraph){
         CoreMap trainingParagraph = new CoreMap();
         List<Token> tokens = paragraph.getTokens();
         List<Token> newTokens = new ArrayList<>();
@@ -65,20 +62,52 @@ public class DocumentAnnotatingHelper {
 
         return trainingParagraph;
     }
-    public static SimpleDataTuple makeDataTuple(CoreMap paragraph, List<RandomVariableType> features, int[] documentFeatures){
+    public static SimpleDataTuple makeDataTuple(CoreMap paragraph, List<RandomVariableType> paraFeatures, int[] documentFeatures){
         String []tokens = getNBWords(paragraph);
 
-        int [] featureValues = new int[features.size() + documentFeatures.length];
+        int [] values = new int[paraFeatures.size() + documentFeatures.length+1];
         int index=0;
-        featureValues[index++] = (DocumentHelper.isDefinition(paragraph)) ? 1:0;
+        values[index++] = (DocumentHelper.isDefinition(paragraph)) ? 1:0;
 
-        for (int i=0; i<featureValues.length;i++){
-            featureValues[index++] = getParagraphFeature(paragraph, features.get(i));
+        for (int i=0; i<paraFeatures.size();i++){
+            values[index++] = getParagraphFeature(paragraph, paraFeatures.get(i));
         }
         for (int i=0; i<documentFeatures.length; i++)
-            featureValues[index++] = documentFeatures[i];
+            values[index++] = documentFeatures[i];
+
+        return new SimpleDataTuple(tokens,values);
+    }
+
+    public static SimpleDataTuple makeDataTupleWithOnlyFeaturesObserved(CoreMap paragraph, List<RandomVariableType> features, int docFeatureLen){
+        String []tokens = getNBWords(paragraph);
+
+        int [] featureValues = new int[features.size() + docFeatureLen+1];
+        int index=0;
+        featureValues[index++] = -1;
+
+        for (int i=0; i<features.size();i++){
+            featureValues[index++] = getParagraphFeature(paragraph, features.get(i));
+        }
+        for (int i=0; i<docFeatureLen; i++)
+            featureValues[index++] = -1;
 
         return new SimpleDataTuple(tokens,featureValues);
+    }
+
+    public static int[] generateDocumentFeatures(List<CoreMap> processedParagraphs,
+                                                   List<RandomVariableType> docFeatures,
+                                                   List<RandomVariableType> paraFeaturesExistAtDocLevel){
+        int[] docFeatureValues = new int[docFeatures.size()];
+
+        Arrays.fill(docFeatureValues, 1);
+        for( CoreMap paragraph : processedParagraphs) {
+            for (int f=0; f< docFeatureValues.length; f++){
+                if (getParagraphFeature(paragraph, RandomVariableType.PARAGRAPH_HAS_DEFINITION)==1)
+                    docFeatureValues[f] &= getParagraphFeature(paragraph,
+                            paraFeaturesExistAtDocLevel.get(f));
+            }
+        }
+        return docFeatureValues;
     }
 
     static DataTuple makeNBDataTuple(CoreMap paragraph, List<RandomVariableType> features){
