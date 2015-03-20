@@ -1,30 +1,39 @@
 package com.skroll.analyzer.model;
 
 import com.skroll.analyzer.model.bn.TrainingNaiveBayesWithFeatureConditions;
+import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+//todo: prior count is not set properly, making the probability favoring positive class.
 public class ProbabilityDocumentAnnotatingModelTest {
-    String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining/AMC Networks CA.html";
+    String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
     File file = new File(trainingFolderName);
     TrainingDocumentAnnotatingModelTest traingTest = new TrainingDocumentAnnotatingModelTest();
     Document doc = traingTest.makeDoc(file);
     ProbabilityDocumentAnnotatingModel model;
+    boolean doneSetup=false;
 
 
-    public void test() throws  Exception{
+    @Before
+    public void setupOnce() throws Exception{
+        if (doneSetup) return;
+        traingTest.testUpdateWithDocument();
+        model= new ProbabilityDocumentAnnotatingModel( traingTest.getTnbf(), traingTest.getModel().getHmm(), doc);
+        doneSetup = true;
     }
 
     @Test
     public void testInitialize() throws Exception {
-        traingTest.testUpdateWithDocument();
-        model= new ProbabilityDocumentAnnotatingModel( traingTest.getTnbf(), doc);
+
         System.out.println(model);
 
 
@@ -47,8 +56,14 @@ public class ProbabilityDocumentAnnotatingModelTest {
         double[][] pBelieves = model.getParagraphCategoryBelief();
 
         for (int i=0; i<paraList.size(); i++){
+            BNInference.normalizeLog(pBelieves[i]);
+
+            System.out.print(i+" [");
+            for (int j=0; j<pBelieves[i].length; j++)
+                System.out.printf("%.0f ", pBelieves[i][j]);
+            System.out.print("] ");
             System.out.println(paraList.get(i).getText());
-            System.out.println(Arrays.toString(pBelieves[i]));
+
         }
     }
 
@@ -58,10 +73,9 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
     @Test
     public void testPassMessagesToParagraphCategories() throws Exception {
-        traingTest.testUpdateWithDocument();
-        model= new ProbabilityDocumentAnnotatingModel( traingTest.getTnbf(), doc);
         model.passMessagesToParagraphCategories();
         System.out.println("After passing message to paragraphCategory once:\n");
+
         printBelieves();
     }
 
@@ -81,8 +95,11 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
     }
 
+    @Test
     public void testAnnotateDocument() throws Exception {
-
+        model.annotateDocument();
+        System.out.println("annotated terms\n");
+        DocumentAnnotatingHelper.printAnnotatedDoc(doc);
     }
 
     public void testGetParagraphCategoryBelief() throws Exception {
@@ -93,4 +110,9 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
     }
 
+    @Test
+    public void testAnnotateDocument1() throws Exception {
+        model.annotateDocument();
+
+    }
 }

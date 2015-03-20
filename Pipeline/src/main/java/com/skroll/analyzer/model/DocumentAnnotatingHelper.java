@@ -5,6 +5,7 @@ import com.skroll.analyzer.model.RandomVariableType;
 import com.skroll.analyzer.model.bn.SimpleDataTuple;
 import com.skroll.analyzer.model.nb.DataTuple;
 import com.skroll.document.CoreMap;
+import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
@@ -217,6 +218,14 @@ public class DocumentAnnotatingHelper {
         return -1;
     }
 
+    public static void printAnnotatedDoc(Document doc){
+
+        for (CoreMap para:DocumentHelper.getDefinitionParagraphs(doc)){
+            System.out.println(para.getText());
+            System.out.println(DocumentHelper.getDefinedTermTokensInParagraph(para));
+        }
+        System.out.println(DocumentHelper.getDefinitionParagraphs(doc).size());
+    }
 
 
 }

@@ -18,14 +18,17 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TrainingDocumentAnnotatingModelTest{
-    String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining/AMC Networks CA.html";
-
+    String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining";
+    TrainingDocumentAnnotatingModel model;
     TrainingNaiveBayesWithFeatureConditions tnbf = new TrainingNaiveBayesWithFeatureConditions(
             RandomVariableType.PARAGRAPH_HAS_DEFINITION,
             DocumentAnnotatingModel.PARAGRAPH_FEATURES,
             DocumentAnnotatingModel.PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL,
             DocumentAnnotatingModel.DOCUMENT_FEATURES
     );
+
+
+
     public void testUpdateWithParagraph() throws Exception {
 
     }
@@ -44,14 +47,14 @@ public class TrainingDocumentAnnotatingModelTest{
         System.out.println("initial model: \n" + tnbf);
 
         //String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining";
-        TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel(tnbf);
+        model = new TrainingDocumentAnnotatingModel(tnbf);
 
 
         File file = new File(trainingFolderName);
         if (file.isDirectory()) {
             File[] listOfFiles = file.listFiles();
             for (File f:listOfFiles) {
-                Document doc = makeDoc(file);
+                Document doc = makeDoc(f);
                 //TrainingDocumentAnnotatingModel model = buildModel(f);
                 model.updateWithDocument(doc);
             }
@@ -114,5 +117,9 @@ public class TrainingDocumentAnnotatingModelTest{
 
     public TrainingNaiveBayesWithFeatureConditions getTnbf() {
         return tnbf;
+    }
+
+    public TrainingDocumentAnnotatingModel getModel() {
+        return model;
     }
 }

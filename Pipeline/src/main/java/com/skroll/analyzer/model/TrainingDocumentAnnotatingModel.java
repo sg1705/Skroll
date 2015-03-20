@@ -114,6 +114,8 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
             updateWithParagraph(paragraph, docFeatureValues);
     }
 
+
+
     @Override
     public String toString() {
         return "TrainingDocumentAnnotatingModel{" +

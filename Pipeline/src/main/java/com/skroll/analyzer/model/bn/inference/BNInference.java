@@ -32,4 +32,25 @@ public class BNInference {
         for (int i=0;i<probs.length;i++) probs[i]= vals[i]/sum*weight;
         return probs;
     }
+
+    /**
+     * make the maximum to be 0.
+     * @param vals
+     */
+    public static void normalizeLog(double[] vals){
+        double max=vals[0];
+        for (int i=1;i<vals.length;i++) if (vals[i]>max) max=vals[i];
+        for (int i=0;i<vals.length;i++) vals[i] = vals[i] - max;
+    }
+
+
+    public static void log(double[] vals){
+        for (int i=0;i<vals.length;i++)
+            vals[i] = Math.log(vals[i]);
+    }
+
+    public static void exp(double[] vals){
+        for (int i=0;i<vals.length;i++)
+            vals[i] = Math.exp(vals[i]);
+    }
 }

@@ -68,6 +68,8 @@ public abstract class DocumentAnnotatingModel {
 
     }
 
-
+    public HiddenMarkovModel getHmm() {
+        return hmm;
+    }
 }
 

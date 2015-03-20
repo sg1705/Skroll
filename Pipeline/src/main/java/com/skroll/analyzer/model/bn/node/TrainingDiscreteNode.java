@@ -9,7 +9,7 @@ import java.util.List;
  * Created by wei2learn on 3/1/2015.
  */
 public class TrainingDiscreteNode extends DiscreteNode {
-    private static final double PRIOR_COUNT = 100;
+    private static final double PRIOR_COUNT = .1;
 
     // store the counts and probability values in a one dimensional array.
     // convert multi-index to the index of the one dimensional array
@@ -37,8 +37,12 @@ public class TrainingDiscreteNode extends DiscreteNode {
         updateCount(multiIndex, weight);
     }
 
-    double[] getPriorCount(){
-        return normalize(PRIOR_COUNT*parameters.length);
+    /**
+     * currently only used to calculate the prior counts for word nodes
+     * @return
+     */
+    double[] getPriorCount(double weight){
+        return normalize(weight*parameters.length);
     }
 
     void updateCount(int[] multiIndex){
@@ -61,6 +65,19 @@ public class TrainingDiscreteNode extends DiscreteNode {
             double sum=0;
             for (int j=0; j<numValues; j++) sum += counts[j+i];
             for (int j=0; j<numValues; j++) probs[i+j] = counts[i+j]/sum;
+        }
+        return probs;
+    }
+
+    public double[] getLogProbabilities(){
+        //double [] priorCounts = ((TrainingDiscreteNode) parent).getPriorCount();
+
+        double[] probs = new double[counts.length];
+        int numValues = familyVariables[0].getFeatureSize();
+        for (int i=0; i<counts.length; i+=numValues){
+            double sum=0;
+            for (int j=0; j<numValues; j++) sum += counts[j+i];
+            for (int j=0; j<numValues; j++) probs[i+j] = Math.log(counts[i+j]/sum);
         }
         return probs;
     }

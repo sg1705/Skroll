@@ -30,11 +30,6 @@ public class ProbabilityWordNode extends WordNode{
         return message;
     }
 
-//    double getProbability(String word, int parentValue){
-//        return probabilityFunction.get(word) [parentValue];
-//    }
-
-
     public Map<String, double[]> getProbabilities() {
         return probabilityFunction;
     }
