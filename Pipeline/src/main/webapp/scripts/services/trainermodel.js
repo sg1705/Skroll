@@ -10,11 +10,15 @@
 
 var ToolbarModel = {
 	trainerToolbar : {
-		isTrainerMode: false
+		isTrainerMode: true
 	},
 
 	toolbarInfo : {
 		title: ""		
+	},
+
+	trainerPrompt: {
+		text: ''
 	}
 
 };
