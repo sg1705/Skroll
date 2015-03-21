@@ -17,7 +17,7 @@ md-list .md-button {
     width: 100%;
 }
 
-md-toolbar .skroll-toolbar {
+md-toolbar.skroll-toolbar {
     height: 48px;
     min-height: 48px;
 }

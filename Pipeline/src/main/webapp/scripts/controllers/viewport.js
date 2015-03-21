@@ -9,12 +9,15 @@
  */
 
 var ViewPortCtrl = function(SelectionModel, documentService, $mdBottomSheet,
-  ToolbarModel, LHSModel) {
+  ToolbarModel, LHSModel, documentModel) {
   this.SelectionModel = SelectionModel;
   this.documentService = documentService;
   this.$mdBottomSheet = $mdBottomSheet;
   this.ToolbarModel = ToolbarModel;
   this.LHSModel = LHSModel;
+  this.documentModel = documentModel;
+
+
 }
 
 ViewPortCtrl.prototype.mouseUp = function($event) {
@@ -113,17 +116,33 @@ ViewPortCtrl.prototype.handleTrainerTextSelection = function(paraId,
     }
   }
 
-  if (!match)
+  if (!match) {
+    prompt = 'Please choose the class for this [' + selectedText + ']';
+    //show set of questions for classes
+    var items = [];
+    for (var ii = 0; ii < documentModel.classes.length; ii++) {
+      items.push(documentModel.classes[ii].name);
+    }
+    this.showYesNoDialog(prompt, items).then(function(clicked) {
+      if (clicked == 1) {
+        LHSModel.sections[0].items = _.reject(LHSModel.sections[0].items, function(obj) {
+          if (obj.itemId == paraId)
+              return true;
+        });
+        console.log(clicked);
+      }
+    });
     return;
-
-  this.showYesNoDialog(prompt).then(function(clicked) {
+  }
+  //create a set of questions. In this case, yes or no
+  var items = ['Yes', 'No'];
+  this.showYesNoDialog(prompt, items).then(function(clicked) {
     if (clicked == 1) {
       LHSModel.sections[0].items = _.reject(LHSModel.sections[0].items, function(obj) {
         if ((obj.itemId == paraId) && (selectedText = obj.text ))
             return true;
       });
     }
-
   })
 }
 
@@ -148,24 +167,40 @@ ViewPortCtrl.prototype.handleTrainerParaSelection = function(paraId) {
   }
 
   if (!match) {
-    return;
+    prompt = 'Please choose the class for this paragraph';
+    //show set of questions for classes
+    var items = [];
+    for (var ii = 0; ii < documentModel.classes.length; ii++) {
+      items.push(documentModel.classes[ii].name);
+    }
+      this.showYesNoDialog(prompt, items).then(function(clicked) {
+        if (clicked == 1) {
+          LHSModel.sections[0].items = _.reject(LHSModel.sections[0].items, function(obj) {
+            if (obj.itemId == paraId)
+                return true;
+          });
+          console.log(clicked);
+        }
+      });
+
+  } else {
+    //create a set of questions. In this case, yes or no
+    var items = ['Yes', 'No'];
+    this.showYesNoDialog(prompt, items).then(function(clicked) {
+      if (clicked == 1) {
+        LHSModel.sections[0].items = _.reject(LHSModel.sections[0].items, function(obj) {
+          if (obj.itemId == paraId)
+              return true;
+        });        
+      }
+      console.log(clicked);
+    })
+
   }
 
-  this.showYesNoDialog(prompt).then(function(clicked) {
-    if (clicked == 1) {
-      LHSModel.sections[0].items = _.reject(LHSModel.sections[0].items, function(obj) {
-        if (obj.itemId == paraId)
-            return true;
-      });
-      
-    }
-    console.log(clicked);
-  })
 }
 
-ViewPortCtrl.prototype.showYesNoDialog = function(text) {
-  //create a set of questions. In this case, yes or no
-  var items = ['Yes', 'No'];
+ViewPortCtrl.prototype.showYesNoDialog = function(text, items) {
   this.ToolbarModel.trainerPrompt.text = text;
   this.ToolbarModel.trainerPrompt.items = items;
   //there are two types of bottom sheet
