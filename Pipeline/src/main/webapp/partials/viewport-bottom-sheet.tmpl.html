@@ -1,9 +1,18 @@
 <md-bottom-sheet class="md-grid">
-  <md-toolbar>
-    Trainer mode question
-  </md-toolbar>
-  {{prompt}}
-  <md-button ng-click="itemClicked($index)" ng-repeat="item in items">{{item}}</md-button>
-
-
+  <md-card>
+    <md-card-content>
+	  <md-toolbar class="skroll-toolbar">
+	  	<h1>
+	    {{prompt}}
+	  	</h1>
+	  </md-toolbar>
+	  	<md-list>
+	  		<md-item ng-repeat="item in items">
+	  		  <md-item-content>
+					<md-button class="md-primary" ng-click="itemClicked($index)">{{item}}</md-button>
+				</md-item-content>
+	  		</md-item>
+  		</md-list>
+  </md-card-content>
+</md-card>
 </md-bottom-sheet>
