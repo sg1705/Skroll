@@ -22,12 +22,21 @@ public class ProbabilityDocumentAnnotatingModelTest {
     ProbabilityDocumentAnnotatingModel model;
     boolean doneSetup=false;
 
+    RandomVariableType wordType = RandomVariableType.WORD_IS_DEFINED_TERM;
+    RandomVariableType paraType = RandomVariableType.PARAGRAPH_HAS_DEFINITION;
+    List<RandomVariableType> wordFeatures = model.DEFAULT_WORD_FEATURES;
+    List<RandomVariableType> paraFeatures = model.DEFAULT_PARAGRAPH_FEATURES;
+    List<RandomVariableType> paraDocFeatures = model.DEFAULT_PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL;
+    List<RandomVariableType> docFeatures = model.DEFAULT_DOCUMENT_FEATURES;
+
 
     @Before
     public void setupOnce() throws Exception{
         if (doneSetup) return;
         traingTest.testUpdateWithDocument();
-        model= new ProbabilityDocumentAnnotatingModel( traingTest.getTnbf(), traingTest.getModel().getHmm(), doc);
+        model= new ProbabilityDocumentAnnotatingModel( traingTest.getTnbf(), traingTest.getModel().getHmm(), doc,
+                wordType, wordFeatures, paraType, paraFeatures, paraDocFeatures, docFeatures
+                );
         doneSetup = true;
     }
 
@@ -46,7 +55,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
         System.out.print("document level feature believes\n");
         double[][] dBelieves = model.getDocumentFeatureBelief();
         for (int i=0; i<dBelieves.length; i++){
-            System.out.println(model.DOCUMENT_FEATURES);
+            System.out.println(model.DEFAULT_DOCUMENT_FEATURES);
             System.out.println(Arrays.toString(dBelieves[i]));
         }
 
@@ -110,9 +119,4 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
     }
 
-    @Test
-    public void testAnnotateDocument1() throws Exception {
-        model.annotateDocument();
-
-    }
 }

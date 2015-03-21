@@ -96,6 +96,7 @@ public class DocumentAnnotatingHelper {
     }
 
     public static int[] generateDocumentFeatures(List<CoreMap> processedParagraphs,
+                                                 RandomVariableType paraCategory,
                                                    List<RandomVariableType> docFeatures,
                                                    List<RandomVariableType> paraFeaturesExistAtDocLevel){
         int[] docFeatureValues = new int[docFeatures.size()];
@@ -103,7 +104,7 @@ public class DocumentAnnotatingHelper {
         Arrays.fill(docFeatureValues, 1);
         for( CoreMap paragraph : processedParagraphs) {
             for (int f=0; f< docFeatureValues.length; f++){
-                if (getParagraphFeature(paragraph, RandomVariableType.PARAGRAPH_HAS_DEFINITION)==1)
+                if (getParagraphFeature(paragraph, paraCategory)==1)
                     docFeatureValues[f] &= getParagraphFeature(paragraph,
                             paraFeaturesExistAtDocLevel.get(f));
             }

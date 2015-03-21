@@ -35,9 +35,21 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
     double[][] paragraphCategoryBelief;
     double[][] documentFeatureBelief;
 
-    public ProbabilityDocumentAnnotatingModel(TrainingNaiveBayesWithFeatureConditions tnbf, HiddenMarkovModel hmm, Document doc) {
+    public ProbabilityDocumentAnnotatingModel(TrainingNaiveBayesWithFeatureConditions tnbf, HiddenMarkovModel hmm,
+                                              Document doc,
+                                                RandomVariableType wordType,
+                                                List<RandomVariableType> wordFeatures,
+                                                RandomVariableType paraCategory,
+                                                List<RandomVariableType> paraFeatures,
+                                                List<RandomVariableType> paraDocFeatures,
+                                                List<RandomVariableType> docFeatures){
 
-        super();
+            this.wordType = wordType;
+            this.wordFeatures = wordFeatures;
+            this.paraCategory = paraCategory;
+            this.paraFeatures = paraFeatures;
+            this.paraDocFeatures = paraDocFeatures;
+            this.docFeatures = docFeatures;
         this.doc = doc;
         lpnbfModel = new LogProbabilityNaiveBayesWithFeatureConditions(tnbf);
 
@@ -47,8 +59,9 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 //            wordFeatureSizes[i] = WORD_FEATURES.get(i).getFeatureSize();
 //        hmm = new HiddenMarkovModel(HMM_MODEL_LENGTH,
 //                RandomVariableType.WORD_IS_DEFINED_TERM.getFeatureSize(), wordFeatureSizes);
-
+        initialize();
          initialize(doc);
+
     }
 
     void initialize(Document doc){
@@ -60,11 +73,11 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
 
         // store feature values for later probability updates
-        paraFeatureValsExistAtDocLevel = new int[paragraphs.size()][PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL.size()];
+        paraFeatureValsExistAtDocLevel = new int[paragraphs.size()][paraDocFeatures.size()];
         for (int p=0; p<paragraphs.size();p++){
-            for (int f=0; f<PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL.size(); f++) {
+            for (int f=0; f<paraDocFeatures.size(); f++) {
                 paraFeatureValsExistAtDocLevel[p][f] = DocumentAnnotatingHelper.getParagraphFeature(
-                        paragraphs.get(p), PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL.get(f));
+                        paragraphs.get(p), paraDocFeatures.get(f));
             }
         }
 
@@ -75,10 +88,10 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
         int numParagraphs = paragraphs.size();
         // todo: assuming the values are binary sized. need to make this more general.
-        messagesToDocumentFeature = new double[numParagraphs][DOCUMENT_FEATURES.size()][2];
-        messagesToParagraphCategory = new double[numParagraphs][PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL.size()][2];
+        messagesToDocumentFeature = new double[numParagraphs][docFeatures.size()][2];
+        messagesToParagraphCategory = new double[numParagraphs][paraDocFeatures.size()][2];
         paragraphCategoryBelief = new double[numParagraphs][2];
-        documentFeatureBelief = new double[DOCUMENT_FEATURES.size()][2];
+        documentFeatureBelief = new double[docFeatures.size()][2];
 
         // compute initial believes
         LogProbabilityDiscreteNode[] documentFeatureNodeArray =
@@ -89,14 +102,14 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 //                Arrays.fill(messagesToDocumentFeature[p][f], 1);
 //                Arrays.fill(messagesToParagraphCategory[p][f], 1);
 //            }
-        for (int f=0; f<PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL.size(); f++)
+        for (int f=0; f<paraDocFeatures.size(); f++)
             documentFeatureBelief[f] = documentFeatureNodeArray[f].getParameters().clone();
 
         LogProbabilityDiscreteNode[] fna = (LogProbabilityDiscreteNode[]) lpnbfModel.getFeatureNodeArray();
         LogProbabilityDiscreteNode categoryNode = (LogProbabilityDiscreteNode)lpnbfModel.getCategoryNode();
         for (int p=0; p<paragraphs.size(); p++){
             SimpleDataTuple tuple = DocumentAnnotatingHelper.makeDataTupleWithOnlyFeaturesObserved(
-                    paragraphs.get(p), allParagraphFeatures, DOCUMENT_FEATURES.size());
+                    paragraphs.get(p), allParagraphFeatures, docFeatures.size());
             lpnbfModel.setObservation(tuple);
             paragraphCategoryBelief[p] = categoryNode.getLogProbabilities().clone();
             for (int i=0; i<fna.length; i++){
@@ -127,7 +140,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
             lpnbfModel.setObservationOfFeatureNodesExistAtDocLevel(paraFeatureValsExistAtDocLevel[p]);
 
-            for (int f=0; f<PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL.size(); f++){
+            for (int f=0; f<paraDocFeatures.size(); f++){
                 double[] messageFromDocFeature = documentFeatureBelief[f].clone();
                 for (int i=0; i<messageFromDocFeature.length; i++) messageFromDocFeature[i] -= messagesToDocumentFeature[p][f][i];
                 messagesToParagraphCategory[p][f] = fedna[f].sumOutOtherNodesWithObservationAndMessage(dfna[f],
@@ -147,7 +160,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
             lpnbfModel.setObservationOfFeatureNodesExistAtDocLevel(paraFeatureValsExistAtDocLevel[p]);
 
-            for (int f=0; f<PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL.size(); f++){
+            for (int f=0; f<paraDocFeatures.size(); f++){
                 double[] messageFromParaCategory = paragraphCategoryBelief[p].clone();
                 for (int i=0; i<messageFromParaCategory.length; i++) messageFromParaCategory[i] -= messagesToParagraphCategory[p][f][i];
                 messagesToDocumentFeature[p][f] = fedna[f].sumOutOtherNodesWithObservationAndMessage(
@@ -194,7 +207,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
             if (paragraph.getTokens().size() == 0)
                 return;
             CoreMap trainingParagraph = DefinedTermExtractionHelper.makeTrainingParagraph(paragraph);
-            DataTuple nbDataTuple = DefinedTermExtractionHelper.makeNBDataTuple(trainingParagraph, PARAGRAPH_FEATURES);
+            DataTuple nbDataTuple = DefinedTermExtractionHelper.makeNBDataTuple(trainingParagraph, paraFeatures);
 
 
             // using NB category as the prior prob to the input of HMM.
@@ -214,10 +227,10 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
             String[] wordsArray = words.toArray(new String[words.size()]);
 
             int length = Math.min(hmm.size(), tokens.size());
-            int[][] features = new int[length][WORD_FEATURES.size()];
+            int[][] features = new int[length][wordFeatures.size()];
             for (int i=0; i<length ;i++){
-                for (int f=0; f<WORD_FEATURES.size();f++){
-                    features[i][f] = DefinedTermExtractionHelper.getWordFeature(paragraph, tokens.get(i), WORD_FEATURES.get(f));
+                for (int f=0; f<wordFeatures.size();f++){
+                    features[i][f] = DefinedTermExtractionHelper.getWordFeature(paragraph, tokens.get(i), wordFeatures.get(f));
                 }
             }
             int[] states = hmm.mostLikelyStateSequence(wordsArray, features, logPrioProbs);
@@ -253,7 +266,9 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
         return documentFeatureBelief;
     }
 
-
+    public LogProbabilityNaiveBayesWithFeatureConditions getLpnbfModel() {
+        return lpnbfModel;
+    }
 
     @Override
     public String toString() {

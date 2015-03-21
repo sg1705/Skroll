@@ -20,12 +20,12 @@ import java.util.List;
 public class TrainingDocumentAnnotatingModelTest{
     String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining";
     TrainingDocumentAnnotatingModel model;
-    TrainingNaiveBayesWithFeatureConditions tnbf = new TrainingNaiveBayesWithFeatureConditions(
-            RandomVariableType.PARAGRAPH_HAS_DEFINITION,
-            DocumentAnnotatingModel.PARAGRAPH_FEATURES,
-            DocumentAnnotatingModel.PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL,
-            DocumentAnnotatingModel.DOCUMENT_FEATURES
-    );
+//    TrainingNaiveBayesWithFeatureConditions tnbf = new TrainingNaiveBayesWithFeatureConditions(
+//            RandomVariableType.PARAGRAPH_HAS_DEFINITION,
+//            DocumentAnnotatingModel.DEFAULT_PARAGRAPH_FEATURES,
+//            DocumentAnnotatingModel.DEFAULT_PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL,
+//            DocumentAnnotatingModel.DEFAULT_DOCUMENT_FEATURES
+//    );
 
 
 
@@ -44,11 +44,11 @@ public class TrainingDocumentAnnotatingModelTest{
     @Test
     public void testUpdateWithDocument() throws Exception {
 
-        System.out.println("initial model: \n" + tnbf);
 
         //String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining";
-        model = new TrainingDocumentAnnotatingModel(tnbf);
+        model = new TrainingDocumentAnnotatingModel();
 
+        System.out.println("initial model: \n" + model.getTnbfModel());
 
         File file = new File(trainingFolderName);
         if (file.isDirectory()) {
@@ -81,8 +81,9 @@ public class TrainingDocumentAnnotatingModelTest{
         for( CoreMap paragraph : doc.getParagraphs())
             paragraphs.add(DocumentAnnotatingHelper.processParagraph(paragraph));
         int[] docFeatureValues = DocumentAnnotatingHelper.generateDocumentFeatures(paragraphs,
-                DocumentAnnotatingModel.DOCUMENT_FEATURES,
-                DocumentAnnotatingModel.PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL);
+                model.getParaCategory(),
+                DocumentAnnotatingModel.DEFAULT_DOCUMENT_FEATURES,
+                DocumentAnnotatingModel.DEFAULT_PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL);
         System.out.println(Arrays.toString(docFeatureValues));
 
     }
@@ -116,7 +117,7 @@ public class TrainingDocumentAnnotatingModelTest{
     }
 
     public TrainingNaiveBayesWithFeatureConditions getTnbf() {
-        return tnbf;
+        return model.getTnbfModel();
     }
 
     public TrainingDocumentAnnotatingModel getModel() {
