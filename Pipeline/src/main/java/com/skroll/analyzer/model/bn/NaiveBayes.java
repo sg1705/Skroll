@@ -46,13 +46,16 @@ public abstract class NaiveBayes {
 
     void generateParentsAndChildren(){
         categoryNode.setChildren(featureNodeArray);
+        categoryNode.setParents(new DiscreteNode[0]);
         for (int i=0; i<featureNodeArray.length; i++){
             featureNodeArray[i].setParents(Arrays.asList(categoryNode).
                     toArray(new DiscreteNode[1]));
+            featureNodeArray[i].setChildren(new DiscreteNode[0]);
         }
+        wordNode.setParent(categoryNode);
     }
 
-    void setObservation(SimpleDataTuple tuple){
+    public void setObservation(SimpleDataTuple tuple){
         int[] values = tuple.getDiscreteValues();
         for (int i=0; i<values.length; i++){
             discreteNodeArray[i].setObservation(values[i]);
@@ -60,7 +63,7 @@ public abstract class NaiveBayes {
         wordNode.setObservation( tuple.getWords());
     }
 
-    void clearObservation(){
+    public void clearObservation(){
         for (DiscreteNode node:discreteNodeArray){
             node.clearObservation();
         }

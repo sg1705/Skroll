@@ -185,9 +185,9 @@ public class API {
     }
 
     @GET
-    @Path("/getDefinition")
+    @Path("/getTerms")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getDefinition(@QueryParam("documentId") String documentId, @Context HttpHeaders hh) {
+    public Response getTerm(@QueryParam("documentId") String documentId, @Context HttpHeaders hh) {
 
         if(documentId==null) {
             MultivaluedMap<String, String> headerParams = hh.getRequestHeaders();
@@ -217,7 +217,7 @@ public class API {
                     logger.debug(paragraph.getId() + "\t" + "DEFINITION" + "\t" + definition);
                     if (definition.isEmpty())
                         continue;
-                    definedTermParagraphList.add(new Paragraph(paragraph.getId(), Joiner.on(" ").join(definition)));
+                    definedTermParagraphList.add(new Paragraph(paragraph.getId(), Joiner.on(" ").join(definition), Paragraph.DEFINITION_CLASSIFICATION));
                 }
             }
         }
@@ -272,7 +272,7 @@ public class API {
         }
         for (Paragraph modifiedParagraph: definitionJson) {
             for (CoreMap paragraph : doc.getParagraphs()) {
-                 if(paragraph.getId().equals(modifiedParagraph.getParagraphId())) {
+                 if(paragraph.getId().equals(modifiedParagraph.getParagraphId()) && modifiedParagraph.getClassificationId()== Paragraph.DEFINITION_CLASSIFICATION) {
                      paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
                      paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class,true);
                      TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, TrainingWeightAnnotationHelper.DEFINITION, userWeight);
@@ -290,7 +290,7 @@ public class API {
                      paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, false);
 
                      // add annotations that received from client - definedTermList
-                     List<String> addedDefinition = Lists.newArrayList( Splitter.on(" ").split(modifiedParagraph.getDefinedTerm()));
+                     List<String> addedDefinition = Lists.newArrayList( Splitter.on(" ").split(modifiedParagraph.getTerm()));
                      if (addedDefinition!=null && !addedDefinition.isEmpty()) {
                          List<Token> tokens = DocumentHelper.getTokens(addedDefinition);
                          DocumentHelper.addDefinedTermTokensInParagraph(tokens, paragraph);

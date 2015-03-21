@@ -38,6 +38,7 @@ public class TrainingWordNode extends WordNode {
         if (counts == null) {
             counts = new double[ parent.getVariable().getFeatureSize() ];
             Arrays.fill(counts, PRIOR_COUNT);
+            wordCount.put(word, counts);
         }
         counts[parentValue] += weight;
     }
@@ -53,21 +54,11 @@ public class TrainingWordNode extends WordNode {
             double sum=0;
             for (int j=0; j<numValues; j++) sum += wordCount.get(w)[j];
             for (int j=0; j<numValues; j++) p[j] = wordCount.get(w)[j]/sum;
+            probs.put(w,p);
         }
         return probs;
     }
 
-//    double getProbability(String word, int parentValue){
-//        return probabilityFunction.get(word) [parentValue];
-//    }
 
 
-
-    @Override
-    public String toString() {
-        return "WordNodes{" +
-                "wordCount=" + wordCount +
-                ", parent=" + parent +
-                '}';
-    }
 }
