@@ -9,20 +9,26 @@
  */
 
 var LHSModel = {
-	
-	sections : [ {
+
+	sections: [{
 		name: 'DEFINITIONS',
-		items: [{itemId: 'p_123', text: 'hey there'}],
+		items: [{
+			itemId: 'p_123',
+			text: 'hey there'
+		}],
 		isSelected: true
-	},
-	{
+	}, {
 		name: 'TABLE OF CONTENTS',
-		items: [{itemId: 'p_123', text: 'hey there'}],
+		items: [{
+			itemId: 'p_123',
+			text: 'hey there'
+		}],
 		isSelected: false
-	}]
+	}],
+
+	model: []
 
 };
-
 
 angular.module('SkrollApp')
   .factory('LHSModel', function () {

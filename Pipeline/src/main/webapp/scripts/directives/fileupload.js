@@ -31,6 +31,7 @@ angular.module('SkrollApp')
                   done: function (e, data) {
                       console.log("Done setting")
                       $("#content").html(data.result);
+                      //TODO delete this once we have the end point
                       //populate definitions
                       documentService.getDefinition().then(function(definitions){
                         //create new LHS model items
@@ -43,7 +44,18 @@ angular.module('SkrollApp')
                           items.push(item);
                         }
                         LHSModel.sections[0].items = items;
+                        // TODO - end delete
+
                         console.log('items:' + items.length);
+                      }, function(msg) {
+                        console.log(msg);
+                      });
+
+                      //use get terms
+                      documentService.getDefinition().then(function(terms){
+                        //create new LHS model items
+                        LHSModel.model = terms;
+                        console.log(terms);
                       }, function(msg) {
                         console.log(msg);
                       });

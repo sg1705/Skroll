@@ -154,11 +154,13 @@ ViewPortCtrl.prototype.handleTrainerParaSelection = function(paraId) {
   var text = "Is this paragraph a %s";
   var match = false;
   var prompt = '';
+  var matchClass;
   for (var jj = 0; jj < sections.length; jj++) {
     for (var ii = 0; ii < sections[jj].items.length; ii++) {
       if (sections[jj].items[ii].itemId == paraId) {
         //check for defintions
         match = true;
+        matchClass = jj;
         prompt = s.sprintf(text, sections[jj].name);
         console.log(prompt);
         break;
@@ -185,7 +187,7 @@ ViewPortCtrl.prototype.handleTrainerParaSelection = function(paraId) {
 
   } else {
     //create a set of questions. In this case, yes or no
-    var items = ['Yes', 'No'];
+    var items = ['Yes', 'No', 'Yes to all ' + documentModel.classes[matchClass].name];
     this.showYesNoDialog(prompt, items).then(function(clicked) {
       if (clicked == 1) {
         LHSModel.sections[0].items = _.reject(LHSModel.sections[0].items, function(obj) {
