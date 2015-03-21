@@ -17,7 +17,7 @@ md-list .md-button {
     width: 100%;
 }
 
-md-toolbar .skroll-toolbar {
+md-toolbar.skroll-toolbar {
     height: 48px;
     min-height: 48px;
 }
@@ -33,7 +33,7 @@ create a blur effect
 
 
 md-sidenav.md-locked-open {
-    width: 200px;
-    min-width: 200px;
+    width: 250px;
+    min-width: 250px;
     max-width: 300px;
 }
