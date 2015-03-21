@@ -35,7 +35,7 @@ public class DefinedTermExtractionModel {
     //      and makes the model more complicated and expensive.
 
     static final List<RandomVariableType> PARAGRAPH_FEATURES = Arrays.asList(
-     //       RandomVariableType.PARAGRAPH_STARTS_WITH_QUOTE,
+            RandomVariableType.PARAGRAPH_STARTS_WITH_QUOTE,
 //            RandomVariableType.PARAGRAPH_STARTS_WITH_SPECIAL_FORMAT,
 //            RandomVariableType.PARAGRAPH_STARTS_WITH_BOLD,
 //            RandomVariableType.PARAGRAPH_STARTS_WITH_UNDERLINE,
