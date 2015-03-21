@@ -3,7 +3,7 @@
     Trainer mode question
   </md-toolbar>
   {{prompt}}
-  <md-button>Yes</md-button>
-  <md-button>No</md-button>
+  <md-button ng-click="itemClicked($index)" ng-repeat="item in items">{{item}}</md-button>
+
 
 </md-bottom-sheet>

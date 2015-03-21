@@ -18,7 +18,8 @@ var ToolbarModel = {
 	},
 
 	trainerPrompt: {
-		text: ''
+		text: '',
+		items: []
 	}
 
 };
