@@ -10,23 +10,20 @@
 
 var LHSModel = {
 
-	sections: [{
-		name: 'DEFINITIONS',
-		items: [{
-			itemId: 'p_123',
-			text: 'hey there'
-		}],
-		isSelected: true
-	}, {
-		name: 'TABLE OF CONTENTS',
-		items: [{
-			itemId: 'p_123',
-			text: 'hey there'
-		}],
-		isSelected: false
-	}],
+	smodel: {
+		terms: []
+	},
 
-	model: []
+	classes: [{
+		id: 1,
+		name: 'Definition',
+		isSelected: true
+
+	}, {
+		id: 2,
+		name: 'Table of Contents',
+		isSelected: true
+	}]
 
 };
 

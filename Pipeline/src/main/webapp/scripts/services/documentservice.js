@@ -47,14 +47,9 @@ angular.module('SkrollApp')
     this.getTerms = function() {
       var deferred = $q.defer();
       /** make a get request */
-      $http.get(documentServiceBase + 'getDefinition')
+      $http.get(documentServiceBase + 'getTerms')
         .success(function(data, status){
-          var terms = _.map(data, function(obj) {
-            obj.classificationId = 0;
-            return obj;
-          });
-
-          deferred.resolve(terms);
+          deferred.resolve(data);
         })
         .error(function(msg, code) {
           deferred.reject(msg);

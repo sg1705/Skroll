@@ -18,10 +18,12 @@ angular.module('SkrollApp')
 
 var LHSCtrl = function (LHSModel) {
 	this.sections = LHSModel.sections;
+  this.smodel = LHSModel.smodel;
+  this.classes = LHSModel.classes;
 }
 
 LHSCtrl.prototype.toggleSection = function(index) {
-	this.sections[index].isSelected = !this.sections[index].isSelected;
+  this.classes[index].isSelected = !this.classes[index].isSelected;
 }
 
 angular.module('SkrollApp')

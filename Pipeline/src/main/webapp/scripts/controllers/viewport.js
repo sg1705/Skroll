@@ -16,8 +16,6 @@ var ViewPortCtrl = function(SelectionModel, documentService, $mdBottomSheet,
   this.ToolbarModel = ToolbarModel;
   this.LHSModel = LHSModel;
   this.documentModel = documentModel;
-
-
 }
 
 ViewPortCtrl.prototype.mouseUp = function($event) {
@@ -98,25 +96,15 @@ ViewPortCtrl.prototype.inferParagraphId = function($event) {
 ViewPortCtrl.prototype.handleTrainerTextSelection = function(paraId,
   selectedText) {
   //find definitions for the given paraId
-  //definitions is section[0]
   //find if the selection is a definition
   console.log(selectedText);
-  var sections = this.LHSModel.sections;
   var text = "Is %s a %s";
   var prompt = '';
-  var match = false;
-  for (var ii = 0; ii < sections[0].items.length; ii++) {
-    if (sections[0].items[ii].itemId == paraId) {
-      //check for defintions
-      if (sections[0].items[ii].text == selectedText) {
-        //found an item
-        var prompt = s.sprintf(text, selectedText, sections[0].name);
-        match = true;
-      }
-    }
-  }
+  var matchedItem = _.find(this.LHSModel.smodel.terms, function(obj){
+    return ((obj.paragraphId == paraId) && (obj.term));
+  });
 
-  if (!match) {
+  if (matchedItem == null) {
     prompt = 'Please choose the class for this [' + selectedText + ']';
     //show set of questions for classes
     var items = [];
@@ -125,21 +113,20 @@ ViewPortCtrl.prototype.handleTrainerTextSelection = function(paraId,
     }
     this.showYesNoDialog(prompt, items).then(function(clicked) {
       if (clicked == 1) {
-        LHSModel.sections[0].items = _.reject(LHSModel.sections[0].items, function(obj) {
-          if (obj.itemId == paraId)
-              return true;
-        });
+        //some logic here
         console.log(clicked);
       }
     });
     return;
   }
+
   //create a set of questions. In this case, yes or no
+  prompt = s.sprintf(text, selectedText, this.getClassificationName(matchedItem.classificationId));
   var items = ['Yes', 'No'];
   this.showYesNoDialog(prompt, items).then(function(clicked) {
     if (clicked == 1) {
-      LHSModel.sections[0].items = _.reject(LHSModel.sections[0].items, function(obj) {
-        if ((obj.itemId == paraId) && (selectedText = obj.text ))
+      LHSModel.smodel.terms = _.reject(LHSModel.smodel.terms, function(obj) {
+        if ((obj.paragraphId == paraId) && (selectedText = obj.term ))
             return true;
       });
     }
@@ -148,50 +135,39 @@ ViewPortCtrl.prototype.handleTrainerTextSelection = function(paraId,
 
 ViewPortCtrl.prototype.handleTrainerParaSelection = function(paraId) {
   //find definitions for the given paraId
-  //definitions is section[0]
   //find if the selection is a definition
-  var sections = this.LHSModel.sections;
   var text = "Is this paragraph a %s";
-  var match = false;
   var prompt = '';
-  var matchClass;
-  for (var jj = 0; jj < sections.length; jj++) {
-    for (var ii = 0; ii < sections[jj].items.length; ii++) {
-      if (sections[jj].items[ii].itemId == paraId) {
-        //check for defintions
-        match = true;
-        matchClass = jj;
-        prompt = s.sprintf(text, sections[jj].name);
-        console.log(prompt);
-        break;
-      }
-    }
-  }
 
-  if (!match) {
+  var matchedItem = _.find(this.LHSModel.smodel.terms, function(obj){
+    return ((obj.paragraphId == paraId) && (obj.term));
+  });
+
+  if (matchedItem == null) {
     prompt = 'Please choose the class for this paragraph';
-    //show set of questions for classes
     var items = [];
     for (var ii = 0; ii < documentModel.classes.length; ii++) {
       items.push(documentModel.classes[ii].name);
     }
-      this.showYesNoDialog(prompt, items).then(function(clicked) {
-        if (clicked == 1) {
-          LHSModel.sections[0].items = _.reject(LHSModel.sections[0].items, function(obj) {
-            if (obj.itemId == paraId)
-                return true;
-          });
-          console.log(clicked);
-        }
-      });
-
-  } else {
-    //create a set of questions. In this case, yes or no
-    var items = ['Yes', 'No', 'Yes to all ' + documentModel.classes[matchClass].name];
     this.showYesNoDialog(prompt, items).then(function(clicked) {
       if (clicked == 1) {
-        LHSModel.sections[0].items = _.reject(LHSModel.sections[0].items, function(obj) {
-          if (obj.itemId == paraId)
+        LHSModel.smodel.terms = _.reject(LHSModel.smodel.terms, function(obj) {
+          if (obj.paragraphId == paraId)
+              return true;
+        });
+        console.log(clicked);
+      }
+    });
+
+  } else {
+    var className = this.getClassificationName(matchedItem.classificationId);
+    prompt = s.sprintf(text, className);
+    //create a set of questions. In this case, yes or no
+    var items = ['Yes', 'No', 'Yes to all ' + className];
+    this.showYesNoDialog(prompt, items).then(function(clicked) {
+      if (clicked == 1) {
+        LHSModel.smodel.terms = _.reject(LHSModel.smodel.terms, function(obj) {
+          if (obj.paragraphId == paraId)
               return true;
         });        
       }
@@ -200,6 +176,14 @@ ViewPortCtrl.prototype.handleTrainerParaSelection = function(paraId) {
 
   }
 
+}
+
+ViewPortCtrl.prototype.getClassificationName = function(classId) {
+  var classification = _.find(documentModel.classes, function(obj){
+    return (obj.id == classId);
+  });
+
+  return classification.name;
 }
 
 ViewPortCtrl.prototype.showYesNoDialog = function(text, items) {

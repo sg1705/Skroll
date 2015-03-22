@@ -30,41 +30,20 @@ angular.module('SkrollApp')
                   },
                   done: function (e, data) {
                       console.log("Done setting")
+                      var terms;
                       $("#content").html(data.result);
-                      //TODO delete this once we have the end point
-                      //populate definitions
-                      documentService.getDefinition().then(function(definitions){
-                        //create new LHS model items
-                        var items = [];
-                        for(var ii = 0; ii < definitions.length; ii++) {
-                          var item = {
-                            itemId: definitions[ii].paragraphId,
-                            text: definitions[ii].definition
-                          }
-                          items.push(item);
-                        }
-                        LHSModel.sections[0].items = items;
-                        // TODO - end delete
-
-                        console.log('items:' + items.length);
-                      }, function(msg) {
-                        console.log(msg);
-                      });
-
                       //use get terms
-                      documentService.getDefinition().then(function(terms){
+                      documentService.getTerms().then(function(terms){
                         //create new LHS model items
-                        LHSModel.model = terms;
-                        console.log(terms);
+                        LHSModel.smodel.terms = terms;
                       }, function(msg) {
                         console.log(msg);
                       });
-
-
                       scope.$apply(function() {
                           scope.targetHtml = data.result;
                           scope.isDocAvailable = true;
                           scope.isProcessing = false;
+                          LHSModel.model = terms;
                           documentModel.isDocAvailable = true;
                           documentModel.targetHtml = data.result;
                           documentModel.isProcessing = false;
