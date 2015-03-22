@@ -20,12 +20,7 @@ import java.util.List;
 public class TrainingDocumentAnnotatingModelTest{
     String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining";
     TrainingDocumentAnnotatingModel model;
-//    TrainingNaiveBayesWithFeatureConditions tnbf = new TrainingNaiveBayesWithFeatureConditions(
-//            RandomVariableType.PARAGRAPH_HAS_DEFINITION,
-//            DocumentAnnotatingModel.DEFAULT_PARAGRAPH_FEATURES,
-//            DocumentAnnotatingModel.DEFAULT_PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL,
-//            DocumentAnnotatingModel.DEFAULT_DOCUMENT_FEATURES
-//    );
+
 
 
 
@@ -45,7 +40,6 @@ public class TrainingDocumentAnnotatingModelTest{
     public void testUpdateWithDocument() throws Exception {
 
 
-        //String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining";
         model = new TrainingDocumentAnnotatingModel();
 
         System.out.println("initial model: \n" + model.getTnbfModel());
@@ -54,13 +48,13 @@ public class TrainingDocumentAnnotatingModelTest{
         if (file.isDirectory()) {
             File[] listOfFiles = file.listFiles();
             for (File f:listOfFiles) {
-                Document doc = makeDoc(f);
+                Document doc = makeTrainingDoc(f);
                 //TrainingDocumentAnnotatingModel model = buildModel(f);
                 model.updateWithDocument(doc);
             }
         } else {
             //TrainingDocumentAnnotatingModel model = buildModel(file);
-            Document doc = makeDoc(file);
+            Document doc = makeTrainingDoc(file);
 
             model.updateWithDocument(doc);
         }
@@ -75,11 +69,11 @@ public class TrainingDocumentAnnotatingModelTest{
 
 
         TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel();
-        Document doc = makeDoc(file);
+        Document doc = makeTrainingDoc(file);
 
         List<CoreMap> paragraphs = new ArrayList<>();
         for( CoreMap paragraph : doc.getParagraphs())
-            paragraphs.add(DocumentAnnotatingHelper.processParagraph(paragraph));
+            paragraphs.add(DocumentAnnotatingHelper.processParagraph(paragraph, model.getHmm().size()));
         int[] docFeatureValues = DocumentAnnotatingHelper.generateDocumentFeatures(paragraphs,
                 model.getParaCategory(),
                 DocumentAnnotatingModel.DEFAULT_DOCUMENT_FEATURES,
@@ -87,8 +81,7 @@ public class TrainingDocumentAnnotatingModelTest{
         System.out.println(Arrays.toString(docFeatureValues));
 
     }
-
-    Document makeDoc(File file){
+    Document makeTrainingDoc(File file){
         String htmlString = null;
         try {
             htmlString = Utils.readStringFromFile(file);
@@ -107,8 +100,27 @@ public class TrainingDocumentAnnotatingModelTest{
                             .add(Pipes.EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC)
                             .build();
             Document doc = pipeline.process(htmlDoc);
-            //return new TrainingDocumentAnnotatingModel(doc, tnbf);
             return doc;
+        } catch(Exception e) {
+            e.printStackTrace();
+            System.err.println("Error reading file");
+        }
+        return null;
+    }
+    Document makeDoc(File file){
+        String htmlString = null;
+        try {
+            htmlString = Utils.readStringFromFile(file);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error reading file");
+        }
+
+        try {
+            Document htmlDoc = new Document();
+            htmlDoc = Parser.parseDocumentFromHtml(htmlString);
+
+            return htmlDoc;
         } catch(Exception e) {
             e.printStackTrace();
             System.err.println("Error reading file");

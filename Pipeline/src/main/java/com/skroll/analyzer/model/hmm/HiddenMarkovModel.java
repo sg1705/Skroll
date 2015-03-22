@@ -12,7 +12,7 @@ public class HiddenMarkovModel {
     static final int DEFAULT_MODEL_LENGTH = 12;
     static final int MAX_MODEL_LENGTH = 20;
     static final int DEFAULT_NUM_STATE_VALUES = 2;
-    static final double PRIOR_COUNT = 40;
+    static final double PRIOR_COUNT = .1;// 40;
 
     //static final int NUMBER_FEATURES =2;
     //static final int[] FEATURE_VALUES={2,MAX_MODEL_LENGTH};
@@ -213,14 +213,30 @@ public class HiddenMarkovModel {
 
 
             for (String k: tokenCounts[i].keySet()){
+                //hask for testing purpose
+                Integer count0 = tokenCounts[0].get(k);
+                if (count0 ==null) count0=0;
+                Integer count1 = tokenCounts[1].get(k);
+                if (count1 ==null) count1=0;
+                if (count0+count1<10) continue;
                 tokenProbabilityGivenStateValue[i].put(k,
-                        (tokenCounts[i].get(k) + priorCountPartI) /totalCountIWithPrior );
+                        (tokenCounts[i].get(k) + priorCountPartI) / totalCountIWithPrior );
             }
-            for (String k: nextTokenCounts[i].keySet())
+            for (String k: nextTokenCounts[i].keySet()) {
+                //hask for testing purpose
+                Integer count0 = nextTokenCounts[0].get(k);
+                if (count0 ==null) count0=0;
+                Integer count1 = nextTokenCounts[1].get(k);
+                if (count1 ==null) count1=0;
+                if (count0+count1<10) continue;
                 nextTokenProbabilityGivenStateValue[i].put(k,
-                        (nextTokenCounts[i].get(k) + priorCountPartI) /totalCountIWithPrior );
+                        (nextTokenCounts[i].get(k) + priorCountPartI) / totalCountIWithPrior);
+            }
         }
         probabilitiesUpToDate = true;
+
+        //hack for testing purpose:
+        //transitionProbability[0][1] +=0.1;
     }
 
     public void updateCounts(String[] tokens, int[] stateValues, int[][] features){

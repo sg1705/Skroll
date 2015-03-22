@@ -33,11 +33,15 @@ public class ProbabilityDocumentAnnotatingModelTest {
     @Before
     public void setupOnce() throws Exception{
         if (doneSetup) return;
+        doneSetup = true;
+
         traingTest.testUpdateWithDocument();
         model= new ProbabilityDocumentAnnotatingModel( traingTest.getTnbf(), traingTest.getModel().getHmm(), doc,
                 wordType, wordFeatures, paraType, paraFeatures, paraDocFeatures, docFeatures
                 );
-        doneSetup = true;
+        model.getHmm().updateProbabilities();
+        System.out.println("HMM\n");
+        System.out.println(model.getHmm());
     }
 
     @Test
@@ -88,10 +92,32 @@ public class ProbabilityDocumentAnnotatingModelTest {
         printBelieves();
     }
 
-    public void testPassMessageToDocumentFeatures() throws Exception {
 
+
+    @Test
+    public void testPassMessageToDocumentFeatures() throws Exception {
+        System.out.println("After passing message to paragraphCategory once:\n");
+
+        model.passMessagesToParagraphCategories();
+        System.out.println("After passing message to documentFeatures once:\n");
+
+        model.passMessageToDocumentFeatures();
+
+        printBelieves();
     }
 
+
+    @Test
+    public void testPassMessages() throws Exception {
+
+        model.passMessagesToParagraphCategories();
+
+        model.passMessageToDocumentFeatures();
+        model.passMessagesToParagraphCategories();
+        System.out.println("After passing messages :\n");
+
+        printBelieves();
+    }
     public void testUpdateBelieves() throws Exception {
 
     }
@@ -106,7 +132,13 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
     @Test
     public void testAnnotateDocument() throws Exception {
+        model.passMessagesToParagraphCategories();
+        model.passMessageToDocumentFeatures();
+        model.passMessagesToParagraphCategories();
+
+//        testPassMessagesToParagraphCategories();
         model.annotateDocument();
+
         System.out.println("annotated terms\n");
         DocumentAnnotatingHelper.printAnnotatedDoc(doc);
     }

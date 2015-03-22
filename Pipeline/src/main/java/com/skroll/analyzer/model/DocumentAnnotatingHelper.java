@@ -25,7 +25,7 @@ public class DocumentAnnotatingHelper {
             RandomVariableType.PARAGRAPH_NUMBER_TOKENS.getFeatureSize()-1;
 
     // create a copy of paragraph and annotate it further for training
-    static CoreMap processParagraph(CoreMap paragraph){
+    static CoreMap processParagraph(CoreMap paragraph, int numWords){
         CoreMap trainingParagraph = new CoreMap();
         List<Token> tokens = paragraph.getTokens();
         List<Token> newTokens = new ArrayList<>();
@@ -37,6 +37,8 @@ public class DocumentAnnotatingHelper {
         boolean inQuotes=false; // flag for annotating if a token is in quotes or not
         int i=0;
         for (Token token: tokens){
+            if (i==numWords) break;
+
             if (WordHelper.isQuote(token.getText())) {
                 inQuotes = !inQuotes;
                 continue;
@@ -221,10 +223,16 @@ public class DocumentAnnotatingHelper {
 
     public static void printAnnotatedDoc(Document doc){
 
-        for (CoreMap para:DocumentHelper.getDefinitionParagraphs(doc)){
-            System.out.println(para.getText());
-            System.out.println(DocumentHelper.getDefinedTermTokensInParagraph(para));
+        List<CoreMap> defParas = DocumentHelper.getDefinitionParagraphs(doc);
+        for ( int i=0; i<defParas.size();i++){
+            System.out.println(defParas.get(i).getText());
+            System.out.print(i);
+            System.out.println(DocumentHelper.getDefinedTermTokensInParagraph(defParas.get(i)));
         }
+//        for (CoreMap para:DocumentHelper.getDefinitionParagraphs(doc)){
+//            System.out.println(para.getText());
+//            System.out.println(DocumentHelper.getDefinedTermTokensInParagraph(para));
+//        }
         System.out.println(DocumentHelper.getDefinitionParagraphs(doc).size());
     }
 

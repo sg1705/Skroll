@@ -48,7 +48,6 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
                                            List<RandomVariableType> paraDocFeatures,
                                            List<RandomVariableType> docFeatures){
         this.tnbfModel = tnbfModel;
-        //this.doc = doc;
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;
         this.paraCategory = paraCategory;
@@ -67,7 +66,6 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     }
 
     void updateWithParagraph(CoreMap trainingParagraph, int[] docFeatureValues) {
-        //CoreMap trainingParagraph = DefinedTermExtractionHelper.makeTrainingParagraph(paragraph);
         updateTNBFWithParagraph(trainingParagraph, docFeatureValues);
         updateHMMWithParagraph(trainingParagraph);
     }
@@ -117,7 +115,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     public void updateWithDocument(Document doc){
         List<CoreMap> paragraphs = new ArrayList<>();
         for( CoreMap paragraph : doc.getParagraphs())
-            paragraphs.add(DocumentAnnotatingHelper.processParagraph(paragraph));
+            paragraphs.add(DocumentAnnotatingHelper.processParagraph(paragraph, hmm.size()));
         int[] docFeatureValues = DocumentAnnotatingHelper.generateDocumentFeatures(paragraphs,
                 paraCategory, docFeatures, paraDocFeatures);
 

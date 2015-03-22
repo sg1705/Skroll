@@ -148,6 +148,7 @@ public class HiddenMarkovModelTest {
         System.out.println("features = "+Arrays.deepToString(features) );
     }
 
+    @Test
     public void testInfer() throws Exception {
         System.out.println("testInfer");
         double [] prob = {0.5,0.5};

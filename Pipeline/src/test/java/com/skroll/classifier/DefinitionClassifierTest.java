@@ -11,11 +11,15 @@ import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
 import com.skroll.util.Configuration;
 import com.skroll.util.ObjectPersistUtil;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.NoSuchFileException;
 
 import static org.junit.Assert.fail;
 
@@ -24,10 +28,20 @@ public class DefinitionClassifierTest {
     //The following line needs to be added to enable log4j
     public static final Logger logger = LoggerFactory
             .getLogger(DefinitionClassifierTest.class);
+    Classifier documentClassifier = new DefinitionClassifier();
+    @Before
+    public void setup(){
+        Configuration configuration = new Configuration();
+        String modelFolderName = configuration.get("modelFolder","/tmp");
+        String path =modelFolderName + ((DefinitionClassifier)documentClassifier).getDtemModelName();
+        File file = new File(path);
+        file.delete();
+    }
+
     @Test
     public void testTrainClassify() {
 
-        Classifier documentClassifier = new DefinitionClassifier();
+
         //convertRawToProcessedCorpus(rawFolder, ProcessedFolder);
         try {
             testTrainFolders("src/test/resources/analyzer/hmmTrainingDocs");

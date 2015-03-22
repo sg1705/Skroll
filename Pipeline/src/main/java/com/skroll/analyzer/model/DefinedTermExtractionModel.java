@@ -35,7 +35,7 @@ public class DefinedTermExtractionModel {
     //      and makes the model more complicated and expensive.
 
     static final List<RandomVariableType> PARAGRAPH_FEATURES = Arrays.asList(
-     //       RandomVariableType.PARAGRAPH_STARTS_WITH_QUOTE,
+            RandomVariableType.PARAGRAPH_STARTS_WITH_QUOTE,
 //            RandomVariableType.PARAGRAPH_STARTS_WITH_SPECIAL_FORMAT,
 //            RandomVariableType.PARAGRAPH_STARTS_WITH_BOLD,
 //            RandomVariableType.PARAGRAPH_STARTS_WITH_UNDERLINE,
@@ -47,7 +47,7 @@ public class DefinedTermExtractionModel {
     static final List<RandomVariableType> WORD_FEATURES = Arrays.asList(
             RandomVariableType.WORD_IN_QUOTES
 //            RandomVariableType.WORD_HAS_SPECIAL_FORMAT,
-            //RandomVariableType.WORD_INDEX
+            //,RandomVariableType.WORD_INDEX
     );
 
     int[][] nbCategoryToHmmState1;

@@ -25,6 +25,11 @@ public class DefinitionClassifier extends ClassifierImpl{
 
     private DefinedTermExtractionModel definedTermExtractionModel = null;
     private  Type dtemType = null;
+
+    public String getDtemModelName() {
+        return dtemModelName;
+    }
+
     private  String dtemModelName = "com.skroll.analyzer.model.DefinedTermExtractionModel.DefinitionDTEM";
 
 

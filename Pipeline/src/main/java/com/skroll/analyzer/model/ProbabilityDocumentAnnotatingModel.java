@@ -54,11 +54,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
         lpnbfModel = new LogProbabilityNaiveBayesWithFeatureConditions(tnbf);
 
         this.hmm = hmm;
-//        int[] wordFeatureSizes = new int[WORD_FEATURES.size()]; // include state at the feature index 0.
-//        for (int i = 0; i < wordFeatureSizes.length; i++)
-//            wordFeatureSizes[i] = WORD_FEATURES.get(i).getFeatureSize();
-//        hmm = new HiddenMarkovModel(HMM_MODEL_LENGTH,
-//                RandomVariableType.WORD_IS_DEFINED_TERM.getFeatureSize(), wordFeatureSizes);
+
         initialize();
          initialize(doc);
 
@@ -69,7 +65,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
         // process raw input paragraph to be used for model
         for( CoreMap paragraph : doc.getParagraphs())
-            paragraphs.add(DocumentAnnotatingHelper.processParagraph(paragraph));
+            paragraphs.add(DocumentAnnotatingHelper.processParagraph(paragraph, hmm.size()));
 
 
         // store feature values for later probability updates
@@ -97,11 +93,6 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
         LogProbabilityDiscreteNode[] documentFeatureNodeArray =
                 (LogProbabilityDiscreteNode[]) lpnbfModel.getDocumentFeatureNodeArray();
 
-//        for (int p=0; p<numParagraphs; p++)
-//            for (int f=0; f<DOCUMENT_FEATURES.size(); f++){
-//                Arrays.fill(messagesToDocumentFeature[p][f], 1);
-//                Arrays.fill(messagesToParagraphCategory[p][f], 1);
-//            }
         for (int f=0; f<paraDocFeatures.size(); f++)
             documentFeatureBelief[f] = documentFeatureNodeArray[f].getParameters().clone();
 
@@ -150,6 +141,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
                 }
             }
         }
+
     }
 
     void passMessageToDocumentFeatures(){
@@ -170,6 +162,9 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
                     documentFeatureBelief[f][i] += messagesToDocumentFeature[p][f][i];
                 }
             }
+        }
+        for (double[] belief: documentFeatureBelief){
+            BNInference.normalizeLog(belief);
         }
     }
 
@@ -205,7 +200,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
         for (int p=0; p<numParagraphs; p++){
             CoreMap paragraph = paragraphList.get(p);
             if (paragraph.getTokens().size() == 0)
-                return;
+                continue;
             CoreMap trainingParagraph = DefinedTermExtractionHelper.makeTrainingParagraph(paragraph);
             DataTuple nbDataTuple = DefinedTermExtractionHelper.makeNBDataTuple(trainingParagraph, paraFeatures);
 
@@ -214,9 +209,6 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
             // This means the HMM output state sequence gives the highest p(HMM observations | given NB observations)
             double[] logPrioProbs =
                     paragraphCategoryBelief[p];
-            //        nb.inferCategoryProbabilitiesMoreStable(nbDataTuple.getTokens(),nbDataTuple.getFeatures());
-
-            //nb.inferLogJointFeaturesProbabilityGivenCategories(nbDataTuple.getTokens(), nbDataTuple.getFeatures());
 
             // can check for NB classification to see if we want to keep checking the words.
             // check here to make it more efficient, or keep going to be more accurate.
@@ -237,7 +229,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
             //assume a definition paragraph always has the first word being a defined term.
             // can do this check after naive bayes to make it faster.
-            if (states[0]==0) return;
+            if (states[0]==0) continue;
 
             List<Token> definedTerms = new ArrayList<>();
 
