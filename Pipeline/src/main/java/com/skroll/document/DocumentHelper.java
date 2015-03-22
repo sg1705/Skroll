@@ -75,6 +75,12 @@ public class DocumentHelper {
         return strings;
     }
 
+    public static List<String> getTOCLists(CoreMap coreMap) {
+        List<Token> tocList = coreMap.get(CoreAnnotations.TOCListAnnotation.class);
+        if (tocList==null) return new ArrayList<>();
+        return DocumentHelper.getTokenString(tocList);
+
+    }
 
 
     //todo: this method should be deleted. but it's used at some places.
@@ -104,6 +110,18 @@ public class DocumentHelper {
         definitionList.add(definitions);
         if (definitions.size() > 0) {
             paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
+        }
+    }
+
+    public static void addTOCsInParagraph(List<Token> newToc, CoreMap paragraph) {
+        List<Token> toc = paragraph.get(CoreAnnotations.TOCListAnnotation.class);
+        if (toc == null) {
+            toc = new ArrayList<>();
+            paragraph.set(CoreAnnotations.TOCListAnnotation.class, toc);
+        }
+        toc.addAll(newToc);
+        if (toc.size() > 0) {
+            paragraph.set(CoreAnnotations.IsTOCAnnotation.class, true);
         }
     }
 
