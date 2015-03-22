@@ -21,15 +21,7 @@ angular.module('SkrollApp')
             //toggle side navigation
             $scope.toggleSidenav = function(menuId) {
                 //check to see if we need to get json
-                if ($scope.definitions.length == 0) {
-                    //get defintions from service
-                    documentService.getDefinition().then(function(definitions){
-                      $scope.definitions = definitions;
-                    }, function(msg) {
-                      console.log(msg);
-                    });
-                  }
-                  $mdSidenav(menuId).toggle();
+                $mdSidenav(menuId).toggle();
               };
 
             //toggle side navigation

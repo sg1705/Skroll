@@ -27,6 +27,9 @@ angular.module('SkrollApp')
             def.paragraphId = data[ii].paragraphId;
             def.definition = data[ii].definedTerm;
             definitions.push(def);
+
+
+
           }         
           deferred.resolve(definitions);
         })
@@ -37,6 +40,25 @@ angular.module('SkrollApp')
       /** done with get request */
       return deferred.promise;
     };
+
+    /**
+    * Retrieves terms for a given document
+    */
+    this.getTerms = function() {
+      var deferred = $q.defer();
+      /** make a get request */
+      $http.get(documentServiceBase + 'getTerms')
+        .success(function(data, status){
+          deferred.resolve(data);
+        })
+        .error(function(msg, code) {
+          deferred.reject(msg);
+          $log.error(msg, code);
+        });;
+      /** done with get request */
+      return deferred.promise;
+    };
+
 
     /**
     * Retrieves list of similar paragraphs
