@@ -51,7 +51,7 @@ public class DefinitionLinker {
                 continue;
             }
             //get all the defined terms
-            List<List<Token>> tokensList = paragraph.get(CoreAnnotations.DefinedTermListAnnotation.class);
+            List<List<Token>> tokensList = paragraph.get(CoreAnnotations.DefinedTermTokensAnnotation.class);
 
             if (tokensList.size() == 0) {
                 Marker linkMarker = MarkerFactory.getMarker(Constants.LINKER_MARKER);

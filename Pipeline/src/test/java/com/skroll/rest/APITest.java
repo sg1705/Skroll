@@ -139,7 +139,7 @@ public class APITest {
                 logger.debug("definitionList:" + Joiner.on(" ").join(definitionList));
                 assert((Joiner.on(" ").join(definitionList).contains("Accredited")));
             }
-            List<Float> trainingWeight = paragraph.get(CoreAnnotations.TrainingWeightAnnotation.class);
+            List<Float> trainingWeight = paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class);
             logger.debug("trainingWeight:" +trainingWeight);
         }
     }

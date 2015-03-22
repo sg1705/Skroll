@@ -1,7 +1,5 @@
 package com.skroll.analyzer.model;
 
-import com.skroll.analyzer.model.DefinedTermExtractionModel;
-import com.skroll.analyzer.model.RandomVariableType;
 import com.skroll.analyzer.model.bn.SimpleDataTuple;
 import com.skroll.analyzer.model.nb.DataTuple;
 import com.skroll.document.CoreMap;
@@ -43,7 +41,7 @@ public class DocumentAnnotatingHelper {
             if (inQuotes){
                 token.set(CoreAnnotations.InQuotesAnnotation.class, true);
             }
-            token.set(CoreAnnotations.Index.class, i++);
+            token.set(CoreAnnotations.IndexInteger.class, i++);
             wordSet.add(token.getText());
             newTokens.add(token);
         }
@@ -53,12 +51,12 @@ public class DocumentAnnotatingHelper {
 
         // put defined terms from paragraph in trainingParagraph
         // todo: may remove this later if trainer creates a training paragraph and put defined terms there directly
-        List<List<Token>> definedTokens = paragraph.get(CoreAnnotations.DefinedTermListAnnotation.class);
+        List<List<Token>> definedTokens = paragraph.get(CoreAnnotations.DefinedTermTokensAnnotation.class);
         if (definedTokens != null && definedTokens.size()>0) {
             trainingParagraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
         }
-        trainingParagraph.set(CoreAnnotations.DefinedTermListAnnotation.class,
-                paragraph.get(CoreAnnotations.DefinedTermListAnnotation.class));
+        trainingParagraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class,
+                paragraph.get(CoreAnnotations.DefinedTermTokensAnnotation.class));
 
         return trainingParagraph;
     }
@@ -194,7 +192,7 @@ public class DocumentAnnotatingHelper {
                         booleanToInt(word.get(CoreAnnotations.IsUnderlineAnnotation.class ))|
                         booleanToInt(word.get(CoreAnnotations.IsBoldAnnotation.class ))|
                         booleanToInt(word.get(CoreAnnotations.IsItalicAnnotation.class ));
-            case WORD_INDEX:  return word.get(CoreAnnotations.Index.class );
+            case WORD_INDEX:  return word.get(CoreAnnotations.IndexInteger.class );
         }
         return -1;
     }
