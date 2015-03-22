@@ -38,7 +38,7 @@ public class DefinitionLinkerTest extends TestCase {
                 definedTokens.add(paragraph.getTokens().get(4));
                 List<List<Token>> definedTokenList = new ArrayList();
                 definedTokenList.add(definedTokens);
-                paragraph.set(CoreAnnotations.DefinedTermListAnnotation.class,definedTokenList);
+                paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class,definedTokenList);
                 // perform all the linking
                 DefinitionLinker linker = new DefinitionLinker();
                 document = linker.linkDefinition(document);

@@ -51,7 +51,7 @@ public class JsonDeserializer {
             if (key.equals("map")) {
                 //it is a coremap
                 //let's start
-                CoreMap coreMap = processObject(element);
+                CoreMap coreMap = processObject("documentLevelKey", element);
                 Document document = new Document(coreMap);
                 return document;
 
@@ -60,93 +60,107 @@ public class JsonDeserializer {
         return null;
     }
 
-    //find out how many entries does it have
-    //find if any entry is a map
-    //find if any entry is a type array
-    //then it is a list of what?
-    private Class inferType(JsonElement element) {
-        // if element has a child and it is only one and a map
-        Set<Map.Entry<String, JsonElement>> set = element.getAsJsonObject().entrySet();
-        if (set.size() == 1) {
-            //check for child element name
-            Map.Entry<String, JsonElement> child = set.iterator().next();
-            if (child.getKey().equals("map")) {
-                return CoreMap.class;
-            }
+    /**
+     * process CoreMap in Array
+     * @param mapKey
+     * @param elmt
+     * @return CoreMap
+     * @throws Exception
+     */
+    private static CoreMap processMapInArray(String mapKey, JsonElement elmt) throws Exception {
+        Set<Map.Entry<String, JsonElement>> set = elmt.getAsJsonObject().entrySet();
+        Iterator<Map.Entry<String, JsonElement>> iterator = set.iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, JsonElement> entry = iterator.next();
+            JsonElement element = entry.getValue();
+            String key = entry.getKey();
+            if (key.equals("map")) {
+                //check to see if the key contains Token
+                CoreMap coreMap = processObject(mapKey, element);
+                return coreMap;
 
+            }
         }
         return null;
     }
 
 
-    private static CoreMap processObject(JsonElement element) throws Exception {
+    /**
+     * Handle process Object
+     * @param key
+     * @param element
+     * @return
+     * @throws Exception
+     */
+    private static CoreMap processObject(String key, JsonElement element) throws Exception {
         CoreMap coreMap = new CoreMap();
+        if (key.contains("Token")) {
+            coreMap = new Token();
+        }
         Set<Map.Entry<String, JsonElement>> set = element.getAsJsonObject().entrySet();
         logger.debug("EntrySet:"+set);
         for(Map.Entry<String, JsonElement> entry : set) {
             JsonElement elmt = entry.getValue();
             if (elmt.isJsonPrimitive()) {
-                logger.debug("elmt.isJsonPrimitive():"+entry.getKey());
-                if (entry.getKey().startsWith("Is")) {
-                    //boolean
-                    coreMap.set(entry.getKey(), new Boolean(elmt.getAsBoolean()));
-                } else {
-                    // add in the core map
-                    coreMap.set(entry.getKey(), elmt.getAsString());
-                }
-            } else if (entry.getKey().equals("DefinedTermListAnnotation")){
-                coreMap.set(entry.getKey(), processDefinedTerm(elmt));
+                // add in the core map
+                coreMap.set(entry.getKey(), processPrimitives(entry.getKey(), elmt));
+            } else if (entry.getKey().equals("DefinedTermTokensAnnotation")){
+                coreMap.set(entry.getKey(), processDefinedTerm(entry.getKey(), elmt));
             } else if (elmt.isJsonArray()) {
                 //infer type
-                coreMap.set(entry.getKey(), processArray(elmt));
+                logger.debug("processing key {} as Array", entry.getKey());
+                coreMap.set(entry.getKey(), processArray(entry.getKey(),elmt));
             } else if (elmt.isJsonObject()) {
-                logger.debug("elmt.isJsonObject():"+elmt);
-                coreMap.set(entry.getKey(), processObject(elmt));
+                logger.debug("processing key {} as Object:" + entry.getKey());
+                coreMap.set(entry.getKey(), processObject(entry.getKey(),elmt));
             }
         }
         return coreMap;
     }
 
-
-
-
-    private static List<CoreMap> processArray(JsonElement element) throws Exception {
+    /**
+     * Handle json Array type
+     * @param key
+     * @param element
+     * @return
+     * @throws Exception
+     */
+    private static List<Object> processArray(String key, JsonElement element) throws Exception {
         //if it an array again other wise
-
-        List<CoreMap> coreMapList = new ArrayList<CoreMap>();
         List<Object> ObjectList = new ArrayList<Object>();
         Iterator<JsonElement> elements = element.getAsJsonArray().iterator();
         while (elements.hasNext()) {
             JsonElement elmt = elements.next();
             //assume that it is a list of coreMap. Hence, each element has to be a object
             if (elmt.isJsonObject()) {
-                logger.debug("elmt.isJsonObject():"+elmt);
-                CoreMap map = processObject(elmt);
-                coreMapList.add(map);
+                CoreMap map = processMapInArray(key, elmt);
+                ObjectList.add(map);
             } else {
                 if (elmt.isJsonPrimitive()) {
-                    ObjectList.add(elmt.getAsFloat());
+                    ObjectList.add(processPrimitives(key, elmt));
                 }
-                logger.debug("Not elmt.isJsonObject():"+elmt);
-                System.out.println("Failed to deserialize the Array");
-            //    throw new Exception("Deserialzation failed because array is not a List<CoreMap>");
             }
         }
-        if(!ObjectList.isEmpty()){
-
-        }
-        return coreMapList;
+        return ObjectList;
     }
-    private static List<List<CoreMap>> processDefinedTerm(JsonElement element) throws Exception {
+
+    /**
+     * Handle  the defined Term  which is list of list.
+     * @param key
+     * @param element
+     * @return
+     * @throws Exception
+     */
+    private static List<List<Object>> processDefinedTerm(String key, JsonElement element) throws Exception {
         //if it an array again other wise
 
-        List<List<CoreMap>> coreMapList = new ArrayList<List<CoreMap>>();
+        List<List<Object>> coreMapList = new ArrayList<List<Object>>();
         Iterator<JsonElement> elements = element.getAsJsonArray().iterator();
         while (elements.hasNext()) {
             JsonElement elmt = elements.next();
             if (elmt.isJsonArray()) {
                 //infer type
-                coreMapList.add(processArray(elmt));
+                coreMapList.add(processArray(key, elmt));
             } else {
                 System.out.println("Failed to deserialize the DefinedTerm");
                 throw new Exception("Deserialzation failed because DefinedTerm is not a List<List<CoreMap>>");
@@ -156,4 +170,28 @@ public class JsonDeserializer {
     }
 
 
+    /**
+     * Handler for json primitives. Important things to remember..
+     *
+     * All boolean start with Is
+     * Float,Integer need to have in it
+     *
+     * @param key
+     * @param element
+     * @return
+     */
+    private static Object processPrimitives(String key, JsonElement element) {
+        if (key.startsWith("Is")) {
+            logger.trace("processing key {} as boolean",key);
+            return new Boolean(element.getAsBoolean());
+        } else if (key.contains("Float")) {
+            logger.trace("processing key {} as Float",key);
+            return new Float(element.getAsFloat());
+        } else if (key.contains("Integer")) {
+            logger.trace("processing key {} as Integer",key);
+            return new Integer(element.getAsInt());
+        }
+        //consider it as a string
+        return new String(element.getAsString());
+    }
 }

@@ -297,7 +297,7 @@ public class API {
                  if(modifiedParagraph.getClassificationId()== Paragraph.DEFINITION_CLASSIFICATION) {
 
                      //remove any existing annotations - definedTermList
-                     paragraph.set(CoreAnnotations.DefinedTermListAnnotation.class, null);
+                     paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class, null);
                      paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, false);
 
                      // add annotations that received from client - definedTermList
@@ -309,7 +309,7 @@ public class API {
                 if(modifiedParagraph.getClassificationId()== Paragraph.TOC_CLASSIFICATION) {
 
                     //remove any existing annotations - TOCList
-                    paragraph.set(CoreAnnotations.TOCListAnnotation.class, null);
+                    paragraph.set(CoreAnnotations.TOCTokensAnnotation.class, null);
                     paragraph.set(CoreAnnotations.IsTOCAnnotation.class, false);
 
                     // add annotations that received from client - TOCList
@@ -326,7 +326,7 @@ public class API {
                     if (paragraph.containsKey(CoreAnnotations.IsTOCAnnotation.class)) {
                         logger.debug(paragraph.getId() + "\t" + "updated TOCs:" + "\t" + DocumentHelper.getTOCLists(paragraph));
                     }
-                    logger.debug("TrainingWeightAnnotation:" + paragraph.get(CoreAnnotations.TrainingWeightAnnotation.class).toString());
+                    logger.debug("TrainingWeightAnnotation:" + paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class).toString());
                 }
             }
         }

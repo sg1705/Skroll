@@ -1,17 +1,13 @@
 package com.skroll.parser.tokenizer;
 
-import com.google.common.base.Strings;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
-import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
-import com.skroll.document.annotation.CoreAnnotation;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.SyncPipe;
 import com.skroll.pipeline.util.Constants;
-import com.skroll.pipeline.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -130,7 +126,7 @@ public class TokenizeParagraphInHtmlDocumentPipe extends SyncPipe<Document, Docu
                 paragraph.set(CoreAnnotations.IsUnderlineAnnotation.class, true);
             }
             //set the count of tokens that start with uppercase
-            paragraph.set(CoreAnnotations.TokenStartsWithUpperCaseCount.class, startsWithUppercaseCount);
+            paragraph.set(CoreAnnotations.StartsWithUpperCaseCountInteger.class, startsWithUppercaseCount);
             //add tokens to master list
             documentTokens.addAll(tokens);
             // check to see if it is a page break
