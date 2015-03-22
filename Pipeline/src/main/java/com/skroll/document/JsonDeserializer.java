@@ -2,6 +2,8 @@ package com.skroll.document;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Type;
 import java.util.*;
@@ -9,7 +11,9 @@ import java.util.*;
 /**
  * Created by saurabh on 12/22/14.
  */
-public class JsonDeserialzer {
+public class JsonDeserializer {
+    public static final Logger logger = LoggerFactory
+            .getLogger(Paragraph.class);
 
     public static String getJson(Document doc) {
         Gson gson = getGson();
@@ -30,7 +34,7 @@ public class JsonDeserialzer {
     }
 
 
-    public Document fromJson(String json) throws Exception {
+    public static Document fromJson(String json) throws Exception {
 
         JsonParser parser = new JsonParser();
         JsonElement jsonElement = parser.parse(json);
@@ -75,12 +79,14 @@ public class JsonDeserialzer {
     }
 
 
-    private CoreMap processObject(JsonElement element) throws Exception {
+    private static CoreMap processObject(JsonElement element) throws Exception {
         CoreMap coreMap = new CoreMap();
         Set<Map.Entry<String, JsonElement>> set = element.getAsJsonObject().entrySet();
+        logger.debug("EntrySet:"+set);
         for(Map.Entry<String, JsonElement> entry : set) {
             JsonElement elmt = entry.getValue();
             if (elmt.isJsonPrimitive()) {
+                logger.debug("elmt.isJsonPrimitive():"+entry.getKey());
                 if (entry.getKey().startsWith("Is")) {
                     //boolean
                     coreMap.set(entry.getKey(), new Boolean(elmt.getAsBoolean()));
@@ -88,10 +94,13 @@ public class JsonDeserialzer {
                     // add in the core map
                     coreMap.set(entry.getKey(), elmt.getAsString());
                 }
+            } else if (entry.getKey().equals("DefinedTermListAnnotation")){
+                coreMap.set(entry.getKey(), processDefinedTerm(elmt));
             } else if (elmt.isJsonArray()) {
                 //infer type
                 coreMap.set(entry.getKey(), processArray(elmt));
             } else if (elmt.isJsonObject()) {
+                logger.debug("elmt.isJsonObject():"+elmt);
                 coreMap.set(entry.getKey(), processObject(elmt));
             }
         }
@@ -101,27 +110,50 @@ public class JsonDeserialzer {
 
 
 
-    private List<CoreMap> processArray(JsonElement element) throws Exception {
+    private static List<CoreMap> processArray(JsonElement element) throws Exception {
         //if it an array again other wise
 
-
-
         List<CoreMap> coreMapList = new ArrayList<CoreMap>();
+        List<Object> ObjectList = new ArrayList<Object>();
         Iterator<JsonElement> elements = element.getAsJsonArray().iterator();
         while (elements.hasNext()) {
             JsonElement elmt = elements.next();
             //assume that it is a list of coreMap. Hence, each element has to be a object
             if (elmt.isJsonObject()) {
+                logger.debug("elmt.isJsonObject():"+elmt);
                 CoreMap map = processObject(elmt);
                 coreMapList.add(map);
             } else {
-                System.out.println("WHOOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-                throw new Exception("Deserialzation failed because array is not a List<CoreMap>");
+                if (elmt.isJsonPrimitive()) {
+                    ObjectList.add(elmt.getAsFloat());
+                }
+                logger.debug("Not elmt.isJsonObject():"+elmt);
+                System.out.println("Failed to deserialize the Array");
+            //    throw new Exception("Deserialzation failed because array is not a List<CoreMap>");
+            }
+        }
+        if(!ObjectList.isEmpty()){
+
+        }
+        return coreMapList;
+    }
+    private static List<List<CoreMap>> processDefinedTerm(JsonElement element) throws Exception {
+        //if it an array again other wise
+
+        List<List<CoreMap>> coreMapList = new ArrayList<List<CoreMap>>();
+        Iterator<JsonElement> elements = element.getAsJsonArray().iterator();
+        while (elements.hasNext()) {
+            JsonElement elmt = elements.next();
+            if (elmt.isJsonArray()) {
+                //infer type
+                coreMapList.add(processArray(elmt));
+            } else {
+                System.out.println("Failed to deserialize the DefinedTerm");
+                throw new Exception("Deserialzation failed because DefinedTerm is not a List<List<CoreMap>>");
             }
         }
         return coreMapList;
     }
-
 
 
 }

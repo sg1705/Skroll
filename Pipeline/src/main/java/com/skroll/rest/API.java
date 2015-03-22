@@ -215,10 +215,18 @@ public class API {
                         paragraph);
                 for (List<String> definition: definitionList) {
                     logger.debug(paragraph.getId() + "\t" + "DEFINITION" + "\t" + definition);
-                    if (definition.isEmpty())
-                        continue;
-                    definedTermParagraphList.add(new Paragraph(paragraph.getId(), Joiner.on(" ").join(definition), Paragraph.DEFINITION_CLASSIFICATION));
+                    if (!definition.isEmpty()) {
+                        definedTermParagraphList.add(new Paragraph(paragraph.getId(), Joiner.on(" ").join(definition), Paragraph.DEFINITION_CLASSIFICATION));
+                    }
                 }
+            }
+            if (paragraph.containsKey(CoreAnnotations.IsTOCAnnotation.class)) {
+                List<String> tocList = DocumentHelper.getTOCLists(
+                        paragraph);
+                    logger.debug(paragraph.getId() + "\t" + "TOC" + "\t" + tocList);
+                    if (!tocList.isEmpty()) {
+                        definedTermParagraphList.add(new Paragraph(paragraph.getId(), Joiner.on(" ").join(tocList), Paragraph.TOC_CLASSIFICATION));
+                    }
             }
         }
         if (definedTermParagraphList.isEmpty()) {
@@ -233,12 +241,12 @@ public class API {
     }
 
     @POST
-    @Path("/overwriteAnnotation")
+    @Path("/updateTerms")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response overwriteAnnotation(String definedTermParagraphList, @Context HttpHeaders hh) {
+    @Produces(MediaType.TEXT_HTML)
+    public Response updateTerms(String definedTermParagraphList, @Context HttpHeaders hh) {
 
-        logger.debug("changeAnnotation- DefinedTermParagraphList:{}", definedTermParagraphList);
+        logger.debug("updateTerms- DefinedTermParagraphList:{}", definedTermParagraphList);
         if (definedTermParagraphList.isEmpty()) {
             logger.warn("NO input data in post request");
             return Response.status(Response.Status.NO_CONTENT).entity("NO input data in post request" ).type(MediaType.APPLICATION_JSON).build();
@@ -264,7 +272,7 @@ public class API {
         }.getType();
         definitionJson = gson.fromJson(definedTermParagraphList, type);
 
-        logger.info("overwriteAnnotation:{} for doc id: {}", definitionJson,documentId);
+        logger.info("updateTerms:{} for doc id: {}", definitionJson,documentId);
 
     } catch(Exception ex) {
            logger.error("Failed to parse the json document: {}", ex);
@@ -272,39 +280,54 @@ public class API {
         }
         for (Paragraph modifiedParagraph: definitionJson) {
             for (CoreMap paragraph : doc.getParagraphs()) {
-                 if(paragraph.getId().equals(modifiedParagraph.getParagraphId()) && modifiedParagraph.getClassificationId()== Paragraph.DEFINITION_CLASSIFICATION) {
-                     paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
-                     paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class,true);
-                     TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, TrainingWeightAnnotationHelper.DEFINITION, userWeight);
-                     // log the existing definitions
+                if(paragraph.getId().equals(modifiedParagraph.getParagraphId())) {
+                    paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
+                    paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class,true);
+                    TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, TrainingWeightAnnotationHelper.DEFINITION, userWeight);
+                    // log the existing definitions
+                    if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
+                        List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(paragraph);
+                            logger.debug(paragraph.getId() + "\t" + "existing definition:" + "\t" + Joiner.on(" , ").join(definitionList));
+                    }
+                    if (paragraph.containsKey(CoreAnnotations.IsTOCAnnotation.class)) {
+                            logger.debug(paragraph.getId() + "\t" + "existing TOCs:" + "\t" + DocumentHelper.getTOCLists(paragraph));
+                    }
+                    List<String> addedTerms = Lists.newArrayList(Splitter.on(" ").split(modifiedParagraph.getTerm()));
 
-                     if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
-                         List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(
-                                 paragraph);
-                         for (List<String> definition : definitionList) {
-                             logger.debug(paragraph.getId() + "\t" + "existing definition:" + "\t" + definition);
-                         }
-                     }
+                 if(modifiedParagraph.getClassificationId()== Paragraph.DEFINITION_CLASSIFICATION) {
+
                      //remove any existing annotations - definedTermList
                      paragraph.set(CoreAnnotations.DefinedTermListAnnotation.class, null);
                      paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, false);
 
                      // add annotations that received from client - definedTermList
-                     List<String> addedDefinition = Lists.newArrayList( Splitter.on(" ").split(modifiedParagraph.getTerm()));
-                     if (addedDefinition!=null && !addedDefinition.isEmpty()) {
-                         List<Token> tokens = DocumentHelper.getTokens(addedDefinition);
+                     if (addedTerms!=null && !addedTerms.isEmpty()) {
+                         List<Token> tokens = DocumentHelper.getTokens(addedTerms);
                          DocumentHelper.addDefinedTermTokensInParagraph(tokens, paragraph);
-                         paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
                      }
-                     // log the updated definitions
-                     List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(
-                             paragraph);
-                     for (List<String> definition : definitionList) {
-                         logger.debug(paragraph.getId() + "\t" + "changed annotation:" + "\t" + definition);
-
-                     }
-                     logger.debug("TrainingWeightAnnotation:" + paragraph.get(CoreAnnotations.TrainingWeightAnnotation.class).toString());
                  }
+                if(modifiedParagraph.getClassificationId()== Paragraph.TOC_CLASSIFICATION) {
+
+                    //remove any existing annotations - TOCList
+                    paragraph.set(CoreAnnotations.TOCListAnnotation.class, null);
+                    paragraph.set(CoreAnnotations.IsTOCAnnotation.class, false);
+
+                    // add annotations that received from client - TOCList
+                    if (addedTerms != null && !addedTerms.isEmpty()) {
+                        List<Token> tokens = DocumentHelper.getTokens(addedTerms);
+                        DocumentHelper.addTOCsInParagraph(tokens, paragraph);
+                    }
+                }
+                    // log the updated definitions
+                    if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
+                        List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(paragraph);
+                        logger.debug(paragraph.getId() + "\t" + "updated definition:" + "\t" + Joiner.on(" , ").join(definitionList));
+                    }
+                    if (paragraph.containsKey(CoreAnnotations.IsTOCAnnotation.class)) {
+                        logger.debug(paragraph.getId() + "\t" + "updated TOCs:" + "\t" + DocumentHelper.getTOCLists(paragraph));
+                    }
+                    logger.debug("TrainingWeightAnnotation:" + paragraph.get(CoreAnnotations.TrainingWeightAnnotation.class).toString());
+                }
             }
         }
         // persist the document using document id. Let's use the file name
@@ -316,8 +339,7 @@ public class API {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to persist the document object" ).type(MediaType.APPLICATION_JSON).build();
         }
         logger.debug("updated document is stored in {}", preEvaluatedFolder + documentId);
-
-        return Response.ok().status(Response.Status.OK).entity("").type(MediaType.APPLICATION_JSON).build();
+        return Response.status(Response.Status.OK).entity(doc.getTarget().getBytes(Constants.DEFAULT_CHARSET)).type(MediaType.TEXT_HTML).build();
     }
 
     @GET
