@@ -7,7 +7,7 @@
  * # fileUpload
  */
 angular.module('SkrollApp')
-  .directive('scrollToParagraph', ['documentModel', function(documentModel) {
+  .directive('scrollToParagraph', ['documentModel', '$mdSidenav', function(documentModel, $mdSidenav) {
     return {
       restricted: 'A',
       link: function(scope, element, attrs) {
@@ -17,10 +17,9 @@ angular.module('SkrollApp')
             var para = $("#"+paragraphId);
             if (para != null) {
                 var contentDiv = $("#skrollport");
-                console.log(contentDiv.scrollTop());
                 $("#skrollport").animate({scrollTop: ($("#skrollport").scrollTop() - 200 + $(para).offset().top)}, "slow");
                 $(para).css("background-color","yellow");
-                scope.toggleSidenav('left');
+                $mdSidenav('left').toggle();
             }
           });
         }

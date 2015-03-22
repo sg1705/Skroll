@@ -76,14 +76,14 @@
 
     <md-content md-scroll-y id="skrollport">
       <div layout="row" flex>
-        <div ng-controller="ViewPortCtrl as ctrl" flex="74">
+        <div ng-controller="ViewPortCtrl as ctrl" flex="75">
             <md-whiteframe class="md-whiteframe-z3">
-              <md-content flex class="md-padding" id="content" ng-click="ctrl.paraClicked($event)" ng-mouseup="ctrl.mouseUp($event)">
+              <md-content flex id="content" class="md-padding" ng-click="ctrl.paraClicked($event)" ng-mouseup="ctrl.mouseUp($event)">
               </md-content>
             </md-whiteframe>  
         </div>
         <!-- hide RHS when small media -->
-        <div hide-sm hide-md flex="26">
+        <div hide-sm hide-md flex="25">
         </div>
       </div>
     </md-content>
@@ -111,6 +111,7 @@
 <script src="bower_components/angular-touch/angular-touch.min.js"></script>
 <script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
 <script src="bower_components/angular-material/angular-material.min.js"></script>
+<script src="bower_components/underscore/underscore-min.js"></script>
 <script src="bower_components/underscore.string/dist/underscore.string.min.js"></script>
 <!-- endbower -->
 <!-- endbuild -->

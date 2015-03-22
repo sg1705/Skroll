@@ -13,7 +13,18 @@ var documentModel = {
   isDocAvailable: false,
   isProcessing: false,
   fileName: "",
-  selectedParagraphId: ""
+  selectedParagraphId: "",
+
+  classes: [
+  	{
+  		id: 1,
+  		name: 'Definition'
+  	},
+  	{
+  		id: 2,
+  		name: 'Table of Contents'
+  	}
+  ]
 };
 
 
