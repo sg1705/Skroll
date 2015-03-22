@@ -42,15 +42,16 @@ public class JsonDeserializerTest {
         String jsonDoc = JsonDeserializer.getJson(createDoc());
         logger.debug("JSON:" +jsonDoc);
         Document document = JsonDeserializer.fromJson(jsonDoc);
-        logger.debug("Doc:" +document);
+        logger.debug("Doc:" + document);
         for (CoreMap paragraph : document.getParagraphs()) {
+            logger.debug("paragraph:" +paragraph.getText());
             if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
                 List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(
                         paragraph);
                 logger.debug("definitionList:" +Joiner.on(" ").join(definitionList));
                 assert((Joiner.on(" ").join(definitionList).contains("susan")));
             }
-            List<Float> trainingWeight = paragraph.get(CoreAnnotations.TrainingWeightAnnotation.class);
+            List<Float> trainingWeight = paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class);
             logger.debug("trainingWeight:" +trainingWeight);
            // assert((trainingWeight.get(0).floatValue()==1.0));
             logger.debug("JSON:" + JsonDeserializer.getJson(document));
@@ -71,7 +72,7 @@ public class JsonDeserializerTest {
         paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
         TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, TrainingWeightAnnotationHelper.DEFINITION, (float) 1.0);
         TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, TrainingWeightAnnotationHelper.TOC, (float)0.5);
-
+        paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
         paralist.add(paragraph);
 
         List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(
