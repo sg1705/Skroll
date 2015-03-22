@@ -136,7 +136,6 @@ public class ProbabilityDocumentAnnotatingModelTest {
         model.passMessageToDocumentFeatures();
         model.passMessagesToParagraphCategories();
 
-//        testPassMessagesToParagraphCategories();
         model.annotateDocument();
 
         System.out.println("annotated terms\n");

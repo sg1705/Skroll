@@ -79,16 +79,6 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     void updateHMMWithParagraph(CoreMap paragraph){
         List<Token> tokens = paragraph.get(CoreAnnotations.TokenAnnotation.class);
 
-        HashSet<String> definitionsSet;
-        if (!paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
-            definitionsSet= new HashSet<String>();
-        } else {
-//            List<Token> defTokens = paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class);
-//            List<String> definitions = Splitter.on(' ').splitToList(DocumentHelper.getTokenString(defTokens).get(0));
-            List<String> definitions = DocumentHelper.getDefinedTerms(paragraph);
-            definitionsSet = new HashSet<String>(definitions);
-        }
-
         int[] tokenType = new int[tokens.size()];
         for (int i = 0; i < tokenType.length; i++) {
             tokenType[i] =  DefinedTermExtractionHelper.getWordFeature(

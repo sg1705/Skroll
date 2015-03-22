@@ -49,11 +49,9 @@ public class TrainingDocumentAnnotatingModelTest{
             File[] listOfFiles = file.listFiles();
             for (File f:listOfFiles) {
                 Document doc = makeTrainingDoc(f);
-                //TrainingDocumentAnnotatingModel model = buildModel(f);
                 model.updateWithDocument(doc);
             }
         } else {
-            //TrainingDocumentAnnotatingModel model = buildModel(file);
             Document doc = makeTrainingDoc(file);
 
             model.updateWithDocument(doc);

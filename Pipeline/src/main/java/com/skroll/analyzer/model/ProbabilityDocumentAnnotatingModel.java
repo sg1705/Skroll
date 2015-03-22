@@ -55,6 +55,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
         this.hmm = hmm;
 
+        hmm.updateProbabilities();
         initialize();
          initialize(doc);
 
@@ -193,6 +194,10 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
     }
 
     public void annotateDocument(){
+        passMessagesToParagraphCategories();
+
+        passMessageToDocumentFeatures();
+        passMessagesToParagraphCategories();
         int numParagraphs = paragraphCategoryBelief.length;
 
         List<CoreMap> paragraphList = doc.getParagraphs();

@@ -184,6 +184,7 @@ public class HiddenMarkovModel {
         return s;
     }
 
+    // todo: need to think more about the correct way to set PRIOR count. But this becomes insignificant with enough data.
     public void updateProbabilities(){
 
         // update state value probability
@@ -212,6 +213,7 @@ public class HiddenMarkovModel {
             }
 
 
+            //todo: need better ways to handle small number of observations.
             for (String k: tokenCounts[i].keySet()){
                 //hask for testing purpose
                 Integer count0 = tokenCounts[0].get(k);
@@ -235,8 +237,6 @@ public class HiddenMarkovModel {
         }
         probabilitiesUpToDate = true;
 
-        //hack for testing purpose:
-        //transitionProbability[0][1] +=0.1;
     }
 
     public void updateCounts(String[] tokens, int[] stateValues, int[][] features){

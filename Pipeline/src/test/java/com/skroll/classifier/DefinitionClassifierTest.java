@@ -61,8 +61,6 @@ public class DefinitionClassifierTest {
     @Test
     public void testClassify() {
 
-        Classifier documentClassifier = new DefinitionClassifier();
-
         String testingFile = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
         Document document = null;
         try {
@@ -89,7 +87,6 @@ public class DefinitionClassifierTest {
      public void testTrainFolders(String folderName) {
             Configuration configuration = new Configuration();
 
-        DefinitionClassifier documentClassifier = new DefinitionClassifier();
         //String folderName = "src/main/resources/trainingDocuments/indentures";
 
         FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(folderName));
@@ -122,19 +119,18 @@ public class DefinitionClassifierTest {
 
             }
         }
-        try {
-            documentClassifier.persistModel();
-        } catch (ObjectPersistUtil.ObjectPersistException e) {
-            e.printStackTrace();
-            fail("failed to persist the model");
-        }
+//        try {
+//            documentClassifier.persistModel();
+//        } catch (ObjectPersistUtil.ObjectPersistException e) {
+//            e.printStackTrace();
+//            fail("failed to persist the model");
+//        }
     }
 
     //@Test
     public void testTrainFile()  {
             Configuration configuration = new Configuration();
 
-        DefinitionClassifier documentClassifier = new DefinitionClassifier();
         String fileName = "src/main/resources/trainingDocuments/indentures/AMC Networks Indenture.html";
 
         String htmlText = null;
