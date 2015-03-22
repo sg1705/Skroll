@@ -30,29 +30,20 @@ angular.module('SkrollApp')
                   },
                   done: function (e, data) {
                       console.log("Done setting")
+                      var terms;
                       $("#content").html(data.result);
-                      //populate definitions
-                      documentService.getDefinition().then(function(definitions){
+                      //use get terms
+                      documentService.getTerms().then(function(terms){
                         //create new LHS model items
-                        var items = [];
-                        for(var ii = 0; ii < definitions.length; ii++) {
-                          var item = {
-                            itemId: definitions[ii].paragraphId,
-                            text: definitions[ii].definition
-                          }
-                          items.push(item);
-                        }
-                        LHSModel.sections[0].items = items;
-                        console.log('items:' + items.length);
+                        LHSModel.smodel.terms = terms;
                       }, function(msg) {
                         console.log(msg);
                       });
-
-
                       scope.$apply(function() {
                           scope.targetHtml = data.result;
                           scope.isDocAvailable = true;
                           scope.isProcessing = false;
+                          LHSModel.model = terms;
                           documentModel.isDocAvailable = true;
                           documentModel.targetHtml = data.result;
                           documentModel.isProcessing = false;

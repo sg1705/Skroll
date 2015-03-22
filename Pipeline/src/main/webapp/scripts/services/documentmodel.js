@@ -17,11 +17,11 @@ var documentModel = {
 
   classes: [
   	{
-  		id: 0,
+  		id: 1,
   		name: 'Definition'
   	},
   	{
-  		id: 1,
+  		id: 2,
   		name: 'Table of Contents'
   	}
   ]

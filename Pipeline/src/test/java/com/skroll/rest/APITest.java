@@ -1,8 +1,13 @@
 package com.skroll.rest;
 
+import com.google.common.base.Joiner;
 import com.google.common.io.Files;
+import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
+import com.skroll.document.DocumentHelper;
 import com.skroll.document.ModelHelper;
+import com.skroll.document.annotation.CoreAnnotations;
+import com.skroll.pipeline.util.Constants;
 import com.skroll.util.Configuration;
 import com.skroll.util.ObjectPersistUtil;
 import org.glassfish.jersey.media.multipart.MultiPart;
@@ -22,7 +27,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import java.io.File;
-import java.nio.charset.Charset;
+import java.util.List;
 
 public class APITest {
     public static final Logger logger = LoggerFactory
@@ -70,7 +75,7 @@ public class APITest {
     @Test
     public void test_UploadFile_GetDefinition() throws Exception {
         String cookie = testFileUpload();
-        testGetDefinition(cookie);
+        testGetTerms(cookie);
     }
 
 
@@ -109,8 +114,8 @@ public class APITest {
         return response.getCookies().get("documentId").getValue();
     }
 
-    public void testGetDefinition(String documentId) throws Exception {
-        String TARGET_URL = "http://localhost:8888/restServices/jsonAPI/getDefinition";
+    public void testGetTerms(String documentId) throws Exception {
+        String TARGET_URL = "http://localhost:8888/restServices/jsonAPI/getTerms";
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
 
@@ -125,8 +130,21 @@ public class APITest {
         testOverwriteAnnotation(documentId);
         Configuration configuration = new Configuration();
         String preEvaluatedFolder = configuration.get("preEvaluatedFolder","/tmp/");
-        Document doc = ModelHelper.getModel(Files.toString(new File(preEvaluatedFolder + documentId), Charset.defaultCharset()));
+        Document doc = ModelHelper.getModel(Files.toString(new File(preEvaluatedFolder + documentId), Constants.DEFAULT_CHARSET));
         assert(doc.getTarget().contains("Accredited Investor"));
+        for (CoreMap paragraph : doc.getParagraphs()) {
+            if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
+                List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(
+                        paragraph);
+                logger.debug("definitionList:" + Joiner.on(" ").join(definitionList));
+                assert((Joiner.on(" ").join(definitionList).contains("Accredited")));
+            }
+            List<Float> trainingWeight = paragraph.get(CoreAnnotations.TrainingWeightAnnotation.class);
+            logger.debug("trainingWeight:" +trainingWeight);
+            assert((trainingWeight.get(0).floatValue()==0.0));
+        }
+        testUpdateModel(documentId);
+        testUpdateBNI(documentId);
     }
 
     public void testOverwriteAnnotation(String documentId) throws Exception {

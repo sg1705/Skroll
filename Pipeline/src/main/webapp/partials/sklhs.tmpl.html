@@ -1,11 +1,11 @@
-<div ng-repeat="section in ctrl.sections">
+<div ng-repeat="class in ctrl.classes">
 	<md-list>
 		<md-button ng-click="ctrl.toggleSection($index)">
-			<h4>{{section.name}}</h4>
+			<h4>{{class.name}}</h4>
 		</md-button>
-    <md-item ng-show="section.isSelected" ng-repeat="item in section.items">
+    <md-item ng-show="class.isSelected" ng-repeat="term in ctrl.smodel.terms | filter: {classificationId:class.id}">
       <md-item-content>
-        <md-button scroll-to-paragraph="{{item.itemId}}">{{item.text}}</md-button>
+        <md-button scroll-to-paragraph="{{term.paragraphId}}">{{term.term}}</md-button>
       </md-item-content>
       <md-divider></md-divider>
     </md-item>
