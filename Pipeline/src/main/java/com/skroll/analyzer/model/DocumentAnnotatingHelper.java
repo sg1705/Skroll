@@ -133,7 +133,7 @@ public class DocumentAnnotatingHelper {
         if (paragraph==null) return;
         switch (feature) {
             case PARAGRAPH_INDEX:
-                paragraph.set(CoreAnnotations.Index.class, value);
+                paragraph.set(CoreAnnotations.IndexInteger.class, value);
                 return;
 
         }
@@ -164,7 +164,7 @@ public class DocumentAnnotatingHelper {
                 return booleanToInt(tokens.get(0).get(CoreAnnotations.IsUnderlineAnnotation.class ));
             case PARAGRAPH_STARTS_WITH_ITALIC:
                 return booleanToInt(tokens.get(0).get(CoreAnnotations.IsItalicAnnotation.class ));
-            case PARAGRAPH_INDEX:  return paragraph.get(CoreAnnotations.Index.class );
+            case PARAGRAPH_INDEX:  return paragraph.get(CoreAnnotations.IndexInteger.class );
 
         }
         return -1;
