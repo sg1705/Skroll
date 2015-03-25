@@ -14,10 +14,10 @@ public class TrainingWeightAnnotationHelper {
     public final static int NONE =2;
 
     public static void updateTrainingWeight(CoreMap paragraph, int index, float userWeight){
-        List<Float>  userWeightList = paragraph.get(CoreAnnotations.TrainingWeightAnnotation.class);
+        List<Float>  userWeightList = paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class);
         if (userWeightList == null) {
             userWeightList = Lists.newArrayList((float)0,(float)0,(float)0);
-            paragraph.set(CoreAnnotations.TrainingWeightAnnotation.class, userWeightList);
+            paragraph.set(CoreAnnotations.TrainingWeightAnnotationFloat.class, userWeightList);
         }
         userWeightList.set(index, userWeightList.get(index) + userWeight);
 

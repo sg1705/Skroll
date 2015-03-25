@@ -58,7 +58,7 @@ public class DocumentHelper {
     //todo: this method should be removed. but it's used at some places.
 
     public static List<String> getDefinedTerms(CoreMap coreMap) {
-        List<List<Token>> definiitonList = coreMap.get(CoreAnnotations.DefinedTermListAnnotation.class);
+        List<List<Token>> definiitonList = coreMap.get(CoreAnnotations.DefinedTermTokensAnnotation.class);
         List<String> strings = new ArrayList<>();
         if (definiitonList==null || definiitonList.size()==0) return strings;
         strings = DocumentHelper.getTokenString(definiitonList.get(0));
@@ -66,7 +66,7 @@ public class DocumentHelper {
     }
 
     public static List<List<String>> getDefinedTermLists(CoreMap coreMap) {
-        List<List<Token>> definitionList = coreMap.get(CoreAnnotations.DefinedTermListAnnotation.class);
+        List<List<Token>> definitionList = coreMap.get(CoreAnnotations.DefinedTermTokensAnnotation.class);
         List<List<String>> strings = new ArrayList<>();
         if (definitionList==null) return strings;
         for (List<Token> list: definitionList){
@@ -75,6 +75,12 @@ public class DocumentHelper {
         return strings;
     }
 
+    public static List<String> getTOCLists(CoreMap coreMap) {
+        List<Token> tocList = coreMap.get(CoreAnnotations.TOCTokensAnnotation.class);
+        if (tocList==null) return new ArrayList<>();
+        return DocumentHelper.getTokenString(tocList);
+
+    }
 
 
     //todo: this method should be deleted. but it's used at some places.
@@ -82,24 +88,24 @@ public class DocumentHelper {
     public static void setDefinedTermTokensInParagraph(List<Token> definitions, CoreMap paragraph) {
         List<List<Token>> list = new ArrayList<>();
         list.add(definitions);
-        paragraph.set(CoreAnnotations.DefinedTermListAnnotation.class, list);
+        paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class, list);
         if (definitions.size() > 0) {
             paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
         }
     }
 
     public static void setDefinedTermTokenListInParagraph(List<List<Token>> definitions, CoreMap paragraph) {
-        paragraph.set(CoreAnnotations.DefinedTermListAnnotation.class, definitions);
+        paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class, definitions);
         if (definitions.size() > 0) {
             paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
         }
     }
 
     public static void addDefinedTermTokensInParagraph(List<Token> definitions, CoreMap paragraph) {
-        List<List<Token>>  definitionList = paragraph.get(CoreAnnotations.DefinedTermListAnnotation.class);
+        List<List<Token>>  definitionList = paragraph.get(CoreAnnotations.DefinedTermTokensAnnotation.class);
         if (definitionList == null) {
             definitionList = new ArrayList<>();
-            paragraph.set(CoreAnnotations.DefinedTermListAnnotation.class, definitionList);
+            paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class, definitionList);
         }
         definitionList.add(definitions);
         if (definitions.size() > 0) {
@@ -107,9 +113,21 @@ public class DocumentHelper {
         }
     }
 
+    public static void addTOCsInParagraph(List<Token> newToc, CoreMap paragraph) {
+        List<Token> toc = paragraph.get(CoreAnnotations.TOCTokensAnnotation.class);
+        if (toc == null) {
+            toc = new ArrayList<>();
+            paragraph.set(CoreAnnotations.TOCTokensAnnotation.class, toc);
+        }
+        toc.addAll(newToc);
+        if (toc.size() > 0) {
+            paragraph.set(CoreAnnotations.IsTOCAnnotation.class, true);
+        }
+    }
+
 
     public static List<List<Token>> getDefinedTermTokensInParagraph(CoreMap paragraph) {
-        return paragraph.get(CoreAnnotations.DefinedTermListAnnotation.class);
+        return paragraph.get(CoreAnnotations.DefinedTermTokensAnnotation.class);
     }
 
     public static List<Token> createTokens(List<String> strings) {

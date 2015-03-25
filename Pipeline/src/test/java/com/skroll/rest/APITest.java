@@ -125,9 +125,9 @@ public class APITest {
     }
 
     @Test
-    public void test_UploadFile_OverwriteAnnotation() throws Exception, ObjectPersistUtil.ObjectPersistException {
+    public void test_UploadFile_UpdateTerms() throws Exception, ObjectPersistUtil.ObjectPersistException {
         String documentId = testFileUpload();
-        testOverwriteAnnotation(documentId);
+        testUpdateTerms(documentId);
         Configuration configuration = new Configuration();
         String preEvaluatedFolder = configuration.get("preEvaluatedFolder","/tmp/");
         Document doc = ModelHelper.getModel(Files.toString(new File(preEvaluatedFolder + documentId), Constants.DEFAULT_CHARSET));
@@ -139,22 +139,19 @@ public class APITest {
                 logger.debug("definitionList:" + Joiner.on(" ").join(definitionList));
                 assert((Joiner.on(" ").join(definitionList).contains("Accredited")));
             }
-            List<Float> trainingWeight = paragraph.get(CoreAnnotations.TrainingWeightAnnotation.class);
+            List<Float> trainingWeight = paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class);
             logger.debug("trainingWeight:" +trainingWeight);
-            assert((trainingWeight.get(0).floatValue()==0.0));
         }
-        testUpdateModel(documentId);
-        testUpdateBNI(documentId);
     }
 
-    public void testOverwriteAnnotation(String documentId) throws Exception {
-        String TARGET_URL = "http://localhost:8888/restServices/jsonAPI/overwriteAnnotation";
+    public void testUpdateTerms(String documentId) throws Exception {
+        String TARGET_URL = "http://localhost:8888/restServices/jsonAPI/updateTerms";
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
 
         String jsonString ="[{\"paragraphId\":\"1854\",\"definedTerm\":\"Unit Test\"},{\"paragraphId\":\"1854\",\"definedTerm\":\"200 Test\"}]";
 
-        Response response = webTarget.request(MediaType.APPLICATION_JSON).cookie(new  NewCookie("documentId", documentId))
+        Response response = webTarget.request(MediaType.TEXT_HTML).cookie(new  NewCookie("documentId", documentId))
                 .post(Entity.entity(jsonString, MediaType.APPLICATION_JSON));
 
         //logger.debug("Here is the response: "+response.getEntity().toString());

@@ -71,7 +71,7 @@ public class HtmlDocumentHMMTester extends SyncPipe<Document, Document> {
             }
             List<List<Token>> definedTokensList = new ArrayList();
             definedTokensList.add(DocumentHelper.createTokens(definitions));
-            paragraph.set(CoreAnnotations.DefinedTermListAnnotation.class, definedTokensList);
+            paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class, definedTokensList);
             newParagraphs.add(paragraph);
         }
         input.setParagraphs(newParagraphs);

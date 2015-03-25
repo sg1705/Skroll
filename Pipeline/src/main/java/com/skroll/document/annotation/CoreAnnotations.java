@@ -141,7 +141,7 @@ public class CoreAnnotations {
     /**
      * annotation for keeping the user training weight for a paragraph
      */
-    public static class TrainingWeightAnnotation implements CoreAnnotation<List<Float>> {
+    public static class TrainingWeightAnnotationFloat implements CoreAnnotation<List<Float>> {
         public Class<List<Float>> getType() {
             return EraserUtils.<Class<List<Float>>> uncheckedCast(List.class);
         }
@@ -166,7 +166,7 @@ public class CoreAnnotations {
      * </pre>
      */
 
-    public static class DefinedTermListAnnotation implements CoreAnnotation<List<List<Token>>> {
+    public static class DefinedTermTokensAnnotation implements CoreAnnotation<List<List<Token>>> {
         public Class<List<List<Token>>> getType() {
             return EraserUtils.<Class<List<List<Token>>>> uncheckedCast(List.class);
         }
@@ -231,7 +231,7 @@ public class CoreAnnotations {
     /**
      * Annotation for training. It specifies the index of a word token in the paragraph.
      */
-    public static class Index implements CoreAnnotation<Integer> {
+    public static class IndexInteger implements CoreAnnotation<Integer> {
         public Class<Integer> getType() {
             return Integer.class;
         }
@@ -249,7 +249,7 @@ public class CoreAnnotations {
     /**
      * Annotation for training. It specifies the index of a word token in the paragraph.
      */
-    public static class TokenStartsWithUpperCaseCount implements CoreAnnotation<Integer> {
+    public static class StartsWithUpperCaseCountInteger implements CoreAnnotation<Integer> {
         public Class<Integer> getType() {
             return Integer.class;
         }
@@ -265,7 +265,7 @@ public class CoreAnnotations {
     }
 
     // TOC Annotation
-    public static class TOCListAnnotation implements CoreAnnotation<List<Token>> {
+    public static class TOCTokensAnnotation implements CoreAnnotation<List<Token>> {
         public Class<List<Token>> getType() {
             return EraserUtils.<Class<List<Token>>> uncheckedCast(List.class);
         }

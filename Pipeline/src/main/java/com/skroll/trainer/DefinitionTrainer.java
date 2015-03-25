@@ -178,12 +178,12 @@ public class DefinitionTrainer {
                             //TODO: only one definition per paragraph supported right now.
                             List<List<Token>> definedTokensList = new ArrayList();
                             definedTokensList.add(definedTokens);
-                            paragraph.set(CoreAnnotations.DefinedTermListAnnotation.class, definedTokensList);
+                            paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class, definedTokensList);
                             paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
                             defList.add(paragraph.getId() + "\t" + "DEFINITION" + "\t" + definedTokens + "\t" + paragraph.getText());
                         } else {
                             paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, false);
-                            paragraph.set(CoreAnnotations.DefinedTermListAnnotation.class, null);
+                            paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class, null);
                             defList.add(paragraph.getId() + "\t" + "NOT_DEFINITION" + "\t" + " " + "\t" + paragraph.getText());
                         }
                     }
