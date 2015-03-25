@@ -131,6 +131,17 @@ public class DocumentAnnotatingHelper {
         return wordSet.toArray(new String[wordSet.size()]);
     }
 
+    static void setParagraphFeature(CoreMap paragraph, RandomVariableType feature, int value){
+        if (paragraph==null) return;
+        switch (feature) {
+            case PARAGRAPH_INDEX:
+                paragraph.set(CoreAnnotations.Index.class, value);
+                return;
+
+        }
+        return;
+    }
+
     static int getParagraphFeature(CoreMap paragraph, RandomVariableType feature){
         if (paragraph==null) return 0;
         List<Token> tokens = paragraph.getTokens();
@@ -155,6 +166,8 @@ public class DocumentAnnotatingHelper {
                 return booleanToInt(tokens.get(0).get(CoreAnnotations.IsUnderlineAnnotation.class ));
             case PARAGRAPH_STARTS_WITH_ITALIC:
                 return booleanToInt(tokens.get(0).get(CoreAnnotations.IsItalicAnnotation.class ));
+            case PARAGRAPH_INDEX:  return paragraph.get(CoreAnnotations.Index.class );
+
         }
         return -1;
     }

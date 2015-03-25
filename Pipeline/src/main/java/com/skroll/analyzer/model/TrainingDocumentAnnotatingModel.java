@@ -1,5 +1,7 @@
 package com.skroll.analyzer.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skroll.analyzer.model.bn.SimpleDataTuple;
 import com.skroll.analyzer.model.bn.TrainingNaiveBayesWithFeatureConditions;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
@@ -39,14 +41,16 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
     }
 
+    @JsonCreator
+    public TrainingDocumentAnnotatingModel(
+            @JsonProperty("tnbfModel")TrainingNaiveBayesWithFeatureConditions tnbfModel,
+            @JsonProperty("wordType")RandomVariableType wordType,
+            @JsonProperty("wordFeatures")List<RandomVariableType> wordFeatures,
+            @JsonProperty("paraCategory")RandomVariableType paraCategory,
+            @JsonProperty("paraFeatures")List<RandomVariableType> paraFeatures,
+            @JsonProperty("paraDocFeatures")List<RandomVariableType> paraDocFeatures,
+            @JsonProperty("docFeatures")List<RandomVariableType> docFeatures){
 
-    public TrainingDocumentAnnotatingModel(TrainingNaiveBayesWithFeatureConditions tnbfModel,
-                                           RandomVariableType wordType,
-                                           List<RandomVariableType> wordFeatures,
-                                           RandomVariableType paraCategory,
-                                           List<RandomVariableType> paraFeatures,
-                                           List<RandomVariableType> paraDocFeatures,
-                                           List<RandomVariableType> docFeatures){
         this.tnbfModel = tnbfModel;
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;

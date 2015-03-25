@@ -1,5 +1,6 @@
 package com.skroll.analyzer.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
 
 import java.util.ArrayList;
@@ -64,30 +65,37 @@ public abstract class DocumentAnnotatingModel {
     static List<RandomVariableType> allParagraphFeatures;
 
 
+    @JsonIgnore
     public List<RandomVariableType> getDocFeatures() {
         return docFeatures;
     }
 
+    @JsonIgnore
     public List<RandomVariableType> getParaFeatures() {
         return paraFeatures;
     }
 
+    @JsonIgnore
     public List<RandomVariableType> getParaDocFeatures() {
         return paraDocFeatures;
     }
 
+    @JsonIgnore
     public List<RandomVariableType> getWordFeatures() {
         return wordFeatures;
     }
 
+    @JsonIgnore
     public static List<RandomVariableType> getAllParagraphFeatures() {
         return allParagraphFeatures;
     }
 
+    @JsonIgnore
     public RandomVariableType getWordType() {
         return wordType;
     }
 
+    @JsonIgnore
     public RandomVariableType getParaCategory() {
         return paraCategory;
     }
@@ -101,7 +109,7 @@ public abstract class DocumentAnnotatingModel {
         return hmm;
     }
 
-    public void initialize(){
+    void initialize(){
         allParagraphFeatures = new ArrayList<>(paraFeatures);
         allParagraphFeatures.addAll(paraDocFeatures);
 

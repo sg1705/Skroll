@@ -1,5 +1,6 @@
 package com.skroll.analyzer.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.skroll.analyzer.model.bn.LogProbabilityNaiveBayesWithFeatureConditions;
 import com.skroll.analyzer.model.bn.ProbabilityNaiveBayesWithFeatureConditions;
 import com.skroll.analyzer.model.bn.SimpleDataTuple;
@@ -56,18 +57,24 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
         this.hmm = hmm;
 
         hmm.updateProbabilities();
-        initialize();
-         initialize(doc);
+        this.initialize();
+         //initialize(doc);
 
     }
 
-    void initialize(Document doc){
+    void initialize(){
+        super.initialize();
+        List<CoreMap> originalParagraphs = doc.getParagraphs();
         List<CoreMap> paragraphs = new ArrayList<>();
 
         // process raw input paragraph to be used for model
-        for( CoreMap paragraph : doc.getParagraphs())
-            paragraphs.add(DocumentAnnotatingHelper.processParagraph(paragraph, hmm.size()));
+        for( int i=0; i<originalParagraphs.size(); i++ ) {
+            CoreMap para = originalParagraphs.get(i);
 
+            // put in paragraph index for easier finding paragraph later
+            DocumentAnnotatingHelper.setParagraphFeature(para, RandomVariableType.PARAGRAPH_INDEX, i);
+            paragraphs.add(DocumentAnnotatingHelper.processParagraph(para, hmm.size()));
+        }
 
         // store feature values for later probability updates
         paraFeatureValsExistAtDocLevel = new int[paragraphs.size()][paraDocFeatures.size()];
@@ -79,6 +86,23 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
         }
 
         computeInitalBelieves(paragraphs);
+    }
+
+    void updateBeliefWithObservation(List<CoreMap> observedParagraphs){
+
+        for( CoreMap para : observedParagraphs) {
+            if (para==null) continue;
+            List<Token> tokens = para.getTokens();
+            if (tokens==null || tokens.size()==0) continue;
+            int pIndex = DocumentAnnotatingHelper.getParagraphFeature(para, RandomVariableType.PARAGRAPH_INDEX);
+            int value = DocumentAnnotatingHelper.getParagraphFeature(para, paraCategory);
+
+            for (int i=0; i<paraCategory.getFeatureSize(); i++){
+                if (i==value) paragraphCategoryBelief[pIndex][i] = 0;
+                else paragraphCategoryBelief[pIndex][i] = Double.NEGATIVE_INFINITY;
+            }
+        }
+
     }
 
     void computeInitalBelieves(List<CoreMap> paragraphs){
@@ -213,7 +237,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
             // using NB category as the prior prob to the input of HMM.
             // This means the HMM output state sequence gives the highest p(HMM observations | given NB observations)
             double[] logPrioProbs =
-                    paragraphCategoryBelief[p];
+                    paragraphCategoryBelief[p].clone();
 
             // can check for NB classification to see if we want to keep checking the words.
             // check here to make it more efficient, or keep going to be more accurate.
@@ -227,7 +251,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
             int[][] features = new int[length][wordFeatures.size()];
             for (int i=0; i<length ;i++){
                 for (int f=0; f<wordFeatures.size();f++){
-                    features[i][f] = DefinedTermExtractionHelper.getWordFeature(paragraph, tokens.get(i), wordFeatures.get(f));
+                    features[i][f] = DocumentAnnotatingHelper.getWordFeature(paragraph, tokens.get(i), wordFeatures.get(f));
                 }
             }
             int[] states = hmm.mostLikelyStateSequence(wordsArray, features, logPrioProbs);
@@ -255,10 +279,12 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
     }
 
+    @JsonIgnore
     public double[][] getParagraphCategoryBelief() {
         return paragraphCategoryBelief;
     }
 
+    @JsonIgnore
     public double[][] getDocumentFeatureBelief() {
         return documentFeatureBelief;
     }

@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class ProbabilityDiscreteNode extends DiscreteNode {
 
-    // store the counts and probability values in a one dimensional array.
+    // store the parameters and probability values in a one dimensional array.
     // convert multi-index to the index of the one dimensional array
     // by treating the multi-index as a multi-base representation of integer,
     // least significant index is index 0.

@@ -17,7 +17,7 @@ public class TrainingWordNodeTest {
 
     }
 
-    //todo: check prior counts...
+    //todo: check prior parameters...
     @Test
     public void testUpdateCount() throws Exception {
 

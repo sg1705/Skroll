@@ -1,7 +1,11 @@
 package com.skroll.classifier;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.FluentIterable;
 import com.google.common.io.Files;
+import com.skroll.analyzer.model.TrainingDocumentAnnotatingModel;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.parser.Parser;
@@ -29,14 +33,14 @@ public class DefinitionClassifierTest {
     public static final Logger logger = LoggerFactory
             .getLogger(DefinitionClassifierTest.class);
     Classifier documentClassifier = new DefinitionClassifier();
-    @Before
-    public void setup(){
-        Configuration configuration = new Configuration();
-        String modelFolderName = configuration.get("modelFolder","/tmp");
-        String path =modelFolderName + ((DefinitionClassifier)documentClassifier).getDtemModelName();
-        File file = new File(path);
-        file.delete();
-    }
+//    @Before
+//    public void setup(){
+//        Configuration configuration = new Configuration();
+//        String modelFolderName = configuration.get("modelFolder","/tmp");
+//        String path =modelFolderName + ((DefinitionClassifier)documentClassifier).getDtemModelName();
+//        File file = new File(path);
+//        file.delete();
+//    }
 
     @Test
     public void testTrainClassify() {
@@ -50,12 +54,17 @@ public class DefinitionClassifierTest {
             fail("failed training");
         }
         String testingFile = "src/test/resources/parser/linker/test-linker-random.html";
-        try {
-            Document document = (Document)documentClassifier.classify(Parser.parseDocumentFromHtmlFile(testingFile));
-            Utils.writeToFile("build/classes/test/test-linker-random.html", document.getTarget());
-        } catch(Exception ex){
-            fail("failed testClassify");
-        }
+//        try {
+//            ObjectMapper mapper = new ObjectMapper();
+//            mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+//            String jsonSting = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(((DefinitionClassifier)documentClassifier).getModel());
+//            TrainingDocumentAnnotatingModel model = mapper.readValue(jsonSting, TrainingDocumentAnnotatingModel.class);
+//            Document document = (Document)documentClassifier.classify(Parser.parseDocumentFromHtmlFile(testingFile));
+//            Utils.writeToFile("build/classes/test/test-linker-random.html", document.getTarget());
+//        } catch(Exception ex){
+//            ex.printStackTrace();
+//            fail(ex.getMessage());
+//        }
     }
 
     @Test

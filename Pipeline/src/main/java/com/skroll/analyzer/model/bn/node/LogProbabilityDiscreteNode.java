@@ -1,5 +1,6 @@
 package com.skroll.analyzer.model.bn.node;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.skroll.analyzer.model.bn.inference.BNInference;
 
 import java.util.Arrays;
@@ -9,7 +10,7 @@ import java.util.Arrays;
  */
 public class LogProbabilityDiscreteNode extends DiscreteNode {
 
-    // store the counts and probability values in a one dimensional array.
+    // store the parameters and probability values in a one dimensional array.
     // convert multi-index to the index of the one dimensional array
     // by treating the multi-index as a multi-base representation of integer,
     // least significant index is index 0.
@@ -42,6 +43,7 @@ public class LogProbabilityDiscreteNode extends DiscreteNode {
      * @param message
      * @return
      */
+    @JsonIgnore
     double[] getLogBelief(int index, double[] message){
         double[] belief = new double[parameters.length];
         int sizeUnderIndexFrom = sizeUpTo(index);
@@ -114,10 +116,12 @@ public class LogProbabilityDiscreteNode extends DiscreteNode {
         return sumOutOtherNodesWithObservation( getParentNodeIndex(parentNode)+1);
     }
 
+    @JsonIgnore
     double getLogProbability(int index){
         return parameters[index];
     }
 
+    @JsonIgnore
     public double[] getLogProbabilities(){
         return parameters;
     }

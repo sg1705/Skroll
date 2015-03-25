@@ -1,5 +1,6 @@
 package com.skroll.analyzer.model.bn.node;
 
+import com.fasterxml.jackson.annotation.*;
 import com.skroll.analyzer.model.RandomVariableType;
 import com.skroll.analyzer.model.bn.inference.BNInference;
 
@@ -9,18 +10,29 @@ import java.util.List;
 /**
  * Created by wei2learn on 3/1/2015.
  */
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = com.skroll.analyzer.model.bn.node.LogProbabilityDiscreteNode.class, name = "LogProbabilityDiscreteNode"),
+        @JsonSubTypes.Type(value = com.skroll.analyzer.model.bn.node.ProbabilityDiscreteNode.class, name = "ProbabilityDiscreteNode"),
+        @JsonSubTypes.Type(value = com.skroll.analyzer.model.bn.node.TrainingDiscreteNode.class, name = "TrainingDiscreteNode")})
+@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 public class DiscreteNode{
     RandomVariableType[] familyVariables;
 
-    // store the counts and probability values in a one dimensional array.
+    // store the parameters and probability values in a one dimensional array.
     // convert multi-index to the index of the one dimensional array
     // by treating the multi-index as a multi-base representation of integer,
     // least significant index is index 0.
+
     double[] parameters; // used to calculate probability and represent how much piror experience exists.
     // todo: in the future, when models are fixed and updated using a lot of data, may consider multiplying by some positive decaying constant less than 1 to reduce the weight of older experiences
 
     DiscreteNode[] parents, children;
     int observedValue = -1; // -1 means unobserved
+    @JsonIgnore
     public Integer getObservation() {
         return observedValue;
     }
@@ -44,6 +56,7 @@ public class DiscreteNode{
     public DiscreteNode(){
     }
 
+    @JsonIgnore
     int getParentNodeIndex(DiscreteNode parentNode){
         for (int i=0; i<parents.length; i++)
             if (parents[i] == parentNode) return i;
@@ -57,7 +70,7 @@ public class DiscreteNode{
         parameters = new double[totalSize];
     }
 
-
+    @JsonIgnore
     int[] getRandomVariableSizes(List<RandomVariableType> randomVariables){
         int[] sizes = new int[randomVariables.size()];
         for (int i=0; i<sizes.length;i++)
@@ -65,6 +78,7 @@ public class DiscreteNode{
         return sizes;
     }
 
+    @JsonIgnore
     int getIndex(int [] multiIndex){ // least significant digit on the left.
         int index=0;
         for (int i=multiIndex.length-1; i>=0; i--){
@@ -78,6 +92,7 @@ public class DiscreteNode{
         return BNInference.normalize(parameters, weight);
     }
 
+    @JsonIgnore
     public double getParameter(int index){
         return parameters[index];
     }
@@ -98,6 +113,7 @@ public class DiscreteNode{
         this.parents = parents;
     }
 
+    @JsonIgnore
     public RandomVariableType getVariable(){
         return familyVariables[0];
     }

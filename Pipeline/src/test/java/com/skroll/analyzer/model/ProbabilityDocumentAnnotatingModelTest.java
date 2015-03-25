@@ -4,12 +4,16 @@ import com.skroll.analyzer.model.bn.TrainingNaiveBayesWithFeatureConditions;
 import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
+import com.skroll.document.DocumentHelper;
+import com.skroll.document.Token;
+import com.skroll.document.annotation.CoreAnnotations;
 import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -132,14 +136,11 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
     @Test
     public void testAnnotateDocument() throws Exception {
-        model.passMessagesToParagraphCategories();
-        model.passMessageToDocumentFeatures();
-        model.passMessagesToParagraphCategories();
-
         model.annotateDocument();
 
         System.out.println("annotated terms\n");
         DocumentAnnotatingHelper.printAnnotatedDoc(doc);
+        printBelieves();
     }
 
     public void testGetParagraphCategoryBelief() throws Exception {
@@ -150,4 +151,44 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
     }
 
+    @Test
+    public void testUpdateBeliefWithZeroObservations() throws Exception {
+
+        List<CoreMap> paraList = doc.getParagraphs();
+        List<Token> definedTerms = new ArrayList<>();
+        List<CoreMap> observedParas = new ArrayList<>();
+
+
+        System.out.print("document level feature believes\n");
+        for (int i=0; i<2; i++){
+            paraList.get(i).set(CoreAnnotations.IsDefinitionAnnotation.class, true);
+            observedParas.add(paraList.get(i));
+        }
+
+        model.updateBeliefWithObservation(observedParas);
+//        model.passMessagesToParagraphCategories();
+//        model.passMessageToDocumentFeatures();
+//        model.passMessagesToParagraphCategories();
+
+        model.annotateDocument();
+
+        System.out.println("annotated terms\n");
+        DocumentAnnotatingHelper.printAnnotatedDoc(doc);
+        System.out.println("believes\n");
+
+        printBelieves();
+
+    }
+
+    @Test
+    public void testUpdateBeliefWithObservation() throws Exception {
+        model.passMessagesToParagraphCategories();
+        model.passMessageToDocumentFeatures();
+        model.passMessagesToParagraphCategories();
+
+        model.annotateDocument();
+
+        System.out.println("annotated terms\n");
+        DocumentAnnotatingHelper.printAnnotatedDoc(doc);
+    }
 }
