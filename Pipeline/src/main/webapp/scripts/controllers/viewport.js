@@ -111,21 +111,21 @@ ViewPortCtrl.prototype.handleTrainerTextSelection = function(paraId,
     prompt = 'Please choose the class for this [' + selectedText + ']';
     //show set of questions for classes
     var items = LHSModel.getClassNames();
-    this.showYesNoDialog(prompt, items).then(function(clickedItemIndex) {
-      //resolve choice
-      var resolvedClass = LHSModel.getClassFromId(clickedItemIndex);
-      console.log(resolvedClass.name);
-    });
-    return;
+    //create a new matched item
+    matchedItem = { paragraphId: paraId, term: selectedText, classificationId: ''};
+    console.log(matchedItem);
+    this.showYesNoDialog(prompt, items).then(angular.bind(this, function(clicked) {
+      matchedItem.classificationId = clicked;
+      var contentHtml = this.documentService.addTermToPara(matchedItem);
+      this.updateDocument(contentHtml);
+    }));
+
+  } else {
+    // yes / no question if matching found
+    var className = LHSModel.getClassFromId(matchedItem.classificationId).name;
+    prompt = s.sprintf(text, selectedText, className);
+    this.showYesNoAllDialog(prompt, matchedItem);
   }
-  // yes / no question if matching found
-  prompt = s.sprintf(text, selectedText, LHSModel.getClassFromId(matchedItem.classificationId).name);
-  var items = ['Yes', 'No'];
-  this.showYesNoDialog(prompt, items).then(function(clicked) {
-    if (clicked == 1) {
-      LHSModel.removeTerm(paraId, selectedText);
-    }
-  })
 }
 
 /**
@@ -155,19 +155,52 @@ ViewPortCtrl.prototype.handleTrainerParaSelection = function(paraId) {
     //yes-no question because there is a term match
     var className = LHSModel.getClassFromId(matchedItem.classificationId).name;
     prompt = s.sprintf(text, className);
-    //create a set of questions. In this case, yes or no
-    var items = ['Yes', 'No', 'Yes to all ' + className];
-    this.showYesNoDialog(prompt, items).then(function(clicked) {
-      if (clicked == 1) {
-        LHSModel.removePara(paraId);
-      }
-      console.log(clicked);
-    })
-
+    this.showYesNoAllDialog(prompt, matchedItem);
   }
 
 }
 
+/**
+* Updates the viewport with fresh content html
+*/
+ViewPortCtrl.prototype.updateDocument = function(contentHtml) {
+  $("#content").html(contentHtml);
+  this.documentService.getTerms().then(function(terms){
+    LHSModel.smodel.terms = terms;
+    console.log(terms);
+  }, function(data, status){
+    console.log(status);
+  });
+
+}
+
+/**
+* Shows a "Yes, No, Yes to all" dialog
+*/
+ViewPortCtrl.prototype.showYesNoAllDialog = function(prompt, matchedItem) {
+  var className = LHSModel.getClassFromId(matchedItem.classificationId).name;
+  //create a set of questions. In this case, yes or no
+  var items = ['Yes', 'No', 'Yes to all ' + className];
+  this.showYesNoDialog(prompt, items).then(angular.bind(this, function(clicked) {
+    if (clicked == 1) {
+      var contentHtml = this.documentService.rejectClassFromPara(matchedItem.classificationId, matchedItem.paragraphId);
+      this.updateDocument(contentHtml);
+    }
+    //answer is yes
+    if (clicked == 0) {
+      var contentHtml = this.documentService.approveClassForPara(matchedItem.classificationId, matchedItem.paragraphId);
+      this.updateDocument(contentHtml);
+    }
+  }));
+
+}
+
+
+
+/**
+* Shows a question bottom sheet
+*
+**/
 ViewPortCtrl.prototype.showYesNoDialog = function(text, items) {
   this.ToolbarModel.trainerPrompt.text = text;
   this.ToolbarModel.trainerPrompt.items = items;
@@ -180,9 +213,10 @@ ViewPortCtrl.prototype.showYesNoDialog = function(text, items) {
 }
 
 angular.module('SkrollApp').controller('TrainerPromptCtrl',function($scope,
-  ToolbarModel, $mdBottomSheet) {
+  ToolbarModel, $mdBottomSheet, documentService) {
   $scope.prompt = ToolbarModel.trainerPrompt.text;
   $scope.items = ToolbarModel.trainerPrompt.items;
+  $scope.documentService = documentService;
 
   $scope.itemClicked = function($index) {
     $mdBottomSheet.hide($index);

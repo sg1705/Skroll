@@ -65,6 +65,22 @@ var LHSModel = {
         if (obj.id == classId)
           return true;
     });
+  },
+
+  filterOutClassFromPara: function(classId, paraId) {
+  	return [{
+  		classificationId: classId,
+  		paragraphId: paraId,
+  		term: ''
+  	}]
+  },
+
+  getParagraphsForClass: function(classId, paraId) {
+		var paras = _.filter(LHSModel.smodel.terms, function(obj){
+			if ((obj.paragraphId == paraId) && (obj.classificationId == classId))
+				return true;
+		});
+
   }
 
 };

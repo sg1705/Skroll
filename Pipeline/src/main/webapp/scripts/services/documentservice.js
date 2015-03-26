@@ -8,7 +8,7 @@
  * Service in the myappApp.
  */
 angular.module('SkrollApp')
-  .service('documentService', function($http, $q, $log) {
+  .service('documentService', function($http, $q, $log, LHSModel) {
     //context root of API
     var documentServiceBase = 'restServices/jsonAPI/';
 
@@ -91,5 +91,48 @@ angular.module('SkrollApp')
         })
       return deferred.promise;
     }
+
+    /**
+    * Removes all instances of paraId from smodel.terms and updates it
+    */
+    this.rejectClassFromPara = function(classId, paraId) {
+      //get a filtered list
+      var terms = LHSModel.filterOutClassFromPara(classId, paraId);
+      this.updateTerms(terms).then(function(data) {
+        return data;
+      }, function(data, status) {
+        console.log(status);
+      });
+    }
+
+    /**
+    * Approves all instances of terms in the paraId for the given class
+    */
+    this.approveClassForPara = function(classId, paraId) {
+      //get a filtered list
+      var terms = LHSModel.getParagraphsForClass(classId, paraId);
+      this.updateTerms(terms).then(function(data) {
+        return data;
+      }, function(data, status) {
+        console.log(status);
+      });
+    }
+
+    /**
+    * Approves all instances of terms in the paraId for the given class
+    */
+    this.addTermToPara = function(item) {
+      //get a filtered list
+      var terms = LHSModel.getParagraphsForClass(item.classificationId, item.paragraphId);
+      if (terms == null)
+        terms = [];
+      terms.push(item);
+      this.updateTerms(terms).then(function(data) {
+        return data;
+      }, function(data, status) {
+        console.log(status);
+      });
+    }
+
 
   });
