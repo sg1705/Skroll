@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title></title>
+  <title>Skroll</title>
   <meta http-equiv="cache-control" content="max-age=0" />
   <meta http-equiv="cache-control" content="no-cache" />
   <meta http-equiv="expires" content="0" />
@@ -31,12 +31,11 @@
 
 <!-- start file selection -->
 <div layout="column" id="uploadForm" ng-show="!isDocAvailable && !isProcessing"
-     style="height: 600px; display:flex; align-items: center;">
+     style="display:flex; align-items: center;">
 
   <md-toolbar layout="row">
     <h1>Welcome to Skroll!</h1>
   </md-toolbar>
-  <md-content>
     <md-list>
       <md-item ng-repeat="id in userDocumentIds">
         <md-item-content>
@@ -55,9 +54,6 @@
   <br/>
   <br/>
 <input file-upload id="fileupload" type="file" name="files[]" data-url="restServices/jsonAPI/upload"/>
-
-
-  </md-content>
 
   
 </div>
@@ -98,7 +94,7 @@
 
     <md-content md-scroll-y id="skrollport">
       <div layout="row" flex>
-        <div ng-controller="ViewPortCtrl as ctrl" flex="75">
+        <div ng-controller="ViewPortCtrl as ctrl" >
             <md-whiteframe class="md-whiteframe-z3">
               <md-content flex id="content" class="md-padding" ng-click="ctrl.paraClicked($event)" ng-mouseup="ctrl.mouseUp($event)">
               </md-content>
