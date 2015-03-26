@@ -132,7 +132,7 @@ public class API {
     }
     @GET
     @Path("/getDoc")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_HTML)
     public Response getDoc(@QueryParam("documentId") String documentId, @Context HttpHeaders hh) {
 
         if(documentId==null) {

@@ -29,7 +29,6 @@ angular.module('SkrollApp')
                       data.submit();
                   },
                   done: function (e, data) {
-                      console.log("Done setting")
                       var terms;
                       $("#content").html(data.result);
                       //use get terms
@@ -47,8 +46,6 @@ angular.module('SkrollApp')
                           documentModel.isDocAvailable = true;
                           documentModel.targetHtml = data.result;
                           documentModel.isProcessing = false;
-                          console.log("Done assigning");
-
                       });
                   },
                   fail: function (e, data) {

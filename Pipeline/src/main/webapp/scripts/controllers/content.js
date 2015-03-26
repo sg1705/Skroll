@@ -17,6 +17,27 @@ angular.module('SkrollApp')
             $scope.definitions = [ ];
             $scope.isEdit = false;
             $scope.similarPara = [ ];
+            $scope.userDocumentIds = [ ];
+            $scope.documentService = documentService;
+
+            $scope.getDocumentIds = function() {
+                documentService.getDocumentIds().then(function(documentIds){
+                    $scope.userDocumentIds = documentIds;
+                });
+            }
+
+            $scope.loadDocument = function(documentId) {
+                documentService.loadDocument(documentId).then(angular.bind(this, function(contentHtml) {
+                  $("#content").html(contentHtml);
+                  $scope.documentService.getTerms().then(function(terms){
+                    LHSModel.smodel.terms = terms;
+                    $scope.isDocAvailable = true;
+                    console.log(terms);
+                  }, function(data, status){
+                    console.log(status);
+                  });                        
+                }));
+            }
 
             //toggle side navigation
             $scope.toggleSidenav = function(menuId) {
@@ -125,5 +146,6 @@ angular.module('SkrollApp')
                     })
                 }
             });
+    $scope.getDocumentIds();
 
         }]);
