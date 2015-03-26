@@ -9,7 +9,7 @@
  */
 
 var ViewPortCtrl = function(SelectionModel, documentService, $mdBottomSheet,
-  ToolbarModel, LHSModel, documentModel) {
+  ToolbarModel, LHSModel, documentModel, $log) {
   this.SelectionModel = SelectionModel;
   this.documentService = documentService;
   this.$mdBottomSheet = $mdBottomSheet;
@@ -19,6 +19,7 @@ var ViewPortCtrl = function(SelectionModel, documentService, $mdBottomSheet,
 }
 
 ViewPortCtrl.prototype.mouseUp = function($event) {
+  console.log("mouseup clicked");
   //should mouse click handle it
   //find out if this is a selection
   var selection = window.getSelection().toString();
@@ -39,6 +40,7 @@ ViewPortCtrl.prototype.mouseUp = function($event) {
 
 
 ViewPortCtrl.prototype.paraClicked = function($event) {
+  console.log("Paragraph clicked");
   //find out if this is a selection
   var selection = window.getSelection().toString();
   //check to see if mouseup should handle it
