@@ -13,16 +13,19 @@ angular.module('SkrollApp')
       link: function(scope, element, attrs) {
         var paragraphId = attrs.scrollToParagraph;
         var para =
-        $(element).click(function() {
-            var para = $("#"+paragraphId);
+          $(element).click(function() {
+            var para = $("#" + paragraphId);
             if (para != null) {
-                var contentDiv = $("#skrollport");
-                $("#skrollport").animate({scrollTop: ($("#skrollport").scrollTop() - 200 + $(para).offset().top)}, "slow");
-                $(para).css("background-color","yellow");
-                $mdSidenav('left').toggle();
+              var contentDiv = $("#skrollport");
+              $("#skrollport").animate({
+                scrollTop: ($("#skrollport").scrollTop() - 200 + $(
+                  para).offset().top)
+              }, "slow");
+              $(para).css("background-color", "yellow");
+              $mdSidenav('left').toggle();
             }
           });
-        }
+      }
 
     }
   }]);

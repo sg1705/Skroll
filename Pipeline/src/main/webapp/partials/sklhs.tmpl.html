@@ -1,5 +1,5 @@
-<div ng-repeat="class in ctrl.classes">
-	<md-list>
+<div ng-repeat="class in ctrl.classes" ng-show="{{class.isVisible}}" >
+	<md-list >
 		<md-button ng-click="ctrl.toggleSection($index)">
 			<h4>{{class.name}}</h4>
 		</md-button>
