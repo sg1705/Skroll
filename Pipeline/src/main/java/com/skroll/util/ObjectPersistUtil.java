@@ -1,7 +1,11 @@
 package com.skroll.util;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.skroll.analyzer.model.TrainingDocumentAnnotatingModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,9 +52,15 @@ public class ObjectPersistUtil {
             throw new ObjectPersistException("UnsupportedEncodingException while reading the persisted object: "+ objectName);
 
         }
-        Gson gson = new GsonBuilder().create();
-        gson.toJson(obj, type, writer);
-
+//        Gson gson = new GsonBuilder().create();
+//        gson.toJson(obj, type, writer);
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+            mapper.writerWithDefaultPrettyPrinter().writeValue(writer, obj);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         try {
             writer.close();
             f_out.close();
@@ -79,9 +89,16 @@ public class ObjectPersistUtil {
             e.printStackTrace();
             throw new ObjectPersistException("UnsupportedEncodingException while reading the persisted object: "+ objectName);
         }
-        Gson gson = new GsonBuilder().create();
-        Object obj = gson.fromJson(reader, type);
-
+//        Gson gson = new GsonBuilder().create();
+//        Object obj = gson.fromJson(reader, type);
+        TrainingDocumentAnnotatingModel obj = null;
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+            obj = mapper.readValue(reader, TrainingDocumentAnnotatingModel.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         try {
             reader.close();
              f_in.close();

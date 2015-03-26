@@ -1,7 +1,11 @@
 package com.skroll.classifier;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.FluentIterable;
 import com.google.common.io.Files;
+import com.skroll.analyzer.model.TrainingDocumentAnnotatingModel;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.parser.Parser;
@@ -11,11 +15,15 @@ import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
 import com.skroll.util.Configuration;
 import com.skroll.util.ObjectPersistUtil;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.NoSuchFileException;
 
 import static org.junit.Assert.fail;
 
@@ -24,10 +32,20 @@ public class DefinitionClassifierTest {
     //The following line needs to be added to enable log4j
     public static final Logger logger = LoggerFactory
             .getLogger(DefinitionClassifierTest.class);
+    Classifier documentClassifier = new DefinitionClassifier();
+//    @Before
+//    public void setup(){
+//        Configuration configuration = new Configuration();
+//        String modelFolderName = configuration.get("modelFolder","/tmp");
+//        String path =modelFolderName + ((DefinitionClassifier)documentClassifier).getDtemModelName();
+//        File file = new File(path);
+//        file.delete();
+//    }
+
     @Test
     public void testTrainClassify() {
 
-        Classifier documentClassifier = new DefinitionClassifier();
+
         //convertRawToProcessedCorpus(rawFolder, ProcessedFolder);
         try {
             testTrainFolders("src/test/resources/analyzer/hmmTrainingDocs");
@@ -36,18 +54,21 @@ public class DefinitionClassifierTest {
             fail("failed training");
         }
         String testingFile = "src/test/resources/parser/linker/test-linker-random.html";
-        try {
-            Document document = (Document)documentClassifier.classify(Parser.parseDocumentFromHtmlFile(testingFile));
-            Utils.writeToFile("build/classes/test/test-linker-random.html", document.getTarget());
-        } catch(Exception ex){
-            fail("failed testClassify");
-        }
+//        try {
+//            ObjectMapper mapper = new ObjectMapper();
+//            mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+//            String jsonSting = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(((DefinitionClassifier)documentClassifier).getModel());
+//            TrainingDocumentAnnotatingModel model = mapper.readValue(jsonSting, TrainingDocumentAnnotatingModel.class);
+//            Document document = (Document)documentClassifier.classify(Parser.parseDocumentFromHtmlFile(testingFile));
+//            Utils.writeToFile("build/classes/test/test-linker-random.html", document.getTarget());
+//        } catch(Exception ex){
+//            ex.printStackTrace();
+//            fail(ex.getMessage());
+//        }
     }
 
     @Test
     public void testClassify() {
-
-        Classifier documentClassifier = new DefinitionClassifier();
 
         String testingFile = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
         Document document = null;
@@ -75,7 +96,6 @@ public class DefinitionClassifierTest {
      public void testTrainFolders(String folderName) {
             Configuration configuration = new Configuration();
 
-        DefinitionClassifier documentClassifier = new DefinitionClassifier();
         //String folderName = "src/main/resources/trainingDocuments/indentures";
 
         FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(folderName));
@@ -108,19 +128,18 @@ public class DefinitionClassifierTest {
 
             }
         }
-        try {
-            documentClassifier.persistModel();
-        } catch (ObjectPersistUtil.ObjectPersistException e) {
-            e.printStackTrace();
-            fail("failed to persist the model");
-        }
+//        try {
+//            documentClassifier.persistModel();
+//        } catch (ObjectPersistUtil.ObjectPersistException e) {
+//            e.printStackTrace();
+//            fail("failed to persist the model");
+//        }
     }
 
     //@Test
     public void testTrainFile()  {
             Configuration configuration = new Configuration();
 
-        DefinitionClassifier documentClassifier = new DefinitionClassifier();
         String fileName = "src/main/resources/trainingDocuments/indentures/AMC Networks Indenture.html";
 
         String htmlText = null;

@@ -1,5 +1,6 @@
 package com.skroll.analyzer.model.bn;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.skroll.analyzer.model.bn.node.DiscreteNode;
 import com.skroll.analyzer.model.RandomVariableType;
 import com.skroll.analyzer.model.bn.node.TrainingDiscreteNode;
@@ -57,14 +58,17 @@ public class TrainingNaiveBayes extends NaiveBayes {
         ((TrainingWordNode) wordNode).updateCount();
         clearObservation(); // probably unnecessary
     }
+    @JsonIgnore
     public TrainingDiscreteNode[] getTrainingDiscreteNodeArray() {
         return trainingDiscreteNodeArray;
     }
 
+    @JsonIgnore
     public TrainingDiscreteNode getTrainingCategoryNode() {
         return trainingCategoryNode;
     }
 
+    @JsonIgnore
     public TrainingWordNode getTrainingWordNode() {
         return trainingWordNode;
     }

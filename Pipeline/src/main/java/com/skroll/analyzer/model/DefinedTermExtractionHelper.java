@@ -130,6 +130,7 @@ public class DefinedTermExtractionHelper {
                 if (tokens==null) return 0;
                 for (List<Token> list: tokens)
                     for (Token t:list) // matching string instead of matching token reference is a hack here.
+                    //todo: this hack should be fixed.
                         if (t.getText().equals(word.getText())) return 1;
                     //if (list.contains(word)) return 1;
                 return 0;

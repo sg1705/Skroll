@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model.bn.node;
 
-import java.util.Arrays;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,11 +13,14 @@ import java.util.Map;
 public class TrainingWordNode extends WordNode {
     private static final double PRIOR_COUNT = 100;
 
-    Map<String, double[]> wordCount;
+    //Map<String, double[]> parameters;
+
+    TrainingWordNode(){
+    }
 
     public TrainingWordNode(TrainingDiscreteNode parent){
         super(parent);
-        wordCount = parameters;
+        //parameters = parameters;
     }
 
     public void updateCount(){
@@ -34,31 +38,58 @@ public class TrainingWordNode extends WordNode {
     }
 
     void updateCount(String word, int parentValue, double weight){
-        double[] counts = wordCount.get(word);
+        double[] counts = parameters.get(word);
         if (counts == null) {
             counts = new double[ parent.getVariable().getFeatureSize() ];
-            Arrays.fill(counts, PRIOR_COUNT);
-            wordCount.put(word, counts);
+            //Arrays.fill(parameters, PRIOR_COUNT);
+            parameters.put(word, counts);
         }
         counts[parentValue] += weight;
     }
 
     /**
-     * convert counts to probabilities
+     * convert parameters to probabilities
      */
+    @JsonIgnore
     public Map<String, double[]> getProbabilities(){
+        double [] priorCounts = ((TrainingDiscreteNode) parent).getPriorCount(PRIOR_COUNT);
         Map<String, double[]> probs = new HashMap<>();
         int numValues = parent.getVariable().getFeatureSize();
-        for (String w: wordCount.keySet()){
+
+        for (String w: parameters.keySet()){
             double[] p = new double[ parent.getVariable().getFeatureSize()  ];
-            double sum=0;
-            for (int j=0; j<numValues; j++) sum += wordCount.get(w)[j];
-            for (int j=0; j<numValues; j++) p[j] = wordCount.get(w)[j]/sum;
+            //double sum=0;
+            //for (int j=0; j<numValues; j++) sum += parameters.get(w)[j];
+            for (int j=0; j<numValues; j++) p[j] = (priorCounts[j] +
+                    parameters.get(w)[j])/ parent.getParameter(j);
             probs.put(w,p);
         }
         return probs;
     }
 
+    @JsonIgnore
+    public Map<String, double[]> getLogProbabilities(){
+        double [] priorCounts = ((TrainingDiscreteNode) parent).getPriorCount(PRIOR_COUNT);
+        Map<String, double[]> probs = new HashMap<>();
+        int numValues = parent.getVariable().getFeatureSize();
+
+        for (String w: parameters.keySet()){
+            double[] p = new double[ parent.getVariable().getFeatureSize()  ];
+            //double sum=0;
+            //for (int j=0; j<numValues; j++) sum += parameters.get(w)[j];
+
+
+            //hack for testing purpose
+            if (parameters.get(w)[0]+ parameters.get(w)[1] <10) continue;
+            for (int j=0; j<numValues; j++) p[j] = Math.log((0.1 +
+                    parameters.get(w)[j])/ parent.getParameter(j));
+
+//            for (int j=0; j<numValues; j++) p[j] = Math.log((priorCounts[j] +
+//                    parameters.get(w)[j])/ parent.getParameter(j));
+            probs.put(w,p);
+        }
+        return probs;
+    }
 
 
 }

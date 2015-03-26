@@ -3,6 +3,7 @@ package com.skroll.analyzer.model;
 import com.skroll.analyzer.model.bn.SimpleDataTuple;
 import com.skroll.analyzer.model.nb.DataTuple;
 import com.skroll.document.CoreMap;
+import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
@@ -22,7 +23,7 @@ public class DocumentAnnotatingHelper {
             RandomVariableType.PARAGRAPH_NUMBER_TOKENS.getFeatureSize()-1;
 
     // create a copy of paragraph and annotate it further for training
-    static CoreMap processParagraph(CoreMap paragraph){
+    static CoreMap processParagraph(CoreMap paragraph, int numWords){
         CoreMap trainingParagraph = new CoreMap();
         List<Token> tokens = paragraph.getTokens();
         List<Token> newTokens = new ArrayList<>();
@@ -34,6 +35,8 @@ public class DocumentAnnotatingHelper {
         boolean inQuotes=false; // flag for annotating if a token is in quotes or not
         int i=0;
         for (Token token: tokens){
+            if (i==numWords) break;
+
             if (WordHelper.isQuote(token.getText())) {
                 inQuotes = !inQuotes;
                 continue;
@@ -93,6 +96,7 @@ public class DocumentAnnotatingHelper {
     }
 
     public static int[] generateDocumentFeatures(List<CoreMap> processedParagraphs,
+                                                 RandomVariableType paraCategory,
                                                    List<RandomVariableType> docFeatures,
                                                    List<RandomVariableType> paraFeaturesExistAtDocLevel){
         int[] docFeatureValues = new int[docFeatures.size()];
@@ -100,7 +104,7 @@ public class DocumentAnnotatingHelper {
         Arrays.fill(docFeatureValues, 1);
         for( CoreMap paragraph : processedParagraphs) {
             for (int f=0; f< docFeatureValues.length; f++){
-                if (getParagraphFeature(paragraph, RandomVariableType.PARAGRAPH_HAS_DEFINITION)==1)
+                if (getParagraphFeature(paragraph, paraCategory)==1)
                     docFeatureValues[f] &= getParagraphFeature(paragraph,
                             paraFeaturesExistAtDocLevel.get(f));
             }
@@ -123,6 +127,17 @@ public class DocumentAnnotatingHelper {
     static String[] getNBWords(CoreMap paragraph){
         Set<String> wordSet = paragraph.get(CoreAnnotations.WordSetForTrainingAnnotation.class);
         return wordSet.toArray(new String[wordSet.size()]);
+    }
+
+    static void setParagraphFeature(CoreMap paragraph, RandomVariableType feature, int value){
+        if (paragraph==null) return;
+        switch (feature) {
+            case PARAGRAPH_INDEX:
+                paragraph.set(CoreAnnotations.IndexInteger.class, value);
+                return;
+
+        }
+        return;
     }
 
     static int getParagraphFeature(CoreMap paragraph, RandomVariableType feature){
@@ -149,6 +164,8 @@ public class DocumentAnnotatingHelper {
                 return booleanToInt(tokens.get(0).get(CoreAnnotations.IsUnderlineAnnotation.class ));
             case PARAGRAPH_STARTS_WITH_ITALIC:
                 return booleanToInt(tokens.get(0).get(CoreAnnotations.IsItalicAnnotation.class ));
+            case PARAGRAPH_INDEX:  return paragraph.get(CoreAnnotations.IndexInteger.class );
+
         }
         return -1;
     }
@@ -215,6 +232,20 @@ public class DocumentAnnotatingHelper {
         return -1;
     }
 
+    public static void printAnnotatedDoc(Document doc){
+
+        List<CoreMap> defParas = DocumentHelper.getDefinitionParagraphs(doc);
+        for ( int i=0; i<defParas.size();i++){
+            System.out.println(defParas.get(i).getText());
+            System.out.print(i);
+            System.out.println(DocumentHelper.getDefinedTermTokensInParagraph(defParas.get(i)));
+        }
+//        for (CoreMap para:DocumentHelper.getDefinitionParagraphs(doc)){
+//            System.out.println(para.getText());
+//            System.out.println(DocumentHelper.getDefinedTermTokensInParagraph(para));
+//        }
+        System.out.println(DocumentHelper.getDefinitionParagraphs(doc).size());
+    }
 
 
 }

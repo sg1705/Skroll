@@ -1,5 +1,6 @@
 package com.skroll.analyzer.model.bn;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ObjectArrays;
 import com.skroll.analyzer.model.bn.node.DiscreteNode;
 import com.skroll.analyzer.model.RandomVariableType;
@@ -46,10 +47,12 @@ public class NaiveBayesWithFeatureConditions extends NaiveBayes{
             featureExistAtDocLevelArray[i].setObservation(values[i]);
     }
 
+    @JsonIgnore
     public DiscreteNode[] getDocumentFeatureNodeArray() {
         return documentFeatureNodeArray;
     }
 
+    @JsonIgnore
     public DiscreteNode[] getFeatureExistAtDocLevelArray() {
         return featureExistAtDocLevelArray;
     }
