@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model;
 
-import com.skroll.analyzer.model.bn.ProbabilityNaiveBayesWithFeatureConditions;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skroll.analyzer.model.bn.SimpleDataTuple;
 import com.skroll.analyzer.model.bn.TrainingNaiveBayesWithFeatureConditions;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
@@ -22,40 +23,53 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     TrainingNaiveBayesWithFeatureConditions tnbfModel;
 
     public TrainingDocumentAnnotatingModel(){
-        super();
-        //this.doc = doc;
+        this(DEFAULT_WORD_TYPE, DEFAULT_WORD_FEATURES,
+                DEFAULT_PARAGRAPH_CATEGORY, DEFAULT_PARAGRAPH_FEATURES,
+                DEFAULT_PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL, DEFAULT_DOCUMENT_FEATURES);
+    }
 
-        tnbfModel = new TrainingNaiveBayesWithFeatureConditions(RandomVariableType.PARAGRAPH_HAS_DEFINITION,
-                PARAGRAPH_FEATURES, PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL, DOCUMENT_FEATURES);
+    public TrainingDocumentAnnotatingModel(RandomVariableType wordType,
+                                           List<RandomVariableType> wordFeatures,
+                                           RandomVariableType paraCategory,
+                                           List<RandomVariableType> paraFeatures,
+                                           List<RandomVariableType> paraDocFeatures,
+                                           List<RandomVariableType> docFeatures){
 
-        int []wordFeatureSizes = new int[WORD_FEATURES.size()]; // include state at the feature index 0.
-        for (int i=0; i<wordFeatureSizes.length;i++)
-            wordFeatureSizes[i] =  WORD_FEATURES.get(i).getFeatureSize();
-        hmm = new HiddenMarkovModel(HMM_MODEL_LENGTH,
-                RandomVariableType.WORD_IS_DEFINED_TERM.getFeatureSize(), wordFeatureSizes);
-        //initialize();
-
+        this( new TrainingNaiveBayesWithFeatureConditions(paraCategory,
+                paraFeatures, paraDocFeatures, docFeatures),
+                wordType, wordFeatures, paraCategory, paraFeatures, paraDocFeatures, docFeatures);
 
     }
 
-    public TrainingDocumentAnnotatingModel(TrainingNaiveBayesWithFeatureConditions tnbfModel){
-        super();
+    @JsonCreator
+    public TrainingDocumentAnnotatingModel(
+            @JsonProperty("tnbfModel")TrainingNaiveBayesWithFeatureConditions tnbfModel,
+            @JsonProperty("wordType")RandomVariableType wordType,
+            @JsonProperty("wordFeatures")List<RandomVariableType> wordFeatures,
+            @JsonProperty("paraCategory")RandomVariableType paraCategory,
+            @JsonProperty("paraFeatures")List<RandomVariableType> paraFeatures,
+            @JsonProperty("paraDocFeatures")List<RandomVariableType> paraDocFeatures,
+            @JsonProperty("docFeatures")List<RandomVariableType> docFeatures){
 
         this.tnbfModel = tnbfModel;
-        //this.doc = doc;
+        this.wordType = wordType;
+        this.wordFeatures = wordFeatures;
+        this.paraCategory = paraCategory;
+        this.paraFeatures = paraFeatures;
+        this.paraDocFeatures = paraDocFeatures;
+        this.docFeatures = docFeatures;
 
-        int []wordFeatureSizes = new int[WORD_FEATURES.size()]; // include state at the feature index 0.
+        int []wordFeatureSizes = new int[wordFeatures.size()]; // include state at the feature index 0.
         for (int i=0; i<wordFeatureSizes.length;i++)
-            wordFeatureSizes[i] =  WORD_FEATURES.get(i).getFeatureSize();
+            wordFeatureSizes[i] =  wordFeatures.get(i).getFeatureSize();
         hmm = new HiddenMarkovModel(HMM_MODEL_LENGTH,
-                RandomVariableType.WORD_IS_DEFINED_TERM.getFeatureSize(), wordFeatureSizes);
-        //initialize();
+                wordType.getFeatureSize(), wordFeatureSizes);
+        initialize();
 
 
     }
 
     void updateWithParagraph(CoreMap trainingParagraph, int[] docFeatureValues) {
-        //CoreMap trainingParagraph = DefinedTermExtractionHelper.makeTrainingParagraph(paragraph);
         updateTNBFWithParagraph(trainingParagraph, docFeatureValues);
         updateHMMWithParagraph(trainingParagraph);
     }
@@ -69,27 +83,17 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     void updateHMMWithParagraph(CoreMap paragraph){
         List<Token> tokens = paragraph.get(CoreAnnotations.TokenAnnotation.class);
 
-        HashSet<String> definitionsSet;
-        if (!paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
-            definitionsSet= new HashSet<String>();
-        } else {
-//            List<Token> defTokens = paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class);
-//            List<String> definitions = Splitter.on(' ').splitToList(DocumentHelper.getTokenString(defTokens).get(0));
-            List<String> definitions = DocumentHelper.getDefinedTerms(paragraph);
-            definitionsSet = new HashSet<String>(definitions);
-        }
-
         int[] tokenType = new int[tokens.size()];
         for (int i = 0; i < tokenType.length; i++) {
             tokenType[i] =  DefinedTermExtractionHelper.getWordFeature(
-                    paragraph, tokens.get(i), RandomVariableType.WORD_IS_DEFINED_TERM);
+                    paragraph, tokens.get(i), wordType);
         }
 
         int length = Math.min(hmm.size(), tokens.size());
-        int[][] features = new int[length][WORD_FEATURES.size()];
+        int[][] features = new int[length][wordFeatures.size()];
         for (int i=0; i<length ;i++){
-            for (int f=0; f<WORD_FEATURES.size();f++){
-                features[i][f] = DefinedTermExtractionHelper.getWordFeature(paragraph, tokens.get(i), WORD_FEATURES.get(f));
+            for (int f=0; f<wordFeatures.size();f++){
+                features[i][f] = DefinedTermExtractionHelper.getWordFeature(paragraph, tokens.get(i), wordFeatures.get(f));
             }
         }
 
@@ -105,13 +109,17 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     public void updateWithDocument(Document doc){
         List<CoreMap> paragraphs = new ArrayList<>();
         for( CoreMap paragraph : doc.getParagraphs())
-            paragraphs.add(DocumentAnnotatingHelper.processParagraph(paragraph));
-        int[] docFeatureValues = DocumentAnnotatingHelper.generateDocumentFeatures(paragraphs,DOCUMENT_FEATURES,
-                PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL);
+            paragraphs.add(DocumentAnnotatingHelper.processParagraph(paragraph, hmm.size()));
+        int[] docFeatureValues = DocumentAnnotatingHelper.generateDocumentFeatures(paragraphs,
+                paraCategory, docFeatures, paraDocFeatures);
 
 
         for( CoreMap paragraph : paragraphs)
             updateWithParagraph(paragraph, docFeatureValues);
+    }
+
+    public TrainingNaiveBayesWithFeatureConditions getTnbfModel() {
+        return tnbfModel;
     }
 
     @Override

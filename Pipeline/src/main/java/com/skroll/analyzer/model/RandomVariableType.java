@@ -12,12 +12,14 @@ public enum RandomVariableType {
     DOCUMENT_DEFINITIONS_IS_UNDERLINED(2),
     DOCUMENT_DEFINITIONS_IN_QUOTES(2),
     PARAGRAPH_HAS_DEFINITION(2, new String[]{"no","yes"}),
+    PARAGRAPH_IS_TOC(2, new String[]{"no","yes"}),
     PARAGRAPH_STARTS_WITH_QUOTE(2),
     PARAGRAPH_STARTS_WITH_BOLD(2),
     PARAGRAPH_STARTS_WITH_UNDERLINE(2),
     PARAGRAPH_STARTS_WITH_ITALIC(2),
     PARAGRAPH_STARTS_WITH_SPECIAL_FORMAT(2),
     PARAGRAPH_NUMBER_TOKENS(10),
+    PARAGRAPH_INDEX,
     WORD_IS_DEFINED_TERM (2),
     WORD_IN_QUOTES (2),
     WORD_IS_BOLD (2),
@@ -29,6 +31,8 @@ public enum RandomVariableType {
     private int featureSize;
     private String[] valueNames;
 
+    RandomVariableType(){
+    }
     RandomVariableType(int featureSize){
         this.featureSize = featureSize;
     }

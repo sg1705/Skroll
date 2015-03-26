@@ -1,5 +1,8 @@
 package com.skroll.analyzer.model.bn.node;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.eclipse.persistence.internal.jaxb.many.MapEntry;
 
 import java.util.Arrays;
@@ -11,6 +14,15 @@ import java.util.Map;
  * When it is used, it actually process all words observations in a data tuple.
  * Created by wei2learn on 3/1/2015.
  */
+
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = com.skroll.analyzer.model.bn.node.LogProbabilityWordNode.class, name = "LogProbabilityWordNode"),
+        @JsonSubTypes.Type(value = com.skroll.analyzer.model.bn.node.ProbabilityWordNode.class, name = "ProbabilityWordNode"),
+        @JsonSubTypes.Type(value = com.skroll.analyzer.model.bn.node.TrainingWordNode.class, name = "TrainingWordNode")})
 public class WordNode                                                                                                                                                       {
 
     Map<String, double[]> parameters = new HashMap<>();
@@ -18,6 +30,7 @@ public class WordNode                                                           
 
     String[] observedWords = new String[0];
 
+    @JsonIgnore
     public String[] getObservation() {
         return observedWords;
     }
