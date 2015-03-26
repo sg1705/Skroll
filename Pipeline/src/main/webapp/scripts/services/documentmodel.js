@@ -15,16 +15,6 @@ var documentModel = {
   fileName: "",
   selectedParagraphId: "",
 
-  classes: [
-  	{
-  		id: 1,
-  		name: 'Definition'
-  	},
-  	{
-  		id: 2,
-  		name: 'Table of Contents'
-  	}
-  ]
 };
 
 
