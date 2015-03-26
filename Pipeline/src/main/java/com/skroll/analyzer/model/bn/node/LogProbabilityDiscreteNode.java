@@ -1,38 +1,39 @@
 package com.skroll.analyzer.model.bn.node;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.skroll.analyzer.model.bn.inference.BNInference;
+
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by wei2learn on 3/1/2015.
  */
-public class ProbabilityDiscreteNode extends DiscreteNode {
+public class LogProbabilityDiscreteNode extends DiscreteNode {
 
     // store the parameters and probability values in a one dimensional array.
     // convert multi-index to the index of the one dimensional array
     // by treating the multi-index as a multi-base representation of integer,
     // least significant index is index 0.
 
-    double[] probabilityFunction;
 
     /**
      * parents, children will be generated outside
      * @param trainingNode
      */
-    public ProbabilityDiscreteNode (TrainingDiscreteNode trainingNode){
+    public LogProbabilityDiscreteNode(TrainingDiscreteNode trainingNode){
         this.familyVariables = trainingNode.familyVariables;
 
-        probabilityFunction =parameters= trainingNode.getProbabilities();
+        parameters= trainingNode.getLogProbabilities();
 
     }
 
     /**
      * copy constructor
-     * @param probabilityNode
+     * @param logProbabilityDiscreteNode
      */
-    public ProbabilityDiscreteNode (ProbabilityDiscreteNode probabilityNode){
-        this.familyVariables = probabilityNode.familyVariables;
-        probabilityFunction =parameters= probabilityNode.getProbabilities().clone();
+    public LogProbabilityDiscreteNode(LogProbabilityDiscreteNode logProbabilityDiscreteNode){
+        this.familyVariables = logProbabilityDiscreteNode.familyVariables;
+        parameters= logProbabilityDiscreteNode.getLogProbabilities().clone();
     }
 
     /**
@@ -42,7 +43,8 @@ public class ProbabilityDiscreteNode extends DiscreteNode {
      * @param message
      * @return
      */
-    double[] getBelief(int index, double[] message){
+    @JsonIgnore
+    double[] getLogBelief(int index, double[] message){
         double[] belief = new double[parameters.length];
         int sizeUnderIndexFrom = sizeUpTo(index);
         for (int i=0,k=0,messageIndex=0; i<parameters.length; i++,k++){
@@ -51,12 +53,14 @@ public class ProbabilityDiscreteNode extends DiscreteNode {
                 messageIndex ++;
                 if (messageIndex == message.length) messageIndex = 0;
             }
-            belief[i] = parameters[i] * message[messageIndex];
+            belief[i] = parameters[i] + message[messageIndex];
         }
         return belief;
     }
 
     /**
+     * This sum out method involves probability additions and does not work in log space.
+     * So the input parameter belief should not be in log space.
      * @param belief
      * @param indexTo the index of the variable to pass message to. The index is for familyVariables
      * @return
@@ -86,39 +90,47 @@ public class ProbabilityDiscreteNode extends DiscreteNode {
 
     // specialized message passing from a single parent to another.
     double[] sumOutOtherNodesWithObservationAndMessage(int indexFrom, double[] message, int indexTo ){
-        double[] belief = getBelief(indexFrom, message);
+        double[] belief = getLogBelief(indexFrom, message);
+        BNInference.exp(belief);
         double[] probs = sumOutOtherNodesWithObservationAndBelief(belief, indexTo);
+        BNInference.log(probs); // convert back to log space
         return probs;
     }
 
-    public double[] sumOutOtherNodesWithObservationAndMessage(ProbabilityDiscreteNode nodeFrom, double[] message,
-                                                              ProbabilityDiscreteNode nodeTo ){
-        return sumOutOtherNodesWithObservationAndMessage( getParentNodeIndex(nodeFrom), message, getParentNodeIndex(nodeTo));
+    public double[] sumOutOtherNodesWithObservationAndMessage(LogProbabilityDiscreteNode nodeFrom, double[] message,
+                                                              LogProbabilityDiscreteNode nodeTo ){
+        return sumOutOtherNodesWithObservationAndMessage( 1+getParentNodeIndex(nodeFrom),
+                message, 1+getParentNodeIndex(nodeTo));
     }
 
     double[] sumOutOtherNodesWithObservation(int indexTo ){
-        double[] probs = sumOutOtherNodesWithObservationAndBelief(parameters, indexTo);
+        double[] belief = parameters.clone();
+        BNInference.exp(belief);
+        double[] probs = sumOutOtherNodesWithObservationAndBelief(belief, indexTo);
+        BNInference.log(probs); // convert back to log space
         return probs;
     }
 
-    public double[] sumOutOtherNodesWithObservation (ProbabilityDiscreteNode parentNode){
+    public double[] sumOutOtherNodesWithObservation (LogProbabilityDiscreteNode parentNode){
         // +1 to include the current node
         return sumOutOtherNodesWithObservation( getParentNodeIndex(parentNode)+1);
     }
 
-    double getProbability(int index){
-        return probabilityFunction[index];
+    @JsonIgnore
+    double getLogProbability(int index){
+        return parameters[index];
     }
 
-    public double[] getProbabilities(){
-        return probabilityFunction;
+    @JsonIgnore
+    public double[] getLogProbabilities(){
+        return parameters;
     }
 
     @Override
     public String toString() {
         return "BNNode{" +
                 "familyVariables=" + Arrays.toString(familyVariables) +
-                ", probabilityFunction=" + Arrays.toString(probabilityFunction) +
+                ", probabilityFunction=" + Arrays.toString(parameters) +
 
                 ", observedValue=" + observedValue +
                 '}';

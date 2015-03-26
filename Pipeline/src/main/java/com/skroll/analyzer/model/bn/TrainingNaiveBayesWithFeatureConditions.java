@@ -1,5 +1,7 @@
 package com.skroll.analyzer.model.bn;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skroll.analyzer.model.bn.node.DiscreteNode;
 import com.skroll.analyzer.model.RandomVariableType;
 import com.skroll.analyzer.model.bn.node.TrainingDiscreteNode;
@@ -12,6 +14,24 @@ import java.util.*;
  * Created by wei2learn on 1/3/2015.
  */
 public class TrainingNaiveBayesWithFeatureConditions extends NaiveBayesWithFeatureConditions {
+
+
+    @JsonCreator
+    public TrainingNaiveBayesWithFeatureConditions(
+            @JsonProperty("wordNode")TrainingWordNode wordNode,
+            @JsonProperty("documentFeatureNodeArray")TrainingDiscreteNode[]  documentFeatureNodeArray,
+            @JsonProperty("featureExistAtDocLevelArray")TrainingDiscreteNode[] featureExistAtDocLevelArray,
+            @JsonProperty("categoryNode")TrainingDiscreteNode categoryNode,
+            @JsonProperty("featureNodeArray") TrainingDiscreteNode[] featureNodeArray,
+            @JsonProperty("discreteNodeArray")TrainingDiscreteNode[] discreteNodeArray) {
+
+        this.wordNode = wordNode;
+        this.documentFeatureNodeArray = documentFeatureNodeArray;
+        this.featureExistAtDocLevelArray = featureExistAtDocLevelArray;
+        this.categoryNode = categoryNode;
+        this.featureNodeArray = featureNodeArray;
+        this.discreteNodeArray = discreteNodeArray;
+    }
 
     // assuming the documentFeatures match the front sublist of the features list
 

@@ -47,7 +47,7 @@ public class DefinedTermExtractionModel {
     static final List<RandomVariableType> WORD_FEATURES = Arrays.asList(
             RandomVariableType.WORD_IN_QUOTES
 //            RandomVariableType.WORD_HAS_SPECIAL_FORMAT,
-            //RandomVariableType.WORD_INDEX
+            //,RandomVariableType.WORD_INDEX
     );
 
     int[][] nbCategoryToHmmState1;

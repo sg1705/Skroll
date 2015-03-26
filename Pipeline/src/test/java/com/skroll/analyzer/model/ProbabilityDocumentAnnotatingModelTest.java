@@ -1,41 +1,127 @@
 package com.skroll.analyzer.model;
 
 import com.skroll.analyzer.model.bn.TrainingNaiveBayesWithFeatureConditions;
+import com.skroll.analyzer.model.bn.inference.BNInference;
+import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
+import com.skroll.document.DocumentHelper;
+import com.skroll.document.Token;
+import com.skroll.document.annotation.CoreAnnotations;
 import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-public class ProbabilityDocumentAnnotatingModelTest extends TestCase {
-    String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining/AMC Networks CA.html";
+//todo: prior count is not set properly, making the probability favoring positive class.
+public class ProbabilityDocumentAnnotatingModelTest {
+    String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
     File file = new File(trainingFolderName);
     TrainingDocumentAnnotatingModelTest traingTest = new TrainingDocumentAnnotatingModelTest();
     Document doc = traingTest.makeDoc(file);
     ProbabilityDocumentAnnotatingModel model;
+    boolean doneSetup=false;
+
+    RandomVariableType wordType = RandomVariableType.WORD_IS_DEFINED_TERM;
+    RandomVariableType paraType = RandomVariableType.PARAGRAPH_HAS_DEFINITION;
+    List<RandomVariableType> wordFeatures = model.DEFAULT_WORD_FEATURES;
+    List<RandomVariableType> paraFeatures = model.DEFAULT_PARAGRAPH_FEATURES;
+    List<RandomVariableType> paraDocFeatures = model.DEFAULT_PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL;
+    List<RandomVariableType> docFeatures = model.DEFAULT_DOCUMENT_FEATURES;
 
 
-    public void test() throws  Exception{
+    @Before
+    public void setupOnce() throws Exception{
+        if (doneSetup) return;
+        doneSetup = true;
+
+        traingTest.testUpdateWithDocument();
+        model= new ProbabilityDocumentAnnotatingModel( traingTest.getTnbf(), traingTest.getModel().getHmm(), doc,
+                wordType, wordFeatures, paraType, paraFeatures, paraDocFeatures, docFeatures
+                );
+        model.getHmm().updateProbabilities();
+        System.out.println("HMM\n");
+        System.out.println(model.getHmm());
     }
 
+    @Test
     public void testInitialize() throws Exception {
-        traingTest.testUpdateWithDocument();
-        model= new ProbabilityDocumentAnnotatingModel( traingTest.getTnbf(), doc);
+
         System.out.println(model);
 
+
+        System.out.println("initial believes\n");
+        printBelieves();
+
+    }
+
+    void printBelieves(){
+        System.out.print("document level feature believes\n");
+        double[][] dBelieves = model.getDocumentFeatureBelief();
+        for (int i=0; i<dBelieves.length; i++){
+            System.out.println(model.DEFAULT_DOCUMENT_FEATURES);
+            System.out.println(Arrays.toString(dBelieves[i]));
+        }
+
+        List<CoreMap> paraList = doc.getParagraphs();
+
+        System.out.print("document level feature believes\n");
+        double[][] pBelieves = model.getParagraphCategoryBelief();
+
+        for (int i=0; i<paraList.size(); i++){
+            BNInference.normalizeLog(pBelieves[i]);
+
+            System.out.print(i+" [");
+            for (int j=0; j<pBelieves[i].length; j++)
+                System.out.printf("%.0f ", pBelieves[i][j]);
+            System.out.print("] ");
+            System.out.println(paraList.get(i).getText());
+
+        }
     }
 
     public void testComputeInitalBelieves() throws Exception {
 
     }
 
+    @Test
     public void testPassMessagesToParagraphCategories() throws Exception {
+        model.passMessagesToParagraphCategories();
+        System.out.println("After passing message to paragraphCategory once:\n");
 
+        printBelieves();
     }
 
+
+
+    @Test
     public void testPassMessageToDocumentFeatures() throws Exception {
+        System.out.println("After passing message to paragraphCategory once:\n");
 
+        model.passMessagesToParagraphCategories();
+        System.out.println("After passing message to documentFeatures once:\n");
+
+        model.passMessageToDocumentFeatures();
+
+        printBelieves();
     }
 
+
+    @Test
+    public void testPassMessages() throws Exception {
+
+        model.passMessagesToParagraphCategories();
+
+        model.passMessageToDocumentFeatures();
+        model.passMessagesToParagraphCategories();
+        System.out.println("After passing messages :\n");
+
+        printBelieves();
+    }
     public void testUpdateBelieves() throws Exception {
 
     }
@@ -48,8 +134,13 @@ public class ProbabilityDocumentAnnotatingModelTest extends TestCase {
 
     }
 
+    @Test
     public void testAnnotateDocument() throws Exception {
+        model.annotateDocument();
 
+        System.out.println("annotated terms\n");
+        DocumentAnnotatingHelper.printAnnotatedDoc(doc);
+        printBelieves();
     }
 
     public void testGetParagraphCategoryBelief() throws Exception {
@@ -58,5 +149,46 @@ public class ProbabilityDocumentAnnotatingModelTest extends TestCase {
 
     public void testGetDocumentFeatureBelief() throws Exception {
 
+    }
+
+    @Test
+    public void testUpdateBeliefWithZeroObservations() throws Exception {
+
+        List<CoreMap> paraList = doc.getParagraphs();
+        List<Token> definedTerms = new ArrayList<>();
+        List<CoreMap> observedParas = new ArrayList<>();
+
+
+        System.out.print("document level feature believes\n");
+        for (int i=0; i<2; i++){
+            paraList.get(i).set(CoreAnnotations.IsDefinitionAnnotation.class, true);
+            observedParas.add(paraList.get(i));
+        }
+
+        model.updateBeliefWithObservation(observedParas);
+//        model.passMessagesToParagraphCategories();
+//        model.passMessageToDocumentFeatures();
+//        model.passMessagesToParagraphCategories();
+
+        model.annotateDocument();
+
+        System.out.println("annotated terms\n");
+        DocumentAnnotatingHelper.printAnnotatedDoc(doc);
+        System.out.println("believes\n");
+
+        printBelieves();
+
+    }
+
+    @Test
+    public void testUpdateBeliefWithObservation() throws Exception {
+        model.passMessagesToParagraphCategories();
+        model.passMessageToDocumentFeatures();
+        model.passMessagesToParagraphCategories();
+
+        model.annotateDocument();
+
+        System.out.println("annotated terms\n");
+        DocumentAnnotatingHelper.printAnnotatedDoc(doc);
     }
 }
