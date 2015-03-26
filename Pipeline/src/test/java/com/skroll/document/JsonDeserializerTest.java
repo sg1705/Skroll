@@ -60,6 +60,9 @@ public class JsonDeserializerTest {
 
     private Document createDoc() {
         Document doc = new Document();
+        doc.setTarget("target");
+        doc.setId("101");
+        doc.setSource("source");
         List<CoreMap> paralist = new ArrayList<>();
         CoreMap paragraph =new CoreMap("1", "para");
 

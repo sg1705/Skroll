@@ -3,6 +3,8 @@ package com.skroll.document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.*;
+
 public class Paragraph {
 
     private String paragraphId;
@@ -24,16 +26,16 @@ public class Paragraph {
         return term;
     }
 
-    public Paragraph(String paragraphId, String definedTerm, int classificationId) {
+    public Paragraph(String paragraphId, String term, int classificationId) {
         this.paragraphId = paragraphId;
-        this.term = definedTerm;
+        this.term = term;
         this.classificationId = classificationId;
     }
 
     @Override
     public String toString() {
         return new StringBuffer(" paragraphId : ").append(this.paragraphId)
-                .append(",").append(" definedTerm : ").append(term).append(",").append(" TOCTerm : ").append(classificationId)
+                .append(",").append(" term : ").append(term).append(",").append(" ClassificationId : ").append(classificationId)
                .toString();
     }
 
@@ -44,4 +46,53 @@ public class Paragraph {
     public void setClassificationId(int classificationId) {
         this.classificationId = classificationId;
     }
+
+
+    public static Map<Paragraph, List<String>> combineTerms(List<Paragraph> paragraphs) {
+
+        Map<Paragraph, List<String>> paraMap = new HashMap<>();
+
+        for (Paragraph paragraph : paragraphs) {
+                if (paraMap.get(paragraph) == null) {
+                    paraMap.put(paragraph, new ArrayList<String>());
+                }
+            paraMap.get(paragraph).add(paragraph.getTerm());
+        }
+        logger.debug("returnMap:" + paraMap);
+        return paraMap;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Paragraph)) return false;
+
+        Paragraph paragraph = (Paragraph) o;
+
+        if (classificationId != paragraph.classificationId) return false;
+        if (!paragraphId.equals(paragraph.paragraphId)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = paragraphId.hashCode();
+        result = 31 * result + classificationId;
+        return result;
+    }
+
+    public static class ParagraphComparator implements Comparator<Paragraph> {
+
+        @Override
+        public int compare(Paragraph o1, Paragraph o2) {
+            if (Integer.parseInt(o1.getParagraphId()) > Integer.parseInt(o2.getParagraphId())) {
+                return 1;
+            } else  if (Integer.parseInt(o1.getParagraphId()) < Integer.parseInt(o2.getParagraphId())) {
+                return -1;
+            }
+            return 0;
+        }
+    }
+
 }

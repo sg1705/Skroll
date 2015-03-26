@@ -1,0 +1,24 @@
+{
+"namespace" : "com.skroll",
+"name" : "avroDocument",
+"type" : "record",
+"fields" :[
+{
+   "name": "avroParagraphsAnnotation",
+   "type":{
+           "type": "array",
+           "items": {
+             "type":"map",
+             "values":
+             {
+              "type": "record",
+                                "name": "avroParagraphsAnnotation",
+                                "fields":[
+                                   {"name": "avroTextAnnotation", "type": "string"},
+                                   {"name": "avroIdAnnotation", "type": "string"}
+                                ]
+                        }
+              }
+           }
+ }  ]
+}
