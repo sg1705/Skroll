@@ -29,20 +29,42 @@
       layout="column"
       style="overflow-y: scroll; -webkit-overflow-scrolling: touch;">
 
+<!-- start file selection -->
 <div layout="column" id="uploadForm" ng-show="!isDocAvailable && !isProcessing"
-     style="height: 600px; display:flex; align-items: center; justify-content:center">
+     style="height: 600px; display:flex; align-items: center;">
 
   <md-toolbar layout="row">
     <h1>Welcome to Skroll!</h1>
   </md-toolbar>
-
+  <md-content>
+    <md-list>
+      <md-item ng-repeat="id in userDocumentIds">
+        <md-item-content>
+          <div class="md-tile-left">
+              <img ng-src="{{item.face}}" class="face" alt="{{item.who}}">
+          </div>
+          <div class="md-tile-content">
+            <md-button ng-click="loadDocument('{{id}}')"><h3>{{id}}</h3></md-button>
+          </div>
+        </md-item-content>
+        <md-divider></md-divider>
+      </md-item>
+      
+    </md-list>
   <br/>
   <br/>
   <br/>
+<input file-upload id="fileupload" type="file" name="files[]" data-url="restServices/jsonAPI/upload"/>
 
-  <input file-upload id="fileupload" type="file" name="files[]" data-url="restServices/jsonAPI/upload" multiple/>
 
+  </md-content>
+
+  
 </div>
+<!-- end file selection screen -->
+
+
+
 
 <div layout="row" layout-sm="column" layout-align="space-around" ng-show="isProcessing">
   <md-progress-circular md-mode="indeterminate" ng-show="isProcessing"></md-progress-circular>

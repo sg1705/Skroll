@@ -85,6 +85,8 @@ ViewPortCtrl.prototype.inferParagraphId = function($event) {
     console.log($(parents[ii]).attr('id'));
   }
 
+  var children = $($event.target).children("div[id^='p_']");
+  console.log('children:' + children.length);
   if (parents.length > 1) {
     return $(parents[0]).attr('id');
   } else {
