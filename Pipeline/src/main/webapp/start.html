@@ -37,7 +37,7 @@
     <h1>Welcome to Skroll!</h1>
   </md-toolbar>
     <md-list>
-      <md-item ng-repeat="id in userDocumentIds">
+      <md-item ng-repeat="id in userDocumentIds | orderBy:id">
         <md-item-content>
           <div class="md-tile-left">
               <img ng-src="{{item.face}}" class="face" alt="{{item.who}}">
