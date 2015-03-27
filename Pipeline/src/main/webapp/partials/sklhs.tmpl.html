@@ -1,14 +1,13 @@
 <div ng-repeat="class in ctrl.classes" ng-show="{{class.isVisible}}" >
-	<md-list >
+	<div flex>
 		<md-button ng-click="ctrl.toggleSection($index)">
-			<h4>{{class.name}}</h4>
+			{{class.name}}
 		</md-button>
-    <md-item ng-show="class.isSelected" ng-repeat="term in ctrl.smodel.terms | filter: {classificationId:class.id}">
-      <md-item-content>
-        <md-button scroll-to-paragraph="{{term.paragraphId}}">{{term.term}}</md-button>
-      </md-item-content>
-      <md-divider></md-divider>
-    </md-item>
-	</md-list>
+	</div>		
+	<ul ng-show="class.isSelected" class="menu-list">
+		<li ng-repeat="term in ctrl.smodel.terms | filter: {classificationId:class.id}">
+			<md-button scroll-to-paragraph="{{term.paragraphId}}">{{term.term}}</md-button>
+		</li>	
+	</ul>
 	<md-divider></md-divider>
 </div>

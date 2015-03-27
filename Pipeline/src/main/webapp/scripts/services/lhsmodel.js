@@ -27,7 +27,7 @@ var LHSModel = {
 	}, {
 		id: 2,
 		name: 'Table of Contents',
-		isSelected: true,
+		isSelected: false,
 		isVisible: true
 	}],
 
