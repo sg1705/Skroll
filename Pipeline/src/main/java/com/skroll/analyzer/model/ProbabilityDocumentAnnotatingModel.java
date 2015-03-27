@@ -2,14 +2,11 @@ package com.skroll.analyzer.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.skroll.analyzer.model.bn.LogProbabilityNaiveBayesWithFeatureConditions;
-import com.skroll.analyzer.model.bn.ProbabilityNaiveBayesWithFeatureConditions;
 import com.skroll.analyzer.model.bn.SimpleDataTuple;
 import com.skroll.analyzer.model.bn.TrainingNaiveBayesWithFeatureConditions;
 import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.analyzer.model.bn.node.LogProbabilityDiscreteNode;
 import com.skroll.analyzer.model.bn.node.LogProbabilityWordNode;
-import com.skroll.analyzer.model.bn.node.ProbabilityDiscreteNode;
-import com.skroll.analyzer.model.bn.node.ProbabilityWordNode;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
 import com.skroll.analyzer.model.nb.DataTuple;
 import com.skroll.document.CoreMap;
@@ -88,7 +85,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
         computeInitalBelieves(paragraphs);
     }
 
-    void updateBeliefWithObservation(List<CoreMap> observedParagraphs){
+    public void updateBeliefWithObservation(List<CoreMap> observedParagraphs){
 
         for( CoreMap para : observedParagraphs) {
             if (para==null) continue;

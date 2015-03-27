@@ -1,7 +1,6 @@
 package com.skroll.classifier;
 
 import com.google.gson.reflect.TypeToken;
-import com.skroll.analyzer.model.DefinedTermExtractionModel;
 import com.skroll.analyzer.model.TOCModel;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -14,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.SortedMap;
 
 /**
@@ -108,6 +108,11 @@ public class TOCClassifier extends ClassifierImpl{
 
     @Override
     public SortedMap<Category, Double> classifyDetailed(Document doc, int numOfTokens) {
+        return null;
+    }
+
+    @Override
+    public Object updateBNI(Document document, List<CoreMap> observedParas) throws Exception {
         return null;
     }
 

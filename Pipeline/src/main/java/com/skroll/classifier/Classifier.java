@@ -1,9 +1,11 @@
 package com.skroll.classifier;
 
+import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.parser.extractor.ParserException;
 import com.skroll.util.ObjectPersistUtil;
 
+import java.util.List;
 import java.util.SortedMap;
 
 /**
@@ -34,4 +36,6 @@ public interface Classifier {
     public Object classify(String fileName, int numOfLines) throws Exception;
 
     public SortedMap<Category,Double> classifyDetailed(Document doc, int numOfTokens);
+
+    public Object updateBNI(Document document, List<CoreMap> observedParas) throws Exception;
 }

@@ -1,15 +1,11 @@
 package com.skroll.analyzer.model;
 
-import com.skroll.analyzer.model.bn.TrainingNaiveBayesWithFeatureConditions;
 import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
-import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
-import junit.framework.TestCase;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
@@ -19,10 +15,14 @@ import java.util.List;
 
 //todo: prior count is not set properly, making the probability favoring positive class.
 public class ProbabilityDocumentAnnotatingModelTest {
+
     String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
     File file = new File(trainingFolderName);
+
     TrainingDocumentAnnotatingModelTest traingTest = new TrainingDocumentAnnotatingModelTest();
+
     Document doc = traingTest.makeDoc(file);
+
     ProbabilityDocumentAnnotatingModel model;
     boolean doneSetup=false;
 

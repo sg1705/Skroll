@@ -286,7 +286,7 @@ public class API {
         return Response.status(Response.Status.BAD_REQUEST).entity("Failed to parse the json document" ).type(MediaType.APPLICATION_JSON).build();
         }
         Map<Paragraph, List<String>> paraMap = Paragraph.combineTerms(definitionJson);
-
+        List<CoreMap> parasForUpdateBNI = new ArrayList<>();
             for (Paragraph  modifiedParagraph: paraMap.keySet()) {
                 for (CoreMap paragraph : doc.getParagraphs()) {
                     if (paragraph.getId().equals(modifiedParagraph.getParagraphId())) {
@@ -319,6 +319,7 @@ public class API {
                                     if (addedTerm != null && !addedTerm.isEmpty()) {
                                         List<Token> tokens = DocumentHelper.getTokens(addedTerm);
                                         DocumentHelper.addDefinedTermTokensInParagraph(tokens, paragraph);
+                                        parasForUpdateBNI.add(paragraph);
                                     }
                                 }
                             }
@@ -353,7 +354,7 @@ public class API {
             }
         // persist the document using document id. Let's use the file name
         try {
-
+            doc = (Document) definitionClassifier.updateBNI(doc,parasForUpdateBNI);
             Files.write(JsonDeserializer.getJson(doc), new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
         } catch (Exception e) {
             logger.error("Failed to persist the document object: {}", e);
@@ -374,7 +375,6 @@ public class API {
         if ( pathParams.get("documentId")==null) {
             logger.warn("documentId is missing from Cookie");
             return Response.status(Response.Status.EXPECTATION_FAILED).entity("documentId is missing from Cookie").type(MediaType.APPLICATION_JSON).build();
-
         }
         String documentId = pathParams.get("documentId").getValue();
         Document doc = documentMap.get(documentId);
