@@ -165,6 +165,11 @@ public class SECDocumentClassifier extends ClassifierImpl {
     }
 
     @Override
+    public Object updateBNI(Document document, List<CoreMap> observedParas) throws Exception {
+        return null;
+    }
+
+    @Override
     public Object classify(Document doc, int numOfTokens) {
         List<String> tokens = extractTokenFromDoc(doc);
         List<String> partitionTokens =null;

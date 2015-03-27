@@ -83,8 +83,6 @@ public class DefinitionClassifier extends ClassifierImpl{
     @Override
     public Object classify(Document document) throws Exception {
 
-
-
         RandomVariableType wordType = RandomVariableType.WORD_IS_DEFINED_TERM;
         RandomVariableType paraType = RandomVariableType.PARAGRAPH_HAS_DEFINITION;
         List<RandomVariableType> wordFeatures = ProbabilityDocumentAnnotatingModel.DEFAULT_WORD_FEATURES;
@@ -101,6 +99,43 @@ public class DefinitionClassifier extends ClassifierImpl{
             logger.debug(DocumentHelper.getDefinedTermTokensInParagraph(para).toString());
         }
 
+
+        bniModel.annotateDocument();
+
+        logger.debug("definitions after annotate");
+        for (CoreMap para:DocumentHelper.getDefinitionParagraphs(document)){
+            logger.debug(para.getText());
+            logger.debug(DocumentHelper.getDefinedTermTokensInParagraph(para).toString());
+        }
+        logger.debug("Document Size:" + DocumentHelper.getDefinitionParagraphs(document).size());
+
+        DefinitionLinker linker = new DefinitionLinker();
+        document = linker.linkDefinition(document);
+        return document;
+    }
+
+    @Override
+    public Object updateBNI(Document document,List<CoreMap> observedParas) throws Exception {
+
+
+        RandomVariableType wordType = RandomVariableType.WORD_IS_DEFINED_TERM;
+        RandomVariableType paraType = RandomVariableType.PARAGRAPH_HAS_DEFINITION;
+        List<RandomVariableType> wordFeatures = ProbabilityDocumentAnnotatingModel.DEFAULT_WORD_FEATURES;
+        List<RandomVariableType> paraFeatures = ProbabilityDocumentAnnotatingModel.DEFAULT_PARAGRAPH_FEATURES;
+        List<RandomVariableType> paraDocFeatures = ProbabilityDocumentAnnotatingModel.DEFAULT_PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL;
+        List<RandomVariableType> docFeatures = ProbabilityDocumentAnnotatingModel.DEFAULT_DOCUMENT_FEATURES;
+
+        ProbabilityDocumentAnnotatingModel bniModel =  new ProbabilityDocumentAnnotatingModel( trainingModel.getTnbfModel(),
+                trainingModel.getHmm(), document, wordType, wordFeatures, paraType, paraFeatures, paraDocFeatures, docFeatures
+        );
+        logger.debug("definitions before annotate");
+
+        for (CoreMap para: DocumentHelper.getDefinitionParagraphs(document)){
+            logger.debug(para.getText());
+            logger.debug(DocumentHelper.getDefinedTermTokensInParagraph(para).toString());
+        }
+
+        bniModel.updateBeliefWithObservation(observedParas);
 
         bniModel.annotateDocument();
 
