@@ -87,8 +87,8 @@ ViewPortCtrl.prototype.inferParagraphId = function($event) {
     console.log($(parents[ii]).attr('id'));
   }
 
-  var children = $($event.target).children("div[id^='p_']");
-  console.log('children:' + children.length);
+  // var children = $($event.target).children("div[id^='p_']");
+  // console.log('children:' + children.length);
   if (parents.length > 1) {
     return $(parents[0]).attr('id');
   } else {
@@ -171,7 +171,8 @@ ViewPortCtrl.prototype.updateDocument = function(contentHtml) {
   $("#content").html(contentHtml);
   this.documentService.getTerms().then(function(terms){
     LHSModel.smodel.terms = terms;
-    console.log(terms);
+    console.log("Terms return by API");
+    console.log(JSON.stringify(terms, null,2));
   }, function(data, status){
     console.log(status);
   });
