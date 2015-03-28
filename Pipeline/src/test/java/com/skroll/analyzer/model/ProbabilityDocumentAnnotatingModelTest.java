@@ -16,8 +16,13 @@ import java.util.List;
 //todo: prior count is not set properly, making the probability favoring positive class.
 public class ProbabilityDocumentAnnotatingModelTest {
 
-    String testingFolderName = "src/test/resources/classifier/smaller-indenture.html";
-    File file = new File(testingFolderName);
+    String testingFileName = "src/test/resources/classifier/smaller-indenture.html";
+//    String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
+//    String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/AMD CA - Def No Quotes.html";
+
+
+
+    File file = new File(testingFileName);
 
     TrainingDocumentAnnotatingModelTest traingTest = new TrainingDocumentAnnotatingModelTest();
 
@@ -61,9 +66,10 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
     void printBelieves(){
         System.out.print("document level feature believes\n");
+        System.out.println(model.DEFAULT_DOCUMENT_FEATURES);
+
         double[][] dBelieves = model.getDocumentFeatureBelief();
         for (int i=0; i<dBelieves.length; i++){
-            System.out.println(model.DEFAULT_DOCUMENT_FEATURES);
             System.out.println(Arrays.toString(dBelieves[i]));
         }
 
@@ -168,7 +174,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
 //        }
         for (int i=0; i<3; i++){
             //paraList.get(i).set(CoreAnnotations.IsDefinitionAnnotation.class, false);
-            DocumentAnnotatingHelper.clearParagraphCateoryAnnotation(paraList.get(i));
+            DocumentAnnotatingHelper.clearParagraphCateoryAnnotation(paraList.get(i), paraType);
 
             observedParas.add(paraList.get(i));
             paraList.get(i).set(CoreAnnotations.IsUserObservationAnnotation.class, true);

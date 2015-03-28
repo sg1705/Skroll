@@ -287,8 +287,14 @@ public class DocumentAnnotatingHelper {
         System.out.println(DocumentHelper.getDefinitionParagraphs(doc).size());
     }
 
-    public static void clearParagraphCateoryAnnotation(CoreMap para){
-        DocumentHelper.setDefinedTermTokenListInParagraph(null, para);
+    public static void clearParagraphCateoryAnnotation(CoreMap para, RandomVariableType paraType){
+        switch (paraType) {
+            case PARAGRAPH_HAS_TOC:
+                para.set(CoreAnnotations.IsTOCAnnotation.class, false);
+                return;
+            case PARAGRAPH_HAS_DEFINITION:
+                DocumentHelper.setDefinedTermTokenListInParagraph(null, para);
+        }
     }
 
 }
