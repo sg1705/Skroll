@@ -5,7 +5,6 @@ import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.skroll.document.*;
 import com.skroll.document.annotation.CoreAnnotations;
-import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
 import com.skroll.pipeline.util.Constants;
 import com.skroll.util.Configuration;
 import com.skroll.util.ObjectPersistUtil;
@@ -28,6 +27,8 @@ import javax.ws.rs.core.Response;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import static junit.framework.TestCase.fail;
 
 public class APITest {
     public static final Logger logger = LoggerFactory
@@ -96,7 +97,7 @@ public class APITest {
         multiPart.setMediaType(MediaType.MULTIPART_FORM_DATA_TYPE);
 
         FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file",
-                new File("src/test/resources/analyzer/evaluate/docclassifier/SIX FLAGS_ex4-1.html"),
+                new File("src/test/resources/classifier/smaller-indenture.html"),
                 MediaType.APPLICATION_OCTET_STREAM_TYPE);
         //byte[] bytes = new byte[10];
         multiPart.
@@ -132,24 +133,53 @@ public class APITest {
         String preEvaluatedFolder = configuration.get("preEvaluatedFolder","/tmp/");
         Document doc = JsonDeserializer.fromJson(Files.toString(new File(preEvaluatedFolder + documentId), Constants.DEFAULT_CHARSET));
         logger.trace("Doc.target():" +doc.getTarget());
-        assert(doc.getTarget().contains("Accredited Investor"));
+        assert(doc.getTarget().contains("Capital Stock"));
         for (CoreMap paragraph : doc.getParagraphs()) {
             if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
                 List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(
                         paragraph);
-                logger.debug("definitionList:" + Joiner.on(" ").join(definitionList));
+                logger.debug(paragraph.getId() + " " + Joiner.on(" ").join(definitionList));
 
             }
-            List<Float> trainingWeight = paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class);
+            if(paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)) {
+                logger.debug("TrainingWeight:" +paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class));
+            }
+            if(paragraph.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)){
+                fail("User Observation need to be cleaned up before passing document to client side. ");
+            }
         }
     }
 
+    @Test
+    public void test_UploadFile_RemoveTerms() throws Exception, ObjectPersistUtil.ObjectPersistException {
+        String documentId = testFileUpload();
+        testRemoveTerms(documentId);
+        Configuration configuration = new Configuration();
+        String preEvaluatedFolder = configuration.get("preEvaluatedFolder","/tmp/");
+        Document doc = JsonDeserializer.fromJson(Files.toString(new File(preEvaluatedFolder + documentId), Constants.DEFAULT_CHARSET));
+        logger.debug("Doc.target():" + doc.getTarget());
+        assert(doc.getTarget().contains("Capital Stock"));
+        for (CoreMap paragraph : doc.getParagraphs()) {
+            if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
+                List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(
+                        paragraph);
+                logger.debug(paragraph.getId() + " " + Joiner.on(" ").join(definitionList));
+
+            }
+            if(paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)) {
+                logger.debug("TrainingWeight:" +paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class));
+            }
+            if(paragraph.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)){
+                fail("User Observation need to be cleaned up before passing document to client side. ");
+            }
+        }
+    }
     public void testUpdateTerms(String documentId) throws Exception {
         String TARGET_URL = "http://localhost:8888/restServices/jsonAPI/updateTerms";
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
 
-        String jsonString ="[{\"paragraphId\":\"1854\",\"term\":\"Unit Test\", \"classificationId\":1},{\"paragraphId\":\"1854\",\"term\":\"200 Test\",\"classificationId\":1}]";
+        String jsonString ="[{\"paragraphId\":\"p_1253\",\"term\":\"Credit Test\", \"classificationId\":1},{\"paragraphId\":\"p_1254\",\"term\":\"Unit Test\",\"classificationId\":1}]";
 
         Response response = webTarget.request(MediaType.TEXT_HTML).cookie(new  NewCookie("documentId", documentId))
                 .post(Entity.entity(jsonString, MediaType.APPLICATION_JSON));
@@ -209,7 +239,7 @@ public class APITest {
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
 
-        String jsonString ="[{\"paragraphId\":\"1854\",\"term\":\"\", \"classificationId\":1},{\"paragraphId\":\"1854\",\"term\":\"\",\"classificationId\":1}]";
+        String jsonString ="[{\"paragraphId\":\"p_1253\",\"term\":\"\", \"classificationId\":1},{\"paragraphId\":\"p_1254\",\"term\":\"\",\"classificationId\":1}]";
 
         Response response = webTarget.request(MediaType.TEXT_HTML).cookie(new  NewCookie("documentId", documentId))
                 .post(Entity.entity(jsonString, MediaType.APPLICATION_JSON));
@@ -228,7 +258,7 @@ public class APITest {
         testGetTerms(documentId);
         testUpdateTerms(documentId);
         String responseString = testGetTerms(documentId);
-        assert(responseString.contains("jack susan"));
+        assert(responseString.contains("Unit Test"));
     }
 
     @Test
@@ -239,7 +269,7 @@ public class APITest {
         testGetTerms(documentId);
         testRemoveTerms(documentId);
         String responseString = testGetTerms(documentId);
-        assert(responseString.contains("jack susan"));
+        assert(!responseString.contains("jack susan"));
     }
 
     private Document createDoc() {
@@ -247,7 +277,7 @@ public class APITest {
         doc.setTarget(" ");
         doc.setSource(" ");
         List<CoreMap> paralist = new ArrayList<>();
-        CoreMap paragraph =new CoreMap("1854", "para");
+        CoreMap paragraph =new CoreMap("1253", "para");
 
         List<String> addedDefinition = Lists.newArrayList("jack", "susan");
         List<Token> tokens = DocumentHelper.getTokens(addedDefinition);
@@ -256,8 +286,6 @@ public class APITest {
         paragraph.set(CoreAnnotations.ParagraphIdAnnotation.class, "1");
         paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
         paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
-        TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, TrainingWeightAnnotationHelper.DEFINITION, (float) 1.0);
-        TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, TrainingWeightAnnotationHelper.TOC, (float)0.5);
         paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
         paralist.add(paragraph);
 

@@ -27,7 +27,8 @@ public class TrainingWeightAnnotationHelper {
         userWeightList.set(DEFINITION,userWeightList.get(DEFINITION + LATEST_WEIGHT_INDEX));
         userWeightList.set(TOC,userWeightList.get(TOC+LATEST_WEIGHT_INDEX));
         userWeightList.set(NONE,userWeightList.get(NONE+LATEST_WEIGHT_INDEX));
-        if(paragraph.get(CoreAnnotations.IsTrainerFeedbackAnnotation.class)){
+
+        if(paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)){
             userWeightList.set(index+LATEST_WEIGHT_INDEX, userWeight);
         } else {
             userWeightList.set(index+LATEST_WEIGHT_INDEX, userWeightList.get(index) + userWeight);

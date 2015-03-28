@@ -4,6 +4,7 @@ import com.google.gson.reflect.TypeToken;
 import com.skroll.analyzer.model.ProbabilityDocumentAnnotatingModel;
 import com.skroll.analyzer.model.RandomVariableType;
 import com.skroll.analyzer.model.TrainingDocumentAnnotatingModel;
+import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
@@ -15,10 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
+import java.util.*;
 
 /**
  * Created by saurabhagarwal on 1/18/15.
@@ -97,7 +95,7 @@ public class DefinitionClassifier extends ClassifierImpl{
         logger.debug("definitions before annotate");
 
         for (CoreMap para: DocumentHelper.getDefinitionParagraphs(document)){
-            logger.debug(DocumentHelper.getDefinedTermTokensInParagraph(para).toString());
+            logger.debug(para.getId() +"\t" + DocumentHelper.getDefinedTermTokensInParagraph(para).toString());
         }
 
         bniMap.put(documentId, bniModel);
@@ -105,7 +103,7 @@ public class DefinitionClassifier extends ClassifierImpl{
 
         logger.debug("definitions after annotate");
         for (CoreMap para:DocumentHelper.getDefinitionParagraphs(document)){
-            logger.debug(DocumentHelper.getDefinedTermTokensInParagraph(para).toString());
+            logger.debug(para.getId() +"\t" + DocumentHelper.getDefinedTermTokensInParagraph(para).toString());
         }
         logger.debug("Document Size:" + DocumentHelper.getDefinitionParagraphs(document).size());
 
@@ -121,7 +119,7 @@ public class DefinitionClassifier extends ClassifierImpl{
         logger.debug("definitions before annotate");
 
         for (CoreMap para: DocumentHelper.getDefinitionParagraphs(document)){
-            logger.debug(DocumentHelper.getDefinedTermTokensInParagraph(para).toString());
+            logger.debug(para.getId() +"\t" +DocumentHelper.getDefinedTermTokensInParagraph(para).toString());
         }
         logger.debug("Number of Defined paras:" + DocumentHelper.getDefinitionParagraphs(document).size());
 
@@ -132,9 +130,10 @@ public class DefinitionClassifier extends ClassifierImpl{
 
         bniMap.get(documentId).annotateDocument();
 
+        printBelieves( bniMap.get(documentId), document );
         logger.debug("definitions after annotate");
         for (CoreMap para:DocumentHelper.getDefinitionParagraphs(document)){
-            logger.debug(DocumentHelper.getDefinedTermTokensInParagraph(para).toString());
+            logger.debug(para.getId() +"\t" + DocumentHelper.getDefinedTermTokensInParagraph(para).toString());
         }
         logger.debug("Number of Defined paras:" + DocumentHelper.getDefinitionParagraphs(document).size());
 
@@ -160,5 +159,29 @@ public class DefinitionClassifier extends ClassifierImpl{
         return classify("documentId",document);
     }
 
+    void printBelieves(ProbabilityDocumentAnnotatingModel model, Document doc ){
+        System.out.print("document level feature believes\n");
+        double[][] dBelieves = model.getDocumentFeatureBelief();
+        for (int i=0; i<dBelieves.length; i++){
+            logger.trace(" " + model.DEFAULT_DOCUMENT_FEATURES);
+            logger.trace(Arrays.toString(dBelieves[i]));
+        }
+
+        List<CoreMap> paraList = doc.getParagraphs();
+
+        logger.trace("document level feature believes\n");
+        double[][] pBelieves = model.getParagraphCategoryBelief();
+
+        for (int i=0; i<paraList.size(); i++){
+            BNInference.normalizeLog(pBelieves[i]);
+
+            logger.trace(i + " [");
+            for (int j=0; j<pBelieves[i].length; j++)
+                logger.trace("%.0f ", pBelieves[i][j]);
+            logger.trace("] ");
+            logger.trace(paraList.get(i).getText());
+
+        }
+    }
 
 }

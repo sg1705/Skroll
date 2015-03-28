@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.skroll.classifier.DefinitionClassifier;
+import com.skroll.classifier.TOCClassifier;
 import com.skroll.document.*;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
@@ -48,6 +49,7 @@ public class API {
 
     protected static Map<String,Document> documentMap = new ConcurrentHashMap<String,Document>();
     private static DefinitionClassifier definitionClassifier = new DefinitionClassifier();
+    private static TOCClassifier tocClassifier = new TOCClassifier();
     private static Configuration configuration = new Configuration();
     private static String  preEvaluatedFolder = configuration.get("preEvaluatedFolder","/tmp/");
     private static ObjectPersistUtil docPersistUtil = new ObjectPersistUtil(preEvaluatedFolder);
@@ -85,6 +87,7 @@ public class API {
                 Document document = Parser.parseDocumentFromHtml(content);
                 //test the document
                 document = (Document) definitionClassifier.classify(fileName, document);
+                //TOC document = (Document) tocClassifier.classify(fileName, document);
                 //logger.debug("document:" + document.getTarget());
                 //link the document
                 documentMap.put(fileName, document);
@@ -318,19 +321,22 @@ public class API {
                             paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, false);
 
                             // add annotations that received from client - definedTermList
-                            if (addedTerms != null && !addedTerms.isEmpty()) {
+                            if (!addedTerms.isEmpty()) {
                                 for(List<String> addedTerm :addedTerms) {
                                     if (addedTerm != null && !addedTerm.isEmpty()) {
-                                        List<Token> tokens = DocumentHelper.getTokens(addedTerm);
-                                        DocumentHelper.addDefinedTermTokensInParagraph(tokens, paragraph);
+                                        if (!Joiner.on("").join(addedTerm).equals("")){
+                                            List<Token> tokens = DocumentHelper.getTokens(addedTerm);
+                                            DocumentHelper.addDefinedTermTokensInParagraph(tokens, paragraph);
+                                        }
                                     }
                                 }
                             }
                             // Add the userObserved paragraphs
                             parasForUpdateBNI.add(paragraph);
+                            logger.debug("userObserved paragraphs:"+ "\t" + paragraph.getText());
                             if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
                                 List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(paragraph);
-                                logger.debug(paragraph.getId() + "\t" + "updated definition:" + "\t" + Joiner.on(" , ").join(definitionList));
+                                logger.debug(paragraph.getId() + "\t" + "userObserved paragraphs:" + "\t" + Joiner.on(" , ").join(definitionList));
                             }
 
                         }
@@ -355,6 +361,7 @@ public class API {
                             }
                         }
                         logger.debug("TrainingWeightAnnotation:" + paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class).toString());
+                        break;
                     }
                 }
             }
@@ -362,6 +369,7 @@ public class API {
         try {
             logger.debug("Number of Definition Paragraph before update BNI: {}",DocumentHelper.getDefinitionParagraphs(doc).size());
             doc = (Document) definitionClassifier.updateBNI(documentId,doc,parasForUpdateBNI);
+            //TOC doc = (Document) definitionClassifier.updateBNI(documentId,doc,parasForUpdateBNI);
             logger.debug("Number of Definition Paragraph After update BNI: {}",DocumentHelper.getDefinitionParagraphs(doc).size());
         } catch (Exception e) {
             logger.error("Failed to update updateBNI, using existing document : {}", e);
@@ -370,7 +378,7 @@ public class API {
             //clear userObservation from the documents before saving the document.
             for (CoreMap paragraph : doc.getParagraphs()) {
                 if (paragraph.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)) {
-                    paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, false);
+                    paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, null);
                 }
             }
             documentMap.put(documentId,doc);
@@ -405,7 +413,7 @@ public class API {
         }
 
         definitionClassifier.train(doc);
-
+        //toc tocClassifier.train(doc);
         logger.debug("train the model using document is stored in {}", preEvaluatedFolder + documentId);
 
         return Response.ok().status(Response.Status.OK).entity("ok").type(MediaType.APPLICATION_JSON).build();
@@ -435,6 +443,7 @@ public class API {
 
         try {
             doc = (Document) definitionClassifier.classify(documentId,doc);
+           //TOC doc = (Document) tocClassifier.classify(documentId,doc);
         } catch (Exception e) {
             logger.error("Failed to classify the document object: {}", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to classify the document object" ).type(MediaType.APPLICATION_JSON).build();
