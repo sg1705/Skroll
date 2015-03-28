@@ -369,7 +369,7 @@ public class API {
         try {
             logger.debug("Number of Definition Paragraph before update BNI: {}",DocumentHelper.getDefinitionParagraphs(doc).size());
             doc = (Document) definitionClassifier.updateBNI(documentId,doc,parasForUpdateBNI);
-            doc = (Document) definitionClassifier.updateBNI(documentId,doc,parasForUpdateBNI);
+            doc = (Document) tocClassifier.updateBNI(documentId,doc,parasForUpdateBNI);
             logger.debug("Number of Definition Paragraph After update BNI: {}",DocumentHelper.getDefinitionParagraphs(doc).size());
         } catch (Exception e) {
             logger.error("Failed to update updateBNI, using existing document : {}", e);
