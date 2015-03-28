@@ -22,8 +22,32 @@ public class TOCClassifier extends ClassifierImpl {
     public static final Logger logger = LoggerFactory.getLogger(TOCClassifier.class);
     private TrainingDocumentAnnotatingModel trainingModel = null;
     private Map<String, ProbabilityDocumentAnnotatingModel> bniMap = new HashMap<>();
+
     private String modelName = "com.skroll.analyzer.model.TrainingDocumentAnnotatingModel.TOC";
 
+    RandomVariableType wordType = RandomVariableType.WORD_IS_TOC_TERM;
+    RandomVariableType paraType = RandomVariableType.PARAGRAPH_HAS_TOC;
+
+    List<RandomVariableType> wordFeatures = Arrays.asList(
+            RandomVariableType.WORD_IN_QUOTES,
+            RandomVariableType.WORD_INDEX,
+            RandomVariableType.WORD_IS_BOLD,
+            RandomVariableType.WORD_IS_UNDERLINED,
+            RandomVariableType.WORD_IS_ITALIC);
+
+    List<RandomVariableType> paraFeatures = Arrays.asList(
+            RandomVariableType.PARAGRAPH_NUMBER_TOKENS);
+
+    List<RandomVariableType> paraDocFeatures = Arrays.asList(
+            RandomVariableType.PARAGRAPH_ALL_WORDS_UPPERCASE,
+            RandomVariableType.PARAGRAPH_IS_CENTER_ALIGNED,
+            RandomVariableType.PARAGRAPH_HAS_ANCHOR);
+
+    List<RandomVariableType> docFeatures = Arrays.asList(
+            RandomVariableType. DOCUMENT_TOC_HAS_WORDS_UPPERCASE,
+            RandomVariableType.DOCUMENT_TOC_IS_CENTER_ALIGNED,
+            RandomVariableType.DOCUMENT_TOC_HAS_ANCHOR
+    );
 
     public TOCClassifier() {
         //read the model
@@ -34,7 +58,12 @@ public class TOCClassifier extends ClassifierImpl {
             trainingModel = null;
         }
         if (trainingModel == null) {
-            trainingModel = new TrainingDocumentAnnotatingModel();
+            trainingModel = new TrainingDocumentAnnotatingModel( wordType,
+                     wordFeatures,
+                     paraType,
+                     paraFeatures,
+                     paraDocFeatures,
+                     docFeatures);
         }
     }
 
@@ -64,33 +93,6 @@ public class TOCClassifier extends ClassifierImpl {
 
     @Override
     public Object classify(String documentId, Document document) throws Exception {
-
-        RandomVariableType wordType = RandomVariableType.WORD_IS_TOC_TERM;
-        RandomVariableType paraType = RandomVariableType.PARAGRAPH_HAS_TOC;
-
-        List<RandomVariableType> wordFeatures = Arrays.asList(
-                RandomVariableType.WORD_IN_QUOTES,
-                RandomVariableType.WORD_INDEX,
-                RandomVariableType.WORD_IS_BOLD,
-                RandomVariableType.WORD_IS_UNDERLINED,
-                RandomVariableType.WORD_IS_ITALIC);
-
-        List<RandomVariableType> paraFeatures = Arrays.asList(
-                RandomVariableType.PARAGRAPH_NUMBER_TOKENS,
-                RandomVariableType.PARAGRAPH_ALL_WORDS_UPPERCASE,
-                RandomVariableType.PARAGRAPH_IS_CENTER_ALIGNED,
-                RandomVariableType.PARAGRAPH_HAS_ANCHOR);
-
-        List<RandomVariableType> paraDocFeatures = Arrays.asList(
-                RandomVariableType.PARAGRAPH_NUMBER_TOKENS,
-                RandomVariableType.PARAGRAPH_ALL_WORDS_UPPERCASE,
-                RandomVariableType.PARAGRAPH_IS_CENTER_ALIGNED,
-                RandomVariableType.PARAGRAPH_HAS_ANCHOR);
-
-        List<RandomVariableType> docFeatures = Arrays.asList(
-                RandomVariableType.DOCUMENT_TOC_HAS_ANCHOR,
-                RandomVariableType.DOCUMENT_TOC_IS_CENTER_ALIGNED,
-                RandomVariableType. DOCUMENT_TOC_HAS_WORDS_UPPERCASE);
 
         ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(trainingModel.getTnbfModel(),
                 trainingModel.getHmm(), document, wordType, wordFeatures, paraType, paraFeatures, paraDocFeatures, docFeatures

@@ -243,8 +243,9 @@ public class HiddenMarkovModel {
 
         //skip samples that are too short
         if (tokens.length < modelLength || stateValues.length<modelLength || features.length<modelLength) return;
-
         for (int i=0;i<modelLength && i < tokens.length; i++){
+            if (stateValues[i]==-1)
+                return;
             for (int f =0; f<features[0].length; f++){
                 stateFeatureValueCounts.get(stateValues[i]).get(f)[features[i][f]]++;
             }

@@ -87,7 +87,7 @@ public class API {
                 Document document = Parser.parseDocumentFromHtml(content);
                 //test the document
                 document = (Document) definitionClassifier.classify(fileName, document);
-                //TOC document = (Document) tocClassifier.classify(fileName, document);
+                document = (Document) tocClassifier.classify(fileName, document);
                 //logger.debug("document:" + document.getTarget());
                 //link the document
                 documentMap.put(fileName, document);
@@ -333,7 +333,7 @@ public class API {
                             }
                             // Add the userObserved paragraphs
                             parasForUpdateBNI.add(paragraph);
-                            logger.debug("userObserved paragraphs:"+ "\t" + paragraph.getText());
+                            logger.debug("userObserved paragraphs:"+ "\t" + paragraph.getId());
                             if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
                                 List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(paragraph);
                                 logger.debug(paragraph.getId() + "\t" + "userObserved paragraphs:" + "\t" + Joiner.on(" , ").join(definitionList));
@@ -369,7 +369,7 @@ public class API {
         try {
             logger.debug("Number of Definition Paragraph before update BNI: {}",DocumentHelper.getDefinitionParagraphs(doc).size());
             doc = (Document) definitionClassifier.updateBNI(documentId,doc,parasForUpdateBNI);
-            //TOC doc = (Document) definitionClassifier.updateBNI(documentId,doc,parasForUpdateBNI);
+            doc = (Document) tocClassifier.updateBNI(documentId,doc,parasForUpdateBNI);
             logger.debug("Number of Definition Paragraph After update BNI: {}",DocumentHelper.getDefinitionParagraphs(doc).size());
         } catch (Exception e) {
             logger.error("Failed to update updateBNI, using existing document : {}", e);
@@ -413,7 +413,7 @@ public class API {
         }
 
         definitionClassifier.train(doc);
-        //toc tocClassifier.train(doc);
+        tocClassifier.train(doc);
         logger.debug("train the model using document is stored in {}", preEvaluatedFolder + documentId);
 
         return Response.ok().status(Response.Status.OK).entity("ok").type(MediaType.APPLICATION_JSON).build();
@@ -443,7 +443,7 @@ public class API {
 
         try {
             doc = (Document) definitionClassifier.classify(documentId,doc);
-           //TOC doc = (Document) tocClassifier.classify(documentId,doc);
+            doc = (Document) tocClassifier.classify(documentId,doc);
         } catch (Exception e) {
             logger.error("Failed to classify the document object: {}", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to classify the document object" ).type(MediaType.APPLICATION_JSON).build();

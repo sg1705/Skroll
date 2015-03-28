@@ -3,12 +3,8 @@ package com.skroll.analyzer.model.bn;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ObjectArrays;
 import com.skroll.analyzer.model.bn.node.DiscreteNode;
-import com.skroll.analyzer.model.RandomVariableType;
-import com.skroll.analyzer.model.bn.node.TrainingDiscreteNode;
-import com.skroll.analyzer.model.bn.node.WordNode;
-import com.skroll.analyzer.model.nb.*;
 
-import java.util.*;
+import java.util.Arrays;
 
 /**
  * Created by wei2learn on 1/3/2015.
@@ -24,12 +20,12 @@ public class NaiveBayesWithFeatureConditions extends NaiveBayes{
 
     void generateParentsAndChildren(){
         categoryNode.setChildren( ObjectArrays.concat
-                (featureExistAtDocLevelArray, documentFeatureNodeArray, DiscreteNode.class));
+                (featureExistAtDocLevelArray, featureNodeArray, DiscreteNode.class));
         categoryNode.setParents(new DiscreteNode[0]);
 
         for (int i=0; i<documentFeatureNodeArray.length; i++){
             featureExistAtDocLevelArray[i].setParents(Arrays.asList(categoryNode, documentFeatureNodeArray[i]).
-                    toArray(new DiscreteNode[documentFeatureNodeArray.length]));
+                    toArray(new DiscreteNode[2]));
             featureExistAtDocLevelArray[i].setChildren(new DiscreteNode[0]);
             documentFeatureNodeArray[i].setChildren( Arrays.asList( featureExistAtDocLevelArray[i]).
                     toArray( new DiscreteNode[1]));
