@@ -193,13 +193,15 @@ ViewPortCtrl.prototype.showYesNoAllDialog = function(prompt, matchedItem) {
       then(angular.bind(this, function(contentHtml){
         this.updateDocument(contentHtml);  
       }));
-      // var contentHtml = this.documentService.rejectClassFromPara(matchedItem.classificationId, matchedItem.paragraphId);
-      // this.updateDocument(contentHtml);
     }
     //answer is yes
     if (clicked == 0) {
-      var contentHtml = this.documentService.approveClassForPara(matchedItem.classificationId, matchedItem.paragraphId);
-      this.updateDocument(contentHtml);
+      this.documentService.approveClassForPara(matchedItem.classificationId, matchedItem.paragraphId).
+      then(angular.bind(this, function(contentHtml){
+        this.updateDocument(contentHtml);  
+      }));
+      // var contentHtml = this.documentService.approveClassForPara(matchedItem.classificationId, matchedItem.paragraphId);
+      // this.updateDocument(contentHtml);
     }
   }));
 }
