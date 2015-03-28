@@ -220,7 +220,7 @@ public class DefinitionTrainer {
 
         Document document = null;
         try {
-            document = (Document)documentClassifier.classify(Parser.parseDocumentFromHtmlFile(testingFile));
+            document = (Document)documentClassifier.classify(testingFile,Parser.parseDocumentFromHtmlFile(testingFile));
         } catch (ParserException e) {
             e.printStackTrace();
            logger.debug("failed to parse document");

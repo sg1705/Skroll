@@ -142,12 +142,6 @@ public class SECDocumentClassifier extends ClassifierImpl {
     }
 
     @Override
-    public Object classify(Document document) {
-        return classify(document,-1);
-    }
-
-
-    @Override
     public SortedMap<Category, Double> classifyDetailed(Document doc, int numOfTokens) {
         Map<Category, Double> probableCategory = new HashMap<Category, Double>();
         System.out.println("nbModelForDoc:" + nbModelForDoc);
@@ -164,10 +158,6 @@ public class SECDocumentClassifier extends ClassifierImpl {
         return null;
     }
 
-    @Override
-    public Object updateBNI(Document document, List<CoreMap> observedParas) throws Exception {
-        return null;
-    }
 
     @Override
     public Object classify(Document doc, int numOfTokens) {

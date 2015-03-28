@@ -33,5 +33,12 @@ public abstract class ClassifierImpl implements Classifier {
         }
         return new ArrayList<String>(words);
     }
-
+    @Override
+    public Object updateBNI(String documentId, Document document, List<CoreMap> observedParas) throws Exception {
+        return null;
+    }
+    @Override
+    public Object classify(String documentId, Document doc) throws Exception{
+        return null;
+    }
 }
