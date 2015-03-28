@@ -378,7 +378,7 @@ public class API {
             //clear userObservation from the documents before saving the document.
             for (CoreMap paragraph : doc.getParagraphs()) {
                 if (paragraph.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)) {
-                    paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, false);
+                    paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, null);
                 }
             }
             documentMap.put(documentId,doc);
