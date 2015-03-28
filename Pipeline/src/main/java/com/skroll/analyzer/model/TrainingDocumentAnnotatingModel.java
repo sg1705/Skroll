@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skroll.analyzer.model.bn.SimpleDataTuple;
 import com.skroll.analyzer.model.bn.TrainingNaiveBayesWithFeatureConditions;
+import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -35,8 +36,8 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
                                            List<RandomVariableType> paraDocFeatures,
                                            List<RandomVariableType> docFeatures){
 
-        this( new TrainingNaiveBayesWithFeatureConditions(paraCategory,
-                paraFeatures, paraDocFeatures, docFeatures),
+        this(new TrainingNaiveBayesWithFeatureConditions(paraCategory,
+                        paraFeatures, paraDocFeatures, docFeatures),
                 wordType, wordFeatures, paraCategory, paraFeatures, paraDocFeatures, docFeatures);
 
     }
@@ -75,10 +76,26 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     }
 
     void updateTNBFWithParagraph(CoreMap paragraph, int[] docFeatureValues){
-        SimpleDataTuple dataTuple = DocumentAnnotatingHelper.makeDataTuple(paragraph, allParagraphFeatures, docFeatureValues);
+        SimpleDataTuple dataTuple = DocumentAnnotatingHelper.makeDataTuple(paragraph, paraCategory, allParagraphFeatures, docFeatureValues);
         tnbfModel.addSample(dataTuple);
     }
 
+    //todo: need to use the right annotation for the weight.
+    void updateTNBFWithParagraphAndWeight(CoreMap paragraph, int[] docFeatureValues) {
+        SimpleDataTuple dataTuple = DocumentAnnotatingHelper.makeDataTuple(paragraph, paraCategory, allParagraphFeatures, docFeatureValues);
+        String[] words = dataTuple.getWords();
+        int[] values = dataTuple.getDiscreteValues();
+        int numCategories = paraCategory.getFeatureSize();
+        Float[] oldWeights = paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class).toArray(new Float[numCategories]);
+        Float[] newWeights = paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class).toArray(new Float[numCategories]);
+        double[] normalizedOldWeights = BNInference.normalize(oldWeights, 1);
+        double[] normalizedNewWeights = BNInference.normalize(oldWeights,1);
+
+        for (int i = 0; i < numCategories; i++) {
+            values[0] = i;
+            tnbfModel.addSample(dataTuple, normalizedNewWeights[i]-normalizedNewWeights[i]);
+        }
+    }
     //todo: this method should be changed. Definitions should be annotated with good training data.
     void updateHMMWithParagraph(CoreMap paragraph){
         List<Token> tokens = paragraph.get(CoreAnnotations.TokenAnnotation.class);

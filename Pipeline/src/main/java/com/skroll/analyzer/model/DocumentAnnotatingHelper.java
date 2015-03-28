@@ -63,12 +63,20 @@ public class DocumentAnnotatingHelper {
 
         return trainingParagraph;
     }
-    public static SimpleDataTuple makeDataTuple(CoreMap paragraph, List<RandomVariableType> paraFeatures, int[] documentFeatures){
+
+    public static SimpleDataTuple[] makeHMMTuples(int numStates, CoreMap paragraph, List<RandomVariableType> wordFeatures){
+        SimpleDataTuple[] tuples = new SimpleDataTuple[numStates];
+        String []tokens = getNBWords(paragraph);
+        return tuples;
+    }
+
+    public static SimpleDataTuple makeDataTuple(CoreMap paragraph, RandomVariableType paraCategory,
+                                                List<RandomVariableType> paraFeatures, int[] documentFeatures){
         String []tokens = getNBWords(paragraph);
 
         int [] values = new int[paraFeatures.size() + documentFeatures.length+1];
         int index=0;
-        values[index++] = (DocumentHelper.isDefinition(paragraph)) ? 1:0;
+        values[index++] = getParagraphFeature(paragraph, paraCategory);
 
         for (int i=0; i<paraFeatures.size();i++){
             values[index++] = getParagraphFeature(paragraph, paraFeatures.get(i));
@@ -78,6 +86,8 @@ public class DocumentAnnotatingHelper {
 
         return new SimpleDataTuple(tokens,values);
     }
+
+
 
     public static SimpleDataTuple makeDataTupleWithOnlyFeaturesObserved(CoreMap paragraph, List<RandomVariableType> features, int docFeatureLen){
         String []tokens = getNBWords(paragraph);
@@ -140,24 +150,31 @@ public class DocumentAnnotatingHelper {
         return;
     }
 
+    static boolean isParaObserved(CoreMap para){
+        return para.get(CoreAnnotations.IsUserObservationAnnotation.class);
+    }
+
+
     static int getParagraphFeature(CoreMap paragraph, RandomVariableType feature){
+        // return false for empty paragraph
         if (paragraph==null) return 0;
         List<Token> tokens = paragraph.getTokens();
         if (tokens==null || tokens.size()==0) return 0;
         switch (feature){
-            case PARAGRAPH_HAS_DEFINITION: return (DocumentHelper.isDefinition(paragraph)) ?1:0;
+            case PARAGRAPH_HAS_DEFINITION:
+                return booleanToInt(paragraph.get(CoreAnnotations.IsDefinitionAnnotation.class));
             case PARAGRAPH_NUMBER_TOKENS:
                 Set<String> words = paragraph.get(CoreAnnotations.WordSetForTrainingAnnotation.class);
                 int num=0;
                 if (words!=null) num = words.size();
                 return Math.min(num, PFS_TOKENS_NUMBER_FEATURE_MAX);
-            case PARAGRAPH_STARTS_WITH_SPECIAL_FORMAT:
-                return booleanToInt(tokens.get(0).get(CoreAnnotations.InQuotesAnnotation.class )) |
-                        booleanToInt(tokens.get(0).get(CoreAnnotations.IsUnderlineAnnotation.class ))|
-                        booleanToInt(tokens.get(0).get(CoreAnnotations.IsBoldAnnotation.class ))|
-                        booleanToInt(tokens.get(0).get(CoreAnnotations.IsItalicAnnotation.class ));
+//            case PARAGRAPH_STARTS_WITH_SPECIAL_FORMAT:
+//                return booleanToInt(tokens.get(0).get(CoreAnnotations.InQuotesAnnotation.class )) |
+//                        booleanToInt(tokens.get(0).get(CoreAnnotations.IsUnderlineAnnotation.class ))|
+//                        booleanToInt(tokens.get(0).get(CoreAnnotations.IsBoldAnnotation.class ))|
+//                        booleanToInt(tokens.get(0).get(CoreAnnotations.IsItalicAnnotation.class ));
             case PARAGRAPH_STARTS_WITH_QUOTE:
-                return (DocumentHelper.startsWithQuote(paragraph)) ?1:0;
+                return booleanToInt(paragraph.get(CoreAnnotations.StartsWithQuote.class));
             case PARAGRAPH_STARTS_WITH_BOLD:
                 return booleanToInt(tokens.get(0).get(CoreAnnotations.IsBoldAnnotation.class ));
             case PARAGRAPH_STARTS_WITH_UNDERLINE:
@@ -176,7 +193,8 @@ public class DocumentAnnotatingHelper {
      * @return
      */
     static int booleanToInt(Boolean b){
-        return (b!=null && b) ? 1:0;
+        if (b==null) return 0;
+        return b ? 1:0;
     }
     /**
      * todo: consider removing paragraph parameter, and store info in just word tokens.
@@ -191,7 +209,7 @@ public class DocumentAnnotatingHelper {
                 List<List<Token>> tokens =  DocumentHelper.getDefinedTermTokensInParagraph(paragraph);
                 if (tokens==null) return 0;
                 for (List<Token> list: tokens)
-                    for (Token t:list) // matching string instead of matching token reference is a hack here.
+                    for (Token t:list) //todo: matching string instead of matching token reference is a hack here.
                         if (t.getText().equals(word.getText())) return 1;
                     //if (list.contains(word)) return 1;
                 return 0;
@@ -204,11 +222,11 @@ public class DocumentAnnotatingHelper {
                 return booleanToInt(word.get(CoreAnnotations.IsUnderlineAnnotation.class ));
             case WORD_IS_ITALIC:
                 return booleanToInt(word.get(CoreAnnotations.IsItalicAnnotation.class ));
-            case WORD_HAS_SPECIAL_FORMAT:
-                return booleanToInt(word.get(CoreAnnotations.InQuotesAnnotation.class )) |
-                        booleanToInt(word.get(CoreAnnotations.IsUnderlineAnnotation.class ))|
-                        booleanToInt(word.get(CoreAnnotations.IsBoldAnnotation.class ))|
-                        booleanToInt(word.get(CoreAnnotations.IsItalicAnnotation.class ));
+//            case WORD_HAS_SPECIAL_FORMAT:
+//                return booleanToInt(word.get(CoreAnnotations.InQuotesAnnotation.class )) |
+//                        booleanToInt(word.get(CoreAnnotations.IsUnderlineAnnotation.class ))|
+//                        booleanToInt(word.get(CoreAnnotations.IsBoldAnnotation.class ))|
+//                        booleanToInt(word.get(CoreAnnotations.IsItalicAnnotation.class ));
             case WORD_INDEX:  return word.get(CoreAnnotations.IndexInteger.class );
         }
         return -1;
@@ -247,5 +265,8 @@ public class DocumentAnnotatingHelper {
         System.out.println(DocumentHelper.getDefinitionParagraphs(doc).size());
     }
 
+    public static void clearParagraphCateoryAnnotation(CoreMap para){
+        DocumentHelper.setDefinedTermTokenListInParagraph(null, para);
+    }
 
 }

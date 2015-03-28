@@ -74,5 +74,13 @@ public class TrainingNaiveBayesWithFeatureConditions extends NaiveBayesWithFeatu
         clearObservation(); // probably unnecessary
     }
 
+    public void addSample(SimpleDataTuple tuple, double weight){
+        setObservation(tuple);
+        for (DiscreteNode node: discreteNodeArray){
+            ((TrainingDiscreteNode) node).updateCount(weight);
+        }
+        ((TrainingWordNode) wordNode).updateCount(weight);
+        clearObservation(); // probably unnecessary
+    }
 
 }
