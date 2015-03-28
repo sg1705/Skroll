@@ -288,7 +288,7 @@ public class API {
            logger.error("Failed to parse the json document: {}", ex);
         return Response.status(Response.Status.BAD_REQUEST).entity("Failed to parse the json document" ).type(MediaType.APPLICATION_JSON).build();
         }
-
+        long startTime = System.currentTimeMillis();
         Map<Paragraph, List<String>> paraMap = Paragraph.combineTerms(definitionJson);
         logger.debug("combineTerms:" + paraMap);
 
@@ -365,6 +365,7 @@ public class API {
                     }
                 }
             }
+        logger.debug("Total time taken to process the updateTerm without updateBNI: {}", System.currentTimeMillis() - startTime);
         // persist the document using document id. Let's use the file name
         try {
             logger.debug("Number of Definition Paragraph before update BNI: {}",DocumentHelper.getDefinitionParagraphs(doc).size());

@@ -5,6 +5,7 @@ import com.skroll.analyzer.model.RandomVariableType;
 import com.skroll.analyzer.model.TrainingDocumentAnnotatingModel;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
+import com.skroll.document.DocumentHelper;
 import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.ParserException;
 import com.skroll.util.ObjectPersistUtil;
@@ -98,9 +99,12 @@ public class TOCClassifier extends ClassifierImpl {
                 trainingModel.getHmm(), document, wordType, wordFeatures, paraType, paraFeatures, paraDocFeatures, docFeatures
         );
 
+        logger.debug("TOC before annotate {}", DocumentHelper.getTOCLists(document));
+
         bniMap.put(documentId, bniModel);
         bniModel.annotateDocument();
 
+        logger.debug("TOC after annotate {} ", DocumentHelper.getTOCLists(document));
         return document;
     }
 
