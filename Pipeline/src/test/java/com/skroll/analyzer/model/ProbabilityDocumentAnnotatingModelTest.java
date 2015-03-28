@@ -16,8 +16,8 @@ import java.util.List;
 //todo: prior count is not set properly, making the probability favoring positive class.
 public class ProbabilityDocumentAnnotatingModelTest {
 
-    String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
-    File file = new File(trainingFolderName);
+    String testingFolderName = "src/test/resources/classifier/smaller-indenture.html";
+    File file = new File(testingFolderName);
 
     TrainingDocumentAnnotatingModelTest traingTest = new TrainingDocumentAnnotatingModelTest();
 
@@ -160,8 +160,16 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
 
         System.out.print("document level feature believes\n");
-        for (int i=0; i<2; i++){
-            paraList.get(i).set(CoreAnnotations.IsDefinitionAnnotation.class, true);
+//        for (int i=0; i<2; i++){
+//            paraList.get(i).set(CoreAnnotations.IsDefinitionAnnotation.class, true);
+//            observedParas.add(paraList.get(i));
+//            paraList.get(i).set(CoreAnnotations.IsUserObservationAnnotation.class, true);
+//
+//        }
+        for (int i=0; i<3; i++){
+            //paraList.get(i).set(CoreAnnotations.IsDefinitionAnnotation.class, false);
+            DocumentAnnotatingHelper.clearParagraphCateoryAnnotation(paraList.get(i));
+
             observedParas.add(paraList.get(i));
             paraList.get(i).set(CoreAnnotations.IsUserObservationAnnotation.class, true);
 

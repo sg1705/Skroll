@@ -151,7 +151,9 @@ public class DocumentAnnotatingHelper {
     }
 
     static boolean isParaObserved(CoreMap para){
-        return para.get(CoreAnnotations.IsUserObservationAnnotation.class);
+        Boolean isObserved = para.get(CoreAnnotations.IsUserObservationAnnotation.class);
+        if (isObserved==null) return false;
+        return  isObserved;
     }
 
 
