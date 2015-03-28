@@ -84,7 +84,7 @@ public class API {
                 //parse the document
                 Document document = Parser.parseDocumentFromHtml(content);
                 //test the document
-                document = (Document) definitionClassifier.classify(document);
+                document = (Document) definitionClassifier.classify(fileName, document);
                 //logger.debug("document:" + document.getTarget());
                 //link the document
                 documentMap.put(fileName, document);
@@ -285,7 +285,10 @@ public class API {
            logger.error("Failed to parse the json document: {}", ex);
         return Response.status(Response.Status.BAD_REQUEST).entity("Failed to parse the json document" ).type(MediaType.APPLICATION_JSON).build();
         }
+
         Map<Paragraph, List<String>> paraMap = Paragraph.combineTerms(definitionJson);
+        logger.debug("combineTerms:" + paraMap);
+
         List<CoreMap> parasForUpdateBNI = new ArrayList<>();
             for (Paragraph  modifiedParagraph: paraMap.keySet()) {
                 for (CoreMap paragraph : doc.getParagraphs()) {
@@ -302,7 +305,7 @@ public class API {
                             logger.debug(paragraph.getId() + "\t" + "existing TOCs:" + "\t" + DocumentHelper.getTOCLists(paragraph));
                         }
 
-                        List<List<String>> addedTerms = new ArrayList<List<String>> ();
+                        List<List<String>> addedTerms = new ArrayList<> ();
                         for(String modifiedTerm : paraMap.get(modifiedParagraph)) {
                             addedTerms.add(Lists.newArrayList(Splitter.on(" ").split(modifiedTerm)));
                         }
@@ -319,10 +322,11 @@ public class API {
                                     if (addedTerm != null && !addedTerm.isEmpty()) {
                                         List<Token> tokens = DocumentHelper.getTokens(addedTerm);
                                         DocumentHelper.addDefinedTermTokensInParagraph(tokens, paragraph);
-                                        parasForUpdateBNI.add(paragraph);
                                     }
                                 }
                             }
+                            // Add the userObserved paragraphs
+                            parasForUpdateBNI.add(paragraph);
                         }
                         if (modifiedParagraph.getClassificationId() == Paragraph.TOC_CLASSIFICATION) {
                             //remove any existing annotations - TOCList
@@ -354,7 +358,11 @@ public class API {
             }
         // persist the document using document id. Let's use the file name
         try {
-            doc = (Document) definitionClassifier.updateBNI(doc,parasForUpdateBNI);
+            logger.debug("Number of Definition Paragraph before invoking BNI: {}",DocumentHelper.getDefinitionParagraphs(doc).size());
+
+            doc = (Document) definitionClassifier.updateBNI(documentId,doc,parasForUpdateBNI);
+            logger.debug("Number of Definition Paragraph After invoking BNI: {}",DocumentHelper.getDefinitionParagraphs(doc).size());
+            documentMap.put(documentId,doc);
             Files.write(JsonDeserializer.getJson(doc), new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
         } catch (Exception e) {
             logger.error("Failed to persist the document object: {}", e);
@@ -413,7 +421,7 @@ public class API {
         // persist the document using document id. Let's use the file name
 
         try {
-            doc = (Document) definitionClassifier.classify(doc);
+            doc = (Document) definitionClassifier.classify(documentId,doc);
         } catch (Exception e) {
             logger.error("Failed to classify the document object: {}", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to classify the document object" ).type(MediaType.APPLICATION_JSON).build();

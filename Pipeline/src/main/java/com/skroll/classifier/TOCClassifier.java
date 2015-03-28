@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Type;
-import java.util.List;
 import java.util.SortedMap;
 
 /**
@@ -83,7 +82,7 @@ public class TOCClassifier extends ClassifierImpl{
 
 
     @Override
-    public Object classify(Document document) throws Exception {
+    public Object classify(String documentId, Document document) throws Exception {
 
         logger.debug("definitions before annotate");
 
@@ -111,19 +110,16 @@ public class TOCClassifier extends ClassifierImpl{
         return null;
     }
 
-    @Override
-    public Object updateBNI(Document document, List<CoreMap> observedParas) throws Exception {
-        return null;
-    }
+
 
     @Override
     public Object classify(Document document, int numOfTokens) throws Exception {
-        return classify(document);
+        return classify("documentId", document);
     }
     @Override
     public Object classify(String fileName, int numOfLines) throws Exception {
         Document document = Parser.parseDocumentFromHtmlFile(fileName);
-        return classify(document);
+        return classify("documentId", document);
     }
 
 

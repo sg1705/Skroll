@@ -1,7 +1,5 @@
 package com.skroll.viewer;
 
-import com.google.common.escape.Escapers;
-import com.google.common.html.HtmlEscapers;
 import com.google.common.io.CharStreams;
 import com.skroll.classifier.DefinitionClassifier;
 import com.skroll.document.Document;
@@ -13,17 +11,13 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Created by saurabh on 1/24/15.
@@ -57,7 +51,7 @@ public class FileUploadServlet extends HttpServlet {
                 //create a classifier
                 DefinitionClassifier classifier = new DefinitionClassifier();
                 //test the document
-                document = (Document)classifier.classify(document);
+                document = (Document)classifier.classify("documentid", document);
                 //link the document
                 response.getOutputStream().write(document.getTarget().getBytes(Constants.DEFAULT_CHARSET));
             } catch (ParserException e) {

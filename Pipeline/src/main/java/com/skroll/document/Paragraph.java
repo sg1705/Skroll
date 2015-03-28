@@ -58,7 +58,7 @@ public class Paragraph {
                 }
             paraMap.get(paragraph).add(paragraph.getTerm());
         }
-        logger.debug("returnMap:" + paraMap);
+
         return paraMap;
     }
 

@@ -131,7 +131,7 @@ public class APITest {
         Configuration configuration = new Configuration();
         String preEvaluatedFolder = configuration.get("preEvaluatedFolder","/tmp/");
         Document doc = JsonDeserializer.fromJson(Files.toString(new File(preEvaluatedFolder + documentId), Constants.DEFAULT_CHARSET));
-        //logger.debug("Doc.target():" +doc.getTarget());
+        logger.trace("Doc.target():" +doc.getTarget());
         assert(doc.getTarget().contains("Accredited Investor"));
         for (CoreMap paragraph : doc.getParagraphs()) {
             if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {

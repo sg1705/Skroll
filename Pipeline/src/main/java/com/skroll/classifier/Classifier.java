@@ -29,7 +29,8 @@ public interface Classifier {
     public void persistModel() throws ObjectPersistUtil.ObjectPersistException;
 
     //TODO: rationalize the  classify functions
-    public Object classify(Document doc) throws Exception;
+
+    public Object classify(String documentId, Document doc) throws Exception;
 
     public Object classify(Document doc, int numOfTokens) throws Exception;
 
@@ -37,5 +38,5 @@ public interface Classifier {
 
     public SortedMap<Category,Double> classifyDetailed(Document doc, int numOfTokens);
 
-    public Object updateBNI(Document document, List<CoreMap> observedParas) throws Exception;
+    public Object updateBNI(String documentId, Document document, List<CoreMap> observedParas) throws Exception;
 }

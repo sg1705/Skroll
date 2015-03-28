@@ -1,11 +1,7 @@
 package com.skroll.classifier;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.FluentIterable;
 import com.google.common.io.Files;
-import com.skroll.analyzer.model.TrainingDocumentAnnotatingModel;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.parser.Parser;
@@ -15,15 +11,11 @@ import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
 import com.skroll.util.Configuration;
 import com.skroll.util.ObjectPersistUtil;
-import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.DirectoryNotEmptyException;
-import java.nio.file.NoSuchFileException;
 
 import static org.junit.Assert.fail;
 
@@ -73,7 +65,7 @@ public class DefinitionClassifierTest {
         String testingFile = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
         Document document = null;
         try {
-            document = (Document)documentClassifier.classify(Parser.parseDocumentFromHtmlFile(testingFile));
+            document = (Document)documentClassifier.classify(testingFile,Parser.parseDocumentFromHtmlFile(testingFile));
         } catch (ParserException e) {
             e.printStackTrace();
             fail("failed to parse document");
