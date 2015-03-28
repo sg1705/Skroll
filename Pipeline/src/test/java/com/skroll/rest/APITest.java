@@ -239,7 +239,7 @@ public class APITest {
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
 
-        String jsonString ="[{\"paragraphId\":\"p_1253\",\"term\":\"\", \"classificationId\":1},{\"paragraphId\":\"p_1254\",\"term\":\"\",\"classificationId\":1}]";
+        String jsonString ="[{\"paragraphId\":\"p_1236\",\"term\":\"\", \"classificationId\":1}]";
 
         Response response = webTarget.request(MediaType.TEXT_HTML).cookie(new  NewCookie("documentId", documentId))
                 .post(Entity.entity(jsonString, MediaType.APPLICATION_JSON));
@@ -256,7 +256,7 @@ public class APITest {
         Document doc = createDoc();
         API.documentMap.put(documentId, doc);
         testGetTerms(documentId);
-        testUpdateTerms(documentId);
+        //testUpdateTerms(documentId);
         String responseString = testGetTerms(documentId);
         assert(responseString.contains("Unit Test"));
     }
@@ -267,7 +267,7 @@ public class APITest {
         Document doc = createDoc();
         API.documentMap.put(documentId, doc);
         testGetTerms(documentId);
-        testRemoveTerms(documentId);
+        //testRemoveTerms(documentId);
         String responseString = testGetTerms(documentId);
         assert(!responseString.contains("jack susan"));
     }
