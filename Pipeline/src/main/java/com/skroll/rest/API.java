@@ -294,6 +294,7 @@ public class API {
                 for (CoreMap paragraph : doc.getParagraphs()) {
                     if (paragraph.getId().equals(modifiedParagraph.getParagraphId())) {
                         paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
+                        //TODO: currently assuming that the trainer is always active
                         paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
                         TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, TrainingWeightAnnotationHelper.DEFINITION, userWeight);
                         // log the existing definitions
@@ -327,6 +328,11 @@ public class API {
                             }
                             // Add the userObserved paragraphs
                             parasForUpdateBNI.add(paragraph);
+                            if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
+                                List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(paragraph);
+                                logger.debug(paragraph.getId() + "\t" + "updated definition:" + "\t" + Joiner.on(" , ").join(definitionList));
+                            }
+
                         }
                         if (modifiedParagraph.getClassificationId() == Paragraph.TOC_CLASSIFICATION) {
                             //remove any existing annotations - TOCList
@@ -343,14 +349,10 @@ public class API {
                                 }
 
                             }
-                        }
-                        // log the updated definitions
-                        if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
-                            List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(paragraph);
-                            logger.debug(paragraph.getId() + "\t" + "updated definition:" + "\t" + Joiner.on(" , ").join(definitionList));
-                        }
-                        if (paragraph.containsKey(CoreAnnotations.IsTOCAnnotation.class)) {
-                            logger.debug(paragraph.getId() + "\t" + "updated TOCs:" + "\t" + DocumentHelper.getTOCLists(paragraph));
+                            // log the userObserved TOC
+                            if (paragraph.containsKey(CoreAnnotations.IsTOCAnnotation.class)) {
+                                logger.debug(paragraph.getId() + "\t" + "updated TOCs:" + "\t" + DocumentHelper.getTOCLists(paragraph));
+                            }
                         }
                         logger.debug("TrainingWeightAnnotation:" + paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class).toString());
                     }
@@ -358,16 +360,27 @@ public class API {
             }
         // persist the document using document id. Let's use the file name
         try {
-            logger.debug("Number of Definition Paragraph before invoking BNI: {}",DocumentHelper.getDefinitionParagraphs(doc).size());
-
+            logger.debug("Number of Definition Paragraph before update BNI: {}",DocumentHelper.getDefinitionParagraphs(doc).size());
             doc = (Document) definitionClassifier.updateBNI(documentId,doc,parasForUpdateBNI);
-            logger.debug("Number of Definition Paragraph After invoking BNI: {}",DocumentHelper.getDefinitionParagraphs(doc).size());
+            logger.debug("Number of Definition Paragraph After update BNI: {}",DocumentHelper.getDefinitionParagraphs(doc).size());
+        } catch (Exception e) {
+            logger.error("Failed to update updateBNI, using existing document : {}", e);
+        }
+        try{
+            //clear userObservation from the documents before saving the document.
+            for (CoreMap paragraph : doc.getParagraphs()) {
+                if (paragraph.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)) {
+                    paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, false);
+                }
+            }
             documentMap.put(documentId,doc);
             Files.write(JsonDeserializer.getJson(doc), new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
         } catch (Exception e) {
             logger.error("Failed to persist the document object: {}", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to persist the document object" ).type(MediaType.APPLICATION_JSON).build();
         }
+
+
         logger.debug("updated document is stored in {}", preEvaluatedFolder + documentId);
         return Response.status(Response.Status.OK).entity(doc.getTarget().getBytes(Constants.DEFAULT_CHARSET)).type(MediaType.TEXT_HTML).build();
     }
