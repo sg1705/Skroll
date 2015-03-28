@@ -12,6 +12,7 @@ public enum RandomVariableType {
     DOCUMENT_DEFINITIONS_IS_UNDERLINED(2),
     DOCUMENT_DEFINITIONS_IN_QUOTES(2),
     PARAGRAPH_HAS_DEFINITION(2, new String[]{"no","yes"}),
+    PARAGRAPH_HAS_TOC(2, new String[]{"no","yes"}),
     PARAGRAPH_IS_TOC(2, new String[]{"no","yes"}),
     PARAGRAPH_STARTS_WITH_QUOTE(2),
     PARAGRAPH_STARTS_WITH_BOLD(2),
@@ -20,13 +21,24 @@ public enum RandomVariableType {
     PARAGRAPH_STARTS_WITH_SPECIAL_FORMAT(2),
     PARAGRAPH_NUMBER_TOKENS(10),
     PARAGRAPH_INDEX,
+    WORD_IS_TOC_TERM (2),
     WORD_IS_DEFINED_TERM (2),
     WORD_IN_QUOTES (2),
     WORD_IS_BOLD (2),
     WORD_IS_UNDERLINED (2),
     WORD_IS_ITALIC (2),
     WORD_HAS_SPECIAL_FORMAT(2),
-    WORD_INDEX (DefinedTermExtractionModel.HMM_MODEL_LENGTH);
+    WORD_INDEX (DefinedTermExtractionModel.HMM_MODEL_LENGTH),
+
+    // new ones for TOC
+    PARAGRAPH_WORDS_STARTS_WITH_UPPERCASE_COUNT (2),
+    PARAGRAPH_ALL_WORDS_UPPERCASE (2),
+    PARAGRAPH_IS_CENTER_ALIGNED (2),
+    PARAGRAPH_HAS_ANCHOR (2),
+
+    DOCUMENT_TOC_HAS_ANCHOR(2),
+    DOCUMENT_TOC_IS_CENTER_ALIGNED(2),
+    DOCUMENT_TOC_HAS_WORDS_UPPERCASE(2);
 
     private int featureSize;
     private String[] valueNames;

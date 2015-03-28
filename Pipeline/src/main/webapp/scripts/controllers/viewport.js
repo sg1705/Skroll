@@ -172,7 +172,8 @@ ViewPortCtrl.prototype.updateDocument = function(contentHtml) {
   this.documentService.getTerms().then(function(terms){
     LHSModel.smodel.terms = terms;
     console.log("Terms return by API");
-    console.log(JSON.stringify(terms, null,2));
+    //console.log(JSON.stringify(terms, null,2));
+    console.log(terms);
   }, function(data, status){
     console.log(status);
   });
