@@ -50,6 +50,7 @@ public class DefinitionLinker {
             if (!paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
                 continue;
             }
+            if (!paragraph.get(CoreAnnotations.IsDefinitionAnnotation.class)) continue;
             //get all the defined terms
             List<List<Token>> tokensList = paragraph.get(CoreAnnotations.DefinedTermTokensAnnotation.class);
 

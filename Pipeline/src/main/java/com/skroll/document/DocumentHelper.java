@@ -96,9 +96,10 @@ public class DocumentHelper {
 
     public static void setDefinedTermTokenListInParagraph(List<List<Token>> definitions, CoreMap paragraph) {
         paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class, definitions);
-        if (definitions.size() > 0) {
+        if (definitions !=null && definitions.size() > 0) {
             paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
-        }
+        } else paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, false);
+
     }
 
     public static void addDefinedTermTokensInParagraph(List<Token> definitions, CoreMap paragraph) {

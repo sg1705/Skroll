@@ -163,6 +163,8 @@ public class ProbabilityDocumentAnnotatingModelTest {
         for (int i=0; i<2; i++){
             paraList.get(i).set(CoreAnnotations.IsDefinitionAnnotation.class, true);
             observedParas.add(paraList.get(i));
+            paraList.get(i).set(CoreAnnotations.IsUserObservationAnnotation.class, true);
+
         }
 
         model.updateBeliefWithObservation(observedParas);
@@ -171,6 +173,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
 //        model.passMessagesToParagraphCategories();
 
         model.annotateDocument();
+
 
         System.out.println("annotated terms\n");
         DocumentAnnotatingHelper.printAnnotatedDoc(doc);
