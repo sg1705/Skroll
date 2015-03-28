@@ -68,7 +68,18 @@ public class DefinitionLinker {
                     continue;
                 }
                 //if only one token and its size is 1 then ignore
-                if ((tokens.size() == 1) & (tokens.get(0).getText().length() == 1)) {
+                if ((tokens.size() == 1) & (tokens.get(0).getText().length() <= 2)) {
+                    continue;
+                }
+                //if all tokens are of size 1 then ignore
+                boolean allTokensSizeOne = true;
+                for(Token token: tokens) {
+                    if (token.getText().length() > 1) {
+                        allTokensSizeOne = false;
+                        break;
+                    }
+                }
+                if (allTokensSizeOne) {
                     continue;
                 }
                 //combine tokens into a regex

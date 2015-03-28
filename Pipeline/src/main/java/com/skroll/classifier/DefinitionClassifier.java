@@ -15,7 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 
 /**
@@ -28,7 +30,7 @@ public class DefinitionClassifier extends ClassifierImpl{
 
     private TrainingDocumentAnnotatingModel trainingModel= null;
 
-
+    private Map<String, ProbabilityDocumentAnnotatingModel> bniMap = new HashMap<>();
     private  Type dtemType = null;
 
     public String getDtemModelName() {
@@ -81,9 +83,7 @@ public class DefinitionClassifier extends ClassifierImpl{
 
 
     @Override
-    public Object classify(Document document) throws Exception {
-
-
+    public Object classify(String documentId, Document document) throws Exception {
 
         RandomVariableType wordType = RandomVariableType.WORD_IS_DEFINED_TERM;
         RandomVariableType paraType = RandomVariableType.PARAGRAPH_HAS_DEFINITION;
@@ -97,16 +97,14 @@ public class DefinitionClassifier extends ClassifierImpl{
         logger.debug("definitions before annotate");
 
         for (CoreMap para: DocumentHelper.getDefinitionParagraphs(document)){
-            logger.debug(para.getText());
             logger.debug(DocumentHelper.getDefinedTermTokensInParagraph(para).toString());
         }
 
-
+        bniMap.put(documentId, bniModel);
         bniModel.annotateDocument();
 
         logger.debug("definitions after annotate");
         for (CoreMap para:DocumentHelper.getDefinitionParagraphs(document)){
-            logger.debug(para.getText());
             logger.debug(DocumentHelper.getDefinedTermTokensInParagraph(para).toString());
         }
         logger.debug("Document Size:" + DocumentHelper.getDefinitionParagraphs(document).size());
@@ -117,18 +115,49 @@ public class DefinitionClassifier extends ClassifierImpl{
     }
 
     @Override
+    public Object updateBNI(String documentId,Document document, List<CoreMap> observedParas) throws Exception {
+
+
+        logger.debug("definitions before annotate");
+
+        for (CoreMap para: DocumentHelper.getDefinitionParagraphs(document)){
+            logger.debug(DocumentHelper.getDefinedTermTokensInParagraph(para).toString());
+        }
+        logger.debug("Number of Defined paras:" + DocumentHelper.getDefinitionParagraphs(document).size());
+
+        if(documentId==null || bniMap.get(documentId)==null){
+            throw new Exception("Failed to updateBNI. check documentId : " +documentId);
+        }
+        bniMap.get(documentId).updateBeliefWithObservation(observedParas);
+
+        bniMap.get(documentId).annotateDocument();
+
+        logger.debug("definitions after annotate");
+        for (CoreMap para:DocumentHelper.getDefinitionParagraphs(document)){
+            logger.debug(DocumentHelper.getDefinedTermTokensInParagraph(para).toString());
+        }
+        logger.debug("Number of Defined paras:" + DocumentHelper.getDefinitionParagraphs(document).size());
+
+
+        DefinitionLinker linker = new DefinitionLinker();
+        document = linker.linkDefinition(document);
+        return document;
+    }
+
+
+    @Override
     public SortedMap<Category, Double> classifyDetailed(Document doc, int numOfTokens) {
         return null;
     }
 
     @Override
     public Object classify(Document document, int numOfTokens) throws Exception {
-        return classify(document);
+        return classify("documentId", document);
     }
     @Override
     public Object classify(String fileName, int numOfLines) throws Exception {
         Document document = Parser.parseDocumentFromHtmlFile(fileName);
-        return classify(document);
+        return classify("documentId",document);
     }
 
 

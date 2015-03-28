@@ -90,7 +90,8 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
      * Set belief based on the observed paragraphs.
      * @param observedParagraphs The paragraphs that are observed.
      */
-    void updateBeliefWithObservation(List<CoreMap> observedParagraphs){
+
+    public void updateBeliefWithObservation(List<CoreMap> observedParagraphs){
 
         for( CoreMap para : observedParagraphs) {
             if (para==null) continue;

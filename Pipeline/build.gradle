@@ -55,8 +55,9 @@ gretty{
 
 
 task trainWithOverride(type: JavaExec) {
+    args = ['--trainWithOverride', 'src/main/resources/trainingDocuments/']
+    File workingDir = new File('Pipeline/')
     main = 'com.skroll.trainer.DefinitionTrainer'
     classpath = sourceSets.main.runtimeClasspath
-    args = ['--trainWithOverride src/main/resources/trainingDocuments/']
 }
 

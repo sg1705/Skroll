@@ -44,20 +44,45 @@ public class JsonDeserializer {
         Set<Map.Entry<String, JsonElement>> set = jsonObject.entrySet();
         Iterator<Map.Entry<String, JsonElement>> iterator = set.iterator();
         //process each element
+        String target=null;
+        String source=null;
+        String id=null;
+        Document document=null;
+        int counter =0;
         while (iterator.hasNext()) {
             Map.Entry<String, JsonElement> entry = iterator.next();
             JsonElement element = entry.getValue();
             String key = entry.getKey();
+            if(key.equals("target")){
+                target=element.getAsString();
+                counter++;
+            }
+            if(key.equals("source")){
+                source = element.getAsString();
+                counter++;
+            }
+            if(key.equals("id")){
+                id = element.getAsString();
+                counter++;
+            }
             if (key.equals("map")) {
                 //it is a coremap
                 //let's start
                 CoreMap coreMap = processObject("documentLevelKey", element);
-                Document document = new Document(coreMap);
-                return document;
-
+                document = new Document(coreMap);
+                counter++;
+            }
+            if(counter==4){
+                break;
             }
         }
-        return null;
+        if(document==null){
+            return null;
+        }
+        document.setTarget(target);
+        document.setSource(source);
+        document.setId(id);
+        return document;
     }
 
     /**
@@ -98,7 +123,7 @@ public class JsonDeserializer {
             coreMap = new Token();
         }
         Set<Map.Entry<String, JsonElement>> set = element.getAsJsonObject().entrySet();
-        logger.debug("EntrySet:"+set);
+        logger.trace("EntrySet:"+set);
         for(Map.Entry<String, JsonElement> entry : set) {
             JsonElement elmt = entry.getValue();
             if (elmt.isJsonPrimitive()) {
@@ -108,10 +133,10 @@ public class JsonDeserializer {
                 coreMap.set(entry.getKey(), processDefinedTerm(entry.getKey(), elmt));
             } else if (elmt.isJsonArray()) {
                 //infer type
-                logger.debug("processing key {} as Array", entry.getKey());
+                logger.trace("processing key {} as Array", entry.getKey());
                 coreMap.set(entry.getKey(), processArray(entry.getKey(),elmt));
             } else if (elmt.isJsonObject()) {
-                logger.debug("processing key {} as Object:" + entry.getKey());
+                logger.trace("processing key {} as Object:" + entry.getKey());
                 coreMap.set(entry.getKey(), processObject(entry.getKey(),elmt));
             }
         }

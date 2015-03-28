@@ -1,7 +1,6 @@
 package com.skroll.classifier;
 
 import com.google.gson.reflect.TypeToken;
-import com.skroll.analyzer.model.DefinedTermExtractionModel;
 import com.skroll.analyzer.model.TOCModel;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -83,7 +82,7 @@ public class TOCClassifier extends ClassifierImpl{
 
 
     @Override
-    public Object classify(Document document) throws Exception {
+    public Object classify(String documentId, Document document) throws Exception {
 
         logger.debug("definitions before annotate");
 
@@ -111,14 +110,16 @@ public class TOCClassifier extends ClassifierImpl{
         return null;
     }
 
+
+
     @Override
     public Object classify(Document document, int numOfTokens) throws Exception {
-        return classify(document);
+        return classify("documentId", document);
     }
     @Override
     public Object classify(String fileName, int numOfLines) throws Exception {
         Document document = Parser.parseDocumentFromHtmlFile(fileName);
-        return classify(document);
+        return classify("documentId", document);
     }
 
 

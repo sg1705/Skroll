@@ -46,7 +46,7 @@ public class API {
     // as we would like to share this hashmap between multiple requests from multiple clients
     // It provides the construct to synchronize only block of map not the whole hashmap.
 
-    private static Map<String,Document> documentMap = new ConcurrentHashMap<String,Document>();
+    protected static Map<String,Document> documentMap = new ConcurrentHashMap<String,Document>();
     private static DefinitionClassifier definitionClassifier = new DefinitionClassifier();
     private static Configuration configuration = new Configuration();
     private static String  preEvaluatedFolder = configuration.get("preEvaluatedFolder","/tmp/");
@@ -84,7 +84,7 @@ public class API {
                 //parse the document
                 Document document = Parser.parseDocumentFromHtml(content);
                 //test the document
-                document = (Document) definitionClassifier.classify(document);
+                document = (Document) definitionClassifier.classify(fileName, document);
                 //logger.debug("document:" + document.getTarget());
                 //link the document
                 documentMap.put(fileName, document);
@@ -96,7 +96,7 @@ public class API {
                 // persist the document using document id. Let's use the file name
                 try {
                     Files.createParentDirs(new File(preEvaluatedFolder + fileName));
-                    Files.write(ModelHelper.getJson(document), new File(preEvaluatedFolder + fileName), Charset.defaultCharset());
+                    Files.write(JsonDeserializer.getJson(document), new File(preEvaluatedFolder + fileName), Charset.defaultCharset());
                 } catch (Exception e) {
                     logger.error("Failed to persist the document object: {}", e);
                     return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to persist the document object" ).type(MediaType.APPLICATION_JSON).build();
@@ -132,7 +132,7 @@ public class API {
     }
     @GET
     @Path("/getDoc")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_HTML)
     public Response getDoc(@QueryParam("documentId") String documentId, @Context HttpHeaders hh) {
 
         if(documentId==null) {
@@ -159,7 +159,14 @@ public class API {
                 return Response.status(Response.Status.EXPECTATION_FAILED).entity("Failed to read document from Corpus").type(MediaType.TEXT_HTML).build();
 
             }
-            doc = ModelHelper.getModel(jsonString);
+            try {
+                doc = JsonDeserializer.fromJson(jsonString);
+            } catch (Exception e) {
+                logger.error("Failed to deserialize the message:" + e.toString());
+                e.printStackTrace();
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to parse document").type(MediaType.TEXT_HTML).build();
+
+            }
             documentMap.put(documentId,doc);
             logger.debug("Doc:" + doc.getParagraphs().toString());
         }
@@ -216,7 +223,10 @@ public class API {
                 for (List<String> definition: definitionList) {
                     logger.debug(paragraph.getId() + "\t" + "DEFINITION" + "\t" + definition);
                     if (!definition.isEmpty()) {
-                        definedTermParagraphList.add(new Paragraph(paragraph.getId(), Joiner.on(" ").join(definition), Paragraph.DEFINITION_CLASSIFICATION));
+                        if(!(Joiner.on(" ").join(definition).equals(""))) {
+                            definedTermParagraphList.add(new Paragraph(paragraph.getId(), Joiner.on(" ").join(definition), Paragraph.DEFINITION_CLASSIFICATION));
+
+                        }
                     }
                 }
             }
@@ -229,10 +239,7 @@ public class API {
                     }
             }
         }
-        if (definedTermParagraphList.isEmpty()) {
-            logger.warn("Defined Term Paragraph is empty");
-            return Response.status(Response.Status.NO_CONTENT).entity("Defined Term Paragraph is empty" ).type(MediaType.TEXT_PLAIN).build();
-        }
+
         Gson gson = new GsonBuilder().create();
         String definitionJson = gson.toJson(definedTermParagraphList);
         logger.debug("definitionJson" + "\t" + definitionJson);
@@ -266,7 +273,7 @@ public class API {
             return Response.status(Response.Status.NO_CONTENT).entity("document cannot be found for document id: "+ documentId).type(MediaType.APPLICATION_JSON).build();
         }
         List<Paragraph> definitionJson =null;
-    try {
+        try {
         Gson gson = new GsonBuilder().create();
         Type type = new TypeToken<List<Paragraph>>() {
         }.getType();
@@ -274,70 +281,106 @@ public class API {
 
         logger.info("updateTerms:{} for doc id: {}", definitionJson,documentId);
 
-    } catch(Exception ex) {
+        } catch(Exception ex) {
            logger.error("Failed to parse the json document: {}", ex);
         return Response.status(Response.Status.BAD_REQUEST).entity("Failed to parse the json document" ).type(MediaType.APPLICATION_JSON).build();
         }
-        for (Paragraph modifiedParagraph: definitionJson) {
-            for (CoreMap paragraph : doc.getParagraphs()) {
-                if(paragraph.getId().equals(modifiedParagraph.getParagraphId())) {
-                    paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
-                    paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class,true);
-                    TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, TrainingWeightAnnotationHelper.DEFINITION, userWeight);
-                    // log the existing definitions
-                    if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
-                        List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(paragraph);
+
+        Map<Paragraph, List<String>> paraMap = Paragraph.combineTerms(definitionJson);
+        logger.debug("combineTerms:" + paraMap);
+
+        List<CoreMap> parasForUpdateBNI = new ArrayList<>();
+            for (Paragraph  modifiedParagraph: paraMap.keySet()) {
+                for (CoreMap paragraph : doc.getParagraphs()) {
+                    if (paragraph.getId().equals(modifiedParagraph.getParagraphId())) {
+                        paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
+                        //TODO: currently assuming that the trainer is always active
+                        paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
+                        TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, TrainingWeightAnnotationHelper.DEFINITION, userWeight);
+                        // log the existing definitions
+                        if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
+                            List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(paragraph);
                             logger.debug(paragraph.getId() + "\t" + "existing definition:" + "\t" + Joiner.on(" , ").join(definitionList));
-                    }
-                    if (paragraph.containsKey(CoreAnnotations.IsTOCAnnotation.class)) {
+                        }
+                        if (paragraph.containsKey(CoreAnnotations.IsTOCAnnotation.class)) {
                             logger.debug(paragraph.getId() + "\t" + "existing TOCs:" + "\t" + DocumentHelper.getTOCLists(paragraph));
+                        }
+
+                        List<List<String>> addedTerms = new ArrayList<> ();
+                        for(String modifiedTerm : paraMap.get(modifiedParagraph)) {
+                            addedTerms.add(Lists.newArrayList(Splitter.on(" ").split(modifiedTerm)));
+                        }
+
+                        if (modifiedParagraph.getClassificationId() == Paragraph.DEFINITION_CLASSIFICATION) {
+
+                            //remove any existing annotations - definedTermList
+                            paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class, null);
+                            paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, false);
+
+                            // add annotations that received from client - definedTermList
+                            if (addedTerms != null && !addedTerms.isEmpty()) {
+                                for(List<String> addedTerm :addedTerms) {
+                                    if (addedTerm != null && !addedTerm.isEmpty()) {
+                                        List<Token> tokens = DocumentHelper.getTokens(addedTerm);
+                                        DocumentHelper.addDefinedTermTokensInParagraph(tokens, paragraph);
+                                    }
+                                }
+                            }
+                            // Add the userObserved paragraphs
+                            parasForUpdateBNI.add(paragraph);
+                            if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
+                                List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(paragraph);
+                                logger.debug(paragraph.getId() + "\t" + "updated definition:" + "\t" + Joiner.on(" , ").join(definitionList));
+                            }
+
+                        }
+                        if (modifiedParagraph.getClassificationId() == Paragraph.TOC_CLASSIFICATION) {
+                            //remove any existing annotations - TOCList
+                            paragraph.set(CoreAnnotations.TOCTokensAnnotation.class, null);
+                            paragraph.set(CoreAnnotations.IsTOCAnnotation.class, false);
+
+                            // add annotations that received from client - TOCList
+                            if (addedTerms != null && !addedTerms.isEmpty()) {
+                                for(List<String> addedTerm :addedTerms) {
+                                    if (addedTerm != null && !addedTerm.isEmpty()) {
+                                        List<Token> tokens = DocumentHelper.getTokens(addedTerm);
+                                        DocumentHelper.addTOCsInParagraph(tokens, paragraph);
+                                    }
+                                }
+
+                            }
+                            // log the userObserved TOC
+                            if (paragraph.containsKey(CoreAnnotations.IsTOCAnnotation.class)) {
+                                logger.debug(paragraph.getId() + "\t" + "updated TOCs:" + "\t" + DocumentHelper.getTOCLists(paragraph));
+                            }
+                        }
+                        logger.debug("TrainingWeightAnnotation:" + paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class).toString());
                     }
-                    List<String> addedTerms = Lists.newArrayList(Splitter.on(" ").split(modifiedParagraph.getTerm()));
-
-                 if(modifiedParagraph.getClassificationId()== Paragraph.DEFINITION_CLASSIFICATION) {
-
-                     //remove any existing annotations - definedTermList
-                     paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class, null);
-                     paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, false);
-
-                     // add annotations that received from client - definedTermList
-                     if (addedTerms!=null && !addedTerms.isEmpty()) {
-                         List<Token> tokens = DocumentHelper.getTokens(addedTerms);
-                         DocumentHelper.addDefinedTermTokensInParagraph(tokens, paragraph);
-                     }
-                 }
-                if(modifiedParagraph.getClassificationId()== Paragraph.TOC_CLASSIFICATION) {
-
-                    //remove any existing annotations - TOCList
-                    paragraph.set(CoreAnnotations.TOCTokensAnnotation.class, null);
-                    paragraph.set(CoreAnnotations.IsTOCAnnotation.class, false);
-
-                    // add annotations that received from client - TOCList
-                    if (addedTerms != null && !addedTerms.isEmpty()) {
-                        List<Token> tokens = DocumentHelper.getTokens(addedTerms);
-                        DocumentHelper.addTOCsInParagraph(tokens, paragraph);
-                    }
-                }
-                    // log the updated definitions
-                    if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
-                        List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(paragraph);
-                        logger.debug(paragraph.getId() + "\t" + "updated definition:" + "\t" + Joiner.on(" , ").join(definitionList));
-                    }
-                    if (paragraph.containsKey(CoreAnnotations.IsTOCAnnotation.class)) {
-                        logger.debug(paragraph.getId() + "\t" + "updated TOCs:" + "\t" + DocumentHelper.getTOCLists(paragraph));
-                    }
-                    logger.debug("TrainingWeightAnnotation:" + paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class).toString());
                 }
             }
-        }
         // persist the document using document id. Let's use the file name
         try {
-
-            Files.write(ModelHelper.getJson(doc), new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
+            logger.debug("Number of Definition Paragraph before update BNI: {}",DocumentHelper.getDefinitionParagraphs(doc).size());
+            doc = (Document) definitionClassifier.updateBNI(documentId,doc,parasForUpdateBNI);
+            logger.debug("Number of Definition Paragraph After update BNI: {}",DocumentHelper.getDefinitionParagraphs(doc).size());
+        } catch (Exception e) {
+            logger.error("Failed to update updateBNI, using existing document : {}", e);
+        }
+        try{
+            //clear userObservation from the documents before saving the document.
+            for (CoreMap paragraph : doc.getParagraphs()) {
+                if (paragraph.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)) {
+                    paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, false);
+                }
+            }
+            documentMap.put(documentId,doc);
+            Files.write(JsonDeserializer.getJson(doc), new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
         } catch (Exception e) {
             logger.error("Failed to persist the document object: {}", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to persist the document object" ).type(MediaType.APPLICATION_JSON).build();
         }
+
+
         logger.debug("updated document is stored in {}", preEvaluatedFolder + documentId);
         return Response.status(Response.Status.OK).entity(doc.getTarget().getBytes(Constants.DEFAULT_CHARSET)).type(MediaType.TEXT_HTML).build();
     }
@@ -353,7 +396,6 @@ public class API {
         if ( pathParams.get("documentId")==null) {
             logger.warn("documentId is missing from Cookie");
             return Response.status(Response.Status.EXPECTATION_FAILED).entity("documentId is missing from Cookie").type(MediaType.APPLICATION_JSON).build();
-
         }
         String documentId = pathParams.get("documentId").getValue();
         Document doc = documentMap.get(documentId);
@@ -392,7 +434,7 @@ public class API {
         // persist the document using document id. Let's use the file name
 
         try {
-            doc = (Document) definitionClassifier.classify(doc);
+            doc = (Document) definitionClassifier.classify(documentId,doc);
         } catch (Exception e) {
             logger.error("Failed to classify the document object: {}", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to classify the document object" ).type(MediaType.APPLICATION_JSON).build();

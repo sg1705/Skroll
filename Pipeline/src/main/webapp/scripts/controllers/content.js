@@ -17,6 +17,27 @@ angular.module('SkrollApp')
             $scope.definitions = [ ];
             $scope.isEdit = false;
             $scope.similarPara = [ ];
+            $scope.userDocumentIds = [ ];
+            $scope.documentService = documentService;
+
+            $scope.getDocumentIds = function() {
+                documentService.getDocumentIds().then(function(documentIds){
+                    $scope.userDocumentIds = documentIds;
+                });
+            }
+
+            $scope.loadDocument = function(documentId) {
+                documentService.loadDocument(documentId).then(angular.bind(this, function(contentHtml) {
+                  $("#content").html(contentHtml);
+                  $scope.documentService.getTerms().then(function(terms){
+                    LHSModel.smodel.terms = terms;
+                    $scope.isDocAvailable = true;
+                    console.log(terms);
+                  }, function(data, status){
+                    console.log(status);
+                  });                        
+                }));
+            }
 
             //toggle side navigation
             $scope.toggleSidenav = function(menuId) {
@@ -41,89 +62,85 @@ angular.module('SkrollApp')
                 $scope.isEdit = !$scope.isEdit;
             };
 
-            /*
-            * Someday I should remove this method. Not being used
-            */
-            $scope.contentClicked = function($event) {
-                var foundId = false;
-                var paraId;
-                //find the paragraph element
-                //children
-                var ids = $($event.target).find("a");
-                for(var ii = 0; ii < ids.length; ii++) {
-                    if ($(ids[ii]).attr("name") != null) {
-                        foundId = true;
-                        $(ids[ii]).parent().css("background-color","yellow");
-                        paraId = $(ids[ii]).attr("name");
-                        $("#rightPanel").html()
-                    }
-                }
+            // /*
+            // * Someday I should remove this method. Not being used
+            // */
+            // $scope.contentClicked = function($event) {
+            //     var foundId = false;
+            //     var paraId;
+            //     //find the paragraph element
+            //     //children
+            //     var ids = $($event.target).find("a");
+            //     for(var ii = 0; ii < ids.length; ii++) {
+            //         if ($(ids[ii]).attr("name") != null) {
+            //             foundId = true;
+            //             $(ids[ii]).parent().css("background-color","yellow");
+            //             paraId = $(ids[ii]).attr("name");
+            //             $("#rightPanel").html()
+            //         }
+            //     }
 
-                //now try siblings
-                //TODO need to refactor this properly
+            //     //now try siblings
+            //     //TODO need to refactor this properly
 
-                if (!foundId) {
-                    ids = $($event.target).prevAll("a");
-                }
+            //     if (!foundId) {
+            //         ids = $($event.target).prevAll("a");
+            //     }
 
-                for(var ii = 0; ii < ids.length; ii++) {
-                    if ($(ids[ii]).attr("name") != null) {
-                        foundId = true;
-                        $(ids[ii]).parent().css("background-color","yellow");
-                        paraId = $(ids[ii]).attr("name");
-                    }
-                }
+            //     for(var ii = 0; ii < ids.length; ii++) {
+            //         if ($(ids[ii]).attr("name") != null) {
+            //             foundId = true;
+            //             $(ids[ii]).parent().css("background-color","yellow");
+            //             paraId = $(ids[ii]).attr("name");
+            //         }
+            //     }
 
-                if (foundId) {
-                    documentService
-                    .getParagraphJson(paraId)
-                    .then(function(data) {
-                        $("#rightPane").html(JSON.stringify(data, null, 2));
-                        $scope.selectedParagraphId = paraId;
-                        documentModel.selectedParagraphId = paraId;
-                    },function(data, status) {
-                        console.log(status);
-                    });
-                }
-            };
+            //     if (foundId) {
+            //         documentService
+            //         .getParagraphJson(paraId)
+            //         .then(function(data) {
+            //             $("#rightPane").html(JSON.stringify(data, null, 2));
+            //             $scope.selectedParagraphId = paraId;
+            //             documentModel.selectedParagraphId = paraId;
+            //         },function(data, status) {
+            //             console.log(status);
+            //         });
+            //     }
+            // };
 
             //### hack for iPhone
             //this code is a hack to get it working on iPhone
-            angular.element(document).ready(function() {
-                if (navigator.platform.indexOf("iPhone") != -1) {
-                    $scope.isProcessing = true;
-                    $http.get('test/AMC-Networks-CA.html')
-                    .success(function(data, status, headers, config) {
+            // angular.element(document).ready(function() {
+            //     if (navigator.platform.indexOf("iPhone") != -1) {
+            //         $scope.isProcessing = true;
+            //         $http.get('test/AMC-Networks-CA.html')
+            //         .success(function(data, status, headers, config) {
+            //             var boundary = (new Date()).getTime();
+            //             var bodyParts = new Array();
+            //             bodyParts.push(
+            //                   '--' + boundary,
+            //                   'Content-Disposition: form-data; name="files[]"; filename="random"',
+            //                   'Content-Type: text/html',
+            //                   '',
+            //                   data);
+            //             bodyParts.push('--' + boundary + '--');
+            //             var bodyString = bodyParts.join('\r\n');
+            //             $http.post('restServices/jsonAPI/upload', bodyString, {
+            //                 headers: {
+            //                     'Content-Type': 'multipart/form-data; boundary=' + boundary
+            //                 }
+            //             }).success(function(data) {
+            //                     $scope.targetHtml = data;
+            //                     $scope.isDocAvailable = true;
+            //                     $scope.isProcessing = false;
+            //                     $("#content").html(data);
+            //             });
 
-                        //create a multiple part request
-                        // I got help from here http://goo.gl/Z8WYlQ
-                        var boundary = (new Date()).getTime();
-                        var bodyParts = new Array();
-                        bodyParts.push(
-                              '--' + boundary,
-                              'Content-Disposition: form-data; name="files[]"; filename="random"',
-                              'Content-Type: text/html',
-                              '',
-                              data);
-                        bodyParts.push('--' + boundary + '--');
-                        var bodyString = bodyParts.join('\r\n');
-
-                        //post
-                        $http.post('restServices/jsonAPI/upload', bodyString, {
-                            headers: {
-                                'Content-Type': 'multipart/form-data; boundary=' + boundary
-                            }
-                        }).success(function(data) {
-                                $scope.targetHtml = data;
-                                $scope.isDocAvailable = true;
-                                $scope.isProcessing = false;
-                                $("#content").html(data);
-                        });
-
-                        // this callback will be called asynchronously
-                        // when the response is available
-                    })
-                }
-            });
+            //             // this callback will be called asynchronously
+            //             // when the response is available
+            //         })
+            //     }
+            // });
+    $scope.getDocumentIds();
 
         }]);
