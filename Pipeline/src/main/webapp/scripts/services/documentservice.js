@@ -98,11 +98,12 @@ angular.module('SkrollApp')
     this.rejectClassFromPara = function(classId, paraId) {
       //get a filtered list
       var terms = LHSModel.filterOutClassFromPara(classId, paraId);
-      this.updateTerms(terms).then(function(data) {
-        return data;
-      }, function(data, status) {
-        console.log(status);
-      });
+      return this.updateTerms(terms);
+      // this.updateTerms(terms).then(function(data) {
+      //   return data;
+      // }, function(data, status) {
+      //   console.log(status);
+      // });
     }
 
     /**
