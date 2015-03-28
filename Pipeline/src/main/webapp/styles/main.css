@@ -43,20 +43,33 @@ md-sidenav.md-locked-open {
 */
 sk-lhs .menu-list {
     background: #fff;
-    max-height: 1300px;
     overflow: hidden;
     position: relative;
     z-index: 1;
+    max-height:12100px;
     -webkit-transition: 0.75s cubic-bezier(0.35, 0, 0.25, 1);
     -webkit-transition-property: max-height;
     -moz-transition: 0.75s cubic-bezier(0.35, 0, 0.25, 1);
     -moz-transition-property: max-height;
     transition: 0.75s cubic-bezier(0.35, 0, 0.25, 1);
     transition-property: max-height;
+    margin: 0px;
     list-style: none;
     padding: 0;
 }
 
+
+.menu-list li {
+    list-style-position: inside;    
+}
+
+.menu-list  button.md-button {
+    font-size:16px;
+    padding: 5px 5px 5px 5px;
+    text-transform: none;
+}
+
+
 sk-lhs .menu-list.ng-hide {
-    max-height: 0;
+    max-height: 0px;
 }

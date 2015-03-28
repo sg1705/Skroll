@@ -6,7 +6,7 @@
 	</div>		
 	<ul ng-show="class.isSelected" class="menu-list">
 		<li ng-repeat="term in ctrl.smodel.terms | filter: {classificationId:class.id}">
-			<md-button scroll-to-paragraph="{{term.paragraphId}}">{{term.term}}</md-button>
+			<md-button class="md-button" scroll-to-paragraph="{{term.paragraphId}}">{{term.term}}</md-button>
 		</li>	
 	</ul>
 	<md-divider></md-divider>
