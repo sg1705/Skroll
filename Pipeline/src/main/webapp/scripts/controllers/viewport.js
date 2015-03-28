@@ -189,8 +189,12 @@ ViewPortCtrl.prototype.showYesNoAllDialog = function(prompt, matchedItem) {
   var items = ['Yes', 'No', 'Yes to all ' + className];
   this.showYesNoDialog(prompt, items).then(angular.bind(this, function(clicked) {
     if (clicked == 1) {
-      var contentHtml = this.documentService.rejectClassFromPara(matchedItem.classificationId, matchedItem.paragraphId);
-      this.updateDocument(contentHtml);
+      this.documentService.rejectClassFromPara(matchedItem.classificationId, matchedItem.paragraphId).
+      then(angular.bind(this, function(contentHtml){
+        this.updateDocument(contentHtml);  
+      }));
+      // var contentHtml = this.documentService.rejectClassFromPara(matchedItem.classificationId, matchedItem.paragraphId);
+      // this.updateDocument(contentHtml);
     }
     //answer is yes
     if (clicked == 0) {
@@ -198,10 +202,7 @@ ViewPortCtrl.prototype.showYesNoAllDialog = function(prompt, matchedItem) {
       this.updateDocument(contentHtml);
     }
   }));
-
 }
-
-
 
 /**
 * Shows a question bottom sheet
