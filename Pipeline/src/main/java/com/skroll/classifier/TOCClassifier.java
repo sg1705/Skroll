@@ -1,71 +1,52 @@
 package com.skroll.classifier;
 
-import com.google.gson.reflect.TypeToken;
-import com.skroll.analyzer.model.TOCModel;
+import com.skroll.analyzer.model.ProbabilityDocumentAnnotatingModel;
+import com.skroll.analyzer.model.RandomVariableType;
+import com.skroll.analyzer.model.TrainingDocumentAnnotatingModel;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
-import com.skroll.document.DocumentHelper;
 import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.ParserException;
-import com.skroll.parser.linker.DefinitionLinker;
 import com.skroll.util.ObjectPersistUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Type;
-import java.util.SortedMap;
+import java.util.*;
 
 /**
- * Created by saurabhagarwal on 1/18/15.
+ * TOC Classifier
+ * <p/>
+ * Created by saurabh on 3/27/2015
  */
-public class TOCClassifier extends ClassifierImpl{
+public class TOCClassifier extends ClassifierImpl {
 
-    public static final Logger logger = LoggerFactory
-            .getLogger(TOCClassifier.class);
+    public static final Logger logger = LoggerFactory.getLogger(TOCClassifier.class);
+    private TrainingDocumentAnnotatingModel trainingModel = null;
+    private Map<String, ProbabilityDocumentAnnotatingModel> bniMap = new HashMap<>();
+    private String modelName = "com.skroll.analyzer.model.TrainingDocumentAnnotatingModel.TOC";
 
-    private TOCModel definedTermExtractionModel = null;
-    private  Type dtemType = null;
-    private  String dtemModelName = "com.skroll.analyzer.model.TOCModel.TOCM";
-
-    public TOCClassifier(boolean createNewModel) {
-        // do not check for existing saved model. always creating new model for testing purpose
-        // todo: need to specify some option whether to create a new model or use existing model
-        dtemType = new TypeToken<TOCModel>() {}.getType();
-        if (definedTermExtractionModel==null) {
-            definedTermExtractionModel = new TOCModel();
-        }
-
-
-    }
 
     public TOCClassifier() {
-        // todo: need to specify some option whether to create a new model or use existing model
+        //read the model
         try {
-            dtemType = new TypeToken<TOCModel>() {}.getType();
-            definedTermExtractionModel = (TOCModel) objectPersistUtil.readObject(dtemType,dtemModelName);
-            logger.debug("definedTermExtractionModel:" + definedTermExtractionModel);
-
+            trainingModel = (TrainingDocumentAnnotatingModel) objectPersistUtil.readObject(null, modelName);
         } catch (Throwable e) {
-            logger.warn("definedTermExtractionModel is not found. creating new one" );
-            definedTermExtractionModel=null;
+            logger.warn("TrainingDocumentAnnotatingModel is not found. creating new one");
+            trainingModel = null;
         }
-        if (definedTermExtractionModel==null) {
-
-            definedTermExtractionModel = new TOCModel();
+        if (trainingModel == null) {
+            trainingModel = new TrainingDocumentAnnotatingModel();
         }
-
-
     }
+
     @Override
     public void persistModel() throws ObjectPersistUtil.ObjectPersistException {
-        objectPersistUtil.persistObject(dtemType,definedTermExtractionModel,dtemModelName);
-        logger.debug("persisted definedTermExtractionModel:" + definedTermExtractionModel);
+        objectPersistUtil.persistObject(null, trainingModel, modelName);
+        logger.debug("persisted definedTermExtractionModel:" + trainingModel);
     }
 
     @Override
     public void train(Document doc) {
-        definedTermExtractionModel.updateWithDocument(doc);
-        definedTermExtractionModel.compile();
+        trainingModel.updateWithDocument(doc);
 
     }
 
@@ -84,43 +65,71 @@ public class TOCClassifier extends ClassifierImpl{
     @Override
     public Object classify(String documentId, Document document) throws Exception {
 
-        logger.debug("definitions before annotate");
+        RandomVariableType wordType = RandomVariableType.WORD_IS_TOC_TERM;
+        RandomVariableType paraType = RandomVariableType.PARAGRAPH_HAS_TOC;
 
-        for (CoreMap para: DocumentHelper.getDefinitionParagraphs(document)){
-            logger.debug(para.getText());
-            logger.debug(DocumentHelper.getDefinedTermTokensInParagraph(para).toString());
-        }
+        List<RandomVariableType> wordFeatures = Arrays.asList(
+                RandomVariableType.WORD_IN_QUOTES,
+                RandomVariableType.WORD_INDEX,
+                RandomVariableType.WORD_IS_BOLD,
+                RandomVariableType.WORD_IS_UNDERLINED,
+                RandomVariableType.WORD_IS_ITALIC);
 
-        definedTermExtractionModel.annotateDefinedTermsInDocument(document);
+        List<RandomVariableType> paraFeatures = Arrays.asList(
+                RandomVariableType.PARAGRAPH_NUMBER_TOKENS,
+                RandomVariableType.PARAGRAPH_ALL_WORDS_UPPERCASE,
+                RandomVariableType.PARAGRAPH_IS_CENTER_ALIGNED,
+                RandomVariableType.PARAGRAPH_HAS_ANCHOR);
 
-        logger.debug("definitions after annotate");
-        for (CoreMap para:DocumentHelper.getDefinitionParagraphs(document)){
-            logger.debug(para.getText());
-            logger.debug(DocumentHelper.getDefinedTermTokensInParagraph(para).toString());
-        }
-        logger.debug("Document Size:" + DocumentHelper.getDefinitionParagraphs(document).size());
+        List<RandomVariableType> paraDocFeatures = Arrays.asList(
+                RandomVariableType.PARAGRAPH_NUMBER_TOKENS,
+                RandomVariableType.PARAGRAPH_ALL_WORDS_UPPERCASE,
+                RandomVariableType.PARAGRAPH_IS_CENTER_ALIGNED,
+                RandomVariableType.PARAGRAPH_HAS_ANCHOR);
 
-        DefinitionLinker linker = new DefinitionLinker();
-        document = linker.linkDefinition(document);
+        List<RandomVariableType> docFeatures = Arrays.asList(
+                RandomVariableType.DOCUMENT_TOC_HAS_ANCHOR,
+                RandomVariableType.DOCUMENT_TOC_IS_CENTER_ALIGNED,
+                RandomVariableType. DOCUMENT_TOC_HAS_WORDS_UPPERCASE);
+
+        ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(trainingModel.getTnbfModel(),
+                trainingModel.getHmm(), document, wordType, wordFeatures, paraType, paraFeatures, paraDocFeatures, docFeatures
+        );
+
+        bniMap.put(documentId, bniModel);
+        bniModel.annotateDocument();
+
         return document;
     }
+
+    @Override
+    public Object updateBNI(String documentId, Document document, List<CoreMap> observedParas) throws Exception {
+
+        if (documentId == null || bniMap.get(documentId) == null) {
+            logger.error("Document Id is NULL or BNI is return null");
+            throw new Exception("Failed to updateBNI. check documentId : " + documentId);
+        }
+        bniMap.get(documentId).updateBeliefWithObservation(observedParas);
+        bniMap.get(documentId).annotateDocument();
+
+        return document;
+    }
+
 
     @Override
     public SortedMap<Category, Double> classifyDetailed(Document doc, int numOfTokens) {
         return null;
     }
 
-
-
     @Override
     public Object classify(Document document, int numOfTokens) throws Exception {
         return classify("documentId", document);
     }
+
     @Override
     public Object classify(String fileName, int numOfLines) throws Exception {
         Document document = Parser.parseDocumentFromHtmlFile(fileName);
         return classify("documentId", document);
     }
-
 
 }

@@ -199,7 +199,7 @@ public class TOCTrainer {
     }
 
     public static void  trainWithOverride(String folderName) throws IOException, ObjectPersistUtil.ObjectPersistException {
-            TOCClassifier documentClassifier = new TOCClassifier(true); // passing the flag to always create new model for testing purpose
+            TOCClassifier documentClassifier = new TOCClassifier(); // passing the flag to always create new model for testing purpose
             FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(folderName));
             for (File f : iterable) {
                 if (f.isFile()) {
