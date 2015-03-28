@@ -183,6 +183,23 @@ public class DocumentAnnotatingHelper {
                 return booleanToInt(tokens.get(0).get(CoreAnnotations.IsItalicAnnotation.class ));
             case PARAGRAPH_INDEX:  return paragraph.get(CoreAnnotations.IndexInteger.class );
 
+            case PARAGRAPH_WORDS_STARTS_WITH_UPPERCASE_COUNT:
+                int tokenSize = paragraph.get(CoreAnnotations.TokenAnnotation.class).size();
+                if (tokenSize != 0) {
+                    float fraction =  paragraph.get(CoreAnnotations.StartsWithUpperCaseCountInteger.class) / tokenSize;
+                    if (fraction > 0.7)
+                        return 1;
+                }
+                return 0;
+            case PARAGRAPH_ALL_WORDS_UPPERCASE:
+                return booleanToInt(paragraph.get(CoreAnnotations.IsItalicAnnotation.class));
+            case PARAGRAPH_IS_CENTER_ALIGNED:
+                return booleanToInt(paragraph.get(CoreAnnotations.IsCenterAlignedAnnotation.class ));
+            case PARAGRAPH_HAS_ANCHOR:
+                return booleanToInt(paragraph.get(CoreAnnotations.IsAnchorAnnotation.class ));
+            case PARAGRAPH_HAS_TOC:
+                return booleanToInt(paragraph.get(CoreAnnotations.IsTOCAnnotation.class));
+
         }
         return -1;
     }
@@ -228,6 +245,9 @@ public class DocumentAnnotatingHelper {
 //                        booleanToInt(word.get(CoreAnnotations.IsBoldAnnotation.class ))|
 //                        booleanToInt(word.get(CoreAnnotations.IsItalicAnnotation.class ));
             case WORD_INDEX:  return word.get(CoreAnnotations.IndexInteger.class );
+
+            case WORD_IS_TOC_TERM:
+                return booleanToInt(word.get(CoreAnnotations.IsTOCAnnotation.class));
         }
         return -1;
     }
