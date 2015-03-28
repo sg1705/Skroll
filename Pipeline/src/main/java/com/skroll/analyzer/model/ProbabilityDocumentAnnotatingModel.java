@@ -119,7 +119,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
         paragraphCategoryBelief = new double[numParagraphs][2];
         documentFeatureBelief = new double[docFeatures.size()][2];
 
-        // compute initial believes
+        // compute initial beliefs
         LogProbabilityDiscreteNode[] documentFeatureNodeArray =
                 (LogProbabilityDiscreteNode[]) lpnbfModel.getDocumentFeatureNodeArray();
 
@@ -129,6 +129,15 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
         LogProbabilityDiscreteNode[] fna = (LogProbabilityDiscreteNode[]) lpnbfModel.getFeatureNodeArray();
         LogProbabilityDiscreteNode categoryNode = (LogProbabilityDiscreteNode)lpnbfModel.getCategoryNode();
         for (int p=0; p<paragraphs.size(); p++){
+            if (DocumentAnnotatingHelper.isParaObserved(paragraphs.get(p))) {
+                int observedVal = DocumentAnnotatingHelper.getParagraphFeature(paragraphs.get(p), paraCategory);
+
+                for (int i=0; i<paraCategory.getFeatureSize(); i++){
+                    if (i==observedVal) paragraphCategoryBelief[p][i] = 0;
+                    else paragraphCategoryBelief[p][i] = Double.NEGATIVE_INFINITY;
+                }
+                continue;
+            }
             SimpleDataTuple tuple = DocumentAnnotatingHelper.makeDataTupleWithOnlyFeaturesObserved(
                     paragraphs.get(p), allParagraphFeatures, docFeatures.size());
             lpnbfModel.setObservation(tuple);
@@ -233,7 +242,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
         for (int p=0; p<numParagraphs; p++){
             CoreMap paragraph = paragraphList.get(p);
-            DocumentAnnotatingHelper.clearParagraphCateoryAnnotation(paragraph);
+            DocumentAnnotatingHelper.clearParagraphCateoryAnnotation(paragraph, paraCategory);
             if (paragraph.getTokens().size() == 0)
                 continue;
             CoreMap processedPara = processedParagraphs.get(p);

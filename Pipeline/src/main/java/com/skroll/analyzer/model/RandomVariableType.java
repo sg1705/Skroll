@@ -11,9 +11,10 @@ package com.skroll.analyzer.model;
 public enum RandomVariableType {
     DOCUMENT_DEFINITIONS_IS_UNDERLINED(2),
     DOCUMENT_DEFINITIONS_IN_QUOTES(2),
+    DOCUMENT_DEFINITIONS_IS_BOLD(2),
     PARAGRAPH_HAS_DEFINITION(2, new String[]{"no","yes"}),
     PARAGRAPH_HAS_TOC(2, new String[]{"no","yes"}),
-    PARAGRAPH_IS_TOC(2, new String[]{"no","yes"}),
+    //PARAGRAPH_IS_TOC(2, new String[]{"no","yes"}),
     PARAGRAPH_STARTS_WITH_QUOTE(2),
     PARAGRAPH_STARTS_WITH_BOLD(2),
     PARAGRAPH_STARTS_WITH_UNDERLINE(2),
