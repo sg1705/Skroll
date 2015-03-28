@@ -99,11 +99,6 @@ angular.module('SkrollApp')
       //get a filtered list
       var terms = LHSModel.filterOutClassFromPara(classId, paraId);
       return this.updateTerms(terms);
-      // this.updateTerms(terms).then(function(data) {
-      //   return data;
-      // }, function(data, status) {
-      //   console.log(status);
-      // });
     }
 
     /**
@@ -128,8 +123,7 @@ angular.module('SkrollApp')
       if (terms == null)
         terms = [];
       terms.push(item);
-      this.updateTerms(terms).then(function(data) {
-        return data;
+      return this.updateTerms(terms).then(function(data) {
       }, function(data, status) {
         console.log(status);
       });

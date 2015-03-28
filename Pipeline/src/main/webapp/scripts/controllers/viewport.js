@@ -120,8 +120,11 @@ ViewPortCtrl.prototype.handleTrainerTextSelection = function(paraId,
     console.log(matchedItem);
     this.showYesNoDialog(prompt, items).then(angular.bind(this, function(clicked) {
       matchedItem.classificationId = clicked;
-      var contentHtml = this.documentService.addTermToPara(matchedItem);
-      this.updateDocument(contentHtml);
+
+      this.documentService.addTermToPara(matchedItem).
+      then(angular.bind(this, function(contentHtml){
+        this.updateDocument(contentHtml);  
+      }));
     }));
 
   } else {
@@ -200,8 +203,6 @@ ViewPortCtrl.prototype.showYesNoAllDialog = function(prompt, matchedItem) {
       then(angular.bind(this, function(contentHtml){
         this.updateDocument(contentHtml);  
       }));
-      // var contentHtml = this.documentService.approveClassForPara(matchedItem.classificationId, matchedItem.paragraphId);
-      // this.updateDocument(contentHtml);
     }
   }));
 }
