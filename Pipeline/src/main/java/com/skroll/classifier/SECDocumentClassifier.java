@@ -197,4 +197,6 @@ public class SECDocumentClassifier extends ClassifierImpl {
         }
         return new ArrayList<String>(words);
     }
+
+
 }

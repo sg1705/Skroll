@@ -5,6 +5,7 @@ import com.skroll.document.Document;
 import com.skroll.parser.extractor.ParserException;
 import com.skroll.util.ObjectPersistUtil;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.SortedMap;
 
@@ -39,4 +40,6 @@ public interface Classifier {
     public SortedMap<Category,Double> classifyDetailed(Document doc, int numOfTokens);
 
     public Object updateBNI(String documentId, Document document, List<CoreMap> observedParas) throws Exception;
+
+    public HashMap<String, HashMap<String, Double>> getVisualMap(String docId, int paraIndex);
 }
