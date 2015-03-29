@@ -242,6 +242,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
         for (int p=0; p<numParagraphs; p++){
             CoreMap paragraph = paragraphList.get(p);
+            if (DocumentAnnotatingHelper.isParaObserved(paragraph)) continue; // skip observed paragraphs
             DocumentAnnotatingHelper.clearParagraphCateoryAnnotation(paragraph, paraCategory);
             if (paragraph.getTokens().size() == 0)
                 continue;
