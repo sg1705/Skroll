@@ -16,7 +16,12 @@ public class Visualizer {
 
         for(int ii = 0; ii < data.length; ii++) {
             String index = ""+ii;
-            map.put(index, data[ii]);
+            if (Double.isNaN(data[ii]) || (Double.isInfinite(data[ii]))) {
+                map.put(index, 123456789.0);
+            } else {
+                map.put(index, data[ii]);
+            }
+
         }
         return map;
     }

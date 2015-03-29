@@ -328,7 +328,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
     public HashMap<String, HashMap<String, Double>> toVisualMap(int paraIndex) {
        //covert paraCategoryBelief
         HashMap<String, HashMap<String, Double>> map = new HashMap();
-        map.put("paragraphClass", Visualizer.toDoubleArrayToMap(paragraphCategoryBelief[paraIndex]));
+        map.put(this.paraCategory.name(), Visualizer.toDoubleArrayToMap(paragraphCategoryBelief[paraIndex]));
         for(int ii = 0; ii < documentFeatureBelief.length; ii++) {
             map.put(this.docFeatures.get(ii).name(), Visualizer.toDoubleArrayToMap(documentFeatureBelief[ii]));
         }
