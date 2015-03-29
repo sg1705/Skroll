@@ -147,18 +147,7 @@ ViewPortCtrl.prototype.handleTrainerParaSelection = function(paraId) {
     return ((obj.paragraphId == paraId) && (obj.term));
   });
 
-  if (matchedItem == null) {
-    //class question when no match is found
-    prompt = 'Please choose the class for this paragraph';
-    //fetch classes
-    var items = LHSModel.getClassNames();
-    this.showYesNoDialog(prompt, items).then(function(clickedItem) {
-      //resolve answer to a class
-      var resolvedClass = LHSModel.getClassFromId(clickedItem);
-      console.log(clickedItem);
-    });
-
-  } else {
+  if (matchedItem != null) {
     //yes-no question because there is a term match
     var className = LHSModel.getClassFromId(matchedItem.classificationId).name;
     prompt = s.sprintf(text, className);
