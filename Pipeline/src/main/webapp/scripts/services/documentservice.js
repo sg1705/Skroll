@@ -166,6 +166,20 @@ angular.module('SkrollApp')
       return deferred.promise;
     };
 
+    /**
+     * Update model
+     */
+    this.updateModel = function() {
+      /** make a get request */
+      $http.get(documentServiceBase + 'updateModel')
+        .success(function(data, status) {
+          console.log("Updated model:");
+          console.log(data);
+        })
+        .error(function(data, status) {
+          console.log(status);
+        });;
+    };
 
 
   });
