@@ -16,9 +16,9 @@ import java.util.List;
 //todo: prior count is not set properly, making the probability favoring positive class.
 public class ProbabilityDocumentAnnotatingModelTest {
 
-//    String testingFileName = "src/test/resources/classifier/smaller-indenture.html";
+    String testingFileName = "src/test/resources/classifier/smaller-indenture.html";
 //    String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
-    String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/AMD CA - Def No Quotes.html";
+    //String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/AMD CA - Def No Quotes.html";
 
 
 

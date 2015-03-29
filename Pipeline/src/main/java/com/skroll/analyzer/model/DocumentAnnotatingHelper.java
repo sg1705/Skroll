@@ -8,6 +8,7 @@ import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotation;
 import com.skroll.document.annotation.CoreAnnotations;
+import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
 import com.skroll.util.WordHelper;
 
 import java.util.*;
@@ -138,6 +139,19 @@ public class DocumentAnnotatingHelper {
     static String[] getNBWords(CoreMap paragraph){
         Set<String> wordSet = paragraph.get(CoreAnnotations.WordSetForTrainingAnnotation.class);
         return wordSet.toArray(new String[wordSet.size()]);
+    }
+
+    static void setParagraphTermAnnotation(CoreMap paragraph, RandomVariableType paraType, List<Token> terms){
+        if (paragraph==null) return;
+        switch (paraType) {
+            case PARAGRAPH_HAS_DEFINITION:
+                DocumentHelper.addDefinedTermTokensInParagraph(terms, paragraph);
+                return;
+            case PARAGRAPH_HAS_TOC:
+                DocumentHelper.addTOCsInParagraph(terms, paragraph);
+                return;
+        }
+        return;
     }
 
     static void setParagraphFeature(CoreMap paragraph, RandomVariableType feature, int value){
