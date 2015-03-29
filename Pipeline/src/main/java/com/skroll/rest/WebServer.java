@@ -98,17 +98,13 @@ public class WebServer {
 
     private URI getWebRootResourceUri() throws FileNotFoundException, URISyntaxException
     {
-        //File indexUri = new File (System.getProperty("user.dir") + "/Pipeline/src/main/webapp");
-
-        URL indexUri = this.getClass().getResource(WEBROOT_INDEX);
-
+        URI indexUri = new File("build/inplaceWebapp").toURI();
         if (indexUri == null)
         {
             throw new FileNotFoundException("Unable to find resource " + WEBROOT_INDEX);
         }
-        // Points to wherever /webroot/ (the resource) is
-        LOG.info("indexUri:" +indexUri.toURI());
-        return indexUri.toURI();
+        LOG.info("indexUri:" +indexUri);
+        return indexUri;
     }
 
     /**
@@ -152,13 +148,13 @@ public class WebServer {
         context.addServlet(defaultServletHolder(baseUri), "/");
 
 
-        ServletHolder jerseyServlet = context.addServlet(
-                org.glassfish.jersey.servlet.ServletContainer.class, "/restServices/*");
-        jerseyServlet.setInitOrder(0);
-
-        jerseyServlet.setInitParameter(
-                "javax.ws.rs.Application",
-                MultiPartApplication.class.getCanonicalName());
+//        ServletHolder jerseyServlet = context.addServlet(
+//                org.glassfish.jersey.servlet.ServletContainer.class, "/restServices/*");
+//        jerseyServlet.setInitOrder(0);
+//
+//        jerseyServlet.setInitParameter(
+//                "javax.ws.rs.Application",
+//                MultiPartApplication.class.getCanonicalName());
 
         return context;
     }
