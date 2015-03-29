@@ -276,20 +276,20 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
             // can do this check after naive bayes to make it faster.
             if (states[0]==0) continue;
 
-            List<Token> definedTerms = new ArrayList<>();
+            List<Token> terms = new ArrayList<>();
 
             for (int i=0; i<states.length;i++){
-                if (states[i]==1) definedTerms.add(tokens.get(i));
+                if (states[i]==1) terms.add(tokens.get(i));
                 else {
-                    if (definedTerms.size()>0){
-                        DocumentHelper.addDefinedTermTokensInParagraph(definedTerms, paragraph);
-                        definedTerms = new ArrayList<>();
+                    if (terms.size()>0){
+                        DocumentAnnotatingHelper.setParagraphTermAnnotation(paragraph, paraCategory, terms);
+                        terms = new ArrayList<>();
                     }
 
                 }
             }
-            if (definedTerms.size()>0){
-                DocumentHelper.addDefinedTermTokensInParagraph(definedTerms, paragraph);
+            if (terms.size()>0){
+                DocumentAnnotatingHelper.setParagraphTermAnnotation(paragraph, paraCategory, terms);
             }
         }
 

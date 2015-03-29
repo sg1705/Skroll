@@ -11,6 +11,7 @@ import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
+import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -86,14 +87,15 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
         String[] words = dataTuple.getWords();
         int[] values = dataTuple.getDiscreteValues();
         int numCategories = paraCategory.getFeatureSize();
-        Float[] oldWeights = paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class).toArray(new Float[numCategories]);
-        Float[] newWeights = paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class).toArray(new Float[numCategories]);
+        double[][] weights = TrainingWeightAnnotationHelper.getParagraphWeight(paragraph, paraCategory);
+        double[] oldWeights =weights[0];
+        double[] newWeights = weights[1];
         double[] normalizedOldWeights = BNInference.normalize(oldWeights, 1);
-        double[] normalizedNewWeights = BNInference.normalize(oldWeights,1);
+        double[] normalizedNewWeights = BNInference.normalize(newWeights,1);
 
         for (int i = 0; i < numCategories; i++) {
             values[0] = i;
-            tnbfModel.addSample(dataTuple, normalizedNewWeights[i]-normalizedNewWeights[i]);
+            tnbfModel.addSample(dataTuple, normalizedNewWeights[i]-normalizedOldWeights[i]);
         }
     }
     //todo: this method should be changed. Definitions should be annotated with good training data.
