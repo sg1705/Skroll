@@ -432,7 +432,7 @@ public class API {
         tocClassifier.train(doc);
         logger.debug("train the model using document is stored in {}", preEvaluatedFolder + documentId);
 
-        return Response.ok().status(Response.Status.OK).entity("ok").type(MediaType.APPLICATION_JSON).build();
+        return Response.ok().status(Response.Status.OK).entity("").type(MediaType.APPLICATION_JSON).build();
     }
 
 
