@@ -23,12 +23,11 @@ public abstract class DocumentAnnotatingModel {
     public static final RandomVariableType DEFAULT_WORD_TYPE = RandomVariableType.WORD_IS_DEFINED_TERM;
 
     public static final List<RandomVariableType> DEFAULT_DOCUMENT_FEATURES = Arrays.asList(
-            RandomVariableType.DOCUMENT_DEFINITIONS_IN_QUOTES
-//            RandomVariableType.PARAGRAPH_STARTS_WITH_SPECIAL_FORMAT,
-//            RandomVariableType.PARAGRAPH_STARTS_WITH_BOLD,
-//            RandomVariableType.PARAGRAPH_STARTS_WITH_UNDERLINE,
-//            RandomVariableType.PARAGRAPH_STARTS_WITH_UNDERLINE,
-//            RandomVariableType.DOCUMENT_DEFINITIONS_IS_UNDERLINED
+            RandomVariableType.DOCUMENT_DEFINITIONS_IS_UNDERLINED,
+            RandomVariableType.DOCUMENT_DEFINITIONS_IS_BOLD
+
+            ,            RandomVariableType.DOCUMENT_DEFINITIONS_IN_QUOTES
+
     );
 
     // paragraph features not exist at doc level
@@ -43,10 +42,13 @@ public abstract class DocumentAnnotatingModel {
 //            RandomVariableType.PARAGRAPH_NUMBER_TOKENS);
 
     public static final List<RandomVariableType> DEFAULT_PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL = Arrays.asList(
-            RandomVariableType.PARAGRAPH_STARTS_WITH_QUOTE
 //            RandomVariableType.PARAGRAPH_STARTS_WITH_SPECIAL_FORMAT,
-//            RandomVariableType.PARAGRAPH_STARTS_WITH_BOLD,
-//            RandomVariableType.PARAGRAPH_STARTS_WITH_UNDERLINE,
+//            ,
+            RandomVariableType.PARAGRAPH_STARTS_WITH_UNDERLINE,
+            RandomVariableType.PARAGRAPH_STARTS_WITH_BOLD,
+
+            RandomVariableType.PARAGRAPH_STARTS_WITH_QUOTE
+
     );
     //todo: if needed, can add a feature to indicated if a word is used as camel case in the document.
     public static final List<RandomVariableType> DEFAULT_WORD_FEATURES = Arrays.asList(

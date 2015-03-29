@@ -6,6 +6,7 @@ import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
+import com.skroll.document.annotation.CoreAnnotation;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.util.WordHelper;
 
@@ -152,7 +153,7 @@ public class DocumentAnnotatingHelper {
 
     static boolean isParaObserved(CoreMap para){
         Boolean isObserved = para.get(CoreAnnotations.IsUserObservationAnnotation.class);
-        if (isObserved==null) return false;
+        if (isObserved==null) isObserved = false;
         return  isObserved;
     }
 
