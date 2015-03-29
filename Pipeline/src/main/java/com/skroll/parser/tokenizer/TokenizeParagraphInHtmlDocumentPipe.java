@@ -47,6 +47,13 @@ public class TokenizeParagraphInHtmlDocumentPipe extends SyncPipe<Document, Docu
             boolean isParaUnderline = true;
             //count tokens that starts with upper case
             int startsWithUppercaseCount = 0;
+            //count tokens for first N
+//            int countFirstNBold;
+//            int countFirstNItalic;
+//            int countFirstNUnderline;
+//            int countFirstNUppercase;
+//            boolean isColonInFirstN;
+
             //iterate over each fragment
             for(CoreMap fragment : fragments ) {
                 //get text of fragment
