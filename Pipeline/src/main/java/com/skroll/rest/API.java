@@ -33,6 +33,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -482,15 +483,30 @@ public class API {
             return Response.status(Response.Status.NOT_FOUND).entity("Failed to find the document in Map" ).type(MediaType.TEXT_PLAIN).build();
         }
 
+        Gson gson = new GsonBuilder().create();
+        StringBuffer buf = new StringBuffer();
+        buf.append("[");
+        int paraIndex = 0;
         for (CoreMap paragraph : doc.getParagraphs()) {
             if (paragraph.getId().equals(paragraphId)) {
                 //found it
-                Gson gson = new GsonBuilder().create();
+
                 String json = gson.toJson(paragraph);
-                return Response.ok().status(Response.Status.OK).entity(json).build();
+                buf.append(json).append(",");
+                break;
+                //return Response.ok().status(Response.Status.OK).entity(json).build();
             }
+            paraIndex++;
         }
-        return Response.ok().status(Response.Status.OK).entity("").build();
+
+        // get the json from BNI
+        logger.debug("ParaIndex: " + paraIndex);
+        HashMap<String, HashMap<String, Double>> map = definitionClassifier.getVisualMap(documentId, paraIndex);
+        String probabilityJson = gson.toJson(map);
+        logger.debug(probabilityJson);
+        buf.append(probabilityJson);
+        buf.append("]");
+        return Response.ok().status(Response.Status.OK).entity(buf.toString()).build();
     }
 
 
