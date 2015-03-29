@@ -47,6 +47,12 @@ public class DocumentHelper {
         return false;
     }
 
+    public static boolean isTOC(CoreMap coreMap) {
+        if (coreMap.containsKey(CoreAnnotations.IsTOCAnnotation.class)) {
+            return coreMap.get(CoreAnnotations.IsTOCAnnotation.class);
+        }
+        return false;
+    }
     public static boolean startsWithQuote(CoreMap coreMap) {
         if (coreMap.containsKey(CoreAnnotations.StartsWithQuote.class)) {
             return coreMap.get(CoreAnnotations.StartsWithQuote.class);
@@ -148,4 +154,11 @@ public class DocumentHelper {
         return definitionParagraphs;
     }
 
+    public static List<CoreMap> getTOCParagraphs(Document doc){
+        List<CoreMap> tocParagraphs= new ArrayList<>();
+        for (CoreMap paragraph: doc.getParagraphs()){
+            if (isTOC(paragraph)) tocParagraphs.add(paragraph);
+        }
+        return tocParagraphs;
+    }
 }

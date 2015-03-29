@@ -7,10 +7,7 @@ import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.util.Configuration;
 import com.skroll.util.ObjectPersistUtil;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by saurabhagarwal on 1/18/15.
@@ -41,4 +38,9 @@ public abstract class ClassifierImpl implements Classifier {
     public Object classify(String documentId, Document doc) throws Exception{
         return null;
     }
+
+    public HashMap<String, HashMap<String, Double>> getVisualMap(String documentId, int paraIndex) {
+        return null;
+    }
+
 }

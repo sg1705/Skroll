@@ -267,7 +267,7 @@ public class APITest {
         Document doc = createDoc();
         API.documentMap.put(documentId, doc);
         testGetTerms(documentId);
-        //testRemoveTerms(documentId);
+        testRemoveTerms(documentId);
         String responseString = testGetTerms(documentId);
         assert(!responseString.contains("jack susan"));
     }

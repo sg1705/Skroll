@@ -33,6 +33,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -151,6 +152,13 @@ public class API {
         logger.info("getDoc- DocumentId:" + documentId.toString());
 
         Document doc = documentMap.get(documentId);
+        try {
+            doc = (Document) definitionClassifier.classify(documentId, doc);
+            doc = (Document) tocClassifier.classify(documentId, doc);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         String jsonString = null;
         if (doc==null) {
             logger.debug("Not found in documentMap, fetching from corpus:" + documentId.toString());
@@ -236,9 +244,11 @@ public class API {
             if (paragraph.containsKey(CoreAnnotations.IsTOCAnnotation.class)) {
                 List<String> tocList = DocumentHelper.getTOCLists(
                         paragraph);
-                    logger.debug(paragraph.getId() + "\t" + "TOC" + "\t" + tocList);
                     if (!tocList.isEmpty()) {
-                        definedTermParagraphList.add(new Paragraph(paragraph.getId(), Joiner.on(" ").join(tocList), Paragraph.TOC_CLASSIFICATION));
+                        if(!(Joiner.on(" ").join(tocList).equals(""))) {
+                            logger.debug(paragraph.getId() + "\t" + "TOC" + "\t" + tocList);
+                            definedTermParagraphList.add(new Paragraph(paragraph.getId(), Joiner.on(" ").join(tocList), Paragraph.TOC_CLASSIFICATION));
+                        }
                     }
             }
         }
@@ -355,6 +365,9 @@ public class API {
                                 }
 
                             }
+                            // Add the userObserved paragraphs
+                            parasForUpdateBNI.add(paragraph);
+                            logger.debug("userObserved paragraphs for TOC:"+ "\t" + paragraph.getId());
                             // log the userObserved TOC
                             if (paragraph.containsKey(CoreAnnotations.IsTOCAnnotation.class)) {
                                 logger.debug(paragraph.getId() + "\t" + "updated TOCs:" + "\t" + DocumentHelper.getTOCLists(paragraph));
@@ -369,9 +382,11 @@ public class API {
         // persist the document using document id. Let's use the file name
         try {
             logger.debug("Number of Definition Paragraph before update BNI: {}",DocumentHelper.getDefinitionParagraphs(doc).size());
+            logger.debug("Number of TOCs Paragraph before update BNI: {}",DocumentHelper.getTOCParagraphs(doc).size());
             doc = (Document) definitionClassifier.updateBNI(documentId,doc,parasForUpdateBNI);
             doc = (Document) tocClassifier.updateBNI(documentId,doc,parasForUpdateBNI);
             logger.debug("Number of Definition Paragraph After update BNI: {}",DocumentHelper.getDefinitionParagraphs(doc).size());
+            logger.debug("Number of TOCs Paragraph after update BNI: {}",DocumentHelper.getTOCParagraphs(doc).size());
         } catch (Exception e) {
             logger.error("Failed to update updateBNI, using existing document : {}", e);
         }
@@ -482,15 +497,35 @@ public class API {
             return Response.status(Response.Status.NOT_FOUND).entity("Failed to find the document in Map" ).type(MediaType.TEXT_PLAIN).build();
         }
 
+        Gson gson = new GsonBuilder().create();
+        StringBuffer buf = new StringBuffer();
+        String annotationJson = "";
+        String probabilityJson;
+        buf.append("[");
+        int paraIndex = 0;
         for (CoreMap paragraph : doc.getParagraphs()) {
             if (paragraph.getId().equals(paragraphId)) {
                 //found it
-                Gson gson = new GsonBuilder().create();
-                String json = gson.toJson(paragraph);
-                return Response.ok().status(Response.Status.OK).entity(json).build();
+                annotationJson = gson.toJson(paragraph);
+                break;
             }
+            paraIndex++;
         }
-        return Response.ok().status(Response.Status.OK).entity("").build();
+
+        // get the json from BNI
+        logger.debug("ParaIndex: " + paraIndex);
+        HashMap<String, HashMap<String, Double>> map = definitionClassifier.getVisualMap(documentId, paraIndex);
+        probabilityJson = gson.toJson(map);
+        buf.append(probabilityJson);
+        buf.append(",");
+        map = tocClassifier.getVisualMap(documentId, paraIndex);
+        probabilityJson = gson.toJson(map);
+        buf.append(probabilityJson);
+        buf.append(",");
+        buf.append(annotationJson);
+        buf.append("]");
+
+        return Response.ok().status(Response.Status.OK).entity(buf.toString()).build();
     }
 
 
