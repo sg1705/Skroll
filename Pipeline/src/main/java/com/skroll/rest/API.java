@@ -152,6 +152,13 @@ public class API {
         logger.info("getDoc- DocumentId:" + documentId.toString());
 
         Document doc = documentMap.get(documentId);
+        try {
+            doc = (Document) definitionClassifier.classify(documentId, doc);
+            doc = (Document) tocClassifier.classify(documentId, doc);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         String jsonString = null;
         if (doc==null) {
             logger.debug("Not found in documentMap, fetching from corpus:" + documentId.toString());
@@ -237,9 +244,11 @@ public class API {
             if (paragraph.containsKey(CoreAnnotations.IsTOCAnnotation.class)) {
                 List<String> tocList = DocumentHelper.getTOCLists(
                         paragraph);
-                    logger.debug(paragraph.getId() + "\t" + "TOC" + "\t" + tocList);
                     if (!tocList.isEmpty()) {
-                        definedTermParagraphList.add(new Paragraph(paragraph.getId(), Joiner.on(" ").join(tocList), Paragraph.TOC_CLASSIFICATION));
+                        if(!(Joiner.on(" ").join(tocList).equals(""))) {
+                            logger.debug(paragraph.getId() + "\t" + "TOC" + "\t" + tocList);
+                            definedTermParagraphList.add(new Paragraph(paragraph.getId(), Joiner.on(" ").join(tocList), Paragraph.TOC_CLASSIFICATION));
+                        }
                     }
             }
         }
@@ -356,6 +365,9 @@ public class API {
                                 }
 
                             }
+                            // Add the userObserved paragraphs
+                            parasForUpdateBNI.add(paragraph);
+                            logger.debug("userObserved paragraphs for TOC:"+ "\t" + paragraph.getId());
                             // log the userObserved TOC
                             if (paragraph.containsKey(CoreAnnotations.IsTOCAnnotation.class)) {
                                 logger.debug(paragraph.getId() + "\t" + "updated TOCs:" + "\t" + DocumentHelper.getTOCLists(paragraph));
@@ -370,9 +382,11 @@ public class API {
         // persist the document using document id. Let's use the file name
         try {
             logger.debug("Number of Definition Paragraph before update BNI: {}",DocumentHelper.getDefinitionParagraphs(doc).size());
+            logger.debug("Number of TOCs Paragraph before update BNI: {}",DocumentHelper.getTOCParagraphs(doc).size());
             doc = (Document) definitionClassifier.updateBNI(documentId,doc,parasForUpdateBNI);
             doc = (Document) tocClassifier.updateBNI(documentId,doc,parasForUpdateBNI);
             logger.debug("Number of Definition Paragraph After update BNI: {}",DocumentHelper.getDefinitionParagraphs(doc).size());
+            logger.debug("Number of TOCs Paragraph after update BNI: {}",DocumentHelper.getTOCParagraphs(doc).size());
         } catch (Exception e) {
             logger.error("Failed to update updateBNI, using existing document : {}", e);
         }
