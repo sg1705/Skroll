@@ -310,7 +310,7 @@ public class API {
                         paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
                         //TODO: currently assuming that the trainer is always active
                         paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
-                        TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, TrainingWeightAnnotationHelper.DEFINITION, userWeight);
+                        //TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, TrainingWeightAnnotationHelper.DEFINITION, userWeight);
                         // log the existing definitions
                         if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
                             List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(paragraph);
@@ -326,6 +326,7 @@ public class API {
                         }
 
                         if (modifiedParagraph.getClassificationId() == Paragraph.DEFINITION_CLASSIFICATION) {
+                            TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, TrainingWeightAnnotationHelper.DEFINITION, userWeight);
 
                             //remove any existing annotations - definedTermList
                             paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class, null);
@@ -352,6 +353,8 @@ public class API {
 
                         }
                         if (modifiedParagraph.getClassificationId() == Paragraph.TOC_CLASSIFICATION) {
+                            TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, TrainingWeightAnnotationHelper.TOC, userWeight);
+
                             //remove any existing annotations - TOCList
                             paragraph.set(CoreAnnotations.TOCTokensAnnotation.class, null);
                             paragraph.set(CoreAnnotations.IsTOCAnnotation.class, false);
