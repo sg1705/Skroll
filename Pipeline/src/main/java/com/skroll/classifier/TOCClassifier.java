@@ -101,12 +101,19 @@ public class TOCClassifier extends ClassifierImpl {
                 trainingModel.getHmm(), document, wordType, wordFeatures, paraType, paraFeatures, paraDocFeatures, docFeatures
         );
 
-        logger.debug("TOC before annotate {}", DocumentHelper.getTOCLists(document));
-
+        logger.debug("TOC before annotate :");
+        for (CoreMap para: DocumentHelper.getTOCParagraphs(document)){
+            logger.debug(para.getId() +"\t" +DocumentHelper.getTOCLists(para).toString());
+            logger.debug("IsTOCAnnotation" +"\t" +para.get(CoreAnnotations.IsTOCAnnotation.class));
+        }
         bniMap.put(documentId, bniModel);
         bniModel.annotateDocument();
 
-        logger.debug("TOC after annotate {} ", DocumentHelper.getTOCLists(document));
+        logger.debug("TOC after annotate :");
+
+        for (CoreMap para: DocumentHelper.getTOCParagraphs(document)){
+            logger.debug(para.getId() +"\t" +DocumentHelper.getTOCLists(para).toString());
+        }
         return document;
     }
 
@@ -180,8 +187,14 @@ public class TOCClassifier extends ClassifierImpl {
     }
 
     @Override
-    public HashMap<String, HashMap<String, Double>> getVisualMap(String documentId, int paraIndex) {
+    public HashMap<String, HashMap<String, Double>> getBNIVisualMap(String documentId, int paraIndex) {
         return bniMap.get(documentId).toVisualMap(paraIndex);
+    }
+
+
+    @Override
+    public HashMap<String, HashMap<String, HashMap<String, Double>>> getModelVisualMap(String documentId) {
+        return trainingModel.toVisualMap();
     }
 
 }

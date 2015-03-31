@@ -91,6 +91,9 @@ public class API {
                 document = (Document) tocClassifier.classify(fileName, document);
                 //logger.debug("document:" + document.getTarget());
                 //link the document
+                for (CoreMap para : document.getParagraphs()){
+                    logger.debug(para.getId() + "\t" + para.getText());
+                }
                 documentMap.put(fileName, document);
 
                 logger.debug("Added document into the documentMap with a generated hash key:"+ documentMap.keySet());
@@ -127,6 +130,7 @@ public class API {
         for (File f : iterable) {
             if (f.isFile()) {
                 docLists.add(f.getName());
+
             }
         }
         Gson gson = new GsonBuilder().create();
@@ -152,12 +156,6 @@ public class API {
         logger.info("getDoc- DocumentId:" + documentId.toString());
 
         Document doc = documentMap.get(documentId);
-        try {
-            doc = (Document) definitionClassifier.classify(documentId, doc);
-            doc = (Document) tocClassifier.classify(documentId, doc);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         String jsonString = null;
         if (doc==null) {
@@ -177,6 +175,16 @@ public class API {
                 e.printStackTrace();
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to parse document").type(MediaType.TEXT_HTML).build();
 
+            }
+            try {
+                doc = (Document) definitionClassifier.classify(documentId, doc);
+                doc = (Document) tocClassifier.classify(documentId, doc);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to classify the document").type(MediaType.TEXT_HTML).build();
+            }
+            for (CoreMap para : doc.getParagraphs()){
+                logger.debug(para.getId() + "\t" + para.getText());
             }
             documentMap.put(documentId,doc);
             logger.debug("Doc:" + doc.getParagraphs().toString());
@@ -524,13 +532,20 @@ public class API {
 
         // get the json from BNI
         logger.debug("ParaIndex: " + paraIndex);
-        HashMap<String, HashMap<String, Double>> map = definitionClassifier.getVisualMap(documentId, paraIndex);
+        HashMap<String, HashMap<String, Double>> map = definitionClassifier.getBNIVisualMap(documentId, paraIndex);
+        HashMap<String, HashMap<String, HashMap<String, Double>>> modelMap = definitionClassifier.getModelVisualMap(documentId);
         probabilityJson = gson.toJson(map);
         buf.append(probabilityJson);
         buf.append(",");
-        map = tocClassifier.getVisualMap(documentId, paraIndex);
+        probabilityJson = gson.toJson(modelMap);
+        buf.append(probabilityJson);
+        buf.append(",");
+        map = tocClassifier.getBNIVisualMap(documentId, paraIndex);
         probabilityJson = gson.toJson(map);
         buf.append(probabilityJson);
+        buf.append(",");
+        modelMap = tocClassifier.getModelVisualMap(documentId);
+        buf.append(gson.toJson(modelMap));
         buf.append(",");
         buf.append(annotationJson);
         buf.append("]");
