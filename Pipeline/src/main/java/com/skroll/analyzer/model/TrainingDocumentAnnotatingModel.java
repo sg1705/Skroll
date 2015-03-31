@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skroll.analyzer.model.bn.SimpleDataTuple;
 import com.skroll.analyzer.model.bn.TrainingNaiveBayesWithFeatureConditions;
 import com.skroll.analyzer.model.bn.inference.BNInference;
+import com.skroll.analyzer.model.bn.node.DiscreteNode;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -12,8 +13,10 @@ import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
+import com.skroll.util.Visualizer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -147,6 +150,15 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
                 "tnbfModel=" + tnbfModel +
                 '}';
     }
+
+    public HashMap<String, HashMap<String, HashMap<String, Double>>> toVisualMap() {
+        HashMap<String, HashMap<String, HashMap<String, Double>>> map = new HashMap();
+        //document level features
+        map.put("DocuemntFeatureNodes", Visualizer.nodesToMap(this.tnbfModel.getDocumentFeatureNodeArray()));
+        map.put("ParagraphFeatureNodes", Visualizer.nodesToMap(this.tnbfModel.getFeatureNodeArray()));
+        return map;
+    }
+
 }
 
 

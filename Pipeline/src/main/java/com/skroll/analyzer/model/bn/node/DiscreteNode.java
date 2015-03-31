@@ -118,6 +118,12 @@ public class DiscreteNode{
         return familyVariables[0];
     }
 
+    @JsonIgnore
+    public RandomVariableType[] getFamilyVariables(){
+        return familyVariables;
+    }
+
+
     @Override
     public String toString() {
         return "DiscreteNode{" +

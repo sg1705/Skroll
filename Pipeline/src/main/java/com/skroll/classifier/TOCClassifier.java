@@ -180,8 +180,14 @@ public class TOCClassifier extends ClassifierImpl {
     }
 
     @Override
-    public HashMap<String, HashMap<String, Double>> getVisualMap(String documentId, int paraIndex) {
+    public HashMap<String, HashMap<String, Double>> getBNIVisualMap(String documentId, int paraIndex) {
         return bniMap.get(documentId).toVisualMap(paraIndex);
+    }
+
+
+    @Override
+    public HashMap<String, HashMap<String, HashMap<String, Double>>> getModelVisualMap(String documentId) {
+        return trainingModel.toVisualMap();
     }
 
 }

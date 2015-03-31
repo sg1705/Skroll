@@ -1,6 +1,10 @@
 package com.skroll.util;
 
+import com.skroll.analyzer.model.bn.node.DiscreteNode;
+
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Visual to create json for all things
@@ -16,12 +20,33 @@ public class Visualizer {
 
         for(int ii = 0; ii < data.length; ii++) {
             String index = ""+ii;
+            if (ii == 0) {
+                index = "No";
+            } else if (ii == 1) {
+                index = "Yes";
+            }
             if (Double.isNaN(data[ii]) || (Double.isInfinite(data[ii]))) {
+                map.put(index, 123456789.0);
                 map.put(index, 123456789.0);
             } else {
                 map.put(index, data[ii]);
             }
 
+        }
+        return map;
+    }
+
+    public static HashMap<String, String> discreteNodeToMap(DiscreteNode node) {
+        HashMap<String, String> map = new HashMap();
+        map.put("familyVariables", Arrays.toString(node.getFamilyVariables()));
+        map.put("parameters", Arrays.toString(node.getParameters()));
+        return map;
+    }
+
+    public static HashMap<String, HashMap<String, Double>> nodesToMap(DiscreteNode[] nodes) {
+        HashMap<String, HashMap<String, Double>> map = new HashMap();
+        for (int ii = 0; ii < nodes.length; ii++) {
+            map.put(nodes[ii].getVariable().name(), Visualizer.toDoubleArrayToMap(nodes[ii].getParameters()));
         }
         return map;
     }
