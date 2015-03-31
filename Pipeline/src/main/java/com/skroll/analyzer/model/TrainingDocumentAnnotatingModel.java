@@ -97,7 +97,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
         double[] oldWeights =weights[0];
         double[] newWeights = weights[1];
         double[] normalizedOldWeights = BNInference.normalize(oldWeights, 1);
-        double[] normalizedNewWeights = BNInference.normalize(newWeights,1);
+        double[] normalizedNewWeights = BNInference.normalize(newWeights, 1);
         double[] trainingWeights = normalizedNewWeights;
         for (int i=0; i<trainingWeights.length; i++)
             trainingWeights[i] -= normalizedOldWeights[i];
@@ -124,7 +124,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
         int[] tokenType = new int[tokens.size()];
         for (int i = 0; i < tokenType.length; i++) {
-            tokenType[i] =  DefinedTermExtractionHelper.getWordFeature(
+            tokenType[i] =  DocumentAnnotatingHelper.getWordFeature(
                     paragraph, tokens.get(i), wordType);
         }
 
@@ -132,7 +132,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
         int[][] features = new int[length][wordFeatures.size()];
         for (int i=0; i<length ;i++){
             for (int f=0; f<wordFeatures.size();f++){
-                features[i][f] = DefinedTermExtractionHelper.getWordFeature(paragraph, tokens.get(i), wordFeatures.get(f));
+                features[i][f] = DocumentAnnotatingHelper.getWordFeature(paragraph, tokens.get(i), wordFeatures.get(f));
             }
         }
 
@@ -146,7 +146,8 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
         int[] tokenType = new int[tokens.size()];
         for (int i = 0; i < tokenType.length; i++) {
-            tokenType[i] =  DefinedTermExtractionHelper.getWordFeature(
+
+            tokenType[i] =  DocumentAnnotatingHelper.getWordFeature(
                     paragraph, tokens.get(i), wordType);
         }
 
@@ -154,14 +155,15 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
         int[][] features = new int[length][wordFeatures.size()];
         for (int i=0; i<length ;i++){
             for (int f=0; f<wordFeatures.size();f++){
-                features[i][f] = DefinedTermExtractionHelper.getWordFeature(paragraph, tokens.get(i), wordFeatures.get(f));
+                features[i][f] = DocumentAnnotatingHelper.getWordFeature(paragraph, tokens.get(i), wordFeatures.get(f));
             }
         }
 
-        for (int i=0;i<wordType.getFeatureSize();i++)
-            hmm.updateCounts(
+        for (int i=0;i<paraCategory.getFeatureSize();i++) {
+            hmm.updateCountsWithWeight(
                     DocumentHelper.getTokenString(tokens).toArray(new String[tokens.size()]),
-                    tokenType, features);
+                    tokenType, features, weights[i]);
+        }
 
     }
     /**

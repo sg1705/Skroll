@@ -92,7 +92,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
         System.out.print("document level feature believes\n");
         System.out.println(model.DEFAULT_DOCUMENT_FEATURES);
 
-        double[][] dBelieves = model.getDocumentFeatureBelief();
+        double[][] dBelieves = model.getDocumentFeatureProbabilities();
         for (int i=0; i<dBelieves.length; i++){
             System.out.println(Arrays.toString(dBelieves[i]));
         }
@@ -100,14 +100,14 @@ public class ProbabilityDocumentAnnotatingModelTest {
         List<CoreMap> paraList = doc.getParagraphs();
 
         System.out.print("document level feature believes\n");
-        double[][] pBelieves = model.getParagraphCategoryBelief();
+        double[][] pBelieves = model.getParagraphCategoryProbabilities();
 
         for (int i=0; i<paraList.size(); i++){
-            BNInference.normalizeLog(pBelieves[i]);
+         //   BNInference.normalizeLog(pBelieves[i]);
 
             System.out.print(i+" [");
             for (int j=0; j<pBelieves[i].length; j++)
-                System.out.printf("%.0f ", pBelieves[i][j]);
+                System.out.printf("%.2f ", pBelieves[i][j]);
             System.out.print("] ");
             System.out.println(paraList.get(i).getText());
 

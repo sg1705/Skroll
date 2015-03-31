@@ -14,6 +14,7 @@ import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
 import com.skroll.util.Visualizer;
 
+import javax.print.Doc;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -297,6 +298,9 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
             if (terms.size()>0){
                 DocumentAnnotatingHelper.addParagraphTermAnnotation(paragraph, paraCategory, terms);
             }
+            //todo: a hack for TOC annotation. should implement HMM for TOC and annotate base on HMM result
+            if (paraCategory == RandomVariableType.PARAGRAPH_HAS_TOC && logPrioProbs[1]>logPrioProbs[0])
+                DocumentAnnotatingHelper.addParagraphTermAnnotation(paragraph, paraCategory, tokens);
         }
 
     }
@@ -304,6 +308,19 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
     @JsonIgnore
     public double[][] getParagraphCategoryBelief() {
         return paragraphCategoryBelief;
+    }
+
+    public double[][] getParagraphCategoryProbabilities(){
+        double[][] paraCatProbs = paragraphCategoryBelief.clone();
+        BNInference.convertLogBeliefArrayToProb(paraCatProbs);
+        return paraCatProbs;
+    }
+
+
+    public double[][] getDocumentFeatureProbabilities(){
+        double[][] docFeatureProbs = documentFeatureBelief.clone();
+        BNInference.convertLogBeliefArrayToProb(docFeatureProbs);
+        return docFeatureProbs;
     }
 
     @JsonIgnore
