@@ -524,13 +524,20 @@ public class API {
 
         // get the json from BNI
         logger.debug("ParaIndex: " + paraIndex);
-        HashMap<String, HashMap<String, Double>> map = definitionClassifier.getVisualMap(documentId, paraIndex);
+        HashMap<String, HashMap<String, Double>> map = definitionClassifier.getBNIVisualMap(documentId, paraIndex);
+        HashMap<String, HashMap<String, HashMap<String, Double>>> modelMap = definitionClassifier.getModelVisualMap(documentId);
         probabilityJson = gson.toJson(map);
         buf.append(probabilityJson);
         buf.append(",");
-        map = tocClassifier.getVisualMap(documentId, paraIndex);
+        probabilityJson = gson.toJson(modelMap);
+        buf.append(probabilityJson);
+        buf.append(",");
+        map = tocClassifier.getBNIVisualMap(documentId, paraIndex);
         probabilityJson = gson.toJson(map);
         buf.append(probabilityJson);
+        buf.append(",");
+        modelMap = tocClassifier.getModelVisualMap(documentId);
+        buf.append(gson.toJson(modelMap));
         buf.append(",");
         buf.append(annotationJson);
         buf.append("]");
