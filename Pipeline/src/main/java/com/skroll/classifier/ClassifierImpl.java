@@ -34,6 +34,9 @@ public abstract class ClassifierImpl implements Classifier {
     public Object updateBNI(String documentId, Document document, List<CoreMap> observedParas) throws Exception {
         return null;
     }
+
+    public void trainWithWeight(Document doc){};
+
     @Override
     public Object classify(String documentId, Document doc) throws Exception{
         return null;

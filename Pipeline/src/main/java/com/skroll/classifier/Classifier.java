@@ -40,6 +40,7 @@ public interface Classifier {
     public SortedMap<Category,Double> classifyDetailed(Document doc, int numOfTokens);
 
     public Object updateBNI(String documentId, Document document, List<CoreMap> observedParas) throws Exception;
+    public void trainWithWeight(Document doc);
 
     public HashMap<String, HashMap<String, Double>> getBNIVisualMap(String docId, int paraIndex);
     public HashMap<String, HashMap<String, HashMap<String, Double>>> getModelVisualMap(String documentId);

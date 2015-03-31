@@ -67,6 +67,11 @@ public class DefinitionClassifier extends ClassifierImpl{
         trainingModel.updateWithDocument(doc);
 
     }
+    @Override
+    public void trainWithWeight(Document doc) {
+        trainingModel.updateWithDocumentAndWeight(doc);
+
+    }
 
     @Override
     public void train(Category category, Document doc) {
@@ -130,7 +135,7 @@ public class DefinitionClassifier extends ClassifierImpl{
 
         bniMap.get(documentId).annotateDocument();
 
-        printBelieves( bniMap.get(documentId), document );
+        printBelieves(bniMap.get(documentId), document);
         logger.debug("definitions after annotate");
         for (CoreMap para:DocumentHelper.getDefinitionParagraphs(document)){
             logger.debug(para.getId() +"\t" + DocumentHelper.getDefinedTermTokensInParagraph(para).toString());

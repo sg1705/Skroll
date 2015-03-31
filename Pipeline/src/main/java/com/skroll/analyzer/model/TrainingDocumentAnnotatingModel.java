@@ -79,8 +79,8 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
        updateHMMWithParagraph(trainingParagraph);
     }
 
-    void updateWithParagraphWithWeights(CoreMap trainingParagraph, int[] docFeatureValues) {
-        double[] weights = getTrainingWeights(trainingParagraph);
+    void updateWithParagraphWithWeights(CoreMap trainingParagraph, CoreMap originalParagraph, int[] docFeatureValues) {
+        double[] weights = getTrainingWeights(originalParagraph);
         updateTNBFWithParagraphAndWeight(trainingParagraph, docFeatureValues, weights);
         //todo: consider doing weight for HMM
         updateHMMWithParagraph(trainingParagraph);
@@ -168,21 +168,28 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
      * todo: to reduce memory usage at the cost of more computation, can process training paragraph one by one later instead of process all and store them now
     * training involves updating Fij for each paragraph i and feature j.
     */
-    public void updateWithDocument(Document doc){
+    public void updateWithDocumentAndWeight(Document doc){
         List<CoreMap> paragraphs = new ArrayList<>();
+        List<CoreMap> originalParagraphs = new ArrayList<>();
+
         for( CoreMap paragraph : doc.getParagraphs()) {
-            if (DocumentAnnotatingHelper.isParaObserved(paragraph))
+            if (DocumentAnnotatingHelper.isParaObserved(paragraph)) {
                 paragraphs.add(DocumentAnnotatingHelper.processParagraph(paragraph, hmm.size()));
+                originalParagraphs.add(paragraph);
+            }
         }
+
         int[] docFeatureValues = DocumentAnnotatingHelper.generateDocumentFeatures(paragraphs,
                 paraCategory, docFeatures, paraDocFeatures);
 
+        //for( CoreMap paragraph : paragraphs)
+        for (int i=0; i<paragraphs.size();i++) {
 
-        for( CoreMap paragraph : paragraphs)
-            updateWithParagraph(paragraph, docFeatureValues);
+            updateWithParagraphWithWeights(paragraphs.get(i),originalParagraphs.get(i), docFeatureValues);
+        }
     }
 
-    public void updateWithDocumentAndWeight(Document doc){
+    public void updateWithDocument(Document doc){
         List<CoreMap> paragraphs = new ArrayList<>();
         for( CoreMap paragraph : doc.getParagraphs()) {
              paragraphs.add(DocumentAnnotatingHelper.processParagraph(paragraph, hmm.size()));
@@ -192,7 +199,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
 
         for( CoreMap paragraph : paragraphs)
-            updateWithParagraphWithWeights(paragraph, docFeatureValues);
+            updateWithParagraph(paragraph, docFeatureValues);
     }
 
     public TrainingNaiveBayesWithFeatureConditions getTnbfModel() {
