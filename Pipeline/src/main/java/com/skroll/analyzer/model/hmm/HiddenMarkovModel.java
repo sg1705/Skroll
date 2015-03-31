@@ -28,11 +28,11 @@ public class HiddenMarkovModel {
     static final int IN_QUOTE_FALSE=0;
 
 
-    int[][] transitionCounts;
-    int totalStateValueCounts[];
-    Map<String, Integer>[] tokenCounts; // count for each state value, each token
-    Map<String, Integer>[] nextTokenCounts; // count for each state value, each token
-    List<List<int[]>> stateFeatureValueCounts; // use list of arrays because need to preallocate the count arrays
+    double[][] transitionCounts;
+    double totalStateValueCounts[];
+    Map<String, Double>[] tokenCounts; // count for each state value, each token
+    Map<String, Double>[] nextTokenCounts; // count for each state value, each token
+    List<List<double[]>> stateFeatureValueCounts; // use list of arrays because need to preallocate the count arrays
 
     int[][] stateNumberCounts; // count for each state value, each state number
 
@@ -59,8 +59,8 @@ public class HiddenMarkovModel {
         this.featureSizes = featureSizes;
         numberFeatures = featureSizes.length; //number of features excluding the state type
         this.numStateValues = numStateValues;
-        transitionCounts = new int [numStateValues][numStateValues];
-        totalStateValueCounts = new int [numStateValues];
+        transitionCounts = new double [numStateValues][numStateValues];
+        totalStateValueCounts = new double [numStateValues];
         tokenCounts = new HashMap[numStateValues];
         nextTokenCounts = new HashMap[numStateValues];
 
@@ -73,17 +73,17 @@ public class HiddenMarkovModel {
         stateNumberProbabilityGivenStateValue = new double[numStateValues][modelLength];
 
         for (int i=0; i<numStateValues; i++){
-            tokenCounts[i] = new HashMap<String, Integer>();
-            nextTokenCounts[i] = new HashMap<String, Integer>();
+            tokenCounts[i] = new HashMap<String, Double>();
+            nextTokenCounts[i] = new HashMap<String, Double>();
             tokenProbabilityGivenStateValue[i] = new HashMap<String, Double>();
             nextTokenProbabilityGivenStateValue[i] = new HashMap<String, Double>();
         }
 
-        stateFeatureValueCounts = new ArrayList<List<int[]>>();
+        stateFeatureValueCounts = new ArrayList<List<double[]>>();
         for (int i=0; i<numStateValues; i++){
-            List<int[]> featureValueCounts = new ArrayList<int[]>();
+            List<double[]> featureValueCounts = new ArrayList<double[]>();
             for (int j=0; j<numberFeatures; j++){
-                int[] valueCounts = new int[featureSizes[j]];
+                double[] valueCounts = new double[featureSizes[j]];
                 featureValueCounts.add(valueCounts);
             }
             stateFeatureValueCounts.add(featureValueCounts);
@@ -101,8 +101,8 @@ public class HiddenMarkovModel {
     }
     public HiddenMarkovModel(int modelLength){
         this.modelLength = modelLength;
-        transitionCounts = new int [numStateValues][numStateValues];
-        totalStateValueCounts = new int [numStateValues];
+        transitionCounts = new double [numStateValues][numStateValues];
+        totalStateValueCounts = new double [numStateValues];
         tokenCounts = new HashMap[numStateValues];
         nextTokenCounts = new HashMap[numStateValues];
 
@@ -115,17 +115,17 @@ public class HiddenMarkovModel {
         stateNumberProbabilityGivenStateValue = new double[numStateValues][modelLength];
 
         for (int i=0; i<numStateValues; i++){
-            tokenCounts[i] = new HashMap<String, Integer>();
-            nextTokenCounts[i] = new HashMap<String, Integer>();
+            tokenCounts[i] = new HashMap<String, Double>();
+            nextTokenCounts[i] = new HashMap<String, Double>();
             tokenProbabilityGivenStateValue[i] = new HashMap<String, Double>();
             nextTokenProbabilityGivenStateValue[i] = new HashMap<String, Double>();
         }
 
-        stateFeatureValueCounts = new ArrayList<List<int[]>>();
+        stateFeatureValueCounts = new ArrayList<List<double[]>>();
         for (int i=0; i<numStateValues; i++){
-            List<int[]> featureValueCounts = new ArrayList<int[]>();
+            List<double[]> featureValueCounts = new ArrayList<double[]>();
             for (int j=0; j<numberFeatures; j++){
-                int[] valueCounts = new int[featureSizes[j]];
+                double[] valueCounts = new double[featureSizes[j]];
                 featureValueCounts.add(valueCounts);
             }
             stateFeatureValueCounts.add(featureValueCounts);
@@ -170,16 +170,16 @@ public class HiddenMarkovModel {
         s+= "totalStateValueCounts " + Arrays.toString(totalStateValueCounts) +'\n';
         s+= "transitionCounts " + Arrays.deepToString(transitionCounts) +'\n';
         //s+= "stateNumberCounts " + Arrays.deepToString(stateNumberCounts) +'\n';
-        for (List<int[]> featureValueCount: stateFeatureValueCounts){
-            for( int[] values: featureValueCount){
+        for (List<double[]> featureValueCount: stateFeatureValueCounts){
+            for( double[] values: featureValueCount){
                 s += Arrays.toString(values);
             }
             s+='\n';
         }
 
-        for (Map<String, Integer> m: tokenCounts)
+        for (Map<String, Double> m: tokenCounts)
             s+= "tokenCounts " +  Arrays.toString(m.entrySet().toArray())  +'\n';
-        for (Map<String, Integer> m: nextTokenCounts)
+        for (Map<String, Double> m: nextTokenCounts)
             s+= "nextTokenCounts " + Arrays.toString(m.entrySet().toArray())  +'\n';
         return s;
     }
@@ -189,7 +189,7 @@ public class HiddenMarkovModel {
 
         // update state value probability
         int total =0;
-        for (int n: totalStateValueCounts) total += n+PRIOR_COUNT;
+        for (double n: totalStateValueCounts) total += n+PRIOR_COUNT;
         for (int i=0; i<numStateValues; i++)
             stateValueProbability[i] = (double)(totalStateValueCounts[i]+PRIOR_COUNT)/total;
 
@@ -216,20 +216,20 @@ public class HiddenMarkovModel {
             //todo: need better ways to handle small number of observations.
             for (String k: tokenCounts[i].keySet()){
                 //hask for testing purpose
-                Integer count0 = tokenCounts[0].get(k);
-                if (count0 ==null) count0=0;
-                Integer count1 = tokenCounts[1].get(k);
-                if (count1 ==null) count1=0;
+                Double count0 = tokenCounts[0].get(k);
+                if (count0 ==null) count0=0.0;
+                Double count1 = tokenCounts[1].get(k);
+                if (count1 ==null) count1=0.0;
                 if (count0+count1<10) continue;
                 tokenProbabilityGivenStateValue[i].put(k,
                         (tokenCounts[i].get(k) + priorCountPartI) / totalCountIWithPrior );
             }
             for (String k: nextTokenCounts[i].keySet()) {
                 //hask for testing purpose
-                Integer count0 = nextTokenCounts[0].get(k);
-                if (count0 ==null) count0=0;
-                Integer count1 = nextTokenCounts[1].get(k);
-                if (count1 ==null) count1=0;
+                Double count0 = nextTokenCounts[0].get(k);
+                if (count0 ==null) count0=0.0;
+                Double count1 = nextTokenCounts[1].get(k);
+                if (count1 ==null) count1=0.0;
                 if (count0+count1<10) continue;
                 nextTokenProbabilityGivenStateValue[i].put(k,
                         (nextTokenCounts[i].get(k) + priorCountPartI) / totalCountIWithPrior);
@@ -260,13 +260,13 @@ public class HiddenMarkovModel {
             }
 
 
-            Integer c = tokenCounts[stateValues[i]].get(token);
-            if (c==null) c=0;
+            Double c = tokenCounts[stateValues[i]].get(token);
+            if (c==null) c=0.0;
             tokenCounts[stateValues[i]].put(token, c + 1);
 
             if (!USE_NEXT_TOKEN || nextToken==null) continue;
             c = nextTokenCounts[stateValues[i]].get(nextToken);
-            if (c==null) c=0;
+            if (c==null) c=0.0;
             nextTokenCounts[stateValues[i]].put(nextToken, c + 1);
         }
         probabilitiesUpToDate = false;
@@ -317,13 +317,13 @@ public class HiddenMarkovModel {
             if (i+inc < tokens.length) // do not update if at the last state
                 transitionCounts[stateValues[i]][stateValues[i+inc]]++;
 
-            Integer c = tokenCounts[stateValues[i]].get(token);
-            if (c==null) c=0;
+            Double c = tokenCounts[stateValues[i]].get(token);
+            if (c==null) c=0.0;
             tokenCounts[stateValues[i]].put(token, c + 1);
 
             if (!USE_NEXT_TOKEN || nextToken==null) continue;
             c = nextTokenCounts[stateValues[i]].get(nextToken);
-            if (c==null) c=0;
+            if (c==null) c=.0;
             nextTokenCounts[stateValues[i]].put(nextToken, c + 1);
         }
         probabilitiesUpToDate = false;
@@ -599,10 +599,10 @@ public class HiddenMarkovModel {
     }
 
     // a helper method to add zero to the counts and update corresponding probabilities in the hashmap
-    void setZeroCountAndProbabilities(Map<String, Integer>[] countMap, Map<String, Double> []probMap, String token){
+    void setZeroCountAndProbabilities(Map<String, Double>[] countMap, Map<String, Double> []probMap, String token){
         for (int i=0;i<numStateValues;i++) {
             if (probMap[i].containsKey(token)) continue;
-            countMap[i].put(token,0);
+            countMap[i].put(token,.0);
             double priorCountPartI = PRIOR_COUNT * stateValueProbability[i];
             double totalCountIWithPrior = totalStateValueCounts[i] + PRIOR_COUNT;
             probMap[i].put(token, priorCountPartI/totalCountIWithPrior);

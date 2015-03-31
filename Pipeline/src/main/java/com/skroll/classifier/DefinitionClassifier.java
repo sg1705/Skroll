@@ -160,26 +160,23 @@ public class DefinitionClassifier extends ClassifierImpl{
     }
 
     void printBelieves(ProbabilityDocumentAnnotatingModel model, Document doc ){
-        System.out.print("document level feature believes\n");
+        logger.debug("document level feature believes\n");
+
         double[][] dBelieves = model.getDocumentFeatureBelief();
         for (int i=0; i<dBelieves.length; i++){
-            logger.trace(" " + model.DEFAULT_DOCUMENT_FEATURES);
-            logger.trace(Arrays.toString(dBelieves[i]));
+            logger.debug(" " + model.DEFAULT_DOCUMENT_FEATURES);
+            logger.debug(Arrays.toString(dBelieves[i]));
         }
 
         List<CoreMap> paraList = doc.getParagraphs();
 
-        logger.trace("document level feature believes\n");
+        logger.debug("paragraph category believes\n");
         double[][] pBelieves = model.getParagraphCategoryBelief();
 
         for (int i=0; i<paraList.size(); i++){
             BNInference.normalizeLog(pBelieves[i]);
-
-            logger.trace(i + " [");
-            for (int j=0; j<pBelieves[i].length; j++)
-                logger.trace("%.0f ", pBelieves[i][j]);
-            logger.trace("] ");
-            logger.trace(paraList.get(i).getText());
+            logger.debug(paraList.get(i).getText());
+            logger.debug(String.format("%d [%.0f %.0f]", i,pBelieves[i][0],pBelieves[i][1]));
 
         }
     }

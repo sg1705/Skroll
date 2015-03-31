@@ -24,6 +24,7 @@ import java.util.List;
  */
 public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
+    static final int NUM_ITERATIONS = 5;
     LogProbabilityNaiveBayesWithFeatureConditions lpnbfModel;
 
     Document doc;
@@ -95,19 +96,20 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
     public void updateBeliefWithObservation(List<CoreMap> observedParagraphs){
 
-        for( CoreMap para : observedParagraphs) {
-            if (para==null) continue;
-            if (!DocumentAnnotatingHelper.isParaObserved(para)) continue;
-            List<Token> tokens = para.getTokens();
-            if (tokens==null || tokens.size()==0) continue;
-            int pIndex = DocumentAnnotatingHelper.getParagraphFeature(para, RandomVariableType.PARAGRAPH_INDEX);
-            int value = DocumentAnnotatingHelper.getParagraphFeature(para, paraCategory);
-
-            for (int i=0; i<paraCategory.getFeatureSize(); i++){
-                if (i==value) paragraphCategoryBelief[pIndex][i] = 0;
-                else paragraphCategoryBelief[pIndex][i] = Double.NEGATIVE_INFINITY;
-            }
-        }
+        computeInitalBeliefs(processedParagraphs);
+//        for( CoreMap para : observedParagraphs) {
+//            if (para==null) continue;
+//            if (!DocumentAnnotatingHelper.isParaObserved(para)) continue;
+//            List<Token> tokens = para.getTokens();
+//            if (tokens==null || tokens.size()==0) continue;
+//            int pIndex = DocumentAnnotatingHelper.getParagraphFeature(para, RandomVariableType.PARAGRAPH_INDEX);
+//            int value = DocumentAnnotatingHelper.getParagraphFeature(para, paraCategory);
+//
+//            for (int i=0; i<paraCategory.getFeatureSize(); i++){
+//                if (i==value) paragraphCategoryBelief[pIndex][i] = 0;
+//                else paragraphCategoryBelief[pIndex][i] = Double.NEGATIVE_INFINITY;
+//            }
+//        }
 
     }
 
@@ -130,9 +132,13 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
         LogProbabilityDiscreteNode[] fna = (LogProbabilityDiscreteNode[]) lpnbfModel.getFeatureNodeArray();
         LogProbabilityDiscreteNode categoryNode = (LogProbabilityDiscreteNode)lpnbfModel.getCategoryNode();
+
+        // observation is only stored in the orignal paragraphs.
+        // May consider to use a separate method to get a list of observed paragrpahs.
+        List<CoreMap> originalParagraphs = doc.getParagraphs();
         for (int p=0; p<paragraphs.size(); p++){
-            if (DocumentAnnotatingHelper.isParaObserved(paragraphs.get(p))) {
-                int observedVal = DocumentAnnotatingHelper.getParagraphFeature(paragraphs.get(p), paraCategory);
+            if (DocumentAnnotatingHelper.isParaObserved(originalParagraphs.get(p))) {
+                int observedVal = DocumentAnnotatingHelper.getParagraphFeature(originalParagraphs.get(p), paraCategory);
 
                 for (int i=0; i<paraCategory.getFeatureSize(); i++){
                     if (i==observedVal) paragraphCategoryBelief[p][i] = 0;
@@ -236,8 +242,10 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
     public void annotateDocument(){
         passMessagesToParagraphCategories();
 
-        passMessageToDocumentFeatures();
-        passMessagesToParagraphCategories();
+        for (int i=0; i<NUM_ITERATIONS;i++) {
+            passMessageToDocumentFeatures();
+            passMessagesToParagraphCategories();
+        }
         int numParagraphs = paragraphCategoryBelief.length;
 
         List<CoreMap> paragraphList = doc.getParagraphs();
@@ -282,14 +290,14 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
                 if (states[i]==1) terms.add(tokens.get(i));
                 else {
                     if (terms.size()>0){
-                        DocumentAnnotatingHelper.setParagraphTermAnnotation(paragraph, paraCategory, terms);
+                        DocumentAnnotatingHelper.addParagraphTermAnnotation(paragraph, paraCategory, terms);
                         terms = new ArrayList<>();
                     }
 
                 }
             }
             if (terms.size()>0){
-                DocumentAnnotatingHelper.setParagraphTermAnnotation(paragraph, paraCategory, terms);
+                DocumentAnnotatingHelper.addParagraphTermAnnotation(paragraph, paraCategory, terms);
             }
         }
 
