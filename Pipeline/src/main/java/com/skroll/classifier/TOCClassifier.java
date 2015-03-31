@@ -81,7 +81,11 @@ public class TOCClassifier extends ClassifierImpl {
         trainingModel.updateWithDocument(doc);
 
     }
+    @Override
+    public void trainWithWeight(Document doc) {
+        trainingModel.updateWithDocumentAndWeight(doc);
 
+    }
     @Override
     public void train(Category category, Document doc) {
         train(doc);

@@ -30,6 +30,8 @@ public class TrainingWeightAnnotationHelper {
         userWeightList.set(NONE,userWeightList.get(NONE+LATEST_WEIGHT_INDEX));
 
         if(paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)){
+            for (int i=LATEST_WEIGHT_INDEX; i<LATEST_WEIGHT_INDEX*2;i++)
+                userWeightList.set(i,(float)0);
             userWeightList.set(index+LATEST_WEIGHT_INDEX, userWeight);
         } else {
             userWeightList.set(index+LATEST_WEIGHT_INDEX, userWeightList.get(index) + userWeight);

@@ -431,13 +431,13 @@ public class API {
             return Response.status(Response.Status.NO_CONTENT).entity("document cannot be found for document id: "+ documentId).type(MediaType.APPLICATION_JSON).build();
         }
 
-        definitionClassifier.train(doc);
+        definitionClassifier.trainWithWeight(doc);
         try {
             definitionClassifier.persistModel();
         } catch (ObjectPersistUtil.ObjectPersistException e) {
             e.printStackTrace();
         }
-        tocClassifier.train(doc);
+        tocClassifier.trainWithWeight(doc);
         try {
             tocClassifier.persistModel();
         } catch (ObjectPersistUtil.ObjectPersistException e) {

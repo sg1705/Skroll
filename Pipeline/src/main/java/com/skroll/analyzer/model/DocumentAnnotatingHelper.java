@@ -141,7 +141,7 @@ public class DocumentAnnotatingHelper {
         return wordSet.toArray(new String[wordSet.size()]);
     }
 
-    static void setParagraphTermAnnotation(CoreMap paragraph, RandomVariableType paraType, List<Token> terms){
+    public static void addParagraphTermAnnotation(CoreMap paragraph, RandomVariableType paraType, List<Token> terms){
         if (paragraph==null) return;
         switch (paraType) {
             case PARAGRAPH_HAS_DEFINITION:

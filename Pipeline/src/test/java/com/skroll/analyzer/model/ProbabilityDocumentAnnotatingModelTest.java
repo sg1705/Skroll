@@ -16,9 +16,11 @@ import java.util.List;
 //todo: prior count is not set properly, making the probability favoring positive class.
 public class ProbabilityDocumentAnnotatingModelTest {
 
-    String testingFileName = "src/test/resources/classifier/smaller-indenture.html";
+//    String testingFileName = "src/test/resources/classifier/mini-indenture.html";
+
+    //String testingFileName = "src/test/resources/classifier/smaller-indenture.html";
 //    String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
-    //String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/AMD CA - Def No Quotes.html";
+    String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/AMD CA - Def No Quotes.html";
 
 
 
@@ -62,6 +64,28 @@ public class ProbabilityDocumentAnnotatingModelTest {
         System.out.println("initial believes\n");
         printBelieves();
 
+    }
+
+    @Test
+    public void testDocBeliefs(){
+        printDocBeliefs();
+        for (int i=0; i<250;i++) {
+            model.passMessagesToParagraphCategories();
+            model.passMessageToDocumentFeatures();
+            System.out.println("After passing messages :\n");
+
+            printDocBeliefs();
+        }
+    }
+
+    void printDocBeliefs(){
+        System.out.print("document level feature believes\n");
+        System.out.println(model.DEFAULT_DOCUMENT_FEATURES);
+
+        double[][] dBelieves = model.getDocumentFeatureBelief();
+        for (int i=0; i<dBelieves.length; i++){
+            System.out.println(Arrays.toString(dBelieves[i]));
+        }
     }
 
     void printBelieves(){
@@ -109,6 +133,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
         System.out.println("After passing message to paragraphCategory once:\n");
 
         model.passMessagesToParagraphCategories();
+        printBelieves();
         System.out.println("After passing message to documentFeatures once:\n");
 
         model.passMessageToDocumentFeatures();
@@ -175,7 +200,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
 //            paraList.get(i).set(CoreAnnotations.IsUserObservationAnnotation.class, true);
 //
 //        }
-        for (int i=0; i<3; i++){
+        for (int i=0; i<0; i++){
             //paraList.get(i).set(CoreAnnotations.IsDefinitionAnnotation.class, false);
             DocumentAnnotatingHelper.clearParagraphCateoryAnnotation(paraList.get(i), paraType);
 
@@ -184,11 +209,24 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
         }
 
-        model.updateBeliefWithObservation(observedParas);
-//        model.passMessagesToParagraphCategories();
-//        model.passMessageToDocumentFeatures();
-//        model.passMessagesToParagraphCategories();
+//        DocumentAnnotatingHelper.addParagraphTermAnnotation(paraList.get(1), paraType, Arrays.asList(paraList.get(1).getTokens().get(0)));
+//        observedParas.add(paraList.get(1));
+//        paraList.get(1).set(CoreAnnotations.IsUserObservationAnnotation.class, true);
 
+        for (int p=paraList.size()-1; p>paraList.size()-4;p--) {
+
+            DocumentAnnotatingHelper.addParagraphTermAnnotation(paraList.get(p), paraType, Arrays.asList(paraList.get(p).getTokens().get(0)));
+            observedParas.add(paraList.get(p));
+            paraList.get(p).set(CoreAnnotations.IsUserObservationAnnotation.class, true);
+        }
+        model.updateBeliefWithObservation(observedParas);
+
+        testDocBeliefs();
+
+//        for (int i=0;i<5;i++) {
+//            model.passMessagesToParagraphCategories();
+//            model.passMessageToDocumentFeatures();
+//        }
         model.annotateDocument();
 
 
@@ -205,6 +243,8 @@ public class ProbabilityDocumentAnnotatingModelTest {
         model.passMessagesToParagraphCategories();
         model.passMessageToDocumentFeatures();
         model.passMessagesToParagraphCategories();
+
+
 
         model.annotateDocument();
 
