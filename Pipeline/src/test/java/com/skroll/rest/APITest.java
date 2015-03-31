@@ -97,7 +97,8 @@ public class APITest {
         multiPart.setMediaType(MediaType.MULTIPART_FORM_DATA_TYPE);
 
         FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file",
-                new File("src/test/resources/classifier/smaller-indenture.html"),
+                new File("src/main/resources/parser/extractor/jQuery/dish-10k.html"),
+                //new File("src/test/resources/classifier/smaller-indenture.html"),
                 MediaType.APPLICATION_OCTET_STREAM_TYPE);
         //byte[] bytes = new byte[10];
         multiPart.
@@ -179,7 +180,8 @@ public class APITest {
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
 
-        String jsonString ="[{\"paragraphId\":\"p_1253\",\"term\":\"Credit Test\", \"classificationId\":1},{\"paragraphId\":\"p_1254\",\"term\":\"Unit Test\",\"classificationId\":1}]";
+        //String jsonString ="[{\"paragraphId\":\"p_1253\",\"term\":\"Credit Test\", \"classificationId\":1},{\"paragraphId\":\"p_1254\",\"term\":\"Unit Test\",\"classificationId\":1}]";
+        String jsonString ="[{\"paragraphId\":\"p_1371\",\"term\":\"Disclosure Regarding Forward-Looking Statements\", \"classificationId\":2}]";
 
         Response response = webTarget.request(MediaType.TEXT_HTML).cookie(new  NewCookie("documentId", documentId))
                 .post(Entity.entity(jsonString, MediaType.APPLICATION_JSON));

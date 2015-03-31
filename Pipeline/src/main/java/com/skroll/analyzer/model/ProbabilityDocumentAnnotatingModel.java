@@ -159,8 +159,6 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
             BNInference.normalizeLog(paragraphCategoryBelief[p]);
         }
 
-
-
     }
 
 
