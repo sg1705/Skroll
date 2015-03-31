@@ -72,16 +72,14 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     }
 
     void updateWithParagraph(CoreMap trainingParagraph, int[] docFeatureValues) {
-        //updateTNBFWithParagraph(trainingParagraph, docFeatureValues);
-        double[] weights = getTrainingWeights(trainingParagraph);
-        updateTNBFWithParagraphAndWeight(trainingParagraph, docFeatureValues, weights);
-
-        updateHMMWithParagraph(trainingParagraph);
+        updateTNBFWithParagraph(trainingParagraph, docFeatureValues);
+       updateHMMWithParagraph(trainingParagraph);
     }
 
     void updateWithParagraphWithWeights(CoreMap trainingParagraph, int[] docFeatureValues) {
         double[] weights = getTrainingWeights(trainingParagraph);
         updateTNBFWithParagraphAndWeight(trainingParagraph, docFeatureValues, weights);
+        //todo: consider doing weight for HMM
         updateHMMWithParagraph(trainingParagraph);
         //updateHMMWithParagraphAndWeight(trainingParagraph,weights);
     }
@@ -179,6 +177,19 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
         for( CoreMap paragraph : paragraphs)
             updateWithParagraph(paragraph, docFeatureValues);
+    }
+
+    public void updateWithDocumentAndWeight(Document doc){
+        List<CoreMap> paragraphs = new ArrayList<>();
+        for( CoreMap paragraph : doc.getParagraphs()) {
+             paragraphs.add(DocumentAnnotatingHelper.processParagraph(paragraph, hmm.size()));
+        }
+        int[] docFeatureValues = DocumentAnnotatingHelper.generateDocumentFeatures(paragraphs,
+                paraCategory, docFeatures, paraDocFeatures);
+
+
+        for( CoreMap paragraph : paragraphs)
+            updateWithParagraphWithWeights(paragraph, docFeatureValues);
     }
 
     public TrainingNaiveBayesWithFeatureConditions getTnbfModel() {
