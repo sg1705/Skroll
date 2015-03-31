@@ -202,7 +202,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
                 double[] messageFromParaCategory = paragraphCategoryBelief[p].clone();
                 for (int i=0; i<messageFromParaCategory.length; i++) messageFromParaCategory[i] -= messagesToParagraphCategory[p][f][i];
                 messagesToDocumentFeature[p][f] = fedna[f].sumOutOtherNodesWithObservationAndMessage(
-                        (LogProbabilityDiscreteNode)lpnbfModel.getCategoryNode(),
+                        (LogProbabilityDiscreteNode) lpnbfModel.getCategoryNode(),
                         messageFromParaCategory, dfna[f]);
                 for (int i=0; i<documentFeatureBelief[f].length; i++){
                     documentFeatureBelief[f][i] += messagesToDocumentFeature[p][f][i];
@@ -266,6 +266,14 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
             // check here to make it more efficient, or keep going to be more accurate.
 
             List<Token> tokens = processedPara.getTokens();
+
+            //todo: a hack for TOC annotation. should implement HMM for TOC and annotate base on HMM result
+            if (paraCategory == RandomVariableType.PARAGRAPH_HAS_TOC && logPrioProbs[1]>logPrioProbs[0]) {
+                DocumentAnnotatingHelper.addParagraphTermAnnotation(paragraph, paraCategory, tokens);
+                continue;
+            }
+
+
             List<String> words = DocumentHelper.getTokenString(tokens);
 
             String[] wordsArray = words.toArray(new String[words.size()]);
@@ -298,9 +306,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
             if (terms.size()>0){
                 DocumentAnnotatingHelper.addParagraphTermAnnotation(paragraph, paraCategory, terms);
             }
-            //todo: a hack for TOC annotation. should implement HMM for TOC and annotate base on HMM result
-            if (paraCategory == RandomVariableType.PARAGRAPH_HAS_TOC && logPrioProbs[1]>logPrioProbs[0])
-                DocumentAnnotatingHelper.addParagraphTermAnnotation(paragraph, paraCategory, tokens);
+
         }
 
     }

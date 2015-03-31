@@ -188,8 +188,8 @@ public class HiddenMarkovModel {
     public void updateProbabilities(){
 
         // update state value probability
-        int total =0;
-        for (double n: totalStateValueCounts) total += n+PRIOR_COUNT;
+        double total =0;
+        for (double n: totalStateValueCounts) total += (n+PRIOR_COUNT);
         for (int i=0; i<numStateValues; i++)
             stateValueProbability[i] = (double)(totalStateValueCounts[i]+PRIOR_COUNT)/total;
 

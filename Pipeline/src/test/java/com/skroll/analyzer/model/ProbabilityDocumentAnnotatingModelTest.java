@@ -19,8 +19,8 @@ public class ProbabilityDocumentAnnotatingModelTest {
 //    String testingFileName = "src/test/resources/classifier/mini-indenture.html";
 
     //String testingFileName = "src/test/resources/classifier/smaller-indenture.html";
-//    String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
-    String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/AMD CA - Def No Quotes.html";
+    String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
+//    String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/AMD CA - Def No Quotes.html";
 
 
 
