@@ -393,11 +393,13 @@ public class API {
         }
         try{
             //clear userObservation from the documents before saving the document.
+            /*
             for (CoreMap paragraph : doc.getParagraphs()) {
                 if (paragraph.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)) {
                     paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, null);
                 }
             }
+            */
             documentMap.put(documentId,doc);
             Files.write(JsonDeserializer.getJson(doc), new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
         } catch (Exception e) {
