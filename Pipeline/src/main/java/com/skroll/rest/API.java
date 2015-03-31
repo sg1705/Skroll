@@ -91,9 +91,6 @@ public class API {
                 document = (Document) tocClassifier.classify(fileName, document);
                 //logger.debug("document:" + document.getTarget());
                 //link the document
-                for (CoreMap para : document.getParagraphs()){
-                    logger.debug(para.getId() + "\t" + para.getText());
-                }
                 documentMap.put(fileName, document);
 
                 logger.debug("Added document into the documentMap with a generated hash key:"+ documentMap.keySet());
@@ -183,11 +180,7 @@ public class API {
                 e.printStackTrace();
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to classify the document").type(MediaType.TEXT_HTML).build();
             }
-            for (CoreMap para : doc.getParagraphs()){
-                logger.debug(para.getId() + "\t" + para.getText());
-            }
             documentMap.put(documentId,doc);
-            logger.debug("Doc:" + doc.getParagraphs().toString());
         }
         NewCookie documentIdCookie = new NewCookie("documentId", documentId);
         return Response.status(Response.Status.OK).cookie(documentIdCookie).entity(doc.getTarget().getBytes(Constants.DEFAULT_CHARSET)).type(MediaType.TEXT_HTML).build();
