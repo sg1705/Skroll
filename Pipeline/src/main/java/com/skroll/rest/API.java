@@ -376,6 +376,17 @@ public class API {
                             if (paragraph.containsKey(CoreAnnotations.IsTOCAnnotation.class)) {
                                 logger.debug(paragraph.getId() + "\t" + "updated TOCs:" + "\t" + DocumentHelper.getTOCLists(paragraph));
                             }
+                        } else if (modifiedParagraph.getClassificationId() == Paragraph.NONE_CLASSIFICATION) {
+                            TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, TrainingWeightAnnotationHelper.NONE, userWeight);
+                            //remove any existing annotations - definedTermList
+                            paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class, null);
+                            paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, false);
+                            //remove any existing annotations - TOCList
+                            paragraph.set(CoreAnnotations.TOCTokensAnnotation.class, null);
+                            paragraph.set(CoreAnnotations.IsTOCAnnotation.class, false);
+                            // Add the userObserved paragraphs
+                            parasForUpdateBNI.add(paragraph);
+                            logger.debug("userObserved paragraphs for NONE:"+ "\t" + paragraph.getId());
                         }
                         logger.debug("TrainingWeightAnnotation:" + paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class).toString());
                         break;
