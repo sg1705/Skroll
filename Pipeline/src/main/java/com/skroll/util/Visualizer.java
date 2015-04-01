@@ -27,7 +27,6 @@ public class Visualizer {
             }
             if (Double.isNaN(data[ii]) || (Double.isInfinite(data[ii]))) {
                 map.put(index, 123456789.0);
-                map.put(index, 123456789.0);
             } else {
                 map.put(index, data[ii]);
             }
@@ -42,6 +41,8 @@ public class Visualizer {
         map.put("parameters", Arrays.toString(node.getParameters()));
         return map;
     }
+
+
 
     public static HashMap<String, HashMap<String, Double>> nodesToMap(DiscreteNode[] nodes) {
         HashMap<String, HashMap<String, Double>> map = new HashMap();

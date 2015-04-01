@@ -110,9 +110,9 @@
   <!-- end content -->
 
   <!-- right sidenav -->
-  <md-sidenav style="width:800px" layout="column" class="md-sidenav-right "
+  <md-sidenav layout="column" class="md-sidenav-right "
               md-component-id="right" md-is-locked-open="false" ng-swipe-left="toggleSidenav('left')">
-    <md-content style="width:750px">
+    <md-content>
       <pre id="rightPane"></pre>
     </md-content>
   </md-sidenav>
@@ -137,6 +137,7 @@
 <!-- build:js({.tmp,app}) scripts/scripts.js -->
 <script src="scripts/app.js"></script>
 <script src="scripts/jquery.fileupload.js"></script>
+<script src="scripts/diff_match_patch_uncompressed.js"></script>
 <script src="scripts/controllers/content.js"></script>
 <script src="scripts/controllers/toolbar.js"></script>
 <script src="scripts/controllers/viewport.js"></script>
