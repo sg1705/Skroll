@@ -20,6 +20,8 @@ import java.util.List;
         @JsonSubTypes.Type(value = com.skroll.analyzer.model.bn.node.TrainingDiscreteNode.class, name = "TrainingDiscreteNode")})
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 public class DiscreteNode{
+
+    @JsonProperty("familyVariables")
     RandomVariableType[] familyVariables;
 
     // store the parameters and probability values in a one dimensional array.

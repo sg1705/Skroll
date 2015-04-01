@@ -94,10 +94,10 @@ ViewPortCtrl.prototype.loadParagraphJson = function(paraId) {
         dmp.diff_cleanupSemantic(d);
         ds = dmp.diff_prettyHtml(d);
       } else {
-        this.ToolbarModel.trainerToolbar.lastJson = newJson;
-        this.ToolbarModel.trainerToolbar.lastSelectedParaId = paraId;
         ds = newJson;
       }
+      this.ToolbarModel.trainerToolbar.lastJson = newJson;
+      this.ToolbarModel.trainerToolbar.lastSelectedParaId = paraId;
       $("#rightPane").html(ds);
     }), function(data, status) {
       console.log(status);
