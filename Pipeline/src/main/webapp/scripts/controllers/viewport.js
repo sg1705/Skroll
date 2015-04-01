@@ -58,18 +58,50 @@ ViewPortCtrl.prototype.paraClicked = function($event) {
   this.highlightParagraph(paraId);
 
 
-  this.documentService
-    .getParagraphJson(paraId)
-    .then(function(data) {
-      $("#rightPane").html(JSON.stringify(data, null, 2));
-    }, function(data, status) {
-      console.log(status);
-    });
+  // this.documentService
+  //   .getParagraphJson(paraId)
+  //   .then(function(data) {
+  //     $("#rightPane").html(JSON.stringify(data, null, 2));
+  //   }, function(data, status) {
+  //     console.log(status);
+  //   });
+
+  this.loadParagraphJson(paraId);
 
   if (ToolbarModel.trainerToolbar.isTrainerMode) {
     this.handleTrainerParaSelection(paraId);
   }
 
+}
+
+ViewPortCtrl.prototype.loadParagraphJson = function(paraId) {
+  this.SelectionModel.paragraphId = paraId;
+  this.documentService
+    .getParagraphJson(paraId)
+    .then(angular.bind(this, function(result) {
+      var oldJson = this.ToolbarModel.trainerToolbar.lastJson;
+      var newJson = JSON.stringify(result, null, 2);
+      var ds;
+      if ((oldJson != '') && (paraId == this.ToolbarModel.trainerToolbar.lastSelectedParaId)) {
+        var dmp = new diff_match_patch();
+        var a = dmp.diff_linesToChars_(oldJson, newJson);
+        var lineText1 = a['chars1'];
+        var lineText2 = a['chars2'];
+        var lineArray = a['lineArray'];
+        var d = dmp.diff_main(lineText1, lineText2, false);
+        dmp.diff_charsToLines_(d, lineArray);
+        var ms_end = (new Date()).getTime();
+        dmp.diff_cleanupSemantic(d);
+        ds = dmp.diff_prettyHtml(d);
+      } else {
+        this.ToolbarModel.trainerToolbar.lastJson = newJson;
+        this.ToolbarModel.trainerToolbar.lastSelectedParaId = paraId;
+        ds = newJson;
+      }
+      $("#rightPane").html(ds);
+    }), function(data, status) {
+      console.log(status);
+    });
 }
 
 ViewPortCtrl.prototype.highlightParagraph = function(paraId) {
