@@ -355,10 +355,6 @@ public class API {
                         if (modifiedParagraph.getClassificationId() == Paragraph.TOC_CLASSIFICATION) {
                             TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, TrainingWeightAnnotationHelper.TOC, userWeight);
 
-                            //remove any existing annotations - definedTermList
-                            paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class, null);
-                            paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, false);
-
                             //remove any existing annotations - TOCList
                             paragraph.set(CoreAnnotations.TOCTokensAnnotation.class, null);
                             paragraph.set(CoreAnnotations.IsTOCAnnotation.class, false);
