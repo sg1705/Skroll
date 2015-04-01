@@ -24,7 +24,10 @@ public class DocumentAnnotatingHelper {
     public static final int PFS_TOKENS_NUMBER_FEATURE_MAX =
             RandomVariableType.PARAGRAPH_NUMBER_TOKENS.getFeatureSize()-1;
 
+
+
     // create a copy of paragraph and annotate it further for training
+    // may consider use different method for training different paragraph type.
     static CoreMap processParagraph(CoreMap paragraph, int numWords){
         CoreMap trainingParagraph = new CoreMap();
         List<Token> tokens = paragraph.getTokens();
@@ -62,6 +65,9 @@ public class DocumentAnnotatingHelper {
         }
         trainingParagraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class,
                 paragraph.get(CoreAnnotations.DefinedTermTokensAnnotation.class));
+
+        trainingParagraph.set(CoreAnnotations.IsTOCAnnotation.class,
+                paragraph.get(CoreAnnotations.IsTOCAnnotation.class));
 
         return trainingParagraph;
     }

@@ -188,8 +188,8 @@ public class HiddenMarkovModel {
     public void updateProbabilities(){
 
         // update state value probability
-        int total =0;
-        for (double n: totalStateValueCounts) total += n+PRIOR_COUNT;
+        double total =0;
+        for (double n: totalStateValueCounts) total += (n+PRIOR_COUNT);
         for (int i=0; i<numStateValues; i++)
             stateValueProbability[i] = (double)(totalStateValueCounts[i]+PRIOR_COUNT)/total;
 
@@ -268,6 +268,38 @@ public class HiddenMarkovModel {
             c = nextTokenCounts[stateValues[i]].get(nextToken);
             if (c==null) c=0.0;
             nextTokenCounts[stateValues[i]].put(nextToken, c + 1);
+        }
+        probabilitiesUpToDate = false;
+    }
+    public void updateCountsWithWeight(String[] tokens, int[] stateValues, int[][] features, double weight){
+
+        //skip samples that are too short
+        if (tokens.length < modelLength || stateValues.length<modelLength || features.length<modelLength) return;
+        for (int i=0;i<modelLength && i < tokens.length; i++){
+            if (stateValues[i]==-1)
+                return;
+            for (int f =0; f<features[0].length; f++){
+                stateFeatureValueCounts.get(stateValues[i]).get(f)[features[i][f]]+=weight;
+            }
+            totalStateValueCounts[stateValues[i]]+=weight;
+
+            String token = tokens[i];
+            String nextToken=null;
+            // nextToken will be null if token is the last token
+            if (i+1 < tokens.length) { // do not update if at the last state
+                transitionCounts[stateValues[i]][stateValues[i + 1]]+=weight;
+                nextToken = tokens[i+1];
+            }
+
+
+            Double c = tokenCounts[stateValues[i]].get(token);
+            if (c==null) c=0.0;
+            tokenCounts[stateValues[i]].put(token, c + weight);
+
+            if (!USE_NEXT_TOKEN || nextToken==null) continue;
+            c = nextTokenCounts[stateValues[i]].get(nextToken);
+            if (c==null) c=0.0;
+            nextTokenCounts[stateValues[i]].put(nextToken, c + weight);
         }
         probabilitiesUpToDate = false;
     }
