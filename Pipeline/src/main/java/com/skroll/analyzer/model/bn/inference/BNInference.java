@@ -25,6 +25,16 @@ public class BNInference {
         return newBelief;
     }
 
+    public static double[] normalize(double[] vals){
+        double sum=0;
+        for (double p:vals) sum+=p;
+        double[] probs = new double[vals.length];
+
+        if (sum!=0)
+            for (int i=0;i<probs.length;i++) probs[i]= vals[i]/sum;
+        return probs;
+    }
+
     public static double[] normalize(double[] vals, double weight){
         double sum=0;
         for (double p:vals) sum+=p;
@@ -63,5 +73,21 @@ public class BNInference {
     public static void exp(double[] vals){
         for (int i=0;i<vals.length;i++)
             vals[i] = Math.exp(vals[i]);
+    }
+
+    public static void convertLogBeliefToProb(double[] beliefs){
+        normalizeLog(beliefs);
+        convertNormalizedLogBeliefToProb(beliefs);
+    }
+
+    public static void convertNormalizedLogBeliefToProb(double[] beliefs){
+        exp(beliefs);
+        normalize(beliefs);
+    }
+
+    public static void convertLogBeliefArrayToProb(double[][] beliefsArray){
+        for (double[] belief: beliefsArray){
+            convertLogBeliefToProb(belief);
+        }
     }
 }
