@@ -59,7 +59,7 @@ public class DefinitionClassifierTest {
 //        }
     }
 
-    @Test
+    //@Test
     public void testClassify() {
 
         String testingFile = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
