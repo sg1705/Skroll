@@ -29,6 +29,18 @@ public class TrainingWeightAnnotationHelper {
         userWeightList.set(TOC,userWeightList.get(TOC+LATEST_WEIGHT_INDEX));
         userWeightList.set(NONE,userWeightList.get(NONE+LATEST_WEIGHT_INDEX));
 
+    }
+
+
+    public static void setTrainingWeight(CoreMap paragraph, int index, float userWeight){
+        List<Float>  userWeightList = paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class);
+        if (userWeightList == null) {
+            //First three float are previously trained weight - Definition, TOC and NONE
+            //Second set of three floats are currently trained weight
+            userWeightList = Lists.newArrayList((float)0,(float)0,(float)0,(float)0,(float)0,(float)0);
+            paragraph.set(CoreAnnotations.TrainingWeightAnnotationFloat.class, userWeightList);
+        }
+
         if(paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)){
             for (int i=LATEST_WEIGHT_INDEX; i<LATEST_WEIGHT_INDEX*2;i++)
                 userWeightList.set(i,(float)0);
@@ -38,7 +50,6 @@ public class TrainingWeightAnnotationHelper {
         }
 
     }
-
     // method converts multi-class weight to binary class weight.
     // todo: this method is temporarily used to get the weights. Should probably be improved later to handle multi-class and others.
     public static double[][] getParagraphWeight(CoreMap para, RandomVariableType paraType){

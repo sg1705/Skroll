@@ -6,6 +6,7 @@ import com.skroll.analyzer.model.bn.SimpleDataTuple;
 import com.skroll.analyzer.model.bn.TrainingNaiveBayesWithFeatureConditions;
 import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.analyzer.model.bn.node.DiscreteNode;
+import com.skroll.analyzer.model.bn.node.TrainingDiscreteNode;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;

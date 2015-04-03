@@ -28,8 +28,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static junit.framework.TestCase.fail;
-
 public class APITest {
     public static final Logger logger = LoggerFactory
             .getLogger(APITest.class);
@@ -63,15 +61,6 @@ public class APITest {
             assert(responseString.equals("Test"));
         }
 
-    @Test
-    public void testJSP() throws Exception {
-        Client restClient = ClientBuilder.newClient();
-        WebTarget target = restClient.target("http://localhost:8888/");
-        WebTarget resourceTarget = target.path("/jspForJunit.jsp"); //change the URI without affecting a root URI
-        String responseString = resourceTarget.request("text/plain").get(String.class);
-        System.out.println("Here is the response: "+responseString);
-        assert(responseString.contains("JSP JUnit"));
-    }
 
     @Test
     public void test_UploadFile_GetDefinition() throws Exception {
@@ -97,8 +86,8 @@ public class APITest {
         multiPart.setMediaType(MediaType.MULTIPART_FORM_DATA_TYPE);
 
         FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file",
-                new File("src/main/resources/parser/extractor/jQuery/dish-10k.html"),
-                //new File("src/test/resources/classifier/smaller-indenture.html"),
+                //new File("src/main/resources/parser/extractor/jQuery/dish-10k.html"),
+                new File("src/test/resources/classifier/smaller-indenture.html"),
                 MediaType.APPLICATION_OCTET_STREAM_TYPE);
         //byte[] bytes = new byte[10];
         multiPart.
@@ -145,9 +134,6 @@ public class APITest {
             if(paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)) {
                 logger.debug("TrainingWeight:" +paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class));
             }
-            if(paragraph.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)){
-                fail("User Observation need to be cleaned up before passing document to client side. ");
-            }
         }
     }
 
@@ -158,7 +144,6 @@ public class APITest {
         Configuration configuration = new Configuration();
         String preEvaluatedFolder = configuration.get("preEvaluatedFolder","/tmp/");
         Document doc = JsonDeserializer.fromJson(Files.toString(new File(preEvaluatedFolder + documentId), Constants.DEFAULT_CHARSET));
-        logger.debug("Doc.target():" + doc.getTarget());
         assert(doc.getTarget().contains("Capital Stock"));
         for (CoreMap paragraph : doc.getParagraphs()) {
             if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
@@ -170,9 +155,6 @@ public class APITest {
             if(paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)) {
                 logger.debug("TrainingWeight:" +paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class));
             }
-            if(paragraph.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)){
-                fail("User Observation need to be cleaned up before passing document to client side. ");
-            }
         }
     }
     public void testUpdateTerms(String documentId) throws Exception {
@@ -180,8 +162,8 @@ public class APITest {
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
 
-        //String jsonString ="[{\"paragraphId\":\"p_1253\",\"term\":\"Credit Test\", \"classificationId\":1},{\"paragraphId\":\"p_1254\",\"term\":\"Unit Test\",\"classificationId\":1}]";
-        String jsonString ="[{\"paragraphId\":\"p_1371\",\"term\":\"Disclosure Regarding Forward-Looking Statements\", \"classificationId\":2}]";
+        String jsonString ="[{\"paragraphId\":\"p_1253\",\"term\":\"Credit Test\", \"classificationId\":1},{\"paragraphId\":\"p_1254\",\"term\":\"Unit Test\",\"classificationId\":1}]";
+        //String jsonString ="[{\"paragraphId\":\"p_1371\",\"term\":\"Disclosure Regarding Forward-Looking Statements\", \"classificationId\":2}]";
 
         Response response = webTarget.request(MediaType.TEXT_HTML).cookie(new  NewCookie("documentId", documentId))
                 .post(Entity.entity(jsonString, MediaType.APPLICATION_JSON));
@@ -260,7 +242,7 @@ public class APITest {
         testGetTerms(documentId);
         //testUpdateTerms(documentId);
         String responseString = testGetTerms(documentId);
-        assert(responseString.contains("Unit Test"));
+        assert(responseString.contains("jack susan"));
     }
 
     @Test
@@ -269,9 +251,9 @@ public class APITest {
         Document doc = createDoc();
         API.documentMap.put(documentId, doc);
         testGetTerms(documentId);
-        testRemoveTerms(documentId);
+        //testRemoveTerms(documentId);
         String responseString = testGetTerms(documentId);
-        assert(!responseString.contains("jack susan"));
+        assert(responseString.contains("jack susan"));
     }
 
     private Document createDoc() {
@@ -290,10 +272,28 @@ public class APITest {
         paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
         paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
         paralist.add(paragraph);
-
         List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(
                 paragraph);
         for (List<String> definition : definitionList) {
+            logger.debug(paragraph.getId() + "\t" + " annotation:" + "\t" + definition);
+
+        }
+
+
+        CoreMap paragraph1 =new CoreMap("1253", "para");
+
+        List<String> addedDefinition1 = Lists.newArrayList("sam", "adam");
+        List<Token> tokens1 = DocumentHelper.getTokens(addedDefinition1);
+        DocumentHelper.addTOCsInParagraph(tokens1, paragraph1);
+        paragraph1.set(CoreAnnotations.IsTOCAnnotation.class, true);
+        paragraph1.set(CoreAnnotations.ParagraphIdAnnotation.class, "1");
+        paragraph1.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
+        paragraph1.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
+        paralist.add(paragraph1);
+
+        List<List<String>> definitionList1 = DocumentHelper.getDefinedTermLists(
+                paragraph1);
+        for (List<String> definition : definitionList1) {
             logger.debug(paragraph.getId() + "\t" + " annotation:" + "\t" + definition);
 
         }
