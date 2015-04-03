@@ -13,12 +13,14 @@ import com.skroll.classifier.Classifier;
 import com.skroll.classifier.DefinitionClassifier;
 import com.skroll.classifier.TOCExperimentClassifier;
 import com.skroll.document.*;
+import com.skroll.document.annotation.CoreAnnotation;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
 import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.ParserException;
 import com.skroll.pipeline.util.Constants;
 import com.skroll.util.Configuration;
+import com.skroll.util.Flags;
 import com.skroll.util.ObjectPersistUtil;
 import org.glassfish.jersey.media.multipart.BodyPart;
 import org.glassfish.jersey.media.multipart.BodyPartEntity;
@@ -30,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
@@ -365,6 +368,7 @@ public class API {
                                     if (addedTerm != null && !addedTerm.isEmpty()) {
                                         if (!Joiner.on("").join(addedTerm).equals("")) {
                                             DocumentHelper.setMatchedTokens(paragraph, addedTerm, Paragraph.TOC_CLASSIFICATION);
+
                                         }
                                     }
                                 }
@@ -399,8 +403,12 @@ public class API {
         try {
             logger.debug("Number of Definition Paragraph before update BNI: {}",DocumentHelper.getDefinitionParagraphs(doc).size());
             logger.debug("Number of TOCs Paragraph before update BNI: {}",DocumentHelper.getTOCParagraphs(doc).size());
-            doc = (Document) definitionClassifier.updateBNI(documentId,doc,parasForUpdateBNI);
-            doc = (Document) tocClassifier.updateBNI(documentId,doc,parasForUpdateBNI);
+            if (Flags.get(Flags.ENABLE_UPDATE_BNI)) {
+                doc = (Document) definitionClassifier.updateBNI(documentId, doc, parasForUpdateBNI);
+                doc = (Document) tocClassifier.updateBNI(documentId, doc, parasForUpdateBNI);
+            } else {
+                logger.debug("No BNIIIIIIIIIIIIIIIIIIIIIIIIIII");
+            }
             logger.debug("Number of Definition Paragraph After update BNI: {}",DocumentHelper.getDefinitionParagraphs(doc).size());
             logger.debug("Number of TOCs Paragraph after update BNI: {}",DocumentHelper.getTOCParagraphs(doc).size());
         } catch (Exception e) {
@@ -665,4 +673,57 @@ public class API {
         Response r = Response.ok().cookie(cookie).status(200).entity(output).build();
         return r;
     }
+
+    @GET
+    @Path("/setFlags")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response setFlags(@QueryParam("flagName") String flagName,
+                             @QueryParam("flagValue") String flagValue,
+                             @Context HttpHeaders hh) {
+        logger.debug("FlagName=" + flagName);
+        logger.debug("FlagValue=" + flagValue);
+        Flags.put(flagName, new Boolean(flagValue));
+        return Response.ok().status(Response.Status.OK).entity("").build();
+    }
+
+
+    @GET
+    @Path("/observeNone")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response observeNone(@Context HttpHeaders hh) throws IOException {
+
+        MultivaluedMap<String, String> headerParams = hh.getRequestHeaders();
+        Map<String, Cookie> pathParams = hh.getCookies();
+        logger.debug("getDocumentId: Cookie: {}", pathParams);
+        if ( pathParams.get("documentId")==null) {
+            logger.warn("documentId is missing from Cookie");
+            return Response.status(Response.Status.EXPECTATION_FAILED).entity("documentId is missing from Cookie").type(MediaType.TEXT_HTML).build();
+
+        }
+        String documentId = pathParams.get("documentId").getValue();
+
+        Document doc = documentMap.get(documentId);
+        if (doc==null) {
+            logger.warn("document cannot be found for document id: "+ documentId);
+            return Response.status(Response.Status.NOT_FOUND).entity("Failed to find the document in Map" ).type(MediaType.TEXT_PLAIN).build();
+        }
+
+        //iterate over each paragraph
+        for(CoreMap paragraph : doc.getParagraphs()) {
+            if (( paragraph.get(CoreAnnotations.IsDefinitionAnnotation.class) ||
+                    paragraph.get(CoreAnnotations.IsTOCAnnotation.class))) {
+
+            } else {
+                paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
+                paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
+            }
+        }
+        Files.write(JsonDeserializer.getJson(doc), new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
+        return Response.ok().status(Response.Status.OK).entity("").build();
+    }
+
+
+
+
+
 }

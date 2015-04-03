@@ -182,4 +182,37 @@ angular.module('SkrollApp')
     };
 
 
+    /**
+     * Sets a given flag
+     */
+    this.setFlags = function(flagName, flagValue) {
+      /** make a get request */
+      $http.get(documentServiceBase + 'setFlags?flagName=' + flagName + '&flagValue=' + flagValue)
+        .success(function(data, status) {
+          console.log("flag set");
+          console.log(data);
+        })
+        .error(function(data, status) {
+          console.log(status);
+        });;
+    };
+
+    /**
+     * Observe none
+     */
+    this.observeNone = function() {
+      /** make a get request */
+      $http.get(documentServiceBase + 'observeNone')
+        .success(function(data, status) {
+          console.log("observed none");
+          console.log(data);
+        })
+        .error(function(data, status) {
+          console.log(status);
+        });;
+    };
+
+
+
+
   });

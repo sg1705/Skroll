@@ -23,6 +23,10 @@ public class TrainingWordNode extends WordNode {
         //parameters = parameters;
     }
 
+    public TrainingWordNode( TrainingWordNode trainingNode){
+        parameters = trainingNode.getCopyOfParameters();
+    }
+
     public void updateCount(){
         updateCount(1);
     }
@@ -80,8 +84,8 @@ public class TrainingWordNode extends WordNode {
 
 
             //hack for testing purpose
-            if (parameters.get(w)[0]+ parameters.get(w)[1] <10) continue;
-            for (int j=0; j<numValues; j++) p[j] = Math.log((0.1 +
+            if (parameters.get(w)[0]+ parameters.get(w)[1] <1) continue;
+            for (int j=0; j<numValues; j++) p[j] = Math.log((0.01 +
                     parameters.get(w)[j])/ parent.getParameter(j));
 
 //            for (int j=0; j<numValues; j++) p[j] = Math.log((priorCounts[j] +

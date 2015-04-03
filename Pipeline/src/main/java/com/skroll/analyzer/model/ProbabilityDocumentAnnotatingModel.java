@@ -317,14 +317,18 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
     }
 
     public double[][] getParagraphCategoryProbabilities(){
-        double[][] paraCatProbs = paragraphCategoryBelief.clone();
+        double[][] paraCatProbs = new double[paragraphCategoryBelief.length][paraCategory.getFeatureSize()];
+        for (int i=0; i<paraCatProbs.length;i++)
+            paraCatProbs[i] = paragraphCategoryBelief[i].clone();
         BNInference.convertLogBeliefArrayToProb(paraCatProbs);
         return paraCatProbs;
     }
 
 
     public double[][] getDocumentFeatureProbabilities(){
-        double[][] docFeatureProbs = documentFeatureBelief.clone();
+        double[][] docFeatureProbs = new double[documentFeatureBelief.length][2];
+        for (int i=0; i<documentFeatureBelief.length; i++)
+                docFeatureProbs[i] = documentFeatureBelief[i].clone();
         BNInference.convertLogBeliefArrayToProb(docFeatureProbs);
         return docFeatureProbs;
     }
@@ -357,7 +361,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
     public HashMap<String, HashMap<String, Double>> toVisualMap(int paraIndex) {
        //covert paraCategoryBelief
         HashMap<String, HashMap<String, Double>> map = new HashMap();
-        map.put(this.paraCategory.name(), Visualizer.toDoubleArrayToMap(this.getParagraphCategoryBelief()[paraIndex]));
+        map.put(this.paraCategory.name(), Visualizer.toDoubleArrayToMap(this.getParagraphCategoryProbabilities()[paraIndex]));
         for(int ii = 0; ii < documentFeatureBelief.length; ii++) {
             map.put(this.docFeatures.get(ii).name(), Visualizer.toDoubleArrayToMap(this.getDocumentFeatureProbabilities()[ii]));
         }

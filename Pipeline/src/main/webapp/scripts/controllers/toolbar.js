@@ -20,6 +20,19 @@ ToolbarCtrl.prototype.toggleTrainerMode = function() {
 	ToolbarModel.trainerToolbar.isTrainerMode = !ToolbarModel.trainerToolbar.isTrainerMode;
 }
 
+ToolbarCtrl.prototype.toggleUpdateBNI = function() {
+	ToolbarModel.trainerToolbar.isUpdateBNI = !ToolbarModel.trainerToolbar.isUpdateBNI;
+	this.documentService.setFlags("ENABLE_UPDATE_BNI", ToolbarModel.trainerToolbar.isUpdateBNI);
+}
+
+ToolbarCtrl.prototype.observeNone = function() {
+	console.log("observing none");
+	this.documentService.observeNone();
+}
+
+
+
+
 ToolbarCtrl.prototype.updateModelByTrainer = function() {
 	this.documentService.updateModel();
 }

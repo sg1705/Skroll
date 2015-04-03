@@ -33,6 +33,37 @@ public class TrainingNaiveBayesWithFeatureConditions extends NaiveBayesWithFeatu
         this.discreteNodeArray = discreteNodeArray;
     }
 
+
+    /**
+     * copy constructor
+     */
+    public TrainingNaiveBayesWithFeatureConditions(TrainingNaiveBayesWithFeatureConditions tnbf){
+        categoryNode = new TrainingDiscreteNode((TrainingDiscreteNode) tnbf.getCategoryNode());
+        TrainingDiscreteNode[] pdfNodeArray = (TrainingDiscreteNode[]) tnbf.getDocumentFeatureNodeArray();
+        TrainingDiscreteNode[] pfNodeArray = (TrainingDiscreteNode[]) tnbf.getFeatureNodeArray();
+        TrainingDiscreteNode[] pfedNodeArray = (TrainingDiscreteNode[]) tnbf.getFeatureExistAtDocLevelArray();
+
+        documentFeatureNodeArray = new TrainingDiscreteNode[ pdfNodeArray.length];
+        featureNodeArray = new TrainingDiscreteNode[ pfNodeArray.length];
+        featureExistAtDocLevelArray = new TrainingDiscreteNode[ pfedNodeArray.length];
+
+        for (int i=0; i<featureNodeArray.length; i++) {
+            featureNodeArray[i] = new TrainingDiscreteNode(pfNodeArray[i]);
+        }
+        for (int i=0; i<documentFeatureNodeArray.length;i++)
+            documentFeatureNodeArray[i] = new TrainingDiscreteNode( pdfNodeArray[i]);
+        for (int i=0; i<featureExistAtDocLevelArray.length;i++)
+            featureExistAtDocLevelArray[i] = new TrainingDiscreteNode( pfedNodeArray[i]);
+        wordNode = new TrainingWordNode((TrainingWordNode) tnbf.getWordNode());
+        generateParentsAndChildren();
+
+        putAllNodesInOneList();
+
+
+
+    }
+
+
     // assuming the documentFeatures match the front sublist of the features list
 
     public TrainingNaiveBayesWithFeatureConditions(RandomVariableType categoryVar,
