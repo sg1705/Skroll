@@ -338,8 +338,7 @@ public class API {
                                 for(List<String> addedTerm :addedTerms) {
                                     if (addedTerm != null && !addedTerm.isEmpty()) {
                                         if (!Joiner.on("").join(addedTerm).equals("")){
-                                            List<Token> tokens = DocumentHelper.getTokens(addedTerm);
-                                            DocumentHelper.addDefinedTermTokensInParagraph(tokens, paragraph);
+                                            DocumentHelper.setMatchedTokens(paragraph, addedTerm, Paragraph.DEFINITION_CLASSIFICATION);
                                         }
                                     }
                                 }
@@ -364,8 +363,9 @@ public class API {
                             if (addedTerms != null && !addedTerms.isEmpty()) {
                                 for(List<String> addedTerm :addedTerms) {
                                     if (addedTerm != null && !addedTerm.isEmpty()) {
-                                        List<Token> tokens = DocumentHelper.getTokens(addedTerm);
-                                        DocumentHelper.addTOCsInParagraph(tokens, paragraph);
+                                        if (!Joiner.on("").join(addedTerm).equals("")) {
+                                            DocumentHelper.setMatchedTokens(paragraph, addedTerm, Paragraph.TOC_CLASSIFICATION);
+                                        }
                                     }
                                 }
 
