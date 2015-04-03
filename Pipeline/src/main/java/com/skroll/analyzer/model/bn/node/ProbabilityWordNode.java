@@ -16,8 +16,8 @@ public class ProbabilityWordNode extends WordNode{
     public ProbabilityWordNode( TrainingWordNode trainingNode){
         probabilityFunction = parameters = trainingNode.getProbabilities();
     }
-    public ProbabilityWordNode( ProbabilityWordNode trainingNode){
-        probabilityFunction = parameters = trainingNode.getProbabilities();
+    public ProbabilityWordNode( ProbabilityWordNode probNode){
+        probabilityFunction = parameters = probNode.getCopyOfParameters();
     }
 
     public double[] sumOutWordsWithObservation(){

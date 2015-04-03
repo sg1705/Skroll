@@ -23,6 +23,10 @@ public class TrainingWordNode extends WordNode {
         //parameters = parameters;
     }
 
+    public TrainingWordNode( TrainingWordNode trainingNode){
+        parameters = trainingNode.getCopyOfParameters();
+    }
+
     public void updateCount(){
         updateCount(1);
     }
