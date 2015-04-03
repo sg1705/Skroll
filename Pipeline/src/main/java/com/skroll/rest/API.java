@@ -9,8 +9,9 @@ import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.skroll.classifier.Classifier;
 import com.skroll.classifier.DefinitionClassifier;
-import com.skroll.classifier.TOCClassifier;
+import com.skroll.classifier.TOCExperimentClassifier;
 import com.skroll.document.*;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
@@ -50,7 +51,7 @@ public class API {
 
     protected static Map<String,Document> documentMap = new ConcurrentHashMap<String,Document>();
     private static DefinitionClassifier definitionClassifier = new DefinitionClassifier();
-    private static TOCClassifier tocClassifier = new TOCClassifier();
+    private static Classifier tocClassifier = new TOCExperimentClassifier();
     private static Configuration configuration = new Configuration();
     private static String  preEvaluatedFolder = configuration.get("preEvaluatedFolder","/tmp/");
     private static ObjectPersistUtil docPersistUtil = new ObjectPersistUtil(preEvaluatedFolder);
@@ -326,7 +327,7 @@ public class API {
                         }
 
                         if (modifiedParagraph.getClassificationId() == Paragraph.DEFINITION_CLASSIFICATION) {
-                            TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, TrainingWeightAnnotationHelper.DEFINITION, userWeight);
+                            TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.DEFINITION, userWeight);
 
                             //remove any existing annotations - definedTermList
                             paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class, null);
@@ -353,7 +354,7 @@ public class API {
 
                         }
                         if (modifiedParagraph.getClassificationId() == Paragraph.TOC_CLASSIFICATION) {
-                            TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, TrainingWeightAnnotationHelper.TOC, userWeight);
+                            TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.TOC, userWeight);
 
                             //remove any existing annotations - TOCList
                             paragraph.set(CoreAnnotations.TOCTokensAnnotation.class, null);
@@ -377,7 +378,7 @@ public class API {
                                 logger.debug(paragraph.getId() + "\t" + "updated TOCs:" + "\t" + DocumentHelper.getTOCLists(paragraph));
                             }
                         } else if (modifiedParagraph.getClassificationId() == Paragraph.NONE_CLASSIFICATION) {
-                            TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, TrainingWeightAnnotationHelper.NONE, userWeight);
+                            TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.NONE, userWeight);
                             //remove any existing annotations - definedTermList
                             paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class, null);
                             paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, false);
@@ -451,11 +452,24 @@ public class API {
         } catch (ObjectPersistUtil.ObjectPersistException e) {
             e.printStackTrace();
         }
-        tocClassifier.trainWithWeight(doc);
+        //tocClassifier.trainWithWeight(doc);
+        for (CoreMap paragraph : doc.getParagraphs()) {
+            if (paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)) {
+                TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, TrainingWeightAnnotationHelper.TOC, userWeight);
+            }
+        }
+
         try {
             tocClassifier.persistModel();
         } catch (ObjectPersistUtil.ObjectPersistException e) {
             e.printStackTrace();
+        }
+        try{
+            documentMap.put(documentId,doc);
+            Files.write(JsonDeserializer.getJson(doc), new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
+        } catch (Exception e) {
+            logger.error("Failed to persist the document object: {}", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to persist the document object" ).type(MediaType.APPLICATION_JSON).build();
         }
         logger.debug("train the model using document is stored in {}", preEvaluatedFolder + documentId);
 
