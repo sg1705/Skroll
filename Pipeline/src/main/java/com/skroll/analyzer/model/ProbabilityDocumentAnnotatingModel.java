@@ -317,14 +317,18 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
     }
 
     public double[][] getParagraphCategoryProbabilities(){
-        double[][] paraCatProbs = paragraphCategoryBelief.clone();
+        double[][] paraCatProbs = new double[paragraphCategoryBelief.length][paraCategory.getFeatureSize()];
+        for (int i=0; i<paraCatProbs.length;i++)
+            paraCatProbs[i] = paragraphCategoryBelief[i].clone();
         BNInference.convertLogBeliefArrayToProb(paraCatProbs);
         return paraCatProbs;
     }
 
 
     public double[][] getDocumentFeatureProbabilities(){
-        double[][] docFeatureProbs = documentFeatureBelief.clone();
+        double[][] docFeatureProbs = new double[documentFeatureBelief.length][2];
+        for (int i=0; i<documentFeatureBelief.length; i++)
+                docFeatureProbs[i] = documentFeatureBelief[i].clone();
         BNInference.convertLogBeliefArrayToProb(docFeatureProbs);
         return docFeatureProbs;
     }

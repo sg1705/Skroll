@@ -53,6 +53,12 @@ public class HiddenMarkovModel {
         this(DEFAULT_MODEL_LENGTH);
     }
 
+    public HiddenMarkovModel(HiddenMarkovModel hmm){
+        this.transitionCounts = hmm.transitionCounts.clone();
+        this.totalStateValueCounts = hmm.totalStateValueCounts.clone();
+        //todo: add the rest
+    }
+
     // features[0] is the number of state values
     public HiddenMarkovModel(int modelLength, int numStateValues, int [] featureSizes){
         this.modelLength = modelLength;

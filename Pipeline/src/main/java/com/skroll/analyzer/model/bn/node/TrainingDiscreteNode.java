@@ -27,6 +27,16 @@ public class TrainingDiscreteNode extends DiscreteNode {
         Arrays.fill(parameters, PRIOR_COUNT);
     }
 
+    /**
+     * copy constructor
+     * @param node
+     */
+    public TrainingDiscreteNode(TrainingDiscreteNode node){
+        this.familyVariables = node.familyVariables;
+        parameters= node.getLogProbabilities().clone();
+    }
+
+
     public void updateCount(){
         updateCount(1);
     }

@@ -34,6 +34,17 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
                 DEFAULT_PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL, DEFAULT_DOCUMENT_FEATURES);
     }
 
+//    public TrainingDocumentAnnotatingModel(TrainingDocumentAnnotatingModel model){
+//        this.tnbfModel = new TrainingNaiveBayesWithFeatureConditions(model.getTnbfModel());
+//        this.hmm = new HiddenMarkovModel(model.getHMM());
+//        this.wordType = model.wordType;
+//        this.wordFeatures = model.wordFeatures;
+//        this.paraCategory = model.paraCategory;
+//        this.paraFeatures = model.paraFeatures;
+//        this.paraDocFeatures = model.paraDocFeatures;
+//        this.docFeatures = model.docFeatures;
+//    }
+
     public TrainingDocumentAnnotatingModel(RandomVariableType wordType,
                                            List<RandomVariableType> wordFeatures,
                                            RandomVariableType paraCategory,
