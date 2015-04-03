@@ -72,7 +72,7 @@ public class TrainingDocumentAnnotatingModelTest{
         List<CoreMap> paragraphs = new ArrayList<>();
         for( CoreMap paragraph : doc.getParagraphs())
             paragraphs.add(DocumentAnnotatingHelper.processParagraph(paragraph, model.getHmm().size()));
-        int[] docFeatureValues = DocumentAnnotatingHelper.generateDocumentFeatures(paragraphs,
+        int[] docFeatureValues = DocumentAnnotatingHelper.generateDocumentFeatures(paragraphs, doc.getParagraphs(),
                 model.getParaCategory(),
                 DocumentAnnotatingModel.DEFAULT_DOCUMENT_FEATURES,
                 DocumentAnnotatingModel.DEFAULT_PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL);
