@@ -19,6 +19,7 @@ import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.ParserException;
 import com.skroll.pipeline.util.Constants;
 import com.skroll.util.Configuration;
+import com.skroll.util.Flags;
 import com.skroll.util.ObjectPersistUtil;
 import org.glassfish.jersey.media.multipart.BodyPart;
 import org.glassfish.jersey.media.multipart.BodyPartEntity;
@@ -399,8 +400,12 @@ public class API {
         try {
             logger.debug("Number of Definition Paragraph before update BNI: {}",DocumentHelper.getDefinitionParagraphs(doc).size());
             logger.debug("Number of TOCs Paragraph before update BNI: {}",DocumentHelper.getTOCParagraphs(doc).size());
-            doc = (Document) definitionClassifier.updateBNI(documentId,doc,parasForUpdateBNI);
-            doc = (Document) tocClassifier.updateBNI(documentId,doc,parasForUpdateBNI);
+            if (Flags.get(Flags.ENABLE_UPDATE_BNI)) {
+                doc = (Document) definitionClassifier.updateBNI(documentId, doc, parasForUpdateBNI);
+                doc = (Document) tocClassifier.updateBNI(documentId, doc, parasForUpdateBNI);
+            } else {
+                logger.debug("No BNIIIIIIIIIIIIIIIIIIIIIIIIIII");
+            }
             logger.debug("Number of Definition Paragraph After update BNI: {}",DocumentHelper.getDefinitionParagraphs(doc).size());
             logger.debug("Number of TOCs Paragraph after update BNI: {}",DocumentHelper.getTOCParagraphs(doc).size());
         } catch (Exception e) {
@@ -665,4 +670,20 @@ public class API {
         Response r = Response.ok().cookie(cookie).status(200).entity(output).build();
         return r;
     }
+
+    @GET
+    @Path("/setFlags")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response setFlags(@QueryParam("flagName") String flagName,
+                             @QueryParam("flagValue") String flagValue,
+                             @Context HttpHeaders hh) {
+        logger.debug("FlagName=" + flagName);
+        logger.debug("FlagValue=" + flagValue);
+        Flags.put(flagName, new Boolean(flagValue));
+        return Response.ok().status(Response.Status.OK).entity("").build();
+    }
+
+
+
+
 }
