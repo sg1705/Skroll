@@ -367,6 +367,15 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
         }
         return map;
     }
+
+    public HashMap<Integer, Double> toParaCategoryDump() {
+        //covert paraCategoryBelief
+        HashMap<Integer, Double> map = new HashMap();
+        for (int ii = 0; ii < this.getParagraphCategoryProbabilities().length; ii++) {
+            map.put(ii, this.getParagraphCategoryProbabilities()[ii][1]);
+        }
+        return map;
+    }
 }
 
 

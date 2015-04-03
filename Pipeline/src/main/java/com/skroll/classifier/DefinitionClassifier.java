@@ -191,6 +191,14 @@ public class DefinitionClassifier extends ClassifierImpl{
         return bniMap.get(documentId).toVisualMap(paraIndex);
     }
 
+
+    @Override
+    public HashMap<Integer, Double> getProbabilityDataForDoc(String documentId) {
+        return bniMap.get(documentId).toParaCategoryDump();
+    }
+
+
+
     @Override
     public HashMap<String, HashMap<String, HashMap<String, Double>>> getModelVisualMap(String documentId) {
         return trainingModel.toVisualMap();

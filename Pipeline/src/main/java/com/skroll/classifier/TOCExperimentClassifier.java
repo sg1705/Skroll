@@ -217,4 +217,10 @@ public class TOCExperimentClassifier extends ClassifierImpl {
         return trainingModel.toVisualMap();
     }
 
+    @Override
+    public HashMap<Integer, Double> getProbabilityDataForDoc(String documentId) {
+        return bniMap.get(documentId).toParaCategoryDump();
+    }
+
+
 }

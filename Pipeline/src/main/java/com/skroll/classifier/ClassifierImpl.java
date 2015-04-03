@@ -46,5 +46,5 @@ public abstract class ClassifierImpl implements Classifier {
         return null;
     }
     public HashMap<String, HashMap<String, HashMap<String, Double>>> getModelVisualMap(String documentId) {return null;}
-
+    public HashMap<Integer, Double> getProbabilityDataForDoc(String documentId) {return null;}
 }
