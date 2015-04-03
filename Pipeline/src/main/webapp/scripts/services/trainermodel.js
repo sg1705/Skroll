@@ -11,6 +11,7 @@
 var ToolbarModel = {
 	trainerToolbar : {
 		isTrainerMode: true,
+		isUpdateBNI: false,
 		lastJson: "",
 		lastSelectedParaId: ''
 	},
