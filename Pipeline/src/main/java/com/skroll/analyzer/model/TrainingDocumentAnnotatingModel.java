@@ -193,7 +193,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
             }
         }
 
-        int[] docFeatureValues = DocumentAnnotatingHelper.generateDocumentFeatures(paragraphs,
+        int[] docFeatureValues = DocumentAnnotatingHelper.generateDocumentFeatures(paragraphs, originalParagraphs,
                 paraCategory, docFeatures, paraDocFeatures);
 
         //for( CoreMap paragraph : paragraphs)
@@ -208,7 +208,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
         for( CoreMap paragraph : doc.getParagraphs()) {
              paragraphs.add(DocumentAnnotatingHelper.processParagraph(paragraph, hmm.size()));
         }
-        int[] docFeatureValues = DocumentAnnotatingHelper.generateDocumentFeatures(paragraphs,
+        int[] docFeatureValues = DocumentAnnotatingHelper.generateDocumentFeatures(paragraphs, doc.getParagraphs(),
                 paraCategory, docFeatures, paraDocFeatures);
 
 
