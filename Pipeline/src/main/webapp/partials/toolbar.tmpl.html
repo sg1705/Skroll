@@ -6,6 +6,12 @@
 
 		<h1>{{ctrl.toolbarInfo.title}}</h1>
 
+
+		<md-button ng-click="ctrl.observeNone()" aria-label="trainer">
+		  <md-icon md-svg-icon="images/icons/ic_format_align_justify_24px.svg" ></md-icon>
+		</md-button>
+
+
 		<md-button ng-click="ctrl.toggleUpdateBNI()" aria-label="trainer" ng-show="!ctrl.trainerToolbar.isUpdateBNI">
 		  <md-icon md-svg-icon="images/icons/ic_format_clear_24px.svg" ></md-icon>
 		</md-button>
