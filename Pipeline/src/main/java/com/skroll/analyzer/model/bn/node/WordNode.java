@@ -64,6 +64,12 @@ public class WordNode                                                           
         this.parent = parent;
     }
 
+    public Map<String, double[]> getCopyOfParameters() {
+        Map<String, double[]> newPara = new HashMap<>();
+        newPara.putAll(parameters);
+        return parameters;
+    }
+
     @Override
     public String toString() {
         return "WordNode{" +
