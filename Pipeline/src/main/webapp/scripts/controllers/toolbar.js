@@ -25,6 +25,12 @@ ToolbarCtrl.prototype.toggleUpdateBNI = function() {
 	this.documentService.setFlags("ENABLE_UPDATE_BNI", ToolbarModel.trainerToolbar.isUpdateBNI);
 }
 
+ToolbarCtrl.prototype.observeNone = function() {
+	console.log("observing none");
+	this.documentService.observeNone();
+}
+
+
 
 
 ToolbarCtrl.prototype.updateModelByTrainer = function() {

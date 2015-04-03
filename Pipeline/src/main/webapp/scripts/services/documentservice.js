@@ -197,6 +197,22 @@ angular.module('SkrollApp')
         });;
     };
 
+    /**
+     * Observe none
+     */
+    this.observeNone = function() {
+      /** make a get request */
+      $http.get(documentServiceBase + 'observeNone')
+        .success(function(data, status) {
+          console.log("observed none");
+          console.log(data);
+        })
+        .error(function(data, status) {
+          console.log(status);
+        });;
+    };
+
+
 
 
   });
