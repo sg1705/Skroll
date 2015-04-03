@@ -71,6 +71,37 @@ public class DocumentHelper {
         return strings;
     }
 
+    public static void setMatchedTokens(CoreMap coreMap, List<String> addedTerm, int classification) {
+        List<Token> tokenList = coreMap.getTokens();
+        List<Token> returnList = new ArrayList<>();
+        int j=0;
+        int l=0;
+        for (int k=0; k< addedTerm.size(); k++) {
+            for(int i=l; i<tokenList.size(); i++){
+                if(tokenList.get(i).getText().equals(addedTerm.get(k))) {
+                    if (j==0) {
+                        j=i;
+                    }
+                    if (i>j+1) {
+                        returnList.clear();
+                        j=i;
+                        continue;
+                    }
+                    returnList.add(tokenList.get(i));
+                    j=i;
+                    break;
+                }
+                l++;
+            }
+        }
+        if (returnList.size() ==addedTerm.size()) {
+             if(classification==Paragraph.DEFINITION_CLASSIFICATION) {
+                 addDefinedTermTokensInParagraph(returnList, coreMap);
+             } else if ( classification==Paragraph.TOC_CLASSIFICATION){
+                 addTOCsInParagraph(returnList, coreMap);
+             }
+        }
+    }
     public static List<List<String>> getDefinedTermLists(CoreMap coreMap) {
         List<List<Token>> definitionList = coreMap.get(CoreAnnotations.DefinedTermTokensAnnotation.class);
         List<List<String>> strings = new ArrayList<>();
