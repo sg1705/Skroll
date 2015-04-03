@@ -7,7 +7,8 @@
  * # fileUpload
  */
 angular.module('SkrollApp')
-  .directive('scrollToParagraph', ['documentModel', '$mdSidenav', 'SelectionModel', function(documentModel, $mdSidenav, SelectionModel) {
+  .directive('scrollToParagraph', ['documentModel', '$mdSidenav', 'SelectionModel', 'ToolbarModel',
+    function(documentModel, $mdSidenav, SelectionModel,ToolbarModel) {
     return {
       restricted: 'A',
       link: function(scope, element, attrs) {
@@ -26,6 +27,8 @@ angular.module('SkrollApp')
               $(para).css("background-color", "yellow");
               $mdSidenav('left').toggle();
               SelectionModel.paragraphId = paragraphId;
+              ToolbarModel.trainerToolbar.lastJson = '';
+
             }
           });
       }
