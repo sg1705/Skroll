@@ -711,8 +711,10 @@ public class API {
 
         //iterate over each paragraph
         for(CoreMap paragraph : doc.getParagraphs()) {
-            if (!( paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class) ||
-                    paragraph.containsKey(CoreAnnotations.IsTOCAnnotation.class))) {
+            if (( paragraph.get(CoreAnnotations.IsDefinitionAnnotation.class) ||
+                    paragraph.get(CoreAnnotations.IsTOCAnnotation.class))) {
+
+            } else {
                 paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
                 paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
             }
