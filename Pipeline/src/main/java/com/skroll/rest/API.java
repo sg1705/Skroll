@@ -364,8 +364,10 @@ public class API {
                             if (addedTerms != null && !addedTerms.isEmpty()) {
                                 for(List<String> addedTerm :addedTerms) {
                                     if (addedTerm != null && !addedTerm.isEmpty()) {
-                                        List<Token> tokens = DocumentHelper.getTokens(addedTerm);
-                                        DocumentHelper.addTOCsInParagraph(tokens, paragraph);
+                                        if (!Joiner.on("").join(addedTerm).equals("")) {
+                                            List<Token> tokens = DocumentHelper.getTokens(addedTerm);
+                                            DocumentHelper.addTOCsInParagraph(tokens, paragraph);
+                                        }
                                     }
                                 }
 
