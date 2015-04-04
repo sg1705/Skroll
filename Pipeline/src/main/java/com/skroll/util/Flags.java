@@ -10,7 +10,7 @@ public class Flags {
     public static final String ENABLE_UPDATE_BNI = "ENABLE_UPDATE_BNI";
 
     public static boolean get(String key) {
-        if (flags.containsValue(key)) {
+        if (flags.containsKey(key)) {
             return flags.get(key);
         }
         return false;
