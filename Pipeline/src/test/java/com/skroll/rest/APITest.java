@@ -25,6 +25,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import java.io.File;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -118,12 +119,26 @@ public class APITest {
     @Test
     public void test_UploadFile_UpdateTerms() throws Exception, ObjectPersistUtil.ObjectPersistException {
         String documentId = testFileUpload();
-        testUpdateTerms(documentId);
         Configuration configuration = new Configuration();
         String preEvaluatedFolder = configuration.get("preEvaluatedFolder","/tmp/");
         Document doc = JsonDeserializer.fromJson(Files.toString(new File(preEvaluatedFolder + documentId), Constants.DEFAULT_CHARSET));
+        for(CoreMap coreMap: doc.getParagraphs()){
+            DocumentHelper.setMatchedTokens(coreMap, Lists.newArrayList("Capital", "Stock"), Paragraph.TOC_CLASSIFICATION);
+            if(coreMap.get(CoreAnnotations.IsTOCAnnotation.class)) {
+                System.out.println(DocumentHelper.getTOCLists(coreMap));
+                assert(Joiner.on(" ").join(DocumentHelper.getTOCLists(coreMap)).equals("Capital Stock"));
+            }
+        }
+        Files.write(JsonDeserializer.getJson(doc), new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
+        testGetDoc();
+        logger.debug("TOC Paragraph before update BNI: {}", DocumentHelper.getTOCParagraphs((doc)));
+
+        testUpdateTerms(documentId);
+
         logger.trace("Doc.target():" +doc.getTarget());
+
         assert(doc.getTarget().contains("Capital Stock"));
+
         for (CoreMap paragraph : doc.getParagraphs()) {
             if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
                 List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(
@@ -162,7 +177,7 @@ public class APITest {
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
 
-        String jsonString ="[{\"paragraphId\":\"p_1253\",\"term\":\"Credit Test\", \"classificationId\":1},{\"paragraphId\":\"p_1254\",\"term\":\"Unit Test\",\"classificationId\":1}]";
+        String jsonString ="[{\"paragraphId\":\"p_1253\",\"term\":\"\", \"classificationId\":2}]";
         //String jsonString ="[{\"paragraphId\":\"p_1371\",\"term\":\"Disclosure Regarding Forward-Looking Statements\", \"classificationId\":2}]";
 
         Response response = webTarget.request(MediaType.TEXT_HTML).cookie(new  NewCookie("documentId", documentId))
@@ -211,7 +226,7 @@ public class APITest {
         String TARGET_URL = "http://localhost:8888/restServices/jsonAPI/getDoc";
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
-        String documentId = "SIX FLAGS_ex4-1.html";
+        String documentId = "smaller-indenture.html";
         WebTarget webTargetWithQueryParam =
                 webTarget.queryParam("documentId", documentId);
         Response response = webTargetWithQueryParam.request(MediaType.APPLICATION_JSON).get();
