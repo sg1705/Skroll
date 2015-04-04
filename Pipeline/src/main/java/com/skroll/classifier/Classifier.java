@@ -44,4 +44,6 @@ public interface Classifier {
 
     public HashMap<String, HashMap<String, Double>> getBNIVisualMap(String docId, int paraIndex);
     public HashMap<String, HashMap<String, HashMap<String, Double>>> getModelVisualMap(String documentId);
+    public List<Double> getProbabilityDataForDoc(String documentId);
+
 }
