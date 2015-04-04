@@ -232,7 +232,7 @@ public class API {
         List<Paragraph> definedTermParagraphList = new ArrayList<>();
 
         for (CoreMap paragraph : doc.getParagraphs()) {
-            if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
+            if (paragraph.get(CoreAnnotations.IsDefinitionAnnotation.class)) {
                 List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(
                         paragraph);
                 for (List<String> definition: definitionList) {
@@ -245,7 +245,7 @@ public class API {
                     }
                 }
             }
-            if (paragraph.containsKey(CoreAnnotations.IsTOCAnnotation.class)) {
+            if (paragraph.get(CoreAnnotations.IsTOCAnnotation.class)) {
                 List<String> tocList = DocumentHelper.getTOCLists(
                         paragraph);
                     if (!tocList.isEmpty()) {
