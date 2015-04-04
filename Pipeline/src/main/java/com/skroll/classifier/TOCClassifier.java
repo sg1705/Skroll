@@ -201,4 +201,9 @@ public class TOCClassifier extends ClassifierImpl {
         return trainingModel.toVisualMap();
     }
 
+    @Override
+    public List<Double> getProbabilityDataForDoc(String documentId) {
+        return bniMap.get(documentId).toParaCategoryDump();
+    }
+
 }

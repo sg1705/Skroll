@@ -693,6 +693,36 @@ public class API {
     }
 
 
+    @GET
+    @Path("/getProbabilityDump")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getProbabilityDump(@Context HttpHeaders hh) throws IOException {
+
+        MultivaluedMap<String, String> headerParams = hh.getRequestHeaders();
+        Map<String, Cookie> pathParams = hh.getCookies();
+        logger.debug("getDocumentId: Cookie: {}", pathParams);
+        if ( pathParams.get("documentId")==null) {
+            logger.warn("documentId is missing from Cookie");
+            return Response.status(Response.Status.EXPECTATION_FAILED).entity("documentId is missing from Cookie").type(MediaType.TEXT_HTML).build();
+
+        }
+        String documentId = pathParams.get("documentId").getValue();
+
+        Document doc = documentMap.get(documentId);
+        if (doc==null) {
+            logger.warn("document cannot be found for document id: "+ documentId);
+            return Response.status(Response.Status.NOT_FOUND).entity("Failed to find the document in Map" ).type(MediaType.TEXT_PLAIN).build();
+        }
+        // get probabilities
+        List<Double> dumpMap = definitionClassifier.getProbabilityDataForDoc(documentId);
+        List<Double> pTOC = tocClassifier.getProbabilityDataForDoc(documentId);
+        List<List<Double>> allPs = new ArrayList();
+        allPs.add(dumpMap);
+        allPs.add(pTOC);
+        Gson gson = new GsonBuilder().create();
+        String json = gson.toJson(allPs);
+        return Response.ok().status(Response.Status.OK).entity(json).build();
+    }
 
 
 

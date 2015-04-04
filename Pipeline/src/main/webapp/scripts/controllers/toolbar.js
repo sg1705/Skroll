@@ -14,6 +14,8 @@ var ToolbarCtrl = function (ToolbarModel, documentService, SelectionModel,$mdSid
 	this.documentService = documentService;
 	this.SelectionModel = SelectionModel;
 	this.$mdSidenav = $mdSidenav;
+	//load google chart
+	//google.load("visualization", "1", {packages:["corechart"]});
 }
 
 ToolbarCtrl.prototype.toggleTrainerMode = function() {
@@ -30,8 +32,46 @@ ToolbarCtrl.prototype.observeNone = function() {
 	this.documentService.observeNone();
 }
 
-
-
+ToolbarCtrl.prototype.showProbabilityDump = function() {
+	$("#rightPane").html('<div id="graph_0"></div><div id="graph_1"></div>');
+	this.documentService
+		.getProbabilityDump()
+		.then(angular.bind(this, function(data) {
+			console.log(data);
+			for (var kk = 0; kk < data.length; kk++) {
+				//get list of probabilities
+				var probs = data[kk];
+				//covert data to chartData
+				var convertedTable = [];
+				convertedTable.push(['Para', 'Probability']);
+				for (var ii = 0; ii < probs.length; ii++) {
+					var tuple = [];
+					tuple.push('' + ii);
+					tuple.push(probs[ii])
+					convertedTable.push(tuple);
+				}
+				var chartData = google.visualization.arrayToDataTable(convertedTable);
+				var options = {
+					title: 'Probability Distribution for '+kk,
+					legend: {
+						position: 'center',
+						alignment: 'center'
+					},
+					colors: ['green'],
+					histogram: {
+						bucketSize: 0.3
+					}
+				};
+				console.log(kk);
+				var chart = new google.visualization.Histogram(document.getElementById(
+					'graph_'+kk));
+				chart.draw(chartData, options);
+			}
+			this.$mdSidenav('right').toggle();
+		}), function(data, status) {
+			console.log(status);
+		});
+}
 
 ToolbarCtrl.prototype.updateModelByTrainer = function() {
 	this.documentService.updateModel();
@@ -70,3 +110,5 @@ ToolbarCtrl.prototype.showAnnotations = function() {
 
 angular.module('SkrollApp')
 	.controller('ToolbarCtrl', ToolbarCtrl);
+
+google.load("visualization", "1", {packages:["corechart"]});

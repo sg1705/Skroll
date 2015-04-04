@@ -213,6 +213,23 @@ angular.module('SkrollApp')
     };
 
 
+    /**
+     * Get probability dump
+     */
+    this.getProbabilityDump = function() {
+      var deferred = $q.defer();
+      /** make a get request */
+      $http.get(documentServiceBase + 'getProbabilityDump')
+        .success(function(data, status) {
+          deferred.resolve(data);
+        })
+        .error(function(msg, code) {
+          deferred.reject(msg);
+          $log.error(msg, code);
+        });;
+      /** done with get request */
+      return deferred.promise;
+    };
 
 
   });

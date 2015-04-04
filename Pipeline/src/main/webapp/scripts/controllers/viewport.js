@@ -140,7 +140,7 @@ ViewPortCtrl.prototype.handleTrainerTextSelection = function(paraId,
   var prompt = '';
   //find a matching term
   var matchedItem = _.find(this.LHSModel.smodel.terms, function(obj){
-    return ((obj.paragraphId == paraId) && (obj.term));
+    return ((obj.paragraphId == paraId) && (obj.term == selectedText));
   });
   // class question if no matching term found
   if (matchedItem == null) {
