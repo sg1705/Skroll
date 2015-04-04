@@ -193,7 +193,7 @@ public class DefinitionClassifier extends ClassifierImpl{
 
 
     @Override
-    public HashMap<Integer, Double> getProbabilityDataForDoc(String documentId) {
+    public List<Double> getProbabilityDataForDoc(String documentId) {
         return bniMap.get(documentId).toParaCategoryDump();
     }
 
