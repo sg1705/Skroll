@@ -130,6 +130,7 @@ public class APITest {
             }
         }
         Files.write(JsonDeserializer.getJson(doc), new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
+        API.documentMap.clear();
         testGetDoc();
         logger.debug("TOC Paragraph before update BNI: {}", DocumentHelper.getTOCParagraphs((doc)));
 
