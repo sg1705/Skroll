@@ -107,23 +107,24 @@ public class TOCExperimentClassifier extends ClassifierImpl {
     @Override
     public Object classify(String documentId, Document document) throws Exception {
 
-        ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(trainingModel.getTnbfModel(),
-                trainingModel.getHmm(), document, wordType, wordFeatures, paraType, paraFeatures, paraDocFeatures, docFeatures
-        );
-
-        logger.debug("TOC before annotate :");
-        for (CoreMap para: DocumentHelper.getTOCParagraphs(document)){
-            logger.debug(para.getId() +"\t" +DocumentHelper.getTOCLists(para).toString());
-            logger.debug("IsTOCAnnotation" +"\t" +para.get(CoreAnnotations.IsTOCAnnotation.class));
-        }
-        bniMap.put(documentId, bniModel);
-        bniModel.annotateDocument();
-
-        logger.debug("TOC after annotate :");
-
-        for (CoreMap para: DocumentHelper.getTOCParagraphs(document)){
-            logger.debug(para.getId() +"\t" +DocumentHelper.getTOCLists(para).toString());
-        }
+        updateBNI(documentId, document, new ArrayList<CoreMap>());
+//        ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(trainingModel.getTnbfModel(),
+//                trainingModel.getHmm(), document, wordType, wordFeatures, paraType, paraFeatures, paraDocFeatures, docFeatures
+//        );
+//
+//        logger.debug("TOC before annotate :");
+//        for (CoreMap para: DocumentHelper.getTOCParagraphs(document)){
+//            logger.debug(para.getId() +"\t" +DocumentHelper.getTOCLists(para).toString());
+//            logger.debug("IsTOCAnnotation" +"\t" +para.get(CoreAnnotations.IsTOCAnnotation.class));
+//        }
+//        bniMap.put(documentId, bniModel);
+//        bniModel.annotateDocument();
+//
+//        logger.debug("TOC after annotate :");
+//
+//        for (CoreMap para: DocumentHelper.getTOCParagraphs(document)){
+//            logger.debug(para.getId() +"\t" +DocumentHelper.getTOCLists(para).toString());
+//        }
         return document;
     }
 
@@ -141,10 +142,10 @@ public class TOCExperimentClassifier extends ClassifierImpl {
         for (CoreMap para: observedParas) {
             logger.debug("observedParas:IsTOCAnnotation" + "\t" + para.get(CoreAnnotations.IsTOCAnnotation.class));
         }
-        if (documentId == null || bniMap.get(documentId) == null) {
-            logger.error("Document Id is NULL or BNI is return null");
-            throw new Exception("Failed to updateBNI. check documentId : " + documentId);
-        }
+//        if (documentId == null || bniMap.get(documentId) == null) {
+//            logger.error("Document Id is NULL or BNI is return null");
+//            throw new Exception("Failed to updateBNI. check documentId : " + documentId);
+//        }
 
         trainingModel = createModel();
         trainingModel.updateWithDocumentAndWeight(document);
