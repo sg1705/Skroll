@@ -334,9 +334,9 @@ public class API {
                         DocumentHelper.clearAnnotations(paragraph);
                             // add annotations that received from client - definedTermList
                             if (!addedTerms.isEmpty()) {
-                                for(List<String> addedTerm :addedTerms) {
+                                for (List<String> addedTerm : addedTerms) {
                                     if (addedTerm != null && !addedTerm.isEmpty()) {
-                                        if (!Joiner.on("").join(addedTerm).equals("")){
+                                        if (!Joiner.on("").join(addedTerm).equals("")) {
                                             logger.debug("addedTerm:" + "\t" + addedTerm);
                                             if (modifiedParagraph.getClassificationId() == Paragraph.DEFINITION_CLASSIFICATION) {
                                                 DocumentHelper.setMatchedTokens(paragraph, addedTerm, Paragraph.DEFINITION_CLASSIFICATION);
@@ -346,9 +346,17 @@ public class API {
                                                 TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.TOC, userWeight);
                                             } else {
                                                 TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.NONE, userWeight);
+                                            }
+                                        } else {
+                                            TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.NONE, userWeight);
                                         }
+                                    } else {
+                                        TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.NONE, userWeight);
                                     }
                                 }
+                            }
+                            else {
+                                    TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.NONE, userWeight);
                             }
                             // Add the userObserved paragraphs
                             parasForUpdateBNI.add(paragraph);
@@ -357,30 +365,28 @@ public class API {
                                 List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(paragraph);
                                 logger.debug(paragraph.getId() + "\t" + "userObserved paragraphs:" + "\t" + Joiner.on(" , ").join(definitionList));
                             }
+                        if (paragraph.get(CoreAnnotations.IsTOCAnnotation.class)) {
+                            logger.debug(paragraph.getId() + "\t" + "updated TOCs:" + "\t" + DocumentHelper.getTOCLists(paragraph));
+                        }
+
+                        logger.debug("TrainingWeightAnnotation:" + paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class));
+                        break;
                         }
                             // log the userObserved TOC
-                            if (paragraph.get(CoreAnnotations.IsTOCAnnotation.class)) {
-                                logger.debug(paragraph.getId() + "\t" + "updated TOCs:" + "\t" + DocumentHelper.getTOCLists(paragraph));
-                            }
-
-                        logger.debug("TrainingWeightAnnotation:" + paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class).toString());
-                        break;
                     }
-                }
             }
-        logger.debug("Total time taken to process the updateTerm without updateBNI: {}", System.currentTimeMillis() - startTime);
+        logger.debug("Total time taken to process the updateTerm without updateBNI: {} msec", System.currentTimeMillis() - startTime);
         // persist the document using document id. Let's use the file name
         try {
-            logger.debug("Number of Definition Paragraph before update BNI: {}",DocumentHelper.getDefinitionParagraphs(doc).size());
-            logger.debug("Number of TOCs Paragraph before update BNI: {}",DocumentHelper.getTOCParagraphs(doc).size());
-            if (Flags.get(Flags.ENABLE_UPDATE_BNI)) {
+            if (!parasForUpdateBNI.isEmpty()) {
+                logger.debug("Number of Definition Paragraph before update BNI: {}", DocumentHelper.getDefinitionParagraphs(doc).size());
+                logger.debug("Number of TOCs Paragraph before update BNI: {}", DocumentHelper.getTOCParagraphs(doc).size());
+                //if (Flags.get(Flags.ENABLE_UPDATE_BNI)) {
                 doc = (Document) definitionClassifier.updateBNI(documentId, doc, parasForUpdateBNI);
                 doc = (Document) tocClassifier.updateBNI(documentId, doc, parasForUpdateBNI);
-            } else {
-                logger.debug("No BNIIIIIIIIIIIIIIIIIIIIIIIIIII");
+                logger.debug("Number of Definition Paragraph After update BNI: {}", DocumentHelper.getDefinitionParagraphs(doc).size());
+                logger.debug("Number of TOCs Paragraph after update BNI: {}", DocumentHelper.getTOCParagraphs(doc).size());
             }
-            logger.debug("Number of Definition Paragraph After update BNI: {}",DocumentHelper.getDefinitionParagraphs(doc).size());
-            logger.debug("Number of TOCs Paragraph after update BNI: {}",DocumentHelper.getTOCParagraphs(doc).size());
         } catch (Exception e) {
             logger.error("Failed to update updateBNI, using existing document : {}", e);
         }
