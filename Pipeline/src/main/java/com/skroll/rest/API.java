@@ -743,10 +743,14 @@ public class API {
             logger.warn("document cannot be found for document id: "+ documentId);
             return Response.status(Response.Status.NOT_FOUND).entity("Failed to find the document in Map" ).type(MediaType.TEXT_PLAIN).build();
         }
-
+        // get probabilities
         List<Double> dumpMap = definitionClassifier.getProbabilityDataForDoc(documentId);
+        List<Double> pTOC = tocClassifier.getProbabilityDataForDoc(documentId);
+        List<List<Double>> allPs = new ArrayList();
+        allPs.add(dumpMap);
+        allPs.add(pTOC);
         Gson gson = new GsonBuilder().create();
-        String json = gson.toJson(dumpMap);
+        String json = gson.toJson(allPs);
         return Response.ok().status(Response.Status.OK).entity(json).build();
     }
 

@@ -98,7 +98,8 @@ public class WebServer {
 
     private URI getWebRootResourceUri() throws FileNotFoundException, URISyntaxException
     {
-        URI indexUri = new File("build/inplaceWebapp").toURI();
+        //URI indexUri = new File("build/inplaceWebapp").toURI();
+        URI indexUri = new File("src/main/webapp").toURI();
         if (indexUri == null)
         {
             throw new FileNotFoundException("Unable to find resource " + WEBROOT_INDEX);

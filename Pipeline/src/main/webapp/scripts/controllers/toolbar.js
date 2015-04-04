@@ -33,35 +33,45 @@ ToolbarCtrl.prototype.observeNone = function() {
 }
 
 ToolbarCtrl.prototype.showProbabilityDump = function() {
-  this.documentService
-    .getProbabilityDump()
-    .then(angular.bind(this, function(data) {
-    	//covert data to chartData
-    	var convertedTable = [ ];
-    	convertedTable.push(['Para', 'Probability']);
-    	for(var ii = 0; ii < data.length; ii++) {
-    		var tuple = [];
-    		tuple.push(''+ii);
-    		tuple.push(data[ii])
-    		convertedTable.push(tuple);
-    	}
-    	console.log(convertedTable);
-      $("#rightPane").html('<pre>' + JSON.stringify(data, null, 2) + '</pre>');
-      this.$mdSidenav('right').toggle();
-      var chartData = google.visualization.arrayToDataTable(convertedTable);
-      var options = {
-	    title: 'Probability Distribution for Definitions',
-	    legend: { position: 'center', alignment : 'center' },
-	    colors: ['green'],
-	    histogram: { bucketSize: 0.3 }
-	  };
-	  var chart = new google.visualization.Histogram(document.getElementById('rightPane'));
-	  chart.draw(chartData, options);
-    }), function(data, status) {
-      console.log(status);
-    });
+	$("#rightPane").html('<div id="graph_0"></div><div id="graph_1"></div>');
+	this.documentService
+		.getProbabilityDump()
+		.then(angular.bind(this, function(data) {
+			console.log(data);
+			for (var kk = 0; kk < data.length; kk++) {
+				//get list of probabilities
+				var probs = data[kk];
+				//covert data to chartData
+				var convertedTable = [];
+				convertedTable.push(['Para', 'Probability']);
+				for (var ii = 0; ii < probs.length; ii++) {
+					var tuple = [];
+					tuple.push('' + ii);
+					tuple.push(probs[ii])
+					convertedTable.push(tuple);
+				}
+				var chartData = google.visualization.arrayToDataTable(convertedTable);
+				var options = {
+					title: 'Probability Distribution for '+kk,
+					legend: {
+						position: 'center',
+						alignment: 'center'
+					},
+					colors: ['green'],
+					histogram: {
+						bucketSize: 0.3
+					}
+				};
+				console.log(kk);
+				var chart = new google.visualization.Histogram(document.getElementById(
+					'graph_'+kk));
+				chart.draw(chartData, options);
+			}
+			this.$mdSidenav('right').toggle();
+		}), function(data, status) {
+			console.log(status);
+		});
 }
-
 
 ToolbarCtrl.prototype.updateModelByTrainer = function() {
 	this.documentService.updateModel();
