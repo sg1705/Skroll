@@ -192,4 +192,14 @@ public class DocumentHelper {
         }
         return tocParagraphs;
     }
+
+    public static void clearAnnotations(CoreMap paragraph){
+
+    //remove any existing annotations - definedTermList
+    paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class, null);
+    paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, false);
+    //remove any existing annotations - TOCList
+    paragraph.set(CoreAnnotations.TOCTokensAnnotation.class, null);
+    paragraph.set(CoreAnnotations.IsTOCAnnotation.class, false);
+    }
 }

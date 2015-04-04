@@ -13,7 +13,6 @@ import com.skroll.classifier.Classifier;
 import com.skroll.classifier.DefinitionClassifier;
 import com.skroll.classifier.TOCExperimentClassifier;
 import com.skroll.document.*;
-import com.skroll.document.annotation.CoreAnnotation;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
 import com.skroll.parser.Parser;
@@ -304,23 +303,24 @@ public class API {
         return Response.status(Response.Status.BAD_REQUEST).entity("Failed to parse the json document" ).type(MediaType.APPLICATION_JSON).build();
         }
         long startTime = System.currentTimeMillis();
+
         Map<Paragraph, List<String>> paraMap = Paragraph.combineTerms(definitionJson);
         logger.debug("combineTerms:" + paraMap);
 
         List<CoreMap> parasForUpdateBNI = new ArrayList<>();
+
             for (Paragraph  modifiedParagraph: paraMap.keySet()) {
                 for (CoreMap paragraph : doc.getParagraphs()) {
                     if (paragraph.getId().equals(modifiedParagraph.getParagraphId())) {
                         paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
                         //TODO: currently assuming that the trainer is always active
                         paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
-                        //TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, TrainingWeightAnnotationHelper.DEFINITION, userWeight);
-                        // log the existing definitions
-                        if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
+                         // log the existing definitions
+                        if (paragraph.get(CoreAnnotations.IsDefinitionAnnotation.class)) {
                             List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(paragraph);
                             logger.debug(paragraph.getId() + "\t" + "existing definition:" + "\t" + Joiner.on(" , ").join(definitionList));
                         }
-                        if (paragraph.containsKey(CoreAnnotations.IsTOCAnnotation.class)) {
+                        if (paragraph.get(CoreAnnotations.IsTOCAnnotation.class)) {
                             logger.debug(paragraph.getId() + "\t" + "existing TOCs:" + "\t" + DocumentHelper.getTOCLists(paragraph));
                         }
 
@@ -328,20 +328,24 @@ public class API {
                         for(String modifiedTerm : paraMap.get(modifiedParagraph)) {
                             addedTerms.add(Lists.newArrayList(Splitter.on(" ").split(modifiedTerm)));
                         }
-
-                        if (modifiedParagraph.getClassificationId() == Paragraph.DEFINITION_CLASSIFICATION) {
-                            TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.DEFINITION, userWeight);
-
-                            //remove any existing annotations - definedTermList
-                            paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class, null);
-                            paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, false);
-
+                        logger.debug("addedTerms:" + "\t" + addedTerms);
+                       // check whether the term is "" ro empty or not that received from client
+                        //remove any existing annotations
+                        DocumentHelper.clearAnnotations(paragraph);
                             // add annotations that received from client - definedTermList
                             if (!addedTerms.isEmpty()) {
                                 for(List<String> addedTerm :addedTerms) {
                                     if (addedTerm != null && !addedTerm.isEmpty()) {
                                         if (!Joiner.on("").join(addedTerm).equals("")){
-                                            DocumentHelper.setMatchedTokens(paragraph, addedTerm, Paragraph.DEFINITION_CLASSIFICATION);
+                                            logger.debug("addedTerm:" + "\t" + addedTerm);
+                                            if (modifiedParagraph.getClassificationId() == Paragraph.DEFINITION_CLASSIFICATION) {
+                                                DocumentHelper.setMatchedTokens(paragraph, addedTerm, Paragraph.DEFINITION_CLASSIFICATION);
+                                                TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.DEFINITION, userWeight);
+                                            } else if (modifiedParagraph.getClassificationId() == Paragraph.TOC_CLASSIFICATION) {
+                                                DocumentHelper.setMatchedTokens(paragraph, addedTerm, Paragraph.TOC_CLASSIFICATION);
+                                                TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.TOC, userWeight);
+                                            } else {
+                                                TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.NONE, userWeight);
                                         }
                                     }
                                 }
@@ -349,50 +353,16 @@ public class API {
                             // Add the userObserved paragraphs
                             parasForUpdateBNI.add(paragraph);
                             logger.debug("userObserved paragraphs:"+ "\t" + paragraph.getId());
-                            if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
+                            if (paragraph.get(CoreAnnotations.IsDefinitionAnnotation.class)) {
                                 List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(paragraph);
                                 logger.debug(paragraph.getId() + "\t" + "userObserved paragraphs:" + "\t" + Joiner.on(" , ").join(definitionList));
                             }
-
                         }
-                        if (modifiedParagraph.getClassificationId() == Paragraph.TOC_CLASSIFICATION) {
-                            TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.TOC, userWeight);
-
-                            //remove any existing annotations - TOCList
-                            paragraph.set(CoreAnnotations.TOCTokensAnnotation.class, null);
-                            paragraph.set(CoreAnnotations.IsTOCAnnotation.class, false);
-
-                            // add annotations that received from client - TOCList
-                            if (addedTerms != null && !addedTerms.isEmpty()) {
-                                for(List<String> addedTerm :addedTerms) {
-                                    if (addedTerm != null && !addedTerm.isEmpty()) {
-                                        if (!Joiner.on("").join(addedTerm).equals("")) {
-                                            DocumentHelper.setMatchedTokens(paragraph, addedTerm, Paragraph.TOC_CLASSIFICATION);
-
-                                        }
-                                    }
-                                }
-
-                            }
-                            // Add the userObserved paragraphs
-                            parasForUpdateBNI.add(paragraph);
-                            logger.debug("userObserved paragraphs for TOC:"+ "\t" + paragraph.getId());
                             // log the userObserved TOC
-                            if (paragraph.containsKey(CoreAnnotations.IsTOCAnnotation.class)) {
+                            if (paragraph.get(CoreAnnotations.IsTOCAnnotation.class)) {
                                 logger.debug(paragraph.getId() + "\t" + "updated TOCs:" + "\t" + DocumentHelper.getTOCLists(paragraph));
                             }
-                        } else if (modifiedParagraph.getClassificationId() == Paragraph.NONE_CLASSIFICATION) {
-                            TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.NONE, userWeight);
-                            //remove any existing annotations - definedTermList
-                            paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class, null);
-                            paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, false);
-                            //remove any existing annotations - TOCList
-                            paragraph.set(CoreAnnotations.TOCTokensAnnotation.class, null);
-                            paragraph.set(CoreAnnotations.IsTOCAnnotation.class, false);
-                            // Add the userObserved paragraphs
-                            parasForUpdateBNI.add(paragraph);
-                            logger.debug("userObserved paragraphs for NONE:"+ "\t" + paragraph.getId());
-                        }
+
                         logger.debug("TrainingWeightAnnotation:" + paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class).toString());
                         break;
                     }
