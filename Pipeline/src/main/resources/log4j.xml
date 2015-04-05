@@ -4,16 +4,16 @@
   <appender name="stdout" class="org.apache.log4j.ConsoleAppender">
     <layout class="org.apache.log4j.PatternLayout">
       <!-- Pattern to output the caller's file name and line number -->
-      <param name="ConversionPattern" value="%-4r [%t] %-5p %c - %M %x - %m%n"/>
+      <param name="ConversionPattern" value="%d{dd MMM yyyy HH:mm:ss,SSS} %-4r %-5p %c{1} - %M %x - %m%n"/>
     </layout>
   </appender>
   <appender name="R" class="org.apache.log4j.RollingFileAppender">
     <param name="file" value="/tmp/skroll.log"/>
-    <param name="MaxFileSize" value="100KB"/>
+    <param name="MaxFileSize" value="10MB"/>
     <!-- Keep one backup file -->
-    <param name="MaxBackupIndex" value="1"/>
+    <param name="MaxBackupIndex" value="5"/>
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%p %t %c{2} - %m%n"/>
+        <param name="ConversionPattern" value="%d{dd MMM yyyy HH:mm:ss,SSS} %-4r %-5p %c{1} - %M %x - %m%n"/>
     </layout>
   </appender>
   <root>

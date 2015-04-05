@@ -29,7 +29,10 @@ import java.util.logging.Logger;
 
 /**
  * Example of using JSP's with embedded jetty and not requiring
- * all of the overhead of a WebAppContext
+ * all of the overhead of a WebAppContext.
+ * For using the WebServer, edit Run Configuration and in working directory setting
+ * append "Pipeline" towards the end.
+ *
  */
 
 public class WebServer {
