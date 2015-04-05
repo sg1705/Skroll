@@ -315,6 +315,7 @@ public class DocumentAnnotatingHelper {
         switch (paraType) {
             case PARAGRAPH_HAS_TOC:
                 para.set(CoreAnnotations.IsTOCAnnotation.class, false);
+                para.set(CoreAnnotations.TOCTokensAnnotation.class, null);
                 return;
             case PARAGRAPH_HAS_DEFINITION:
                 DocumentHelper.setDefinedTermTokenListInParagraph(null, para);
