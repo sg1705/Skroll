@@ -8,6 +8,7 @@ import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
+import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.ParserException;
 import com.skroll.parser.linker.DefinitionLinker;
@@ -21,10 +22,10 @@ import java.util.*;
 /**
  * Created by saurabhagarwal on 1/18/15.
  */
-public class DefinitionClassifier extends ClassifierImpl{
+public class DefinitionExperimentClassifier extends ClassifierImpl{
 
     public static final Logger logger = LoggerFactory
-            .getLogger(DefinitionClassifier.class);
+            .getLogger(DefinitionExperimentClassifier.class);
 
     private TrainingDocumentAnnotatingModel trainingModel= null;
 
@@ -39,23 +40,28 @@ public class DefinitionClassifier extends ClassifierImpl{
 
 
 
-    public DefinitionClassifier() {
+    public DefinitionExperimentClassifier() {
+        trainingModel = createModel();
+    }
+        public TrainingDocumentAnnotatingModel createModel() {
+            TrainingDocumentAnnotatingModel localTrainingModel=null;
         try {
             dtemType = new TypeToken<TrainingDocumentAnnotatingModel>() {}.getType();
-            trainingModel = (TrainingDocumentAnnotatingModel) objectPersistUtil.readObject(dtemType,dtemModelName);
-            logger.trace("TrainingDocumentAnnotatingModel:" + trainingModel);
+            localTrainingModel = (TrainingDocumentAnnotatingModel) objectPersistUtil.readObject(dtemType,dtemModelName);
+            logger.trace("TrainingDocumentAnnotatingModel:" + localTrainingModel);
 
         } catch (Throwable e) {
             logger.warn("TrainingDocumentAnnotatingModel is not found. creating new one" );
-            trainingModel=null;
+            localTrainingModel=null;
         }
-        if (trainingModel==null) {
+        if (localTrainingModel==null) {
 
-            trainingModel = new TrainingDocumentAnnotatingModel();
+            localTrainingModel = new TrainingDocumentAnnotatingModel();
         }
 
 
-    }
+            return localTrainingModel;
+        }
     @Override
     public void persistModel() throws ObjectPersistUtil.ObjectPersistException {
         objectPersistUtil.persistObject(dtemType,trainingModel,dtemModelName);
@@ -87,13 +93,15 @@ public class DefinitionClassifier extends ClassifierImpl{
 
     @Override
     public Object classify(String documentId, Document document) throws Exception {
-
+        return  updateBNI(documentId, document, new ArrayList<CoreMap>());
+       /*
         RandomVariableType wordType = RandomVariableType.WORD_IS_DEFINED_TERM;
         RandomVariableType paraType = RandomVariableType.PARAGRAPH_HAS_DEFINITION;
         List<RandomVariableType> wordFeatures = ProbabilityDocumentAnnotatingModel.DEFAULT_WORD_FEATURES;
         List<RandomVariableType> paraFeatures = ProbabilityDocumentAnnotatingModel.DEFAULT_PARAGRAPH_FEATURES;
         List<RandomVariableType> paraDocFeatures = ProbabilityDocumentAnnotatingModel.DEFAULT_PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL;
         List<RandomVariableType> docFeatures = ProbabilityDocumentAnnotatingModel.DEFAULT_DOCUMENT_FEATURES;
+
         ProbabilityDocumentAnnotatingModel bniModel =  new ProbabilityDocumentAnnotatingModel( trainingModel.getTnbfModel(),
                 trainingModel.getHmm(), document, wordType, wordFeatures, paraType, paraFeatures, paraDocFeatures, docFeatures
         );
@@ -115,6 +123,7 @@ public class DefinitionClassifier extends ClassifierImpl{
         DefinitionLinker linker = new DefinitionLinker();
         document = linker.linkDefinition(document);
         return document;
+        */
     }
 
     @Override
@@ -127,27 +136,44 @@ public class DefinitionClassifier extends ClassifierImpl{
             logger.debug(para.getId() +"\t" +DocumentHelper.getDefinedTermTokensInParagraph(para).toString());
         }
         logger.debug("Number of Defined paras:" + DocumentHelper.getDefinitionParagraphs(document).size());
-
+        logger.debug("observedParas:" + "\t" + observedParas);
+        for (CoreMap para: observedParas) {
+            logger.debug("observedParas:IsDefinitionAnnotation" + "\t" + para.get(CoreAnnotations.IsDefinitionAnnotation.class));
+        }
+       /*
         if(documentId==null || bniMap.get(documentId)==null){
             throw new Exception("Failed to updateBNI. check documentId : " +documentId);
         }
-        bniMap.get(documentId).updateBeliefWithObservation(observedParas);
+        */
+        trainingModel = createModel();
+        trainingModel.updateWithDocumentAndWeight(document);
 
-        bniMap.get(documentId).annotateDocument();
+        RandomVariableType wordType = RandomVariableType.WORD_IS_DEFINED_TERM;
+        RandomVariableType paraType = RandomVariableType.PARAGRAPH_HAS_DEFINITION;
+        List<RandomVariableType> wordFeatures = ProbabilityDocumentAnnotatingModel.DEFAULT_WORD_FEATURES;
+        List<RandomVariableType> paraFeatures = ProbabilityDocumentAnnotatingModel.DEFAULT_PARAGRAPH_FEATURES;
+        List<RandomVariableType> paraDocFeatures = ProbabilityDocumentAnnotatingModel.DEFAULT_PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL;
+        List<RandomVariableType> docFeatures = ProbabilityDocumentAnnotatingModel.DEFAULT_DOCUMENT_FEATURES;
 
-        printBelieves(bniMap.get(documentId), document);
+        ProbabilityDocumentAnnotatingModel bniModel =  new ProbabilityDocumentAnnotatingModel( trainingModel.getTnbfModel(),
+                trainingModel.getHmm(), document, wordType, wordFeatures, paraType, paraFeatures, paraDocFeatures, docFeatures
+        );
+
+        bniModel.updateBeliefWithObservation(observedParas);
+        bniModel.annotateDocument();
+        bniMap.put(documentId, bniModel);
+        printBelieves(bniModel, document);
+
         logger.debug("definitions after annotate");
         for (CoreMap para:DocumentHelper.getDefinitionParagraphs(document)){
             logger.debug(para.getId() +"\t" + DocumentHelper.getDefinedTermTokensInParagraph(para).toString());
         }
         logger.debug("Number of Defined paras:" + DocumentHelper.getDefinitionParagraphs(document).size());
 
-
         DefinitionLinker linker = new DefinitionLinker();
         document = linker.linkDefinition(document);
         return document;
     }
-
 
     @Override
     public SortedMap<Category, Double> classifyDetailed(Document doc, int numOfTokens) {

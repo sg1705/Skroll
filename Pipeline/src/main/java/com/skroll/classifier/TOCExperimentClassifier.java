@@ -183,26 +183,23 @@ public class TOCExperimentClassifier extends ClassifierImpl {
         return classify("documentId", document);
     }
     void printBelieves(ProbabilityDocumentAnnotatingModel model, Document doc ){
-        System.out.println("document level feature believes\n");
+        logger.trace("document level feature believes\n");
+
         double[][] dBelieves = model.getDocumentFeatureBelief();
         for (int i=0; i<dBelieves.length; i++){
-            System.out.print(" " + model.DEFAULT_DOCUMENT_FEATURES);
-            System.out.print(Arrays.toString(dBelieves[i]));
+            logger.trace(" " + model.DEFAULT_DOCUMENT_FEATURES);
+            logger.trace(Arrays.toString(dBelieves[i]));
         }
 
         List<CoreMap> paraList = doc.getParagraphs();
 
-        System.out.println("document level feature believes\n");
+        logger.trace("paragraph category believes\n");
         double[][] pBelieves = model.getParagraphCategoryBelief();
 
         for (int i=0; i<paraList.size(); i++){
             BNInference.normalizeLog(pBelieves[i]);
-
-            System.out.print(i + " [");
-            for (int j=0; j<pBelieves[i].length; j++)
-                System.out.printf("%.0f ", pBelieves[i][j]);
-            System.out.println("] ");
-            System.out.println(paraList.get(i).getText());
+            logger.trace(paraList.get(i).getText());
+            logger.trace(String.format("%d [%.0f %.0f]", i, pBelieves[i][0], pBelieves[i][1]));
 
         }
     }
