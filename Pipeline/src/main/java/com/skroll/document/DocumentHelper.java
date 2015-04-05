@@ -71,14 +71,14 @@ public class DocumentHelper {
         return strings;
     }
 
-    public static void setMatchedTokens(CoreMap coreMap, List<String> addedTerm, int classification) {
+    public static void setMatchedTokens(CoreMap coreMap, List<Token> addedTerm, int classification) {
         List<Token> tokenList = coreMap.getTokens();
         List<Token> returnList = new ArrayList<>();
         int j=0;
         int l=0;
         for (int k=0; k< addedTerm.size(); k++) {
             for(int i=l; i<tokenList.size(); i++){
-                if(tokenList.get(i).getText().equals(addedTerm.get(k))) {
+                if(tokenList.get(i).getText().equals(addedTerm.get(k).getText())) {
                     if (j==0) {
                         j=i;
                     }
@@ -191,6 +191,16 @@ public class DocumentHelper {
             if (isTOC(paragraph)) tocParagraphs.add(paragraph);
         }
         return tocParagraphs;
+    }
+
+    public static List<Token> getTokensOfADoc(Document doc){
+        List<Token> tokens= new ArrayList<>();
+        for (CoreMap paragraph: doc.getParagraphs()){
+            for (Token token: paragraph.getTokens()){
+                tokens.add(token);
+            }
+        }
+        return tokens;
     }
 
     public static void clearAnnotations(CoreMap paragraph){
