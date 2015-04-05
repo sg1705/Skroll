@@ -25,7 +25,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import java.io.File;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -129,10 +128,8 @@ public class APITest {
                 assert(Joiner.on(" ").join(DocumentHelper.getTOCLists(coreMap)).equals("Capital Stock"));
             }
         }
-        Files.write(JsonDeserializer.getJson(doc), new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
-        API.documentMap.clear();
-        testGetDoc();
-        logger.debug("TOC Paragraph before update BNI: {}", DocumentHelper.getTOCParagraphs((doc)));
+        API.documentMap.put("smaller-indenture.html",doc);
+        logger.debug("TOC Paragraph before calling updateTerm: {}", DocumentHelper.getTOCParagraphs((doc)));
 
         testUpdateTerms(documentId);
 
@@ -230,8 +227,8 @@ public class APITest {
         String documentId = "smaller-indenture.html";
         WebTarget webTargetWithQueryParam =
                 webTarget.queryParam("documentId", documentId);
-        Response response = webTargetWithQueryParam.request(MediaType.APPLICATION_JSON).get();
-        logger.debug("Here is the response: "+response.getEntity().toString());
+        String response = webTargetWithQueryParam.request().get(String.class);
+        assert(response.contains("Restricted Subsidiaries"));
     }
 
     public void testRemoveTerms(String documentId) throws Exception {
