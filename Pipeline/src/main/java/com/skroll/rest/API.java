@@ -1,9 +1,7 @@
 package com.skroll.rest;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
 import com.google.common.collect.FluentIterable;
-import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
@@ -324,9 +322,17 @@ public class API {
                             logger.debug(paragraph.getId() + "\t" + "existing TOCs:" + "\t" + DocumentHelper.getTOCLists(paragraph));
                         }
 
-                        List<List<String>> addedTerms = new ArrayList<> ();
+                        List<List<Token>> addedTerms = new ArrayList<> ();
+
                         for(String modifiedTerm : paraMap.get(modifiedParagraph)) {
-                            addedTerms.add(Lists.newArrayList(Splitter.on(" ").split(modifiedTerm)));
+                            List<Token> tokens=null;
+                            try {
+                                Document tempDoc = Parser.parseDocumentFromHtml(modifiedTerm);
+                                tokens = DocumentHelper.getTokensOfADoc(tempDoc);
+                            } catch (ParserException e) {
+                                e.printStackTrace();
+                            }
+                            addedTerms.add(tokens);
                         }
                         logger.debug("addedTerms:" + "\t" + addedTerms);
                        // check whether the term is "" ro empty or not that received from client
@@ -334,7 +340,7 @@ public class API {
                         DocumentHelper.clearAnnotations(paragraph);
                             // add annotations that received from client - definedTermList
                             if (!addedTerms.isEmpty()) {
-                                for (List<String> addedTerm : addedTerms) {
+                                for (List<Token> addedTerm : addedTerms) {
                                     if (addedTerm != null && !addedTerm.isEmpty()) {
                                         if (!Joiner.on("").join(addedTerm).equals("")) {
                                             logger.debug("addedTerm:" + "\t" + addedTerm);

@@ -122,7 +122,7 @@ public class APITest {
         String preEvaluatedFolder = configuration.get("preEvaluatedFolder","/tmp/");
         Document doc = JsonDeserializer.fromJson(Files.toString(new File(preEvaluatedFolder + documentId), Constants.DEFAULT_CHARSET));
         for(CoreMap coreMap: doc.getParagraphs()){
-            DocumentHelper.setMatchedTokens(coreMap, Lists.newArrayList("Capital", "Stock"), Paragraph.TOC_CLASSIFICATION);
+            DocumentHelper.setMatchedTokens(coreMap, DocumentHelper.createTokens(Lists.newArrayList("Capital", "Stock")), Paragraph.TOC_CLASSIFICATION);
             if(coreMap.get(CoreAnnotations.IsTOCAnnotation.class)) {
                 System.out.println(DocumentHelper.getTOCLists(coreMap));
                 assert(Joiner.on(" ").join(DocumentHelper.getTOCLists(coreMap)).equals("Capital Stock"));
