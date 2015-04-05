@@ -131,12 +131,20 @@ public class TOCExperimentClassifier extends ClassifierImpl {
     @Override
     public Object updateBNI(String documentId, Document document, List<CoreMap> observedParas) throws Exception {
 
+        logger.debug("all observed paragraphs:");
+
+        for (CoreMap para: DocumentHelper.getObservedParagraphs(document)){
+            logger.debug(para.getText());
+        }
+
         logger.debug("TOC before annotate :");
         for (CoreMap para: DocumentHelper.getTOCParagraphs(document)){
             logger.debug(para.getId() +"\t" +DocumentHelper.getTOCLists(para).toString());
             logger.debug("IsTOCAnnotation" +"\t" +para.get(CoreAnnotations.IsTOCAnnotation.class));
         }
+
         logger.debug("observedParas:" + "\t" + observedParas);
+
 
 
         for (CoreMap para: observedParas) {

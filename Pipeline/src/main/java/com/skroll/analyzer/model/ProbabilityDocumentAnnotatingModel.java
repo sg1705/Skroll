@@ -239,6 +239,8 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
     }
 
     public void annotateDocument(){
+
+
         passMessagesToParagraphCategories();
 
         for (int i=0; i<NUM_ITERATIONS;i++) {
