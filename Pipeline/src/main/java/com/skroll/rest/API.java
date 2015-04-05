@@ -234,7 +234,7 @@ public class API {
                 List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(
                         paragraph);
                 for (List<String> definition: definitionList) {
-                    logger.debug(paragraph.getId() + "\t" + "DEFINITION" + "\t" + definition);
+                    logger.trace(paragraph.getId() + "\t" + "DEFINITION" + "\t" + definition);
                     if (!definition.isEmpty()) {
                         if(!(Joiner.on(" ").join(definition).equals(""))) {
                             definedTermParagraphList.add(new Paragraph(paragraph.getId(), Joiner.on(" ").join(definition), Paragraph.DEFINITION_CLASSIFICATION));
@@ -248,7 +248,7 @@ public class API {
                         paragraph);
                     if (!tocList.isEmpty()) {
                         if(!(Joiner.on(" ").join(tocList).equals(""))) {
-                            logger.debug(paragraph.getId() + "\t" + "TOC" + "\t" + tocList);
+                            logger.trace(paragraph.getId() + "\t" + "TOC" + "\t" + tocList);
                             definedTermParagraphList.add(new Paragraph(paragraph.getId(), Joiner.on(" ").join(tocList), Paragraph.TOC_CLASSIFICATION));
                         }
                     }
@@ -323,16 +323,18 @@ public class API {
                         }
 
                         List<List<Token>> addedTerms = new ArrayList<> ();
+                        if (!(modifiedParagraph.getClassificationId() == Paragraph.NONE_CLASSIFICATION)) {
 
-                        for(String modifiedTerm : paraMap.get(modifiedParagraph)) {
-                            List<Token> tokens=null;
-                            try {
-                                Document tempDoc = Parser.parseDocumentFromHtml(modifiedTerm);
-                                tokens = DocumentHelper.getTokensOfADoc(tempDoc);
-                            } catch (ParserException e) {
-                                e.printStackTrace();
+                            for (String modifiedTerm : paraMap.get(modifiedParagraph)) {
+                                List<Token> tokens = null;
+                                try {
+                                    Document tempDoc = Parser.parseDocumentFromHtml(modifiedTerm);
+                                    tokens = DocumentHelper.getTokensOfADoc(tempDoc);
+                                } catch (ParserException e) {
+                                    e.printStackTrace();
+                                }
+                                addedTerms.add(tokens);
                             }
-                            addedTerms.add(tokens);
                         }
                         logger.debug("addedTerms:" + "\t" + addedTerms);
                        // check whether the term is "" ro empty or not that received from client

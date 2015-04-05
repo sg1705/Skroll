@@ -175,7 +175,7 @@ public class APITest {
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
 
-        String jsonString ="[{\"paragraphId\":\"p_1253\",\"term\":\"\", \"classificationId\":2}]";
+        String jsonString ="[{\"paragraphId\":\"p_1253\",\"term\":\"Base Terms\", \"classificationId\":2}]";
         //String jsonString ="[{\"paragraphId\":\"p_1371\",\"term\":\"Disclosure Regarding Forward-Looking Statements\", \"classificationId\":2}]";
 
         Response response = webTarget.request(MediaType.TEXT_HTML).cookie(new  NewCookie("documentId", documentId))
