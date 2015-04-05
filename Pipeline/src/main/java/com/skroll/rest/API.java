@@ -10,7 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.skroll.classifier.Classifier;
-import com.skroll.classifier.DefinitionClassifier;
+import com.skroll.classifier.DefinitionExperimentClassifier;
 import com.skroll.classifier.TOCExperimentClassifier;
 import com.skroll.document.*;
 import com.skroll.document.annotation.CoreAnnotations;
@@ -52,7 +52,7 @@ public class API {
     // It provides the construct to synchronize only block of map not the whole hashmap.
 
     protected static Map<String,Document> documentMap = new ConcurrentHashMap<String,Document>();
-    private static DefinitionClassifier definitionClassifier = new DefinitionClassifier();
+    private static Classifier definitionClassifier = new DefinitionExperimentClassifier();
     private static Classifier tocClassifier = new TOCExperimentClassifier();
     private static Configuration configuration = new Configuration();
     private static String  preEvaluatedFolder = configuration.get("preEvaluatedFolder","/tmp/");
@@ -259,7 +259,7 @@ public class API {
 
         Gson gson = new GsonBuilder().create();
         String definitionJson = gson.toJson(definedTermParagraphList);
-        logger.debug("definitionJson" + "\t" + definitionJson);
+        logger.trace("definitionJson" + "\t" + definitionJson);
         Response r = Response.ok().status(Response.Status.OK).entity(definitionJson).build();
         return r;
     }
