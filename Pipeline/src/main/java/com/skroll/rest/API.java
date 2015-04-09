@@ -383,7 +383,7 @@ public class API {
                             // log the userObserved TOC
                     }
             }
-        logger.debug("Total time taken to process the updateTerm without updateBNI: {} msec", System.currentTimeMillis() - startTime);
+        logger.info("Total time taken to process the updateTerm without updateBNI: {} msec", System.currentTimeMillis() - startTime);
         // persist the document using document id. Let's use the file name
         try {
             if (!parasForUpdateBNI.isEmpty()) {
@@ -700,6 +700,8 @@ public class API {
             } else {
                 paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
                 paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
+                DocumentHelper.clearAnnotations(paragraph);
+                TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.NONE, userWeight);
             }
         }
         Files.write(JsonDeserializer.getJson(doc), new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
