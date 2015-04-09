@@ -347,10 +347,16 @@ public class API {
                                         if (!Joiner.on("").join(addedTerm).equals("")) {
                                             logger.debug("addedTerm:" + "\t" + addedTerm);
                                             if (modifiedParagraph.getClassificationId() == Paragraph.DEFINITION_CLASSIFICATION) {
-                                                DocumentHelper.setMatchedTokens(paragraph, addedTerm, Paragraph.DEFINITION_CLASSIFICATION);
+                                                if (!DocumentHelper.setMatchedTokens(paragraph, addedTerm, Paragraph.DEFINITION_CLASSIFICATION)) {
+                                                    logger.error("Selected text does not match with the existing document, there may be special char passed from viewer: {}", addedTerm);
+                                                    return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Selected text does not match with the existing document, there may be special char passed from viewer " + addedTerm ).type(MediaType.APPLICATION_JSON).build();
+                                                }
                                                 TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.DEFINITION, userWeight);
                                             } else if (modifiedParagraph.getClassificationId() == Paragraph.TOC_CLASSIFICATION) {
-                                                DocumentHelper.setMatchedTokens(paragraph, addedTerm, Paragraph.TOC_CLASSIFICATION);
+                                                if (!DocumentHelper.setMatchedTokens(paragraph, addedTerm, Paragraph.TOC_CLASSIFICATION)) {
+                                                    logger.error("Selected text does not match with the existing document, there may be special char passed from viewer: {}", addedTerm);
+                                                    return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Selected text does not match with the existing document, there may be special char passed from viewer " + addedTerm ).type(MediaType.APPLICATION_JSON).build();
+                                                }
                                                 TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.TOC, userWeight);
                                             } else {
                                                 TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.NONE, userWeight);
@@ -408,7 +414,8 @@ public class API {
             }
             */
             documentMap.put(documentId,doc);
-            Files.write(JsonDeserializer.getJson(doc), new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
+            // todo: only storing the doc at updateModel time for now.
+           // Files.write(JsonDeserializer.getJson(doc), new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
         } catch (Exception e) {
             logger.error("Failed to persist the document object: {}", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to persist the document object" ).type(MediaType.APPLICATION_JSON).build();

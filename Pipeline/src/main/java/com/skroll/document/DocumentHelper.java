@@ -71,7 +71,7 @@ public class DocumentHelper {
         return strings;
     }
 
-    public static void setMatchedTokens(CoreMap coreMap, List<Token> addedTerm, int classification) {
+    public static boolean setMatchedTokens(CoreMap coreMap, List<Token> addedTerm, int classification) {
         List<Token> tokenList = coreMap.getTokens();
         List<Token> returnList = new ArrayList<>();
         int j=0;
@@ -100,7 +100,9 @@ public class DocumentHelper {
              } else if ( classification==Paragraph.TOC_CLASSIFICATION){
                  addTOCsInParagraph(returnList, coreMap);
              }
+            return true;
         }
+        return false;
     }
     public static List<List<String>> getDefinedTermLists(CoreMap coreMap) {
         List<List<Token>> definitionList = coreMap.get(CoreAnnotations.DefinedTermTokensAnnotation.class);
