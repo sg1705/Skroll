@@ -16,7 +16,15 @@ public class TrainingHMM extends HMM {
         nb = new TrainingNaiveBayesWithFeatureConditions(stateType, featureVarList,
                 featureExistsAtDocLevelVarList, documentFeatureVarList);
     }
-    public void addSample(SimpleDataTuple[] tuples){
 
+    public void addSample(SimpleDataTuple[] tuples, double weight){
+        for (int i=0; i<tuples.length; i++){
+            if (i+1<tuples.length){
+                int state = tuples[i].getDiscreteValues()[0];
+                int nextState = tuples[i+1].getDiscreteValues()[0];
+                transitionParameters[state][nextState] += weight;
+            }
+            ((TrainingNaiveBayesWithFeatureConditions) nb).addSample(tuples[i]);
+        }
     }
 }

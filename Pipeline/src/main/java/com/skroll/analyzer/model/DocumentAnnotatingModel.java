@@ -52,7 +52,8 @@ public abstract class DocumentAnnotatingModel {
     );
     //todo: if needed, can add a feature to indicated if a word is used as camel case in the document.
     public static final List<RandomVariableType> DEFAULT_WORD_FEATURES = Arrays.asList(
-            RandomVariableType.WORD_IN_QUOTES
+            RandomVariableType.WORD_IN_QUOTES,
+            RandomVariableType.WORD_IS_UNDERLINED
 //            RandomVariableType.WORD_HAS_SPECIAL_FORMAT,
             //RandomVariableType.WORD_INDEX
     );

@@ -31,6 +31,10 @@ public enum RandomVariableType {
     WORD_HAS_SPECIAL_FORMAT(2),
     WORD_INDEX (DefinedTermExtractionModel.HMM_MODEL_LENGTH),
 
+    WORD(0),
+    FIRST_WORD(0),
+    NEXT_WORD(0),
+
     // new ones for TOC
     PARAGRAPH_WORDS_STARTS_WITH_UPPERCASE_COUNT (2),
     PARAGRAPH_ALL_WORDS_UPPERCASE (2),
@@ -40,6 +44,8 @@ public enum RandomVariableType {
     DOCUMENT_TOC_HAS_ANCHOR(2),
     DOCUMENT_TOC_IS_CENTER_ALIGNED(2),
     DOCUMENT_TOC_HAS_WORDS_UPPERCASE(2);
+
+
 
     private int featureSize;
     private String[] valueNames;
