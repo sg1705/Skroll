@@ -22,6 +22,11 @@ public abstract class DocumentAnnotatingModel {
     public static final RandomVariableType DEFAULT_PARAGRAPH_CATEGORY = RandomVariableType.PARAGRAPH_HAS_DEFINITION;
     public static final RandomVariableType DEFAULT_WORD_TYPE = RandomVariableType.WORD_IS_DEFINED_TERM;
 
+    public static final List<RandomVariableType> DEFAULT_WORDS = Arrays.asList(
+            RandomVariableType.WORD
+    );
+
+
     public static final List<RandomVariableType> DEFAULT_DOCUMENT_FEATURES = Arrays.asList(
             RandomVariableType.DOCUMENT_DEFINITIONS_IS_UNDERLINED,
             RandomVariableType.DOCUMENT_DEFINITIONS_IS_BOLD

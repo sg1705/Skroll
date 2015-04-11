@@ -1,5 +1,6 @@
 package com.skroll.analyzer.model.bn;
 
+import com.skroll.analyzer.model.DocumentAnnotatingModel;
 import com.skroll.analyzer.model.RandomVariableType;
 import junit.framework.TestCase;
 
@@ -13,7 +14,8 @@ public class TrainingNaiveBayesWithFeatureConditionsTest extends TestCase {
                 RandomVariableType.PARAGRAPH_HAS_DEFINITION,
                 new ArrayList<RandomVariableType>(),
                 Arrays.asList(RandomVariableType.PARAGRAPH_STARTS_WITH_QUOTE),
-                Arrays.asList(RandomVariableType.DOCUMENT_DEFINITIONS_IN_QUOTES));
+                Arrays.asList(RandomVariableType.DOCUMENT_DEFINITIONS_IN_QUOTES),
+                DocumentAnnotatingModel.DEFAULT_WORDS);
 
         System.out.println("initial model");
         System.out.println(nb);

@@ -11,10 +11,10 @@ public class TrainingHMM extends HMM {
     public TrainingHMM(int modelLength, RandomVariableType stateType,
                        List<RandomVariableType> featureVarList,
                        List<RandomVariableType> featureExistsAtDocLevelVarList,
-                       List<RandomVariableType> documentFeatureVarList){
+                       List<RandomVariableType> documentFeatureVarList, List<RandomVariableType> wordVarList ){
 
         nb = new TrainingNaiveBayesWithFeatureConditions(stateType, featureVarList,
-                featureExistsAtDocLevelVarList, documentFeatureVarList);
+                featureExistsAtDocLevelVarList, documentFeatureVarList, wordVarList );
     }
 
     public void addSample(SimpleDataTuple[] tuples, double weight){

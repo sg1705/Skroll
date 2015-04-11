@@ -1,5 +1,6 @@
 package com.skroll.classifier;
 
+import com.skroll.analyzer.model.DocumentAnnotatingModel;
 import com.skroll.analyzer.model.ProbabilityDocumentAnnotatingModel;
 import com.skroll.analyzer.model.RandomVariableType;
 import com.skroll.analyzer.model.TrainingDocumentAnnotatingModel;
@@ -71,7 +72,8 @@ public class TOCExperimentClassifier extends ClassifierImpl {
                      paraType,
                      paraFeatures,
                      paraDocFeatures,
-                     docFeatures);
+                     docFeatures,
+                    DocumentAnnotatingModel.DEFAULT_WORDS);
         }
             return localTrainingModel;
         }

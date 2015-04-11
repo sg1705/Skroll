@@ -31,7 +31,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     public TrainingDocumentAnnotatingModel(){
         this(DEFAULT_WORD_TYPE, DEFAULT_WORD_FEATURES,
                 DEFAULT_PARAGRAPH_CATEGORY, DEFAULT_PARAGRAPH_FEATURES,
-                DEFAULT_PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL, DEFAULT_DOCUMENT_FEATURES);
+                DEFAULT_PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL, DEFAULT_DOCUMENT_FEATURES, DEFAULT_WORDS);
     }
 
 //    public TrainingDocumentAnnotatingModel(TrainingDocumentAnnotatingModel model){
@@ -50,10 +50,11 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
                                            RandomVariableType paraCategory,
                                            List<RandomVariableType> paraFeatures,
                                            List<RandomVariableType> paraDocFeatures,
-                                           List<RandomVariableType> docFeatures){
+                                           List<RandomVariableType> docFeatures,
+                                           List<RandomVariableType> wordVarList ){
 
         this(new TrainingNaiveBayesWithFeatureConditions(paraCategory,
-                        paraFeatures, paraDocFeatures, docFeatures),
+                        paraFeatures, paraDocFeatures, docFeatures, wordVarList ),
                 wordType, wordFeatures, paraCategory, paraFeatures, paraDocFeatures, docFeatures);
 
     }
