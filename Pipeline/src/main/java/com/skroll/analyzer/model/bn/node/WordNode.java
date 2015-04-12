@@ -60,8 +60,20 @@ public class WordNode                                                           
         return s;
     }
 
+    public DiscreteNode getParent() {
+        return parent;
+    }
+
     public void setParent(DiscreteNode parent) {
         this.parent = parent;
+    }
+
+    public Map<String, double[]> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(Map<String, double[]> parameters) {
+        this.parameters = parameters;
     }
 
     public Map<String, double[]> getCopyOfParameters() {

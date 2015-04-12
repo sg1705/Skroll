@@ -19,6 +19,9 @@ import java.util.List;
         @JsonSubTypes.Type(value = com.skroll.analyzer.model.bn.node.ProbabilityDiscreteNode.class, name = "ProbabilityDiscreteNode"),
         @JsonSubTypes.Type(value = com.skroll.analyzer.model.bn.node.TrainingDiscreteNode.class, name = "TrainingDiscreteNode")})
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
+
+
+
 public class DiscreteNode{
 
     @JsonProperty("familyVariables")
@@ -34,6 +37,19 @@ public class DiscreteNode{
 
     DiscreteNode[] parents, children;
     int observedValue = -1; // -1 means unobserved
+
+
+    public DiscreteNode(){
+    }
+
+    // calculation of the size up to (not include) the variable at the specified index.
+    int sizeUpTo(int index){
+        int size=1;
+        for (int i=0; i<index; i++)
+            size *= familyVariables[i].getFeatureSize();
+        return size;
+    }
+
     @JsonIgnore
     public Integer getObservation() {
         return observedValue;
@@ -47,16 +63,6 @@ public class DiscreteNode{
         this.observedValue = -1;
     }
 
-    // calculation of the size up to (not include) the variable at the specified index.
-    int sizeUpTo(int index){
-        int size=1;
-        for (int i=0; i<index; i++)
-            size *= familyVariables[i].getFeatureSize();
-        return size;
-    }
-
-    public DiscreteNode(){
-    }
 
     @JsonIgnore
     int getParentNodeIndex(DiscreteNode parentNode){
@@ -65,11 +71,9 @@ public class DiscreteNode{
         return -1;
     }
 
-    public DiscreteNode(List<RandomVariableType> randomVariables){
-        this.familyVariables =  randomVariables.toArray(new RandomVariableType[randomVariables.size()]);
 
-        int totalSize = sizeUpTo(familyVariables.length);
-        parameters = new double[totalSize];
+    public void setFamilyVariables(RandomVariableType[] familyVariables) {
+        this.familyVariables = familyVariables;
     }
 
     @JsonIgnore
@@ -80,15 +84,6 @@ public class DiscreteNode{
         return sizes;
     }
 
-    @JsonIgnore
-    int getIndex(int [] multiIndex){ // least significant digit on the left.
-        int index=0;
-        for (int i=multiIndex.length-1; i>=0; i--){
-            index *= familyVariables[i].getFeatureSize();
-            index += multiIndex[i];
-        }
-        return index;
-    }
 
     double[] normalize(double weight){
         return BNInference.normalize(parameters, weight);
@@ -99,9 +94,20 @@ public class DiscreteNode{
         return parameters[index];
     }
 
+    @JsonIgnore
+    public int numValues(){
+        return familyVariables[0].getFeatureSize();
+    }
+
+
     public double[] getParameters(){
         return parameters;
     }
+
+    public double[] copyOfParameters(){
+        return parameters.clone();
+    }
+
 
     public void setParameters(double[] parameters) {
         this.parameters = parameters;
@@ -115,6 +121,10 @@ public class DiscreteNode{
         this.parents = parents;
     }
 
+    public DiscreteNode[] getParents() {
+        return parents;
+    }
+
     @JsonIgnore
     public RandomVariableType getVariable(){
         return familyVariables[0];
@@ -124,6 +134,7 @@ public class DiscreteNode{
     public RandomVariableType[] getFamilyVariables(){
         return familyVariables;
     }
+
 
 
     @Override

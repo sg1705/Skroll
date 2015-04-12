@@ -18,14 +18,6 @@ public class TrainingDiscreteNode extends DiscreteNode {
     // least significant index is index 0.
     // todo: in the future, when models are fixed and updated using a lot of data, may consider multiplying by some positive decaying constant less than 1 to reduce the weight of older experiences
 
-    //double[] parameters;
-    TrainingDiscreteNode(){}
-
-    public TrainingDiscreteNode(List<RandomVariableType> randomVariables){
-        super(randomVariables);
-        //parameters = parameters;
-        Arrays.fill(parameters, PRIOR_COUNT);
-    }
 
     /**
      * copy constructor
@@ -63,7 +55,7 @@ public class TrainingDiscreteNode extends DiscreteNode {
     }
 
     void updateCount(int[] multiIndex, double weight){
-        parameters[ getIndex(multiIndex)] += weight;
+        parameters[ TrainingHelper.getIndex(familyVariables, multiIndex)] += weight;
     }
 
     /**
