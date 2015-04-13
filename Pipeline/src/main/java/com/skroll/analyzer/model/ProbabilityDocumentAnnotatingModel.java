@@ -1,7 +1,6 @@
 package com.skroll.analyzer.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.skroll.analyzer.model.bn.LogProbabilityNaiveBayesWithFeatureConditions;
 import com.skroll.analyzer.model.bn.NBInferenceHelper;
 import com.skroll.analyzer.model.bn.NaiveBayesWithFeatureConditions;
 import com.skroll.analyzer.model.bn.SimpleDataTuple;

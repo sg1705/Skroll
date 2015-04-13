@@ -143,7 +143,6 @@ public class DiscreteNode{
         return "DiscreteNode{" +
                 "familyVariables=" + Arrays.toString(familyVariables) +
                 ", parameters=" + Arrays.toString(parameters) +
-
                 '}';
     }
 }

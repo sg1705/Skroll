@@ -1,7 +1,6 @@
 package com.skroll.util;
 
 import com.skroll.analyzer.model.bn.node.DiscreteNode;
-import com.skroll.analyzer.model.bn.node.TrainingDiscreteNode;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -50,7 +49,7 @@ public class Visualizer {
         HashMap<String, HashMap<String, Double>> map = new HashMap();
         for (int ii = 0; ii < nodes.length; ii++) {
             //map.put(nodes[ii].getVariable().name(), Visualizer.toDoubleArrayToMap(nodes[ii].getParameters()));
-            map.put(nodes[ii].getVariable().name(), Visualizer.toDoubleArrayToMapWithoutYesNo(((TrainingDiscreteNode) nodes[ii]).getProbabilities()));
+            map.put(nodes[ii].getVariable().name(), Visualizer.toDoubleArrayToMapWithoutYesNo((nodes[ii]).getParameters()));
         }
         return map;
     }

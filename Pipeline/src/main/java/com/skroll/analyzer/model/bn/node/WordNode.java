@@ -19,10 +19,10 @@ import java.util.Map;
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
         property = "type")
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = com.skroll.analyzer.model.bn.node.LogProbabilityWordNode.class, name = "LogProbabilityWordNode"),
-        @JsonSubTypes.Type(value = com.skroll.analyzer.model.bn.node.ProbabilityWordNode.class, name = "ProbabilityWordNode"),
-        @JsonSubTypes.Type(value = com.skroll.analyzer.model.bn.node.TrainingWordNode.class, name = "TrainingWordNode")})
+//@JsonSubTypes({
+//        @JsonSubTypes.Type(value = com.skroll.analyzer.model.bn.node.LogProbabilityWordNode.class, name = "LogProbabilityWordNode"),
+//        @JsonSubTypes.Type(value = com.skroll.analyzer.model.bn.node.ProbabilityWordNode.class, name = "ProbabilityWordNode"),
+//        @JsonSubTypes.Type(value = com.skroll.analyzer.model.bn.node.TrainingWordNode.class, name = "TrainingWordNode")})
 public class WordNode                                                                                                                                                       {
 
     Map<String, double[]> parameters = new HashMap<>();
