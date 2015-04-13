@@ -84,7 +84,7 @@ public class WordNode                                                           
     public String toString() {
         return "WordNode{" +
                 "parameters=" + mapToString() +
-                ", parent=" + parent +
+                ", parent=" + parent.getVariable() +
                 '}';
     }
 }
