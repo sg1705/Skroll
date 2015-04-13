@@ -2,22 +2,27 @@ package com.skroll.analyzer.model.bn.node;
 
 import com.skroll.analyzer.model.RandomVariableType;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by wei on 4/11/15.
  */
 
 // It is okay for these helper method to use nodes parameters
-public class TrainingHelper {
+public class NodeTrainingHelper {
     private static final double PRIOR_COUNT = .1;
 
-    static DiscreteNode createTrainingDiscreteNode(List<RandomVariableType> randomVariables){
-
-        DiscreteNode node = new DiscreteNode();
+    /**
+     * Creates a DiscreteNode for training from a list of RandomVariables in the node's family and its parent nodes.
+     * The first entry of the randomVariables is the variable of the current node.
+     * The parent nodes correspond to the random variables after the first entry.
+     * @param randomVariables   the random variables in the family
+     * @param parents   the parent nodes
+     * @return  a new DiscreteNode for training
+     */
+    public static DiscreteNode createTrainingDiscreteNode(List<RandomVariableType> randomVariables,
+                                                          List<DiscreteNode> parents){
+        DiscreteNode node = new DiscreteNode(parents.toArray(new DiscreteNode[parents.size()]));
         RandomVariableType[] variables =
                 randomVariables.toArray(new RandomVariableType[randomVariables.size()]);
         node.setFamilyVariables( variables);
@@ -27,6 +32,9 @@ public class TrainingHelper {
         node.setParameters(parameters);
         return node;
 
+    }
+    public static DiscreteNode createTrainingDiscreteNode(List<RandomVariableType> randomVariables){
+        return createTrainingDiscreteNode(randomVariables, new ArrayList<DiscreteNode>());
     }
 
 
@@ -40,11 +48,11 @@ public class TrainingHelper {
         return index;
     }
 
-    static void updateCount(DiscreteNode node){
+    public static void updateCount(DiscreteNode node){
         updateCount(node, 1);
     }
 
-    static void updateCount(DiscreteNode node, double weight){
+    public static void updateCount(DiscreteNode node, double weight){
 
         RandomVariableType[] variables = node.getFamilyVariables();
         int[] multiIndex= new int[variables.length];
@@ -76,12 +84,11 @@ public class TrainingHelper {
 
 
     public static WordNode createTrainingWordNode(DiscreteNode parent){
-        WordNode node = new WordNode();
-        node.setParent(parent);
-        return node;
+        return new WordNode(parent);
+
     }
 
-    static void updateCount(WordNode node){
+    public static void updateCount(WordNode node){
         updateCount(node, 1);
     }
 

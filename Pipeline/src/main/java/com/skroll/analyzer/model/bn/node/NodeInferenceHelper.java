@@ -1,22 +1,26 @@
 package com.skroll.analyzer.model.bn.node;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.skroll.analyzer.model.RandomVariableType;
 import com.skroll.analyzer.model.bn.inference.BNInference;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by wei on 4/11/15.
  */
-public class InferenceHelper {
-    static DiscreteNode createProbabilityDiscreteNode(DiscreteNode trainingNode){
-        DiscreteNode node = new DiscreteNode();
+public class NodeInferenceHelper {
+    public static DiscreteNode createLogProbabilityDiscreteNode(DiscreteNode trainingNode, List<DiscreteNode> parents){
+        DiscreteNode node = new DiscreteNode(parents.toArray(new DiscreteNode[parents.size()]));
         node.setFamilyVariables( trainingNode.getFamilyVariables());
-        node.setParameters( TrainingHelper.getLogProbabilities(trainingNode));
+        node.setParameters(NodeTrainingHelper.getLogProbabilities(trainingNode));
         return node;
     }
 
+    public static DiscreteNode createLogProbabilityDiscreteNode(DiscreteNode trainingNode){
+        return createLogProbabilityDiscreteNode(trainingNode, new ArrayList<DiscreteNode>());
+    }
 
 
     /**
@@ -26,7 +30,7 @@ public class InferenceHelper {
      * @param message
      * @return
      */
-    double[] getLogBelief(DiscreteNode node, int index, double[] message){
+    static double[] getLogBelief(DiscreteNode node, int index, double[] message){
         double[] belief = node.copyOfParameters();
         int sizeUnderIndexFrom = node.sizeUpTo(index);
         for (int i=0,k=0,messageIndex=0; i<belief.length; i++,k++){
@@ -47,7 +51,7 @@ public class InferenceHelper {
      * @param indexTo the index of the variable to pass message to. The index is for familyVariables
      * @return
      */
-    double[] sumOutOtherNodesWithObservationAndBelief(DiscreteNode node, double[] belief, int indexTo ){
+    static double[] sumOutOtherNodesWithObservationAndBelief(DiscreteNode node, double[] belief, int indexTo ){
         RandomVariableType[] familyVariables = node.getFamilyVariables();
         double[] probs = new double[ familyVariables[indexTo].getFeatureSize() ];
         int sizeUnder = node.sizeUpTo(indexTo);
@@ -72,7 +76,7 @@ public class InferenceHelper {
     }
 
     // specialized message passing from a single parent to another.
-    double[] sumOutOtherNodesWithObservationAndMessage(DiscreteNode  node, int indexFrom, double[] message, int indexTo ){
+    static double[] sumOutOtherNodesWithObservationAndMessage(DiscreteNode  node, int indexFrom, double[] message, int indexTo ){
         double[] belief = getLogBelief(node, indexFrom, message);
         BNInference.exp(belief);
         double[] probs = sumOutOtherNodesWithObservationAndBelief(node, belief, indexTo);
@@ -81,13 +85,13 @@ public class InferenceHelper {
     }
 
 
-    public double[] sumOutOtherNodesWithObservationAndMessage(DiscreteNode node, DiscreteNode nodeFrom,
+    public static double[] sumOutOtherNodesWithObservationAndMessage(DiscreteNode node, DiscreteNode nodeFrom,
                                                               double[] message, DiscreteNode nodeTo ){
         return sumOutOtherNodesWithObservationAndMessage(node, 1+node.getParentNodeIndex(nodeFrom),
                 message, 1+node.getParentNodeIndex(nodeTo));
     }
 
-    double[] sumOutOtherNodesWithObservation(DiscreteNode node, int indexTo ){
+    static double[] sumOutOtherNodesWithObservation(DiscreteNode node, int indexTo ){
         double[] belief = node.copyOfParameters();
         BNInference.exp(belief);
         double[] probs = sumOutOtherNodesWithObservationAndBelief(node, belief, indexTo);
@@ -95,7 +99,7 @@ public class InferenceHelper {
         return probs;
     }
 
-    public double[] sumOutOtherNodesWithObservation (DiscreteNode node, LogProbabilityDiscreteNode parentNode){
+    public static double[] sumOutOtherNodesWithObservation (DiscreteNode node, DiscreteNode parentNode){
         // +1 to include the current node
         return sumOutOtherNodesWithObservation(node, node.getParentNodeIndex(parentNode)+1);
     }
@@ -103,13 +107,13 @@ public class InferenceHelper {
 
 
 
-    public static WordNode createLogProbabilityWordNode(WordNode trainingNode){
-        WordNode node = new WordNode();
-        node.setParameters( TrainingHelper.getLogProbabilities(trainingNode));
+    public static WordNode createLogProbabilityWordNode(WordNode trainingNode, DiscreteNode parentNode){
+        WordNode node = new WordNode(parentNode);
+        node.setParameters( NodeTrainingHelper.getLogProbabilities(trainingNode));
         return node;
     }
 
-    public double[] sumOutWordsWithObservation(WordNode node){
+    public static double[] sumOutWordsWithObservation(WordNode node){
 
         double[] message = new double[node.getParent().getVariable().getFeatureSize()];
         Arrays.fill(message, 0);

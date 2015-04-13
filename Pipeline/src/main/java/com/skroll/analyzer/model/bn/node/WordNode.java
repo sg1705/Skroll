@@ -49,8 +49,6 @@ public class WordNode                                                           
     public WordNode(DiscreteNode parent){
         this.parent = parent;
     }
-    public WordNode(){
-    }
 
     String mapToString(){
         String s="";

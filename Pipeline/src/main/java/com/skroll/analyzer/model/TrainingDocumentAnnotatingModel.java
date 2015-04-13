@@ -2,11 +2,11 @@ package com.skroll.analyzer.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.skroll.analyzer.model.bn.NBTrainingHelper;
+import com.skroll.analyzer.model.bn.NaiveBayesWithFeatureConditions;
 import com.skroll.analyzer.model.bn.SimpleDataTuple;
-import com.skroll.analyzer.model.bn.TrainingNaiveBayesWithFeatureConditions;
 import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.analyzer.model.bn.node.DiscreteNode;
-import com.skroll.analyzer.model.bn.node.TrainingDiscreteNode;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
-    TrainingNaiveBayesWithFeatureConditions tnbfModel;
+    NaiveBayesWithFeatureConditions tnbfModel;
 
     public TrainingDocumentAnnotatingModel(){
         this(DEFAULT_WORD_TYPE, DEFAULT_WORD_FEATURES,
@@ -53,7 +53,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
                                            List<RandomVariableType> docFeatures,
                                            List<RandomVariableType> wordVarList ){
 
-        this(new TrainingNaiveBayesWithFeatureConditions(paraCategory,
+        this(NBTrainingHelper.createTrainingNBWithFeatureConditioning(paraCategory,
                         paraFeatures, paraDocFeatures, docFeatures, wordVarList ),
                 wordType, wordFeatures, paraCategory, paraFeatures, paraDocFeatures, docFeatures);
 
@@ -61,7 +61,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
     @JsonCreator
     public TrainingDocumentAnnotatingModel(
-            @JsonProperty("tnbfModel")TrainingNaiveBayesWithFeatureConditions tnbfModel,
+            @JsonProperty("tnbfModel")NaiveBayesWithFeatureConditions tnbfModel,
             @JsonProperty("wordType")RandomVariableType wordType,
             @JsonProperty("wordFeatures")List<RandomVariableType> wordFeatures,
             @JsonProperty("paraCategory")RandomVariableType paraCategory,
@@ -102,7 +102,8 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
     void updateTNBFWithParagraph(CoreMap paragraph, int[] docFeatureValues){
         SimpleDataTuple dataTuple = DocumentAnnotatingHelper.makeDataTuple(paragraph, paraCategory, allParagraphFeatures, docFeatureValues);
-        tnbfModel.addSample(dataTuple);
+        NBTrainingHelper.addSample( tnbfModel, dataTuple);
+        //tnbfModel.addSample(dataTuple);
     }
 
     double[] getTrainingWeights(CoreMap para){
@@ -128,7 +129,8 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
         for (int i = 0; i < numCategories; i++) {
             values[0] = i;
-            tnbfModel.addSample(dataTuple, weights[i]);
+            NBTrainingHelper.addSample( tnbfModel, dataTuple, weights[i]);
+            //tnbfModel.addSample(dataTuple, weights[i]);
         }
     }
     //todo: this method should be changed. Definitions should be annotated with good training data.
@@ -217,7 +219,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
             updateWithParagraph(paragraph, docFeatureValues);
     }
 
-    public TrainingNaiveBayesWithFeatureConditions getTnbfModel() {
+    public NaiveBayesWithFeatureConditions getTnbfModel() {
         return tnbfModel;
     }
 
@@ -231,8 +233,12 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     public HashMap<String, HashMap<String, HashMap<String, Double>>> toVisualMap() {
         HashMap<String, HashMap<String, HashMap<String, Double>>> map = new HashMap();
         //document level features
-        map.put("DocuemntFeatureNodes", Visualizer.nodesToMap(this.tnbfModel.getDocumentFeatureNodeArray()));
-        map.put("ParagraphFeatureNodes", Visualizer.nodesToMap(this.tnbfModel.getFeatureNodeArray()));
+        List<DiscreteNode> docFeatureNodes = this.tnbfModel.getDocumentFeatureNodes();
+        map.put("DocuemntFeatureNodes", Visualizer.nodesToMap(
+                docFeatureNodes.toArray(new DiscreteNode[docFeatureNodes.size()])));
+        List<DiscreteNode> featureNodes = this.tnbfModel.getFeatureNodes();
+        map.put("ParagraphFeatureNodes", Visualizer.nodesToMap(
+                featureNodes.toArray( new DiscreteNode[featureNodes.size()])));
         return map;
     }
 

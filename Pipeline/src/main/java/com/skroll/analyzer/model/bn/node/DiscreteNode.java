@@ -14,10 +14,10 @@ import java.util.List;
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
         property = "type")
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = com.skroll.analyzer.model.bn.node.LogProbabilityDiscreteNode.class, name = "LogProbabilityDiscreteNode"),
-        @JsonSubTypes.Type(value = com.skroll.analyzer.model.bn.node.ProbabilityDiscreteNode.class, name = "ProbabilityDiscreteNode"),
-        @JsonSubTypes.Type(value = com.skroll.analyzer.model.bn.node.TrainingDiscreteNode.class, name = "TrainingDiscreteNode")})
+//@JsonSubTypes({
+//        @JsonSubTypes.Type(value = com.skroll.analyzer.model.bn.node.LogProbabilityDiscreteNode.class, name = "LogProbabilityDiscreteNode"),
+//        @JsonSubTypes.Type(value = com.skroll.analyzer.model.bn.node.ProbabilityDiscreteNode.class, name = "ProbabilityDiscreteNode"),
+//        @JsonSubTypes.Type(value = com.skroll.analyzer.model.bn.node.TrainingDiscreteNode.class, name = "TrainingDiscreteNode")})
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 
 
@@ -35,12 +35,13 @@ public class DiscreteNode{
     double[] parameters; // used to calculate probability and represent how much piror experience exists.
     // todo: in the future, when models are fixed and updated using a lot of data, may consider multiplying by some positive decaying constant less than 1 to reduce the weight of older experiences
 
-    DiscreteNode[] parents, children;
+    DiscreteNode[] parents;//, children;
     int observedValue = -1; // -1 means unobserved
 
-
-    public DiscreteNode(){
+    public DiscreteNode(DiscreteNode[] parents){
+        this.parents = parents;
     }
+
 
     // calculation of the size up to (not include) the variable at the specified index.
     int sizeUpTo(int index){
@@ -113,9 +114,9 @@ public class DiscreteNode{
         this.parameters = parameters;
     }
 
-    public void setChildren(DiscreteNode[] children) {
-        this.children = children;
-    }
+//    public void setChildren(DiscreteNode[] children) {
+//        this.children = children;
+//    }
 
     public void setParents(DiscreteNode[] parents) {
         this.parents = parents;

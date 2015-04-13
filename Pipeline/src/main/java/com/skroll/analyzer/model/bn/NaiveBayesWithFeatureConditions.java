@@ -3,71 +3,63 @@ package com.skroll.analyzer.model.bn;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ObjectArrays;
 import com.skroll.analyzer.model.bn.node.DiscreteNode;
+import com.skroll.analyzer.model.bn.node.WordNode;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by wei2learn on 1/3/2015.
  */
 public class NaiveBayesWithFeatureConditions extends NaiveBayes{
 
-    DiscreteNode[]  documentFeatureNodeArray;
-    DiscreteNode[] featureExistAtDocLevelArray;
+//    DiscreteNode[]  documentFeatureNodeArray;
+//    DiscreteNode[] featureExistAtDocLevelArray;
+    List<DiscreteNode> documentFeatureNodes;
+    List<DiscreteNode> featureExistAtDocLevelNodes;
 
-    public  NaiveBayesWithFeatureConditions(){
 
+
+    public NaiveBayesWithFeatureConditions(DiscreteNode categoryNode,
+                                           List<DiscreteNode> featureNodes,
+                                           List<DiscreteNode> featureExistAtDocLevelNodes,
+                                           List<DiscreteNode> docFeatureNodes,
+                                           List<WordNode> wordNodes){
+        this.categoryNode = categoryNode;
+        this.featureNodes = featureNodes;
+        this.featureExistAtDocLevelNodes = featureExistAtDocLevelNodes;
+        this.documentFeatureNodes = docFeatureNodes;
+        this.wordNodes = wordNodes;
+        putAllDiscreteNodesInOneList();
     }
 
-    void generateParentsAndChildren(){
-        categoryNode.setChildren( ObjectArrays.concat
-                (featureExistAtDocLevelArray, featureNodeArray, DiscreteNode.class));
-        categoryNode.setParents(new DiscreteNode[0]);
 
-        for (int i=0; i<documentFeatureNodeArray.length; i++){
-            featureExistAtDocLevelArray[i].setParents(Arrays.asList(categoryNode, documentFeatureNodeArray[i]).
-                    toArray(new DiscreteNode[2]));
-            featureExistAtDocLevelArray[i].setChildren(new DiscreteNode[0]);
-            documentFeatureNodeArray[i].setChildren( Arrays.asList( featureExistAtDocLevelArray[i]).
-                    toArray( new DiscreteNode[1]));
-            documentFeatureNodeArray[i].setParents(new DiscreteNode[0]);
-        }
-        for (int i=0; i<featureNodeArray.length; i++) {
-            featureNodeArray[i].setParents(Arrays.asList(categoryNode).toArray(new DiscreteNode[1]));
-            featureNodeArray[i].setChildren(new DiscreteNode[0]);
-        }
-        generateWordNodeParents();
+    public void putAllDiscreteNodesInOneList(){
+        super.putAllDiscreteNodesInOneList();
+        allDiscreteNodes.addAll(featureExistAtDocLevelNodes);
+        allDiscreteNodes.addAll(documentFeatureNodes);
     }
 
     public void setObservationOfFeatureNodesExistAtDocLevel(int[] values){
         for (int i=0; i<values.length; i++)
-            featureExistAtDocLevelArray[i].setObservation(values[i]);
+            featureExistAtDocLevelNodes.get(i).setObservation(values[i]);
     }
 
-    @JsonIgnore
-    public DiscreteNode[] getDocumentFeatureNodeArray() {
-        return documentFeatureNodeArray;
+
+    public List<DiscreteNode> getDocumentFeatureNodes() {
+        return documentFeatureNodes;
     }
 
-    @JsonIgnore
-    public DiscreteNode[] getFeatureExistAtDocLevelArray() {
-        return featureExistAtDocLevelArray;
+    public void setDocumentFeatureNodes(List<DiscreteNode> documentFeatureNodes) {
+        this.documentFeatureNodes = documentFeatureNodes;
     }
 
-    void putAllNodesInOneList(){
-        // put all nodes in a single array for simpler update.
-        discreteNodeArray = new DiscreteNode[documentFeatureNodeArray.length +
-                featureExistAtDocLevelArray.length + featureNodeArray.length+1];
-        int i=0;
-        discreteNodeArray[i++] = categoryNode;
-        for (DiscreteNode node: featureNodeArray){
-            discreteNodeArray[i++] = node;
-        }
+    public List<DiscreteNode> getFeatureExistAtDocLevelNodes() {
+        return featureExistAtDocLevelNodes;
+    }
 
-        for (DiscreteNode node: featureExistAtDocLevelArray)
-            discreteNodeArray[i++] = node;
-        for (DiscreteNode node: documentFeatureNodeArray){
-            discreteNodeArray[i++] = node;
-        }
+    public void setFeatureExistAtDocLevelNodes(List<DiscreteNode> featureExistAtDocLevelNodes) {
+        this.featureExistAtDocLevelNodes = featureExistAtDocLevelNodes;
     }
 
     @Override
@@ -75,11 +67,14 @@ public class NaiveBayesWithFeatureConditions extends NaiveBayes{
         return "NaiveBayesWithFeatureConditions{" +
 
                 "category=" + categoryNode +
-                "\nwordNode=\n" + Arrays.toString(wordNodeArray) +
-                "\nfeatureArray=\n" + Arrays.toString(featureNodeArray) +
+                "\nwordNode=\n" + wordNodes +
+                "\nfeatureArray=\n" + featureNodes +
 
-                "\nfeatureExistAtDocLevelArray=\n" + Arrays.toString(featureExistAtDocLevelArray) +
-                ",\n documentFeatureNodeArray=\n" + Arrays.toString(documentFeatureNodeArray) +
+                "NaiveBayesWithFeatureConditions{" +
+                "documentFeatureNodes=" + documentFeatureNodes +
+                ", featureExistAtDocLevelNodes=" + featureExistAtDocLevelNodes +
                 '}';
     }
+
+
 }
