@@ -45,6 +45,7 @@ public class DefinitionLinker {
      */
     public Document linkDefinition(Document document) {
         //iterate over each paragraph
+        String text = document.getSource();
         for(CoreMap paragraph : document.getParagraphs()) {
             //check if paragraph is a definition
             if (!paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
@@ -60,6 +61,7 @@ public class DefinitionLinker {
                         "Found a definition paragraph but didn't find defined terms");
                 continue;
             }
+
             for (List<Token> tokens : tokensList) {
                 //if tokens.size is 0 then there is a problem
                 if (tokens.size() == 0) {
@@ -86,10 +88,10 @@ public class DefinitionLinker {
                 //combine tokens into a regex
                 String regex = Joiner.on(REGEX_TOKEN_SEPARATOR).join(tokens);
                 //search and replace
-                String text = searchAndReplace(document.getTarget(), regex, paragraph.getId());
-                document.setTarget(text);
+                text = searchAndReplace(text, regex, paragraph.getId());
             }
         }
+        document.setTarget(text);
         return document;
     }
 
