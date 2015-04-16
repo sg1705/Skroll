@@ -69,6 +69,7 @@ var chunkId = 5000;
 var pageBreak = false;
 var DEBUG = false;
 var isAnchor = false;
+var isFirstChunkOfPara = true;
 
 // core annotations
 var ID_ANNOTATION = "IdAnnotation";
@@ -160,6 +161,7 @@ function createPara(element) {
     paragraphId++;
     pageBreak = false;
     isAnchor = false;
+    isFirstChunkOfPara = true;
 }
 
 
@@ -196,27 +198,50 @@ function processPageBreak(index, element) {
   Process any given node as a text node and chunks it based on formatting
 **/
 function processTextNode(index, element) {
-    //create a chunk and add it to stack
-    var chunkText = $(element).text();
     var newChunk = new Object();
-    newChunk[ID_ANNOTATION] = chunkId;
-    newChunk[TEXT_ANNOTATION] = chunkText;
+    //check to see if need to create a chunk
+    var isChunkRequired = false;
+    if (isFirstChunkOfPara) {
+        isChunkRequired = true;
+        isFirstChunkOfPara = false;
+    }
+
     if (isBold(element.parentNode)) {
         newChunk[IS_BOLD_ANNOTATION] = true;
+        isChunkRequired = true;
+        isFirstChunkOfPara = true;
     }
     if (isItalic(element.parentNode)) {
         newChunk[IS_ITALIC_ANNOTATION] = true;
+        isChunkRequired = true;
+        isFirstChunkOfPara = true;
     }
     if (isUnderLine(element.parentNode)) {
         newChunk[IS_UNDERLINE_ANNOTATION] = true;
+        isChunkRequired = true;
+        isFirstChunkOfPara = true;
     }
     if (isCenterAligned(element.parentNode)) {
         newChunk[IS_CENTER_ALIGNED_ANNOTATION] = true;
+        isChunkRequired = true;
+        isFirstChunkOfPara = true;
     }
-    newChunk[FONTSIZE_ANNOTATION] = $(element.parentNode).css("font-size");
+    var chunkText = $(element).text();
+    if (isChunkRequired) {
+        //create a chunk and add it to stack
 
-    chunkStack.push(newChunk);
-    chunkId++;
+        newChunk[ID_ANNOTATION] = chunkId;
+        newChunk[TEXT_ANNOTATION] = chunkText;
+        newChunk[FONTSIZE_ANNOTATION] = $(element.parentNode).css("font-size");
+
+        chunkStack.push(newChunk);
+        chunkId++;
+    } else {
+        //append to old chunk
+        var oldChunk = chunkStack[chunkStack.length - 1];
+        oldChunk[TEXT_ANNOTATION] = oldChunk[TEXT_ANNOTATION] + chunkText;
+        chunkStack[chunkStack.length - 1] = oldChunk;
+    }
 
     if (DEBUG) {
         if (element.jquery)
