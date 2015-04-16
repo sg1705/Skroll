@@ -321,6 +321,17 @@ function isAnchorElement(element) {
                     return true;
             }
         }
+        //check for href
+        var href = $(element).attr('href');
+        if (href != null) {
+            //check to see if an external link or anchor
+            var lastIndexOfHash = href.lastIndexOf("#");
+            var lastIndexOfSlash = href.lastIndexOf("/");
+            if (lastIndexOfHash > lastIndexOfSlash) {
+                //has anchor, so replace href
+                $(element).attr('href', href.substr(lastIndexOfHash));
+            }
+        }
 
     }
     return false;
