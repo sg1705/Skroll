@@ -4,6 +4,7 @@ import com.skroll.analyzer.model.DocumentAnnotatingModel;
 import com.skroll.analyzer.model.ProbabilityDocumentAnnotatingModel;
 import com.skroll.analyzer.model.RandomVariableType;
 import com.skroll.analyzer.model.TrainingDocumentAnnotatingModel;
+import com.skroll.analyzer.model.bn.NBFCConfig;
 import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -53,6 +54,7 @@ public class TOCExperimentClassifier extends ClassifierImpl {
             RandomVariableType.DOCUMENT_TOC_IS_CENTER_ALIGNED,
             RandomVariableType.DOCUMENT_TOC_HAS_ANCHOR
     );
+    NBFCConfig nbfcConfig = new NBFCConfig(paraType, paraFeatures, paraDocFeatures, docFeatures, DocumentAnnotatingModel.DEFAULT_WORDS);
 
     public TOCExperimentClassifier() {
         trainingModel = createModel();
@@ -69,11 +71,7 @@ public class TOCExperimentClassifier extends ClassifierImpl {
         if (localTrainingModel == null) {
             localTrainingModel = new TrainingDocumentAnnotatingModel( wordType,
                      wordFeatures,
-                     paraType,
-                     paraFeatures,
-                     paraDocFeatures,
-                     docFeatures,
-                    DocumentAnnotatingModel.DEFAULT_WORDS);
+                     nbfcConfig);
         }
             return localTrainingModel;
         }
@@ -161,7 +159,7 @@ public class TOCExperimentClassifier extends ClassifierImpl {
         trainingModel.updateWithDocumentAndWeight(document);
 
         ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(trainingModel.getTnbfModel(),
-                trainingModel.getHmm(), document, wordType, wordFeatures, paraType, paraFeatures, paraDocFeatures, docFeatures
+                trainingModel.getHmm(), document, wordType, wordFeatures, nbfcConfig
         );
 
         bniModel.updateBeliefWithObservation(observedParas);

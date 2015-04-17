@@ -13,8 +13,6 @@ import java.util.List;
  */
 public class NaiveBayesWithFeatureConditions extends NaiveBayes{
 
-//    DiscreteNode[]  documentFeatureNodeArray;
-//    DiscreteNode[] featureExistAtDocLevelArray;
     List<DiscreteNode> documentFeatureNodes;
     List<DiscreteNode> featureExistAtDocLevelNodes;
 

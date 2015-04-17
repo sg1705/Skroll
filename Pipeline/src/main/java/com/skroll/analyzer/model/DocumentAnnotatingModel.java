@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.skroll.analyzer.model.bn.NBFCConfig;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
 
 import java.util.ArrayList;
@@ -14,8 +15,6 @@ import java.util.List;
  */
 public abstract class DocumentAnnotatingModel {
     static final int HMM_MODEL_LENGTH = 12;
-
-    HiddenMarkovModel hmm;
 
 
 
@@ -63,31 +62,40 @@ public abstract class DocumentAnnotatingModel {
             //RandomVariableType.WORD_INDEX
     );
 
-    public RandomVariableType paraCategory = DEFAULT_PARAGRAPH_CATEGORY, wordType = DEFAULT_WORD_TYPE;
+    public static final NBFCConfig DEFAULT_NBFC_CONFIG = new NBFCConfig(
+            DEFAULT_PARAGRAPH_CATEGORY, DEFAULT_PARAGRAPH_FEATURES,
+            DEFAULT_PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL, DEFAULT_DOCUMENT_FEATURES, DEFAULT_WORDS);
 
-    List<RandomVariableType> docFeatures,
-            paraFeatures,
-            paraDocFeatures,
-            wordFeatures;
+
+    public RandomVariableType wordType = DEFAULT_WORD_TYPE;
+
+    List<RandomVariableType> wordFeatures;
+    HiddenMarkovModel hmm;
+    NBFCConfig nbfcConfig;
+
+
+
+
 
     static List<RandomVariableType> allParagraphFeatures;
 
 
-    @JsonIgnore
-    public List<RandomVariableType> getDocFeatures() {
-        return docFeatures;
-    }
 
-    @JsonIgnore
-    public List<RandomVariableType> getParaFeatures() {
-        return paraFeatures;
-    }
-
-    @JsonIgnore
-    public List<RandomVariableType> getParaDocFeatures() {
-        return paraDocFeatures;
-    }
-
+//    @JsonIgnore
+//    public List<RandomVariableType> getDocFeatures() {
+//        return docFeatures;
+//    }
+//
+//    @JsonIgnore
+//    public List<RandomVariableType> getParaFeatures() {
+//        return paraFeatures;
+//    }
+//
+//    @JsonIgnore
+//    public List<RandomVariableType> getParaDocFeatures() {
+//        return paraDocFeatures;
+//    }
+//
     @JsonIgnore
     public List<RandomVariableType> getWordFeatures() {
         return wordFeatures;
@@ -105,7 +113,7 @@ public abstract class DocumentAnnotatingModel {
 
     @JsonIgnore
     public RandomVariableType getParaCategory() {
-        return paraCategory;
+        return nbfcConfig.getCategoryVar();
     }
 
     public DocumentAnnotatingModel() {
@@ -118,9 +126,12 @@ public abstract class DocumentAnnotatingModel {
     }
 
     void initialize(){
-        allParagraphFeatures = new ArrayList<>(paraFeatures);
-        allParagraphFeatures.addAll(paraDocFeatures);
+        allParagraphFeatures = new ArrayList<>(nbfcConfig.getFeatureVarList());
+        allParagraphFeatures.addAll(nbfcConfig.getFeatureExistsAtDocLevelVarList());
+    }
 
+    public NBFCConfig getNbfcConfig() {
+        return nbfcConfig;
     }
 }
 

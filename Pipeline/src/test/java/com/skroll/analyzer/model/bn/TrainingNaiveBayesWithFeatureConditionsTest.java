@@ -12,11 +12,12 @@ public class TrainingNaiveBayesWithFeatureConditionsTest extends TestCase {
     public void testAddSample() throws Exception {
         NaiveBayesWithFeatureConditions nb =
                 NBTrainingHelper.createTrainingNBWithFeatureConditioning(
+                        new NBFCConfig(
                                 RandomVariableType.PARAGRAPH_HAS_DEFINITION,
                                     new ArrayList<RandomVariableType>(),
                                     Arrays.asList(RandomVariableType.PARAGRAPH_STARTS_WITH_QUOTE),
                                     Arrays.asList(RandomVariableType.DOCUMENT_DEFINITIONS_IN_QUOTES),
-                                    DocumentAnnotatingModel.DEFAULT_WORDS);
+                                    DocumentAnnotatingModel.DEFAULT_WORDS));
 
         System.out.println("initial model");
         System.out.println(nb);

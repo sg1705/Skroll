@@ -2,6 +2,7 @@ package com.skroll.analyzer.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.skroll.analyzer.model.bn.NBFCConfig;
 import com.skroll.analyzer.model.bn.NBTrainingHelper;
 import com.skroll.analyzer.model.bn.NaiveBayesWithFeatureConditions;
 import com.skroll.analyzer.model.bn.SimpleDataTuple;
@@ -29,33 +30,15 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     NaiveBayesWithFeatureConditions tnbfModel;
 
     public TrainingDocumentAnnotatingModel(){
-        this(DEFAULT_WORD_TYPE, DEFAULT_WORD_FEATURES,
-                DEFAULT_PARAGRAPH_CATEGORY, DEFAULT_PARAGRAPH_FEATURES,
-                DEFAULT_PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL, DEFAULT_DOCUMENT_FEATURES, DEFAULT_WORDS);
+        this(DEFAULT_WORD_TYPE, DEFAULT_WORD_FEATURES, DEFAULT_NBFC_CONFIG);
     }
-
-//    public TrainingDocumentAnnotatingModel(TrainingDocumentAnnotatingModel model){
-//        this.tnbfModel = new TrainingNaiveBayesWithFeatureConditions(model.getTnbfModel());
-//        this.hmm = new HiddenMarkovModel(model.getHMM());
-//        this.wordType = model.wordType;
-//        this.wordFeatures = model.wordFeatures;
-//        this.paraCategory = model.paraCategory;
-//        this.paraFeatures = model.paraFeatures;
-//        this.paraDocFeatures = model.paraDocFeatures;
-//        this.docFeatures = model.docFeatures;
-//    }
 
     public TrainingDocumentAnnotatingModel(RandomVariableType wordType,
                                            List<RandomVariableType> wordFeatures,
-                                           RandomVariableType paraCategory,
-                                           List<RandomVariableType> paraFeatures,
-                                           List<RandomVariableType> paraDocFeatures,
-                                           List<RandomVariableType> docFeatures,
-                                           List<RandomVariableType> wordVarList ){
+                                           NBFCConfig nbfcConfig ){
 
-        this(NBTrainingHelper.createTrainingNBWithFeatureConditioning(paraCategory,
-                        paraFeatures, paraDocFeatures, docFeatures, wordVarList ),
-                wordType, wordFeatures, paraCategory, paraFeatures, paraDocFeatures, docFeatures);
+        this(NBTrainingHelper.createTrainingNBWithFeatureConditioning(nbfcConfig ),
+                wordType, wordFeatures, nbfcConfig);
 
     }
 
@@ -64,18 +47,12 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
             @JsonProperty("tnbfModel")NaiveBayesWithFeatureConditions tnbfModel,
             @JsonProperty("wordType")RandomVariableType wordType,
             @JsonProperty("wordFeatures")List<RandomVariableType> wordFeatures,
-            @JsonProperty("paraCategory")RandomVariableType paraCategory,
-            @JsonProperty("paraFeatures")List<RandomVariableType> paraFeatures,
-            @JsonProperty("paraDocFeatures")List<RandomVariableType> paraDocFeatures,
-            @JsonProperty("docFeatures")List<RandomVariableType> docFeatures){
+            NBFCConfig nbfcConfig){
+        this.nbfcConfig = nbfcConfig;
 
         this.tnbfModel = tnbfModel;
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;
-        this.paraCategory = paraCategory;
-        this.paraFeatures = paraFeatures;
-        this.paraDocFeatures = paraDocFeatures;
-        this.docFeatures = docFeatures;
 
         int []wordFeatureSizes = new int[wordFeatures.size()]; // include state at the feature index 0.
         for (int i=0; i<wordFeatureSizes.length;i++)
@@ -101,13 +78,14 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     }
 
     void updateTNBFWithParagraph(CoreMap paragraph, int[] docFeatureValues){
-        SimpleDataTuple dataTuple = DocumentAnnotatingHelper.makeDataTuple(paragraph, paraCategory, allParagraphFeatures, docFeatureValues);
+        SimpleDataTuple dataTuple = DocumentAnnotatingHelper.makeDataTuple(
+                paragraph, nbfcConfig.getCategoryVar(), allParagraphFeatures, docFeatureValues);
         NBTrainingHelper.addSample( tnbfModel, dataTuple);
         //tnbfModel.addSample(dataTuple);
     }
 
     double[] getTrainingWeights(CoreMap para){
-        double[][] weights = TrainingWeightAnnotationHelper.getParagraphWeight(para, paraCategory);
+        double[][] weights = TrainingWeightAnnotationHelper.getParagraphWeight(para, nbfcConfig.getCategoryVar());
         double[] oldWeights =weights[0];
         double[] newWeights = weights[1];
         double[] normalizedOldWeights = BNInference.normalize(oldWeights, 1);
@@ -121,10 +99,10 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
     //todo: need to use the right annotation for the weight.
     void updateTNBFWithParagraphAndWeight(CoreMap paragraph, int[] docFeatureValues, double[] weights) {
-        SimpleDataTuple dataTuple = DocumentAnnotatingHelper.makeDataTuple(paragraph, paraCategory, allParagraphFeatures, docFeatureValues);
+        SimpleDataTuple dataTuple = DocumentAnnotatingHelper.makeDataTuple(paragraph, nbfcConfig.getCategoryVar(), allParagraphFeatures, docFeatureValues);
         String[] words = dataTuple.getWords();
         int[] values = dataTuple.getDiscreteValues();
-        int numCategories = paraCategory.getFeatureSize();
+        int numCategories = nbfcConfig.getCategoryVar().getFeatureSize();
 
 
         for (int i = 0; i < numCategories; i++) {
@@ -174,7 +152,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
             }
         }
 
-        for (int i=0;i<paraCategory.getFeatureSize();i++) {
+        for (int i=0;i<nbfcConfig.getCategoryVar().getFeatureSize();i++) {
             hmm.updateCountsWithWeight(
                     DocumentHelper.getTokenString(tokens).toArray(new String[tokens.size()]),
                     tokenType, features, weights[i]);
@@ -197,7 +175,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
         }
 
         int[] docFeatureValues = DocumentAnnotatingHelper.generateDocumentFeatures(paragraphs, originalParagraphs,
-                paraCategory, docFeatures, paraDocFeatures);
+                nbfcConfig);
 
         //for( CoreMap paragraph : paragraphs)
         for (int i=0; i<paragraphs.size();i++) {
@@ -212,7 +190,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
              paragraphs.add(DocumentAnnotatingHelper.processParagraph(paragraph, hmm.size()));
         }
         int[] docFeatureValues = DocumentAnnotatingHelper.generateDocumentFeatures(paragraphs, doc.getParagraphs(),
-                paraCategory, docFeatures, paraDocFeatures);
+                nbfcConfig);
 
 
         for( CoreMap paragraph : paragraphs)

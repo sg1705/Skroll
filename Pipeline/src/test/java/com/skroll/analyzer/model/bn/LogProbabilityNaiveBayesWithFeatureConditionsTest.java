@@ -13,11 +13,12 @@ public class LogProbabilityNaiveBayesWithFeatureConditionsTest extends TestCase 
     public void testCreatFromTraining(){
         NaiveBayesWithFeatureConditions nb =
                 NBTrainingHelper.createTrainingNBWithFeatureConditioning(
-                        RandomVariableType.PARAGRAPH_HAS_DEFINITION,
-                        new ArrayList<RandomVariableType>(),
-                        Arrays.asList(RandomVariableType.PARAGRAPH_STARTS_WITH_QUOTE),
-                        Arrays.asList(RandomVariableType.DOCUMENT_DEFINITIONS_IN_QUOTES),
-                        DocumentAnnotatingModel.DEFAULT_WORDS);
+                        new NBFCConfig(
+                            RandomVariableType.PARAGRAPH_HAS_DEFINITION,
+                            new ArrayList<RandomVariableType>(),
+                            Arrays.asList(RandomVariableType.PARAGRAPH_STARTS_WITH_QUOTE),
+                            Arrays.asList(RandomVariableType.DOCUMENT_DEFINITIONS_IN_QUOTES),
+                            DocumentAnnotatingModel.DEFAULT_WORDS));
 
         System.out.println("initial model");
         System.out.println(nb);

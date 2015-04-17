@@ -1,5 +1,6 @@
 package com.skroll.analyzer.model;
 
+import com.skroll.analyzer.model.bn.NBFCConfig;
 import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -40,6 +41,8 @@ public class ProbabilityDocumentAnnotatingModelTest {
     List<RandomVariableType> paraDocFeatures = model.DEFAULT_PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL;
     List<RandomVariableType> docFeatures = model.DEFAULT_DOCUMENT_FEATURES;
 
+    NBFCConfig nbfcConfig = new NBFCConfig(paraType, paraFeatures, paraDocFeatures, docFeatures,
+            Arrays.asList(RandomVariableType.WORD));
 
     @Before
     public void setupOnce() throws Exception{
@@ -48,7 +51,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
         traingTest.testUpdateWithDocument();
         model= new ProbabilityDocumentAnnotatingModel( traingTest.getTnbf(), traingTest.getModel().getHmm(), doc,
-                wordType, wordFeatures, paraType, paraFeatures, paraDocFeatures, docFeatures
+                wordType, wordFeatures, traingTest.getModel().getNbfcConfig()
                 );
         model.getHmm().updateProbabilities();
         System.out.println("HMM\n");

@@ -73,9 +73,7 @@ public class TrainingDocumentAnnotatingModelTest{
         for( CoreMap paragraph : doc.getParagraphs())
             paragraphs.add(DocumentAnnotatingHelper.processParagraph(paragraph, model.getHmm().size()));
         int[] docFeatureValues = DocumentAnnotatingHelper.generateDocumentFeatures(paragraphs, doc.getParagraphs(),
-                model.getParaCategory(),
-                DocumentAnnotatingModel.DEFAULT_DOCUMENT_FEATURES,
-                DocumentAnnotatingModel.DEFAULT_PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL);
+                model.getNbfcConfig());
         System.out.println(Arrays.toString(docFeatureValues));
 
     }

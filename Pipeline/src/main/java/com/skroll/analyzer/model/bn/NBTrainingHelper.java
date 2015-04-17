@@ -11,32 +11,31 @@ import java.util.List;
  * Created by wei on 4/12/15.
  */
 public class NBTrainingHelper {
-    public static NaiveBayes createTrainingNB(RandomVariableType categoryVar,
-                                   List<RandomVariableType> featureVarList, List<RandomVariableType> wordVarList){
+    public static NaiveBayes createTrainingNB(NBConfig config){
 
-        DiscreteNode categoryNode = NodeTrainingHelper.createTrainingDiscreteNode(Arrays.asList(categoryVar));
+        DiscreteNode categoryNode = NodeTrainingHelper.createTrainingDiscreteNode(
+                Arrays.asList(config.getCategoryVar()));
 
         return new NaiveBayes(
                 categoryNode,
-                createFeatureNodes(featureVarList, categoryVar, categoryNode),
-                createWordNodes(wordVarList, categoryNode)
+                createFeatureNodes(config, categoryNode),
+                createWordNodes(config, categoryNode)
         );
 
     }
 
-    static List<DiscreteNode> createFeatureNodes(List<RandomVariableType> featureVarList,
-                                                 RandomVariableType categoryVar, DiscreteNode categoryNode){
+    static List<DiscreteNode> createFeatureNodes(NBConfig config, DiscreteNode categoryNode){
         List<DiscreteNode> featureNodes = new ArrayList<>();
-        for (RandomVariableType featureVar: featureVarList){
-            featureNodes.add( NodeTrainingHelper.createTrainingDiscreteNode( Arrays.asList( featureVar, categoryVar),
-                    Arrays.asList(categoryNode)));
+        for (RandomVariableType featureVar: config.getFeatureVarList()){
+            featureNodes.add( NodeTrainingHelper.createTrainingDiscreteNode(
+                    Arrays.asList( featureVar, config.getCategoryVar()), Arrays.asList(categoryNode)));
         }
         return featureNodes;
     }
 
-    static List<WordNode> createWordNodes(List<RandomVariableType> wordVarList, DiscreteNode categoryNode){
+    static List<WordNode> createWordNodes(NBConfig config, DiscreteNode categoryNode){
         List<WordNode> wordNodes = new ArrayList<>();
-        for (RandomVariableType var: wordVarList){
+        for (RandomVariableType var: config.getWordVarList()){
             wordNodes.add( NodeTrainingHelper.createTrainingWordNode(categoryNode));
         }
         return wordNodes;
@@ -60,38 +59,33 @@ public class NBTrainingHelper {
 
 
 
-    public static NaiveBayesWithFeatureConditions createTrainingNBWithFeatureConditioning(
-            RandomVariableType categoryVar,
-            List<RandomVariableType> featureVarList,
-            List<RandomVariableType> featureExistsAtDocLevelVarList,
-            List<RandomVariableType> documentFeatureVarList,
-            List<RandomVariableType> wordVarList ) {
+    public static NaiveBayesWithFeatureConditions createTrainingNBWithFeatureConditioning(NBFCConfig config) {
 
-        DiscreteNode categoryNode = NodeTrainingHelper.createTrainingDiscreteNode(Arrays.asList(categoryVar));
-        List<DiscreteNode> docFeatureNodes = createDocFeatureNodes(documentFeatureVarList);
+        DiscreteNode categoryNode = NodeTrainingHelper.createTrainingDiscreteNode(
+                Arrays.asList(config.getCategoryVar()));
+        List<DiscreteNode> docFeatureNodes = createDocFeatureNodes(config);
 
         return new NaiveBayesWithFeatureConditions(
                 categoryNode,
-                createFeatureNodes(featureVarList, categoryVar, categoryNode),
-                createFeatureExistAtDoclevelNodes(featureExistsAtDocLevelVarList, docFeatureNodes, categoryNode),
+                createFeatureNodes(config, categoryNode),
+                createFeatureExistAtDoclevelNodes(config, docFeatureNodes, categoryNode),
                 docFeatureNodes,
-                createWordNodes(wordVarList, categoryNode)
+                createWordNodes(config, categoryNode)
         );
     }
 
-    static List<DiscreteNode> createDocFeatureNodes(List<RandomVariableType> docFeatureVarList){
+    static List<DiscreteNode> createDocFeatureNodes(NBFCConfig config){
         List<DiscreteNode> docFeatureNodes= new ArrayList<>();
-        for (RandomVariableType var: docFeatureVarList){
+        for (RandomVariableType var: config.getDocumentFeatureVarList()){
             docFeatureNodes.add( NodeTrainingHelper.createTrainingDiscreteNode(Arrays.asList(var)));
         }
         return docFeatureNodes;
     }
 
     static List<DiscreteNode> createFeatureExistAtDoclevelNodes(
-            List<RandomVariableType> featureExistsAtDocLevelVarList,
-            List<DiscreteNode>  docFeatureNodes,
-            DiscreteNode categoryNode){
+            NBFCConfig config, List<DiscreteNode>  docFeatureNodes, DiscreteNode categoryNode){
 
+        List<RandomVariableType> featureExistsAtDocLevelVarList = config.getFeatureExistsAtDocLevelVarList();
         List<DiscreteNode> nodes= new ArrayList<>();
         for (int i=0; i<featureExistsAtDocLevelVarList.size(); i++){
             nodes.add( NodeTrainingHelper.createTrainingDiscreteNode(

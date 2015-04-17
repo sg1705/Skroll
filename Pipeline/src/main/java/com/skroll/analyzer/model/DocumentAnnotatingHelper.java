@@ -1,5 +1,6 @@
 package com.skroll.analyzer.model;
 
+import com.skroll.analyzer.model.bn.NBFCConfig;
 import com.skroll.analyzer.model.bn.SimpleDataTuple;
 import com.skroll.analyzer.model.nb.DataTuple;
 import com.skroll.document.CoreMap;
@@ -132,19 +133,19 @@ public class DocumentAnnotatingHelper {
 
     //todo: we're check both processedParagraphs and originalParas. But should probably combine the information and just check one.
     public static int[] generateDocumentFeatures(List<CoreMap> processedParagraphs, List<CoreMap> originalParas,
-                                                 RandomVariableType paraCategory,
-                                                   List<RandomVariableType> docFeatures,
-                                                   List<RandomVariableType> paraFeaturesExistAtDocLevel){
-        int[] docFeatureValues = new int[docFeatures.size()];
+                                                 NBFCConfig nbfcConfig){
+        int[] docFeatureValues = new int[nbfcConfig.getDocumentFeatureVarList().size()];
 
         Arrays.fill(docFeatureValues, 1);
         //for( CoreMap paragraph : processedParagraphs) {
         for (int p=0; p<processedParagraphs.size();p++){
             CoreMap paragraph = processedParagraphs.get(p);
             for (int f=0; f< docFeatureValues.length; f++){
-                if (getParagraphFeature(paragraph, paraCategory)==1)
-                    docFeatureValues[f] &= (getParagraphFeature(paragraph, paraFeaturesExistAtDocLevel.get(f)) |
-                            getParagraphFeature(originalParas.get(p), paraFeaturesExistAtDocLevel.get(f) ));
+                if (getParagraphFeature(paragraph, nbfcConfig.getCategoryVar())==1)
+                    docFeatureValues[f] &= (
+                            getParagraphFeature(paragraph, nbfcConfig.getFeatureExistsAtDocLevelVarList().get(f)) |
+                            getParagraphFeature(originalParas.get(p),
+                                    nbfcConfig.getFeatureExistsAtDocLevelVarList().get(f) ));
             }
         }
         return docFeatureValues;

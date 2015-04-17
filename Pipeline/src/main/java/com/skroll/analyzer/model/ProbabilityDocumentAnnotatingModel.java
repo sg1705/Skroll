@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.skroll.analyzer.model.bn.NBFCConfig;
 import com.skroll.analyzer.model.bn.NBInferenceHelper;
 import com.skroll.analyzer.model.bn.NaiveBayesWithFeatureConditions;
 import com.skroll.analyzer.model.bn.SimpleDataTuple;
@@ -41,17 +42,12 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
                                               Document doc,
                                                 RandomVariableType wordType,
                                                 List<RandomVariableType> wordFeatures,
-                                                RandomVariableType paraCategory,
-                                                List<RandomVariableType> paraFeatures,
-                                                List<RandomVariableType> paraDocFeatures,
-                                                List<RandomVariableType> docFeatures){
+                                                NBFCConfig nbfcConfig){
 
+        this.nbfcConfig = nbfcConfig;
             this.wordType = wordType;
             this.wordFeatures = wordFeatures;
-            this.paraCategory = paraCategory;
-            this.paraFeatures = paraFeatures;
-            this.paraDocFeatures = paraDocFeatures;
-            this.docFeatures = docFeatures;
+
         this.doc = doc;
         lpnbfModel = NBInferenceHelper.createLogProbNBWithFeatureConditions(tnbf);
                 //new LogProbabilityNaiveBayesWithFeatureConditions(tnbf);
@@ -78,6 +74,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
             processedParagraphs.add(DocumentAnnotatingHelper.processParagraph(para, hmm.size()));
         }
 
+        List<RandomVariableType> paraDocFeatures = nbfcConfig.getFeatureExistsAtDocLevelVarList();
         // store feature values for later probability updates
         paraFeatureValsExistAtDocLevel = new int[processedParagraphs.size()][paraDocFeatures.size()];
         for (int p=0; p< processedParagraphs.size();p++){
@@ -116,6 +113,10 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
     //todo: should probably set inital belief based on observations if a document is reopened by the trainer or the same user again.
     void computeInitalBeliefs(List<CoreMap> paragraphs){
+
+        List<RandomVariableType> docFeatures = nbfcConfig.getDocumentFeatureVarList();
+        List<RandomVariableType> paraDocFeatures = nbfcConfig.getFeatureExistsAtDocLevelVarList();
+        RandomVariableType paraCategory = nbfcConfig.getCategoryVar();
 
         int numParagraphs = paragraphs.size();
         // todo: assuming the values are binary sized. need to make this more general.
@@ -182,7 +183,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
             lpnbfModel.setObservationOfFeatureNodesExistAtDocLevel(paraFeatureValsExistAtDocLevel[p]);
 
-            for (int f=0; f<paraDocFeatures.size(); f++){
+            for (int f=0; f<nbfcConfig.getFeatureExistsAtDocLevelVarList().size(); f++){
                 double[] messageFromDocFeature = documentFeatureBelief[f].clone();
                 for (int i=0; i<messageFromDocFeature.length; i++) messageFromDocFeature[i] -= messagesToDocumentFeature[p][f][i];
                 messagesToParagraphCategory[p][f] = NodeInferenceHelper.sumOutOtherNodesWithObservationAndMessage(
@@ -207,7 +208,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
             lpnbfModel.setObservationOfFeatureNodesExistAtDocLevel(paraFeatureValsExistAtDocLevel[p]);
 
-            for (int f=0; f<paraDocFeatures.size(); f++){
+            for (int f=0; f<nbfcConfig.getFeatureExistsAtDocLevelVarList().size(); f++){
                 double[] messageFromParaCategory = paragraphCategoryBelief[p].clone();
                 for (int i=0; i<messageFromParaCategory.length; i++) messageFromParaCategory[i] -= messagesToParagraphCategory[p][f][i];
                 messagesToDocumentFeature[p][f] =  NodeInferenceHelper.sumOutOtherNodesWithObservationAndMessage(
@@ -262,6 +263,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
         List<CoreMap> paragraphList = doc.getParagraphs();
 
+        RandomVariableType paraCategory = nbfcConfig.getCategoryVar();
         for (int p=0; p<numParagraphs; p++){
             CoreMap paragraph = paragraphList.get(p);
             if (DocumentAnnotatingHelper.isParaObserved(paragraph)) continue; // skip observed paragraphs
@@ -330,7 +332,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
     }
 
     public double[][] getParagraphCategoryProbabilities(){
-        double[][] paraCatProbs = new double[paragraphCategoryBelief.length][paraCategory.getFeatureSize()];
+        double[][] paraCatProbs = new double[paragraphCategoryBelief.length][nbfcConfig.getCategoryVar().getFeatureSize()];
         for (int i=0; i<paraCatProbs.length;i++)
             paraCatProbs[i] = paragraphCategoryBelief[i].clone();
         BNInference.convertLogBeliefArrayToProb(paraCatProbs);
@@ -374,9 +376,11 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
     public HashMap<String, HashMap<String, Double>> toVisualMap(int paraIndex) {
        //covert paraCategoryBelief
         HashMap<String, HashMap<String, Double>> map = new HashMap();
-        map.put(this.paraCategory.name(), Visualizer.toDoubleArrayToMap(this.getParagraphCategoryProbabilities()[paraIndex]));
+        map.put(this.nbfcConfig.getCategoryVar().name(),
+                Visualizer.toDoubleArrayToMap(this.getParagraphCategoryProbabilities()[paraIndex]));
         for(int ii = 0; ii < documentFeatureBelief.length; ii++) {
-            map.put(this.docFeatures.get(ii).name(), Visualizer.toDoubleArrayToMap(this.getDocumentFeatureProbabilities()[ii]));
+            map.put(this.nbfcConfig.getDocumentFeatureVarList().get(ii).name(),
+                    Visualizer.toDoubleArrayToMap(this.getDocumentFeatureProbabilities()[ii]));
         }
         return map;
     }
