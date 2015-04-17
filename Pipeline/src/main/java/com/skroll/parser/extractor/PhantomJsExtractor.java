@@ -27,6 +27,7 @@ public class PhantomJsExtractor {
         String htmlText = input.get(CoreAnnotations.TextAnnotation.class);
         //remove newline
         htmlText = htmlText.replace("\n","");
+        //htmlText = "<meta charset=\"utf-8\" />" + htmlText;
 
         //create tmp file
         String fileName = createTempFile(htmlText).toString();
