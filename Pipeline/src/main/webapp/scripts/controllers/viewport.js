@@ -126,8 +126,8 @@ ViewPortCtrl.prototype.inferParagraphId = function($event) {
     console.log($(parents[ii]).attr('id'));
   }
 
-  // var children = $($event.target).children("div[id^='p_']");
-  // console.log('children:' + children.length);
+  var children = $($event.target).children("div[id^='p_']");
+  //console.log('children:' + children.length);
   if (parents.length > 1) {
     return $(parents[0]).attr('id');
   } else {
@@ -135,6 +135,11 @@ ViewPortCtrl.prototype.inferParagraphId = function($event) {
     if ((this.SelectionModel.mouseDownParaId != null) && (this.SelectionModel.mouseDownParaId != '')) {
       return this.SelectionModel.mouseDownParaId;
     }
+
+    if ((children.length == 0) && (parents.length ==1)) {
+      return $(parents[0]).attr('id');
+    }
+
     return null;
   }
 
