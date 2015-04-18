@@ -78,14 +78,14 @@ public class DocumentHelper {
         return strings;
     }
 
-    public static void setMatchedTokens(CoreMap coreMap, List<String> addedTerm, int classification) {
+    public static boolean setMatchedTokens(CoreMap coreMap, List<Token> addedTerm, int classification) {
         List<Token> tokenList = coreMap.getTokens();
         List<Token> returnList = new ArrayList<>();
         int j=0;
         int l=0;
         for (int k=0; k< addedTerm.size(); k++) {
             for(int i=l; i<tokenList.size(); i++){
-                if(tokenList.get(i).getText().equals(addedTerm.get(k))) {
+                if(tokenList.get(i).getText().equals(addedTerm.get(k).getText())) {
                     if (j==0) {
                         j=i;
                     }
@@ -107,7 +107,9 @@ public class DocumentHelper {
              } else if ( classification==Paragraph.TOC_CLASSIFICATION){
                  addTOCsInParagraph(returnList, coreMap);
              }
+            return true;
         }
+        return false;
     }
     public static List<List<String>> getDefinedTermLists(CoreMap coreMap) {
         List<List<Token>> definitionList = coreMap.get(CoreAnnotations.DefinedTermTokensAnnotation.class);
@@ -200,12 +202,25 @@ public class DocumentHelper {
         return tocParagraphs;
     }
 
-    public static List<CoreMap> getObservedParagraphs(Document doc){
-        List<CoreMap> observedParagraphs= new ArrayList<>();
-        for (CoreMap paragraph: doc.getParagraphs()){
+
+    public static List<CoreMap> getObservedParagraphs(Document doc) {
+        List<CoreMap> observedParagraphs = new ArrayList<>();
+        for (CoreMap paragraph : doc.getParagraphs()) {
             if (isObserved(paragraph)) observedParagraphs.add(paragraph);
         }
         return observedParagraphs;
+
+    }
+
+    public static List<Token> getTokensOfADoc(Document doc){
+        List<Token> tokens= new ArrayList<>();
+        for (CoreMap paragraph: doc.getParagraphs()){
+            for (Token token: paragraph.getTokens()){
+                tokens.add(token);
+            }
+        }
+        return tokens;
+
     }
 
     public static void clearAnnotations(CoreMap paragraph){

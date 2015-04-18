@@ -1,0 +1,42 @@
+<meta charset="utf-8" />
+<!DOCTYPE html>
+<!--?xml version="1.0" encoding="UTF-8"?-->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+<body>
+
+<text>
+
+  <table style="BORDER-COLLAPSE:COLLAPSE" border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tbody><tr>
+      <td width="2%" valign="top" align="left"><font style="font-family:arial" size="2">•</font></td>
+      <td align="left" valign="top">
+        <p align="left"><font style="font-family:arial" size="2">the growth of our business and revenues and our expectations about the factors that influence our success and trends in our business;
+      </font></p></td></tr></tbody>
+  </table>
+
+</text>
+</body>
+</html>
+<script src="../jquery.min.js"></script>
+<script src="../jQueryParser.js"></script>
+
+<script>
+    var DEBUG = true;
+
+
+    $(":root").contents().each(function(index, element) {
+        processNode(index, element);
+    });
+
+
+    // done
+    //move chunks to paragraphs
+    createPara();
+    docObject.set(PARAGRAPH_ANNOTATION, paragraphs);
+
+    console.log(
+        JSON.stringify(docObject, null, 2)
+       + ";---------------SKROLL---------------------;" + $(":root").html()
+    );
+</script>

@@ -1,0 +1,48 @@
+<div>
+    This is first paragraph
+</div>
+
+<div>
+    This is <a name="mylink">second paragraph
+</div>
+
+<div>
+    <p><font style="font-weight:bold">This</font> is third paragraph</p>
+</div>
+
+
+<table>
+    <tr>
+        <td><b>First</b> column</td>
+        <td>Second column</td>
+    </tr>
+
+    <tr>
+        <td><a name="mylink1">First</a> column</td>
+        <td>Second column</td>
+    </tr>
+
+</table>
+
+<script src="../jquery.min.js"></script>
+<script src="../jQueryParser.js"></script>
+
+<script>
+    var DEBUG = true;
+
+
+    $(":root").contents().each(function(index, element) {
+        processNode(index, element);
+    });
+
+
+    // done
+    //move chunks to paragraphs
+    createPara();
+    docObject.set(PARAGRAPH_ANNOTATION, paragraphs);
+
+    console.log(
+        JSON.stringify(docObject, null, 2)
+       + ";---------------SKROLL---------------------;" + $(":root").html()
+    );
+</script>
