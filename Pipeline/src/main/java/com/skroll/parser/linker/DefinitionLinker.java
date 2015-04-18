@@ -44,6 +44,8 @@ public class DefinitionLinker {
      * @return
      */
     public Document linkDefinition(Document document) {
+
+        /**
         //iterate over each paragraph
         String text = document.getSource();
         for(CoreMap paragraph : document.getParagraphs()) {
@@ -92,6 +94,7 @@ public class DefinitionLinker {
             }
         }
         document.setTarget(text);
+         **/
         return document;
     }
 
