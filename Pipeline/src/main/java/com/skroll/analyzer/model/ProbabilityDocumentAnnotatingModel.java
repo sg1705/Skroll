@@ -189,7 +189,9 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
                 }
             }
         }
-
+        for (double[] belief: paragraphCategoryBelief){
+            BNInference.normalizeLog(belief);
+        }
     }
 
     void passMessageToDocumentFeatures(){
