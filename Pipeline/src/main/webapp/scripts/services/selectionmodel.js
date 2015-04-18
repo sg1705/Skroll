@@ -10,7 +10,8 @@
 
 var SelectionModel = {
 	paragraphId: "",
-	selectedText: ""
+	selectedText: "",
+	mouseDownParaId: ""
 };
 
 
