@@ -24,7 +24,7 @@ public class TrainingNaiveBayesWithFeatureConditionsTest extends TestCase {
         nb.addSample(tuple);
         System.out.println("model after");
         System.out.println(nb);
-        assert(nb.getFeatureExistAtDocLevelArray()[0].getParameters()[4]==2.0);
+        assert(nb.getFeatureExistAtDocLevelArray()[0].getParameters()[4]==1.1);
 
     }
 }

@@ -29,7 +29,7 @@ public class ProbabilityNaiveBayesWithFeatureConditionsTest extends TestCase {
         System.out.println("probability model");
         System.out.println(pbn);
 
-        assert((int)(100*pbn.getFeatureExistAtDocLevelArray()[0].getParameters()[4])==66);
+        assert((int)(100*pbn.getFeatureExistAtDocLevelArray()[0].getParameters()[4])==91);
     }
 
 }
