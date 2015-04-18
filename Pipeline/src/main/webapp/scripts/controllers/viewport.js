@@ -29,7 +29,8 @@ ViewPortCtrl.prototype.mouseUp = function($event) {
   //clear selection
   this.clearSelection();
   var paraId = this.inferParagraphId($event);
-
+  if (paraId == null)
+    return;
   //save selection
   this.saveSelection(paraId, selection);
 
