@@ -7,6 +7,4 @@ package com.skroll.analyzer.model.bn;
 public class HMM {
     NaiveBayesWithFeatureConditions nb;
     double[][] transitionParameters;
-
-
 }

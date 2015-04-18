@@ -1,5 +1,6 @@
 package com.skroll.classifier;
 
+import com.skroll.analyzer.model.DocumentAnnotatingModel;
 import com.skroll.analyzer.model.ProbabilityDocumentAnnotatingModel;
 import com.skroll.analyzer.model.RandomVariableType;
 import com.skroll.analyzer.model.TrainingDocumentAnnotatingModel;
@@ -43,11 +44,17 @@ public class TOCExperimentClassifier extends ClassifierImpl {
             RandomVariableType.PARAGRAPH_NUMBER_TOKENS);
 
     List<RandomVariableType> paraDocFeatures = Arrays.asList(
+            RandomVariableType.PARAGRAPH_STARTS_WITH_BOLD,
+            RandomVariableType.PARAGRAPH_STARTS_WITH_ITALIC,
+            RandomVariableType.PARAGRAPH_STARTS_WITH_UNDERLINE,
             RandomVariableType.PARAGRAPH_ALL_WORDS_UPPERCASE,
             RandomVariableType.PARAGRAPH_IS_CENTER_ALIGNED,
             RandomVariableType.PARAGRAPH_HAS_ANCHOR);
 
     List<RandomVariableType> docFeatures = Arrays.asList(
+            RandomVariableType.DOCUMENT_TOC_IS_BOLD,
+            RandomVariableType.DOCUMENT_TOC_IS_ITALIC,
+            RandomVariableType.DOCUMENT_TOC_IS_UNDERLINED,
             RandomVariableType. DOCUMENT_TOC_HAS_WORDS_UPPERCASE,
             RandomVariableType.DOCUMENT_TOC_IS_CENTER_ALIGNED,
             RandomVariableType.DOCUMENT_TOC_HAS_ANCHOR
@@ -71,7 +78,8 @@ public class TOCExperimentClassifier extends ClassifierImpl {
                      paraType,
                      paraFeatures,
                      paraDocFeatures,
-                     docFeatures);
+                     docFeatures,
+                    DocumentAnnotatingModel.DEFAULT_WORDS);
         }
             return localTrainingModel;
         }
@@ -131,12 +139,20 @@ public class TOCExperimentClassifier extends ClassifierImpl {
     @Override
     public Object updateBNI(String documentId, Document document, List<CoreMap> observedParas) throws Exception {
 
+        logger.debug("all observed paragraphs:");
+
+        for (CoreMap para: DocumentHelper.getObservedParagraphs(document)){
+            logger.debug(para.getText());
+        }
+
         logger.debug("TOC before annotate :");
         for (CoreMap para: DocumentHelper.getTOCParagraphs(document)){
             logger.debug(para.getId() +"\t" +DocumentHelper.getTOCLists(para).toString());
             logger.debug("IsTOCAnnotation" +"\t" +para.get(CoreAnnotations.IsTOCAnnotation.class));
         }
+
         logger.debug("observedParas:" + "\t" + observedParas);
+
 
 
         for (CoreMap para: observedParas) {

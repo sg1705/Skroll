@@ -24,7 +24,12 @@ public class LogProbabilityNaiveBayesWithFeatureConditions extends NaiveBayesWit
         for (int i=0; i<featureExistAtDocLevelArray.length;i++)
             featureExistAtDocLevelArray[i] = new LogProbabilityDiscreteNode( tfedNodeArray[i]);
 
-        wordNode = new LogProbabilityWordNode((TrainingWordNode) tnb.getWordNode());
+
+        TrainingWordNode[] trainingWordNodes = (TrainingWordNode[]) tnb.getWordNodeArray();
+        wordNodeArray = new LogProbabilityWordNode[trainingWordNodes.length];
+        for (int i=0; i<trainingWordNodes.length; i++)
+            wordNodeArray[i] = new LogProbabilityWordNode(trainingWordNodes[i]);
+
         generateParentsAndChildren();
         putAllNodesInOneList();
     }
@@ -49,7 +54,12 @@ public class LogProbabilityNaiveBayesWithFeatureConditions extends NaiveBayesWit
             documentFeatureNodeArray[i] = new LogProbabilityDiscreteNode( pdfNodeArray[i]);
         for (int i=0; i<featureExistAtDocLevelArray.length;i++)
             featureExistAtDocLevelArray[i] = new LogProbabilityDiscreteNode( pfedNodeArray[i]);
-        wordNode = new LogProbabilityWordNode((LogProbabilityWordNode) pnb.getWordNode());
+
+        LogProbabilityWordNode[] oldNodes = (LogProbabilityWordNode[]) pnb.getWordNodeArray();
+        wordNodeArray = new LogProbabilityWordNode[oldNodes.length];
+        for (int i=0; i<oldNodes.length; i++)
+            wordNodeArray[i] = new LogProbabilityWordNode(oldNodes[i]);
+
         generateParentsAndChildren();
 
         putAllNodesInOneList();
