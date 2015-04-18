@@ -1,6 +1,9 @@
 package com.skroll.document;
 
+import com.google.common.base.Joiner;
 import com.skroll.document.annotation.CoreAnnotations;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +12,8 @@ import java.util.List;
  * Created by saurabh on 12/29/14.
  */
 public class DocumentHelper {
-
+    public static final Logger logger = LoggerFactory
+            .getLogger(DocumentHelper.class);
     public static List<Token> getTokens(List<String> words) {
         List<Token> tokens = new ArrayList<Token>();
         for(String word: words) {
@@ -71,14 +75,28 @@ public class DocumentHelper {
         return strings;
     }
 
-    public static boolean setMatchedTokens(CoreMap coreMap, List<Token> addedTerm, int classification) {
+
+    public static boolean setMatchedText(CoreMap coreMap, List<Token> addedTerm, int classification) {
         List<Token> tokenList = coreMap.getTokens();
+        String tokenStringList = Joiner.on("").join(tokenList);
+        String addedTermList = Joiner.on("").join(addedTerm);
+        logger.debug("addedTerm:" + "\t" + addedTermList);
+        logger.debug("existing para:" + "\t" + tokenStringList);
+
+        if (!tokenStringList.contains(addedTermList)) {
+            return false;
+        }
+
         List<Token> returnList = new ArrayList<>();
         int j=0;
         int l=0;
-        for (int k=0; k< addedTerm.size(); k++) {
+        int remainingAddedTermLength = 0;
+        while (remainingAddedTermLength < addedTermList.length()) {
             for(int i=l; i<tokenList.size(); i++){
-                if(tokenList.get(i).getText().equals(addedTerm.get(k).getText())) {
+                int tokenLength = tokenList.get(i).getText().length();
+                String addedTermSubString = addedTermList.substring(remainingAddedTermLength,remainingAddedTermLength + tokenLength);
+                if(tokenList.get(i).getText().equals(addedTermSubString)) {
+                    remainingAddedTermLength+=tokenLength;
                     if (j==0) {
                         j=i;
                     }
@@ -89,20 +107,19 @@ public class DocumentHelper {
                     }
                     returnList.add(tokenList.get(i));
                     j=i;
+                    l++;
                     break;
                 }
                 l++;
             }
         }
-        if (returnList.size() ==addedTerm.size()) {
-             if(classification==Paragraph.DEFINITION_CLASSIFICATION) {
-                 addDefinedTermTokensInParagraph(returnList, coreMap);
-             } else if ( classification==Paragraph.TOC_CLASSIFICATION){
-                 addTOCsInParagraph(returnList, coreMap);
-             }
+            if(classification==Paragraph.DEFINITION_CLASSIFICATION) {
+                addDefinedTermTokensInParagraph(returnList, coreMap);
+            } else if ( classification==Paragraph.TOC_CLASSIFICATION){
+                addTOCsInParagraph(returnList, coreMap);
+            }
             return true;
-        }
-        return false;
+
     }
     public static List<List<String>> getDefinedTermLists(CoreMap coreMap) {
         List<List<Token>> definitionList = coreMap.get(CoreAnnotations.DefinedTermTokensAnnotation.class);

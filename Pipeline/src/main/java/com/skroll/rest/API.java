@@ -336,7 +336,6 @@ public class API {
                                 addedTerms.add(tokens);
                             }
                         }
-                        logger.debug("addedTerms:" + "\t" + addedTerms);
                        // check whether the term is "" ro empty or not that received from client
                         //remove any existing annotations
                         DocumentHelper.clearAnnotations(paragraph);
@@ -345,15 +344,15 @@ public class API {
                                 for (List<Token> addedTerm : addedTerms) {
                                     if (addedTerm != null && !addedTerm.isEmpty()) {
                                         if (!Joiner.on("").join(addedTerm).equals("")) {
-                                            logger.debug("addedTerm:" + "\t" + addedTerm);
+
                                             if (modifiedParagraph.getClassificationId() == Paragraph.DEFINITION_CLASSIFICATION) {
-                                                if (!DocumentHelper.setMatchedTokens(paragraph, addedTerm, Paragraph.DEFINITION_CLASSIFICATION)) {
+                                                if (!DocumentHelper.setMatchedText(paragraph, addedTerm, Paragraph.DEFINITION_CLASSIFICATION)) {
                                                     logger.error("Selected text does not match with the existing document, there may be special char passed from viewer: {}", addedTerm);
                                                     return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Selected text does not match with the existing document, there may be special char passed from viewer " + addedTerm ).type(MediaType.APPLICATION_JSON).build();
                                                 }
                                                 TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.DEFINITION, userWeight);
                                             } else if (modifiedParagraph.getClassificationId() == Paragraph.TOC_CLASSIFICATION) {
-                                                if (!DocumentHelper.setMatchedTokens(paragraph, addedTerm, Paragraph.TOC_CLASSIFICATION)) {
+                                                if (!DocumentHelper.setMatchedText(paragraph, addedTerm, Paragraph.TOC_CLASSIFICATION)) {
                                                     logger.error("Selected text does not match with the existing document, there may be special char passed from viewer: {}", addedTerm);
                                                     return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Selected text does not match with the existing document, there may be special char passed from viewer " + addedTerm ).type(MediaType.APPLICATION_JSON).build();
                                                 }
@@ -746,7 +745,5 @@ public class API {
         String json = gson.toJson(allPs);
         return Response.ok().status(Response.Status.OK).entity(json).build();
     }
-
-
 
 }
