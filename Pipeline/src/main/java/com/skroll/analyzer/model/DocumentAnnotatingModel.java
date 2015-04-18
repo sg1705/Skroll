@@ -70,7 +70,7 @@ public abstract class DocumentAnnotatingModel {
             paraDocFeatures,
             wordFeatures;
 
-    static List<RandomVariableType> allParagraphFeatures;
+    List<RandomVariableType> allParagraphFeatures;
 
 
     @JsonIgnore
@@ -94,7 +94,7 @@ public abstract class DocumentAnnotatingModel {
     }
 
     @JsonIgnore
-    public static List<RandomVariableType> getAllParagraphFeatures() {
+    public List<RandomVariableType> getAllParagraphFeatures() {
         return allParagraphFeatures;
     }
 
