@@ -35,7 +35,7 @@ public class NaiveBayesWithFeatureConditions extends NaiveBayes{
             featureNodeArray[i].setParents(Arrays.asList(categoryNode).toArray(new DiscreteNode[1]));
             featureNodeArray[i].setChildren(new DiscreteNode[0]);
         }
-        wordNode.setParent(categoryNode);
+        generateWordNodeParents();
     }
 
     public void setObservationOfFeatureNodesExistAtDocLevel(int[] values){
@@ -75,7 +75,7 @@ public class NaiveBayesWithFeatureConditions extends NaiveBayes{
         return "NaiveBayesWithFeatureConditions{" +
 
                 "category=" + categoryNode +
-                "\nwordNode=\n" + wordNode +
+                "\nwordNode=\n" + Arrays.toString(wordNodeArray) +
                 "\nfeatureArray=\n" + Arrays.toString(featureNodeArray) +
 
                 "\nfeatureExistAtDocLevelArray=\n" + Arrays.toString(featureExistAtDocLevelArray) +

@@ -2,30 +2,29 @@ package com.skroll.analyzer.model.bn;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.skroll.analyzer.model.bn.node.DiscreteNode;
 import com.skroll.analyzer.model.RandomVariableType;
 import com.skroll.analyzer.model.bn.node.TrainingDiscreteNode;
 import com.skroll.analyzer.model.bn.node.TrainingWordNode;
-import com.skroll.analyzer.model.bn.node.WordNode;
 
 import java.util.*;
 
 /**
  * Created by wei2learn on 1/3/2015.
  */
-public class TrainingNaiveBayesWithFeatureConditions extends NaiveBayesWithFeatureConditions {
+public class TrainingNaiveBayesWithFeatureConditions extends NaiveBayesWithFeatureConditions implements TrainingBN{
 
 
+    //constructor added to make json work
     @JsonCreator
     public TrainingNaiveBayesWithFeatureConditions(
-            @JsonProperty("wordNode")TrainingWordNode wordNode,
+            @JsonProperty("wordNode")TrainingWordNode[] wordNodeArray,
             @JsonProperty("documentFeatureNodeArray")TrainingDiscreteNode[]  documentFeatureNodeArray,
             @JsonProperty("featureExistAtDocLevelArray")TrainingDiscreteNode[] featureExistAtDocLevelArray,
             @JsonProperty("categoryNode")TrainingDiscreteNode categoryNode,
             @JsonProperty("featureNodeArray") TrainingDiscreteNode[] featureNodeArray,
             @JsonProperty("discreteNodeArray")TrainingDiscreteNode[] discreteNodeArray) {
 
-        this.wordNode = wordNode;
+        this.wordNodeArray = wordNodeArray;
         this.documentFeatureNodeArray = documentFeatureNodeArray;
         this.featureExistAtDocLevelArray = featureExistAtDocLevelArray;
         this.categoryNode = categoryNode;
@@ -54,7 +53,12 @@ public class TrainingNaiveBayesWithFeatureConditions extends NaiveBayesWithFeatu
             documentFeatureNodeArray[i] = new TrainingDiscreteNode( pdfNodeArray[i]);
         for (int i=0; i<featureExistAtDocLevelArray.length;i++)
             featureExistAtDocLevelArray[i] = new TrainingDiscreteNode( pfedNodeArray[i]);
-        wordNode = new TrainingWordNode((TrainingWordNode) tnbf.getWordNode());
+
+        TrainingWordNode[] oldWordNodeArray = (TrainingWordNode[]) tnbf.getWordNodeArray();
+        TrainingWordNode[] newWordNodeArray = new TrainingWordNode[oldWordNodeArray.length];
+        for (int i=0; i<oldWordNodeArray.length;i++){
+            newWordNodeArray[i] = new TrainingWordNode(oldWordNodeArray[i]);
+        }
         generateParentsAndChildren();
 
         putAllNodesInOneList();
@@ -69,7 +73,8 @@ public class TrainingNaiveBayesWithFeatureConditions extends NaiveBayesWithFeatu
     public TrainingNaiveBayesWithFeatureConditions(RandomVariableType categoryVar,
                                                    List<RandomVariableType> featureVarList,
                                                    List<RandomVariableType> featureExistsAtDocLevelVarList,
-                                                   List<RandomVariableType> documentFeatureVarList) {
+                                                   List<RandomVariableType> documentFeatureVarList,
+                                                   List<RandomVariableType> wordVarList ) {
 
         categoryNode = new TrainingDiscreteNode(Arrays.asList(categoryVar));
         featureNodeArray = new TrainingDiscreteNode[ featureVarList.size()];
@@ -87,7 +92,11 @@ public class TrainingNaiveBayesWithFeatureConditions extends NaiveBayesWithFeatu
                     Arrays.asList(featureVarList.get(i), categoryVar));
         }
 
-        wordNode = new TrainingWordNode((TrainingDiscreteNode)categoryNode);
+        wordNodeArray = new TrainingWordNode[wordVarList.size()];
+        for (int i=0; i<wordVarList.size(); i++){
+            wordNodeArray[i] =  new TrainingWordNode((TrainingDiscreteNode)categoryNode);
+        }
+
         generateParentsAndChildren();
 
         putAllNodesInOneList();
@@ -97,21 +106,14 @@ public class TrainingNaiveBayesWithFeatureConditions extends NaiveBayesWithFeatu
 
 
     public void addSample(SimpleDataTuple tuple){
-        setObservation(tuple);
-        for (DiscreteNode node: discreteNodeArray){
-            ((TrainingDiscreteNode) node).updateCount();
-        }
-        ((TrainingWordNode) wordNode).updateCount();
-        clearObservation(); // probably unnecessary
+        BNHelper.addSample(this, tuple);
     }
 
     public void addSample(SimpleDataTuple tuple, double weight){
-        setObservation(tuple);
-        for (DiscreteNode node: discreteNodeArray){
-            ((TrainingDiscreteNode) node).updateCount(weight);
-        }
-        ((TrainingWordNode) wordNode).updateCount(weight);
-        clearObservation(); // probably unnecessary
+        BNHelper.addSample(this, tuple, weight);
+
     }
+
+
 
 }

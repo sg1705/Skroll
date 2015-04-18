@@ -13,14 +13,18 @@ public class ProbabilityNaiveBayes extends NaiveBayes{
 
     // build from TrainingNaiveBayes
     public ProbabilityNaiveBayes(TrainingNaiveBayes tnb) {
-        categoryNode = new ProbabilityDiscreteNode(tnb.getTrainingCategoryNode());
+        categoryNode = new ProbabilityDiscreteNode((TrainingDiscreteNode)tnb.getCategoryNode());
         TrainingDiscreteNode[] trainingFreatureNodeArray = (TrainingDiscreteNode[]) tnb.getFeatureNodeArray();
         featureNodeArray = new ProbabilityDiscreteNode[ trainingFreatureNodeArray.length];
         for (int i=0; i<featureNodeArray.length; i++) {
             featureNodeArray[i] = new ProbabilityDiscreteNode(trainingFreatureNodeArray[i]);
         }
 
-        wordNode = new ProbabilityWordNode(tnb.getTrainingWordNode());
+        TrainingWordNode[] trainingWordNodes = (TrainingWordNode[]) tnb.getWordNodeArray();
+        wordNodeArray = new ProbabilityWordNode[trainingWordNodes.length];
+        for (int i=0; i<trainingWordNodes.length; i++)
+            wordNodeArray[i] = new ProbabilityWordNode(trainingWordNodes[i]);
+
         generateParentsAndChildren();
 
         // put all nodes in a single array for simpler update.
@@ -42,7 +46,11 @@ public class ProbabilityNaiveBayes extends NaiveBayes{
             featureNodeArray[i] = new ProbabilityDiscreteNode(probabilityFreatureNodeArray[i]);
         }
 
-        wordNode = new ProbabilityWordNode((ProbabilityWordNode) pnb.getWordNode());
+        ProbabilityWordNode[] oldNodes = (ProbabilityWordNode[]) pnb.getWordNodeArray();
+        wordNodeArray = new ProbabilityWordNode[oldNodes.length];
+        for (int i=0; i<oldNodes.length; i++)
+            wordNodeArray[i] = new ProbabilityWordNode(oldNodes[i]);
+
         generateParentsAndChildren();
 
         // put all nodes in a single array for simpler update.

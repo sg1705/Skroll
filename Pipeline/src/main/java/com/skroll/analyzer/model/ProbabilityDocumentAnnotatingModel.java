@@ -158,10 +158,12 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
             }
 
             // incorporate word information
-            LogProbabilityWordNode wordNode = (LogProbabilityWordNode)lpnbfModel.getWordNode();
-            double[] message = wordNode.sumOutWordsWithObservation();
-            for (int j=0; j<message.length; j++)
-                paragraphCategoryBelief[p][j] += message[j];
+            LogProbabilityWordNode[] wordNodes = (LogProbabilityWordNode[])lpnbfModel.getWordNodeArray();
+            for (LogProbabilityWordNode node: wordNodes) {
+                double[] message = node.sumOutWordsWithObservation();
+                for (int j = 0; j < message.length; j++)
+                    paragraphCategoryBelief[p][j] += message[j];
+            }
 
             BNInference.normalizeLog(paragraphCategoryBelief[p]);
         }
@@ -187,7 +189,9 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
                 }
             }
         }
-
+        for (double[] belief: paragraphCategoryBelief){
+            BNInference.normalizeLog(belief);
+        }
     }
 
     void passMessageToDocumentFeatures(){
@@ -239,6 +243,8 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
     }
 
     public void annotateDocument(){
+
+
         passMessagesToParagraphCategories();
 
         for (int i=0; i<NUM_ITERATIONS;i++) {

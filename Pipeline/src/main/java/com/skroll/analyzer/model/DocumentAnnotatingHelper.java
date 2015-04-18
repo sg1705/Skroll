@@ -95,6 +95,23 @@ public class DocumentAnnotatingHelper {
         return new SimpleDataTuple(tokens,values);
     }
 
+//    public static SimpleDataTuple[] makeHMMTuples(CoreMap paragraph, RandomVariableType wordCategory,
+//                                                List<RandomVariableType> wordFeatures, int[] documentFeatures){
+//        String []tokens = getNBWords(paragraph);
+//
+//        int [] values = new int[paraFeatures.size() + documentFeatures.length+1];
+//        int index=0;
+//        values[index++] = getParagraphFeature(paragraph, paraCategory);
+//
+//        for (int i=0; i<paraFeatures.size();i++){
+//            values[index++] = getParagraphFeature(paragraph, paraFeatures.get(i));
+//        }
+//        for (int i=0; i<documentFeatures.length; i++)
+//            values[index++] = documentFeatures[i];
+//
+//        return new SimpleDataTuple(tokens,values);
+//    }
+
 
 
     public static SimpleDataTuple makeDataTupleWithOnlyFeaturesObserved(CoreMap paragraph, List<RandomVariableType> features, int docFeatureLen){
