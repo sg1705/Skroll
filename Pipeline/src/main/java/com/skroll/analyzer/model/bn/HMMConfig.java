@@ -15,4 +15,12 @@ public class HMMConfig {
         this.nbfcConfig = nbfcConfig;
         this.length = length;
     }
+
+    public NBFCConfig getNbfcConfig() {
+        return nbfcConfig;
+    }
+
+    public int getLength() {
+        return length;
+    }
 }

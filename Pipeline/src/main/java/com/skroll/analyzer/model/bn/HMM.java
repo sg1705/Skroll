@@ -5,6 +5,11 @@ package com.skroll.analyzer.model.bn;
  * Created by wei2learn on 3/27/2015.
  */
 public class HMM {
-    NaiveBayesWithFeatureConditions nb;
+    NaiveBayesWithFeatureConditions nbfc;
     double[][] transitionParameters;
+
+    public HMM(NaiveBayesWithFeatureConditions nbfc, double[][] transitionParameters){
+        this.nbfc = nbfc;
+        this.transitionParameters = transitionParameters;
+    }
 }
