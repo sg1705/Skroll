@@ -87,21 +87,24 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
     }
 
-    void updateWithParagraph(CoreMap trainingParagraph, int[] docFeatureValues) {
-        updateTNBFWithParagraph(trainingParagraph, docFeatureValues);
-       updateHMMWithParagraph(trainingParagraph);
+    void updateWithParagraph(CoreMap originalPara, CoreMap processedPara, int[] docFeatureValues) {
+        updateTNBFWithParagraph(originalPara, processedPara, docFeatureValues);
+
+        //todo: check to see if HMM needs annotations from originalPara
+       updateHMMWithParagraph(processedPara);
     }
 
-    void updateWithParagraphWithWeights(CoreMap trainingParagraph, CoreMap originalParagraph, int[] docFeatureValues) {
+    void updateWithParagraphWithWeights( CoreMap originalParagraph, CoreMap processedPara, int[] docFeatureValues) {
         double[] weights = getTrainingWeights(originalParagraph);
-        updateTNBFWithParagraphAndWeight(trainingParagraph, docFeatureValues, weights);
+        updateTNBFWithParagraphAndWeight(originalParagraph, processedPara, docFeatureValues, weights);
         //todo: consider doing weight for HMM
-        updateHMMWithParagraph(trainingParagraph);
+        //todo: check if HMM needs info from originalPara
+        updateHMMWithParagraph(processedPara);
         //updateHMMWithParagraphAndWeight(trainingParagraph,weights);
     }
 
-    void updateTNBFWithParagraph(CoreMap paragraph, int[] docFeatureValues){
-        SimpleDataTuple dataTuple = DocumentAnnotatingHelper.makeDataTuple(paragraph, paraCategory, allParagraphFeatures, docFeatureValues);
+    void updateTNBFWithParagraph(CoreMap originalPara, CoreMap processedPara, int[] docFeatureValues){
+        SimpleDataTuple dataTuple = DocumentAnnotatingHelper.makeDataTuple(originalPara,processedPara, paraCategory, allParagraphFeatures, docFeatureValues);
         tnbfModel.addSample(dataTuple);
     }
 
@@ -119,8 +122,8 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     }
 
     //todo: need to use the right annotation for the weight.
-    void updateTNBFWithParagraphAndWeight(CoreMap paragraph, int[] docFeatureValues, double[] weights) {
-        SimpleDataTuple dataTuple = DocumentAnnotatingHelper.makeDataTuple(paragraph, paraCategory, allParagraphFeatures, docFeatureValues);
+    void updateTNBFWithParagraphAndWeight(CoreMap originalPara, CoreMap processedPara, int[] docFeatureValues, double[] weights) {
+        SimpleDataTuple dataTuple = DocumentAnnotatingHelper.makeDataTuple(originalPara, processedPara, paraCategory, allParagraphFeatures, docFeatureValues);
         String[] words = dataTuple.getWords();
         int[] values = dataTuple.getDiscreteValues();
         int numCategories = paraCategory.getFeatureSize();
@@ -184,37 +187,40 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     * training involves updating Fij for each paragraph i and feature j.
     */
     public void updateWithDocumentAndWeight(Document doc){
-        List<CoreMap> paragraphs = new ArrayList<>();
+        List<CoreMap> processedParas = new ArrayList<>();
         List<CoreMap> originalParagraphs = new ArrayList<>();
 
         for( CoreMap paragraph : doc.getParagraphs()) {
             if (DocumentAnnotatingHelper.isParaObserved(paragraph)) {
-                paragraphs.add(DocumentAnnotatingHelper.processParagraph(paragraph, hmm.size()));
+                processedParas.add(DocumentAnnotatingHelper.processParagraph(paragraph, hmm.size()));
                 originalParagraphs.add(paragraph);
             }
         }
 
-        int[] docFeatureValues = DocumentAnnotatingHelper.generateDocumentFeatures(paragraphs, originalParagraphs,
+        int[] docFeatureValues = DocumentAnnotatingHelper.generateDocumentFeatures(originalParagraphs,processedParas,
                 paraCategory, docFeatures, paraDocFeatures);
 
         //for( CoreMap paragraph : paragraphs)
-        for (int i=0; i<paragraphs.size();i++) {
+        for (int i=0; i<processedParas.size();i++) {
 
-            updateWithParagraphWithWeights(paragraphs.get(i),originalParagraphs.get(i), docFeatureValues);
+            updateWithParagraphWithWeights(originalParagraphs.get(i), processedParas.get(i), docFeatureValues);
         }
     }
 
     public void updateWithDocument(Document doc){
-        List<CoreMap> paragraphs = new ArrayList<>();
-        for( CoreMap paragraph : doc.getParagraphs()) {
-             paragraphs.add(DocumentAnnotatingHelper.processParagraph(paragraph, hmm.size()));
+        List<CoreMap> processedParas = new ArrayList<>();
+        List<CoreMap> originalParas = doc.getParagraphs();
+        for( CoreMap paragraph : originalParas) {
+             processedParas.add(DocumentAnnotatingHelper.processParagraph(paragraph, hmm.size()));
         }
-        int[] docFeatureValues = DocumentAnnotatingHelper.generateDocumentFeatures(paragraphs, doc.getParagraphs(),
+        int[] docFeatureValues = DocumentAnnotatingHelper.generateDocumentFeatures(doc.getParagraphs(), processedParas,
                 paraCategory, docFeatures, paraDocFeatures);
 
 
-        for( CoreMap paragraph : paragraphs)
-            updateWithParagraph(paragraph, docFeatureValues);
+        for (int i=0; i<processedParas.size(); i++)
+            updateWithParagraph(originalParas.get(i), processedParas.get(i), docFeatureValues);
+//        for( CoreMap processedPara : processedParas)
+//            updateWithParagraph(processedPara, docFeatureValues);
     }
 
     public TrainingNaiveBayesWithFeatureConditions getTnbfModel() {
@@ -231,8 +237,10 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     public HashMap<String, HashMap<String, HashMap<String, Double>>> toVisualMap() {
         HashMap<String, HashMap<String, HashMap<String, Double>>> map = new HashMap();
         //document level features
-        map.put("DocuemntFeatureNodes", Visualizer.nodesToMap(this.tnbfModel.getDocumentFeatureNodeArray()));
-        map.put("ParagraphFeatureNodes", Visualizer.nodesToMap(this.tnbfModel.getFeatureNodeArray()));
+//        map.put("DocuemntFeatureNodes", Visualizer.nodesToMap(this.tnbfModel.getDocumentFeatureNodeArray()));
+//        map.put("ParagraphFeatureNodes", Visualizer.nodesToMap(this.tnbfModel.getFeatureNodeArray()));
+        map.put("ParagraphFeatureNodes", Visualizer.nodesToMap(this.tnbfModel.getDiscreteNodeArray()));
+
         return map;
     }
 
