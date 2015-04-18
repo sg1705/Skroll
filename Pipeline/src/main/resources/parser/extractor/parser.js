@@ -35,7 +35,7 @@ var parsedJson = page.evaluate(function() {
 
     // done
     //move chunks to paragraphs
-    createPara();
+    createLastPara();
     docObject.set(PARAGRAPH_ANNOTATION, paragraphs);
 
     return ( ";---------------SKROLLJSON---------------------;"
