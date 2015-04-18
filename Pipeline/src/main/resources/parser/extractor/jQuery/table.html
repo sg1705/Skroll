@@ -24,6 +24,21 @@
 
 </table>
 
+<table>
+
+  <tr>
+    <td>My row</td>
+    <td>Your row</td>
+  </tr>
+
+  <tr>
+    <td>His row</td>
+    <td>Her row</td>
+  </tr>
+
+
+</table>
+
 <div>
     <p>This is third &nbsp; paragraph <b> this <i>is</i> bold</b></p>
 </div>
@@ -44,7 +59,7 @@
 
     // done
     //move chunks to paragraphs
-    createPara();
+    createLastPara();
     docObject.set(PARAGRAPH_ANNOTATION, paragraphs);
 
     console.log(JSON.stringify(docObject, null, 2));
