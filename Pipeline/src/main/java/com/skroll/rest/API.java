@@ -174,6 +174,7 @@ public class API {
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to parse document").type(MediaType.TEXT_HTML).build();
 
             }
+        }
             try {
                 doc = (Document) definitionClassifier.classify(documentId, doc);
                 doc = (Document) tocClassifier.classify(documentId, doc);
@@ -182,7 +183,6 @@ public class API {
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to classify the document").type(MediaType.TEXT_HTML).build();
             }
             documentMap.put(documentId,doc);
-        }
         NewCookie documentIdCookie = new NewCookie("documentId", documentId);
         return Response.status(Response.Status.OK).cookie(documentIdCookie).entity(doc.getTarget().getBytes(Constants.DEFAULT_CHARSET)).type(MediaType.TEXT_HTML).build();
     }

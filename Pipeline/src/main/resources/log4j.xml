@@ -22,7 +22,7 @@
     <appender-ref ref="R" />
   </root>
   <logger name="com.skroll" additivity="false">
-    <level value="debug" />
+    <level value="info" />
     <appender-ref ref="stdout" />
     <appender-ref ref="R" />
   </logger>
