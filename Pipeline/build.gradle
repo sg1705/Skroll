@@ -51,7 +51,6 @@ gretty{
     servletContainer = "jetty9"
     fastReload = true
     scanInterval = 1
-    LANG = en_US.UTF-8
 }
 
 
