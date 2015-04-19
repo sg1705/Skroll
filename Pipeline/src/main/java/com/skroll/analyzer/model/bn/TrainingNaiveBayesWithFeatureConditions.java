@@ -17,7 +17,7 @@ public class TrainingNaiveBayesWithFeatureConditions extends NaiveBayesWithFeatu
     //constructor added to make json work
     @JsonCreator
     public TrainingNaiveBayesWithFeatureConditions(
-            @JsonProperty("wordNode")TrainingWordNode[] wordNodeArray,
+            @JsonProperty("wordNodeArray")TrainingWordNode[] wordNodeArray,
             @JsonProperty("documentFeatureNodeArray")TrainingDiscreteNode[]  documentFeatureNodeArray,
             @JsonProperty("featureExistAtDocLevelArray")TrainingDiscreteNode[] featureExistAtDocLevelArray,
             @JsonProperty("categoryNode")TrainingDiscreteNode categoryNode,
