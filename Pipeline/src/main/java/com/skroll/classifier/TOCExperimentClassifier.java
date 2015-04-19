@@ -41,23 +41,31 @@ public class TOCExperimentClassifier extends ClassifierImpl {
             RandomVariableType.WORD_IS_ITALIC);
 
     List<RandomVariableType> paraFeatures = Arrays.asList(
-            RandomVariableType.PARAGRAPH_NUMBER_TOKENS);
+            RandomVariableType.PARAGRAPH_NUMBER_TOKENS
+            );
 
     List<RandomVariableType> paraDocFeatures = Arrays.asList(
+            RandomVariableType.PARAGRAPH_NOT_IN_TABLE,
             RandomVariableType.PARAGRAPH_STARTS_WITH_BOLD,
             RandomVariableType.PARAGRAPH_STARTS_WITH_ITALIC,
             RandomVariableType.PARAGRAPH_STARTS_WITH_UNDERLINE,
             RandomVariableType.PARAGRAPH_ALL_WORDS_UPPERCASE,
             RandomVariableType.PARAGRAPH_IS_CENTER_ALIGNED,
-            RandomVariableType.PARAGRAPH_HAS_ANCHOR);
+            RandomVariableType.PARAGRAPH_HAS_ANCHOR
+    );
 
     List<RandomVariableType> docFeatures = Arrays.asList(
+            RandomVariableType.DOCUMENT_TOC_NOT_IN_TABLE,
             RandomVariableType.DOCUMENT_TOC_IS_BOLD,
             RandomVariableType.DOCUMENT_TOC_IS_ITALIC,
             RandomVariableType.DOCUMENT_TOC_IS_UNDERLINED,
             RandomVariableType. DOCUMENT_TOC_HAS_WORDS_UPPERCASE,
             RandomVariableType.DOCUMENT_TOC_IS_CENTER_ALIGNED,
             RandomVariableType.DOCUMENT_TOC_HAS_ANCHOR
+    );
+    List<RandomVariableType> wordVarList = Arrays.asList(
+            RandomVariableType.WORD,
+            RandomVariableType.FIRST_WORD
     );
 
     public TOCExperimentClassifier() {
@@ -79,7 +87,7 @@ public class TOCExperimentClassifier extends ClassifierImpl {
                      paraFeatures,
                      paraDocFeatures,
                      docFeatures,
-                    DocumentAnnotatingModel.DEFAULT_WORDS);
+                    wordVarList);
         }
             return localTrainingModel;
         }
@@ -167,10 +175,12 @@ public class TOCExperimentClassifier extends ClassifierImpl {
         trainingModel.updateWithDocumentAndWeight(document);
 
         ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(trainingModel.getTnbfModel(),
-                trainingModel.getHmm(), document, wordType, wordFeatures, paraType, paraFeatures, paraDocFeatures, docFeatures
+                trainingModel.getHmm(), document, wordType, wordFeatures, paraType, paraFeatures,
+                paraDocFeatures, docFeatures, wordVarList
         );
 
-        bniModel.updateBeliefWithObservation(observedParas);
+        // already done in the constructor
+        //bniModel.updateBeliefWithObservation(observedParas);
         bniModel.annotateDocument();
         bniMap.put(documentId, bniModel);
         printBelieves(bniModel, document );

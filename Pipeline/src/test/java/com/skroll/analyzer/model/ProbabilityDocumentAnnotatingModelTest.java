@@ -48,7 +48,8 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
         traingTest.testUpdateWithDocument();
         model= new ProbabilityDocumentAnnotatingModel( traingTest.getTnbf(), traingTest.getModel().getHmm(), doc,
-                wordType, wordFeatures, paraType, paraFeatures, paraDocFeatures, docFeatures
+                wordType, wordFeatures, paraType, paraFeatures, paraDocFeatures, docFeatures,
+                model.DEFAULT_WORDS
                 );
         model.getHmm().updateProbabilities();
         System.out.println("HMM\n");

@@ -104,7 +104,8 @@ public class TOCClassifier extends ClassifierImpl {
     public Object classify(String documentId, Document document) throws Exception {
 
         ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(trainingModel.getTnbfModel(),
-                trainingModel.getHmm(), document, wordType, wordFeatures, paraType, paraFeatures, paraDocFeatures, docFeatures
+                trainingModel.getHmm(), document, wordType, wordFeatures, paraType, paraFeatures, paraDocFeatures,
+                docFeatures,DocumentAnnotatingModel.DEFAULT_WORDS
         );
 
         logger.debug("TOC before annotate :");
