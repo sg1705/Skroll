@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model.bn;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skroll.analyzer.model.bn.node.DiscreteNode;
 import com.skroll.analyzer.model.RandomVariableType;
 import com.skroll.analyzer.model.bn.node.WordNode;
@@ -11,7 +12,6 @@ import java.util.*;
  * Created by wei2learn on 1/3/2015.
  */
 public abstract class NaiveBayes {
-
 
     WordNode[] wordNodeArray;
     DiscreteNode categoryNode;
