@@ -68,7 +68,8 @@ public abstract class DocumentAnnotatingModel {
     List<RandomVariableType> docFeatures,
             paraFeatures,
             paraDocFeatures,
-            wordFeatures;
+            wordFeatures,
+    wordVarList;
 
     List<RandomVariableType> allParagraphFeatures;
 

@@ -1,6 +1,7 @@
 package com.skroll.classifier;
 
 import com.google.gson.reflect.TypeToken;
+import com.skroll.analyzer.model.DocumentAnnotatingModel;
 import com.skroll.analyzer.model.ProbabilityDocumentAnnotatingModel;
 import com.skroll.analyzer.model.RandomVariableType;
 import com.skroll.analyzer.model.TrainingDocumentAnnotatingModel;
@@ -156,7 +157,8 @@ public class DefinitionExperimentClassifier extends ClassifierImpl{
         List<RandomVariableType> docFeatures = ProbabilityDocumentAnnotatingModel.DEFAULT_DOCUMENT_FEATURES;
 
         ProbabilityDocumentAnnotatingModel bniModel =  new ProbabilityDocumentAnnotatingModel( trainingModel.getTnbfModel(),
-                trainingModel.getHmm(), document, wordType, wordFeatures, paraType, paraFeatures, paraDocFeatures, docFeatures
+                trainingModel.getHmm(), document, wordType, wordFeatures, paraType, paraFeatures, paraDocFeatures,
+                docFeatures, DocumentAnnotatingModel.DEFAULT_WORDS
         );
 
         bniModel.updateBeliefWithObservation(observedParas);
