@@ -55,7 +55,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
         this(new TrainingNaiveBayesWithFeatureConditions(paraCategory,
                         paraFeatures, paraDocFeatures, docFeatures, wordVarList ),
-                wordType, wordFeatures, paraCategory, paraFeatures, paraDocFeatures, docFeatures);
+                wordType, wordFeatures, paraCategory, paraFeatures, paraDocFeatures, docFeatures, wordVarList);
 
     }
 
@@ -67,7 +67,8 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
             @JsonProperty("paraCategory")RandomVariableType paraCategory,
             @JsonProperty("paraFeatures")List<RandomVariableType> paraFeatures,
             @JsonProperty("paraDocFeatures")List<RandomVariableType> paraDocFeatures,
-            @JsonProperty("docFeatures")List<RandomVariableType> docFeatures){
+            @JsonProperty("docFeatures")List<RandomVariableType> docFeatures,
+            @JsonProperty("wordVarList")List<RandomVariableType> wordVarList){
 
         this.tnbfModel = tnbfModel;
         this.wordType = wordType;
@@ -76,6 +77,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
         this.paraFeatures = paraFeatures;
         this.paraDocFeatures = paraDocFeatures;
         this.docFeatures = docFeatures;
+        this.wordVarList = wordVarList;
 
         int []wordFeatureSizes = new int[wordFeatures.size()]; // include state at the feature index 0.
         for (int i=0; i<wordFeatureSizes.length;i++)
@@ -104,7 +106,8 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     }
 
     void updateTNBFWithParagraph(CoreMap originalPara, CoreMap processedPara, int[] docFeatureValues){
-        SimpleDataTuple dataTuple = DocumentAnnotatingHelper.makeDataTuple(originalPara,processedPara, paraCategory, allParagraphFeatures, docFeatureValues);
+        SimpleDataTuple dataTuple = DocumentAnnotatingHelper.makeDataTuple(originalPara,processedPara, paraCategory,
+                allParagraphFeatures, docFeatureValues, wordVarList);
         tnbfModel.addSample(dataTuple);
     }
 
@@ -123,8 +126,8 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
     //todo: need to use the right annotation for the weight.
     void updateTNBFWithParagraphAndWeight(CoreMap originalPara, CoreMap processedPara, int[] docFeatureValues, double[] weights) {
-        SimpleDataTuple dataTuple = DocumentAnnotatingHelper.makeDataTuple(originalPara, processedPara, paraCategory, allParagraphFeatures, docFeatureValues);
-        String[] words = dataTuple.getWords();
+        SimpleDataTuple dataTuple = DocumentAnnotatingHelper.makeDataTuple(originalPara, processedPara, paraCategory,
+                allParagraphFeatures, docFeatureValues, wordVarList);
         int[] values = dataTuple.getDiscreteValues();
         int numCategories = paraCategory.getFeatureSize();
 

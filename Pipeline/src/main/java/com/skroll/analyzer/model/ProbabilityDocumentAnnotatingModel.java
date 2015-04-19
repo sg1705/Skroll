@@ -45,7 +45,8 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
                                                 RandomVariableType paraCategory,
                                                 List<RandomVariableType> paraFeatures,
                                                 List<RandomVariableType> paraDocFeatures,
-                                                List<RandomVariableType> docFeatures){
+                                                List<RandomVariableType> docFeatures,
+                                              List<RandomVariableType> wordVarList){
 
             this.wordType = wordType;
             this.wordFeatures = wordFeatures;
@@ -53,6 +54,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
             this.paraFeatures = paraFeatures;
             this.paraDocFeatures = paraDocFeatures;
             this.docFeatures = docFeatures;
+        this.wordVarList = wordVarList;
         this.doc = doc;
         lpnbfModel = new LogProbabilityNaiveBayesWithFeatureConditions(tnbf);
 
@@ -148,7 +150,8 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
                 continue;
             }
             SimpleDataTuple tuple = DocumentAnnotatingHelper.makeDataTupleWithOnlyFeaturesObserved(
-                    originalParagraphs.get(p), processedParas.get(p), allParagraphFeatures, docFeatures.size());
+                    originalParagraphs.get(p), processedParas.get(p), allParagraphFeatures, docFeatures.size(),
+                    wordVarList);
             lpnbfModel.setObservation(tuple);
             paragraphCategoryBelief[p] = categoryNode.getLogProbabilities().clone();
             for (int i=0; i<fna.length; i++){

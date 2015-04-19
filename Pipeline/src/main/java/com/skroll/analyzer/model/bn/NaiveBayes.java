@@ -80,7 +80,7 @@ public abstract class NaiveBayes {
             discreteNodeArray[i].setObservation(values[i]);
         }
         for (int i=0; i<wordNodeArray.length; i++){
-            wordNodeArray[i].setObservation(tuple.getWords());
+            wordNodeArray[i].setObservation(tuple.getWords(i));
         }
     }
 

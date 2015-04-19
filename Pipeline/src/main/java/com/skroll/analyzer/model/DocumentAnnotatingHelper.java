@@ -33,7 +33,9 @@ public class DocumentAnnotatingHelper {
         List<Token> tokens = paragraph.getTokens();
         List<Token> newTokens = new ArrayList<>();
 
-        Set<String> wordSet = new HashSet<>();
+        //Set<String> wordSet = new HashSet<>();
+        Set<String> wordSet = new LinkedHashSet<>(); //use LinkedHashSet to maintain order.
+
         if (tokens.size()>0 && WordHelper.isQuote(tokens.get(0).getText()))
             trainingParagraph.set(CoreAnnotations.StartsWithQuote.class, true);
 
@@ -72,15 +74,23 @@ public class DocumentAnnotatingHelper {
         return trainingParagraph;
     }
 
-    public static SimpleDataTuple[] makeHMMTuples(int numStates, CoreMap paragraph, List<RandomVariableType> wordFeatures){
-        SimpleDataTuple[] tuples = new SimpleDataTuple[numStates];
-        String []tokens = getNBWords(paragraph);
-        return tuples;
-    }
+//    public static SimpleDataTuple[] makeHMMTuples(int numStates, CoreMap paragraph, List<RandomVariableType> wordFeatures){
+//        SimpleDataTuple[] tuples = new SimpleDataTuple[numStates];
+//        String []tokens = getNBWords(paragraph);
+//        return tuples;
+//    }
 
+
+    static List<String[]> getWordsList(CoreMap processedPara, List<RandomVariableType> wordVarList){
+        List<String[]> words = new ArrayList<>();
+        for (int i=0; i<wordVarList.size();i++) {
+            words.add(getWords(processedPara, wordVarList.get(i)));
+        }
+        return words;
+    }
     public static SimpleDataTuple makeDataTuple(CoreMap originalPara, CoreMap processedPara, RandomVariableType paraCategory,
-                                                List<RandomVariableType> paraFeatures, int[] documentFeatures){
-        String []tokens = getNBWords(processedPara);
+                                                List<RandomVariableType> paraFeatures, int[] documentFeatures,
+                                                List<RandomVariableType> wordVarList){
 
         int [] values = new int[paraFeatures.size() + documentFeatures.length+1];
         int index=0;
@@ -92,7 +102,7 @@ public class DocumentAnnotatingHelper {
         for (int i=0; i<documentFeatures.length; i++)
             values[index++] = documentFeatures[i];
 
-        return new SimpleDataTuple(tokens,values);
+        return new SimpleDataTuple( getWordsList(processedPara, wordVarList), values);
     }
 
 //    public static SimpleDataTuple[] makeHMMTuples(CoreMap paragraph, RandomVariableType wordCategory,
@@ -114,8 +124,9 @@ public class DocumentAnnotatingHelper {
 
 
 
-    public static SimpleDataTuple makeDataTupleWithOnlyFeaturesObserved(CoreMap originalPara, CoreMap processedPara, List<RandomVariableType> features, int docFeatureLen){
-        String []tokens = getNBWords(processedPara);
+    public static SimpleDataTuple makeDataTupleWithOnlyFeaturesObserved(
+            CoreMap originalPara, CoreMap processedPara,
+            List<RandomVariableType> features, int docFeatureLen, List<RandomVariableType> wordVarList){
 
         int [] featureValues = new int[features.size() + docFeatureLen+1];
         int index=0;
@@ -127,7 +138,7 @@ public class DocumentAnnotatingHelper {
         for (int i=0; i<docFeatureLen; i++)
             featureValues[index++] = -1;
 
-        return new SimpleDataTuple(tokens,featureValues);
+        return new SimpleDataTuple(getWordsList(processedPara, wordVarList),featureValues);
     }
 
     //todo: we're check both processedParagraphs and originalParas. But should probably combine the information and just check one.
@@ -153,6 +164,21 @@ public class DocumentAnnotatingHelper {
     static String[] getNBWords(CoreMap paragraph){
         Set<String> wordSet = paragraph.get(CoreAnnotations.WordSetForTrainingAnnotation.class);
         return wordSet.toArray(new String[wordSet.size()]);
+    }
+
+    static String[] getWords(CoreMap paragraph, RandomVariableType wordVar){
+        if (paragraph==null) return null;
+        Set<String> wordSet = paragraph.get(CoreAnnotations.WordSetForTrainingAnnotation.class);
+        if (wordSet == null || wordSet.size()==0) return new String[0];
+
+        String[] wordArray =  wordSet.toArray(new String[wordSet.size()]);
+        switch (wordVar) {
+            case FIRST_WORD:
+                return new String[]{wordArray[0]};
+            case WORD:
+                return wordArray;
+        }
+        return null;
     }
 
     public static void addParagraphTermAnnotation(CoreMap paragraph, RandomVariableType paraType, List<Token> terms){
