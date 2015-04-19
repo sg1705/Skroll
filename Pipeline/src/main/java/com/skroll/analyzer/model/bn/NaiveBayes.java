@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model.bn;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skroll.analyzer.model.bn.node.DiscreteNode;
 import com.skroll.analyzer.model.RandomVariableType;
 import com.skroll.analyzer.model.bn.node.WordNode;
@@ -12,10 +13,15 @@ import java.util.*;
  */
 public abstract class NaiveBayes {
 
-    WordNode wordNode;
+    WordNode[] wordNodeArray;
     DiscreteNode categoryNode;
     DiscreteNode[] featureNodeArray;
     DiscreteNode[] discreteNodeArray;
+
+//    List<WordNode> wordNodes;
+//    DiscreteNode categoryNode;
+//    List<DiscreteNode>  featureNodes;
+//    List<DiscreteNode> allDiscreteNodes;
 
     // for training with complete observed data, we can set observation on all nodes,
     // then make each node update its frequency count
@@ -26,7 +32,9 @@ public abstract class NaiveBayes {
 
     // this NaiveBayes is not really instantiated, so may not need this constructor.
     // assuming there is a documentFeature for each feature, so the sizes of the two lists passed in should match.
-    public NaiveBayes(RandomVariableType categoryVar, List<RandomVariableType> featureVarList) {
+    public NaiveBayes(RandomVariableType categoryVar,
+                      List<RandomVariableType> featureVarList, List<RandomVariableType> wordVarList) {
+        wordNodeArray = new WordNode[wordVarList.size()];
         categoryNode = new DiscreteNode(Arrays.asList(categoryVar));
         featureNodeArray = new DiscreteNode[ featureVarList.size()];
         for (int i=0; i<featureVarList.size(); i++) {
@@ -34,7 +42,10 @@ public abstract class NaiveBayes {
                     Arrays.asList(featureVarList.get(i), categoryVar));
         }
 
-        wordNode = new WordNode(categoryNode);
+        for (int i=0; i<wordVarList.size(); i++){
+            wordNodeArray[i] = new WordNode(categoryNode);
+        }
+
         generateParentsAndChildren();
 
         // put all nodes in a single array for simpler update.
@@ -53,7 +64,14 @@ public abstract class NaiveBayes {
                     toArray(new DiscreteNode[1]));
             featureNodeArray[i].setChildren(new DiscreteNode[0]);
         }
-        wordNode.setParent(categoryNode);
+
+    }
+
+    void generateWordNodeParents(){
+        for (int i=0; i<wordNodeArray.length; i++){
+            wordNodeArray[i].setParent(categoryNode);
+        }
+
     }
 
     public void setObservation(SimpleDataTuple tuple){
@@ -61,19 +79,27 @@ public abstract class NaiveBayes {
         for (int i=0; i<values.length; i++){
             discreteNodeArray[i].setObservation(values[i]);
         }
-        wordNode.setObservation( tuple.getWords());
+        for (int i=0; i<wordNodeArray.length; i++){
+            wordNodeArray[i].setObservation(tuple.getWords());
+        }
     }
 
     public void clearObservation(){
         for (DiscreteNode node:discreteNodeArray){
             node.clearObservation();
         }
-        wordNode.clearObservation();
+        for (int i=0; i<wordNodeArray.length; i++){
+            wordNodeArray[i].clearObservation();
+        }
     }
 
     @JsonIgnore
-    public WordNode getWordNode() {
-        return wordNode;
+    public WordNode[] getWordNodeArray() {
+        return wordNodeArray;
+    }
+
+    public DiscreteNode[] getDiscreteNodeArray() {
+        return discreteNodeArray;
     }
 
     @JsonIgnore

@@ -70,6 +70,10 @@ var pageBreak = false;
 var DEBUG = false;
 var isAnchor = false;
 var isFirstChunkOfPara = true;
+var isBlockInTable = {
+    currentPara: false,
+    nextPara: false
+}
 
 // core annotations
 var ID_ANNOTATION = "IdAnnotation";
@@ -84,6 +88,7 @@ var IS_PAGE_BREAK_ANNOTATION = "IsPageBreakAnnotation";
 var IS_CENTER_ALIGNED_ANNOTATION = "IsCenterAlignedAnnotation";
 var FONTSIZE_ANNOTATION = "FontSizeAnnotation";
 var IS_ANCHOR_ANNOTATION = "IsAnchorAnnotation";
+var IS_TABLE_ANNOTATION = "IsInTableAnnotation";
 
  function CoreMap(chunkId, text) {
 
@@ -155,6 +160,11 @@ function createPara(element) {
     if (isAnchor) {
       newParagraph[IS_ANCHOR_ANNOTATION] = true;
     }
+
+    if (isBlockInTable.currentPara) {
+      newParagraph[IS_TABLE_ANNOTATION] = true;
+    }
+
     paragraphs.push(newParagraph);
     insertMarker(paragraphId, element);
     chunkStack = new Array();
@@ -164,6 +174,10 @@ function createPara(element) {
     isFirstChunkOfPara = true;
 }
 
+function createLastPara() {
+    isBlockInTable.currentPara = isBlockInTable.nextPara;
+    createPara();
+}
 
 /**
 *  Processes an element if it is a row
@@ -283,9 +297,23 @@ function isNodeBlock(element) {
 
     var displayStyle = $(element).css("display")
     if ((displayStyle == "block") || (displayStyle == "table")) {
+        isBlockInTable.currentPara = isBlockInTable.nextPara;
+        if (displayStyle == "table") {
+            isBlockInTable.nextPara = true;
+        } else {
+            isBlockInTable.nextPara = false;
+        }
         return true;
-    }
+    } else {
+        if (displayStyle.indexOf("table") > -1) {
+            isBlockInTable.nextPara = true;
+        }
+
     return false;
+
+    }
+
+
 }
 
 function isUnderLine(element) {

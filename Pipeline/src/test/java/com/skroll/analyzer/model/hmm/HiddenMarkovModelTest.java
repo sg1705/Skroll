@@ -20,7 +20,7 @@ public class HiddenMarkovModelTest {
         hmm.updateProbabilities();
         System.out.println(hmm.showProbabilities());
 
-        assert(hmm.showProbabilities().endsWith("[means=0.5063179547458125]\n"));
+        assert(hmm.showProbabilities().endsWith("[means=0.9403409090909091]\n"));
         double[][] result = hmm.infer(token);
         System.out.println(Arrays.deepToString((result)));
 
@@ -169,7 +169,7 @@ public class HiddenMarkovModelTest {
 
         System.out.println(Arrays.deepToString(hmm.infer(token)) );
         System.out.println(Arrays.deepToString(hmm.inferForward(newTokens, features, length)) );
-        assert((int)(100*hmm.infer(token)[0][0])==47);
+        assert((int)(10000*hmm.infer(token)[0][0])==6);
 
 
     }

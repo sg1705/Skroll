@@ -26,23 +26,4 @@
 
 <script src="../jquery.min.js"></script>
 <script src="../jQueryParser.js"></script>
-
-<script>
-    var DEBUG = true;
-
-
-    $(":root").contents().each(function(index, element) {
-        processNode(index, element);
-    });
-
-
-    // done
-    //move chunks to paragraphs
-    createPara();
-    docObject.set(PARAGRAPH_ANNOTATION, paragraphs);
-
-    console.log(
-        JSON.stringify(docObject, null, 2)
-       + ";---------------SKROLL---------------------;" + $(":root").html()
-    );
-</script>
+<script src="../parserTest.js"></script>

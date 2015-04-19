@@ -57,6 +57,13 @@ public class DocumentHelper {
         }
         return false;
     }
+
+    public static boolean isObserved(CoreMap coreMap) {
+        if (coreMap.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)) {
+            return coreMap.get(CoreAnnotations.IsUserObservationAnnotation.class);
+        }
+        return false;
+    }
     public static boolean startsWithQuote(CoreMap coreMap) {
         if (coreMap.containsKey(CoreAnnotations.StartsWithQuote.class)) {
             return coreMap.get(CoreAnnotations.StartsWithQuote.class);
@@ -212,6 +219,16 @@ public class DocumentHelper {
         return tocParagraphs;
     }
 
+
+    public static List<CoreMap> getObservedParagraphs(Document doc) {
+        List<CoreMap> observedParagraphs = new ArrayList<>();
+        for (CoreMap paragraph : doc.getParagraphs()) {
+            if (isObserved(paragraph)) observedParagraphs.add(paragraph);
+        }
+        return observedParagraphs;
+
+    }
+
     public static List<Token> getTokensOfADoc(Document doc){
         List<Token> tokens= new ArrayList<>();
         for (CoreMap paragraph: doc.getParagraphs()){
@@ -220,6 +237,7 @@ public class DocumentHelper {
             }
         }
         return tokens;
+
     }
 
     public static void clearAnnotations(CoreMap paragraph){
