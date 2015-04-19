@@ -264,7 +264,7 @@ public class API {
 
     @POST
     @Path("/updateTerms")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @Produces(MediaType.TEXT_HTML)
     public Response updateTerms(String definedTermParagraphList, @Context HttpHeaders hh) {
 
@@ -450,7 +450,7 @@ public class API {
         } catch (ObjectPersistUtil.ObjectPersistException e) {
             e.printStackTrace();
         }
-        //tocClassifier.trainWithWeight(doc);
+        tocClassifier.trainWithWeight(doc);
         for (CoreMap paragraph : doc.getParagraphs()) {
             if (paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)) {
                 TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, TrainingWeightAnnotationHelper.TOC, userWeight);
