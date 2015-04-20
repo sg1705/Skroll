@@ -700,12 +700,13 @@ public class API {
 
         //iterate over each paragraph
         for(CoreMap paragraph : doc.getParagraphs()) {
-            if (( paragraph.get(CoreAnnotations.IsDefinitionAnnotation.class) ||
-                    paragraph.get(CoreAnnotations.IsTOCAnnotation.class))) {
-
+            paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
+            paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
+            if (paragraph.get(CoreAnnotations.IsDefinitionAnnotation.class)) {
+                TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.DEFINITION, userWeight);
+            } else if (paragraph.get(CoreAnnotations.IsTOCAnnotation.class)) {
+                TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.TOC, userWeight);
             } else {
-                paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
-                paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
                 DocumentHelper.clearAnnotations(paragraph);
                 TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.NONE, userWeight);
             }
