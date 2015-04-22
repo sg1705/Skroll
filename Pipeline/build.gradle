@@ -61,6 +61,14 @@ task trainWithOverride(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
 }
 
+
+task trainWithWeight(type: JavaExec) {
+    args = ['--trainWithWeight', 'build/resources/main/preEvaluated/']
+    File workingDir = new File('Pipeline/')
+    main = 'com.skroll.trainer.DefinitionTrainer'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
 //create a single Jar with all dependencies
 task fatJar(type: Jar) {
     manifest {

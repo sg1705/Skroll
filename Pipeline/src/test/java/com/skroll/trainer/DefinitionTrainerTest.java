@@ -47,4 +47,18 @@ public class DefinitionTrainerTest {
             fail(" failed to persist the model");
         }
     }
+
+    @Test
+    public void TestTrainWithWeight(){
+        String fileName = "build/resources/main/preEvaluated/";
+        try {
+            DefinitionTrainer.trainFolderUsingTrainingWeight(fileName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(" failed to create overwrite files");
+        } catch (ObjectPersistUtil.ObjectPersistException e) {
+            e.printStackTrace();
+            fail(" failed to persist the model");
+        }
+    }
 }

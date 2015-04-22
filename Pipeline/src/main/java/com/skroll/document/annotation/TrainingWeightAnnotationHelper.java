@@ -50,6 +50,15 @@ public class TrainingWeightAnnotationHelper {
         }
 
     }
+
+    public static void clearOldTrainingWeight(CoreMap paragraph){
+        List<Float>  userWeightList = paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class);
+        if (userWeightList != null) {
+            for (int i = 0; i < INDEX; i++)
+                userWeightList.set(i, (float) 0);
+        }
+
+    }
     // method converts multi-class weight to binary class weight.
     // todo: this method is temporarily used to get the weights. Should probably be improved later to handle multi-class and others.
     public static double[][] getParagraphWeight(CoreMap para, RandomVariableType paraType){
