@@ -15,7 +15,7 @@ public class DefinitionTrainerTest {
         String folderName = "src/main/resources/trainingDocuments/indentures/AMC Networks Indenture.html";
 
         try {
-            DefinitionTrainer.generateHRFs(folderName);
+            ExperiementTrainer.generateHRFs(folderName);
         } catch (IOException e) {
             e.printStackTrace();
             fail(" failed to create overwrite files");
@@ -27,7 +27,7 @@ public class DefinitionTrainerTest {
 
         String fileName = "src/main/resources/trainingDocuments/indentures/AMC Networks Indenture.html";
         try {
-            DefinitionTrainer.generateHRF(fileName);
+            ExperiementTrainer.generateHRF(fileName);
         } catch (IOException e) {
             e.printStackTrace();
             fail(" failed to create overwrite files");
@@ -38,8 +38,22 @@ public class DefinitionTrainerTest {
     public void TestTrainWithOverride(){
         String fileName = "src/main/resources/trainingDocuments/indentures/";
         try {
-            DefinitionTrainer.trainWithOverride(fileName);
+            ExperiementTrainer.trainWithOverride(fileName);
         } catch (IOException e) {
+            e.printStackTrace();
+            fail(" failed to create overwrite files");
+        } catch (ObjectPersistUtil.ObjectPersistException e) {
+            e.printStackTrace();
+            fail(" failed to persist the model");
+        }
+    }
+
+    @Test
+    public void TestTrainWithWeight(){
+        String fileName = "build/resources/main/preEvaluated/";
+        try {
+            ExperiementTrainer.trainFolderUsingTrainingWeight(fileName);
+        } catch (Exception e) {
             e.printStackTrace();
             fail(" failed to create overwrite files");
         } catch (ObjectPersistUtil.ObjectPersistException e) {

@@ -8,11 +8,11 @@ import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.skroll.classifier.Classifier;
 import com.skroll.classifier.DefinitionClassifier;
-import com.skroll.document.CoreMap;
-import com.skroll.document.Document;
-import com.skroll.document.DocumentHelper;
-import com.skroll.document.Token;
+import com.skroll.classifier.DefinitionExperimentClassifier;
+import com.skroll.classifier.TOCExperimentClassifier;
+import com.skroll.document.*;
 import com.skroll.document.annotation.CoreAnnotations;
+import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
 import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.ParserException;
 import com.skroll.pipeline.Pipeline;
@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -41,23 +42,30 @@ import java.util.List;
 --classify src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html
 */
 
-public class DefinitionTrainer {
+public class ExperiementTrainer {
     //The following line needs to be added to enable log4j
     public static final Logger logger = LoggerFactory
-            .getLogger(DefinitionTrainer.class);
+            .getLogger(ExperiementTrainer.class);
+
+    private  static DefinitionExperimentClassifier documentClassifier = new DefinitionExperimentClassifier();
+    private  static TOCExperimentClassifier tocExperimentClassifier = new TOCExperimentClassifier();
 
     public static void main(String[] args) throws IOException, ObjectPersistUtil.ObjectPersistException {
 
         //ToDO: use the apache common commandline
         if (args[0].equals("--generateHRFs")) {
-            DefinitionTrainer.generateHRFs(args[1]);
+            ExperiementTrainer.generateHRFs(args[1]);
         }
         if (args[0].equals("--trainWithOverride")) {
             logger.debug("folder Name :" + args[1]);
-            DefinitionTrainer.trainWithOverride(args[1]);
+            ExperiementTrainer.trainWithOverride(args[1]);
         }
         if (args[0].equals("--classify")){
-            DefinitionTrainer.classify(args[1]);
+            ExperiementTrainer.classify(args[1]);
+        }
+        if (args[0].equals("--trainWithWeight")) {
+            logger.debug("folder Name :" + args[1]);
+            ExperiementTrainer.trainFolderUsingTrainingWeight(args[1]);
         }
 
     }
@@ -68,7 +76,7 @@ public class DefinitionTrainer {
         for (File f : iterable) {
             if (f.isFile()) {
                 String fileName = f.getPath();
-                DefinitionTrainer.generateHRF(fileName);
+                ExperiementTrainer.generateHRF(fileName);
             }
         }
     }
@@ -204,7 +212,7 @@ public class DefinitionTrainer {
             for (File f : iterable) {
                 if (f.isFile()) {
                     String fileName = f.getPath();
-                    Document doc = DefinitionTrainer.modifyDocWithOverride(fileName);
+                    Document doc = ExperiementTrainer.modifyDocWithOverride(fileName);
                     documentClassifier.train(doc);
 
                 }
@@ -233,4 +241,46 @@ public class DefinitionTrainer {
 
     }
 
+
+    public static void trainFolderUsingTrainingWeight (String preEvaluatedFolder) throws ObjectPersistUtil.ObjectPersistException {
+
+        FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(preEvaluatedFolder));
+        List<String> docLists = new ArrayList<String>();
+        for (File f : iterable) {
+            if (f.isFile()) {
+                trainFileUsingTrainingWeight(f.getPath());
+            }
+        }
+        documentClassifier.persistModel();
+        tocExperimentClassifier.persistModel();
+    }
+
+
+    public static void trainFileUsingTrainingWeight (String preEvaluatedFile) {
+
+        String jsonString = null;
+        Document doc =null;
+        try {
+            logger.info ("training file {}" ,preEvaluatedFile);
+            jsonString = Files.toString(new File(preEvaluatedFile), Charset.defaultCharset());
+        } catch (Exception e) {
+            logger.error("Failed to read document from Corpus:" + e.toString());
+            e.printStackTrace();
+        }
+        try {
+            doc = JsonDeserializer.fromJson(jsonString);
+        } catch (Exception e) {
+            logger.error("Failed to deserialize the message:" + e.toString());
+            e.printStackTrace();
+        }
+        //iterate over each paragraph
+        for(CoreMap paragraph : doc.getParagraphs()) {
+            if (paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)) {
+                TrainingWeightAnnotationHelper.clearOldTrainingWeight(paragraph);
+            }
+        }
+        documentClassifier.trainWithWeight(doc);
+        tocExperimentClassifier.trainWithWeight(doc);
+
+    }
 }
