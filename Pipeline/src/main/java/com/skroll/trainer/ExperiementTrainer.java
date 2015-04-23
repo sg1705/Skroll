@@ -42,10 +42,10 @@ import java.util.List;
 --classify src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html
 */
 
-public class DefinitionTrainer {
+public class ExperiementTrainer {
     //The following line needs to be added to enable log4j
     public static final Logger logger = LoggerFactory
-            .getLogger(DefinitionTrainer.class);
+            .getLogger(ExperiementTrainer.class);
 
     private  static DefinitionExperimentClassifier documentClassifier = new DefinitionExperimentClassifier();
     private  static TOCExperimentClassifier tocExperimentClassifier = new TOCExperimentClassifier();
@@ -54,18 +54,18 @@ public class DefinitionTrainer {
 
         //ToDO: use the apache common commandline
         if (args[0].equals("--generateHRFs")) {
-            DefinitionTrainer.generateHRFs(args[1]);
+            ExperiementTrainer.generateHRFs(args[1]);
         }
         if (args[0].equals("--trainWithOverride")) {
             logger.debug("folder Name :" + args[1]);
-            DefinitionTrainer.trainWithOverride(args[1]);
+            ExperiementTrainer.trainWithOverride(args[1]);
         }
         if (args[0].equals("--classify")){
-            DefinitionTrainer.classify(args[1]);
+            ExperiementTrainer.classify(args[1]);
         }
         if (args[0].equals("--trainWithWeight")) {
             logger.debug("folder Name :" + args[1]);
-            DefinitionTrainer.trainFolderUsingTrainingWeight(args[1]);
+            ExperiementTrainer.trainFolderUsingTrainingWeight(args[1]);
         }
 
     }
@@ -76,7 +76,7 @@ public class DefinitionTrainer {
         for (File f : iterable) {
             if (f.isFile()) {
                 String fileName = f.getPath();
-                DefinitionTrainer.generateHRF(fileName);
+                ExperiementTrainer.generateHRF(fileName);
             }
         }
     }
@@ -212,7 +212,7 @@ public class DefinitionTrainer {
             for (File f : iterable) {
                 if (f.isFile()) {
                     String fileName = f.getPath();
-                    Document doc = DefinitionTrainer.modifyDocWithOverride(fileName);
+                    Document doc = ExperiementTrainer.modifyDocWithOverride(fileName);
                     documentClassifier.train(doc);
 
                 }
