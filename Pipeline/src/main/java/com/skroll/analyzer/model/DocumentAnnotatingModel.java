@@ -28,6 +28,8 @@ public abstract class DocumentAnnotatingModel {
 
 
     public static final List<RandomVariableType> DEFAULT_DOCUMENT_FEATURES = Arrays.asList(
+//            RandomVariableType.DOCUMENT_DEFINITIONS_NOT_IN_TABLE,
+//            RandomVariableType.DOCUMENT_DEFINITIONS_IS_ITALIC,
             RandomVariableType.DOCUMENT_DEFINITIONS_IS_UNDERLINED,
             RandomVariableType.DOCUMENT_DEFINITIONS_IS_BOLD
 
@@ -39,16 +41,9 @@ public abstract class DocumentAnnotatingModel {
     public static final List<RandomVariableType> DEFAULT_PARAGRAPH_FEATURES = Arrays.asList(
             RandomVariableType.PARAGRAPH_NUMBER_TOKENS);
 
-//    static final List<RandomVariableType> PARAGRAPH_FEATURES = Arrays.asList(
-//            RandomVariableType.PARAGRAPH_STARTS_WITH_QUOTE,
-//            RandomVariableType.PARAGRAPH_STARTS_WITH_SPECIAL_FORMAT,
-//            RandomVariableType.PARAGRAPH_STARTS_WITH_BOLD,
-//            RandomVariableType.PARAGRAPH_STARTS_WITH_UNDERLINE,
-//            RandomVariableType.PARAGRAPH_NUMBER_TOKENS);
-
     public static final List<RandomVariableType> DEFAULT_PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL = Arrays.asList(
-//            RandomVariableType.PARAGRAPH_STARTS_WITH_SPECIAL_FORMAT,
-//            ,
+//            RandomVariableType.PARAGRAPH_NOT_IN_TABLE,
+//            RandomVariableType.PARAGRAPH_STARTS_WITH_ITALIC,
             RandomVariableType.PARAGRAPH_STARTS_WITH_UNDERLINE,
             RandomVariableType.PARAGRAPH_STARTS_WITH_BOLD,
 
@@ -59,7 +54,6 @@ public abstract class DocumentAnnotatingModel {
     public static final List<RandomVariableType> DEFAULT_WORD_FEATURES = Arrays.asList(
             RandomVariableType.WORD_IN_QUOTES,
             RandomVariableType.WORD_IS_UNDERLINED
-//            RandomVariableType.WORD_HAS_SPECIAL_FORMAT,
             //RandomVariableType.WORD_INDEX
     );
 
