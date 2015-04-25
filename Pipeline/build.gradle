@@ -65,7 +65,7 @@ task trainWithOverride(type: JavaExec) {
 task trainWithWeight(type: JavaExec) {
     args = ['--trainWithWeight', 'build/resources/main/preEvaluated/']
     File workingDir = new File('Pipeline/')
-    main = 'com.skroll.trainer.DefinitionTrainer'
+    main = 'com.skroll.trainer.ExperiementTrainer'
     classpath = sourceSets.main.runtimeClasspath
 }
 
