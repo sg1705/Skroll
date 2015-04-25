@@ -38,6 +38,31 @@ public class IsInTableAnnotationTest extends TestCase {
         assert (countTableAnnotation == 5);
     }
 
+    public void testComplex10kIsInTableAnnotation() throws Exception {
+        // read a sample file
+        String fileName = "src/test/resources/document/test-10k-table.html";
+        String htmlString = Utils.readStringFromFile(fileName);
+
+
+        Document htmlDoc = new Document();
+        htmlDoc.setSource(htmlString);
+        htmlDoc = Parser.parseDocumentFromHtml(htmlString);
+
+        //find out how many paragraphs have table annotation
+        List<CoreMap> paragraphs = htmlDoc.getParagraphs();
+        int countTableAnnotation = 0;
+        for (CoreMap paragraph : paragraphs) {
+            if (paragraph.containsKey(CoreAnnotations.IsInTableAnnotation.class)) {
+                System.out.println(paragraph.getText());
+                countTableAnnotation++;
+            }
+        }
+        System.out.println(countTableAnnotation);
+        assert (countTableAnnotation == 25);
+    }
+
+
+
     public void test10kIsInTableAnnotation() throws Exception {
         // read a sample file
         String fileName = "src/test/resources/document/random10k.html";
@@ -58,7 +83,7 @@ public class IsInTableAnnotationTest extends TestCase {
             }
         }
         System.out.println(countTableAnnotation);
-        assert (countTableAnnotation == 931);
+        assert (countTableAnnotation == 1064);
     }
 
 

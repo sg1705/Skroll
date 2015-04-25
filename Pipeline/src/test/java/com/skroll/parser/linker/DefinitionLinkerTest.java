@@ -14,9 +14,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class DefinitionLinkerTest extends TestCase {
+public class DefinitionLinkerTest {
 
-    @Test
     public void testLinkRandomDocument() throws Exception {
         //search for regex
         String validateString = "<a href=\"#p_2240\">";
