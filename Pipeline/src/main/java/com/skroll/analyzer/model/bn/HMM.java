@@ -8,6 +8,9 @@ public class HMM {
     NaiveBayesWithFeatureConditions nbfc;
     double[][] transitionParameters;
 
+    public HMM(){
+
+    }
     public HMM(NaiveBayesWithFeatureConditions nbfc, double[][] transitionParameters){
         this.nbfc = nbfc;
         this.transitionParameters = transitionParameters;
