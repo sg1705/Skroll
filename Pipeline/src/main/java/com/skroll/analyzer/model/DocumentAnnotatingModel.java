@@ -28,8 +28,8 @@ public abstract class DocumentAnnotatingModel {
 
 
     public static final List<RandomVariableType> DEFAULT_DOCUMENT_FEATURES = Arrays.asList(
-//            RandomVariableType.DOCUMENT_DEFINITIONS_NOT_IN_TABLE,
-//            RandomVariableType.DOCUMENT_DEFINITIONS_IS_ITALIC,
+            RandomVariableType.DOCUMENT_DEFINITIONS_NOT_IN_TABLE,
+            RandomVariableType.DOCUMENT_DEFINITIONS_IS_ITALIC,
             RandomVariableType.DOCUMENT_DEFINITIONS_IS_UNDERLINED,
             RandomVariableType.DOCUMENT_DEFINITIONS_IS_BOLD
 
@@ -42,8 +42,8 @@ public abstract class DocumentAnnotatingModel {
             RandomVariableType.PARAGRAPH_NUMBER_TOKENS);
 
     public static final List<RandomVariableType> DEFAULT_PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL = Arrays.asList(
-//            RandomVariableType.PARAGRAPH_NOT_IN_TABLE,
-//            RandomVariableType.PARAGRAPH_STARTS_WITH_ITALIC,
+            RandomVariableType.PARAGRAPH_NOT_IN_TABLE,
+            RandomVariableType.PARAGRAPH_STARTS_WITH_ITALIC,
             RandomVariableType.PARAGRAPH_STARTS_WITH_UNDERLINE,
             RandomVariableType.PARAGRAPH_STARTS_WITH_BOLD,
 
