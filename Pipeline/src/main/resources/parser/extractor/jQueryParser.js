@@ -70,10 +70,7 @@ var pageBreak = false;
 var DEBUG = false;
 var isAnchor = false;
 var isFirstChunkOfPara = true;
-var isBlockInTable = {
-    currentPara: false,
-    nextPara: false
-}
+var isBlockInTable = false;
 
 // core annotations
 var ID_ANNOTATION = "IdAnnotation";
@@ -161,7 +158,7 @@ function createPara(element) {
       newParagraph[IS_ANCHOR_ANNOTATION] = true;
     }
 
-    if (isBlockInTable.currentPara) {
+    if (isBlockInTable) {
       newParagraph[IS_TABLE_ANNOTATION] = true;
     }
 
@@ -172,10 +169,17 @@ function createPara(element) {
     pageBreak = false;
     isAnchor = false;
     isFirstChunkOfPara = true;
+
+    if (isElementInTable(element)) {
+        isBlockInTable = true;
+    } else {
+        isBlockInTable = false;
+    }
+
+
 }
 
 function createLastPara() {
-    isBlockInTable.currentPara = isBlockInTable.nextPara;
     createPara();
 }
 
@@ -297,23 +301,18 @@ function isNodeBlock(element) {
 
     var displayStyle = $(element).css("display")
     if ((displayStyle == "block") || (displayStyle == "table")) {
-        isBlockInTable.currentPara = isBlockInTable.nextPara;
-        if (displayStyle == "table") {
-            isBlockInTable.nextPara = true;
-        } else {
-            isBlockInTable.nextPara = false;
-        }
         return true;
-    } else {
-        if (displayStyle.indexOf("table") > -1) {
-            isBlockInTable.nextPara = true;
-        }
-
-    return false;
-
     }
+    return false;
+}
 
-
+function isElementInTable(element) {
+    if ($(element).is('table'))
+        return true;
+    if ($(element).parents('table').length > 0) {
+        return true;
+    }
+    return false;
 }
 
 function isUnderLine(element) {
