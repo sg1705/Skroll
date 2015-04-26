@@ -80,6 +80,7 @@ var LHSModel = {
 			if ((obj.paragraphId == paraId) && (obj.classificationId == classId))
 				return true;
 		});
+		return paras;
 
   }
 

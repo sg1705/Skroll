@@ -122,7 +122,7 @@ public class APITest {
         String preEvaluatedFolder = configuration.get("preEvaluatedFolder","/tmp/");
         Document doc = JsonDeserializer.fromJson(Files.toString(new File(preEvaluatedFolder + documentId), Constants.DEFAULT_CHARSET));
         for(CoreMap coreMap: doc.getParagraphs()){
-            DocumentHelper.setMatchedTokens(coreMap, Lists.newArrayList("Capital", "Stock"), Paragraph.TOC_CLASSIFICATION);
+            DocumentHelper.setMatchedText(coreMap, DocumentHelper.createTokens(Lists.newArrayList("Capital", "Stock")), Paragraph.TOC_CLASSIFICATION);
             if(coreMap.get(CoreAnnotations.IsTOCAnnotation.class)) {
                 System.out.println(DocumentHelper.getTOCLists(coreMap));
                 assert(Joiner.on(" ").join(DocumentHelper.getTOCLists(coreMap)).equals("Capital Stock"));
@@ -175,7 +175,7 @@ public class APITest {
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
 
-        String jsonString ="[{\"paragraphId\":\"p_1253\",\"term\":\"\", \"classificationId\":2}]";
+        String jsonString ="[{\"paragraphId\":\"p_1253\",\"term\":\"Base Terms\", \"classificationId\":2}]";
         //String jsonString ="[{\"paragraphId\":\"p_1371\",\"term\":\"Disclosure Regarding Forward-Looking Statements\", \"classificationId\":2}]";
 
         Response response = webTarget.request(MediaType.TEXT_HTML).cookie(new  NewCookie("documentId", documentId))

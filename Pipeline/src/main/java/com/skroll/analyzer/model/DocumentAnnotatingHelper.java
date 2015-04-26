@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model;
 
 import com.skroll.analyzer.model.bn.NBFCConfig;
+import com.skroll.analyzer.model.bn.NBFCConfig;
 import com.skroll.analyzer.model.bn.SimpleDataTuple;
 import com.skroll.analyzer.model.nb.DataTuple;
 import com.skroll.document.CoreMap;
@@ -34,7 +35,9 @@ public class DocumentAnnotatingHelper {
         List<Token> tokens = paragraph.getTokens();
         List<Token> newTokens = new ArrayList<>();
 
-        Set<String> wordSet = new HashSet<>();
+        //Set<String> wordSet = new HashSet<>();
+        Set<String> wordSet = new LinkedHashSet<>(); //use LinkedHashSet to maintain order.
+
         if (tokens.size()>0 && WordHelper.isQuote(tokens.get(0).getText()))
             trainingParagraph.set(CoreAnnotations.StartsWithQuote.class, true);
 
@@ -73,27 +76,35 @@ public class DocumentAnnotatingHelper {
         return trainingParagraph;
     }
 
-    public static SimpleDataTuple[] makeHMMTuples(int numStates, CoreMap paragraph, List<RandomVariableType> wordFeatures){
-        SimpleDataTuple[] tuples = new SimpleDataTuple[numStates];
-        String []tokens = getNBWords(paragraph);
-        return tuples;
-    }
+//    public static SimpleDataTuple[] makeHMMTuples(int numStates, CoreMap paragraph, List<RandomVariableType> wordFeatures){
+//        SimpleDataTuple[] tuples = new SimpleDataTuple[numStates];
+//        String []tokens = getNBWords(paragraph);
+//        return tuples;
+//    }
 
-    public static SimpleDataTuple makeDataTuple(CoreMap paragraph, RandomVariableType paraCategory,
-                                                List<RandomVariableType> paraFeatures, int[] documentFeatures){
-        String []tokens = getNBWords(paragraph);
+
+    static List<String[]> getWordsList(CoreMap processedPara, List<RandomVariableType> wordVarList){
+        List<String[]> words = new ArrayList<>();
+        for (int i=0; i<wordVarList.size();i++) {
+            words.add(getWords(processedPara, wordVarList.get(i)));
+        }
+        return words;
+    }
+    public static SimpleDataTuple makeDataTuple(CoreMap originalPara, CoreMap processedPara, RandomVariableType paraCategory,
+                                                List<RandomVariableType> paraFeatures, int[] documentFeatures,
+                                                List<RandomVariableType> wordVarList){
 
         int [] values = new int[paraFeatures.size() + documentFeatures.length+1];
         int index=0;
-        values[index++] = getParagraphFeature(paragraph, paraCategory);
+        values[index++] = getParagraphFeature(originalPara, processedPara, paraCategory);
 
         for (int i=0; i<paraFeatures.size();i++){
-            values[index++] = getParagraphFeature(paragraph, paraFeatures.get(i));
+            values[index++] = getParagraphFeature(originalPara,processedPara, paraFeatures.get(i));
         }
         for (int i=0; i<documentFeatures.length; i++)
             values[index++] = documentFeatures[i];
 
-        return new SimpleDataTuple(tokens,values);
+        return new SimpleDataTuple( getWordsList(processedPara, wordVarList), values);
     }
 
 //    public static SimpleDataTuple[] makeHMMTuples(CoreMap paragraph, RandomVariableType wordCategory,
@@ -115,25 +126,27 @@ public class DocumentAnnotatingHelper {
 
 
 
-    public static SimpleDataTuple makeDataTupleWithOnlyFeaturesObserved(CoreMap paragraph, List<RandomVariableType> features, int docFeatureLen){
-        String []tokens = getNBWords(paragraph);
+    public static SimpleDataTuple makeDataTupleWithOnlyFeaturesObserved(
+            CoreMap originalPara, CoreMap processedPara,
+            List<RandomVariableType> features, int docFeatureLen, List<RandomVariableType> wordVarList){
 
         int [] featureValues = new int[features.size() + docFeatureLen+1];
         int index=0;
         featureValues[index++] = -1;
 
         for (int i=0; i<features.size();i++){
-            featureValues[index++] = getParagraphFeature(paragraph, features.get(i));
+            featureValues[index++] = getParagraphFeature(originalPara, processedPara, features.get(i));
         }
         for (int i=0; i<docFeatureLen; i++)
             featureValues[index++] = -1;
 
-        return new SimpleDataTuple(tokens,featureValues);
+        return new SimpleDataTuple(getWordsList(processedPara, wordVarList),featureValues);
     }
 
     //todo: we're check both processedParagraphs and originalParas. But should probably combine the information and just check one.
-    public static int[] generateDocumentFeatures(List<CoreMap> processedParagraphs, List<CoreMap> originalParas,
+    public static int[] generateDocumentFeatures(List<CoreMap> originalParas, List<CoreMap> processedParagraphs,
                                                  NBFCConfig nbfcConfig){
+        
         int[] docFeatureValues = new int[nbfcConfig.getDocumentFeatureVarList().size()];
 
         Arrays.fill(docFeatureValues, 1);
@@ -141,31 +154,32 @@ public class DocumentAnnotatingHelper {
         for (int p=0; p<processedParagraphs.size();p++){
             CoreMap paragraph = processedParagraphs.get(p);
             for (int f=0; f< docFeatureValues.length; f++){
-                if (getParagraphFeature(paragraph, nbfcConfig.getCategoryVar())==1)
-                    docFeatureValues[f] &= (
-                            getParagraphFeature(paragraph, nbfcConfig.getFeatureExistsAtDocLevelVarList().get(f)) |
-                            getParagraphFeature(originalParas.get(p),
-                                    nbfcConfig.getFeatureExistsAtDocLevelVarList().get(f) ));
+                if (getParagraphFeature(originalParas.get(p), paragraph, nbfcConfig.getCategoryVar())==1)
+                    docFeatureValues[f] &= (getParagraphFeature(originalParas.get(p), paragraph, nbfcConfig.getFeatureExistsAtDocLevelVarList().get(f) ));
             }
         }
         return docFeatureValues;
     }
 
-    static DataTuple makeNBDataTuple(CoreMap paragraph, List<RandomVariableType> features){
-        int category = (DocumentHelper.isDefinition(paragraph)) ? 1:0;
-        String []tokens = getNBWords(paragraph);
-
-        int [] featureValues = new int[features.size()];
-        for (int i=0; i<featureValues.length;i++){
-            featureValues[i] = getParagraphFeature(paragraph, features.get(i));
-        }
-
-        return new DataTuple(category,tokens,featureValues);
-    }
     // remove quotes and duplicate words
     static String[] getNBWords(CoreMap paragraph){
         Set<String> wordSet = paragraph.get(CoreAnnotations.WordSetForTrainingAnnotation.class);
         return wordSet.toArray(new String[wordSet.size()]);
+    }
+
+    static String[] getWords(CoreMap paragraph, RandomVariableType wordVar){
+        if (paragraph==null) return null;
+        Set<String> wordSet = paragraph.get(CoreAnnotations.WordSetForTrainingAnnotation.class);
+        if (wordSet == null || wordSet.size()==0) return new String[0];
+
+        String[] wordArray =  wordSet.toArray(new String[wordSet.size()]);
+        switch (wordVar) {
+            case FIRST_WORD:
+                return new String[]{wordArray[0]};
+            case WORD:
+                return wordArray;
+        }
+        return null;
     }
 
     public static void addParagraphTermAnnotation(CoreMap paragraph, RandomVariableType paraType, List<Token> terms){
@@ -199,16 +213,23 @@ public class DocumentAnnotatingHelper {
     }
 
 
-    static int getParagraphFeature(CoreMap paragraph, RandomVariableType feature){
+    /**
+     *
+     * @param paragraph
+     * @param processedPara contains extra annotation that are computed from the original annotations from paragraph
+     * @param feature
+     * @return
+     */
+    static int getParagraphFeature(CoreMap paragraph, CoreMap processedPara, RandomVariableType feature){
         // return false for empty paragraph
         if (paragraph==null) return 0;
-        List<Token> tokens = paragraph.getTokens();
+        List<Token> tokens = processedPara.getTokens();
         if (tokens==null || tokens.size()==0) return 0;
         switch (feature){
             case PARAGRAPH_HAS_DEFINITION:
                 return booleanToInt(paragraph.get(CoreAnnotations.IsDefinitionAnnotation.class));
             case PARAGRAPH_NUMBER_TOKENS:
-                Set<String> words = paragraph.get(CoreAnnotations.WordSetForTrainingAnnotation.class);
+                Set<String> words = processedPara.get(CoreAnnotations.WordSetForTrainingAnnotation.class);
                 int num=0;
                 if (words!=null) num = words.size();
                 return Math.min(num, PFS_TOKENS_NUMBER_FEATURE_MAX);
@@ -218,7 +239,7 @@ public class DocumentAnnotatingHelper {
 //                        booleanToInt(tokens.get(0).get(CoreAnnotations.IsBoldAnnotation.class ))|
 //                        booleanToInt(tokens.get(0).get(CoreAnnotations.IsItalicAnnotation.class ));
             case PARAGRAPH_STARTS_WITH_QUOTE:
-                return booleanToInt(paragraph.get(CoreAnnotations.StartsWithQuote.class));
+                return booleanToInt(processedPara.get(CoreAnnotations.StartsWithQuote.class));
             case PARAGRAPH_STARTS_WITH_BOLD:
                 return booleanToInt(tokens.get(0).get(CoreAnnotations.IsBoldAnnotation.class ));
             case PARAGRAPH_STARTS_WITH_UNDERLINE:
@@ -243,6 +264,8 @@ public class DocumentAnnotatingHelper {
                 return booleanToInt(paragraph.get(CoreAnnotations.IsAnchorAnnotation.class ));
             case PARAGRAPH_HAS_TOC:
                 return booleanToInt(paragraph.get(CoreAnnotations.IsTOCAnnotation.class));
+            case PARAGRAPH_NOT_IN_TABLE:
+                return 1-booleanToInt(paragraph.get(CoreAnnotations.IsInTableAnnotation.class));
 
         }
         return -1;

@@ -7,6 +7,7 @@ import junit.framework.TestCase;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class LogProbabilityNaiveBayesWithFeatureConditionsTest extends TestCase {
 
@@ -23,7 +24,9 @@ public class LogProbabilityNaiveBayesWithFeatureConditionsTest extends TestCase 
         System.out.println("initial model");
         System.out.println(nb);
         // variables are in the order of category, feature, features exist at doc level, document feature
-        SimpleDataTuple tuple = new SimpleDataTuple(new String[]{"a"}, new int[]{0,0,1});
+        List<String[]> wordsList = new ArrayList<>();
+        wordsList.add(new String[]{"a"});
+        SimpleDataTuple tuple = new SimpleDataTuple(wordsList, new int[]{0,0,1} );
         NBTrainingHelper.addSample(nb, tuple);
         System.out.println("model after");
         System.out.println(nb);

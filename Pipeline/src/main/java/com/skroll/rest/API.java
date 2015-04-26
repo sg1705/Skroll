@@ -1,9 +1,7 @@
 package com.skroll.rest;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
 import com.google.common.collect.FluentIterable;
-import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
@@ -176,6 +174,7 @@ public class API {
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to parse document").type(MediaType.TEXT_HTML).build();
 
             }
+        }
             try {
                 doc = (Document) definitionClassifier.classify(documentId, doc);
                 doc = (Document) tocClassifier.classify(documentId, doc);
@@ -184,7 +183,6 @@ public class API {
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to classify the document").type(MediaType.TEXT_HTML).build();
             }
             documentMap.put(documentId,doc);
-        }
         NewCookie documentIdCookie = new NewCookie("documentId", documentId);
         return Response.status(Response.Status.OK).cookie(documentIdCookie).entity(doc.getTarget().getBytes(Constants.DEFAULT_CHARSET)).type(MediaType.TEXT_HTML).build();
     }
@@ -236,7 +234,7 @@ public class API {
                 List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(
                         paragraph);
                 for (List<String> definition: definitionList) {
-                    logger.debug(paragraph.getId() + "\t" + "DEFINITION" + "\t" + definition);
+                    logger.trace(paragraph.getId() + "\t" + "DEFINITION" + "\t" + definition);
                     if (!definition.isEmpty()) {
                         if(!(Joiner.on(" ").join(definition).equals(""))) {
                             definedTermParagraphList.add(new Paragraph(paragraph.getId(), Joiner.on(" ").join(definition), Paragraph.DEFINITION_CLASSIFICATION));
@@ -250,7 +248,7 @@ public class API {
                         paragraph);
                     if (!tocList.isEmpty()) {
                         if(!(Joiner.on(" ").join(tocList).equals(""))) {
-                            logger.debug(paragraph.getId() + "\t" + "TOC" + "\t" + tocList);
+                            logger.trace(paragraph.getId() + "\t" + "TOC" + "\t" + tocList);
                             definedTermParagraphList.add(new Paragraph(paragraph.getId(), Joiner.on(" ").join(tocList), Paragraph.TOC_CLASSIFICATION));
                         }
                     }
@@ -266,7 +264,7 @@ public class API {
 
     @POST
     @Path("/updateTerms")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @Produces(MediaType.TEXT_HTML)
     public Response updateTerms(String definedTermParagraphList, @Context HttpHeaders hh) {
 
@@ -324,25 +322,40 @@ public class API {
                             logger.debug(paragraph.getId() + "\t" + "existing TOCs:" + "\t" + DocumentHelper.getTOCLists(paragraph));
                         }
 
-                        List<List<String>> addedTerms = new ArrayList<> ();
-                        for(String modifiedTerm : paraMap.get(modifiedParagraph)) {
-                            addedTerms.add(Lists.newArrayList(Splitter.on(" ").split(modifiedTerm)));
+                        List<List<Token>> addedTerms = new ArrayList<> ();
+                        if (!(modifiedParagraph.getClassificationId() == Paragraph.NONE_CLASSIFICATION)) {
+
+                            for (String modifiedTerm : paraMap.get(modifiedParagraph)) {
+                                List<Token> tokens = null;
+                                try {
+                                    Document tempDoc = Parser.parseDocumentFromHtml(modifiedTerm);
+                                    tokens = DocumentHelper.getTokensOfADoc(tempDoc);
+                                } catch (ParserException e) {
+                                    e.printStackTrace();
+                                }
+                                addedTerms.add(tokens);
+                            }
                         }
-                        logger.debug("addedTerms:" + "\t" + addedTerms);
                        // check whether the term is "" ro empty or not that received from client
                         //remove any existing annotations
                         DocumentHelper.clearAnnotations(paragraph);
                             // add annotations that received from client - definedTermList
                             if (!addedTerms.isEmpty()) {
-                                for (List<String> addedTerm : addedTerms) {
+                                for (List<Token> addedTerm : addedTerms) {
                                     if (addedTerm != null && !addedTerm.isEmpty()) {
                                         if (!Joiner.on("").join(addedTerm).equals("")) {
-                                            logger.debug("addedTerm:" + "\t" + addedTerm);
+
                                             if (modifiedParagraph.getClassificationId() == Paragraph.DEFINITION_CLASSIFICATION) {
-                                                DocumentHelper.setMatchedTokens(paragraph, addedTerm, Paragraph.DEFINITION_CLASSIFICATION);
+                                                if (!DocumentHelper.setMatchedText(paragraph, addedTerm, Paragraph.DEFINITION_CLASSIFICATION)) {
+                                                    logger.error("Selected text does not match with the existing document, there may be special char passed from viewer: {}", addedTerm);
+                                                    return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Selected text does not match with the existing document, there may be special char passed from viewer " + addedTerm ).type(MediaType.APPLICATION_JSON).build();
+                                                }
                                                 TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.DEFINITION, userWeight);
                                             } else if (modifiedParagraph.getClassificationId() == Paragraph.TOC_CLASSIFICATION) {
-                                                DocumentHelper.setMatchedTokens(paragraph, addedTerm, Paragraph.TOC_CLASSIFICATION);
+                                                if (!DocumentHelper.setMatchedText(paragraph, addedTerm, Paragraph.TOC_CLASSIFICATION)) {
+                                                    logger.error("Selected text does not match with the existing document, there may be special char passed from viewer: {}", addedTerm);
+                                                    return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Selected text does not match with the existing document, there may be special char passed from viewer " + addedTerm ).type(MediaType.APPLICATION_JSON).build();
+                                                }
                                                 TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.TOC, userWeight);
                                             } else {
                                                 TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.NONE, userWeight);
@@ -375,7 +388,7 @@ public class API {
                             // log the userObserved TOC
                     }
             }
-        logger.debug("Total time taken to process the updateTerm without updateBNI: {} msec", System.currentTimeMillis() - startTime);
+        logger.info("Total time taken to process the updateTerm without updateBNI: {} msec", System.currentTimeMillis() - startTime);
         // persist the document using document id. Let's use the file name
         try {
             if (!parasForUpdateBNI.isEmpty()) {
@@ -400,7 +413,8 @@ public class API {
             }
             */
             documentMap.put(documentId,doc);
-            Files.write(JsonDeserializer.getJson(doc), new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
+            // todo: only storing the doc at updateModel time for now.
+           // Files.write(JsonDeserializer.getJson(doc), new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
         } catch (Exception e) {
             logger.error("Failed to persist the document object: {}", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to persist the document object" ).type(MediaType.APPLICATION_JSON).build();
@@ -436,7 +450,7 @@ public class API {
         } catch (ObjectPersistUtil.ObjectPersistException e) {
             e.printStackTrace();
         }
-        //tocClassifier.trainWithWeight(doc);
+        tocClassifier.trainWithWeight(doc);
         for (CoreMap paragraph : doc.getParagraphs()) {
             if (paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)) {
                 TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, TrainingWeightAnnotationHelper.TOC, userWeight);
@@ -686,12 +700,15 @@ public class API {
 
         //iterate over each paragraph
         for(CoreMap paragraph : doc.getParagraphs()) {
-            if (( paragraph.get(CoreAnnotations.IsDefinitionAnnotation.class) ||
-                    paragraph.get(CoreAnnotations.IsTOCAnnotation.class))) {
-
+            paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
+            paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
+            if (paragraph.get(CoreAnnotations.IsDefinitionAnnotation.class)) {
+                TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.DEFINITION, userWeight);
+            } else if (paragraph.get(CoreAnnotations.IsTOCAnnotation.class)) {
+                TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.TOC, userWeight);
             } else {
-                paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
-                paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
+                DocumentHelper.clearAnnotations(paragraph);
+                TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.NONE, userWeight);
             }
         }
         Files.write(JsonDeserializer.getJson(doc), new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
@@ -729,7 +746,5 @@ public class API {
         String json = gson.toJson(allPs);
         return Response.ok().status(Response.Status.OK).entity(json).build();
     }
-
-
 
 }

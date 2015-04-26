@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model.bn;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skroll.analyzer.model.bn.node.DiscreteNode;
 import com.skroll.analyzer.model.RandomVariableType;
 import com.skroll.analyzer.model.bn.node.NodeTrainingHelper;
@@ -76,7 +77,7 @@ public class NaiveBayes {
             allDiscreteNodes.get(i).setObservation(values[i]);
         }
         for (int i=0; i<wordNodes.size(); i++){
-            wordNodes.get(i).setObservation(tuple.getWords());
+            wordNodes.get(i).setObservation(tuple.getWords(i));
         }
     }
 

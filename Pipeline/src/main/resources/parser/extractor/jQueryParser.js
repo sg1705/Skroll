@@ -69,6 +69,8 @@ var chunkId = 5000;
 var pageBreak = false;
 var DEBUG = false;
 var isAnchor = false;
+var isFirstChunkOfPara = true;
+var isBlockInTable = false;
 
 // core annotations
 var ID_ANNOTATION = "IdAnnotation";
@@ -83,6 +85,7 @@ var IS_PAGE_BREAK_ANNOTATION = "IsPageBreakAnnotation";
 var IS_CENTER_ALIGNED_ANNOTATION = "IsCenterAlignedAnnotation";
 var FONTSIZE_ANNOTATION = "FontSizeAnnotation";
 var IS_ANCHOR_ANNOTATION = "IsAnchorAnnotation";
+var IS_TABLE_ANNOTATION = "IsInTableAnnotation";
 
  function CoreMap(chunkId, text) {
 
@@ -154,14 +157,31 @@ function createPara(element) {
     if (isAnchor) {
       newParagraph[IS_ANCHOR_ANNOTATION] = true;
     }
+
+    if (isBlockInTable) {
+      newParagraph[IS_TABLE_ANNOTATION] = true;
+    }
+
     paragraphs.push(newParagraph);
     insertMarker(paragraphId, element);
     chunkStack = new Array();
     paragraphId++;
     pageBreak = false;
     isAnchor = false;
+    isFirstChunkOfPara = true;
+
+    if (isElementInTable(element)) {
+        isBlockInTable = true;
+    } else {
+        isBlockInTable = false;
+    }
+
+
 }
 
+function createLastPara() {
+    createPara();
+}
 
 /**
 *  Processes an element if it is a row
@@ -196,27 +216,50 @@ function processPageBreak(index, element) {
   Process any given node as a text node and chunks it based on formatting
 **/
 function processTextNode(index, element) {
-    //create a chunk and add it to stack
-    var chunkText = $(element).text();
     var newChunk = new Object();
-    newChunk[ID_ANNOTATION] = chunkId;
-    newChunk[TEXT_ANNOTATION] = chunkText;
+    //check to see if need to create a chunk
+    var isChunkRequired = false;
+    if (isFirstChunkOfPara) {
+        isChunkRequired = true;
+        isFirstChunkOfPara = false;
+    }
+
     if (isBold(element.parentNode)) {
         newChunk[IS_BOLD_ANNOTATION] = true;
+        isChunkRequired = true;
+        isFirstChunkOfPara = true;
     }
     if (isItalic(element.parentNode)) {
         newChunk[IS_ITALIC_ANNOTATION] = true;
+        isChunkRequired = true;
+        isFirstChunkOfPara = true;
     }
     if (isUnderLine(element.parentNode)) {
         newChunk[IS_UNDERLINE_ANNOTATION] = true;
+        isChunkRequired = true;
+        isFirstChunkOfPara = true;
     }
     if (isCenterAligned(element.parentNode)) {
         newChunk[IS_CENTER_ALIGNED_ANNOTATION] = true;
+        isChunkRequired = true;
+        isFirstChunkOfPara = true;
     }
-    newChunk[FONTSIZE_ANNOTATION] = $(element.parentNode).css("font-size");
+    var chunkText = $(element).text();
+    if (isChunkRequired) {
+        //create a chunk and add it to stack
 
-    chunkStack.push(newChunk);
-    chunkId++;
+        newChunk[ID_ANNOTATION] = chunkId;
+        newChunk[TEXT_ANNOTATION] = chunkText;
+        newChunk[FONTSIZE_ANNOTATION] = $(element.parentNode).css("font-size");
+
+        chunkStack.push(newChunk);
+        chunkId++;
+    } else {
+        //append to old chunk
+        var oldChunk = chunkStack[chunkStack.length - 1];
+        oldChunk[TEXT_ANNOTATION] = oldChunk[TEXT_ANNOTATION] + chunkText;
+        chunkStack[chunkStack.length - 1] = oldChunk;
+    }
 
     if (DEBUG) {
         if (element.jquery)
@@ -263,6 +306,15 @@ function isNodeBlock(element) {
     return false;
 }
 
+function isElementInTable(element) {
+    if ($(element).is('table'))
+        return true;
+    if ($(element).parents('table').length > 0) {
+        return true;
+    }
+    return false;
+}
+
 function isUnderLine(element) {
     if ($(element).css("text-decoration") == "underline")
         return true;
@@ -294,6 +346,17 @@ function isAnchorElement(element) {
             if (anchorName != '') {
                 if (!(anchorName == anchorId))
                     return true;
+            }
+        }
+        //check for href
+        var href = $(element).attr('href');
+        if (href != null) {
+            //check to see if an external link or anchor
+            var lastIndexOfHash = href.lastIndexOf("#");
+            var lastIndexOfSlash = href.lastIndexOf("/");
+            if (lastIndexOfHash > lastIndexOfSlash) {
+                //has anchor, so replace href
+                $(element).attr('href', href.substr(lastIndexOfHash));
             }
         }
 

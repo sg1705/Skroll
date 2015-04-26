@@ -18,6 +18,12 @@ var ViewPortCtrl = function(SelectionModel, documentService, $mdBottomSheet,
   this.documentModel = documentModel;
 }
 
+ViewPortCtrl.prototype.mouseDown = function($event) {
+  var selection = window.getSelection().toString();
+  var paraId = this.inferParagraphId($event);
+  this.SelectionModel.mouseDownParaId = paraId;
+}
+
 ViewPortCtrl.prototype.mouseUp = function($event) {
   console.log("mouseup clicked");
   //should mouse click handle it
@@ -29,7 +35,8 @@ ViewPortCtrl.prototype.mouseUp = function($event) {
   //clear selection
   this.clearSelection();
   var paraId = this.inferParagraphId($event);
-
+  if (paraId == null)
+    return;
   //save selection
   this.saveSelection(paraId, selection);
 
@@ -119,11 +126,20 @@ ViewPortCtrl.prototype.inferParagraphId = function($event) {
     console.log($(parents[ii]).attr('id'));
   }
 
-  // var children = $($event.target).children("div[id^='p_']");
-  // console.log('children:' + children.length);
+  var children = $($event.target).children("div[id^='p_']");
+  //console.log('children:' + children.length);
   if (parents.length > 1) {
     return $(parents[0]).attr('id');
   } else {
+
+    if ((this.SelectionModel.mouseDownParaId != null) && (this.SelectionModel.mouseDownParaId != '')) {
+      return this.SelectionModel.mouseDownParaId;
+    }
+
+    if ((children.length == 0) && (parents.length ==1)) {
+      return $(parents[0]).attr('id');
+    }
+
     return null;
   }
 

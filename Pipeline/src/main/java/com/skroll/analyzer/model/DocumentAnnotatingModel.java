@@ -16,6 +16,7 @@ import java.util.List;
 public abstract class DocumentAnnotatingModel {
     static final int HMM_MODEL_LENGTH = 12;
 
+    HiddenMarkovModel hmm;
 
 
     public static final RandomVariableType DEFAULT_PARAGRAPH_CATEGORY = RandomVariableType.PARAGRAPH_HAS_DEFINITION;
@@ -27,6 +28,8 @@ public abstract class DocumentAnnotatingModel {
 
 
     public static final List<RandomVariableType> DEFAULT_DOCUMENT_FEATURES = Arrays.asList(
+            RandomVariableType.DOCUMENT_DEFINITIONS_NOT_IN_TABLE,
+            RandomVariableType.DOCUMENT_DEFINITIONS_IS_ITALIC,
             RandomVariableType.DOCUMENT_DEFINITIONS_IS_UNDERLINED,
             RandomVariableType.DOCUMENT_DEFINITIONS_IS_BOLD
 
@@ -38,16 +41,9 @@ public abstract class DocumentAnnotatingModel {
     public static final List<RandomVariableType> DEFAULT_PARAGRAPH_FEATURES = Arrays.asList(
             RandomVariableType.PARAGRAPH_NUMBER_TOKENS);
 
-//    static final List<RandomVariableType> PARAGRAPH_FEATURES = Arrays.asList(
-//            RandomVariableType.PARAGRAPH_STARTS_WITH_QUOTE,
-//            RandomVariableType.PARAGRAPH_STARTS_WITH_SPECIAL_FORMAT,
-//            RandomVariableType.PARAGRAPH_STARTS_WITH_BOLD,
-//            RandomVariableType.PARAGRAPH_STARTS_WITH_UNDERLINE,
-//            RandomVariableType.PARAGRAPH_NUMBER_TOKENS);
-
     public static final List<RandomVariableType> DEFAULT_PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL = Arrays.asList(
-//            RandomVariableType.PARAGRAPH_STARTS_WITH_SPECIAL_FORMAT,
-//            ,
+            RandomVariableType.PARAGRAPH_NOT_IN_TABLE,
+            RandomVariableType.PARAGRAPH_STARTS_WITH_ITALIC,
             RandomVariableType.PARAGRAPH_STARTS_WITH_UNDERLINE,
             RandomVariableType.PARAGRAPH_STARTS_WITH_BOLD,
 
@@ -58,7 +54,6 @@ public abstract class DocumentAnnotatingModel {
     public static final List<RandomVariableType> DEFAULT_WORD_FEATURES = Arrays.asList(
             RandomVariableType.WORD_IN_QUOTES,
             RandomVariableType.WORD_IS_UNDERLINED
-//            RandomVariableType.WORD_HAS_SPECIAL_FORMAT,
             //RandomVariableType.WORD_INDEX
     );
 
@@ -66,50 +61,41 @@ public abstract class DocumentAnnotatingModel {
             DEFAULT_PARAGRAPH_CATEGORY, DEFAULT_PARAGRAPH_FEATURES,
             DEFAULT_PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL, DEFAULT_DOCUMENT_FEATURES, DEFAULT_WORDS);
 
+    List<RandomVariableType> docFeatures,
+            paraFeatures,
+            paraDocFeatures,
+            wordFeatures,
+    wordVarList;
 
-    public RandomVariableType wordType = DEFAULT_WORD_TYPE;
+    List<RandomVariableType> allParagraphFeatures;
 
-    List<RandomVariableType> wordFeatures;
-    HiddenMarkovModel hmm;
     NBFCConfig nbfcConfig;
 
+    @JsonIgnore
+    public List<RandomVariableType> getDocFeatures() {
+        return docFeatures;
+    }
 
+    @JsonIgnore
+    public List<RandomVariableType> getParaFeatures() {
+        return paraFeatures;
+    }
 
+    @JsonIgnore
+    public List<RandomVariableType> getParaDocFeatures() {
+        return paraDocFeatures;
+    }
 
-
-    static List<RandomVariableType> allParagraphFeatures;
-
-
-
-//    @JsonIgnore
-//    public List<RandomVariableType> getDocFeatures() {
-//        return docFeatures;
-//    }
-//
-//    @JsonIgnore
-//    public List<RandomVariableType> getParaFeatures() {
-//        return paraFeatures;
-//    }
-//
-//    @JsonIgnore
-//    public List<RandomVariableType> getParaDocFeatures() {
-//        return paraDocFeatures;
-//    }
-//
     @JsonIgnore
     public List<RandomVariableType> getWordFeatures() {
         return wordFeatures;
     }
 
     @JsonIgnore
-    public static List<RandomVariableType> getAllParagraphFeatures() {
+    public List<RandomVariableType> getAllParagraphFeatures() {
         return allParagraphFeatures;
     }
 
-    @JsonIgnore
-    public RandomVariableType getWordType() {
-        return wordType;
-    }
 
     @JsonIgnore
     public RandomVariableType getParaCategory() {

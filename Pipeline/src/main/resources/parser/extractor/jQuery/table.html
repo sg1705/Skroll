@@ -24,6 +24,21 @@
 
 </table>
 
+<table>
+
+  <tr>
+    <td>My row</td>
+    <td>Your row</td>
+  </tr>
+
+  <tr>
+    <td>His row</td>
+    <td>Her row</td>
+  </tr>
+
+
+</table>
+
 <div>
     <p>This is third &nbsp; paragraph <b> this <i>is</i> bold</b></p>
 </div>
@@ -32,20 +47,4 @@
 
 <script src="../jquery.min.js"></script>
 <script src="../jQueryParser.js"></script>
-
-<script>
-    var DEBUG = true;
-
-
-    $(":root").contents().each(function(index, element) {
-        processNode(index, element);
-    });
-
-
-    // done
-    //move chunks to paragraphs
-    createPara();
-    docObject.set(PARAGRAPH_ANNOTATION, paragraphs);
-
-    console.log(JSON.stringify(docObject, null, 2));
-</script>
+<script src="../parserTest.js"></script>

@@ -49,13 +49,10 @@
         <md-divider></md-divider>
       </md-item>
       
-    </md-list>
-  <br/>
-  <br/>
-  <br/>
-<input file-upload id="fileupload" type="file" name="files[]" data-url="restServices/jsonAPI/upload"/>
-
-  
+      <md-item>
+        <input file-upload id="fileupload" type="file" name="files[]" data-url="restServices/jsonAPI/upload"/>
+    </md-item>
+    </md-list>  
 </div>
 <!-- end file selection screen -->
 
@@ -96,7 +93,7 @@
       <div layout="row" flex>
         <div ng-controller="ViewPortCtrl as ctrl" >
             <md-whiteframe class="md-whiteframe-z3">
-              <md-content flex id="content" class="md-padding" ng-click="ctrl.paraClicked($event)" ng-mouseup="ctrl.mouseUp($event)">
+              <md-content flex id="content" class="md-padding" ng-click="ctrl.paraClicked($event)" ng-mouseup="ctrl.mouseUp($event)" ng-mousedown="ctrl.mouseDown($event)">
               </md-content>
             </md-whiteframe>  
         </div>

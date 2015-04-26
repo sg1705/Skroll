@@ -80,7 +80,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
         for (int p=0; p< processedParagraphs.size();p++){
             for (int f=0; f<paraDocFeatures.size(); f++) {
                 paraFeatureValsExistAtDocLevel[p][f] = DocumentAnnotatingHelper.getParagraphFeature(
-                        processedParagraphs.get(p), paraDocFeatures.get(f));
+                        originalParagraphs.get(p), processedParagraphs.get(p), paraDocFeatures.get(f));
             }
         }
 
@@ -112,13 +112,13 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
     }
 
     //todo: should probably set inital belief based on observations if a document is reopened by the trainer or the same user again.
-    void computeInitalBeliefs(List<CoreMap> paragraphs){
+    void computeInitalBeliefs(List<CoreMap> processedParas){
 
         List<RandomVariableType> docFeatures = nbfcConfig.getDocumentFeatureVarList();
         List<RandomVariableType> paraDocFeatures = nbfcConfig.getFeatureExistsAtDocLevelVarList();
         RandomVariableType paraCategory = nbfcConfig.getCategoryVar();
 
-        int numParagraphs = paragraphs.size();
+        int numParagraphs = processedParas.size();
         // todo: assuming the values are binary sized. need to make this more general.
         messagesToDocumentFeature = new double[numParagraphs][docFeatures.size()][2];
         messagesToParagraphCategory = new double[numParagraphs][paraDocFeatures.size()][2];
@@ -136,9 +136,9 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
         // observation is only stored in the orignal paragraphs.
         // May consider to use a separate method to get a list of observed paragrpahs.
         List<CoreMap> originalParagraphs = doc.getParagraphs();
-        for (int p=0; p<paragraphs.size(); p++){
+        for (int p=0; p<processedParas.size(); p++){
             if (DocumentAnnotatingHelper.isParaObserved(originalParagraphs.get(p))) {
-                int observedVal = DocumentAnnotatingHelper.getParagraphFeature(originalParagraphs.get(p), paraCategory);
+                int observedVal = DocumentAnnotatingHelper.getParagraphFeature(originalParagraphs.get(p), processedParas.get(p), paraCategory);
 
                 for (int i=0; i<paraCategory.getFeatureSize(); i++){
                     if (i==observedVal) paragraphCategoryBelief[p][i] = 0;
@@ -147,7 +147,8 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
                 continue;
             }
             SimpleDataTuple tuple = DocumentAnnotatingHelper.makeDataTupleWithOnlyFeaturesObserved(
-                    paragraphs.get(p), allParagraphFeatures, docFeatures.size());
+                    originalParagraphs.get(p), processedParas.get(p), allParagraphFeatures, docFeatures.size(),
+                    wordVarList);
             lpnbfModel.setObservation(tuple);
             paragraphCategoryBelief[p] = categoryNode.getParameters().clone();
             for (int i=0; i<fnl.size(); i++){
@@ -195,7 +196,9 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
                 }
             }
         }
-
+        for (double[] belief: paragraphCategoryBelief){
+            BNInference.normalizeLog(belief);
+        }
     }
 
     void passMessageToDocumentFeatures(){

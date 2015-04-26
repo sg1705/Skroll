@@ -226,7 +226,7 @@ public class HiddenMarkovModel {
                 if (count0 ==null) count0=0.0;
                 Double count1 = tokenCounts[1].get(k);
                 if (count1 ==null) count1=0.0;
-                if (count0+count1<10) continue;
+//                if (count0+count1<10) continue;
                 tokenProbabilityGivenStateValue[i].put(k,
                         (tokenCounts[i].get(k) + priorCountPartI) / totalCountIWithPrior );
             }
@@ -236,7 +236,7 @@ public class HiddenMarkovModel {
                 if (count0 ==null) count0=0.0;
                 Double count1 = nextTokenCounts[1].get(k);
                 if (count1 ==null) count1=0.0;
-                if (count0+count1<10) continue;
+//                if (count0+count1<10) continue;
                 nextTokenProbabilityGivenStateValue[i].put(k,
                         (nextTokenCounts[i].get(k) + priorCountPartI) / totalCountIWithPrior);
             }

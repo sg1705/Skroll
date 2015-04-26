@@ -27,6 +27,7 @@ public class PhantomJsExtractor {
         String htmlText = input.get(CoreAnnotations.TextAnnotation.class);
         //remove newline
         htmlText = htmlText.replace("\n","");
+        //htmlText = "<meta charset=\"utf-8\" />" + htmlText;
 
         //create tmp file
         String fileName = createTempFile(htmlText).toString();
@@ -66,20 +67,18 @@ public class PhantomJsExtractor {
         byte[] output = stdout.toByteArray();
         String[] parserOutput = new String(output, Constants.DEFAULT_CHARSET).split(";---------------SKROLLJSON---------------------;");
         String[] result = parserOutput[1].split(";---------------SKROLL---------------------;");
-        //String[] result = new String(output, Constants.DEFAULT_CHARSET).split(";---------------SKROLL---------------------;");
-        // split the result into linkedHtml and json
-
         ModelHelper helper = new ModelHelper();
         Document newDoc = new Document();
         try {
             newDoc = helper.fromJson(result[0]);
             newDoc.setTarget(result[1]);
+            newDoc.setSource(result[1]);
         } catch (Exception e) {
             // error TODO needs to be logged
             e.printStackTrace();
             throw e;
         }
-        newDoc.set(CoreAnnotations.TextAnnotation.class, htmlText);
+        //newDoc.set(CoreAnnotations.TextAnnotation.class, htmlText);
 
         //no paragraphs in the doc
         if (newDoc.get(CoreAnnotations.ParagraphsAnnotation.class) == null) {

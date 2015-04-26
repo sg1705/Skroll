@@ -57,7 +57,27 @@ gretty{
 task trainWithOverride(type: JavaExec) {
     args = ['--trainWithOverride', 'src/main/resources/trainingDocuments/']
     File workingDir = new File('Pipeline/')
-    main = 'com.skroll.trainer.DefinitionTrainer'
+    main = 'com.skroll.trainer.ExperiementTrainer'
     classpath = sourceSets.main.runtimeClasspath
 }
 
+
+task trainWithWeight(type: JavaExec) {
+    args = ['--trainWithWeight', 'build/resources/main/preEvaluated/']
+    File workingDir = new File('Pipeline/')
+    main = 'com.skroll.trainer.ExperiementTrainer'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+//create a single Jar with all dependencies
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Skroll Fat Jar',
+                'Implementation-Version': version,
+                'Main-Class': 'com.skroll.rest.WebServer'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
+    with jar
+}

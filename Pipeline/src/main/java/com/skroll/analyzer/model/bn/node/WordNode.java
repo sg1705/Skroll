@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model.bn.node;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.eclipse.persistence.internal.jaxb.many.MapEntry;
@@ -25,6 +26,7 @@ import java.util.Map;
 //        @JsonSubTypes.Type(value = com.skroll.analyzer.model.bn.node.TrainingWordNode.class, name = "TrainingWordNode")})
 public class WordNode                                                                                                                                                       {
 
+    @JsonProperty("parameters")
     Map<String, double[]> parameters = new HashMap<>();
     DiscreteNode parent;
 
