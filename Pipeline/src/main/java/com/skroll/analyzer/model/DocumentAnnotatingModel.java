@@ -61,40 +61,44 @@ public abstract class DocumentAnnotatingModel {
             DEFAULT_PARAGRAPH_CATEGORY, DEFAULT_PARAGRAPH_FEATURES,
             DEFAULT_PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL, DEFAULT_DOCUMENT_FEATURES, DEFAULT_WORDS);
 
-    List<RandomVariableType> docFeatures,
-            paraFeatures,
-            paraDocFeatures,
-            wordFeatures,
-    wordVarList;
+    public RandomVariableType wordType = DEFAULT_WORD_TYPE;
 
-    List<RandomVariableType> allParagraphFeatures;
+    List<RandomVariableType> wordFeatures;
+
+//    List<RandomVariableType> docFeatures,
+//            paraFeatures,
+//            paraDocFeatures,
+//            wordFeatures,
+//    wordVarList;
+
+//    List<RandomVariableType> allParagraphFeatures;
 
     NBFCConfig nbfcConfig;
 
-    @JsonIgnore
-    public List<RandomVariableType> getDocFeatures() {
-        return docFeatures;
-    }
-
-    @JsonIgnore
-    public List<RandomVariableType> getParaFeatures() {
-        return paraFeatures;
-    }
-
-    @JsonIgnore
-    public List<RandomVariableType> getParaDocFeatures() {
-        return paraDocFeatures;
-    }
-
-    @JsonIgnore
-    public List<RandomVariableType> getWordFeatures() {
-        return wordFeatures;
-    }
-
-    @JsonIgnore
-    public List<RandomVariableType> getAllParagraphFeatures() {
-        return allParagraphFeatures;
-    }
+//    @JsonIgnore
+//    public List<RandomVariableType> getDocFeatures() {
+//        return docFeatures;
+//    }
+//
+//    @JsonIgnore
+//    public List<RandomVariableType> getParaFeatures() {
+//        return paraFeatures;
+//    }
+//
+//    @JsonIgnore
+//    public List<RandomVariableType> getParaDocFeatures() {
+//        return paraDocFeatures;
+//    }
+//
+//    @JsonIgnore
+//    public List<RandomVariableType> getWordFeatures() {
+//        return wordFeatures;
+//    }
+//
+//    @JsonIgnore
+//    public List<RandomVariableType> getAllParagraphFeatures() {
+//        return allParagraphFeatures;
+//    }
 
 
     @JsonIgnore
@@ -111,10 +115,10 @@ public abstract class DocumentAnnotatingModel {
         return hmm;
     }
 
-    void initialize(){
-        allParagraphFeatures = new ArrayList<>(nbfcConfig.getFeatureVarList());
-        allParagraphFeatures.addAll(nbfcConfig.getFeatureExistsAtDocLevelVarList());
-    }
+//    void initialize(){
+//        allParagraphFeatures = new ArrayList<>(nbfcConfig.getFeatureVarList());
+//        allParagraphFeatures.addAll(nbfcConfig.getFeatureExistsAtDocLevelVarList());
+//    }
 
     public NBFCConfig getNbfcConfig() {
         return nbfcConfig;

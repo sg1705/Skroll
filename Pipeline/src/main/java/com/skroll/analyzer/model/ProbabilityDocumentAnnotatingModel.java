@@ -61,7 +61,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
     }
 
     void initialize(){
-        super.initialize();
+        //super.initialize();
         List<CoreMap> originalParagraphs = doc.getParagraphs();
 
 
@@ -147,8 +147,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
                 continue;
             }
             SimpleDataTuple tuple = DocumentAnnotatingHelper.makeDataTupleWithOnlyFeaturesObserved(
-                    originalParagraphs.get(p), processedParas.get(p), allParagraphFeatures, docFeatures.size(),
-                    wordVarList);
+                    originalParagraphs.get(p), processedParas.get(p), docFeatures.size(), nbfcConfig);
             lpnbfModel.setObservation(tuple);
             paragraphCategoryBelief[p] = categoryNode.getParameters().clone();
             for (int i=0; i<fnl.size(); i++){

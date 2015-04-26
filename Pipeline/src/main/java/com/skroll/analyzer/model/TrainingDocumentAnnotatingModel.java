@@ -59,7 +59,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
             wordFeatureSizes[i] =  wordFeatures.get(i).getFeatureSize();
         hmm = new HiddenMarkovModel(HMM_MODEL_LENGTH,
                 wordType.getFeatureSize(), wordFeatureSizes);
-        initialize();
+        //initialize();
 
 
     }
@@ -81,8 +81,8 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     }
 
     void updateTNBFWithParagraph(CoreMap originalPara, CoreMap processedPara, int[] docFeatureValues){
-        SimpleDataTuple dataTuple = DocumentAnnotatingHelper.makeDataTuple(originalPara,processedPara, nbfcConfig.getCategoryVar(), ,
-                allParagraphFeatures, docFeatureValues, wordVarList);
+        SimpleDataTuple dataTuple = DocumentAnnotatingHelper.makeDataTuple(originalPara,processedPara,
+                 docFeatureValues, nbfcConfig);
         NBTrainingHelper.addSample( tnbfModel, dataTuple);
     }
 
@@ -101,8 +101,8 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
     //todo: need to use the right annotation for the weight.
     void updateTNBFWithParagraphAndWeight(CoreMap originalPara, CoreMap processedPara, int[] docFeatureValues, double[] weights) {
-        SimpleDataTuple dataTuple = DocumentAnnotatingHelper.makeDataTuple(originalPara, processedPara, nbfcConfig.getCategoryVar(),
-                allParagraphFeatures, docFeatureValues, wordVarList);
+        SimpleDataTuple dataTuple = DocumentAnnotatingHelper.makeDataTuple(originalPara, processedPara,
+                docFeatureValues, nbfcConfig);
         int[] values = dataTuple.getDiscreteValues();
         int numCategories = nbfcConfig.getCategoryVar().getFeatureSize();
 
@@ -154,7 +154,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
             }
         }
 
-        for (int i=0;i<nbfcConfig.getCategoryVar().getFeatureSize();i++) {
+        for (int i=0;i<nbfcConfig.getCategoryVar().getFeatureSize(); i++) {
             hmm.updateCountsWithWeight(
                     DocumentHelper.getTokenString(tokens).toArray(new String[tokens.size()]),
                     tokenType, features, weights[i]);

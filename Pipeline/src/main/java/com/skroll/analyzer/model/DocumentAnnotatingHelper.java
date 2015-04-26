@@ -1,7 +1,6 @@
 package com.skroll.analyzer.model;
 
 import com.skroll.analyzer.model.bn.NBFCConfig;
-import com.skroll.analyzer.model.bn.NBFCConfig;
 import com.skroll.analyzer.model.bn.SimpleDataTuple;
 import com.skroll.analyzer.model.nb.DataTuple;
 import com.skroll.document.CoreMap;
@@ -90,9 +89,12 @@ public class DocumentAnnotatingHelper {
         }
         return words;
     }
-    public static SimpleDataTuple makeDataTuple(CoreMap originalPara, CoreMap processedPara, RandomVariableType paraCategory,
-                                                List<RandomVariableType> paraFeatures, int[] documentFeatures,
-                                                List<RandomVariableType> wordVarList){
+    public static SimpleDataTuple makeDataTuple(CoreMap originalPara, CoreMap processedPara,
+                                                int[] documentFeatures, NBFCConfig config){
+
+        RandomVariableType paraCategory = config.getCategoryVar();
+        List<RandomVariableType> paraFeatures = config.getAllParagraphFeatures();
+        List<RandomVariableType> wordVarList = config.getWordVarList();
 
         int [] values = new int[paraFeatures.size() + documentFeatures.length+1];
         int index=0;
@@ -128,7 +130,10 @@ public class DocumentAnnotatingHelper {
 
     public static SimpleDataTuple makeDataTupleWithOnlyFeaturesObserved(
             CoreMap originalPara, CoreMap processedPara,
-            List<RandomVariableType> features, int docFeatureLen, List<RandomVariableType> wordVarList){
+            int docFeatureLen, NBFCConfig config){
+
+        List<RandomVariableType> wordVarList = config.getWordVarList();
+        List<RandomVariableType> features = config.getAllParagraphFeatures();
 
         int [] featureValues = new int[features.size() + docFeatureLen+1];
         int index=0;
