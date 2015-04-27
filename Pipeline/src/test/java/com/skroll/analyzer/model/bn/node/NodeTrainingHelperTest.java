@@ -37,9 +37,7 @@ public class NodeTrainingHelperTest {
                         Arrays.asList(parentNode));
 
 
-        assert (node.familyVariables.length == familyVariables.size());
-        assert (node.getRandomVariableSizes(familyVariables)[0] == familyVariables.get(0).getFeatureSize());
-        assert (node.getRandomVariableSizes(familyVariables).length == familyVariables.size());
+        assert (node.getFamilyVariables().length == familyVariables.size());
 
         assert( node.getParameters().length == parameters.length);
         assert( node.getParameter(0) == parameters[0]);
@@ -52,7 +50,7 @@ public class NodeTrainingHelperTest {
                 .createTrainingDiscreteNode(this.nodeVariables);
 
 
-        assert (node.familyVariables.length == nodeVariables.size());
+        assert (node.getFamilyVariables().length == nodeVariables.size());
 
         assert( node.getParameters().length == 2);
         assert( node.getParameter(0) == parameters[0]);

@@ -50,14 +50,9 @@ public class DiscreteNodeTest {
     @Test
     public void testSetFamilyVariables() throws Exception {
         // if no parent, then only 1 random variable
-        assert(node.familyVariables.length == variables.length);
+        assert (node.getFamilyVariables().length == variables.length);
     }
 
-    @Test
-    public void testGetRandomVariableSizes() throws Exception {
-        assert (node.getRandomVariableSizes(Arrays.asList(variables))[0] == variables[0].getFeatureSize());
-        assert (node.getRandomVariableSizes(Arrays.asList(variables)).length == 1);
-    }
 
     @Test
     public void testGetParameter() throws Exception {

@@ -269,6 +269,9 @@ public class DocumentAnnotatingHelper {
                 return booleanToInt(paragraph.get(CoreAnnotations.IsAnchorAnnotation.class ));
             case PARAGRAPH_HAS_TOC:
                 return booleanToInt(paragraph.get(CoreAnnotations.IsTOCAnnotation.class));
+
+            // for easier uniform process, using NOT_IN_TABLE instead of IN_TABLE,
+            // because NOT_IN_TABLE is a positive contributing feature like IN_QUOTES
             case PARAGRAPH_NOT_IN_TABLE:
                 return 1-booleanToInt(paragraph.get(CoreAnnotations.IsInTableAnnotation.class));
 

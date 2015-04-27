@@ -16,10 +16,6 @@ import java.util.List;
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
         property = "type")
-//@JsonSubTypes({
-//        @JsonSubTypes.Type(value = com.skroll.analyzer.model.bn.node.LogProbabilityDiscreteNode.class, name = "LogProbabilityDiscreteNode"),
-//        @JsonSubTypes.Type(value = com.skroll.analyzer.model.bn.node.ProbabilityDiscreteNode.class, name = "ProbabilityDiscreteNode"),
-//        @JsonSubTypes.Type(value = com.skroll.analyzer.model.bn.node.TrainingDiscreteNode.class, name = "TrainingDiscreteNode")})
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 
 
@@ -30,14 +26,14 @@ public class DiscreteNode{
     public static final Logger logger = LoggerFactory.getLogger(DiscreteNode.class);
 
     @JsonProperty("familyVariables")
-    RandomVariableType[] familyVariables;
+    private RandomVariableType[] familyVariables;
 
     // store the parameters and probability values in a one dimensional array.
     // convert multi-index to the index of the one dimensional array
     // by treating the multi-index as a multi-base representation of integer,
     // least significant index is index 0.
 
-    double[] parameters; // used to calculate probability and represent how much piror experience exists.
+    private double[] parameters; // used to calculate probability and represent how much piror experience exists.
     // todo: in the future, when models are fixed and updated using a lot of data, may consider multiplying by some positive decaying constant less than 1 to reduce the weight of older experiences
 
     DiscreteNode[] parents;//, children;
@@ -87,13 +83,6 @@ public class DiscreteNode{
 
     }
 
-    @JsonIgnore
-    int[] getRandomVariableSizes(List<RandomVariableType> randomVariables){
-        int[] sizes = new int[randomVariables.size()];
-        for (int i=0; i<sizes.length;i++)
-            sizes[i] = randomVariables.get(i).getFeatureSize();
-        return sizes;
-    }
 
 
     @JsonIgnore
@@ -105,7 +94,6 @@ public class DiscreteNode{
     public int numValues(){
         return familyVariables[0].getFeatureSize();
     }
-
 
     public double[] getParameters(){
         return parameters;
@@ -119,10 +107,6 @@ public class DiscreteNode{
     public void setParameters(double[] parameters) {
         this.parameters = parameters;
     }
-
-//    public void setChildren(DiscreteNode[] children) {
-//        this.children = children;
-//    }
 
     public void setParents(DiscreteNode[] parents) {
         this.parents = parents;
