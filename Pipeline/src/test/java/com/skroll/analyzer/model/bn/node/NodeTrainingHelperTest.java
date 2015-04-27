@@ -63,21 +63,50 @@ public class NodeTrainingHelperTest {
     @Test
     public void testGetIndex() throws Exception {
 
+        int index = NodeTrainingHelper.getIndex(familyVariables.toArray(new RandomVariableType[familyVariables.size()]),
+                new int[] {0,1});
+
+        assert (index  == 2);
     }
 
     @Test
     public void testUpdateCount() throws Exception {
+        DiscreteNode node = NodeTrainingHelper
+                .createTrainingDiscreteNode(this.familyVariables,
+                        Arrays.asList(parentNode));
+
+        node.parents[0].setObservation(1);
+        node.setObservation(1);
+        NodeTrainingHelper.updateCount(node, 12.0);
+        assert (node.getParameter(3) == 12 + NodeTrainingHelper.PRIOR_COUNT);
 
     }
 
     @Test
-    public void testUpdateCount1() throws Exception {
+    public void testUpdateCountWithDefaultWeight() throws Exception {
+        DiscreteNode node = NodeTrainingHelper
+                .createTrainingDiscreteNode(this.familyVariables,
+                        Arrays.asList(parentNode));
+
+        node.parents[0].setObservation(1);
+        node.setObservation(1);
+        NodeTrainingHelper.updateCount(node);
+        assert (node.getParameter(3) == 1 + NodeTrainingHelper.PRIOR_COUNT);
 
     }
 
     @Test
     public void testGetLogProbabilities() throws Exception {
+        String result = "[-0.6931471805599453, -0.6931471805599453, -2.4849066497880004, -0.08701137698962981]";
+        DiscreteNode node = NodeTrainingHelper
+                .createTrainingDiscreteNode(this.familyVariables,
+                        Arrays.asList(parentNode));
 
+        node.parents[0].setObservation(1);
+        node.setObservation(1);
+        NodeTrainingHelper.updateCount(node);
+        System.out.println(Arrays.toString(NodeTrainingHelper.getLogProbabilities(node)));
+        assert (Arrays.toString(NodeTrainingHelper.getLogProbabilities(node)).equals(result));
     }
 
     @Test
