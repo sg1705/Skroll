@@ -3,6 +3,8 @@ package com.skroll.analyzer.model.bn.node;
 import com.fasterxml.jackson.annotation.*;
 import com.skroll.analyzer.model.RandomVariableType;
 import com.skroll.analyzer.model.bn.inference.BNInference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,6 +25,9 @@ import java.util.List;
 
 
 public class DiscreteNode{
+
+    @JsonIgnore
+    public static final Logger logger = LoggerFactory.getLogger(DiscreteNode.class);
 
     @JsonProperty("familyVariables")
     RandomVariableType[] familyVariables;
@@ -74,7 +79,12 @@ public class DiscreteNode{
 
 
     public void setFamilyVariables(RandomVariableType[] familyVariables) {
-        this.familyVariables = familyVariables;
+        if (parents.length == (familyVariables.length - 1)) {
+            this.familyVariables = familyVariables;
+        } else {
+            logger.error("Parents and FamilyVariable mismatch");
+        }
+
     }
 
     @JsonIgnore
@@ -85,10 +95,6 @@ public class DiscreteNode{
         return sizes;
     }
 
-
-    double[] normalize(double weight){
-        return BNInference.normalize(parameters, weight);
-    }
 
     @JsonIgnore
     public double getParameter(int index){

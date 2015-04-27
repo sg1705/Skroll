@@ -10,7 +10,7 @@ import java.util.*;
 
 // It is okay for these helper method to use nodes parameters
 public class NodeTrainingHelper {
-    private static final double PRIOR_COUNT = .1;
+    protected static final double PRIOR_COUNT = .1;
 
     /**
      * Creates a DiscreteNode for training from a list of RandomVariables in the node's family and its parent nodes.
@@ -33,6 +33,7 @@ public class NodeTrainingHelper {
         return node;
 
     }
+
     public static DiscreteNode createTrainingDiscreteNode(List<RandomVariableType> randomVariables){
         return createTrainingDiscreteNode(randomVariables, new ArrayList<DiscreteNode>());
     }

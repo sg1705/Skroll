@@ -11,14 +11,14 @@ import java.util.List;
  * Created by wei on 4/11/15.
  */
 public class NodeInferenceHelper {
-    public static DiscreteNode createLogProbabilityDiscreteNode(DiscreteNode trainingNode, List<DiscreteNode> parents){
+    public static DiscreteNode createLogProbabilityDiscreteNode(DiscreteNode trainingNode, List<DiscreteNode> parents) {
         DiscreteNode node = new DiscreteNode(parents.toArray(new DiscreteNode[parents.size()]));
         node.setFamilyVariables( trainingNode.getFamilyVariables());
         node.setParameters(NodeTrainingHelper.getLogProbabilities(trainingNode));
         return node;
     }
 
-    public static DiscreteNode createLogProbabilityDiscreteNode(DiscreteNode trainingNode){
+    public static DiscreteNode createLogProbabilityDiscreteNode(DiscreteNode trainingNode) {
         return createLogProbabilityDiscreteNode(trainingNode, new ArrayList<DiscreteNode>());
     }
 
