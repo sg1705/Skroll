@@ -134,11 +134,23 @@ function processNode(index, element) {
         processTextNode(index, element);
     }
 
+
     // check to see if the node is a block type
     if (isNodeBlock(element)) {
         // create a paragraph
         createPara(element);
+
     }
+
+    //check to see if the new element is in table
+    if (isElementInTable(element)) {
+        //create new para
+        processTextNode(index, element);
+        return;
+    }
+
+
+
 
     $(element).contents().each(function(index, element) {
         processNode(index, element);
@@ -247,7 +259,6 @@ function processTextNode(index, element) {
     var chunkText = $(element).text();
     if (isChunkRequired) {
         //create a chunk and add it to stack
-
         newChunk[ID_ANNOTATION] = chunkId;
         newChunk[TEXT_ANNOTATION] = chunkText;
         newChunk[FONTSIZE_ANNOTATION] = $(element.parentNode).css("font-size");
