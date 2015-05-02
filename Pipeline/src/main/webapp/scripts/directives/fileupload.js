@@ -12,7 +12,8 @@ angular.module('SkrollApp')
     'ToolbarModel', 
     'documentService',
     'LHSModel',
-    function(documentModel, ToolbarModel, documentService, LHSModel) {
+    '$location',
+    function(documentModel, ToolbarModel, documentService, LHSModel, $location) {
       return {
           restricted: 'A',
           link: function(scope, element, attrs) {
@@ -20,7 +21,6 @@ angular.module('SkrollApp')
                   dataType: 'text',
                   add: function (e, data) {
                       scope.$apply(function() {
-                          scope.isProcessing = true;
                           documentModel.isProcessing = true;
                           documentModel.fileName = data.files[0].name;
                           scope.fileName = data.files[0].name;
@@ -47,6 +47,8 @@ angular.module('SkrollApp')
                           documentModel.targetHtml = data.result;
                           documentModel.isProcessing = false;
                       });
+                      documentModel.documentId = documentModel.fileName;
+                      $location.path('/view/docId/' + documentModel.documentId);
                   },
                   fail: function (e, data) {
                       console.log("failed");

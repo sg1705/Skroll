@@ -4,6 +4,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.FluentIterable;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Files;
+import com.google.common.io.Resources;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -32,6 +33,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -746,5 +748,39 @@ public class API {
         String json = gson.toJson(allPs);
         return Response.ok().status(Response.Status.OK).entity(json).build();
     }
+
+    @GET
+    @Path("/importDoc")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response importDoc(@QueryParam("documentId") String documentId, @Context HttpHeaders hh) throws Exception {
+
+        //fetch the document
+        String content = Resources.asCharSource(new URL(documentId), Charset.forName("UTF-8")).read();
+        String fileName = new URL(documentId).getPath();
+        String[] strs = fileName.split("/");
+        fileName = strs[strs.length - 1];
+
+        //parse the document
+        Document document = Parser.parseDocumentFromHtml(content);
+        //test the document
+        document = (Document) definitionClassifier.classify(fileName, document);
+        document = (Document) tocClassifier.classify(fileName, document);
+        //logger.debug("document:" + document.getTarget());
+        //link the document
+        documentMap.put(fileName, document);
+        logger.debug("Added document into the documentMap with a generated hash key:"+ documentMap.keySet());
+        NewCookie documentIdCookie = new NewCookie("documentId", fileName);
+        // persist the document using document id. Let's use the file name
+        try {
+            Files.createParentDirs(new File(preEvaluatedFolder + fileName));
+            Files.write(JsonDeserializer.getJson(document), new File(preEvaluatedFolder + fileName), Charset.defaultCharset());
+        } catch (Exception e) {
+            logger.error("Failed to persist the document object: {}", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to persist the document object" ).type(MediaType.APPLICATION_JSON).build();
+        }
+        logger.info(fileName);
+        return Response.status(Response.Status.OK).cookie(documentIdCookie).entity("").type(MediaType.APPLICATION_JSON).build();
+    }
+
 
 }
