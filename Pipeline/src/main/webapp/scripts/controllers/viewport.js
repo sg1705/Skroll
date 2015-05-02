@@ -9,13 +9,14 @@
  */
 
 var ViewPortCtrl = function(SelectionModel, documentService, $mdBottomSheet,
-  ToolbarModel, LHSModel, documentModel, $log) {
+  ToolbarModel, LHSModel, $log, $routeParams) {
   this.SelectionModel = SelectionModel;
   this.documentService = documentService;
   this.$mdBottomSheet = $mdBottomSheet;
   this.ToolbarModel = ToolbarModel;
   this.LHSModel = LHSModel;
   this.documentModel = documentModel;
+  this.documentModel.documentId = $routeParams.docId;
 }
 
 ViewPortCtrl.prototype.mouseDown = function($event) {
@@ -63,16 +64,6 @@ ViewPortCtrl.prototype.paraClicked = function($event) {
   this.SelectionModel.paragraphId = paraId;
   //highlight paragraph
   this.highlightParagraph(paraId);
-
-
-  // this.documentService
-  //   .getParagraphJson(paraId)
-  //   .then(function(data) {
-  //     $("#rightPane").html(JSON.stringify(data, null, 2));
-  //   }, function(data, status) {
-  //     console.log(status);
-  //   });
-
   this.loadParagraphJson(paraId);
 
   if (ToolbarModel.trainerToolbar.isTrainerMode) {
@@ -236,7 +227,7 @@ ViewPortCtrl.prototype.showYesNoAllDialog = function(prompt, matchedItem) {
     }
     //answer is yes
     if (clicked == 0) {
-      this.documentService.approveClassForPara(matchedItem.classificationId, matchedItem.paragraphId).
+      this.documentService.approveClassForPara(matchedItem).
       then(angular.bind(this, function(contentHtml){
         this.updateDocument(contentHtml);  
       }));
@@ -255,8 +246,10 @@ ViewPortCtrl.prototype.showYesNoDialog = function(text, items) {
   //true or false ; or item selection
   return this.$mdBottomSheet.show({
     templateUrl: 'partials/viewport-bottom-sheet.tmpl.html',
-    controller: 'TrainerPromptCtrl'
-  })
+    controller: 'TrainerPromptCtrl',
+    parent: angular.element(":root")
+
+  });
 }
 
 angular.module('SkrollApp').controller('TrainerPromptCtrl',function($scope,
@@ -286,5 +279,5 @@ ViewPortCtrl.prototype.clearSelection = function() {
 
 angular.module('SkrollApp')
   .controller('ViewPortCtrl', ['SelectionModel', 'documentService',
-    '$mdBottomSheet', 'ToolbarModel', 'LHSModel', ViewPortCtrl
+    '$mdBottomSheet', 'ToolbarModel', 'LHSModel', '$log', '$routeParams', ViewPortCtrl
   ]);
