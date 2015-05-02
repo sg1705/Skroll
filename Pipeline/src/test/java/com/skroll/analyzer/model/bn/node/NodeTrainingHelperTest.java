@@ -17,6 +17,9 @@ public class NodeTrainingHelperTest {
     private double[] parameters = {NodeTrainingHelper.PRIOR_COUNT, NodeTrainingHelper.PRIOR_COUNT,
                 NodeTrainingHelper.PRIOR_COUNT, NodeTrainingHelper.PRIOR_COUNT,};
 
+    private WordNode wNode;
+    private String observedString = "abc";
+
     @Before
     public void setup() {
         this.parentNode = new DiscreteNode(new DiscreteNode[0]);
@@ -27,6 +30,10 @@ public class NodeTrainingHelperTest {
         familyVariables = new ArrayList();
         familyVariables.addAll(nodeVariables);
         familyVariables.addAll(Arrays.asList(parentVariables));
+
+        wNode = NodeTrainingHelper.createTrainingWordNode(parentNode);
+        wNode.getParent().setObservation(1);
+        wNode.setObservation(new String[]{observedString});
     }
 
 
@@ -77,6 +84,10 @@ public class NodeTrainingHelperTest {
         node.setObservation(1);
         NodeTrainingHelper.updateCount(node, 12.0);
         assert (node.getParameter(3) == 12 + NodeTrainingHelper.PRIOR_COUNT);
+        NodeTrainingHelper.updateCount(node, -12.0);
+        System.out.println("after update count by -12");
+        System.out.println(node);
+
 
     }
 
@@ -109,26 +120,47 @@ public class NodeTrainingHelperTest {
 
     @Test
     public void testCreateTrainingWordNode() throws Exception {
+        WordNode wNode = NodeTrainingHelper.createTrainingWordNode(parentNode);
+        assert (wNode.getParent() == parentNode);
 
     }
 
     @Test
-    public void testUpdateCount2() throws Exception {
+    public void testUpdateWordNodeCount() throws Exception {
+        NodeTrainingHelper.updateCount(wNode, 12);
+        System.out.println("word node after updating with observed word abc");
+        System.out.println(wNode);
+        assert (wNode.getParameters().get(observedString)[1] == 12);
 
     }
 
     @Test
-    public void testUpdateCount3() throws Exception {
+    public void testUpdateWordNodeDefaultCount() throws Exception {
+        NodeTrainingHelper.updateCount(wNode);
+        System.out.println("word node after updating with observed word abc");
+        System.out.println(wNode);
+        assert (wNode.getParameters().get(observedString)[1] == 1);
 
     }
 
     @Test
-    public void testUpdateCount4() throws Exception {
+    public void testUpdateWordNodeCountWithWord() throws Exception {
+        NodeTrainingHelper.updateCount(wNode, observedString, 12);
+        System.out.println("word node after updating with observed word abc");
+        System.out.println(wNode);
+        assert (wNode.getParameters().get(observedString)[1] == 12);
 
     }
+
 
     @Test
     public void testGetLogProbabilities1() throws Exception {
-
+        String result = "[-2.302585092994046, 4.788324729085938]";
+        NodeTrainingHelper.updateCount(wNode, 12);
+        System.out.println("word node after updating with observed word abc");
+        System.out.println(Arrays.toString(
+                NodeTrainingHelper.getLogProbabilities(wNode).get(observedString)));
+        assert (result.equals(Arrays.toString(
+                NodeTrainingHelper.getLogProbabilities(wNode).get(observedString))));
     }
 }
