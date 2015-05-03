@@ -21,7 +21,7 @@ import java.util.*;
 /**
  * Created by saurabhagarwal on 1/5/15.
  */
-public class SECDocumentClassifier extends ClassifierImpl {
+public class SECDocumentClassifier implements Classifier {
 
 
     public static final Logger logger = LoggerFactory
@@ -34,8 +34,9 @@ public class SECDocumentClassifier extends ClassifierImpl {
     private String modelFolderName = configuration.get("modelFolder","/tmp");
     protected ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil(modelFolderName);
     private Type type = null;
-
+    List<Category> categories = new ArrayList<>();
     public SECDocumentClassifier() {
+
         categories.add(new Category(0, "Indenture"));
         categories.add(new Category(1, "CreditAgreements"));
         categories.add(new Category(2, "Prospectus"));
@@ -58,11 +59,6 @@ public class SECDocumentClassifier extends ClassifierImpl {
     @Override
     public void persistModel() throws ObjectPersistUtil.ObjectPersistException {
         objectPersistUtil.persistObject(type,nbModelForDoc,modelName);
-    }
-
-    @Override
-    public void train(Category category, Document doc) {
-
     }
 
     @Override
@@ -94,6 +90,11 @@ public class SECDocumentClassifier extends ClassifierImpl {
 
         }
         //System.out.println("nbModelForDoc:" + nbModelForDoc);
+    }
+
+    @Override
+    public Object classify(String documentId, Document doc) throws Exception {
+        return null;
     }
 
     @Override
@@ -137,11 +138,40 @@ public class SECDocumentClassifier extends ClassifierImpl {
     }
 
     @Override
-    public void train(Document doc) {
+    public Category getCategory() {
+        return null;
+    }
+
+    @Override
+    public Object updateBNI(String documentId, Document document, List<CoreMap> observedParas) throws Exception {
+        return null;
+    }
+
+    @Override
+    public HashMap<String, HashMap<String, Double>> getBNIVisualMap(Document doc, int paraIndex) {
+        return null;
+    }
+
+    @Override
+    public HashMap<String, HashMap<String, HashMap<String, Double>>> getModelVisualMap() {
+        return null;
+    }
+
+    @Override
+    public List<Double> getProbabilityDataForDoc(Document doc) {
+        return null;
+    }
+
+    @Override
+    public void trainWithWeight(Document doc) {
 
     }
 
     @Override
+    public void train(Document doc) {
+
+    }
+
     public SortedMap<Category, Double> classifyDetailed(Document doc, int numOfTokens) {
         Map<Category, Double> probableCategory = new HashMap<Category, Double>();
         System.out.println("nbModelForDoc:" + nbModelForDoc);

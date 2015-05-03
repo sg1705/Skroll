@@ -6,8 +6,9 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
+import com.skroll.classifier.Category;
 import com.skroll.classifier.Classifier;
-import com.skroll.classifier.TOCClassifier;
+import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
@@ -41,11 +42,23 @@ import java.util.List;
 --working path C:\Users\wei2learn\IdeaProjects\Skroll3\Pipeline
 
  */
+
 public class TOCTrainer {
     //The following line needs to be added to enable log4j
     public static final Logger logger = LoggerFactory
             .getLogger(TOCTrainer.class);
+    private static ClassifierFactory classifierFactory = new ClassifierFactory();
+    private static Classifier documentClassifier = null;
+    private static Classifier tocClassifier = null;
+    static {
+        try {
+            documentClassifier = classifierFactory.getClassifier(Category.DEFINITION);
+            tocClassifier = classifierFactory.getClassifier(Category.TOC);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
+    }
     public static void main(String[] args) throws IOException, ObjectPersistUtil.ObjectPersistException {
 
         //ToDO: use the apache common commandline
@@ -199,7 +212,7 @@ public class TOCTrainer {
     }
 
     public static void  trainWithOverride(String folderName) throws IOException, ObjectPersistUtil.ObjectPersistException {
-            TOCClassifier documentClassifier = new TOCClassifier(); // passing the flag to always create new model for testing purpose
+            //TOCExperimentClassifier documentClassifier = new TOCExperimentClassifier(); // passing the flag to always create new model for testing purpose
             FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(folderName));
             for (File f : iterable) {
                 if (f.isFile()) {
@@ -214,13 +227,13 @@ public class TOCTrainer {
 
     public static void classify(String testingFile) {
 
-        Classifier documentClassifier = new TOCClassifier();
+       // Classifier tocClassifier = new TOCExperimentClassifier();
         // String testingFile = "src/test/resources/parser/linker/test-linker-random.html";
         //String testingFile = "src/main/resources/trainingDocuments/indentures/AMC Networks Indenture.html";
 
         Document document = null;
         try {
-            document = (Document)documentClassifier.classify(testingFile,Parser.parseDocumentFromHtmlFile(testingFile));
+            document = (Document)tocClassifier.classify(testingFile,Parser.parseDocumentFromHtmlFile(testingFile));
         } catch (ParserException e) {
             e.printStackTrace();
            logger.debug("failed to parse document");

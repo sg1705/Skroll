@@ -1,5 +1,6 @@
 package com.skroll.rest;
 
+import com.skroll.util.WebGuiceModule;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
 import javax.ws.rs.core.Application;
@@ -16,7 +17,9 @@ public class MultiPartApplication extends Application{
         final Set<Class<?>> classes = new HashSet<Class<?>>();
         // register resources and features
         classes.add(MultiPartFeature.class);
-        classes.add(API.class);
+        classes.add(DocAPI.class);
+        classes.add(InstrumentAPI.class);
+        classes.add(WebGuiceModule.class);
         return classes;
     }
 }

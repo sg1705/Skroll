@@ -1,12 +1,58 @@
 package com.skroll.classifier;
 
+import com.skroll.analyzer.model.RandomVariableType;
+
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by saurabhagarwal on 1/5/15.
  */
 public class Category {
 
+    public static final int NONE = 0;
+    public static final int DEFINITION = 1;
+    public static final int TOC = 2;
+
     int id;
     String name;
+    RandomVariableType wordType = RandomVariableType.WORD_IS_TOC_TERM;
+    RandomVariableType paraType = RandomVariableType.PARAGRAPH_HAS_TOC;
+
+    List<RandomVariableType> wordFeatures = Arrays.asList(
+            RandomVariableType.WORD_IN_QUOTES,
+            RandomVariableType.WORD_INDEX,
+            RandomVariableType.WORD_IS_BOLD,
+            RandomVariableType.WORD_IS_UNDERLINED,
+            RandomVariableType.WORD_IS_ITALIC);
+
+    List<RandomVariableType> paraFeatures = Arrays.asList(
+            RandomVariableType.PARAGRAPH_NUMBER_TOKENS
+    );
+
+    List<RandomVariableType> paraDocFeatures = Arrays.asList(
+            RandomVariableType.PARAGRAPH_NOT_IN_TABLE,
+            RandomVariableType.PARAGRAPH_STARTS_WITH_BOLD,
+            RandomVariableType.PARAGRAPH_STARTS_WITH_ITALIC,
+            RandomVariableType.PARAGRAPH_STARTS_WITH_UNDERLINE,
+            RandomVariableType.PARAGRAPH_ALL_WORDS_UPPERCASE,
+            RandomVariableType.PARAGRAPH_IS_CENTER_ALIGNED,
+            RandomVariableType.PARAGRAPH_HAS_ANCHOR
+    );
+
+    List<RandomVariableType> docFeatures = Arrays.asList(
+            RandomVariableType.DOCUMENT_TOC_NOT_IN_TABLE,
+            RandomVariableType.DOCUMENT_TOC_IS_BOLD,
+            RandomVariableType.DOCUMENT_TOC_IS_ITALIC,
+            RandomVariableType.DOCUMENT_TOC_IS_UNDERLINED,
+            RandomVariableType. DOCUMENT_TOC_HAS_WORDS_UPPERCASE,
+            RandomVariableType.DOCUMENT_TOC_IS_CENTER_ALIGNED,
+            RandomVariableType.DOCUMENT_TOC_HAS_ANCHOR
+    );
+    List<RandomVariableType> wordVarList = Arrays.asList(
+            RandomVariableType.WORD,
+            RandomVariableType.FIRST_WORD
+    );
 
     public Category(int id, String name){
         this.id =id;

@@ -2,6 +2,8 @@ package com.skroll.classifier;
 
 import com.google.common.collect.FluentIterable;
 import com.google.common.io.Files;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.parser.Parser;
@@ -11,6 +13,8 @@ import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
 import com.skroll.util.Configuration;
 import com.skroll.util.ObjectPersistUtil;
+import com.skroll.util.SkrollGuiceModule;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,15 +28,21 @@ public class DefinitionClassifierTest {
     //The following line needs to be added to enable log4j
     public static final Logger logger = LoggerFactory
             .getLogger(DefinitionClassifierTest.class);
-    Classifier documentClassifier = new DefinitionClassifier();
-//    @Before
-//    public void setup(){
-//        Configuration configuration = new Configuration();
-//        String modelFolderName = configuration.get("modelFolder","/tmp");
-//        String path =modelFolderName + ((DefinitionClassifier)documentClassifier).getDtemModelName();
-//        File file = new File(path);
-//        file.delete();
-//    }
+    private static ClassifierFactory classifierFactory = new ClassifierFactory();
+    private static Classifier documentClassifier = null;
+    private static Classifier tocClassifier = null;
+
+      @Before
+    public void setup(){
+      try {
+          Injector injector = Guice.createInjector(new SkrollGuiceModule());
+          ClassifierFactory classifierFactory = injector.getInstance(ClassifierFactory.class);
+          documentClassifier = classifierFactory.getClassifier(Category.DEFINITION);
+          tocClassifier = classifierFactory.getClassifier(Category.TOC);
+     } catch (Exception e) {
+        e.printStackTrace();
+        }
+    }
 
     @Test
     public void testTrainClassify() {
