@@ -4,7 +4,10 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.skroll.classifier.Category;
-import com.skroll.document.*;
+import com.skroll.document.CoreMap;
+import com.skroll.document.Document;
+import com.skroll.document.DocumentHelper;
+import com.skroll.document.JsonDeserializer;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.util.Constants;
 import com.skroll.util.Configuration;
@@ -52,7 +55,7 @@ public class DocAPITest {
     }
 
     public String testFileUpload() throws Exception {
-        String TARGET_URL = "http://localhost:8888/restServices/jsonAPI/upload";
+        String TARGET_URL = "http://localhost:8888/restServices/doc/upload";
         Client client = ClientBuilder.newBuilder().register(MultiPartFeature.class).build();
         WebTarget webTarget = client.target(TARGET_URL);
         MultiPart multiPart = new MultiPart();
@@ -79,7 +82,7 @@ public class DocAPITest {
     }
 
     public String testGetTerms(String documentId) throws Exception {
-        String TARGET_URL = "http://localhost:8888/restServices/jsonAPI/getTerms";
+        String TARGET_URL = "http://localhost:8888/restServices/doc/getTerms";
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
 
@@ -88,6 +91,16 @@ public class DocAPITest {
         return responseString;
     }
 
+    @Test
+    public void testGetParagraphJson() throws Exception {
+        String documentId = testFileUpload();
+        String TARGET_URL = "http://localhost:8888/restServices/instrument/getParagraphJson";
+        Client client = ClientBuilder.newClient();
+        WebTarget webTarget = client.target(TARGET_URL);
+
+        String responseString = webTarget.request(MediaType.APPLICATION_JSON).cookie(new  NewCookie("documentId", documentId)).get(String.class);
+        System.out.println("Here is the response: "+responseString);
+    }
     @Test
     public void test_UploadFile_UpdateTerms() throws Exception, ObjectPersistUtil.ObjectPersistException {
 
@@ -146,7 +159,7 @@ public class DocAPITest {
     @Test
     public void testUpdateTerms() throws Exception {
         String documentId = testFileUpload();
-        String TARGET_URL = "http://localhost:8888/restServices/jsonAPI/updateTerms";
+        String TARGET_URL = "http://localhost:8888/restServices/doc/updateTerms";
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
 
@@ -165,7 +178,7 @@ public class DocAPITest {
     @Test
     public void testUpdateModel() throws Exception {
         String documentId = testFileUpload();
-        String TARGET_URL = "http://localhost:8888/restServices/jsonAPI/updateModel";
+        String TARGET_URL = "http://localhost:8888/restServices/doc/updateModel";
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
 
@@ -178,7 +191,7 @@ public class DocAPITest {
     @Test
     public void testUploadListDocs() throws Exception {
         testFileUpload();
-        String TARGET_URL = "http://localhost:8888/restServices/jsonAPI/listDocs";
+        String TARGET_URL = "http://localhost:8888/restServices/doc/listDocs";
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
         String response = webTarget.request().get(String.class);
@@ -189,7 +202,7 @@ public class DocAPITest {
 
     @Test
     public void testGetDoc() throws Exception {
-        String TARGET_URL = "http://localhost:8888/restServices/jsonAPI/getDoc";
+        String TARGET_URL = "http://localhost:8888/restServices/doc/getDoc";
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
         String documentId = "smaller-indenture.html";
@@ -201,7 +214,7 @@ public class DocAPITest {
     @Test
     public void testRemoveTerms() throws Exception {
         String documentId =  testFileUpload();
-        String TARGET_URL = "http://localhost:8888/restServices/jsonAPI/updateTerms";
+        String TARGET_URL = "http://localhost:8888/restServices/doc/updateTerms";
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
 

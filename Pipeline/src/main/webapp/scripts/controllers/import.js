@@ -17,7 +17,7 @@ var ImportCtrl = function($location, $routeParams, $http) {
   }
   documentModel.isProcessing = true;
   console.log(url);
-  $http.get('restServices/jsonAPI/importDoc?documentId=' + $routeParams.q)
+  $http.get('restServices/doc/importDoc?documentId=' + $routeParams.q)
     .success(function(data) {
       console.log(data);
       var docId = data.documentId;
