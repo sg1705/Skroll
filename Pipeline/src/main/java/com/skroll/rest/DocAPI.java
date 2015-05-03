@@ -4,6 +4,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.FluentIterable;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Files;
+import com.google.common.io.Resources;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.skroll.classifier.Category;
@@ -30,6 +31,7 @@ import javax.ws.rs.core.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +47,8 @@ public class DocAPI {
     // as we would like to share this hashmap between multiple requests from multiple clients
     // It provides the construct to synchronize only block of map not the whole hashmap.
 
-    @Inject private ClassifierFactory classifierFactory;
+    @Inject
+    private ClassifierFactory classifierFactory;
     private static Configuration configuration = new Configuration();
     private static String preEvaluatedFolder = configuration.get("preEvaluatedFolder", "/tmp/");
 
@@ -53,16 +56,18 @@ public class DocAPI {
     private float userWeight = 95;
 
 
-    private Response logErrorResponse( String message, Exception e){
-        logger.error("{} : {}",message, e);
-        if(e!=null) e.printStackTrace();
+    private Response logErrorResponse(String message, Exception e) {
+        logger.error("{} : {}", message, e);
+        if (e != null) e.printStackTrace();
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
 
     }
-    private Response logErrorResponse(String message){
+
+    private Response logErrorResponse(String message) {
         return logErrorResponse(message, null);
 
     }
+
     @POST
     @Path("/upload")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -112,8 +117,43 @@ public class DocAPI {
         return logErrorResponse("Failed to process attachments. Reason ");
     }
 
+    @GET
+    @Path("/importDoc")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response importDoc(@QueryParam("documentId") String documentId, @Context HttpHeaders hh, @BeanParam RequestBean request) throws Exception {
+        Document document = null;
+        //fetch the document
+        String content = Resources.asCharSource(new URL(documentId), Charset.forName("UTF-8")).read();
+        String fileName = new URL(documentId).getPath();
+        String[] strs = fileName.split("/");
+        fileName = strs[strs.length - 1];
+        try {
+            document = Parser.parseDocumentFromHtml(content);
+            for (Classifier classifier : request.getClassifiers()) {
+                document = (Document) classifier.classify(fileName, document);
+            }
+            request.getDocumentFactory().putDocument(fileName, document);
+            logger.debug("Added document into the documentMap with a generated hash key:" + fileName);
+
+        } catch (ParserException e) {
+            return logErrorResponse("Failed to parse the uploaded file", e);
+        } catch (Exception e) {
+            return logErrorResponse("Failed to classify", e);
+        }
+        // persist the document using document id. Let's use the file name
+        try {
+            Files.createParentDirs(new File(preEvaluatedFolder + fileName));
+            Files.write(JsonDeserializer.getJson(document), new File(preEvaluatedFolder + fileName), Charset.defaultCharset());
+        } catch (Exception e) {
+            return logErrorResponse("Failed to persist the document object", e);
+        }
+        logger.info(fileName);
+        return Response.status(Response.Status.OK).cookie(new NewCookie("documentId", fileName)).entity("").type(MediaType.APPLICATION_JSON).build();
+    }
+
     /**
      * list the docs under the pre Evaluated Folder
+     *
      * @param hh
      * @return
      */
@@ -146,7 +186,7 @@ public class DocAPI {
                 jsonString = Files.toString(new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
                 doc = JsonDeserializer.fromJson(jsonString);
             } catch (Exception e) {
-               return logErrorResponse("Failed to read/deserialize document from Pre Evaluated Folder", e);
+                return logErrorResponse("Failed to read/deserialize document from Pre Evaluated Folder", e);
             }
         }
         try {
@@ -202,7 +242,7 @@ public class DocAPI {
                 }
             }
         }
-        
+
         String definitionJson = new GsonBuilder().create().toJson(termList);
         logger.trace("definitionJson" + "\t" + definitionJson);
         Response r = Response.ok().status(Response.Status.OK).entity(definitionJson).build();
@@ -223,7 +263,8 @@ public class DocAPI {
 
         List<Paragraph> definitionJson = null;
         try {
-            definitionJson = new GsonBuilder().create().fromJson(definedTermParagraphList, new TypeToken<List<Paragraph>>() {}.getType());
+            definitionJson = new GsonBuilder().create().fromJson(definedTermParagraphList, new TypeToken<List<Paragraph>>() {
+            }.getType());
             logger.info("updateTerms:{} for doc id: {}", definitionJson, documentId);
 
         } catch (Exception ex) {
@@ -370,6 +411,7 @@ public class DocAPI {
         logger.debug("train the model using document is stored in {}", preEvaluatedFolder + documentId);
         return Response.ok().status(Response.Status.OK).build();
     }
+
     @GET
     @Path("/observeNone")
     @Produces(MediaType.TEXT_PLAIN)
@@ -395,4 +437,5 @@ public class DocAPI {
         Files.write(JsonDeserializer.getJson(doc), new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
         return Response.ok().status(Response.Status.OK).entity("").build();
     }
+
 }

@@ -1,7 +1,6 @@
 apply plugin: 'java'
 apply plugin: 'war'
 apply from: 'https://raw.github.com/akhikhl/gretty/master/pluginScripts/gretty.plugin'
-apply plugin: "jacoco"
 
 version = '1.0'
 sourceCompatibility = JavaVersion.VERSION_1_7
@@ -61,7 +60,7 @@ gretty{
 task trainWithOverride(type: JavaExec) {
     args = ['--trainWithOverride', 'src/main/resources/trainingDocuments/']
     File workingDir = new File('Pipeline/')
-    main = 'com.skroll.trainer.DefinitionTrainer'
+    main = 'com.skroll.trainer.ExperiementTrainer'
     classpath = sourceSets.main.runtimeClasspath
 }
 

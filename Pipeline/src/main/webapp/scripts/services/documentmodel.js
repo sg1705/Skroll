@@ -14,6 +14,7 @@ var documentModel = {
   isProcessing: false,
   fileName: "",
   selectedParagraphId: "",
+  documentId: ""
 
 };
 

@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html ng-app="SkrollApp" >
 
 <head>
   <meta charset="utf-8">
@@ -23,112 +23,29 @@
 
 </head>
 
-
-<body ng-app="SkrollApp"
-      ng-controller="ContentCtrl"
-      layout="column"
-      style="overflow-y: scroll; -webkit-overflow-scrolling: touch;">
-
-<!-- start file selection -->
-<div layout="column" id="uploadForm" ng-show="!isDocAvailable && !isProcessing"
-     style="display:flex; align-items: center;">
-
-  <md-toolbar layout="row">
-    <h1>Welcome to Skroll!</h1>
-  </md-toolbar>
-    <md-list>
-      <md-item ng-repeat="id in userDocumentIds | orderBy:id">
-        <md-item-content>
-          <div class="md-tile-left">
-              <img ng-src="{{item.face}}" class="face" alt="{{item.who}}">
-          </div>
-          <div class="md-tile-content">
-            <md-button ng-click="loadDocument('{{id}}')"><h3>{{id}}</h3></md-button>
-          </div>
-        </md-item-content>
-        <md-divider></md-divider>
-      </md-item>
-      
-      <md-item>
-        <input file-upload id="fileupload" type="file" name="files[]" data-url="restServices/jsonAPI/upload"/>
-    </md-item>
-    </md-list>  
-</div>
-<!-- end file selection screen -->
-
-
-
-
-<div layout="row" layout-sm="column" layout-align="space-around" ng-show="isProcessing">
-  <md-progress-circular md-mode="indeterminate" ng-show="isProcessing"></md-progress-circular>
+<body style="height:100%" ng-controller="ContentCtrl">
+  <div ng-view layout="column" style="-webkit-overflow-scrolling: touch; height:100%">
 </div>
 
-<!-- Start the layout of the doc -->
-<div ng-show="isDocAvailable" layout="row">
+  <md-backdrop ng-show="documentModel.isProcessing" class="md-opaque md-bottom-sheet-backdrop md-default-theme">
+  </md-backdrop>
 
-  <!-- LHS -->
-  <md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z3"
-              md-component-id="left" md-is-locked-open="$media('gt-sm')" >
 
-    <div layout="column" flex>
-      <md-toolbar class="skroll-toolbar">
-      </md-toolbar>
-
-      <md-content md-scroll-y flex class="md-padding" ng-controller="LHSCtrl as ctrl">
-        <sk-lhs/>
-
-      </md-content>
-    </div>
-  </md-sidenav>
-  <!-- end sidebar -->
-
-  <!-- content -->
-  <div layout="column" ng-show="isDocAvailable" flex >
-
-    <md-toolbar class="skroll-toolbar">
-      <sk-toolbar />
-    </md-toolbar>
-
-    <md-content md-scroll-y id="skrollport">
-      <div layout="row" flex>
-        <div ng-controller="ViewPortCtrl as ctrl" >
-            <md-whiteframe class="md-whiteframe-z3">
-              <md-content flex id="content" class="md-padding" ng-click="ctrl.paraClicked($event)" ng-mouseup="ctrl.mouseUp($event)" ng-mousedown="ctrl.mouseDown($event)">
-              </md-content>
-            </md-whiteframe>  
-        </div>
-        <!-- hide RHS when small media -->
-        <div hide-sm hide-md flex="25">
-        </div>
-      </div>
-    </md-content>
-
-  </div>
-  <!-- end content -->
-
-  <!-- right sidenav -->
-  <md-sidenav layout="column" class="md-sidenav-right "
-              md-component-id="right" md-is-locked-open="false" ng-swipe-left="toggleSidenav('left')">
-    <md-content>
-      <pre id="rightPane"></pre>
-    </md-content>
-  </md-sidenav>
-</div>
-<!-- end layout -->
-
+</body>
 <!-- build:js(.) scripts/vendor.js -->
 <!-- bower:js -->
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
 <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script src="bower_components/angular/angular.min.js"></script>
 <script src="bower_components/angular-aria/angular-aria.min.js"></script>
 <script src="bower_components/angular-animate/angular-animate.min.js"></script>
 <script src="bower_components/angular-touch/angular-touch.min.js"></script>
 <script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
 <script src="bower_components/angular-material/angular-material.min.js"></script>
+<script src="bower_components/angular-route/angular-route.js"></script>
 <script src="bower_components/underscore/underscore-min.js"></script>
 <script src="bower_components/underscore.string/dist/underscore.string.min.js"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <!-- endbower -->
 <!-- endbuild -->
 
@@ -137,12 +54,14 @@
 <script src="scripts/jquery.fileupload.js"></script>
 <script src="scripts/diff_match_patch_uncompressed.js"></script>
 <script src="scripts/controllers/content.js"></script>
+<script src="scripts/controllers/import.js"></script>
 <script src="scripts/controllers/toolbar.js"></script>
 <script src="scripts/controllers/viewport.js"></script>
 <script src="scripts/directives/fileupload.js"></script>
 <script src="scripts/directives/scrolltoparagraph.js"></script>
 <script src="scripts/directives/sktoolbar.js"></script>
 <script src="scripts/directives/sklhs.js"></script>
+<script src="scripts/directives/skcontent.js"></script>
 <script src="scripts/services/documentmodel.js"></script>
 <script src="scripts/services/trainermodel.js"></script>
 <script src="scripts/services/selectionmodel.js"></script>
@@ -150,6 +69,6 @@
 <script src="scripts/services/lhsmodel.js"></script>
 <!-- endbuild -->
 
-</body>
+
 </html>
 

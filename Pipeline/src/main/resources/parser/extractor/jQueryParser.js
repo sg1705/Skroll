@@ -70,10 +70,7 @@ var pageBreak = false;
 var DEBUG = false;
 var isAnchor = false;
 var isFirstChunkOfPara = true;
-var isBlockInTable = {
-    currentPara: false,
-    nextPara: false
-}
+var isBlockInTable = false;
 
 // core annotations
 var ID_ANNOTATION = "IdAnnotation";
@@ -137,11 +134,23 @@ function processNode(index, element) {
         processTextNode(index, element);
     }
 
+
     // check to see if the node is a block type
     if (isNodeBlock(element)) {
         // create a paragraph
         createPara(element);
+
     }
+
+    //check to see if the new element is in table
+    if (isElementInTable(element)) {
+        //create new para
+        processTextNode(index, element);
+        return;
+    }
+
+
+
 
     $(element).contents().each(function(index, element) {
         processNode(index, element);
@@ -161,7 +170,7 @@ function createPara(element) {
       newParagraph[IS_ANCHOR_ANNOTATION] = true;
     }
 
-    if (isBlockInTable.currentPara) {
+    if (isBlockInTable) {
       newParagraph[IS_TABLE_ANNOTATION] = true;
     }
 
@@ -172,10 +181,17 @@ function createPara(element) {
     pageBreak = false;
     isAnchor = false;
     isFirstChunkOfPara = true;
+
+    if (isElementInTable(element)) {
+        isBlockInTable = true;
+    } else {
+        isBlockInTable = false;
+    }
+
+
 }
 
 function createLastPara() {
-    isBlockInTable.currentPara = isBlockInTable.nextPara;
     createPara();
 }
 
@@ -243,7 +259,6 @@ function processTextNode(index, element) {
     var chunkText = $(element).text();
     if (isChunkRequired) {
         //create a chunk and add it to stack
-
         newChunk[ID_ANNOTATION] = chunkId;
         newChunk[TEXT_ANNOTATION] = chunkText;
         newChunk[FONTSIZE_ANNOTATION] = $(element.parentNode).css("font-size");
@@ -297,23 +312,18 @@ function isNodeBlock(element) {
 
     var displayStyle = $(element).css("display")
     if ((displayStyle == "block") || (displayStyle == "table")) {
-        isBlockInTable.currentPara = isBlockInTable.nextPara;
-        if (displayStyle == "table") {
-            isBlockInTable.nextPara = true;
-        } else {
-            isBlockInTable.nextPara = false;
-        }
         return true;
-    } else {
-        if (displayStyle.indexOf("table") > -1) {
-            isBlockInTable.nextPara = true;
-        }
-
-    return false;
-
     }
+    return false;
+}
 
-
+function isElementInTable(element) {
+    if ($(element).is('table'))
+        return true;
+    if ($(element).parents('table').length > 0) {
+        return true;
+    }
+    return false;
 }
 
 function isUnderLine(element) {
