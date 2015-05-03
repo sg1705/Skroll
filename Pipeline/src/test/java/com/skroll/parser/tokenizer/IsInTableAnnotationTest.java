@@ -35,7 +35,7 @@ public class IsInTableAnnotationTest extends TestCase {
             }
         }
         System.out.println(countTableAnnotation);
-        assert (countTableAnnotation == 5);
+        assert (countTableAnnotation == 2);
     }
 
     public void testComplex10kIsInTableAnnotation() throws Exception {
@@ -58,7 +58,7 @@ public class IsInTableAnnotationTest extends TestCase {
             }
         }
         System.out.println(countTableAnnotation);
-        assert (countTableAnnotation == 25);
+        assert (countTableAnnotation == 1);
     }
 
 
@@ -83,7 +83,7 @@ public class IsInTableAnnotationTest extends TestCase {
             }
         }
         System.out.println(countTableAnnotation);
-        assert (countTableAnnotation == 1064);
+        assert (countTableAnnotation == 214);
     }
 
 

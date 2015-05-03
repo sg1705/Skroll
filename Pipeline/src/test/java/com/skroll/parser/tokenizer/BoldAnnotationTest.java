@@ -2,6 +2,7 @@ package com.skroll.parser.tokenizer;
 
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
+import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.Parser;
@@ -26,7 +27,8 @@ public class BoldAnnotationTest extends TestCase {
         htmlDoc = Parser.parseDocumentFromHtml(htmlString);
 
         //find out how many tokens have bold
-        List<Token> tokens = htmlDoc.get(CoreAnnotations.TokenAnnotation.class);
+        //List<Token> tokens = htmlDoc.get(CoreAnnotations.TokenAnnotation.class);
+        List<Token> tokens = DocumentHelper.getDocumentTokens(htmlDoc);
         int count = 0;
         for(Token token: tokens) {
             if (token.containsKey(CoreAnnotations.IsBoldAnnotation.class)) {
@@ -35,7 +37,7 @@ public class BoldAnnotationTest extends TestCase {
             }
         }
         System.out.println("Total number of bold words:" + count);
-        assert ( count == 2);
+        assert ( count == 1);
     }
 
 }
