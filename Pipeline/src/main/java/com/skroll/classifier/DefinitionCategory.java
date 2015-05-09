@@ -16,7 +16,7 @@ public class DefinitionCategory extends Category{
 
    // private  String modelName = "com.skroll.analyzer.model.TrainingDocumentAnnotatingModel.DefinitionDTEM";
    public DefinitionCategory() {
-       super(1, "DefinitionCategory");
+       super(1, "com.skroll.classifier.DefinitionCategory");
         wordType = RandomVariableType.WORD_IS_DEFINED_TERM;
         paraType = RandomVariableType.PARAGRAPH_HAS_DEFINITION;
 

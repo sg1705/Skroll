@@ -8,7 +8,6 @@ import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
 import com.skroll.util.ObjectPersistUtil;
-import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -115,7 +114,7 @@ public class SECDocumentClassifierTest {
         return probableCategory;
     }
 
-    @Test
+    //@Test
      public void testTrainClassify() throws ObjectPersistUtil.ObjectPersistException {
 
         SECDocumentClassifier documentClassifier = new SECDocumentClassifier();

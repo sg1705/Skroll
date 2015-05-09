@@ -18,7 +18,7 @@ public class TOCCategory extends Category {
     //private String modelName = "com.skroll.analyzer.model.TrainingDocumentAnnotatingModel.TOC";
 
     public TOCCategory() {
-        super(2,"TOCCategory");
+        super(2,"com.skroll.classifier.TOCCategory");
         wordType = RandomVariableType.WORD_IS_TOC_TERM;
         paraType = RandomVariableType.PARAGRAPH_HAS_TOC;
 
