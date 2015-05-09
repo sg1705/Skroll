@@ -88,3 +88,8 @@ sk-lhs .menu-toggle-button {
 sk-lhs .menu-list.ng-hide {
     max-height: 0px;
 }
+
+#content p {
+ line-height: 1;
+ margin:0px;
+}
