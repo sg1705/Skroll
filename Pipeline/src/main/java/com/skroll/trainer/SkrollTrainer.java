@@ -6,10 +6,11 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.skroll.classifier.Category;
 import com.skroll.classifier.Classifier;
-import com.skroll.classifier.DefinitionClassifier;
-import com.skroll.classifier.DefinitionExperimentClassifier;
-import com.skroll.classifier.TOCExperimentClassifier;
+import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.*;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
@@ -21,6 +22,7 @@ import com.skroll.pipeline.util.Constants;
 import com.skroll.pipeline.util.Utils;
 import com.skroll.util.Configuration;
 import com.skroll.util.ObjectPersistUtil;
+import com.skroll.util.SkrollGuiceModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,46 +44,60 @@ import java.util.List;
 --classify src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html
 */
 
-public class ExperiementTrainer {
+public class SkrollTrainer {
     //The following line needs to be added to enable log4j
     public static final Logger logger = LoggerFactory
-            .getLogger(ExperiementTrainer.class);
+            .getLogger(SkrollTrainer.class);
+    Injector injector = Guice.createInjector(new SkrollGuiceModule());
+     ClassifierFactory classifierFactory = injector.getInstance(ClassifierFactory.class);
 
-    private  static DefinitionExperimentClassifier documentClassifier = new DefinitionExperimentClassifier();
-    private  static TOCExperimentClassifier tocExperimentClassifier = new TOCExperimentClassifier();
+    private static Classifier documentClassifier = null;
+    private static Classifier tocExperimentClassifier = null;
+
+    public SkrollTrainer(){
+        try {
+             documentClassifier = classifierFactory.getClassifier(Category.DEFINITION);
+             tocExperimentClassifier = classifierFactory.getClassifier(Category.TOC);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
 
     public static void main(String[] args) throws IOException, ObjectPersistUtil.ObjectPersistException {
 
+        SkrollTrainer skrollTrainer = new SkrollTrainer();
         //ToDO: use the apache common commandline
         if (args[0].equals("--generateHRFs")) {
-            ExperiementTrainer.generateHRFs(args[1]);
+            skrollTrainer.generateHRFs(args[1]);
         }
         if (args[0].equals("--trainWithOverride")) {
             logger.debug("folder Name :" + args[1]);
-            ExperiementTrainer.trainWithOverride(args[1]);
+            skrollTrainer.trainWithOverride(args[1]);
         }
         if (args[0].equals("--classify")){
-            ExperiementTrainer.classify(args[1]);
+            skrollTrainer.classify(args[1]);
         }
         if (args[0].equals("--trainWithWeight")) {
             logger.debug("folder Name :" + args[1]);
-            ExperiementTrainer.trainFolderUsingTrainingWeight(args[1]);
+            skrollTrainer.trainFolderUsingTrainingWeight(args[1]);
         }
 
     }
     // Generate CSV file for override.
-    public static void generateHRFs(String folderName) throws IOException {
+    public void generateHRFs(String folderName) throws IOException {
 
         FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(folderName));
         for (File f : iterable) {
             if (f.isFile()) {
                 String fileName = f.getPath();
-                ExperiementTrainer.generateHRF(fileName);
+                generateHRF(fileName);
             }
         }
     }
 
-    public static void generateHRF(String fileName) throws  IOException {
+    public void generateHRF(String fileName) throws  IOException {
 
         Configuration configuration = new Configuration();
         String targetFolder = configuration.get("hrfFolder","hrf/");
@@ -131,7 +147,7 @@ public class ExperiementTrainer {
         }
     }
 
-    public static Document modifyDocWithOverride(String fileName) throws  IOException {
+    public Document modifyDocWithOverride(String fileName) throws  IOException {
 
         Configuration configuration = new Configuration();
         String hrfFolder = configuration.get("hrfFolder","hrf/");
@@ -206,13 +222,13 @@ public class ExperiementTrainer {
         return doc;
     }
 
-    public static void  trainWithOverride(String folderName) throws IOException, ObjectPersistUtil.ObjectPersistException {
-            DefinitionClassifier documentClassifier = new DefinitionClassifier();
+    public void  trainWithOverride(String folderName) throws IOException, ObjectPersistUtil.ObjectPersistException {
+            //Classifier documentClassifier = new DefinitionExperimentClassifier();
             FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(folderName));
             for (File f : iterable) {
                 if (f.isFile()) {
                     String fileName = f.getPath();
-                    Document doc = ExperiementTrainer.modifyDocWithOverride(fileName);
+                    Document doc = modifyDocWithOverride(fileName);
                     documentClassifier.train(doc);
 
                 }
@@ -220,9 +236,9 @@ public class ExperiementTrainer {
             documentClassifier.persistModel();
     }
 
-    public static void classify(String testingFile) {
+    public  void classify(String testingFile) {
 
-        Classifier documentClassifier = new DefinitionClassifier();
+        //Classifier documentClassifier = new DefinitionExperimentClassifier();
         // String testingFile = "src/test/resources/parser/linker/test-linker-random.html";
         //String testingFile = "src/main/resources/trainingDocuments/indentures/AMC Networks Indenture.html";
 
@@ -242,7 +258,7 @@ public class ExperiementTrainer {
     }
 
 
-    public static void trainFolderUsingTrainingWeight (String preEvaluatedFolder) throws ObjectPersistUtil.ObjectPersistException {
+    public void trainFolderUsingTrainingWeight (String preEvaluatedFolder) throws ObjectPersistUtil.ObjectPersistException {
 
         FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(preEvaluatedFolder));
         List<String> docLists = new ArrayList<String>();
@@ -256,7 +272,7 @@ public class ExperiementTrainer {
     }
 
 
-    public static void trainFileUsingTrainingWeight (String preEvaluatedFile) {
+    public  void trainFileUsingTrainingWeight (String preEvaluatedFile) {
 
         String jsonString = null;
         Document doc =null;

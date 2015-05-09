@@ -2,6 +2,7 @@ package com.skroll.document;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import com.skroll.classifier.Category;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
 import org.junit.After;
@@ -73,8 +74,8 @@ public class JsonDeserializerTest {
         paragraph.set(CoreAnnotations.ParagraphIdAnnotation.class, "1");
         paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
         paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
-        TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, TrainingWeightAnnotationHelper.DEFINITION, (float) 1.0);
-        TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, TrainingWeightAnnotationHelper.TOC, (float)0.5);
+        TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, Category.DEFINITION, (float) 1.0);
+        TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, Category.TOC, (float)0.5);
         paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
         paralist.add(paragraph);
 

@@ -1,6 +1,8 @@
 package com.skroll.rest;
 
 
+import com.google.inject.servlet.GuiceFilter;
+import com.skroll.util.WebGuiceModule;
 import org.apache.tomcat.InstanceManager;
 import org.apache.tomcat.SimpleInstanceManager;
 import org.eclipse.jetty.annotations.ServletContainerInitializersStarter;
@@ -14,6 +16,8 @@ import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
 
+import javax.servlet.DispatcherType;
+import javax.servlet.ServletContextListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -22,6 +26,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -80,6 +85,10 @@ public class WebServer {
         WebAppContext webAppContext = getWebAppContext(baseUri, getScratchDir());
 
         server.setHandler(webAppContext);
+
+        ServletContextListener guiceListener = new WebGuiceModule();
+        webAppContext.addFilter(GuiceFilter.class, "/", EnumSet.of(DispatcherType.INCLUDE, DispatcherType.REQUEST));
+        webAppContext.addEventListener(guiceListener);
 
         // Start Server
         server.start();

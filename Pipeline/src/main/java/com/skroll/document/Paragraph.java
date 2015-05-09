@@ -11,10 +11,6 @@ public class Paragraph {
     private String term;
     private int classificationId;
 
-    public final static int NONE_CLASSIFICATION = 0;
-    public final static int DEFINITION_CLASSIFICATION = 1;
-    public final static int TOC_CLASSIFICATION = 2;
-
     public static final Logger logger = LoggerFactory
             .getLogger(Paragraph.class);
 

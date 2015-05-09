@@ -10,8 +10,8 @@
 angular.module('SkrollApp')
   .service('documentService', function($http, $q, $log, LHSModel, documentModel) {
     //context root of API
-    var documentServiceBase = 'restServices/jsonAPI/';
-
+    var documentServiceBase = 'restServices/doc/';
+    var instrumentServiceBase = 'restServices/instrument/';
     /**
      * Retrieves terms for a given document
      */
@@ -55,7 +55,7 @@ angular.module('SkrollApp')
       $log.debug(paragraphId);
       var deferred = $q.defer();
       /** make a get request */
-      $http.get(documentServiceBase + 'getSimilarPara?paragraphId=' +
+      $http.get(instrumentServiceBase + 'getSimilarPara?paragraphId=' +
           paragraphId + '&documentId=' + documentModel.documentId)
         .success(function(data) {
           var paragraphs = [];
@@ -81,7 +81,7 @@ angular.module('SkrollApp')
     this.getParagraphJson = function(paragraphId) {
       $log.debug("Fetching json for paragraphId:" + paragraphId);
       var deferred = $q.defer();
-      $http.get(documentServiceBase + 'getParagraphJson?paragraphId=' +
+      $http.get(instrumentServiceBase + 'getParagraphJson?paragraphId=' +
           paragraphId + '&documentId=' + documentModel.documentId)
         .success(function(data) {
           deferred.resolve(data);
@@ -183,7 +183,7 @@ angular.module('SkrollApp')
      */
     this.setFlags = function(flagName, flagValue) {
       /** make a get request */
-      $http.get(documentServiceBase + 'setFlags?flagName=' + flagName + '&flagValue=' + flagValue + '&documentId=' + documentModel.documentId)
+      $http.get(instrumentServiceBase + 'setFlags?flagName=' + flagName + '&flagValue=' + flagValue + '&documentId=' + documentModel.documentId)
         .success(function(data, status) {
           console.log("flag set");
           console.log(data);
@@ -215,7 +215,7 @@ angular.module('SkrollApp')
     this.getProbabilityDump = function() {
       var deferred = $q.defer();
       /** make a get request */
-      $http.get(documentServiceBase + 'getProbabilityDump' + '?documentId=' + documentModel.documentId)
+      $http.get(instrumentServiceBase + 'getProbabilityDump' + '?documentId=' + documentModel.documentId)
         .success(function(data, status) {
           deferred.resolve(data);
         })
@@ -226,6 +226,4 @@ angular.module('SkrollApp')
       /** done with get request */
       return deferred.promise;
     };
-
-
   });

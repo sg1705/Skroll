@@ -7,15 +7,15 @@ import java.io.IOException;
 
 import static org.junit.Assert.fail;
 
-public class DefinitionTrainerTest {
+public class SkrollTrainerTest {
 
 
     @Test
     public void testGenerateFilesForOverride()  {
         String folderName = "src/main/resources/trainingDocuments/indentures/AMC Networks Indenture.html";
-
+        SkrollTrainer skrollTrainer = new SkrollTrainer();
         try {
-            ExperiementTrainer.generateHRFs(folderName);
+            skrollTrainer.generateHRFs(folderName);
         } catch (IOException e) {
             e.printStackTrace();
             fail(" failed to create overwrite files");
@@ -24,10 +24,10 @@ public class DefinitionTrainerTest {
 
     @Test
     public void testGenerateFileForOverride() {
-
+        SkrollTrainer skrollTrainer = new SkrollTrainer();
         String fileName = "src/main/resources/trainingDocuments/indentures/AMC Networks Indenture.html";
         try {
-            ExperiementTrainer.generateHRF(fileName);
+            skrollTrainer.generateHRF(fileName);
         } catch (IOException e) {
             e.printStackTrace();
             fail(" failed to create overwrite files");
@@ -36,9 +36,10 @@ public class DefinitionTrainerTest {
 
     @Test
     public void TestTrainWithOverride(){
-        String fileName = "src/main/resources/trainingDocuments/indentures/";
+        SkrollTrainer skrollTrainer = new SkrollTrainer();
+        String fileName = "src/main/resources/trainingDocuments/indentures/AMC Networks Indenture.html";
         try {
-            ExperiementTrainer.trainWithOverride(fileName);
+            skrollTrainer.trainWithOverride(fileName);
         } catch (IOException e) {
             e.printStackTrace();
             fail(" failed to create overwrite files");
@@ -50,9 +51,10 @@ public class DefinitionTrainerTest {
 
     @Test
     public void TestTrainWithWeight(){
+        SkrollTrainer skrollTrainer = new SkrollTrainer();
         String fileName = "build/resources/main/preEvaluated/";
         try {
-            ExperiementTrainer.trainFolderUsingTrainingWeight(fileName);
+            skrollTrainer.trainFolderUsingTrainingWeight(fileName);
         } catch (Exception e) {
             e.printStackTrace();
             fail(" failed to create overwrite files");

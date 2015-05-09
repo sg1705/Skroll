@@ -1,6 +1,7 @@
 package com.skroll.document;
 
 import com.google.common.base.Joiner;
+import com.skroll.classifier.Category;
 import com.skroll.document.annotation.CoreAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -120,9 +121,9 @@ public class DocumentHelper {
                 l++;
             }
         }
-            if(classification==Paragraph.DEFINITION_CLASSIFICATION) {
+            if(classification== Category.DEFINITION) {
                 addDefinedTermTokensInParagraph(returnList, coreMap);
-            } else if ( classification==Paragraph.TOC_CLASSIFICATION){
+            } else if ( classification==Category.TOC){
                 addTOCsInParagraph(returnList, coreMap);
             }
             return true;

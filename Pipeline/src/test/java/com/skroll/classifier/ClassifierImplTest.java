@@ -2,6 +2,8 @@ package com.skroll.classifier;
 
 import com.google.common.collect.FluentIterable;
 import com.google.common.io.Files;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.parser.Parser;
@@ -10,7 +12,8 @@ import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
 import com.skroll.util.Configuration;
-import com.skroll.util.ObjectPersistUtil;
+import com.skroll.util.SkrollGuiceModule;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,47 +22,29 @@ import java.io.File;
 
 import static org.junit.Assert.fail;
 
-public class DefinitionClassifierTest {
+public class ClassifierImplTest {
 
     //The following line needs to be added to enable log4j
     public static final Logger logger = LoggerFactory
-            .getLogger(DefinitionClassifierTest.class);
-    Classifier documentClassifier = new DefinitionClassifier();
-//    @Before
-//    public void setup(){
-//        Configuration configuration = new Configuration();
-//        String modelFolderName = configuration.get("modelFolder","/tmp");
-//        String path =modelFolderName + ((DefinitionClassifier)documentClassifier).getDtemModelName();
-//        File file = new File(path);
-//        file.delete();
-//    }
+            .getLogger(ClassifierImplTest.class);
+    private static ClassifierFactory classifierFactory = new ClassifierFactory();
+    private static Classifier documentClassifier = null;
+    private static Classifier tocClassifier = null;
 
-    @Test
-    public void testTrainClassify() {
-
-
-        //convertRawToProcessedCorpus(rawFolder, ProcessedFolder);
-        try {
-            testTrainFolders("src/test/resources/analyzer/hmmTrainingDocs");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            fail("failed training");
+    @Before
+    public void setup(){
+      try {
+          Injector injector = Guice.createInjector(new SkrollGuiceModule());
+          ClassifierFactory classifierFactory = injector.getInstance(ClassifierFactory.class);
+          documentClassifier = classifierFactory.getClassifier(Category.DEFINITION);
+          tocClassifier = classifierFactory.getClassifier(Category.TOC);
+     } catch (Exception e) {
+        e.printStackTrace();
         }
-        String testingFile = "src/test/resources/parser/linker/test-linker-random.html";
-//        try {
-//            ObjectMapper mapper = new ObjectMapper();
-//            mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-//            String jsonSting = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(((DefinitionClassifier)documentClassifier).getModel());
-//            TrainingDocumentAnnotatingModel model = mapper.readValue(jsonSting, TrainingDocumentAnnotatingModel.class);
-//            Document document = (Document)documentClassifier.classify(Parser.parseDocumentFromHtmlFile(testingFile));
-//            Utils.writeToFile("build/classes/test/test-linker-random.html", document.getTarget());
-//        } catch(Exception ex){
-//            ex.printStackTrace();
-//            fail(ex.getMessage());
-//        }
     }
 
-    //@Test
+
+    @Test
     public void testClassify() {
 
         String testingFile = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
@@ -73,22 +58,12 @@ public class DefinitionClassifierTest {
             e.printStackTrace();
             fail(" failed to find a Model");
         }
-
-        assert(DocumentHelper.getDefinitionParagraphs(document).size()==174);
-        assert(DocumentHelper.getDefinedTermTokensInParagraph(
-                DocumentHelper.getDefinitionParagraphs(document).get(172))
-                .get(1).get(1).toString().equals("trustee"));
-
-        logger.debug ("Number fo Paragraphs returned: " + document.getParagraphs().size());
-            Utils.writeToFile("build/classes/test/test-linker-random.html", document.getTarget());
-
+        logger.debug ("Number fo Paragraphs returned: " + DocumentHelper.getDefinitionParagraphs(document).size());
     }
 
     //@Test
      public void testTrainFolders(String folderName) {
             Configuration configuration = new Configuration();
-
-        //String folderName = "src/main/resources/trainingDocuments/indentures";
 
         FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(folderName));
         for (File f : iterable) {
@@ -128,7 +103,7 @@ public class DefinitionClassifierTest {
 //        }
     }
 
-    //@Test
+    @Test
     public void testTrainFile()  {
             Configuration configuration = new Configuration();
 
@@ -149,7 +124,7 @@ public class DefinitionClassifierTest {
             e.printStackTrace();
             fail("failed to parse the file");
         }
-
+        try {
         // extract the definition from paragraph from html doc.
         Pipeline<Document, Document> pipeline =
                 new Pipeline.Builder()
@@ -157,11 +132,11 @@ public class DefinitionClassifierTest {
                         .build();
         doc = pipeline.process(doc);
         documentClassifier.train(doc);
-        try {
+
             documentClassifier.persistModel();
-        } catch (ObjectPersistUtil.ObjectPersistException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
-            fail("failed to persist the model");
+            fail("failed to train/persist the model");
         }
     }
 }
