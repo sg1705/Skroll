@@ -2,7 +2,7 @@ package com.skroll.util;
 
 import com.skroll.analyzer.model.TrainingDocumentAnnotatingModel;
 import com.skroll.classifier.Category;
-import com.skroll.classifier.DEFCategory;
+import com.skroll.classifier.DefinitionCategory;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +15,7 @@ public class ObjectPersistUtilTest {
     @Test
     public void testPersistReadObject() throws Exception {
 
-        Category category = new DEFCategory();
+        Category category = new DefinitionCategory();
         TrainingDocumentAnnotatingModel localTrainingModel = new TrainingDocumentAnnotatingModel(category.getWordType(),
                 category.getWordFeatures(),
                 category.getParaType(),

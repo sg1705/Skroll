@@ -19,7 +19,7 @@ public class ClassifierFactory {
     private ModelFactory modelFactory;
 
     static {
-        categories.put(Category.DEFINITION,new DEFCategory());
+        categories.put(Category.DEFINITION,new DefinitionCategory());
         categories.put(Category.TOC,new TOCCategory());
     }
 

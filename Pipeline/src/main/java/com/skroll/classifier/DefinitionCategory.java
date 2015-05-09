@@ -9,13 +9,13 @@ import java.util.Arrays;
 /**
  * Created by saurabhagarwal on 1/18/15.
  */
-public class DEFCategory extends Category{
+public class DefinitionCategory extends Category{
 
     public static final Logger logger = LoggerFactory
-            .getLogger(DEFCategory.class);
+            .getLogger(DefinitionCategory.class);
 
    // private  String modelName = "com.skroll.analyzer.model.TrainingDocumentAnnotatingModel.DefinitionDTEM";
-   public DEFCategory() {
+   public DefinitionCategory() {
        super(1, "DefinitionCategory");
         wordType = RandomVariableType.WORD_IS_DEFINED_TERM;
         paraType = RandomVariableType.PARAGRAPH_HAS_DEFINITION;
