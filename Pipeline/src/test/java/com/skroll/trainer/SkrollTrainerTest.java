@@ -37,7 +37,7 @@ public class SkrollTrainerTest {
     @Test
     public void TestTrainWithOverride(){
         SkrollTrainer skrollTrainer = new SkrollTrainer();
-        String fileName = "src/main/resources/trainingDocuments/indentures/";
+        String fileName = "src/main/resources/trainingDocuments/indentures/AMC Networks Indenture.html";
         try {
             skrollTrainer.trainWithOverride(fileName);
         } catch (IOException e) {

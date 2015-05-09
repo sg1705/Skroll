@@ -16,6 +16,9 @@ public class Category {
 
     int id;
     String name;
+
+
+
     RandomVariableType wordType = RandomVariableType.WORD_IS_TOC_TERM;
     RandomVariableType paraType = RandomVariableType.PARAGRAPH_HAS_TOC;
 
@@ -77,6 +80,34 @@ public class Category {
     @Override
     public String toString(){
         return "id("+id+"),name("+name +")";
+    }
+
+    public RandomVariableType getWordType() {
+        return wordType;
+    }
+
+    public RandomVariableType getParaType() {
+        return paraType;
+    }
+
+    public List<RandomVariableType> getWordFeatures() {
+        return wordFeatures;
+    }
+
+    public List<RandomVariableType> getParaFeatures() {
+        return paraFeatures;
+    }
+
+    public List<RandomVariableType> getParaDocFeatures() {
+        return paraDocFeatures;
+    }
+
+    public List<RandomVariableType> getDocFeatures() {
+        return docFeatures;
+    }
+
+    public List<RandomVariableType> getWordVarList() {
+        return wordVarList;
     }
 }
 

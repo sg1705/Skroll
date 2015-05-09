@@ -34,7 +34,7 @@ public class AnchorAnnotationTest extends TestCase {
             }
         }
         System.out.println(countAnchorTags);
-        assert ( countAnchorTags == 2);
+        assert ( countAnchorTags == 1);
     }
 
     public void testAnchorAnnotationOn10k() throws Exception {
@@ -57,6 +57,6 @@ public class AnchorAnnotationTest extends TestCase {
             }
         }
         System.out.println(countAnchorTags);
-        assert ( countAnchorTags == 29);
+        assert ( countAnchorTags == 9);
     }
 }

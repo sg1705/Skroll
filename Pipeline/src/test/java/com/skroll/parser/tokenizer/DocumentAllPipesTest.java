@@ -3,6 +3,7 @@ package com.skroll.parser.tokenizer;
 import com.google.common.base.Joiner;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
+import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.Parser;
@@ -25,7 +26,7 @@ public class DocumentAllPipesTest extends TestCase {
 
         Document doc = Parser.parseDocumentFromHtmlFile(fileName);
         //find out how many tokens have bold
-        List<Token> tokens = doc.get(CoreAnnotations.TokenAnnotation.class);
+        List<Token> tokens = DocumentHelper.getDocumentTokens(doc);
         int count = 0;
         for(Token token: tokens) {
             if (token.containsKey(CoreAnnotations.IsBoldAnnotation.class)) {
@@ -35,8 +36,8 @@ public class DocumentAllPipesTest extends TestCase {
         }
         System.out.println("Total number of bold words:" + count);
         System.out.println("Total number of paragraphs:" + doc.getParagraphs().size());
-        assert (count == 729);
+        assert (count == 682);
         System.out.println(doc.getParagraphs().size());
-        assert (doc.getParagraphs().size() == 1993);
+        assert (doc.getParagraphs().size() == 1499);
     }
 }

@@ -250,4 +250,16 @@ public class DocumentHelper {
     paragraph.set(CoreAnnotations.TOCTokensAnnotation.class, null);
     paragraph.set(CoreAnnotations.IsTOCAnnotation.class, false);
     }
+
+    public static List<Token> getDocumentTokens(Document document) {
+        //get paragraph
+        List<CoreMap> paragraphs = document.getParagraphs();
+        List<Token> tokens = new ArrayList();
+        int count = 0;
+        for(CoreMap paragraph: paragraphs) {
+            count = count + paragraph.getTokens().size();
+            tokens.addAll(paragraph.getTokens());
+        }
+        return tokens;
+    }
 }

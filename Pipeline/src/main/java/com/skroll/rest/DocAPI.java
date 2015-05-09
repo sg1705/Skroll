@@ -409,7 +409,7 @@ public class DocAPI {
             logErrorResponse("Failed to persist the document object: {}", e);
         }
         logger.debug("train the model using document is stored in {}", preEvaluatedFolder + documentId);
-        return Response.ok().status(Response.Status.OK).build();
+        return Response.ok().status(Response.Status.OK).entity("model has been updated").build();
     }
 
     @GET

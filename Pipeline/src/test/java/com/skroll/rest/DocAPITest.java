@@ -35,14 +35,16 @@ public class DocAPITest {
     public static final Logger logger = LoggerFactory
             .getLogger(DocAPITest.class);
     WebServer jettyServer = new WebServer(8888);
+    String documentId=null;
     @Before
-    public void setup () {
+    public void setup () throws Exception {
 
         try {
             jettyServer.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        documentId = testFileUpload();
     }
     @After
     public void shutdown() {
@@ -92,19 +94,8 @@ public class DocAPITest {
     }
 
     @Test
-    public void testGetParagraphJson() throws Exception {
-        String documentId = testFileUpload();
-        String TARGET_URL = "http://localhost:8888/restServices/instrument/getParagraphJson";
-        Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(TARGET_URL);
-
-        String responseString = webTarget.request(MediaType.APPLICATION_JSON).cookie(new  NewCookie("documentId", documentId)).get(String.class);
-        System.out.println("Here is the response: "+responseString);
-    }
-    @Test
     public void test_UploadFile_UpdateTerms() throws Exception, ObjectPersistUtil.ObjectPersistException {
 
-        String documentId = testFileUpload();
         Configuration configuration = new Configuration();
         String preEvaluatedFolder = configuration.get("preEvaluatedFolder","/tmp/");
         Document doc = JsonDeserializer.fromJson(Files.toString(new File(preEvaluatedFolder + documentId), Constants.DEFAULT_CHARSET));
@@ -137,7 +128,6 @@ public class DocAPITest {
 
     @Test
     public void test_UploadFile_RemoveTerms() throws Exception, ObjectPersistUtil.ObjectPersistException {
-        String documentId = testFileUpload();
         testRemoveTerms();
         Configuration configuration = new Configuration();
         String preEvaluatedFolder = configuration.get("preEvaluatedFolder","/tmp/");
@@ -158,7 +148,6 @@ public class DocAPITest {
 
     @Test
     public void testUpdateTerms() throws Exception {
-        String documentId = testFileUpload();
         String TARGET_URL = "http://localhost:8888/restServices/doc/updateTerms";
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
@@ -177,20 +166,18 @@ public class DocAPITest {
 
     @Test
     public void testUpdateModel() throws Exception {
-        String documentId = testFileUpload();
         String TARGET_URL = "http://localhost:8888/restServices/doc/updateModel";
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
 
         String response = webTarget.request(MediaType.APPLICATION_JSON).cookie(new  NewCookie("documentId", documentId)).get(String.class);
         logger.debug("Here is the response: " + response);
-        assert(response.contains("ok"));
+        assert(response.contains("model has been updated"));
         client.close();
     }
 
     @Test
     public void testUploadListDocs() throws Exception {
-        testFileUpload();
         String TARGET_URL = "http://localhost:8888/restServices/doc/listDocs";
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
@@ -213,7 +200,6 @@ public class DocAPITest {
     }
     @Test
     public void testRemoveTerms() throws Exception {
-        String documentId =  testFileUpload();
         String TARGET_URL = "http://localhost:8888/restServices/doc/updateTerms";
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);

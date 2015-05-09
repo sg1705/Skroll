@@ -1,6 +1,7 @@
 package com.skroll.parser.tokenizer;
 
 import com.skroll.document.Document;
+import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.Parser;
@@ -25,7 +26,7 @@ public class TextNodeHasAnchorTest extends TestCase {
         htmlDoc = Parser.parseDocumentFromHtml(htmlString);
 
         //find out how many tokens have bold
-        List<Token> tokens = htmlDoc.get(CoreAnnotations.TokenAnnotation.class);
+        List<Token> tokens = DocumentHelper.getDocumentTokens(htmlDoc);
         int count = 0;
         for(Token token: tokens) {
             String text = token.get(CoreAnnotations.TextAnnotation.class);
