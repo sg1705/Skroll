@@ -6,4 +6,5 @@ package com.skroll.document.annotation;
 public interface CoreAnnotation<V> extends TypesafeMap.Key<V> {
 
     public Class<V> getType();
+
 }

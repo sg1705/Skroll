@@ -81,3 +81,9 @@ task fatJar(type: Jar) {
     exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
     with jar
 }
+
+task start(type: JavaExec) {
+    File workingDir = new File('Pipeline/')
+    main = 'com.skroll.rest.WebServer'
+    classpath = sourceSets.main.runtimeClasspath
+}
