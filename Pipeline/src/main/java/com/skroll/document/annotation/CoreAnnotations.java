@@ -29,6 +29,10 @@ public class CoreAnnotations {
         public Class<String> getType() {
             return String.class;
         }
+
+        public Class getAnnType() {
+            return TextAnnotation.class;
+        }
     }
 
 

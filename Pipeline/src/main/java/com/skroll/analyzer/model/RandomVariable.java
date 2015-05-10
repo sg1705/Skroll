@@ -15,9 +15,15 @@ public class RandomVariable {
         this.featureSize = featureSize;
     }
 
-    RandomVariable(int featureSize, String[] valueNames) {
+    RandomVariable(int featureSize, String name) {
+        this.featureSize = featureSize;
+        this.name = name;
+    }
+
+    RandomVariable(int featureSize, String[] valueNames, String name) {
         this.featureSize = featureSize;
         this.valueNames = valueNames;
+        this.name = name;
     }
 
     public int getFeatureSize() {
@@ -27,6 +33,10 @@ public class RandomVariable {
     public String getValueName(int i) {
         if (valueNames == null) return String.valueOf(i);
         return valueNames[i];
+    }
+
+    public String getName() {
+        return name;
     }
 
 }
