@@ -73,6 +73,13 @@ public class InstrumentAPI {
             paraIndex++;
         }
 
+        for (CoreMap table : doc.getTables()) {
+            if (table.get(CoreAnnotations.ParagraphIdAnnotation.class).equals(paragraphId)) {
+                //found a matching table
+                annotationJson = annotationJson + "," + gson.toJson(table);
+            }
+        }
+
         // get the json from BNI
         logger.debug("ParaIndex: " + paraIndex);
         try {
