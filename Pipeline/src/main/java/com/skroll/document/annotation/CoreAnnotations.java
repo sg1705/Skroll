@@ -285,4 +285,34 @@ public class CoreAnnotations {
             return Boolean.class;
         }
     }
+
+
+    /**
+     * CoreMap key identifying the tables
+     */
+    public static class TablesAnnotation implements CoreAnnotation<List<CoreMap>> {
+        public Class<List<CoreMap>> getType() {
+            return EraserUtils.<Class<List<CoreMap>>> uncheckedCast(List.class);
+        }
+    }
+
+    /**
+     * CoreMap key identifying the table rows
+     */
+    public static class RowsAnnotation implements CoreAnnotation<List<CoreMap>> {
+        public Class<List<CoreMap>> getType() {
+            return EraserUtils.<Class<List<CoreMap>>> uncheckedCast(List.class);
+        }
+    }
+
+    /**
+     * CoreMap key identifying the table cols
+     */
+    public static class ColsAnnotation implements CoreAnnotation<List<CoreMap>> {
+        public Class<List<CoreMap>> getType() {
+            return EraserUtils.<Class<List<CoreMap>>> uncheckedCast(List.class);
+        }
+    }
+
+
 }

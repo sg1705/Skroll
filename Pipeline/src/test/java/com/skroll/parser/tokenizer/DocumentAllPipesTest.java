@@ -30,7 +30,6 @@ public class DocumentAllPipesTest extends TestCase {
         int count = 0;
         for(Token token: tokens) {
             if (token.containsKey(CoreAnnotations.IsBoldAnnotation.class)) {
-                System.out.println(token.getText());
                 count++;
             }
         }

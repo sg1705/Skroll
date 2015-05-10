@@ -144,6 +144,7 @@ function processNode(index, element) {
 
     //check to see if the new element is in table
     if (isElementInTable(element)) {
+        processTableAnnotation(element);
         //create new para
         processTextNode(index, element);
         return;
@@ -161,6 +162,25 @@ function createPara(element) {
     var newParagraph = new Object();
     newParagraph[ID_ANNOTATION] = 'p_'+paragraphId;
     newParagraph[TEXT_ANNOTATION] = "";
+    if (isBlockInTable) {
+      newParagraph[IS_TABLE_ANNOTATION] = true;
+    }
+
+    setParaAnnotations(newParagraph);
+    paragraphs.push(newParagraph);
+    insertMarker(paragraphId, element);
+    paragraphId++;
+    resetPara();
+
+    if (isElementInTable(element)) {
+        isBlockInTable = true;
+    } else {
+        isBlockInTable = false;
+    }
+
+}
+
+function setParaAnnotations(newParagraph) {
     newParagraph[PARAGRAPH_FRAGMENT] = chunkStack;
     //insert page break annotation
     if (pageBreak) {
@@ -170,25 +190,14 @@ function createPara(element) {
       newParagraph[IS_ANCHOR_ANNOTATION] = true;
     }
 
-    if (isBlockInTable) {
-      newParagraph[IS_TABLE_ANNOTATION] = true;
-    }
 
-    paragraphs.push(newParagraph);
-    insertMarker(paragraphId, element);
+}
+
+function resetPara() {
     chunkStack = new Array();
-    paragraphId++;
     pageBreak = false;
     isAnchor = false;
     isFirstChunkOfPara = true;
-
-    if (isElementInTable(element)) {
-        isBlockInTable = true;
-    } else {
-        isBlockInTable = false;
-    }
-
-
 }
 
 function createLastPara() {

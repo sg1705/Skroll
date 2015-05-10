@@ -30,7 +30,6 @@ public class IsInTableAnnotationTest extends TestCase {
         int countTableAnnotation = 0;
         for (CoreMap paragraph : paragraphs) {
             if (paragraph.containsKey(CoreAnnotations.IsInTableAnnotation.class)) {
-                System.out.println(paragraph.getText());
                 countTableAnnotation++;
             }
         }
@@ -53,7 +52,6 @@ public class IsInTableAnnotationTest extends TestCase {
         int countTableAnnotation = 0;
         for (CoreMap paragraph : paragraphs) {
             if (paragraph.containsKey(CoreAnnotations.IsInTableAnnotation.class)) {
-                System.out.println(paragraph.getText());
                 countTableAnnotation++;
             }
         }
@@ -78,13 +76,10 @@ public class IsInTableAnnotationTest extends TestCase {
         int countTableAnnotation = 0;
         for (CoreMap paragraph : paragraphs) {
             if (paragraph.containsKey(CoreAnnotations.IsInTableAnnotation.class)) {
-                System.out.println(paragraph.getText());
                 countTableAnnotation++;
             }
         }
         System.out.println(countTableAnnotation);
         assert (countTableAnnotation == 214);
     }
-
-
 }
