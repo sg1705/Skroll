@@ -28,7 +28,6 @@ public class PageBreakAnnotationTest extends TestCase {
         int countPageBreak = 0;
         for (CoreMap paragraph : paragraphs) {
             if (paragraph.containsKey(CoreAnnotations.IsPageBreakAnnotation.class)) {
-                System.out.println(paragraph.getText());
                 countPageBreak++;
             }
         }
@@ -52,11 +51,12 @@ public class PageBreakAnnotationTest extends TestCase {
         int countPageBreak = 0;
         for (CoreMap paragraph : paragraphs) {
             if (paragraph.containsKey(CoreAnnotations.IsPageBreakAnnotation.class)) {
-                System.out.println(paragraph.getText());
                 countPageBreak++;
             }
         }
         System.out.println(countPageBreak);
+
+        assert(countPageBreak == 105);
     }
 
 }

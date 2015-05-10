@@ -69,7 +69,7 @@
 
 <script src="../jquery.min.js"></script>
 <script src="../jQueryParser.js"></script>
-
+<script src="../jQueryTableParser.js"></script>
 <script>
     var DEBUG = true;
 
@@ -83,6 +83,6 @@
     //move chunks to paragraphs
     createLastPara();
     docObject.set(PARAGRAPH_ANNOTATION, paragraphs);
-
+    docObject.set(TABLES_ANNOTATION, tables);
     console.log(JSON.stringify(docObject, null, 2));
 </script>

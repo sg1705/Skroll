@@ -23,6 +23,9 @@ page.injectJs('./jquery.min.js', function() {
 page.injectJs('./jQueryParser.js', function() {
     console.log('parser included...');
 });
+page.injectJs('./jQueryTableParser.js', function() {
+    console.log('parser included...');
+});
 
 
 
@@ -37,7 +40,7 @@ var parsedJson = page.evaluate(function() {
     //move chunks to paragraphs
     createLastPara();
     docObject.set(PARAGRAPH_ANNOTATION, paragraphs);
-
+    docObject.set(TABLES_ANNOTATION, tables);
     return ( ";---------------SKROLLJSON---------------------;"
              + JSON.stringify(docObject, null, 2)
              + ";---------------SKROLL---------------------;"
