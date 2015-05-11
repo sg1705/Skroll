@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model;
 
 import com.skroll.document.CoreMap;
+import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.util.WordHelper;
@@ -15,7 +16,7 @@ import java.util.Set;
  */
 public class ParaProcessor {
     // create a copy of paragraph and annotate it further for training
-    static CoreMap makeTrainingParagraph(CoreMap paragraph) {
+    static CoreMap processParagraph(CoreMap paragraph) {
         CoreMap trainingParagraph = new CoreMap();
         List<Token> tokens = paragraph.getTokens();
         List<Token> newTokens = new ArrayList<>();
@@ -52,6 +53,22 @@ public class ParaProcessor {
                 paragraph.get(CoreAnnotations.DefinedTermTokensAnnotation.class));
 
         return trainingParagraph;
+    }
+
+
+    // print processedPara for testing purpose
+    static void print(CoreMap processedPara) {
+        Set<String> wordSet = processedPara.get(CoreAnnotations.WordSetForTrainingAnnotation.class);
+        System.out.println((wordSet));
+        List<Token> processedTokens = processedPara.get(CoreAnnotations.TokenAnnotation.class);
+        List<String> strings = DocumentHelper.getTokenString(processedTokens);
+        System.out.println(strings);
+
+        for (Token token : processedTokens) {
+            System.out.print(token.get(CoreAnnotations.InQuotesAnnotation.class) + " ");
+        }
+        System.out.println();
+
     }
 
 }

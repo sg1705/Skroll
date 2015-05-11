@@ -36,6 +36,15 @@ public class RVValues {
 
     }
 
+    static void addValueComputer(RandomVariable rv, RVValueComputer computer) {
+        valueComputerMap.put(rv, computer);
+    }
+
+    static void addAnnotationLink(RandomVariable rv, Class ann) {
+        rvaMap.put(rv, ann);
+    }
+
+
     static int getValue(RandomVariable rv, CoreMap m) {
         RVValueComputer processor = valueComputerMap.get(rv);
         if (processor != null) return processor.getValue(m);
@@ -80,5 +89,16 @@ public class RVValues {
             return createRVFromAnnotation(ann, DEFAULT_NUM_INT_VALS);
         }
         return null; // not able to create RV automatically
+    }
+
+    /**
+     * returns 0 if input parameter false, 1 if true
+     *
+     * @param b
+     * @return
+     */
+    static int booleanToInt(Boolean b) {
+        if (b == null) return 0;
+        return b ? 1 : 0;
     }
 }

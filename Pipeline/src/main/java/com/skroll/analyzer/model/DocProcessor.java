@@ -1,7 +1,7 @@
 package com.skroll.analyzer.model;
 
 import com.skroll.analyzer.data.DocData;
-import com.skroll.analyzer.model.bn.NBFCConfig;
+import com.skroll.analyzer.model.bn.config.NBFCConfig;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 
@@ -13,12 +13,13 @@ import java.util.List;
  * Created by wei on 5/10/15.
  */
 public class DocProcessor {
-    static List<CoreMap> processParagraphs() {
+    static List<CoreMap> processParagraphs(List<CoreMap> paras) {
         List<CoreMap> processedParas = new ArrayList<>();
+        for (CoreMap para : paras) processedParas.add(ParaProcessor.processParagraph(para));
         return processedParas;
     }
 
-    static DocData getDataFromDoc(Document doc) {
+    static DocData getDataFromDoc(Document doc, NBFCConfig config) {
         DocData data = new DocData();
 
         return data;
@@ -36,24 +37,24 @@ public class DocProcessor {
         return result;
     }
 
-//    //todo: we're check both processedParagraphs and originalParas. But should probably combine the information and just check one.
-//    // this method is assuming all the doc features are binary
-//    public static int[] generateDocumentFeatures(List<CoreMap> originalParas, List<CoreMap> processedParagraphs,
-//                                                 NBFCConfig nbfcConfig){
-//
-//        int[] docFeatureValues = new int[nbfcConfig.getDocumentFeatureVarList().size()];
-//
-//        Arrays.fill(docFeatureValues, 1);
-//        //for( CoreMap paragraph : processedParagraphs) {
-//        for (int p=0; p<processedParagraphs.size();p++){
-//            CoreMap paragraph = processedParagraphs.get(p);
-//            for (int f=0; f< docFeatureValues.length; f++){
-//                if (RVValues.getValue(nbfcConfig.getCategoryVar(), originalParas.get(p))==1)
-//                    docFeatureValues[f] &= (getFeatureValue(nbfcConfig.getFeatureExistsAtDocLevelVarList().get(f),
-//                            Arrays.asList(originalParas.get(p), paragraph )));
-//            }
-//        }
-//        return docFeatureValues;
-//    }
+    //todo: we're check both processedParagraphs and originalParas. But should probably combine the information and just check one.
+    // this method is assuming all the doc features are binary
+    public static int[] generateDocumentFeatures(List<CoreMap> originalParas, List<CoreMap> processedParagraphs,
+                                                 NBFCConfig nbfcConfig) {
+
+        int[] docFeatureValues = new int[nbfcConfig.getDocumentFeatureVarList().size()];
+
+        Arrays.fill(docFeatureValues, 1);
+        //for( CoreMap paragraph : processedParagraphs) {
+        for (int p = 0; p < processedParagraphs.size(); p++) {
+            CoreMap paragraph = processedParagraphs.get(p);
+            for (int f = 0; f < docFeatureValues.length; f++) {
+                if (RVValues.getValue(nbfcConfig.getCategoryVar(), originalParas.get(p)) == 1)
+                    docFeatureValues[f] &= (getFeatureValue(nbfcConfig.getFeatureExistsAtDocLevelVarList().get(f),
+                            Arrays.asList(originalParas.get(p), paragraph)));
+            }
+        }
+        return docFeatureValues;
+    }
 
 }
