@@ -20,6 +20,7 @@ angular.module('SkrollApp')
       $scope.documentModel = documentModel;
       $scope.documentService = documentService;
       $scope.$location = $location;
+      $scope.smodel = LHSModel.smodel;
 
       $scope.getDocumentIds = function() {
         documentService.getDocumentIds().then(function(documentIds) {

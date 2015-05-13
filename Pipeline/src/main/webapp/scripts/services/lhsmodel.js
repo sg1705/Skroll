@@ -12,7 +12,8 @@ var LHSModel = {
 
 	smodel: {
 		terms: [],
-		levelTerms: []
+		levelTerms: [],
+    hover: false
 	},
 
 	classes: [{
@@ -78,7 +79,7 @@ var LHSModel = {
 
   getParagraphsForClass: function(classId, paraId) {
 		var paras = _.filter(LHSModel.smodel.terms, function(obj){
-			if ((obj.paraId == paragraphId) && (obj.classificationId == classId))
+			if ((obj.paraId == paraId) && (obj.classificationId == classId))
 				return true;
 		});
 		return paras;
@@ -103,6 +104,8 @@ var LHSModel = {
     for(var ii = 0; ii < terms.length; ii++) {
     	var level = new Object();
     	var term = terms[ii].term.toLowerCase();
+      if (term.indexOf('( continued )') > -1)
+        continue;
       if (s.startsWith(term, 'item')) {
       	//level 1
       	level['level'] = 1;
