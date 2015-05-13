@@ -26,4 +26,8 @@ public class ParaStartsWithFeatureComputer implements RVValueComputer {
         Token firstToken = tokens.get(0);
         return RVValues.booleanToInt(processedPara.getTokens().get(0).<Boolean>get(wordFeature));
     }
+
+    public int getNumVals() {
+        return 2;
+    }
 }

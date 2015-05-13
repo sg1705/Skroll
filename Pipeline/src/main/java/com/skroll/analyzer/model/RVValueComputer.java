@@ -7,4 +7,6 @@ import com.skroll.document.CoreMap;
  */
 public interface RVValueComputer {
     int getValue(CoreMap m);
+
+    public int getNumVals();
 }

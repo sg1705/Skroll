@@ -20,6 +20,7 @@ import static org.junit.Assert.*;
  */
 public class DocProcessorTest {
     Document doc = new Document();
+    ModelRVSetting setting = new DefModelRVSetting();
 
 
     @Before
@@ -63,11 +64,28 @@ public class DocProcessorTest {
 
     @Test
     public void testGetFeatureValue() throws Exception {
+        List<CoreMap> processedParas = DocProcessor.processParagraphs(doc.getParagraphs());
+        for (int i = 0; i < processedParas.size(); i++) {
+            System.out.print("paragraph " + i + ": \n");
+            for (RandomVariable rv : setting.getNbfcConfig().getAllParagraphFeatures()) {
+                int v = DocProcessor.getFeatureValue(rv, Arrays.asList(
+                        doc.getParagraphs().get(i), processedParas.get(i)));
+                System.out.print(rv.getName() + "=" + v + " ");
+            }
+        }
+        assert (DocProcessor.getFeatureValue(setting.getNbfcConfig().getAllParagraphFeatures().get(0),
+                Arrays.asList(doc.getParagraphs().get(0), processedParas.get(0))) == 5);
 
+        assert (DocProcessor.getFeatureValue(setting.getNbfcConfig().getAllParagraphFeatures().get(1),
+                Arrays.asList(doc.getParagraphs().get(0), processedParas.get(0))) == 1);
     }
 
     @Test
     public void testGenerateDocumentFeatures() throws Exception {
-
+        List<CoreMap> processedParas = DocProcessor.processParagraphs(doc.getParagraphs());
+        int[] docFeatureVals =
+                DocProcessor.generateDocumentFeatures(doc.getParagraphs(), processedParas, setting.getNbfcConfig());
+        System.out.println(Arrays.toString(docFeatureVals));
     }
+
 }
