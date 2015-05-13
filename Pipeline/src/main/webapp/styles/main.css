@@ -33,15 +33,16 @@ sk-viewport .blurry-text {
 
 
 md-sidenav.md-locked-open {
-    width: 250px;
+    width: 300px;
+    /*width: 250px; before we got levels*/
     min-width: 250px;
-    max-width: 300px;
+    max-width: 350px;
 }
 
 /**
 * Styles related to sk-lhs
 */
-sk-lhs .menu-list {
+sk-lhs, sk-lhs-levels .menu-list {
     background: #fff;
     overflow: hidden;
     position: relative;
@@ -58,6 +59,25 @@ sk-lhs .menu-list {
     padding: 0;
 }
 
+md-content.sk-lhs-hover:hover {
+    opacity: 1;
+}
+
+md-content.sk-lhs-hover {
+    opacity: 0.3;
+    -webkit-transition: 0.25s cubic-bezier(0.35, 0, 0.25, 1);
+    -webkit-transition-property: opacity;
+    -moz-transition: 0.25s cubic-bezier(0.35, 0, 0.25, 1);
+    -moz-transition-property: opacity;
+    transition: 0.25s cubic-bezier(0.35, 0, 0.25, 1);
+    transition-property: opacity;
+
+}
+
+
+.menu-item-level-2 {
+    padding-left: 10px;
+}
 
 sk-lhs .menu-toggle-button {
     text-align: left;
@@ -77,6 +97,7 @@ sk-lhs .menu-toggle-button {
 .menu-list li {
     list-style-position: inside;    
 }
+
 
 .menu-list button.md-button {
     font-size:16px;

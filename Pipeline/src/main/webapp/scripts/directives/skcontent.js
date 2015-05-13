@@ -21,6 +21,7 @@ angular.module('SkrollApp')
                 documentService.getTerms().then(function(terms) {
                 LHSModel.smodel.terms = terms;
                 console.log(terms);
+                LHSModel.createLevels();
                 element.replaceWith(documentModel.targetHtml);
                 documentModel.isProcessing = false;
               }, function(data, status) {

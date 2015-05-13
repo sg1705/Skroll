@@ -202,6 +202,8 @@ ViewPortCtrl.prototype.updateDocument = function(contentHtml) {
   $("#content").html(contentHtml);
   this.documentService.getTerms().then(function(terms){
     LHSModel.smodel.terms = terms;
+    //TODO : remove this after real levels are received from server
+    LHSModel.createLevels();
     console.log("Terms return by API");
     //console.log(JSON.stringify(terms, null,2));
     console.log(terms);
