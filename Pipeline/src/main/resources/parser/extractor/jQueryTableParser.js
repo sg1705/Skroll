@@ -66,6 +66,20 @@ function processTableAnnotation(tableElement) {
     tables.push(newTable);
 }
 
+
+function getTextFromTable(tableElement) {
+    var text = '';
+    $(tableElement).find('tr').each(function(rowIndex,r) {
+        $(this).find('th, td').each(function(cellIndex, c) {
+            var textNodes = getTextNodesIn(c, false);
+            for(var ii = 0; ii < textNodes.length; ii++) {
+                text = text + $(textNodes[ii]).text() + ' ';
+            }
+        });
+    });
+    return text;
+}
+
 //function getAllTextNodesIn(element) {
 //    return $(element).find('*').contents().filter(function () { return this.nodeType === 3; });
 //}

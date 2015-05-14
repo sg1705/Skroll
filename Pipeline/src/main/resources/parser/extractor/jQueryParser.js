@@ -56,6 +56,16 @@ Rules first
       Add it to a list of paragraphs
    d. Continue traversing
 
+Changelog
+
+5/13/2015
+* Refactored processTextNode by splitting into two. processTextNode() and createChunk()
+* Created method called getTableText . This method iterates over each row and cell, and
+  joins the each text in the cell with a space.
+
+5/13/2015
+* Created a method called processFont
+* Commented this method in two places processNode() and createChunk()
 
 **/
 
@@ -142,15 +152,15 @@ function processNode(index, element) {
 
     }
 
+    //processFont(element);
+
     //check to see if the new element is in table
     if (isElementInTable(element)) {
         processTableAnnotation(element);
         //create new para
-        processTextNode(index, element);
+        processTableText(element);
         return;
     }
-
-
 
 
     $(element).contents().each(function(index, element) {
@@ -180,6 +190,11 @@ function createPara(element) {
 
 }
 
+function createLastPara() {
+    createPara();
+}
+
+
 function setParaAnnotations(newParagraph) {
     newParagraph[PARAGRAPH_FRAGMENT] = chunkStack;
     //insert page break annotation
@@ -193,6 +208,15 @@ function setParaAnnotations(newParagraph) {
 
 }
 
+function processFont(element) {
+    if (element.style != null) {
+        if (element.style.fontFamily != null) {
+            $(element).css("font-family","'Roboto', sans-serif");
+            //$(element).css("font-family","TiemposTextWeb-Regular, Georgia, serif");
+        }
+    }
+}
+
 function resetPara() {
     chunkStack = new Array();
     pageBreak = false;
@@ -200,9 +224,6 @@ function resetPara() {
     isFirstChunkOfPara = true;
 }
 
-function createLastPara() {
-    createPara();
-}
 
 /**
 *  Processes an element if it is a row
@@ -237,6 +258,16 @@ function processPageBreak(index, element) {
   Process any given node as a text node and chunks it based on formatting
 **/
 function processTextNode(index, element) {
+    var chunkText = $(element).text();
+    createChunk(chunkText, element);
+}
+
+function processTableText(tableElement) {
+    var chunkText = getTextFromTable(tableElement);
+    createChunk(chunkText, tableElement);
+}
+
+function createChunk(chunkText, element) {
     var newChunk = new Object();
     //check to see if need to create a chunk
     var isChunkRequired = false;
@@ -265,7 +296,7 @@ function processTextNode(index, element) {
         isChunkRequired = true;
         isFirstChunkOfPara = true;
     }
-    var chunkText = $(element).text();
+    //processFont(element);
     if (isChunkRequired) {
         //create a chunk and add it to stack
         newChunk[ID_ANNOTATION] = chunkId;
@@ -286,7 +317,6 @@ function processTextNode(index, element) {
             printNodes(index, element, $(element).css("display"));
     }
 }
-
 
 function insertMarker(paragraphId, element) {
     //original marker
