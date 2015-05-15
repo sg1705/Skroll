@@ -23,6 +23,7 @@ angular.module('SkrollApp')
                 console.log(terms);
                 LHSModel.createLevels();
                 element.replaceWith(documentModel.targetHtml);
+                ToolbarModel.toolbarInfo.title = documentModel.documentId;
                 documentModel.isProcessing = false;
               }, function(data, status) {
                 console.log(status);
