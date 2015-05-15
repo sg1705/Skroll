@@ -56,9 +56,15 @@ public class RandomVariableCreater {
         return null; // not able to create RV automatically
     }
 
-    static RandomVariable createRVWithComputer(RVValueComputer computer, String name) {
+    static RandomVariable createDiscreteRVWithComputer(RVValueComputer computer, String name) {
         RandomVariable rv = new RandomVariable(computer.getNumVals(), name);
         RVValues.addValueComputer(rv, computer);
+        return rv;
+    }
+
+    static RandomVariable createWordsRVWithComputer(RVWordsComputer computer, String name) {
+        RandomVariable rv = new RandomVariable(0, name);
+        RVValues.addWordsComputer(rv, computer);
         return rv;
     }
 }

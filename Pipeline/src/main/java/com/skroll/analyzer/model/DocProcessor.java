@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model;
 
 import com.skroll.analyzer.data.DocData;
+import com.skroll.analyzer.model.bn.SimpleDataTuple;
 import com.skroll.analyzer.model.bn.config.NBFCConfig;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -22,9 +23,38 @@ public class DocProcessor {
 
     // process the document to make data tuples stored in DocData for models to use
     static DocData getDataFromDoc(Document doc, NBFCConfig config) {
-        DocData data = new DocData();
+        DocData data = new DocData(doc, config);
+        List<RandomVariable> wordVarList = config.getWordVarList();
+        List<RandomVariable> features = config.getAllParagraphFeatures();
 
+        List<CoreMap> originalParas = doc.getParagraphs();
+        List<CoreMap> processedParas = processParagraphs(doc.getParagraphs());
 
+        SimpleDataTuple[] tuples = new SimpleDataTuple[originalParas.size()];
+
+        int[] docFeatureVals = generateDocumentFeatures(originalParas, processedParas, config);
+
+        int numVals = wordVarList.size() + features.size();
+        for (int p = 0; p < originalParas.size(); p++) {
+            List<CoreMap> paras = Arrays.asList(originalParas.get(p), processedParas.get(p));
+            int[] vals = new int[numVals];
+            int i = 0;
+            vals[i++] = getFeatureValue(config.getCategoryVar(), Arrays.asList(originalParas.get(i)));
+
+            for (; i < features.size(); i++) {
+                vals[i] = getFeatureValue(features.get(i), paras);
+            }
+
+            for (; i < docFeatureVals.length; i++) vals[i] = docFeatureVals[i];
+
+            List<String[]> wordsList = new ArrayList<>();
+            for (RandomVariable rv : config.getWordVarList()) {
+                //RVValues.getWords(rv, processedParas.get(p)).toArray(new String[]);
+                wordsList.add(RVValues.getWords(rv, processedParas.get(p)));
+            }
+            tuples[p] = new SimpleDataTuple(wordsList, vals);
+        }
+        data.setTuples(tuples);
         return data;
     }
 

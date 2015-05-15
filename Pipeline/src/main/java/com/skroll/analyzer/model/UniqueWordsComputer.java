@@ -12,16 +12,16 @@ import java.util.Set;
  */
 public class UniqueWordsComputer implements RVWordsComputer {
 
-    public List<String> getWords(CoreMap m) {
+    public String[] getWords(CoreMap m) {
         return getWords(m, m.getTokens().size());
     }
 
-    public List<String> getWords(CoreMap m, int n) {
+    public String[] getWords(CoreMap m, int n) {
         Set<String> wordSet = new HashSet<>();
         for (int i = 0; i < n; i++)
             wordSet.add(m.getTokens().toString());
 
-        return new ArrayList<>(wordSet);
+        return wordSet.toArray(new String[wordSet.size()]);
 
 
     }

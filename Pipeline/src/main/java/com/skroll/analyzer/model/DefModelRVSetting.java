@@ -14,7 +14,7 @@ public class DefModelRVSetting extends ModelRVSetting {
             RandomVariableCreater.createRVFromAnnotation(CoreAnnotations.IsTOCAnnotation.class);
 
     static final List<RandomVariable> DEFAULT_PARA_FEATURE_VARS = Arrays.asList(
-            RandomVariableCreater.createRVWithComputer(new NumberTokensComputer(), "numTokens")
+            RandomVariableCreater.createDiscreteRVWithComputer(new NumberTokensComputer(), "numTokens")
     );
     static final List<RandomVariable> DEFAULT_PARA_DOC_FEATURE_VARS = Arrays.asList(
             RandomVariableCreater.createParagraphStartsWithRV(CoreAnnotations.InQuotesAnnotation.class)
@@ -24,7 +24,8 @@ public class DefModelRVSetting extends ModelRVSetting {
             new RandomVariable(2, "tocs in quotes")
     );
     static final List<RandomVariable> DEFAULT_WORD_VARS = Arrays.asList(
-            RandomVariableCreater.createRVFromAnnotation(CoreAnnotations.WordSetForTrainingAnnotation.class)
+            RandomVariableCreater.createWordsRVWithComputer(new UniqueWordsComputer(), "uniqueWords")
+//            RandomVariableCreater.createRVFromAnnotation(CoreAnnotations.WordSetForTrainingAnnotation.class)
     );
 
     public DefModelRVSetting() {

@@ -26,6 +26,10 @@ public class RVValues {
         return rvaMap.get(rv);
     }
 
+    static void addWordsComputer(RandomVariable rv, RVWordsComputer computer) {
+        wordsComputerMap.put(rv, computer);
+    }
+
     static void addValueComputer(RandomVariable rv, RVValueComputer computer) {
         valueComputerMap.put(rv, computer);
     }
@@ -35,16 +39,16 @@ public class RVValues {
     }
 
 
-    static List<String> getWords(RandomVariable rv, CoreMap m) {
+    static String[] getWords(RandomVariable rv, CoreMap m) {
         RVWordsComputer computer = wordsComputerMap.get(rv);
         if (computer != null) return computer.getWords(m);
-        Class ann = rvaMap.get(rv);
-        if (ann == null) return null;
-        Object val = m.get(ann);
-        if (val instanceof Set)
-            return new ArrayList<String>((Set<String>) val);
-        else if (val instanceof List)
-            return (List<String>) val;
+//        Class ann = rvaMap.get(rv);
+//        if (ann == null) return null;
+//        Object val = m.get(ann);
+//        if (val instanceof Set)
+//            return new ArrayList<String>((Set<String>) val);
+//        else if (val instanceof List)
+//            return (List<String>) val;
         return null;
     }
     static int getValue(RandomVariable rv, CoreMap m) {
