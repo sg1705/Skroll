@@ -3,7 +3,9 @@ package com.skroll.document.annotation;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Token;
 import com.skroll.pipeline.util.EraserUtils;
+import org.reflections.Reflections;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -11,6 +13,17 @@ import java.util.Set;
  * Created by saurabh on 1/3/15.
  */
 public class CoreAnnotations {
+
+    public static HashMap<Class, String> aMap = new HashMap();
+
+    static {
+        Reflections reflections = new Reflections("com.skroll.document.annotation");
+        Set<Class<? extends CoreAnnotation>> annotationClasses = reflections.getSubTypesOf(CoreAnnotation.class);
+        for(Class annotationClass : annotationClasses) {
+            aMap.put(annotationClass, annotationClass.getSimpleName());
+        }
+
+    }
 
     /**
      * Static methods only

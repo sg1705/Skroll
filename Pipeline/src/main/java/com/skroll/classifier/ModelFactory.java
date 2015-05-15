@@ -39,7 +39,8 @@ public class ModelFactory {
         TrainingDocumentAnnotatingModel localTrainingModel=null;
         try {
             localTrainingModel = (TrainingDocumentAnnotatingModel) objectPersistUtil.readObject(null,category.getName());
-            logger.trace("TrainingDocumentAnnotatingModel:" + localTrainingModel);
+            //TODO: This statement is a big offender
+            //logger.trace("TrainingDocumentAnnotatingModel:" + localTrainingModel);
 
         } catch (Throwable e) {
             logger.warn("TrainingDocumentAnnotatingModel is not found. creating new one" );
