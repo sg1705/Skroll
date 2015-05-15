@@ -5,9 +5,17 @@ var fs = require('fs');
 var args = system.args;
 
 var fileName = args[1];
-//htmlText = htmlText.substring(1, htmlText.length-1);
-var htmlText = fs.read(fileName);
 
+/* process url argument */
+var globalSourceUrl = args[2];
+var globalSourceUrlFile = (new Date()).getTime();
+if (globalSourceUrl == null) {
+    globalSourceUrl = '';
+}
+fs.write('/tmp/' + globalSourceUrlFile + '.js', "var sourceUrl = '" + globalSourceUrl + "'", "w");
+/* -- end process url argument */
+
+var htmlText = fs.read(fileName);
 page.settings.resourceTimeout = 200;
 page.settings.loadImages = false;
 
@@ -17,6 +25,10 @@ page.onConsoleMessage = function (msg) {
 
 //page.settings.userAgent = 'SpecialAgent';
 page.content = htmlText;
+page.injectJs('/tmp/' + globalSourceUrlFile + '.js', function() {
+    console.log('included...');
+});
+
 page.injectJs('./jquery.min.js', function() {
     console.log('included...');
 });
@@ -28,13 +40,11 @@ page.injectJs('./jQueryTableParser.js', function() {
 });
 
 
-
-var parsedJson = page.evaluate(function() {
+var parsedJson = page.evaluate(function(globalSourceUrl) {
 
     $(":root").contents().each(function(index, element) {
         processNode(index, element);
     });
-
 
     // done
     //move chunks to paragraphs

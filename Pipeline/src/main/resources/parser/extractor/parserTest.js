@@ -1,4 +1,5 @@
 var DEBUG = true;
+var sourceUrl = "www.google.com";
 $(":root").contents().each(function(index, element) {
     processNode(index, element);
 });
