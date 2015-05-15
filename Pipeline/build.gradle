@@ -44,6 +44,7 @@ dependencies {
     compile 'com.google.inject:guice:3.0'
     compile 'com.google.inject.extensions:guice-servlet:3.0'
     compile "com.squarespace.jersey2-guice:jersey2-guice:0.5"
+    compile 'org.reflections:reflections:0.9.9'
 }
 
 gretty{
