@@ -159,7 +159,7 @@ ViewPortCtrl.prototype.handleTrainerTextSelection = function(paraId,
     console.log(matchedItem);
     this.showYesNoDialog(prompt, items).then(angular.bind(this, function(clicked) {
       matchedItem.classificationId = clicked;
-
+      documentModel.isProcessing = true;
       this.documentService.addTermToPara(matchedItem).
       then(angular.bind(this, function(contentHtml){
         this.updateDocument(contentHtml);  
@@ -207,6 +207,7 @@ ViewPortCtrl.prototype.updateDocument = function(contentHtml) {
     console.log("Terms return by API");
     //console.log(JSON.stringify(terms, null,2));
     console.log(terms);
+    documentModel.isProcessing = false;
   }, function(data, status){
     console.log(status);
   });
@@ -221,6 +222,7 @@ ViewPortCtrl.prototype.showYesNoAllDialog = function(prompt, matchedItem) {
   //create a set of questions. In this case, yes or no
   var items = ['Yes', 'No', 'Yes to all ' + className];
   this.showYesNoDialog(prompt, items).then(angular.bind(this, function(clicked) {
+    documentModel.isProcessing = true;
     if (clicked == 1) {
       this.documentService.rejectClassFromPara(matchedItem.classificationId, matchedItem.paragraphId).
       then(angular.bind(this, function(contentHtml){

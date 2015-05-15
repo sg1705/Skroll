@@ -14,6 +14,7 @@ angular.module('SkrollApp')
       transclude: true,
       link: function(scope, element, attrs) {
           if (documentModel.documentId != null) {
+            documentModel.isProcessing = true;
             documentService.loadDocument(documentModel.documentId).then(angular.bind(this, function(contentHtml) {
               documentModel.targetHtml = contentHtml;
 
