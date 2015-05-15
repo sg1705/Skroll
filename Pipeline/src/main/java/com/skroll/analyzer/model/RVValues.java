@@ -4,9 +4,7 @@ import com.skroll.document.CoreMap;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by wei on 5/9/15.
@@ -28,14 +26,6 @@ public class RVValues {
         return rvaMap.get(rv);
     }
 
-    static List<String> getWords(RandomVariable rv, CoreMap m) {
-        RVWordsComputer computer = wordsComputerMap.get(rv);
-        if (computer != null) return computer.getWords(m);
-
-        return null;
-
-    }
-
     static void addValueComputer(RandomVariable rv, RVValueComputer computer) {
         valueComputerMap.put(rv, computer);
     }
@@ -45,6 +35,18 @@ public class RVValues {
     }
 
 
+    static List<String> getWords(RandomVariable rv, CoreMap m) {
+        RVWordsComputer computer = wordsComputerMap.get(rv);
+        if (computer != null) return computer.getWords(m);
+        Class ann = rvaMap.get(rv);
+        if (ann == null) return null;
+        Object val = m.get(ann);
+        if (val instanceof Set)
+            return new ArrayList<String>((Set<String>) val);
+        else if (val instanceof List)
+            return (List<String>) val;
+        return null;
+    }
     static int getValue(RandomVariable rv, CoreMap m) {
         RVValueComputer processor = valueComputerMap.get(rv);
         if (processor != null) return processor.getValue(m);

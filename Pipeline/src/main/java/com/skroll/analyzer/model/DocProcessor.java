@@ -19,8 +19,11 @@ public class DocProcessor {
         return processedParas;
     }
 
+
+    // process the document to make data tuples stored in DocData for models to use
     static DocData getDataFromDoc(Document doc, NBFCConfig config) {
         DocData data = new DocData();
+
 
         return data;
     }

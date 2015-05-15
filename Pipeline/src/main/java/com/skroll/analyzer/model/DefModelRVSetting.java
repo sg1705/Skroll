@@ -23,7 +23,9 @@ public class DefModelRVSetting extends ModelRVSetting {
     static final List<RandomVariable> DEFAULT_DOC_FEATURE_VARS = Arrays.asList(
             new RandomVariable(2, "tocs in quotes")
     );
-    static final List<RandomVariable> DEFAULT_WORD_VARS = Arrays.asList();
+    static final List<RandomVariable> DEFAULT_WORD_VARS = Arrays.asList(
+            RandomVariableCreater.createRVFromAnnotation(CoreAnnotations.WordSetForTrainingAnnotation.class)
+    );
 
     public DefModelRVSetting() {
         super(DEFAULT_PARA_IS_DEF, DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS,

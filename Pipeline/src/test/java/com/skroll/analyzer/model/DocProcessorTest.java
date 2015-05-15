@@ -72,6 +72,10 @@ public class DocProcessorTest {
                         doc.getParagraphs().get(i), processedParas.get(i)));
                 System.out.print(rv.getName() + "=" + v + " ");
             }
+            for (RandomVariable rv : setting.getNbfcConfig().getWordVarList()) {
+                System.out.print(RVValues.getWords(rv, processedParas.get(i)));
+            }
+            System.out.println();
         }
         assert (DocProcessor.getFeatureValue(setting.getNbfcConfig().getAllParagraphFeatures().get(0),
                 Arrays.asList(doc.getParagraphs().get(0), processedParas.get(0))) == 5);

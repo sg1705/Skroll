@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by wei on 5/10/15.
@@ -49,7 +51,8 @@ public class RandomVariableCreater {
             return createRVFromAnnotation(ann, 2);
         } else if (c.equals(Integer.class)) {
             return createRVFromAnnotation(ann, DEFAULT_NUM_INT_VALS);
-        }
+        } else if (c.equals(Set.class))
+            return createRVFromAnnotation(ann, 0);
         return null; // not able to create RV automatically
     }
 
