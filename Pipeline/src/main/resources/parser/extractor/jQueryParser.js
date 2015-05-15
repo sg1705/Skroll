@@ -139,6 +139,17 @@ function processNode(index, element) {
         processPageBreak(index, element);
     }
 
+    if ($(element).is('img')) {
+        var srcurl = $(element).attr('src');
+        if (srcurl.indexOf('/') == -1 ) {
+            //append the sourceurl
+            if (sourceUrl != null) {
+                var newUrl = sourceUrl + '/' + srcurl;
+                $(element).attr('src', newUrl);
+            }
+        }
+    }
+
     //check if a #text node
     if (element.nodeType == 3) {
         processTextNode(index, element);

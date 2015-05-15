@@ -314,5 +314,14 @@ public class CoreAnnotations {
         }
     }
 
+    /**
+     * Annotation for original url
+     */
+    public static class SourceUrlAnnotation implements CoreAnnotation<String> {
+        public Class<String> getType() {
+            return String.class;
+        }
+    }
+
 
 }

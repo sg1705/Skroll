@@ -126,9 +126,12 @@ public class DocAPI {
         String content = Resources.asCharSource(new URL(documentId), Charset.forName("UTF-8")).read();
         String fileName = new URL(documentId).getPath();
         String[] strs = fileName.split("/");
+        int lastIndexOfSlash = documentId.lastIndexOf('/');
+        String url = documentId.substring(0, lastIndexOfSlash);
+
         fileName = strs[strs.length - 1];
         try {
-            document = Parser.parseDocumentFromHtml(content);
+            document = Parser.parseDocumentFromHtml(content, url);
             for (Classifier classifier : request.getClassifiers()) {
                 document = (Document) classifier.classify(fileName, document);
             }
