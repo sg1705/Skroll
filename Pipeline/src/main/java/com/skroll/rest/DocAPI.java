@@ -132,9 +132,10 @@ public class DocAPI {
         fileName = strs[strs.length - 1];
         try {
             document = Parser.parseDocumentFromHtml(content, url);
-            for (Classifier classifier : request.getClassifiers()) {
-                document = (Document) classifier.classify(fileName, document);
-            }
+            //Streams require final objects
+            String fName = fileName;
+            Document fDoc = document;
+            request.getClassifiers().parallelStream().forEach(c -> c.classify(fName, fDoc));
             request.getDocumentFactory().putDocument(fileName, document);
             logger.debug("Added document into the documentMap with a generated hash key:" + fileName);
 
@@ -192,10 +193,10 @@ public class DocAPI {
                 return logErrorResponse("Failed to read/deserialize document from Pre Evaluated Folder", e);
             }
         }
+        //Streams require final objects
+        final Document finalDoc = doc;
         try {
-            for (Classifier classifier : request.getClassifiers()) {
-                doc = (Document) classifier.classify(documentId, doc);
-            }
+            request.getClassifiers().parallelStream().forEach(c -> c.classify(documentId, finalDoc));
             request.getDocumentFactory().putDocument(documentId, doc);
         } catch (Exception e) {
             return logErrorResponse("Failed to classify/store document", e);

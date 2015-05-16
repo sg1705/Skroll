@@ -31,7 +31,14 @@ var LHSModel = {
 		name: 'Table of Contents',
 		isSelected: false,
 		isVisible: true
-	}],
+	},
+  {
+    id: 3,
+    name: 'TOC Level 2',
+    isSelected: false,
+    isVisible: true
+  }
+  ],
 
 	removePara: function(paraId) {
 		this.smodel.terms = _.reject(this.smodel.terms, function(obj) {

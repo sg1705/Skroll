@@ -97,19 +97,28 @@ public class ClassifierImpl implements Classifier {
     }
 
     @Override
-    public Object classify(String documentId, Document document) throws Exception {
-        return  updateBNI(documentId, document, new ArrayList<CoreMap>());
+    public Object classify(String documentId, Document document) {
+        try {
+            return updateBNI(documentId, document, new ArrayList<CoreMap>());
+        } catch (Exception e) {
 
+        }
+        return document;
     }
 
     @Override
-    public Object classify(Document document, int numOfTokens) throws Exception {
+    public Object classify(Document document, int numOfTokens) {
         return classify("documentId", document);
     }
 
     @Override
-    public Object classify(String fileName, int numOfLines) throws Exception {
-        Document document = Parser.parseDocumentFromHtmlFile(fileName);
+    public Object classify(String fileName, int numOfLines) {
+        Document document = null;
+        try {
+            document = Parser.parseDocumentFromHtmlFile(fileName);
+        } catch (ParserException e) {
+            e.printStackTrace();
+        }
         return classify("documentId", document);
     }
 
