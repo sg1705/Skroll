@@ -26,11 +26,11 @@ public interface Classifier {
 
     public void train(Category category, String fileName, int numOfLines) throws ParserException;
 
-    public Object classify(String documentId, Document doc) throws Exception;
+    public Object classify(String documentId, Document doc);
 
-    public Object classify(Document doc, int numOfTokens) throws Exception;
+    public Object classify(Document doc, int numOfTokens);
 
-    public Object classify(String fileName, int numOfLines) throws Exception;
+    public Object classify(String fileName, int numOfLines);
 
     public Category getCategory();
 

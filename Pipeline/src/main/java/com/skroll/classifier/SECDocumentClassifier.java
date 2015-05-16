@@ -93,7 +93,7 @@ public class SECDocumentClassifier implements Classifier {
     }
 
     @Override
-    public Object classify(String documentId, Document doc) throws Exception {
+    public Object classify(String documentId, Document doc)  {
         return null;
     }
 

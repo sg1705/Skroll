@@ -24,11 +24,11 @@ public class ModelFactory {
     Configuration configuration = new Configuration();
     private String modelFolderName = configuration.get("modelFolder","/tmp");
     protected ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil(modelFolderName);
-    protected Map<String, TrainingDocumentAnnotatingModel> TrainingModelMap = new HashMap<>();
+    protected static Map<String, TrainingDocumentAnnotatingModel> TrainingModelMap = new HashMap<>();
     protected Map<String, ProbabilityDocumentAnnotatingModel> bniModelMap = new HashMap<>();
 
     TrainingDocumentAnnotatingModel getTrainingModel(Category category) {
-        if(TrainingModelMap.containsKey(category.getName())){
+        if (TrainingModelMap.containsKey(category.getName())){
             return TrainingModelMap.get(category.getName());
         }
         return createModel(category);
@@ -36,17 +36,19 @@ public class ModelFactory {
 
 
     public TrainingDocumentAnnotatingModel createModel(Category category) {
-        TrainingDocumentAnnotatingModel localTrainingModel=null;
-        try {
-            localTrainingModel = (TrainingDocumentAnnotatingModel) objectPersistUtil.readObject(null,category.getName());
-            //TODO: This statement is a big offender
-            //logger.trace("TrainingDocumentAnnotatingModel:" + localTrainingModel);
+        TrainingDocumentAnnotatingModel localTrainingModel =
+                null;
 
-        } catch (Throwable e) {
-            logger.warn("TrainingDocumentAnnotatingModel is not found. creating new one" );
-            localTrainingModel=null;
+        if (localTrainingModel == null) {
+            try {
+
+                    localTrainingModel = (TrainingDocumentAnnotatingModel) objectPersistUtil.readObject(null,category.getName());
+            } catch (Throwable e) {
+                logger.warn("TrainingDocumentAnnotatingModel is not found. creating new one" );
+                localTrainingModel = null;
+            }
         }
-        if (localTrainingModel==null) {
+        if (localTrainingModel == null) {
 
             localTrainingModel = new TrainingDocumentAnnotatingModel(category.wordType,
                     category.wordFeatures,
@@ -63,19 +65,18 @@ public class ModelFactory {
 
     ProbabilityDocumentAnnotatingModel getBNIModel(Category category, Document document) {
 
-        TrainingDocumentAnnotatingModel trainingModel = createModel(category);
+        TrainingDocumentAnnotatingModel trainingModel = getTrainingModel(category);
         trainingModel.updateWithDocumentAndWeight(document);
 
         ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(trainingModel.getTnbfModel(),
                 trainingModel.getHmm(), document, category.wordType, category.wordFeatures, category.paraType,category. paraFeatures,
                 category.paraDocFeatures, category.docFeatures, category.wordVarList);
         bniModel.annotateDocument();
-        printBelieves(bniModel, document);
+        //printBelieves(bniModel, document);
         return bniModel;
     }
     public void saveTrainingModel(Category category) throws ObjectPersistUtil.ObjectPersistException {
         objectPersistUtil.persistObject(null, getTrainingModel(category), category.getName());
-        logger.debug("persisted TrainingDocumentAnnotatingModel:" + getTrainingModel(category));
     }
 
     void printBelieves(ProbabilityDocumentAnnotatingModel model, Document doc ){
