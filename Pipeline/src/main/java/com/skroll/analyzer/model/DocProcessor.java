@@ -24,7 +24,6 @@ public class DocProcessor {
     // process the document to make data tuples stored in DocData for models to use
     static DocData getDataFromDoc(Document doc, NBFCConfig config) {
         DocData data = new DocData(doc, config);
-        List<RandomVariable> wordVarList = config.getWordVarList();
         List<RandomVariable> features = config.getAllParagraphFeatures();
 
         List<CoreMap> originalParas = doc.getParagraphs();
@@ -34,18 +33,18 @@ public class DocProcessor {
 
         int[] docFeatureVals = generateDocumentFeatures(originalParas, processedParas, config);
 
-        int numVals = wordVarList.size() + features.size();
+        int numVals = features.size() + docFeatureVals.length + 1;
         for (int p = 0; p < originalParas.size(); p++) {
             List<CoreMap> paras = Arrays.asList(originalParas.get(p), processedParas.get(p));
             int[] vals = new int[numVals];
-            int i = 0;
-            vals[i++] = getFeatureValue(config.getCategoryVar(), Arrays.asList(originalParas.get(i)));
+            int iVal = 0;
+            vals[iVal++] = getFeatureValue(config.getCategoryVar(), Arrays.asList(originalParas.get(p)));
 
-            for (; i < features.size(); i++) {
-                vals[i] = getFeatureValue(features.get(i), paras);
+            for (int i = 0; i < features.size(); i++) {
+                vals[iVal++] = getFeatureValue(features.get(i), paras);
             }
 
-            for (; i < docFeatureVals.length; i++) vals[i] = docFeatureVals[i];
+            for (int i = 0; i < docFeatureVals.length; i++) vals[iVal++] = docFeatureVals[i];
 
             List<String[]> wordsList = new ArrayList<>();
             for (RandomVariable rv : config.getWordVarList()) {
@@ -54,6 +53,7 @@ public class DocProcessor {
             }
             tuples[p] = new SimpleDataTuple(wordsList, vals);
         }
+        data.setDocFeatureValues(docFeatureVals);
         data.setTuples(tuples);
         return data;
     }

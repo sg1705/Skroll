@@ -1,5 +1,6 @@
 package com.skroll.analyzer.model;
 
+import com.skroll.analyzer.data.DocData;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
@@ -9,6 +10,7 @@ import com.skroll.document.annotation.CoreAnnotations;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,9 +21,30 @@ import static org.junit.Assert.*;
  * Created by wei on 5/10/15.
  */
 public class DocProcessorTest {
-    Document doc = new Document();
-    ModelRVSetting setting = new DefModelRVSetting();
+    static final RandomVariable DEFAULT_PARA_IS_DEF =
+            RandomVariableCreater.createRVFromAnnotation(CoreAnnotations.IsTOCAnnotation.class);
 
+    static final List<RandomVariable> DEFAULT_PARA_FEATURE_VARS = Arrays.asList(
+            RandomVariableCreater.createDiscreteRVWithComputer(new NumberTokensComputer(), "numTokens")
+    );
+    static final List<RandomVariable> DEFAULT_PARA_DOC_FEATURE_VARS = Arrays.asList(
+            RandomVariableCreater.createParagraphStartsWithRV(CoreAnnotations.InQuotesAnnotation.class)
+    );
+
+    static final List<RandomVariable> DEFAULT_DOC_FEATURE_VARS = Arrays.asList(
+            new RandomVariable(2, "tocs in quotes")
+    );
+    static final List<RandomVariable> DEFAULT_WORD_VARS = Arrays.asList(
+            RandomVariableCreater.createWordsRVWithComputer(new UniqueWordsComputer(), "uniqueWords")
+    );
+
+    Document doc = new Document();
+    ModelRVSetting setting = new ModelRVSetting(
+            DEFAULT_PARA_IS_DEF,
+            DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS, DEFAULT_DOC_FEATURE_VARS, DEFAULT_WORD_VARS
+    );
+
+    static String trainingFileName = "src/test/resources/analyzer/definedTermExtractionTraining/AMC Networks CA.html";
 
     @Before
     public void setUp() throws Exception {
@@ -45,6 +68,11 @@ public class DocProcessorTest {
 
         doc.setParagraphs(paraList);
 
+        // for testing with real file
+        doc = TestHelper.makeTrainingDoc(new File(trainingFileName));
+        //doc = TestHelper.makeDoc( new File(trainingFileName));
+        setting = new DefModelRVSetting();
+
     }
 
     @Test
@@ -59,6 +87,8 @@ public class DocProcessorTest {
 
     @Test
     public void testGetDataFromDoc() throws Exception {
+        DocData data = DocProcessor.getDataFromDoc(doc, setting.getNbfcConfig());
+        System.out.print(data);
 
     }
 

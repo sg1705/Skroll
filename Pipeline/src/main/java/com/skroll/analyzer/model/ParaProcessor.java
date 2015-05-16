@@ -17,6 +17,10 @@ import java.util.Set;
 public class ParaProcessor {
     // create a copy of paragraph and annotate it further for training
     static CoreMap processParagraph(CoreMap paragraph) {
+        return processParagraph(paragraph, ModelRVSetting.NUM_WORDS_TO_USE_PER_PARAGRAPH);
+    }
+
+    static CoreMap processParagraph(CoreMap paragraph, int numWordsToUse) {
         CoreMap trainingParagraph = new CoreMap();
         List<Token> tokens = paragraph.getTokens();
         List<Token> newTokens = new ArrayList<>();
@@ -38,6 +42,7 @@ public class ParaProcessor {
             token.set(CoreAnnotations.IndexInteger.class, i++);
             wordSet.add(token.getText());
             newTokens.add(token);
+            if (i == numWordsToUse) break;
         }
 
         trainingParagraph.set(CoreAnnotations.WordSetForTrainingAnnotation.class, wordSet);

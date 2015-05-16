@@ -23,6 +23,7 @@ public class ParaStartsWithFeatureComputer implements RVValueComputer {
      */
     public int getValue(CoreMap processedPara) {
         List<Token> tokens = processedPara.getTokens();
+        if (tokens.size() == 0) return 0;
         Token firstToken = tokens.get(0);
         return RVValues.booleanToInt(processedPara.getTokens().get(0).<Boolean>get(wordFeature));
     }

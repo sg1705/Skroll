@@ -5,6 +5,7 @@ import com.skroll.analyzer.model.bn.config.NBFCConfig;
 import com.skroll.analyzer.model.bn.SimpleDataTuple;
 import com.skroll.document.Document;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -35,5 +36,14 @@ public class DocData {
 
     public void setDocFeatureValues(int[] docFeatureValues) {
         this.docFeatureValues = docFeatureValues;
+    }
+
+    @Override
+    public String toString() {
+        return "DocData{" +
+                "config=" + config +
+                ", tuples=" + Arrays.toString(tuples) +
+                ",\n docFeatureValues=" + Arrays.toString(docFeatureValues) +
+                '}';
     }
 }

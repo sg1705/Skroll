@@ -12,6 +12,7 @@ import java.util.List;
  */
 public class ModelRVSetting {
 
+    public static final int NUM_WORDS_TO_USE_PER_PARAGRAPH = 10;
     NBFCConfig nbfcConfig;
 
     public ModelRVSetting(RandomVariable categoryVar,
