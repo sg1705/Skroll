@@ -101,7 +101,7 @@ public class ClassifierImpl implements Classifier {
         try {
             return updateBNI(documentId, document, new ArrayList<CoreMap>());
         } catch (Exception e) {
-
+            logger.error("Cannot classify", e);
         }
         return document;
     }
@@ -117,7 +117,7 @@ public class ClassifierImpl implements Classifier {
         try {
             document = Parser.parseDocumentFromHtmlFile(fileName);
         } catch (ParserException e) {
-            e.printStackTrace();
+            logger.error("Cannot parse file", e);
         }
         return classify("documentId", document);
     }
