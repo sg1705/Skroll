@@ -13,9 +13,9 @@ angular.module('SkrollApp', ['ngMaterial', 'ngSanitize', 'ngTouch', 'ngRoute']);
 
 //** when newer version of material comes out
 //this is lifted from http://goo.gl/mrWZ0F
+//reloadOnSearch was because of this plunker http://plnkr.co/edit/tgin0gpQl1qwu9hVXBno?p=preview
 angular.module('SkrollApp')
 	.config(function($mdIconProvider, $routeProvider, $locationProvider) {
-	    //$locationProvider.html5Mode(true);
 		$mdIconProvider
 			.iconSet('viewer', 'img/icons/sets/viewer-24.svg', 24);
 
@@ -30,10 +30,13 @@ angular.module('SkrollApp')
 		}).
 		when('/view/docId/:docId', {
 			templateUrl: 'partials/viewport.tmpl.html',
-			controller: 'ContentCtrl'
+			controller: 'ContentCtrl',
+			reloadOnSearch: false
 		}).
 		otherwise({
 			redirectTo: '/list'
 		});
+	    $locationProvider.html5Mode(true);
+	    $locationProvider.hashPrefix("!");
 
 	});
