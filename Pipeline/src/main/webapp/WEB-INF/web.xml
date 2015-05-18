@@ -31,6 +31,7 @@
         <servlet-name>Base URL Servlet</servlet-name>
         <url-pattern>/list/*</url-pattern>
         <url-pattern>/view/*</url-pattern>
+        <url-pattern>/open/*</url-pattern>
     </servlet-mapping>
 
 
