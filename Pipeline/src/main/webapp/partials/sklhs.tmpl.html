@@ -1,6 +1,6 @@
 <div ng-repeat="class in ctrl.classes" ng-show="{{class.isVisible}}" >
 	
-		<md-button class="menu-toggle-button" ng-click="ctrl.toggleSection($index)">
+		<md-button md-no-ink class="menu-toggle-button" ng-click="ctrl.toggleSection($index)">
 		  <div layout="row" layout-align="space-between center">
 			<span>{{class.name}}</span>
 		

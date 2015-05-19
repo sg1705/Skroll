@@ -39,6 +39,7 @@ md-sidenav.md-locked-open {
     max-width: 350px;
 }
 
+
 /**
 * Styles related to sk-lhs
 */
@@ -57,6 +58,28 @@ sk-lhs, sk-lhs-levels .menu-list {
     margin: 0px;
     list-style: none;
     padding: 0;
+}
+
+sk-toolbar .md-button {
+    margin: 0px;
+    min-height: 0px;
+    min-width: 0px;
+    line-height:normal;
+    text-align: left;
+}
+
+md-icon {
+    height: 24px;
+    width: 24px;
+}
+
+sk-lhs-levels .md-button {
+    margin: 0px;
+    min-height: 0px;
+    min-width: 0px;
+    line-height:normal;
+    text-align: left;
+
 }
 
 md-content.sk-lhs-hover:hover {
@@ -79,7 +102,7 @@ md-content.sk-lhs-hover {
     padding-left: 10px;
 }
 
-sk-lhs .menu-toggle-button {
+sk-lhs.menu-toggle-button {
     text-align: left;
     width: 100%;
 }
