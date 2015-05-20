@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model.bn.node;
 
-import com.skroll.analyzer.model.RandomVariableType;
+import com.skroll.analyzer.model.RVCreater;
+import com.skroll.analyzer.model.RandomVariable;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,13 +10,13 @@ import java.util.Arrays;
 public class DiscreteNodeTest {
 
     protected DiscreteNode node;
-    protected RandomVariableType[] variables = new RandomVariableType[1];
+    protected RandomVariable[] variables = new RandomVariable[1];
     protected double[] parameters = {0.1, 0.1};
 
     @Before
     public void setup() {
         this.node = new DiscreteNode(new DiscreteNode[0]);
-        variables[0] = RandomVariableType.DOCUMENT_DEFINITIONS_IS_BOLD;
+        variables[0] = new RandomVariable(2, "docDefIsBold");
         node.setFamilyVariables(variables);
         node.setParameters(parameters);
     }

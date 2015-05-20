@@ -2,7 +2,8 @@ package com.skroll.analyzer.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.skroll.analyzer.model.bn.NBFCConfig;
+import com.skroll.analyzer.data.DocData;
+import com.skroll.analyzer.model.bn.config.NBFCConfig;
 import com.skroll.analyzer.model.bn.NBTrainingHelper;
 import com.skroll.analyzer.model.bn.NaiveBayesWithFeatureConditions;
 import com.skroll.analyzer.model.bn.SimpleDataTuple;
@@ -29,12 +30,12 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
     NaiveBayesWithFeatureConditions tnbfModel;
 
-    public TrainingDocumentAnnotatingModel(){
-        this(DEFAULT_WORD_TYPE, DEFAULT_WORD_FEATURES, DEFAULT_NBFC_CONFIG);
-    }
+//    public TrainingDocumentAnnotatingModel(){
+//        this(DEFAULT_WORD_TYPE, DEFAULT_WORD_FEATURES, DEFAULT_NBFC_CONFIG);
+//    }
 
-    public TrainingDocumentAnnotatingModel(RandomVariableType wordType,
-                                           List<RandomVariableType> wordFeatures,
+    public TrainingDocumentAnnotatingModel(RandomVariable wordType,
+                                           List<RandomVariable> wordFeatures,
                                            NBFCConfig nbfcConfig ){
 
         this(NBTrainingHelper.createTrainingNBWithFeatureConditioning(nbfcConfig ),
@@ -45,8 +46,8 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     @JsonCreator
     public TrainingDocumentAnnotatingModel(
             @JsonProperty("tnbfModel")NaiveBayesWithFeatureConditions tnbfModel,
-            @JsonProperty("wordType")RandomVariableType wordType,
-            @JsonProperty("wordFeatures")List<RandomVariableType> wordFeatures,
+            @JsonProperty("wordType") RandomVariable wordType,
+            @JsonProperty("wordFeatures") List<RandomVariable> wordFeatures,
             NBFCConfig nbfcConfig){
         this.nbfcConfig = nbfcConfig;
 
@@ -64,27 +65,6 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
     }
 
-    void updateWithParagraph(CoreMap originalPara, CoreMap processedPara, int[] docFeatureValues) {
-        updateTNBFWithParagraph(originalPara, processedPara, docFeatureValues);
-
-        //todo: check to see if HMM needs annotations from originalPara
-       updateHMMWithParagraph(processedPara);
-    }
-
-    void updateWithParagraphWithWeights( CoreMap originalParagraph, CoreMap processedPara, int[] docFeatureValues) {
-        double[] weights = getTrainingWeights(originalParagraph);
-        updateTNBFWithParagraphAndWeight(originalParagraph, processedPara, docFeatureValues, weights);
-        //todo: consider doing weight for HMM
-        //todo: check if HMM needs info from originalPara
-        updateHMMWithParagraph(processedPara);
-        //updateHMMWithParagraphAndWeight(trainingParagraph,weights);
-    }
-
-    void updateTNBFWithParagraph(CoreMap originalPara, CoreMap processedPara, int[] docFeatureValues){
-        SimpleDataTuple dataTuple = DocumentAnnotatingHelper.makeDataTuple(originalPara,processedPara,
-                 docFeatureValues, nbfcConfig);
-        NBTrainingHelper.addSample( tnbfModel, dataTuple);
-    }
 
     double[] getTrainingWeights(CoreMap para){
         double[][] weights = TrainingWeightAnnotationHelper.getParagraphWeight(para, nbfcConfig.getCategoryVar());
@@ -99,35 +79,35 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
         return trainingWeights;
     }
 
-    //todo: need to use the right annotation for the weight.
-    void updateTNBFWithParagraphAndWeight(CoreMap originalPara, CoreMap processedPara, int[] docFeatureValues, double[] weights) {
-        SimpleDataTuple dataTuple = DocumentAnnotatingHelper.makeDataTuple(originalPara, processedPara,
-                docFeatureValues, nbfcConfig);
-        int[] values = dataTuple.getDiscreteValues();
-        int numCategories = nbfcConfig.getCategoryVar().getFeatureSize();
-
-
-        for (int i = 0; i < numCategories; i++) {
-            values[0] = i;
-            NBTrainingHelper.addSample( tnbfModel, dataTuple, weights[i]);
-            //tnbfModel.addSample(dataTuple, weights[i]);
-        }
-    }
+    //    //todo: need to use the right annotation for the weight.
+//    void updateTNBFWithParagraphAndWeight(CoreMap originalPara, CoreMap processedPara, int[] docFeatureValues, double[] weights) {
+//        SimpleDataTuple dataTuple = DocumentAnnotatingHelper.makeDataTuple(originalPara, processedPara,
+//                docFeatureValues, nbfcConfig);
+//        int[] values = dataTuple.getDiscreteValues();
+//        int numCategories = nbfcConfig.getCategoryVar().getFeatureSize();
+//
+//
+//        for (int i = 0; i < numCategories; i++) {
+//            values[0] = i;
+//            NBTrainingHelper.addSample( tnbfModel, dataTuple, weights[i]);
+//            //tnbfModel.addSample(dataTuple, weights[i]);
+//        }
+//    }
     //todo: this method should be changed. Definitions should be annotated with good training data.
     void updateHMMWithParagraph(CoreMap paragraph){
         List<Token> tokens = paragraph.get(CoreAnnotations.TokenAnnotation.class);
-
         int[] tokenType = new int[tokens.size()];
+
+
         for (int i = 0; i < tokenType.length; i++) {
-            tokenType[i] =  DocumentAnnotatingHelper.getWordFeature(
-                    paragraph, tokens.get(i), wordType);
+            tokenType[i] = RVValues.getWordLevelRVValue(wordType, tokens.get(i), paragraph);
         }
 
         int length = Math.min(hmm.size(), tokens.size());
         int[][] features = new int[length][wordFeatures.size()];
         for (int i=0; i<length ;i++){
             for (int f=0; f<wordFeatures.size();f++){
-                features[i][f] = DocumentAnnotatingHelper.getWordFeature(paragraph, tokens.get(i), wordFeatures.get(f));
+                features[i][f] = RVValues.getWordLevelRVValue(wordFeatures.get(f), tokens.get(i), paragraph);
             }
         }
 
@@ -136,70 +116,88 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
                 tokenType, features);
 
     }
-    void updateHMMWithParagraphAndWeight(CoreMap paragraph, double[] weights){
-        List<Token> tokens = paragraph.get(CoreAnnotations.TokenAnnotation.class);
+//    void updateHMMWithParagraphAndWeight(CoreMap paragraph, double[] weights){
+//        List<Token> tokens = paragraph.get(CoreAnnotations.TokenAnnotation.class);
+//
+//        int[] tokenType = new int[tokens.size()];
+//        for (int i = 0; i < tokenType.length; i++) {
+//
+//            tokenType[i] =  DocumentAnnotatingHelper.getWordFeature(
+//                    paragraph, tokens.get(i), wordType);
+//        }
+//
+//        int length = Math.min(hmm.size(), tokens.size());
+//        int[][] features = new int[length][wordFeatures.size()];
+//        for (int i=0; i<length ;i++){
+//            for (int f=0; f<wordFeatures.size();f++){
+//                features[i][f] = DocumentAnnotatingHelper.getWordFeature(paragraph, tokens.get(i), wordFeatures.get(f));
+//            }
+//        }
+//
+//        for (int i=0;i<nbfcConfig.getCategoryVar().getFeatureSize(); i++) {
+//            hmm.updateCountsWithWeight(
+//                    DocumentHelper.getTokenString(tokens).toArray(new String[tokens.size()]),
+//                    tokenType, features, weights[i]);
+//        }
+//
+//    }
 
-        int[] tokenType = new int[tokens.size()];
-        for (int i = 0; i < tokenType.length; i++) {
-
-            tokenType[i] =  DocumentAnnotatingHelper.getWordFeature(
-                    paragraph, tokens.get(i), wordType);
-        }
-
-        int length = Math.min(hmm.size(), tokens.size());
-        int[][] features = new int[length][wordFeatures.size()];
-        for (int i=0; i<length ;i++){
-            for (int f=0; f<wordFeatures.size();f++){
-                features[i][f] = DocumentAnnotatingHelper.getWordFeature(paragraph, tokens.get(i), wordFeatures.get(f));
-            }
-        }
-
-        for (int i=0;i<nbfcConfig.getCategoryVar().getFeatureSize(); i++) {
-            hmm.updateCountsWithWeight(
-                    DocumentHelper.getTokenString(tokens).toArray(new String[tokens.size()]),
-                    tokenType, features, weights[i]);
-        }
-
-    }
     /**
      * todo: to reduce memory usage at the cost of more computation, can process training paragraph one by one later instead of process all and store them now
     * training involves updating Fij for each paragraph i and feature j.
     */
     public void updateWithDocumentAndWeight(Document doc){
-        List<CoreMap> processedParas = new ArrayList<>();
-        List<CoreMap> originalParagraphs = new ArrayList<>();
+//        List<CoreMap> processedParas = new ArrayList<>();
+//        List<CoreMap> originalParagraphs = new ArrayList<>();
 
-        for( CoreMap paragraph : doc.getParagraphs()) {
-            if (DocumentAnnotatingHelper.isParaObserved(paragraph)) {
-                processedParas.add(DocumentAnnotatingHelper.processParagraph(paragraph, hmm.size()));
-                originalParagraphs.add(paragraph);
+        List<CoreMap> originalParas = doc.getParagraphs();
+        List<CoreMap> processedParas = DocProcessor.processParagraphs(originalParas, hmm.size());
+        DocData data = DocProcessor.getDataFromDoc(doc, processedParas, nbfcConfig);
+        SimpleDataTuple[] tuples = data.getTuples();
+
+
+        for (int p = 0; p < originalParas.size(); p++) {
+            double[] weights = getTrainingWeights(originalParas.get(p));
+            int[] values = tuples[p].getDiscreteValues();
+            int numCategories = nbfcConfig.getCategoryVar().getFeatureSize();
+
+
+            for (int i = 0; i < numCategories; i++) {
+                values[0] = i;
+                NBTrainingHelper.addSample(tnbfModel, tuples[p], weights[i]);
+                //tnbfModel.addSample(dataTuple, weights[i]);
             }
+            NBTrainingHelper.addSample(tnbfModel, tuples[p]);
+
         }
 
-        int[] docFeatureValues = DocumentAnnotatingHelper.generateDocumentFeatures(originalParagraphs,processedParas,
-                nbfcConfig);
+        for (CoreMap para : processedParas)
+            updateHMMWithParagraph(para);
 
-        //for( CoreMap paragraph : paragraphs)
-        for (int i=0; i<processedParas.size();i++) {
-
-            updateWithParagraphWithWeights(originalParagraphs.get(i), processedParas.get(i), docFeatureValues);
-        }
     }
 
     public void updateWithDocument(Document doc){
-        List<CoreMap> processedParas = new ArrayList<>();
+
         List<CoreMap> originalParas = doc.getParagraphs();
-        for( CoreMap paragraph : originalParas) {
-             processedParas.add(DocumentAnnotatingHelper.processParagraph(paragraph, hmm.size()));
-        }
-        int[] docFeatureValues = DocumentAnnotatingHelper.generateDocumentFeatures(doc.getParagraphs(), processedParas,
-                nbfcConfig);
-
-
-        for (int i=0; i<processedParas.size(); i++)
-            updateWithParagraph(originalParas.get(i), processedParas.get(i), docFeatureValues);
-//        for( CoreMap processedPara : processedParas)
-//            updateWithParagraph(processedPara, docFeatureValues);
+        List<CoreMap> processedParas = DocProcessor.processParagraphs(originalParas, hmm.size());
+        DocData data = DocProcessor.getDataFromDoc(doc, processedParas, nbfcConfig);
+        for (SimpleDataTuple tuple : data.getTuples())
+            NBTrainingHelper.addSample(tnbfModel, tuple);
+        for (CoreMap para : processedParas)
+            updateHMMWithParagraph(para);
+//
+//
+//        for( CoreMap paragraph : originalParas) {
+//             processedParas.add(DocumentAnnotatingHelper.processParagraph(paragraph, hmm.size()));
+//        }
+//        int[] docFeatureValues = DocumentAnnotatingHelper.generateDocumentFeatures(doc.getParagraphs(), processedParas,
+//                nbfcConfig);
+//
+//
+//        for (int i=0; i<processedParas.size(); i++)
+//            updateWithParagraph(originalParas.get(i), processedParas.get(i), docFeatureValues);
+////        for( CoreMap processedPara : processedParas)
+////            updateWithParagraph(processedPara, docFeatureValues);
     }
 
     public NaiveBayesWithFeatureConditions getTnbfModel() {

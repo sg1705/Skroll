@@ -5,15 +5,14 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.Set;
 
 /**
  * Created by wei on 5/10/15.
  */
-public class RandomVariableCreater {
+public class RVCreater {
 
-    public static final Logger logger = LoggerFactory.getLogger(RandomVariableCreater.class);
+    public static final Logger logger = LoggerFactory.getLogger(RVCreater.class);
     static final int DEFAULT_NUM_INT_VALS = 10;
 
     public static RandomVariable createParagraphStartsWithRV(Class wordAnnotation) {
@@ -65,6 +64,13 @@ public class RandomVariableCreater {
     static RandomVariable createWordsRVWithComputer(RVWordsComputer computer, String name) {
         RandomVariable rv = new RandomVariable(0, name);
         RVValues.addWordsComputer(rv, computer);
+        return rv;
+    }
+
+
+    static RandomVariable createWordLevelRVWithComputer(WRVValueComputer computer, String name) {
+        RandomVariable rv = new RandomVariable(computer.getNumVals(), name);
+        RVValues.addWRVValueComputer(rv, computer);
         return rv;
     }
 }

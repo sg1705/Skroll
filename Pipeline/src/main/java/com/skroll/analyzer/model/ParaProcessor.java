@@ -6,10 +6,7 @@ import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.util.WordHelper;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by wei on 5/10/15.
@@ -20,18 +17,42 @@ public class ParaProcessor {
         return processParagraph(paragraph, ModelRVSetting.NUM_WORDS_TO_USE_PER_PARAGRAPH);
     }
 
+    // check through the CoreMaps(usually paragraphs) for feature value.
+    // take the maximum of the values from different CoreMap, because -1 or 0 indicates no value present in the Coremap
+    // todo: this may not be a good approach
+    static int getFeatureValue(RandomVariable v, List<CoreMap> mList) {
+        int result = -1;
+        for (CoreMap m : mList) {
+            int value = RVValues.getValue(v, m);
+            if (value > result) result = value;
+        }
+        return result;
+    }
+
+
+    public static int[] getFeatureVals(List<RandomVariable> rvs, List<CoreMap> m) {
+        int[] vals = new int[rvs.size()];
+        for (int f = 0; f < rvs.size(); f++) {
+            vals[f] = getFeatureValue(rvs.get(f), m);
+        }
+        return vals;
+    }
+
+    // set inquote annotation and make word sets
     static CoreMap processParagraph(CoreMap paragraph, int numWordsToUse) {
         CoreMap trainingParagraph = new CoreMap();
         List<Token> tokens = paragraph.getTokens();
         List<Token> newTokens = new ArrayList<>();
 
-        Set<String> wordSet = new HashSet<>();
+//        Set<String> wordSet = new HashSet<>();
+//        Set<String> wordSet = new LinkedHashSet<>(); //use LinkedHashSet to maintain order.
         if (tokens.size() > 0 && WordHelper.isQuote(tokens.get(0).getText()))
             trainingParagraph.set(CoreAnnotations.StartsWithQuote.class, true);
 
         boolean inQuotes = false; // flag for annotating if a token is in quotes or not
         int i = 0;
         for (Token token : tokens) {
+            if (i == numWordsToUse) break;
             if (WordHelper.isQuote(token.getText())) {
                 inQuotes = !inQuotes;
                 continue;
@@ -40,12 +61,11 @@ public class ParaProcessor {
                 token.set(CoreAnnotations.InQuotesAnnotation.class, true);
             }
             token.set(CoreAnnotations.IndexInteger.class, i++);
-            wordSet.add(token.getText());
+//            wordSet.add(token.getText());
             newTokens.add(token);
-            if (i == numWordsToUse) break;
         }
 
-        trainingParagraph.set(CoreAnnotations.WordSetForTrainingAnnotation.class, wordSet);
+//        trainingParagraph.set(CoreAnnotations.WordSetForTrainingAnnotation.class, wordSet);
         trainingParagraph.set(CoreAnnotations.TokenAnnotation.class, newTokens);
 
         // put defined terms from paragraph in trainingParagraph
@@ -54,8 +74,11 @@ public class ParaProcessor {
         if (definedTokens != null && definedTokens.size() > 0) {
             trainingParagraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
         }
-        trainingParagraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class,
-                paragraph.get(CoreAnnotations.DefinedTermTokensAnnotation.class));
+//        trainingParagraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class,
+//                paragraph.get(CoreAnnotations.DefinedTermTokensAnnotation.class));
+//
+//        trainingParagraph.set(CoreAnnotations.IsTOCAnnotation.class,
+//                paragraph.get(CoreAnnotations.IsTOCAnnotation.class));
 
         return trainingParagraph;
     }

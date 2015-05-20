@@ -5,7 +5,6 @@ import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
-import com.skroll.document.annotation.CoreAnnotation;
 import com.skroll.document.annotation.CoreAnnotations;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,27 +14,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by wei on 5/10/15.
  */
 public class DocProcessorTest {
     static final RandomVariable DEFAULT_PARA_IS_DEF =
-            RandomVariableCreater.createRVFromAnnotation(CoreAnnotations.IsTOCAnnotation.class);
+            RVCreater.createRVFromAnnotation(CoreAnnotations.IsTOCAnnotation.class);
 
     static final List<RandomVariable> DEFAULT_PARA_FEATURE_VARS = Arrays.asList(
-            RandomVariableCreater.createDiscreteRVWithComputer(new NumberTokensComputer(), "numTokens")
+            RVCreater.createDiscreteRVWithComputer(new NumberTokensComputer(), "numTokens")
     );
     static final List<RandomVariable> DEFAULT_PARA_DOC_FEATURE_VARS = Arrays.asList(
-            RandomVariableCreater.createParagraphStartsWithRV(CoreAnnotations.InQuotesAnnotation.class)
+            RVCreater.createParagraphStartsWithRV(CoreAnnotations.InQuotesAnnotation.class)
     );
 
     static final List<RandomVariable> DEFAULT_DOC_FEATURE_VARS = Arrays.asList(
             new RandomVariable(2, "tocs in quotes")
     );
     static final List<RandomVariable> DEFAULT_WORD_VARS = Arrays.asList(
-            RandomVariableCreater.createWordsRVWithComputer(new UniqueWordsComputer(), "uniqueWords")
+            RVCreater.createWordsRVWithComputer(new UniqueWordsComputer(), "uniqueWords")
     );
 
     Document doc = new Document();

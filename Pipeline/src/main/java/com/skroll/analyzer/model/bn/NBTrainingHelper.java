@@ -1,6 +1,8 @@
 package com.skroll.analyzer.model.bn;
 
-import com.skroll.analyzer.model.RandomVariableType;
+import com.skroll.analyzer.model.RandomVariable;
+import com.skroll.analyzer.model.bn.config.NBConfig;
+import com.skroll.analyzer.model.bn.config.NBFCConfig;
 import com.skroll.analyzer.model.bn.node.*;
 
 import java.util.ArrayList;
@@ -26,7 +28,7 @@ public class NBTrainingHelper {
 
     static List<DiscreteNode> createFeatureNodes(NBConfig config, DiscreteNode categoryNode){
         List<DiscreteNode> featureNodes = new ArrayList<>();
-        for (RandomVariableType featureVar: config.getFeatureVarList()){
+        for (RandomVariable featureVar : config.getFeatureVarList()) {
             featureNodes.add( NodeTrainingHelper.createTrainingDiscreteNode(
                     Arrays.asList( featureVar, config.getCategoryVar()), Arrays.asList(categoryNode)));
         }
@@ -35,7 +37,7 @@ public class NBTrainingHelper {
 
     static List<WordNode> createWordNodes(NBConfig config, DiscreteNode categoryNode){
         List<WordNode> wordNodes = new ArrayList<>();
-        for (RandomVariableType var: config.getWordVarList()){
+        for (RandomVariable var : config.getWordVarList()) {
             wordNodes.add( NodeTrainingHelper.createTrainingWordNode(categoryNode));
         }
         return wordNodes;
@@ -76,7 +78,7 @@ public class NBTrainingHelper {
 
     static List<DiscreteNode> createDocFeatureNodes(NBFCConfig config){
         List<DiscreteNode> docFeatureNodes= new ArrayList<>();
-        for (RandomVariableType var: config.getDocumentFeatureVarList()){
+        for (RandomVariable var : config.getDocumentFeatureVarList()) {
             docFeatureNodes.add( NodeTrainingHelper.createTrainingDiscreteNode(Arrays.asList(var)));
         }
         return docFeatureNodes;
@@ -85,7 +87,7 @@ public class NBTrainingHelper {
     static List<DiscreteNode> createFeatureExistAtDoclevelNodes(
             NBFCConfig config, List<DiscreteNode>  docFeatureNodes, DiscreteNode categoryNode){
 
-        List<RandomVariableType> featureExistsAtDocLevelVarList = config.getFeatureExistsAtDocLevelVarList();
+        List<RandomVariable> featureExistsAtDocLevelVarList = config.getFeatureExistsAtDocLevelVarList();
         List<DiscreteNode> nodes= new ArrayList<>();
         for (int i=0; i<featureExistsAtDocLevelVarList.size(); i++){
             nodes.add( NodeTrainingHelper.createTrainingDiscreteNode(

@@ -8,19 +8,19 @@ public class RandomVariable {
     private int featureSize;
     private String[] valueNames;
 
-    RandomVariable() {
+    public RandomVariable() {
     }
 
-    RandomVariable(int featureSize) {
+    public RandomVariable(int featureSize) {
         this.featureSize = featureSize;
     }
 
-    RandomVariable(int featureSize, String name) {
+    public RandomVariable(int featureSize, String name) {
         this.featureSize = featureSize;
         this.name = name;
     }
 
-    RandomVariable(int featureSize, String[] valueNames, String name) {
+    public RandomVariable(int featureSize, String[] valueNames, String name) {
         this.featureSize = featureSize;
         this.valueNames = valueNames;
         this.name = name;

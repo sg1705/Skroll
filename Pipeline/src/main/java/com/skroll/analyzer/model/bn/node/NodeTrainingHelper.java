@@ -1,6 +1,6 @@
 package com.skroll.analyzer.model.bn.node;
 
-import com.skroll.analyzer.model.RandomVariableType;
+import com.skroll.analyzer.model.RandomVariable;
 
 import java.util.*;
 
@@ -20,11 +20,11 @@ public class NodeTrainingHelper {
      * @param parents   the parent nodes
      * @return  a new DiscreteNode for training
      */
-    public static DiscreteNode createTrainingDiscreteNode(List<RandomVariableType> randomVariables,
+    public static DiscreteNode createTrainingDiscreteNode(List<RandomVariable> randomVariables,
                                                           List<DiscreteNode> parents){
         DiscreteNode node = new DiscreteNode(parents.toArray(new DiscreteNode[parents.size()]));
-        RandomVariableType[] variables =
-                randomVariables.toArray(new RandomVariableType[randomVariables.size()]);
+        RandomVariable[] variables =
+                randomVariables.toArray(new RandomVariable[randomVariables.size()]);
         node.setFamilyVariables( variables);
         int totalSize = node.sizeUpTo(randomVariables.size());
         double[] parameters = new double[totalSize];
@@ -34,13 +34,12 @@ public class NodeTrainingHelper {
 
     }
 
-    public static DiscreteNode createTrainingDiscreteNode(List<RandomVariableType> randomVariables){
+    public static DiscreteNode createTrainingDiscreteNode(List<RandomVariable> randomVariables) {
         return createTrainingDiscreteNode(randomVariables, new ArrayList<DiscreteNode>());
     }
 
 
-
-    static int getIndex(RandomVariableType[] variables, int [] multiIndex){ // least significant digit on the left.
+    static int getIndex(RandomVariable[] variables, int[] multiIndex) { // least significant digit on the left.
         int index=0;
         for (int i=multiIndex.length-1; i>=0; i--){
             index *= variables[i].getFeatureSize();
@@ -55,7 +54,7 @@ public class NodeTrainingHelper {
 
     public static void updateCount(DiscreteNode node, double weight){
 
-        RandomVariableType[] variables = node.getFamilyVariables();
+        RandomVariable[] variables = node.getFamilyVariables();
         int[] multiIndex= new int[variables.length];
         DiscreteNode[] parents = node.getParents();
         multiIndex[0] = node.getObservation();

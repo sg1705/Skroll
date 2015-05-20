@@ -14,16 +14,28 @@ public class ModelRVSetting {
 
     public static final int NUM_WORDS_TO_USE_PER_PARAGRAPH = 10;
     NBFCConfig nbfcConfig;
+    RandomVariable wordType;
+    List<RandomVariable> wordFeatures;
 
-    public ModelRVSetting(RandomVariable categoryVar,
+    public ModelRVSetting(RandomVariable wordType,
+                          List<RandomVariable> wordFeatures,
+                          RandomVariable paraType,
                           List<RandomVariable> paraFeatureVars,
                           List<RandomVariable> paraDocFeatureVars,
                           List<RandomVariable> docFeatureVars,
                           List<RandomVariable> wordVars) {
-        nbfcConfig = new NBFCConfig(categoryVar, paraFeatureVars, paraDocFeatureVars, docFeatureVars, wordVars);
+        nbfcConfig = new NBFCConfig(paraType, paraFeatureVars, paraDocFeatureVars, docFeatureVars, wordVars);
     }
 
     public NBFCConfig getNbfcConfig() {
         return nbfcConfig;
+    }
+
+    public RandomVariable getWordType() {
+        return wordType;
+    }
+
+    public List<RandomVariable> getWordFeatures() {
+        return wordFeatures;
     }
 }

@@ -14,20 +14,33 @@ import java.util.List;
  * Created by wei on 5/10/15.
  */
 public class DocProcessor {
-    static List<CoreMap> processParagraphs(List<CoreMap> paras) {
+    static List<CoreMap> processParagraphs(List<CoreMap> paras, int numWordsToUse) {
         List<CoreMap> processedParas = new ArrayList<>();
-        for (CoreMap para : paras) processedParas.add(ParaProcessor.processParagraph(para));
+        for (CoreMap para : paras) processedParas.add(ParaProcessor.processParagraph(para, numWordsToUse));
         return processedParas;
+    }
+
+    public static int[][] getFeaturesVals(List<RandomVariable> rvs,
+                                          List<CoreMap> originalParas, List<CoreMap> processedParas) {
+        int nP = originalParas.get(0).size();
+        int[][] features = new int[nP][rvs.size()];
+        for (int p = 0; p < nP; p++) {
+            List<CoreMap> paras = Arrays.asList(originalParas.get(p), processedParas.get(p));
+            for (int f = 0; f < rvs.size(); f++) {
+                features[p][f] = ParaProcessor.getFeatureValue(rvs.get(f), paras);
+            }
+        }
+        return features;
     }
 
 
     // process the document to make data tuples stored in DocData for models to use
-    static DocData getDataFromDoc(Document doc, NBFCConfig config) {
+    static DocData getDataFromDoc(Document doc, List<CoreMap> processedParas, NBFCConfig config) {
         DocData data = new DocData(doc, config);
         List<RandomVariable> features = config.getAllParagraphFeatures();
 
         List<CoreMap> originalParas = doc.getParagraphs();
-        List<CoreMap> processedParas = processParagraphs(doc.getParagraphs());
+//        List<CoreMap> processedParas = processParagraphs(doc.getParagraphs());
 
         SimpleDataTuple[] tuples = new SimpleDataTuple[originalParas.size()];
 
@@ -38,10 +51,11 @@ public class DocProcessor {
             List<CoreMap> paras = Arrays.asList(originalParas.get(p), processedParas.get(p));
             int[] vals = new int[numVals];
             int iVal = 0;
-            vals[iVal++] = getFeatureValue(config.getCategoryVar(), Arrays.asList(originalParas.get(p)));
+            vals[iVal++] = ParaProcessor.getFeatureValue(config.getCategoryVar(),
+                    Arrays.asList(originalParas.get(p)));
 
             for (int i = 0; i < features.size(); i++) {
-                vals[iVal++] = getFeatureValue(features.get(i), paras);
+                vals[iVal++] = ParaProcessor.getFeatureValue(features.get(i), paras);
             }
 
             for (int i = 0; i < docFeatureVals.length; i++) vals[iVal++] = docFeatureVals[i];
@@ -59,17 +73,6 @@ public class DocProcessor {
     }
 
 
-    // check through the CoreMaps(usually paragraphs) for feature value.
-    // take the maximum of the values from different CoreMap, because -1 or 0 indicates no value present in the Coremap
-    static int getFeatureValue(RandomVariable v, List<CoreMap> mList) {
-        int result = -1;
-        for (CoreMap m : mList) {
-            int value = RVValues.getValue(v, m);
-            if (value > result) result = value;
-        }
-        return result;
-    }
-
     //todo: we're check both processedParagraphs and originalParas. But should probably combine the information and just check one.
     // this method is assuming all the doc features are binary
     public static int[] generateDocumentFeatures(List<CoreMap> originalParas, List<CoreMap> processedParagraphs,
@@ -83,7 +86,8 @@ public class DocProcessor {
             CoreMap paragraph = processedParagraphs.get(p);
             for (int f = 0; f < docFeatureValues.length; f++) {
                 if (RVValues.getValue(nbfcConfig.getCategoryVar(), originalParas.get(p)) == 1)
-                    docFeatureValues[f] &= (getFeatureValue(nbfcConfig.getFeatureExistsAtDocLevelVarList().get(f),
+                    docFeatureValues[f] &= (ParaProcessor.getFeatureValue(
+                            nbfcConfig.getFeatureExistsAtDocLevelVarList().get(f),
                             Arrays.asList(originalParas.get(p), paragraph)));
             }
         }

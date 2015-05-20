@@ -16,6 +16,7 @@ public class UniqueWordsComputer implements RVWordsComputer {
         return getWords(m, m.getTokens().size());
     }
 
+    // not really used for now, since the paragraphs are preprocessed to remove words in the back
     public String[] getWords(CoreMap m, int n) {
         Set<String> wordSet = new HashSet<>();
         for (int i = 0; i < n; i++)

@@ -6,7 +6,7 @@ import com.skroll.document.CoreMap;
  * Created by wei on 5/9/15.
  */
 public class NumberTokensComputer implements RVValueComputer {
-    int numVals = RandomVariableCreater.DEFAULT_NUM_INT_VALS;
+    int numVals = RVCreater.DEFAULT_NUM_INT_VALS;
 
     public NumberTokensComputer() {
 

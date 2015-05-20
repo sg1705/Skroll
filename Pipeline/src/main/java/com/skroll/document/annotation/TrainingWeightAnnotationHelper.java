@@ -1,7 +1,10 @@
 package com.skroll.document.annotation;
 
 import com.google.common.collect.Lists;
+import com.skroll.analyzer.model.DefModelRVSetting;
+import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.RandomVariableType;
+import com.skroll.analyzer.model.TOCModelRVSetting;
 import com.skroll.document.CoreMap;
 
 import java.util.List;
@@ -61,22 +64,23 @@ public class TrainingWeightAnnotationHelper {
     }
     // method converts multi-class weight to binary class weight.
     // todo: this method is temporarily used to get the weights. Should probably be improved later to handle multi-class and others.
-    public static double[][] getParagraphWeight(CoreMap para, RandomVariableType paraType){
+    public static double[][] getParagraphWeight(CoreMap para, RandomVariable paraType) {
         List<Float>  weightList = para.get(CoreAnnotations.TrainingWeightAnnotationFloat.class);
         double[][] weights = new double[2][paraType.getFeatureSize()];
         weights[0][0] = weightList.get(NONE);
         weights[1][0] = weightList.get(NONE+LATEST_WEIGHT_INDEX);
 
-        switch (paraType){
-            case PARAGRAPH_HAS_TOC:
-                weights[0][1] = weightList.get(TOC);
-                weights[1][1] = weightList.get(TOC+LATEST_WEIGHT_INDEX);
-                return weights;
-            case PARAGRAPH_HAS_DEFINITION:
+        // todo: this is bad. need to make it more general
+        if (paraType == DefModelRVSetting.PARA_IS_DEF) {
                 weights[0][1] = weightList.get(DEFINITION);
                 weights[1][1] = weightList.get(DEFINITION+LATEST_WEIGHT_INDEX);
                 return weights;
+        } else if (paraType == TOCModelRVSetting.PARA_IS_TOC) {
+            weights[0][1] = weightList.get(TOC);
+            weights[1][1] = weightList.get(TOC + LATEST_WEIGHT_INDEX);
+            return weights;
         }
+
         return weights;
     }
 }

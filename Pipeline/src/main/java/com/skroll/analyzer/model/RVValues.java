@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model;
 
 import com.skroll.document.CoreMap;
+import com.skroll.document.Token;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -19,6 +20,8 @@ public class RVValues {
     // If some RV's value does not come directly from some annotation,
     // then valueComputerMap gets the computer of the value
     static private Map<RandomVariable, RVValueComputer> valueComputerMap = new HashMap<>();
+    static private Map<RandomVariable, RVValueSetter> valueSetterMap = new HashMap<>();
+    static private Map<RandomVariable, WRVValueComputer> wordLevelValueComputerMap = new HashMap<>();
     static private Map<RandomVariable, RVWordsComputer> wordsComputerMap = new HashMap<>();
 
 
@@ -30,8 +33,16 @@ public class RVValues {
         wordsComputerMap.put(rv, computer);
     }
 
+    static void addWRVValueComputer(RandomVariable rv, WRVValueComputer computer) {
+        wordLevelValueComputerMap.put(rv, computer);
+    }
+
     static void addValueComputer(RandomVariable rv, RVValueComputer computer) {
         valueComputerMap.put(rv, computer);
+    }
+
+    static void addValueSetter(RandomVariable rv, RVValueSetter setter) {
+        valueSetterMap.put(rv, setter);
     }
 
     static void addAnnotationLink(RandomVariable rv, Class ann) {
@@ -42,20 +53,17 @@ public class RVValues {
     static String[] getWords(RandomVariable rv, CoreMap m) {
         RVWordsComputer computer = wordsComputerMap.get(rv);
         if (computer != null) return computer.getWords(m);
-//        Class ann = rvaMap.get(rv);
-//        if (ann == null) return null;
-//        Object val = m.get(ann);
-//        if (val instanceof Set)
-//            return new ArrayList<String>((Set<String>) val);
-//        else if (val instanceof List)
-//            return (List<String>) val;
         return null;
     }
-    static int getValue(RandomVariable rv, CoreMap m) {
-        RVValueComputer processor = valueComputerMap.get(rv);
-        if (processor != null) return processor.getValue(m);
 
-//        CoreAnnotation ann = RVAMap.get(rv);
+    // not really used for now, since the paragraphs are preprocessed to remove words in the back
+    static String[] getWords(RandomVariable rv, CoreMap m, int maxNumWords) {
+        RVWordsComputer computer = wordsComputerMap.get(rv);
+        if (computer != null) return computer.getWords(m, maxNumWords);
+        return null;
+    }
+
+    static int getValueFromMap(RandomVariable rv, CoreMap m) {
         Class ann = rvaMap.get(rv);
         Object val = m.get(ann);
 //        Class valType = val.getClass();
@@ -69,6 +77,36 @@ public class RVValues {
             return intVal < rv.getFeatureSize() ? intVal : rv.getFeatureSize() - 1;
         }
         return -1;
+
+    }
+
+    public static int getValue(RandomVariable rv, CoreMap m) {
+        RVValueComputer processor = valueComputerMap.get(rv);
+        if (processor != null) return processor.getValue(m);
+        return getValueFromMap(rv, m);
+    }
+
+    // this is for setting user observation of the paragraph category
+    public static void setValue(RandomVariable rv, int val, CoreMap m, List<List<Token>> terms) {
+        RVValueSetter setter = valueSetterMap.get(rv);
+        setter.setValue(val, m, terms);
+    }
+
+    public static void addTerms(RandomVariable rv, CoreMap m, List<Token> terms) {
+        RVValueSetter setter = valueSetterMap.get(rv);
+        setter.addTerms(m, terms);
+    }
+
+    public static void clearValue(RandomVariable rv, CoreMap m) {
+        RVValueSetter setter = valueSetterMap.get(rv);
+        setter.clearValue(m);
+    }
+
+    public static int getWordLevelRVValue(RandomVariable rv, Token token, CoreMap para) {
+
+        WRVValueComputer processor = wordLevelValueComputerMap.get(rv);
+        if (processor != null) return processor.getValue(token, para);
+        return getValueFromMap(rv, token);
     }
 
     static Class annotationType(Class ann) throws Exception {

@@ -43,6 +43,10 @@ public class NaiveBayesWithFeatureConditions extends NaiveBayes{
             featureExistAtDocLevelNodes.get(i).setObservation(values[i]);
     }
 
+    public void setParaFeatureObservation(int[] values) {
+        for (int i = 0; i < values.length; i++)
+            featureNodes.get(i).setObservation(values[i]);
+    }
 
     public List<DiscreteNode> getDocumentFeatureNodes() {
         return documentFeatureNodes;

@@ -2,7 +2,6 @@ package com.skroll.analyzer.model;
 
 import com.skroll.document.annotation.CoreAnnotations;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,7 +11,7 @@ import java.util.List;
  */
 public class ModelSetter {
 
-    RandomVariable paraStartsWithQuote = RandomVariableCreater.createParagraphStartsWithRV(
+    RandomVariable paraStartsWithQuote = RVCreater.createParagraphStartsWithRV(
             CoreAnnotations.InQuotesAnnotation.class);
     List<RandomVariable> paraDocFeatures = Arrays.asList(paraStartsWithQuote);
     List<RandomVariable> docFeatures = Arrays.asList(new RandomVariable(2, "docQuotes"));

@@ -1,6 +1,6 @@
 package com.skroll.analyzer.model.bn.node;
 
-import com.skroll.analyzer.model.RandomVariableType;
+import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.bn.inference.BNInference;
 
 import java.util.ArrayList;
@@ -52,7 +52,7 @@ public class NodeInferenceHelper {
      * @return
      */
     static double[] sumOutOtherNodesWithObservationAndBelief(DiscreteNode node, double[] belief, int indexTo ){
-        RandomVariableType[] familyVariables = node.getFamilyVariables();
+        RandomVariable[] familyVariables = node.getFamilyVariables();
         double[] probs = new double[ familyVariables[indexTo].getFeatureSize() ];
         int sizeUnder = node.sizeUpTo(indexTo);
 

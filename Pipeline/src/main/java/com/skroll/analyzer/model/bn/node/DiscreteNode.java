@@ -1,7 +1,7 @@
 package com.skroll.analyzer.model.bn.node;
 
 import com.fasterxml.jackson.annotation.*;
-import com.skroll.analyzer.model.RandomVariableType;
+import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.bn.inference.BNInference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,7 @@ public class DiscreteNode{
     public static final Logger logger = LoggerFactory.getLogger(DiscreteNode.class);
 
     @JsonProperty("familyVariables")
-    private RandomVariableType[] familyVariables;
+    private RandomVariable[] familyVariables;
 
     // store the parameters and probability values in a one dimensional array.
     // convert multi-index to the index of the one dimensional array
@@ -74,7 +74,7 @@ public class DiscreteNode{
     }
 
 
-    public void setFamilyVariables(RandomVariableType[] familyVariables) {
+    public void setFamilyVariables(RandomVariable[] familyVariables) {
         if (parents.length == (familyVariables.length - 1)) {
             this.familyVariables = familyVariables;
         } else {
@@ -117,12 +117,12 @@ public class DiscreteNode{
     }
 
     @JsonIgnore
-    public RandomVariableType getVariable(){
+    public RandomVariable getVariable() {
         return familyVariables[0];
     }
 
     @JsonIgnore
-    public RandomVariableType[] getFamilyVariables(){
+    public RandomVariable[] getFamilyVariables() {
         return familyVariables;
     }
 
