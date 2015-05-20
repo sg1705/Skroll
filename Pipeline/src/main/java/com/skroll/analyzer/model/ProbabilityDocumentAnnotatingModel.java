@@ -38,6 +38,12 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
     double[][] paragraphCategoryBelief;
     double[][] documentFeatureBelief;
 
+
+    public ProbabilityDocumentAnnotatingModel(NaiveBayesWithFeatureConditions tnbf, HiddenMarkovModel hmm,
+                                              Document doc, ModelRVSetting setting) {
+        this(tnbf, hmm, doc, setting.getWordType(), setting.getWordFeatures(), setting.getNbfcConfig());
+    }
+
     public ProbabilityDocumentAnnotatingModel(NaiveBayesWithFeatureConditions tnbf, HiddenMarkovModel hmm,
                                               Document doc,
                                               RandomVariable wordType,
@@ -143,7 +149,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
         // May consider to use a separate method to get a list of observed paragrpahs.
         List<CoreMap> originalParagraphs = doc.getParagraphs();
         for (int p = 0; p < processedParagraphs.size(); p++) {
-            if (DocumentAnnotatingHelper.isParaObserved(originalParagraphs.get(p))) {
+            if (DocProcessor.isParaObserved(originalParagraphs.get(p))) {
                 int observedVal = RVValues.getValue(paraCategory, originalParagraphs.get(p));
 //                        DocumentAnnotatingHelper.getParagraphFeature(originalParagraphs.get(p), processedParas.get(p), paraCategory);
 
@@ -282,7 +288,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
         RandomVariable paraCategory = nbfcConfig.getCategoryVar();
         for (int p=0; p<numParagraphs; p++){
             CoreMap paragraph = paragraphList.get(p);
-            if (DocumentAnnotatingHelper.isParaObserved(paragraph)) continue; // skip observed paragraphs
+            if (DocProcessor.isParaObserved(paragraph)) continue; // skip observed paragraphs
             RVValues.clearValue(paraCategory, paragraph);
 //            DocumentAnnotatingHelper.clearParagraphCateoryAnnotation(paragraph, paraCategory);
             if (paragraph.getTokens().size() == 0)

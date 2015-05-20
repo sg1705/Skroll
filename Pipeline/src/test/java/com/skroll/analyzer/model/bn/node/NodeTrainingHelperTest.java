@@ -1,6 +1,6 @@
 package com.skroll.analyzer.model.bn.node;
 
-import com.skroll.analyzer.model.RandomVariableType;
+import com.skroll.analyzer.model.RandomVariable;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,9 +11,9 @@ import java.util.List;
 public class NodeTrainingHelperTest {
 
     private DiscreteNode parentNode;
-    private RandomVariableType[] parentVariables = new RandomVariableType[1];
-    private List<RandomVariableType> nodeVariables = new ArrayList();
-    private List<RandomVariableType> familyVariables;
+    private RandomVariable[] parentVariables = new RandomVariable[1];
+    private List<RandomVariable> nodeVariables = new ArrayList();
+    private List<RandomVariable> familyVariables;
     private double[] parameters = {NodeTrainingHelper.PRIOR_COUNT, NodeTrainingHelper.PRIOR_COUNT,
                 NodeTrainingHelper.PRIOR_COUNT, NodeTrainingHelper.PRIOR_COUNT,};
 
@@ -23,8 +23,8 @@ public class NodeTrainingHelperTest {
     @Before
     public void setup() {
         this.parentNode = new DiscreteNode(new DiscreteNode[0]);
-        parentVariables[0] = RandomVariableType.DOCUMENT_DEFINITIONS_IS_BOLD;
-        nodeVariables.add(RandomVariableType.DOCUMENT_DEFINITIONS_IS_BOLD);
+        parentVariables[0] = new RandomVariable(2, "defIsBold");
+        nodeVariables.add(parentVariables[0]);
         parentNode.setFamilyVariables(parentVariables);
         parentNode.setParameters(parameters);
         familyVariables = new ArrayList();
@@ -68,7 +68,7 @@ public class NodeTrainingHelperTest {
     @Test
     public void testGetIndex() throws Exception {
 
-        int index = NodeTrainingHelper.getIndex(familyVariables.toArray(new RandomVariableType[familyVariables.size()]),
+        int index = NodeTrainingHelper.getIndex(familyVariables.toArray(new RandomVariable[familyVariables.size()]),
                 new int[] {0,1});
 
         assert (index  == 2);

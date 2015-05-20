@@ -1,5 +1,7 @@
 package com.skroll.analyzer.model.bn;
 
+import com.skroll.analyzer.model.bn.config.NBFCConfig;
+
 /**
  * Created by wei on 4/16/15.
  */

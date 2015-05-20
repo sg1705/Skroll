@@ -5,6 +5,7 @@ import com.skroll.analyzer.model.bn.SimpleDataTuple;
 import com.skroll.analyzer.model.bn.config.NBFCConfig;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
+import com.skroll.document.annotation.CoreAnnotations;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +32,12 @@ public class DocProcessor {
             }
         }
         return features;
+    }
+
+    static boolean isParaObserved(CoreMap para) {
+        Boolean isObserved = para.get(CoreAnnotations.IsUserObservationAnnotation.class);
+        if (isObserved == null) isObserved = false;
+        return isObserved;
     }
 
 

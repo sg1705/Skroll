@@ -1,10 +1,7 @@
 package com.skroll.classifier;
 
-import com.skroll.analyzer.model.DocumentAnnotatingModel;
-import com.skroll.analyzer.model.ProbabilityDocumentAnnotatingModel;
-import com.skroll.analyzer.model.RandomVariableType;
-import com.skroll.analyzer.model.TrainingDocumentAnnotatingModel;
-import com.skroll.analyzer.model.bn.NBFCConfig;
+import com.skroll.analyzer.model.*;
+import com.skroll.analyzer.model.bn.config.NBFCConfig;
 import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -53,7 +50,7 @@ public class TOCClassifier extends ClassifierImpl {
             RandomVariableType.DOCUMENT_TOC_IS_CENTER_ALIGNED,
             RandomVariableType.DOCUMENT_TOC_HAS_ANCHOR
     );
-    NBFCConfig nbfcConfig = new NBFCConfig(paraType, paraFeatures, paraDocFeatures, docFeatures, DocumentAnnotatingModel.DEFAULT_WORDS);
+//    NBFCConfig nbfcConfig = new NBFCConfig(paraType, paraFeatures, paraDocFeatures, docFeatures, DocumentAnnotatingModel.DEFAULT_WORDS);
 
     public TOCClassifier() {
         //read the model
@@ -64,9 +61,10 @@ public class TOCClassifier extends ClassifierImpl {
             trainingModel = null;
         }
         if (trainingModel == null) {
-            trainingModel = new TrainingDocumentAnnotatingModel( wordType,
-                    wordFeatures,
-                    nbfcConfig);
+            trainingModel = new TrainingDocumentAnnotatingModel(new TOCModelRVSetting());
+//            trainingModel = new TrainingDocumentAnnotatingModel( wordType,
+//                    wordFeatures,
+//                    nbfcConfig);
         }
     }
 
@@ -102,8 +100,10 @@ public class TOCClassifier extends ClassifierImpl {
     public Object classify(String documentId, Document document) throws Exception {
 
         ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(trainingModel.getTnbfModel(),
-                trainingModel.getHmm(), document, wordType, wordFeatures, nbfcConfig
-        );
+                trainingModel.getHmm(), document, new TOCModelRVSetting());
+//        ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(trainingModel.getTnbfModel(),
+//                trainingModel.getHmm(), document, wordType, wordFeatures, nbfcConfig
+//        );
 
         logger.debug("TOC before annotate :");
         for (CoreMap para: DocumentHelper.getTOCParagraphs(document)){
@@ -169,7 +169,8 @@ public class TOCClassifier extends ClassifierImpl {
         System.out.println("document level feature believes\n");
         double[][] dBelieves = model.getDocumentFeatureBelief();
         for (int i=0; i<dBelieves.length; i++){
-            System.out.print(" " + model.DEFAULT_DOCUMENT_FEATURES);
+//            System.out.print(" " + model.DEFAULT_DOCUMENT_FEATURES);
+            System.out.print(" " + model.getNbfcConfig().getDocumentFeatureVarList());
             System.out.print(Arrays.toString(dBelieves[i]));
         }
 

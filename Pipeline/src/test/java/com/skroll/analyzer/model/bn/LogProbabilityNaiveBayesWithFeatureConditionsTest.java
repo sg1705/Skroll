@@ -1,7 +1,9 @@
 package com.skroll.analyzer.model.bn;
 
 import com.skroll.analyzer.model.DocumentAnnotatingModel;
+import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.RandomVariableType;
+import com.skroll.analyzer.model.bn.config.NBFCConfig;
 import com.skroll.analyzer.model.bn.inference.BNInference;
 import junit.framework.TestCase;
 
@@ -15,11 +17,12 @@ public class LogProbabilityNaiveBayesWithFeatureConditionsTest extends TestCase 
         NaiveBayesWithFeatureConditions nb =
                 NBTrainingHelper.createTrainingNBWithFeatureConditioning(
                         new NBFCConfig(
-                            RandomVariableType.PARAGRAPH_HAS_DEFINITION,
-                            new ArrayList<RandomVariableType>(),
-                            Arrays.asList(RandomVariableType.PARAGRAPH_STARTS_WITH_QUOTE),
-                            Arrays.asList(RandomVariableType.DOCUMENT_DEFINITIONS_IN_QUOTES),
-                            DocumentAnnotatingModel.DEFAULT_WORDS));
+                                new RandomVariable(2, "paraIsDef"),
+                                new ArrayList<RandomVariable>(),
+                                Arrays.asList(new RandomVariable(2, "startsWithQuote")),
+                                Arrays.asList(new RandomVariable(2, "defInQuotes")),
+                                Arrays.asList(new RandomVariable(0, "words"))));
+
 
         System.out.println("initial model");
         System.out.println(nb);

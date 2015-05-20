@@ -1,6 +1,6 @@
 package com.skroll.analyzer.model;
 
-import com.skroll.analyzer.model.bn.NBFCConfig;
+import com.skroll.analyzer.model.bn.config.NBFCConfig;
 import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -33,16 +33,16 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
     ProbabilityDocumentAnnotatingModel model;
     boolean doneSetup=false;
-
-    RandomVariableType wordType = RandomVariableType.WORD_IS_DEFINED_TERM;
-    RandomVariableType paraType = RandomVariableType.PARAGRAPH_HAS_DEFINITION;
-    List<RandomVariableType> wordFeatures = model.DEFAULT_WORD_FEATURES;
-    List<RandomVariableType> paraFeatures = model.DEFAULT_PARAGRAPH_FEATURES;
-    List<RandomVariableType> paraDocFeatures = model.DEFAULT_PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL;
-    List<RandomVariableType> docFeatures = model.DEFAULT_DOCUMENT_FEATURES;
-
-    NBFCConfig nbfcConfig = new NBFCConfig(paraType, paraFeatures, paraDocFeatures, docFeatures,
-            Arrays.asList(RandomVariableType.WORD));
+    //
+//    RandomVariableType wordType = RandomVariableType.WORD_IS_DEFINED_TERM;
+    RandomVariable paraType = DefModelRVSetting.PARA_IS_DEF;
+//    List<RandomVariableType> wordFeatures = model.DEFAULT_WORD_FEATURES;
+//    List<RandomVariableType> paraFeatures = model.DEFAULT_PARAGRAPH_FEATURES;
+//    List<RandomVariableType> paraDocFeatures = model.DEFAULT_PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL;
+//    List<RandomVariableType> docFeatures = model.DEFAULT_DOCUMENT_FEATURES;
+//
+//    NBFCConfig nbfcConfig = new NBFCConfig(paraType, paraFeatures, paraDocFeatures, docFeatures,
+//            Arrays.asList(RandomVariableType.WORD));
 
     @Before
     public void setupOnce() throws Exception{
@@ -51,7 +51,8 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
         traingTest.testUpdateWithDocument();
         model= new ProbabilityDocumentAnnotatingModel( traingTest.getTnbf(), traingTest.getModel().getHmm(), doc,
-                wordType, wordFeatures, traingTest.getModel().getNbfcConfig()
+                new DefModelRVSetting()
+//                wordType, wordFeatures, traingTest.getModel().getNbfcConfig()
                 );
         model.getHmm().updateProbabilities();
         System.out.println("HMM\n");
@@ -83,8 +84,8 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
     void printDocBeliefs(){
         System.out.print("document level feature believes\n");
-        System.out.println(model.DEFAULT_DOCUMENT_FEATURES);
-
+//        System.out.println(model.DEFAULT_DOCUMENT_FEATURES);
+        System.out.print(" " + model.getNbfcConfig().getDocumentFeatureVarList());
         double[][] dBelieves = model.getDocumentFeatureBelief();
         for (int i=0; i<dBelieves.length; i++){
             System.out.println(Arrays.toString(dBelieves[i]));
@@ -93,8 +94,8 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
     void printBelieves(){
         System.out.print("document level feature believes\n");
-        System.out.println(model.DEFAULT_DOCUMENT_FEATURES);
-
+//        System.out.println(model.DEFAULT_DOCUMENT_FEATURES);
+        System.out.print(" " + model.getNbfcConfig().getDocumentFeatureVarList());
         double[][] dBelieves = model.getDocumentFeatureProbabilities();
         for (int i=0; i<dBelieves.length; i++){
             System.out.println(Arrays.toString(dBelieves[i]));
@@ -176,7 +177,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
         model.annotateDocument();
 
         System.out.println("annotated terms\n");
-        DocumentAnnotatingHelper.printAnnotatedDoc(doc);
+        RVValues.printAnnotatedDoc(doc);
         printBelieves();
     }
 
@@ -205,7 +206,8 @@ public class ProbabilityDocumentAnnotatingModelTest {
 //        }
         for (int i=0; i<0; i++){
             //paraList.get(i).set(CoreAnnotations.IsDefinitionAnnotation.class, false);
-            DocumentAnnotatingHelper.clearParagraphCateoryAnnotation(paraList.get(i), paraType);
+            RVValues.clearValue(paraType, paraList.get(i));
+//            DocumentAnnotatingHelper.clearParagraphCateoryAnnotation(paraList.get(i), paraType);
 
             observedParas.add(paraList.get(i));
             paraList.get(i).set(CoreAnnotations.IsUserObservationAnnotation.class, true);
@@ -217,8 +219,9 @@ public class ProbabilityDocumentAnnotatingModelTest {
 //        paraList.get(1).set(CoreAnnotations.IsUserObservationAnnotation.class, true);
 
         for (int p=paraList.size()-1; p>paraList.size()-4;p--) {
+            RVValues.addTerms(paraType, paraList.get(p), Arrays.asList(paraList.get(p).getTokens().get(0)));
 
-            DocumentAnnotatingHelper.addParagraphTermAnnotation(paraList.get(p), paraType, Arrays.asList(paraList.get(p).getTokens().get(0)));
+//            DocumentAnnotatingHelper.addParagraphTermAnnotation(paraList.get(p), paraType, Arrays.asList(paraList.get(p).getTokens().get(0)));
             observedParas.add(paraList.get(p));
             paraList.get(p).set(CoreAnnotations.IsUserObservationAnnotation.class, true);
         }
@@ -234,7 +237,8 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
 
         System.out.println("annotated terms\n");
-        DocumentAnnotatingHelper.printAnnotatedDoc(doc);
+//        DocumentAnnotatingHelper.printAnnotatedDoc(doc);
+        RVValues.printAnnotatedDoc(doc);
         System.out.println("believes\n");
 
         printBelieves();
@@ -252,6 +256,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
         model.annotateDocument();
 
         System.out.println("annotated terms\n");
-        DocumentAnnotatingHelper.printAnnotatedDoc(doc);
+        RVValues.printAnnotatedDoc(doc);
+//        DocumentAnnotatingHelper.printAnnotatedDoc(doc);
     }
 }

@@ -18,7 +18,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TrainingDocumentAnnotatingModelTest{
+    int maxNumWords = 20;
     String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining";
+    ModelRVSetting setting = new DefModelRVSetting();
     TrainingDocumentAnnotatingModel model;
 
 
@@ -70,10 +72,12 @@ public class TrainingDocumentAnnotatingModelTest{
         Document doc = makeTrainingDoc(file);
 
         List<CoreMap> paragraphs = new ArrayList<>();
-        for( CoreMap paragraph : doc.getParagraphs())
-            paragraphs.add(DocumentAnnotatingHelper.processParagraph(paragraph, model.getHmm().size()));
-        int[] docFeatureValues = DocumentAnnotatingHelper.generateDocumentFeatures(doc.getParagraphs(),paragraphs,
-                model.getNbfcConfig());
+//        for( CoreMap paragraph : doc.getParagraphs())
+//            paragraphs.add(DocumentAnnotatingHelper.processParagraph(paragraph, model.getHmm().size()));
+//        int[] docFeatureValues = DocumentAnnotatingHelper.generateDocumentFeatures(doc.getParagraphs(),paragraphs,
+//                model.getNbfcConfig());
+        int[] docFeatureValues = DocProcessor.generateDocumentFeatures(doc.getParagraphs(),
+                DocProcessor.processParagraphs(doc.getParagraphs(), maxNumWords), setting.getNbfcConfig());
         System.out.println(Arrays.toString(docFeatureValues));
 
         assert(Arrays.equals(docFeatureValues, new int[]{1,0,1,0,1}));

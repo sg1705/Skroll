@@ -1,5 +1,6 @@
 package com.skroll.analyzer.model.bn.node;
 
+import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.RandomVariableType;
 import junit.framework.TestCase;
 import org.junit.Before;
@@ -16,13 +17,15 @@ public class ProbabilityDiscreteNodeTest {
     public static void setUpOnce() throws  Exception{
 
         DiscreteNode tdNode = NodeTrainingHelper.createTrainingDiscreteNode(
-                Arrays.asList(RandomVariableType.DOCUMENT_DEFINITIONS_IN_QUOTES));
+                Arrays.asList(new RandomVariable(2, "DOCUMENT_DEFINITIONS_IN_QUOTES")));
         DiscreteNode tpNode = NodeTrainingHelper.createTrainingDiscreteNode(
-                Arrays.asList(RandomVariableType.PARAGRAPH_HAS_DEFINITION));
+                Arrays.asList(new RandomVariable(2, "PARAGRAPH_HAS_DEFINITION")));
         DiscreteNode tfNode = NodeTrainingHelper.createTrainingDiscreteNode(
-                Arrays.asList(RandomVariableType.PARAGRAPH_STARTS_WITH_QUOTE,
-                        RandomVariableType.PARAGRAPH_HAS_DEFINITION,
-                        RandomVariableType.DOCUMENT_DEFINITIONS_IN_QUOTES),
+                Arrays.asList(new RandomVariable(2, "PARAGRAPH_STARTS_WITH_QUOTE"),
+                        tpNode.getFamilyVariables()[0],
+                        tdNode.getFamilyVariables()[0]),
+//                        RandomVariableType.PARAGRAPH_HAS_DEFINITION,
+//                        RandomVariableType.DOCUMENT_DEFINITIONS_IN_QUOTES),
                 Arrays.asList(tpNode, tdNode)
         ) ;
 

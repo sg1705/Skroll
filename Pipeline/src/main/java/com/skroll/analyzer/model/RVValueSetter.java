@@ -4,6 +4,7 @@ import com.skroll.document.CoreMap;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotation;
 import com.skroll.document.annotation.CoreAnnotations;
+import com.skroll.document.annotation.TypesafeMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
 // may consider using interface if more types of needed
 public class RVValueSetter {
     Class typeKey;
-    Class termsKey;
+    Class<TypesafeMap.Key<List<List<Token>>>> termsKey;
 
     public RVValueSetter(Class typeKey, Class termsKey) {
         this.typeKey = typeKey;

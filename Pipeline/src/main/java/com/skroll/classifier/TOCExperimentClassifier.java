@@ -1,10 +1,7 @@
 package com.skroll.classifier;
 
-import com.skroll.analyzer.model.DocumentAnnotatingModel;
-import com.skroll.analyzer.model.ProbabilityDocumentAnnotatingModel;
-import com.skroll.analyzer.model.RandomVariableType;
-import com.skroll.analyzer.model.TrainingDocumentAnnotatingModel;
-import com.skroll.analyzer.model.bn.NBFCConfig;
+import com.skroll.analyzer.model.*;
+import com.skroll.analyzer.model.bn.config.NBFCConfig;
 import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -68,7 +65,7 @@ public class TOCExperimentClassifier extends ClassifierImpl {
             RandomVariableType.WORD,
             RandomVariableType.FIRST_WORD
     );
-    NBFCConfig nbfcConfig = new NBFCConfig(paraType, paraFeatures, paraDocFeatures, docFeatures, wordVarList);
+//    NBFCConfig nbfcConfig = new NBFCConfig(paraType, paraFeatures, paraDocFeatures, docFeatures, wordVarList);
 
     public TOCExperimentClassifier() {
         trainingModel = createModel();
@@ -83,9 +80,10 @@ public class TOCExperimentClassifier extends ClassifierImpl {
             localTrainingModel = null;
         }
         if (localTrainingModel == null) {
-            localTrainingModel = new TrainingDocumentAnnotatingModel( wordType,
-                     wordFeatures,
-                     nbfcConfig);
+//            localTrainingModel = new TrainingDocumentAnnotatingModel( wordType,
+//                     wordFeatures,
+//                     nbfcConfig);
+            localTrainingModel = new TrainingDocumentAnnotatingModel(new TOCModelRVSetting());
         }
             return localTrainingModel;
         }
@@ -171,9 +169,12 @@ public class TOCExperimentClassifier extends ClassifierImpl {
 
         trainingModel = createModel();
         trainingModel.updateWithDocumentAndWeight(document);
+//        ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(trainingModel.getTnbfModel(),
+//                trainingModel.getHmm(), document, wordType, wordFeatures, nbfcConfig
+//        );
 
         ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(trainingModel.getTnbfModel(),
-                trainingModel.getHmm(), document, wordType, wordFeatures, nbfcConfig
+                trainingModel.getHmm(), document, new TOCModelRVSetting()
         );
 
         // already done in the constructor
@@ -210,7 +211,8 @@ public class TOCExperimentClassifier extends ClassifierImpl {
 
         double[][] dBelieves = model.getDocumentFeatureBelief();
         for (int i=0; i<dBelieves.length; i++){
-            logger.trace(" " + model.DEFAULT_DOCUMENT_FEATURES);
+//            logger.trace(" " + model.DEFAULT_DOCUMENT_FEATURES);
+            logger.trace(" " + model.getNbfcConfig().getDocumentFeatureVarList());
             logger.trace(Arrays.toString(dBelieves[i]));
         }
 

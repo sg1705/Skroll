@@ -18,6 +18,8 @@ import java.util.List;
  * Created by wei on 5/10/15.
  */
 public class DocProcessorTest {
+
+    int maxNumWords = 20;
     static final RandomVariable DEFAULT_PARA_IS_DEF =
             RVCreater.createRVFromAnnotation(CoreAnnotations.IsTOCAnnotation.class);
 
@@ -37,6 +39,7 @@ public class DocProcessorTest {
 
     Document doc = new Document();
     ModelRVSetting setting = new ModelRVSetting(
+            DefModelRVSetting.WORD_IS_DEF, DefModelRVSetting.DEFAULT_WORD_FEATURES,
             DEFAULT_PARA_IS_DEF,
             DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS, DEFAULT_DOC_FEATURE_VARS, DEFAULT_WORD_VARS
     );
@@ -74,7 +77,7 @@ public class DocProcessorTest {
 
     @Test
     public void testProcessParagraphs() throws Exception {
-        List<CoreMap> processedParas = DocProcessor.processParagraphs(doc.getParagraphs());
+        List<CoreMap> processedParas = DocProcessor.processParagraphs(doc.getParagraphs(), maxNumWords);
         for (CoreMap para : processedParas) {
             ParaProcessor.print(para);
         }
@@ -84,18 +87,19 @@ public class DocProcessorTest {
 
     @Test
     public void testGetDataFromDoc() throws Exception {
-        DocData data = DocProcessor.getDataFromDoc(doc, setting.getNbfcConfig());
+        List<CoreMap> processedParas = DocProcessor.processParagraphs(doc.getParagraphs(), maxNumWords);
+        DocData data = DocProcessor.getDataFromDoc(doc, processedParas, setting.getNbfcConfig());
         System.out.print(data);
 
     }
 
     @Test
     public void testGetFeatureValue() throws Exception {
-        List<CoreMap> processedParas = DocProcessor.processParagraphs(doc.getParagraphs());
+        List<CoreMap> processedParas = DocProcessor.processParagraphs(doc.getParagraphs(), maxNumWords);
         for (int i = 0; i < processedParas.size(); i++) {
             System.out.print("paragraph " + i + ": \n");
             for (RandomVariable rv : setting.getNbfcConfig().getAllParagraphFeatures()) {
-                int v = DocProcessor.getFeatureValue(rv, Arrays.asList(
+                int v = ParaProcessor.getFeatureValue(rv, Arrays.asList(
                         doc.getParagraphs().get(i), processedParas.get(i)));
                 System.out.print(rv.getName() + "=" + v + " ");
             }
@@ -104,16 +108,16 @@ public class DocProcessorTest {
             }
             System.out.println();
         }
-        assert (DocProcessor.getFeatureValue(setting.getNbfcConfig().getAllParagraphFeatures().get(0),
+        assert (ParaProcessor.getFeatureValue(setting.getNbfcConfig().getAllParagraphFeatures().get(0),
                 Arrays.asList(doc.getParagraphs().get(0), processedParas.get(0))) == 5);
 
-        assert (DocProcessor.getFeatureValue(setting.getNbfcConfig().getAllParagraphFeatures().get(1),
+        assert (ParaProcessor.getFeatureValue(setting.getNbfcConfig().getAllParagraphFeatures().get(1),
                 Arrays.asList(doc.getParagraphs().get(0), processedParas.get(0))) == 1);
     }
 
     @Test
     public void testGenerateDocumentFeatures() throws Exception {
-        List<CoreMap> processedParas = DocProcessor.processParagraphs(doc.getParagraphs());
+        List<CoreMap> processedParas = DocProcessor.processParagraphs(doc.getParagraphs(), maxNumWords);
         int[] docFeatureVals =
                 DocProcessor.generateDocumentFeatures(doc.getParagraphs(), processedParas, setting.getNbfcConfig());
         System.out.println(Arrays.toString(docFeatureVals));

@@ -1,6 +1,8 @@
 package com.skroll.analyzer.model;
 
 import com.skroll.document.CoreMap;
+import com.skroll.document.Document;
+import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
 
 import java.lang.reflect.Constructor;
@@ -144,5 +146,21 @@ public class RVValues {
     static int booleanToInt(Boolean b) {
         if (b == null) return 0;
         return b ? 1 : 0;
+    }
+
+
+    public static void printAnnotatedDoc(Document doc) {
+
+        List<CoreMap> defParas = DocumentHelper.getDefinitionParagraphs(doc);
+        for (int i = 0; i < defParas.size(); i++) {
+            System.out.println(defParas.get(i).getText());
+            System.out.print(i);
+            System.out.println(DocumentHelper.getDefinedTermTokensInParagraph(defParas.get(i)));
+        }
+//        for (CoreMap para:DocumentHelper.getDefinitionParagraphs(doc)){
+//            System.out.println(para.getText());
+//            System.out.println(DocumentHelper.getDefinedTermTokensInParagraph(para));
+//        }
+        System.out.println(DocumentHelper.getDefinitionParagraphs(doc).size());
     }
 }

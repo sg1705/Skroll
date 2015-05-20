@@ -1,11 +1,8 @@
 package com.skroll.classifier;
 
 import com.google.gson.reflect.TypeToken;
-import com.skroll.analyzer.model.DocumentAnnotatingModel;
-import com.skroll.analyzer.model.ProbabilityDocumentAnnotatingModel;
-import com.skroll.analyzer.model.RandomVariableType;
-import com.skroll.analyzer.model.TrainingDocumentAnnotatingModel;
-import com.skroll.analyzer.model.bn.NBFCConfig;
+import com.skroll.analyzer.model.*;
+import com.skroll.analyzer.model.bn.config.NBFCConfig;
 import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -89,18 +86,30 @@ public class DefinitionClassifier extends ClassifierImpl{
 
     @Override
     public Object classify(String documentId, Document document) throws Exception {
-
-        RandomVariableType wordType = RandomVariableType.WORD_IS_DEFINED_TERM;
-        RandomVariableType paraType = RandomVariableType.PARAGRAPH_HAS_DEFINITION;
-        List<RandomVariableType> wordFeatures = ProbabilityDocumentAnnotatingModel.DEFAULT_WORD_FEATURES;
-        List<RandomVariableType> paraFeatures = ProbabilityDocumentAnnotatingModel.DEFAULT_PARAGRAPH_FEATURES;
-        List<RandomVariableType> paraDocFeatures = ProbabilityDocumentAnnotatingModel.DEFAULT_PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL;
-        List<RandomVariableType> docFeatures = ProbabilityDocumentAnnotatingModel.DEFAULT_DOCUMENT_FEATURES;
-        NBFCConfig nbfcConfig = new NBFCConfig(paraType, paraFeatures, paraDocFeatures, docFeatures, DocumentAnnotatingModel.DEFAULT_WORDS);
+//
+//        RandomVariableType wordType = RandomVariableType.WORD_IS_DEFINED_TERM;
+//        RandomVariableType paraType = RandomVariableType.PARAGRAPH_HAS_DEFINITION;
+//        List<RandomVariableType> wordFeatures = ProbabilityDocumentAnnotatingModel.DEFAULT_WORD_FEATURES;
+//        List<RandomVariableType> paraFeatures = ProbabilityDocumentAnnotatingModel.DEFAULT_PARAGRAPH_FEATURES;
+//        List<RandomVariableType> paraDocFeatures = ProbabilityDocumentAnnotatingModel.DEFAULT_PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL;
+//        List<RandomVariableType> docFeatures = ProbabilityDocumentAnnotatingModel.DEFAULT_DOCUMENT_FEATURES;
+//        NBFCConfig nbfcConfig = new NBFCConfig(paraType, paraFeatures, paraDocFeatures, docFeatures, DocumentAnnotatingModel.DEFAULT_WORDS);
 
         ProbabilityDocumentAnnotatingModel bniModel =  new ProbabilityDocumentAnnotatingModel( trainingModel.getTnbfModel(),
-                trainingModel.getHmm(), document, wordType, wordFeatures, nbfcConfig
+                trainingModel.getHmm(), document, new DefModelRVSetting()
         );
+//
+//        RandomVariableType wordType = RandomVariableType.WORD_IS_DEFINED_TERM;
+//        RandomVariableType paraType = RandomVariableType.PARAGRAPH_HAS_DEFINITION;
+//        List<RandomVariableType> wordFeatures = ProbabilityDocumentAnnotatingModel.DEFAULT_WORD_FEATURES;
+//        List<RandomVariableType> paraFeatures = ProbabilityDocumentAnnotatingModel.DEFAULT_PARAGRAPH_FEATURES;
+//        List<RandomVariableType> paraDocFeatures = ProbabilityDocumentAnnotatingModel.DEFAULT_PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL;
+//        List<RandomVariableType> docFeatures = ProbabilityDocumentAnnotatingModel.DEFAULT_DOCUMENT_FEATURES;
+//        NBFCConfig nbfcConfig = new NBFCConfig(paraType, paraFeatures, paraDocFeatures, docFeatures, DocumentAnnotatingModel.DEFAULT_WORDS);
+//
+//        ProbabilityDocumentAnnotatingModel bniModel =  new ProbabilityDocumentAnnotatingModel( trainingModel.getTnbfModel(),
+//                trainingModel.getHmm(), document, wordType, wordFeatures, nbfcConfig
+//        );
         logger.debug("definitions before annotate");
 
         for (CoreMap para: DocumentHelper.getDefinitionParagraphs(document)){
@@ -173,7 +182,8 @@ public class DefinitionClassifier extends ClassifierImpl{
 
         double[][] dBelieves = model.getDocumentFeatureBelief();
         for (int i=0; i<dBelieves.length; i++){
-            logger.trace(" " + model.DEFAULT_DOCUMENT_FEATURES);
+            logger.trace(" " + model.getNbfcConfig().getDocumentFeatureVarList());
+//            logger.trace(" " + model.DEFAULT_DOCUMENT_FEATURES);
             logger.trace(Arrays.toString(dBelieves[i]));
         }
 

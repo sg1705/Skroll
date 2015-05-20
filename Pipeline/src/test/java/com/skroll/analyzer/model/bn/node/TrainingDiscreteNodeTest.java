@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model.bn.node;
 
 import com.skroll.analyzer.model.DocumentAnnotatingModel;
+import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.RandomVariableType;
 import com.skroll.analyzer.model.bn.inference.BNInference;
 import junit.framework.TestCase;
@@ -13,7 +14,7 @@ public class TrainingDiscreteNodeTest {
     DiscreteNode node;
     @Before
     public void initialize(){
-        node = NodeTrainingHelper.createTrainingDiscreteNode(Arrays.asList(RandomVariableType.PARAGRAPH_NUMBER_TOKENS));
+        node = NodeTrainingHelper.createTrainingDiscreteNode(Arrays.asList(new RandomVariable(2, "numberTokens")));
     }
 
     @Test

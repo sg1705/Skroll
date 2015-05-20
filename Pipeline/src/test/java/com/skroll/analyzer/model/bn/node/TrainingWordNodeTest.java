@@ -1,5 +1,6 @@
 package com.skroll.analyzer.model.bn.node;
 
+import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.RandomVariableType;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -9,7 +10,7 @@ import java.util.Arrays;
 import static org.junit.Assert.*;
 
 public class TrainingWordNodeTest {
-    DiscreteNode parent = NodeTrainingHelper.createTrainingDiscreteNode(Arrays.asList(RandomVariableType.PARAGRAPH_HAS_DEFINITION));
+    DiscreteNode parent = NodeTrainingHelper.createTrainingDiscreteNode(Arrays.asList(new RandomVariable(2, "paraHasDef")));
     WordNode node = new WordNode(parent);
 
     @BeforeClass

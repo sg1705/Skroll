@@ -30,9 +30,15 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
     NaiveBayesWithFeatureConditions tnbfModel;
 
-//    public TrainingDocumentAnnotatingModel(){
-//        this(DEFAULT_WORD_TYPE, DEFAULT_WORD_FEATURES, DEFAULT_NBFC_CONFIG);
-//    }
+
+    public TrainingDocumentAnnotatingModel() {
+        this(DefModelRVSetting.WORD_IS_DEF, DefModelRVSetting.DEFAULT_WORD_FEATURES,
+                new DefModelRVSetting().getNbfcConfig());
+    }
+
+    public TrainingDocumentAnnotatingModel(ModelRVSetting setting) {
+        this(setting.getWordType(), setting.getWordFeatures(), setting.getNbfcConfig());
+    }
 
     public TrainingDocumentAnnotatingModel(RandomVariable wordType,
                                            List<RandomVariable> wordFeatures,
