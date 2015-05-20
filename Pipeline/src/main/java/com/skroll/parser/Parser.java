@@ -1,6 +1,7 @@
 package com.skroll.parser;
 
 import com.skroll.document.Document;
+import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.extractor.ParserException;
 import com.skroll.parser.tokenizer.PostExtractionPipe;
 import com.skroll.pipeline.Pipeline;
@@ -12,15 +13,7 @@ import com.skroll.pipeline.util.Utils;
  */
 public class Parser {
 
-    /**
-     * Returns the parsed document from Html file.
-     *
-     * @param htmlText
-     * @return document
-     */
-    public static Document parseDocumentFromHtml(String htmlText) throws ParserException {
-        Document document = new Document();
-        document.setSource(htmlText);
+    private static Document parseInDoc(Document document) throws ParserException {
         //create a pipeline
         Pipeline<Document, Document> pipeline =
                 new Pipeline.Builder()
@@ -31,6 +24,34 @@ public class Parser {
         document = pipeline.process(document);
         return document;
     }
+
+
+    /**
+     * Returns the parsed document from Html file.
+     *
+     * @param htmlText
+     * @return document
+     */
+    public static Document parseDocumentFromHtml(String htmlText) throws ParserException {
+        Document document = new Document();
+        document.setSource(htmlText);
+        return parseInDoc(document);
+    }
+
+    /**
+     * Returns the parsed document from Html file.
+     *
+     * @param htmlText
+     * @return document
+     */
+    public static Document parseDocumentFromHtml(String htmlText, String url) throws ParserException {
+        Document document = new Document();
+        document.setSource(htmlText);
+        document.set(CoreAnnotations.SourceUrlAnnotation.class, url);
+        return parseInDoc(document);
+    }
+
+
 
     /**
      * Returns a parsed document from a file

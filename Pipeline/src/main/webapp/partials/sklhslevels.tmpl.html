@@ -1,0 +1,22 @@
+<div>
+		<md-button class="menu-toggle-button" ng-click="">
+		  <div layout="row" layout-align="space-between center">
+				<span>Table of Contents</span>	
+			</div>		
+		</md-button>
+
+	
+	<ul class="menu-list">
+		<li ng-repeat="term in ctrl.smodel.levelTerms">
+			<md-divider ng-if="term.level ==1 " inset></md-divider>
+			<md-button ng-if="term.level ==1 " class="md-primary" scroll-to-paragraph="{{term.paragraphId}}">{{term.term}}</md-button>
+			
+			<md-button md-no-ink ng-if="term.level == 2" style="padding-left: 15px; font-size:12px" class="md-primary md-hue-1 menu-item-level-2" scroll-to-paragraph="{{term.paragraphId}}">{{term.term}}</md-button>
+			
+
+
+		</li>
+
+	</ul>
+	<md-divider></md-divider>
+</div>

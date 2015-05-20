@@ -4,6 +4,7 @@
 <head>
   <meta charset="utf-8">
   <title>Skroll</title>
+  <base href="/">
   <meta http-equiv="cache-control" content="max-age=0" />
   <meta http-equiv="cache-control" content="no-cache" />
   <meta http-equiv="expires" content="0" />
@@ -15,6 +16,7 @@
   <!-- build:css(.) styles/vendor.css -->
   <!-- bower:css -->
   <link rel="stylesheet" href="bower_components/angular-material/angular-material.min.css">
+  <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
   <!-- endbower -->
   <!-- endbuild -->
   <!-- build:css(.tmp) styles/main.css -->
@@ -23,12 +25,15 @@
 
 </head>
 
+  <md-backdrop ng-show="documentModel.isProcessing"  class="md-opaque md-bottom-sheet-backdrop md-default-theme">
+    <md-progress-circular style="z-index: 80; position:absolute;top: 50%;left: 50%;" md-mode="indeterminate"></md-progress-circular>
+  </md-backdrop>
+
+
 <body style="height:100%" ng-controller="ContentCtrl">
   <div ng-view layout="column" style="-webkit-overflow-scrolling: touch; height:100%">
 </div>
 
-  <md-backdrop ng-show="documentModel.isProcessing" class="md-opaque md-bottom-sheet-backdrop md-default-theme">
-  </md-backdrop>
 
 
 </body>

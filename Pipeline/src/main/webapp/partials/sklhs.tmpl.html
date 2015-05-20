@@ -1,6 +1,6 @@
 <div ng-repeat="class in ctrl.classes" ng-show="{{class.isVisible}}" >
 	
-		<md-button class="menu-toggle-button" ng-click="ctrl.toggleSection($index)">
+		<md-button md-no-ink class="menu-toggle-button" ng-click="ctrl.toggleSection($index)">
 		  <div layout="row" layout-align="space-between center">
 			<span>{{class.name}}</span>
 		
@@ -14,7 +14,9 @@
 	<ul ng-show="class.isSelected" class="menu-list">
 		<li ng-repeat="term in ctrl.smodel.terms | filter: {classificationId:class.id}">
 			<md-button class="md-button" scroll-to-paragraph="{{term.paragraphId}}">{{term.term}}</md-button>
-		</li>	
+			<md-divider inset></md-divider>
+		</li>
+
 	</ul>
 	<md-divider></md-divider>
 </div>

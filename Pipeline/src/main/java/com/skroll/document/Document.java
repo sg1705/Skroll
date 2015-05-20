@@ -1,8 +1,8 @@
 package com.skroll.document;
 
-import com.skroll.document.annotation.CoreAnnotation;
 import com.skroll.document.annotation.CoreAnnotations;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,7 +19,7 @@ public class Document extends CoreMap {
 
     public Document(String source) {
         initialize();
-        this.setSource(source);;
+        this.setSource(source);
     }
 
     public Document(CoreMap map) {
@@ -27,9 +27,21 @@ public class Document extends CoreMap {
     }
 
     public List<CoreMap> getParagraphs() {
-        List<CoreMap> paras = this.get(CoreAnnotations.ParagraphsAnnotation.class);
-        return this.get(CoreAnnotations.ParagraphsAnnotation.class);
+        if (this.containsKey(CoreAnnotations.ParagraphsAnnotation.class)) {
+            return this.get(CoreAnnotations.ParagraphsAnnotation.class);
+        } else {
+            return new ArrayList<CoreMap>();
+        }
     }
+
+    public List<CoreMap> getTables() {
+        if (this.containsKey(CoreAnnotations.TablesAnnotation.class)) {
+            return this.get(CoreAnnotations.TablesAnnotation.class);
+        } else {
+            return new ArrayList<CoreMap>();
+        }
+    }
+
 
     public void setParagraphs(List<CoreMap> paragraphs) {
         this.set(CoreAnnotations.ParagraphsAnnotation.class, paragraphs);
