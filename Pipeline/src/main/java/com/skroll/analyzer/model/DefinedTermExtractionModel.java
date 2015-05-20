@@ -7,11 +7,11 @@ import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
+import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -107,14 +107,14 @@ public class DefinedTermExtractionModel {
             if (states[i]==1) definedTerms.add(tokens.get(i));
             else {
                 if (definedTerms.size()>0){
-                    DocumentHelper.addDefinedTermTokensInParagraph(definedTerms, paragraph);
+                    CategoryAnnotationHelper.addDefinedTokensInCategoryAnnotation(paragraph, definedTerms);
                     definedTerms = new ArrayList<>();
                 }
 
             }
         }
         if (definedTerms.size()>0){
-            DocumentHelper.addDefinedTermTokensInParagraph(definedTerms, paragraph);
+            CategoryAnnotationHelper.addDefinedTokensInCategoryAnnotation(paragraph, definedTerms);
         }
     }
 
@@ -141,6 +141,7 @@ public class DefinedTermExtractionModel {
     void updateHMMWithParagraph(CoreMap paragraph){
         List<Token> tokens = paragraph.get(CoreAnnotations.TokenAnnotation.class);
 
+        /*
         HashSet<String> definitionsSet;
         if (!paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
             definitionsSet= new HashSet<String>();
@@ -150,7 +151,7 @@ public class DefinedTermExtractionModel {
             List<String> definitions = DocumentHelper.getDefinedTerms(paragraph);
             definitionsSet = new HashSet<String>(definitions);
         }
-
+*/
         int[] tokenType = new int[tokens.size()];
         for (int i = 0; i < tokenType.length; i++) {
             tokenType[i] =  DefinedTermExtractionHelper.getWordFeature(

@@ -25,7 +25,6 @@ public class ModelFactory {
     private String modelFolderName = configuration.get("modelFolder","/tmp");
     protected ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil(modelFolderName);
     protected Map<String, TrainingDocumentAnnotatingModel> TrainingModelMap = new HashMap<>();
-    protected Map<String, ProbabilityDocumentAnnotatingModel> bniModelMap = new HashMap<>();
 
     TrainingDocumentAnnotatingModel getTrainingModel(Category category) {
         if(TrainingModelMap.containsKey(category.getName())){
@@ -62,7 +61,7 @@ public class ModelFactory {
 
     ProbabilityDocumentAnnotatingModel getBNIModel(Category category, Document document) {
 
-        TrainingDocumentAnnotatingModel trainingModel = createModel(category);
+        TrainingDocumentAnnotatingModel trainingModel = getTrainingModel(category);
         trainingModel.updateWithDocumentAndWeight(document);
 
         ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(trainingModel.getTnbfModel(),

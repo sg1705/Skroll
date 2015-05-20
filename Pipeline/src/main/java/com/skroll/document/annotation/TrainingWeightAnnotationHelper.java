@@ -1,31 +1,34 @@
 package com.skroll.document.annotation;
 
-import com.google.common.collect.Lists;
 import com.skroll.analyzer.model.RandomVariableType;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by saurabhagarwal on 3/8/15.
  */
 public class TrainingWeightAnnotationHelper {
-    public final static int LATEST_WEIGHT_INDEX =3;
-    public final static int INDEX =3;
+    public final static int LATEST_WEIGHT_INDEX =7;
+    public final static int INDEX =6;
 
     public static void updateTrainingWeight(CoreMap paragraph, int index, float userWeight){
         List<Float>  userWeightList = paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class);
         if (userWeightList == null) {
             //First three float are previously trained weight - Definition, TOC and NONE
             //Second set of three floats are currently trained weight
-            userWeightList = Lists.newArrayList((float)0,(float)0,(float)0,(float)0,(float)0,(float)0);
+            userWeightList = new ArrayList();
+            for (int i=0; i<LATEST_WEIGHT_INDEX*2; i++) {
+                userWeightList.add((float)0);
+            }
             paragraph.set(CoreAnnotations.TrainingWeightAnnotationFloat.class, userWeightList);
         }
-
-        userWeightList.set(Category.DEFINITION,userWeightList.get(Category.DEFINITION + LATEST_WEIGHT_INDEX));
-        userWeightList.set(Category.TOC,userWeightList.get(Category.TOC+LATEST_WEIGHT_INDEX));
-        userWeightList.set(Category.NONE,userWeightList.get(Category.NONE+LATEST_WEIGHT_INDEX));
+        userWeightList.set(Category.NONE, userWeightList.get(Category.NONE + LATEST_WEIGHT_INDEX));
+        for (Integer categoryId : Category.getCategories()) {
+            userWeightList.set(categoryId, userWeightList.get(categoryId + LATEST_WEIGHT_INDEX));
+        }
 
     }
 
@@ -35,7 +38,10 @@ public class TrainingWeightAnnotationHelper {
         if (userWeightList == null) {
             //First three float are previously trained weight - Definition, TOC and NONE
             //Second set of three floats are currently trained weight
-            userWeightList = Lists.newArrayList((float)0,(float)0,(float)0,(float)0,(float)0,(float)0);
+            userWeightList = new ArrayList();
+            for (int i=0; i<LATEST_WEIGHT_INDEX*2; i++) {
+                userWeightList.add((float)0);
+            }
             paragraph.set(CoreAnnotations.TrainingWeightAnnotationFloat.class, userWeightList);
         }
 
@@ -67,8 +73,8 @@ public class TrainingWeightAnnotationHelper {
 
         switch (paraType){
             case PARAGRAPH_HAS_TOC:
-                weights[0][1] = weightList.get(Category.TOC);
-                weights[1][1] = weightList.get(Category.TOC+LATEST_WEIGHT_INDEX);
+                weights[0][1] = weightList.get(Category.TOC_1);
+                weights[1][1] = weightList.get(Category.TOC_1+LATEST_WEIGHT_INDEX);
                 return weights;
             case PARAGRAPH_HAS_DEFINITION:
                 weights[0][1] = weightList.get(Category.DEFINITION);

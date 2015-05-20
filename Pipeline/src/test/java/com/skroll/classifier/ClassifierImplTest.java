@@ -5,7 +5,7 @@ import com.google.common.io.Files;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.skroll.document.Document;
-import com.skroll.document.DocumentHelper;
+import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.ParserException;
 import com.skroll.pipeline.Pipeline;
@@ -37,7 +37,7 @@ public class ClassifierImplTest {
           Injector injector = Guice.createInjector(new SkrollGuiceModule());
           ClassifierFactory classifierFactory = injector.getInstance(ClassifierFactory.class);
           documentClassifier = classifierFactory.getClassifier(Category.DEFINITION);
-          tocClassifier = classifierFactory.getClassifier(Category.TOC);
+          tocClassifier = classifierFactory.getClassifier(Category.TOC_1);
      } catch (Exception e) {
         e.printStackTrace();
         }
@@ -58,7 +58,7 @@ public class ClassifierImplTest {
             e.printStackTrace();
             fail(" failed to find a Model");
         }
-        logger.debug ("Number fo Paragraphs returned: " + DocumentHelper.getDefinitionParagraphs(document).size());
+        logger.debug ("Number fo Paragraphs returned: " + CategoryAnnotationHelper.getParaWithCategoryAnnotation(document,Category.DEFINITION).size());
     }
 
     //@Test

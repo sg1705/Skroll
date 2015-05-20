@@ -19,6 +19,7 @@ public class TOCCategory extends Category {
 
     public TOCCategory() {
         super(2,"com.skroll.classifier.TOCCategory");
+
         wordType = RandomVariableType.WORD_IS_TOC_TERM;
         paraType = RandomVariableType.PARAGRAPH_HAS_TOC;
 

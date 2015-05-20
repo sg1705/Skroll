@@ -21,7 +21,7 @@ public class ClassifierFactoryTest {
     @Test
     public void testGetClassifier() throws Exception {
         assert(classifierFactory.getClassifier(Category.DEFINITION)!=null);
-        assert(classifierFactory.getClassifier(Category.TOC)!=null);
+        assert(classifierFactory.getClassifier(Category.TOC_1)!=null);
 
     }
 

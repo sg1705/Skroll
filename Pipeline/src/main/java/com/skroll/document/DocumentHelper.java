@@ -1,7 +1,5 @@
 package com.skroll.document;
 
-import com.google.common.base.Joiner;
-import com.skroll.classifier.Category;
 import com.skroll.document.annotation.CoreAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +24,7 @@ public class DocumentHelper {
     }
 
     public static List<String> getTokenString(List<Token> tokens) {
+        if (tokens==null) return null;
         List<String> words = new ArrayList<String>();
         for(Token token : tokens) {
             words.add(token.getText());
@@ -44,7 +43,7 @@ public class DocumentHelper {
         coreMap.set(CoreAnnotations.TokenAnnotation.class, tokens1);
         return coreMap;
     }
-
+/*
     public static boolean isDefinition(CoreMap coreMap) {
         if (coreMap.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
             return coreMap.get(CoreAnnotations.IsDefinitionAnnotation.class);
@@ -58,7 +57,7 @@ public class DocumentHelper {
         }
         return false;
     }
-
+*/
     public static boolean isObserved(CoreMap coreMap) {
         if (coreMap.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)) {
             return coreMap.get(CoreAnnotations.IsUserObservationAnnotation.class);
@@ -74,7 +73,7 @@ public class DocumentHelper {
 
 
     //todo: this method should be removed. but it's used at some places.
-
+/*
     public static List<String> getDefinedTerms(CoreMap coreMap) {
         List<List<Token>> definiitonList = coreMap.get(CoreAnnotations.DefinedTermTokensAnnotation.class);
         List<String> strings = new ArrayList<>();
@@ -85,6 +84,7 @@ public class DocumentHelper {
 
 
     public static boolean setMatchedText(CoreMap coreMap, List<Token> addedTerm, int classification) {
+
         List<Token> tokenList = coreMap.getTokens();
         String tokenStringList = Joiner.on("").join(tokenList);
         String addedTermList = Joiner.on("").join(addedTerm);
@@ -99,9 +99,15 @@ public class DocumentHelper {
         int j=0;
         int l=0;
         int remainingAddedTermLength = 0;
+
         while (remainingAddedTermLength < addedTermList.length()) {
             for(int i=l; i<tokenList.size(); i++){
                 int tokenLength = tokenList.get(i).getText().length();
+                //check if the selected text is not the complete word or token
+                if(addedTermList.length() < remainingAddedTermLength + tokenLength ){
+                    logger.error("One of Selected text {} does not contain the complete word [{}] ", addedTerm,tokenList.get(i).getText());
+                    return false;
+                }
                 String addedTermSubString = addedTermList.substring(remainingAddedTermLength,remainingAddedTermLength + tokenLength);
                 if(tokenList.get(i).getText().equals(addedTermSubString)) {
                     remainingAddedTermLength+=tokenLength;
@@ -123,7 +129,7 @@ public class DocumentHelper {
         }
             if(classification== Category.DEFINITION) {
                 addDefinedTermTokensInParagraph(returnList, coreMap);
-            } else if ( classification==Category.TOC){
+            } else if ( classification==Category.TOC_1){
                 addTOCsInParagraph(returnList, coreMap);
             }
             return true;
@@ -194,7 +200,7 @@ public class DocumentHelper {
     public static List<List<Token>> getDefinedTermTokensInParagraph(CoreMap paragraph) {
         return paragraph.get(CoreAnnotations.DefinedTermTokensAnnotation.class);
     }
-
+*/
     public static List<Token> createTokens(List<String> strings) {
         List<Token> tokens = new ArrayList<Token>();
         for(String str: strings) {
@@ -204,6 +210,7 @@ public class DocumentHelper {
         return tokens;
     }
 
+    /*
     public static List<CoreMap> getDefinitionParagraphs(Document doc){
         List<CoreMap> definitionParagraphs= new ArrayList<>();
         for (CoreMap paragraph: doc.getParagraphs()){
@@ -220,7 +227,7 @@ public class DocumentHelper {
         return tocParagraphs;
     }
 
-
+*/
     public static List<CoreMap> getObservedParagraphs(Document doc) {
         List<CoreMap> observedParagraphs = new ArrayList<>();
         for (CoreMap paragraph : doc.getParagraphs()) {
@@ -240,7 +247,7 @@ public class DocumentHelper {
         return tokens;
 
     }
-
+/*
     public static void clearAnnotations(CoreMap paragraph){
 
     //remove any existing annotations - definedTermList
@@ -250,7 +257,7 @@ public class DocumentHelper {
     paragraph.set(CoreAnnotations.TOCTokensAnnotation.class, null);
     paragraph.set(CoreAnnotations.IsTOCAnnotation.class, false);
     }
-
+*/
     public static List<Token> getDocumentTokens(Document document) {
         //get paragraph
         List<CoreMap> paragraphs = document.getParagraphs();

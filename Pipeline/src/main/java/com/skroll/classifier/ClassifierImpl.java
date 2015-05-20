@@ -3,8 +3,8 @@ package com.skroll.classifier;
 import com.skroll.analyzer.model.TrainingDocumentAnnotatingModel;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
-import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
+import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.ParserException;
@@ -53,26 +53,15 @@ public class ClassifierImpl implements Classifier {
 
     @Override
     public Object updateBNI(String documentId,Document document, List<CoreMap> observedParas) throws Exception {
+        if (!observedParas.isEmpty())
+            logger.debug("observedParas:" + "\t" + observedParas);
 
-        logger.debug("observedParas:" + "\t" + observedParas);
         logger.debug("Before annotate");
-        for (CoreMap para: DocumentHelper.getDefinitionParagraphs(document)){
-            logger.debug(para.getId() +"\t" + "existing Defs:" + "\t" +DocumentHelper.getDefinedTermTokensInParagraph(para).toString());
-        }
-        for (CoreMap para: DocumentHelper.getTOCParagraphs(document)){
-            logger.debug(para.getId() +"\t" + "existing TOCs:" + "\t" + DocumentHelper.getTOCLists(para).toString());
-        }
-
+        CategoryAnnotationHelper.displayCategoryOfDoc(document);
         modelFactory.getBNIModel(category, document);
 
         logger.debug("After annotate");
-        for (CoreMap para:DocumentHelper.getDefinitionParagraphs(document)){
-            logger.debug(para.getId() +"\t" + "updated Defs:" + "\t" + DocumentHelper.getDefinedTermTokensInParagraph(para).toString());
-        }
-        for (CoreMap para: DocumentHelper.getTOCParagraphs(document)){
-            logger.debug(para.getId() +"\t" + "updated TOCs:" + "\t" +DocumentHelper.getTOCLists(para).toString());
-        }
-
+        CategoryAnnotationHelper.displayCategoryOfDoc(document);
         DefinitionLinker linker = new DefinitionLinker();
         document = linker.linkDefinition(document);
         return document;

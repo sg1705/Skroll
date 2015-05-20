@@ -4,6 +4,7 @@ import com.skroll.document.CoreMap;
 import com.skroll.document.Token;
 import com.skroll.pipeline.util.EraserUtils;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -79,7 +80,6 @@ public class CoreAnnotations {
     }
 
 
-
     public static class TokenAnnotation implements CoreAnnotation<List<Token>> {
         public Class<List<Token>> getType() {
             return EraserUtils.<Class<List<Token>>> uncheckedCast(List.class);
@@ -114,13 +114,13 @@ public class CoreAnnotations {
         }
     }
 
-
+/*
     public static class IsDefinitionAnnotation implements CoreAnnotation<Boolean> {
         public Class<Boolean> getType() {
             return Boolean.class;
         }
     }
-
+*/
     /**
      * annotation to indicate that a paragraph has a user observation
      */
@@ -273,8 +273,7 @@ public class CoreAnnotations {
             return Boolean.class;
         }
     }
-
-    // TOC Annotation
+/*
     public static class TOCTokensAnnotation implements CoreAnnotation<List<Token>> {
         public Class<List<Token>> getType() {
             return EraserUtils.<Class<List<Token>>> uncheckedCast(List.class);
@@ -283,6 +282,16 @@ public class CoreAnnotations {
     public static class IsTOCAnnotation implements CoreAnnotation<Boolean> {
         public Class<Boolean> getType() {
             return Boolean.class;
+        }
+    }
+*/
+    /**
+     * Annotation for training. It specifies the index of a word token in the paragraph.
+     */
+
+    public static class CategoryAnnotations implements CoreAnnotation<HashMap<Integer,CoreMap>> {
+        public Class<HashMap<Integer,CoreMap>> getType() {
+            return EraserUtils.<Class<HashMap<Integer,CoreMap>>> uncheckedCast(HashMap.class);
         }
     }
 }

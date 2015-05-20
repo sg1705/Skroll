@@ -84,11 +84,11 @@ public class InstrumentAPI {
             probabilityJson = gson.toJson(modelMap);
             buf.append(probabilityJson);
             buf.append(",");
-            map = classifierFactory.getClassifier(Category.TOC).getBNIVisualMap(doc, paraIndex);
+            map = classifierFactory.getClassifier(Category.TOC_1).getBNIVisualMap(doc, paraIndex);
             probabilityJson = gson.toJson(map);
             buf.append(probabilityJson);
             buf.append(",");
-            modelMap = classifierFactory.getClassifier(Category.TOC).getModelVisualMap();
+            modelMap = classifierFactory.getClassifier(Category.TOC_1).getModelVisualMap();
             buf.append(gson.toJson(modelMap));
             buf.append(",");
             buf.append(annotationJson);
@@ -197,7 +197,7 @@ public class InstrumentAPI {
         // get probabilities
         try {
             List<Double> dumpMap = classifierFactory.getClassifier(Category.DEFINITION).getProbabilityDataForDoc(doc);
-            List<Double> pTOC = classifierFactory.getClassifier(Category.TOC).getProbabilityDataForDoc(doc);
+            List<Double> pTOC = classifierFactory.getClassifier(Category.TOC_1).getProbabilityDataForDoc(doc);
 
             List<List<Double>> allPs = new ArrayList();
             allPs.add(dumpMap);

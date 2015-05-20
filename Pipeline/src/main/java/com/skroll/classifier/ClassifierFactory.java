@@ -20,7 +20,12 @@ public class ClassifierFactory {
 
     static {
         categories.put(Category.DEFINITION,new DefinitionCategory());
-        categories.put(Category.TOC,new TOCCategory());
+        //categories.put(Category.TOC,new TOCCategory());
+        categories.put(Category.TOC_1,new Category(Category.TOC_1,"com.skroll.classifier.TOC_1"));
+        categories.put(Category.TOC_2,new Category(Category.TOC_2,"com.skroll.classifier.TOC_2"));
+        categories.put(Category.TOC_3,new Category(Category.TOC_3,"com.skroll.classifier.TOC_3"));
+        categories.put(Category.TOC_4,new Category(Category.TOC_4,"com.skroll.classifier.TOC_4"));
+        categories.put(Category.TOC_5,new Category(Category.TOC_5,"com.skroll.classifier.TOC_5"));
     }
 
     public Classifier getClassifier(int categoryId) throws Exception {
@@ -49,8 +54,12 @@ public class ClassifierFactory {
    public List<Classifier> getClassifier(Document document) throws Exception {
        List<Classifier> classifierList = new ArrayList<>();
        classifierList.add(getClassifier(Category.DEFINITION));
-       classifierList.add(getClassifier(Category.TOC));
-
+       //classifierList.add(getClassifier(Category.TOC));
+       classifierList.add(getClassifier(Category.TOC_1));
+       classifierList.add(getClassifier(Category.TOC_2));
+       classifierList.add(getClassifier(Category.TOC_3));
+       classifierList.add(getClassifier(Category.TOC_4));
+       classifierList.add(getClassifier(Category.TOC_5));
        return classifierList;
    }
 }

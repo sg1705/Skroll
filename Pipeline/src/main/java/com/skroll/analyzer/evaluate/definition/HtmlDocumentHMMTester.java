@@ -3,10 +3,12 @@ package com.skroll.analyzer.evaluate.definition;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
+import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
+import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
@@ -37,7 +39,7 @@ public class HtmlDocumentHMMTester extends SyncPipe<Document, Document> {
         //assume that words are extracted
         for(CoreMap paragraph : input.getParagraphs()) {
             List<String> definitions = new ArrayList<String>();
-            if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
+            if (!(CategoryAnnotationHelper.isCategoryId(paragraph, Category.DEFINITION))){
                 boolean isPreviousWordDefinition = false;
                 List<String> tempDefinitions = new ArrayList<String>();
                 // test for terms
@@ -51,7 +53,7 @@ public class HtmlDocumentHMMTester extends SyncPipe<Document, Document> {
                             isPreviousWordDefinition = true;
                         }
                         tempDefinitions.add(paragraph.get(CoreAnnotations.TokenAnnotation.class).get(ii).getText());
-                        paragraph.get(CoreAnnotations.TokenAnnotation.class).get(ii).set(CoreAnnotations.IsDefinitionAnnotation.class, true);
+                       //  paragraph.get(CoreAnnotations.TokenAnnotation.class).get(ii).set(CoreAnnotations.IsDefinitionAnnotation.class, true);
 //                        // chances are that this is a definition
 //                        definitions.add(paragraph.getWords().get(ii));
                     } else {
@@ -71,7 +73,8 @@ public class HtmlDocumentHMMTester extends SyncPipe<Document, Document> {
             }
             List<List<Token>> definedTokensList = new ArrayList();
             definedTokensList.add(DocumentHelper.createTokens(definitions));
-            paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class, definedTokensList);
+            //paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class, definedTokensList);
+            CategoryAnnotationHelper.setDInCategoryAnnotation(paragraph,definedTokensList);
             newParagraphs.add(paragraph);
         }
         input.setParagraphs(newParagraphs);
