@@ -43,21 +43,6 @@ public class DocumentHelper {
         coreMap.set(CoreAnnotations.TokenAnnotation.class, tokens1);
         return coreMap;
     }
-/*
-    public static boolean isDefinition(CoreMap coreMap) {
-        if (coreMap.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
-            return coreMap.get(CoreAnnotations.IsDefinitionAnnotation.class);
-        }
-        return false;
-    }
-
-    public static boolean isTOC(CoreMap coreMap) {
-        if (coreMap.containsKey(CoreAnnotations.IsTOCAnnotation.class)) {
-            return coreMap.get(CoreAnnotations.IsTOCAnnotation.class);
-        }
-        return false;
-    }
-*/
     public static boolean isObserved(CoreMap coreMap) {
         if (coreMap.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)) {
             return coreMap.get(CoreAnnotations.IsUserObservationAnnotation.class);
@@ -71,136 +56,6 @@ public class DocumentHelper {
         return false;
     }
 
-
-    //todo: this method should be removed. but it's used at some places.
-/*
-    public static List<String> getDefinedTerms(CoreMap coreMap) {
-        List<List<Token>> definiitonList = coreMap.get(CoreAnnotations.DefinedTermTokensAnnotation.class);
-        List<String> strings = new ArrayList<>();
-        if (definiitonList==null || definiitonList.size()==0) return strings;
-        strings = DocumentHelper.getTokenString(definiitonList.get(0));
-        return strings;
-    }
-
-
-    public static boolean setMatchedText(CoreMap coreMap, List<Token> addedTerm, int classification) {
-
-        List<Token> tokenList = coreMap.getTokens();
-        String tokenStringList = Joiner.on("").join(tokenList);
-        String addedTermList = Joiner.on("").join(addedTerm);
-        logger.debug("addedTerm:" + "\t" + addedTermList);
-        logger.debug("existing para:" + "\t" + tokenStringList);
-
-        if (!tokenStringList.contains(addedTermList)) {
-            return false;
-        }
-
-        List<Token> returnList = new ArrayList<>();
-        int j=0;
-        int l=0;
-        int remainingAddedTermLength = 0;
-
-        while (remainingAddedTermLength < addedTermList.length()) {
-            for(int i=l; i<tokenList.size(); i++){
-                int tokenLength = tokenList.get(i).getText().length();
-                //check if the selected text is not the complete word or token
-                if(addedTermList.length() < remainingAddedTermLength + tokenLength ){
-                    logger.error("One of Selected text {} does not contain the complete word [{}] ", addedTerm,tokenList.get(i).getText());
-                    return false;
-                }
-                String addedTermSubString = addedTermList.substring(remainingAddedTermLength,remainingAddedTermLength + tokenLength);
-                if(tokenList.get(i).getText().equals(addedTermSubString)) {
-                    remainingAddedTermLength+=tokenLength;
-                    if (j==0) {
-                        j=i;
-                    }
-                    if (i>j+1) {
-                        returnList.clear();
-                        j=i;
-                        continue;
-                    }
-                    returnList.add(tokenList.get(i));
-                    j=i;
-                    l++;
-                    break;
-                }
-                l++;
-            }
-        }
-            if(classification== Category.DEFINITION) {
-                addDefinedTermTokensInParagraph(returnList, coreMap);
-            } else if ( classification==Category.TOC_1){
-                addTOCsInParagraph(returnList, coreMap);
-            }
-            return true;
-
-    }
-    public static List<List<String>> getDefinedTermLists(CoreMap coreMap) {
-        List<List<Token>> definitionList = coreMap.get(CoreAnnotations.DefinedTermTokensAnnotation.class);
-        List<List<String>> strings = new ArrayList<>();
-        if (definitionList==null) return strings;
-        for (List<Token> list: definitionList){
-            strings.add(DocumentHelper.getTokenString(list));
-        }
-        return strings;
-    }
-
-    public static List<String> getTOCLists(CoreMap coreMap) {
-        List<Token> tocList = coreMap.get(CoreAnnotations.TOCTokensAnnotation.class);
-        if (tocList==null) return new ArrayList<>();
-        return DocumentHelper.getTokenString(tocList);
-
-    }
-
-
-    //todo: this method should be deleted. but it's used at some places.
-
-    public static void setDefinedTermTokensInParagraph(List<Token> definitions, CoreMap paragraph) {
-        List<List<Token>> list = new ArrayList<>();
-        list.add(definitions);
-        paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class, list);
-        if (definitions.size() > 0) {
-            paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
-        }
-    }
-
-    public static void setDefinedTermTokenListInParagraph(List<List<Token>> definitions, CoreMap paragraph) {
-        paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class, definitions);
-        if (definitions !=null && definitions.size() > 0) {
-            paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
-        } else paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, false);
-
-    }
-
-    public static void addDefinedTermTokensInParagraph(List<Token> definitions, CoreMap paragraph) {
-        List<List<Token>>  definitionList = paragraph.get(CoreAnnotations.DefinedTermTokensAnnotation.class);
-        if (definitionList == null) {
-            definitionList = new ArrayList<>();
-            paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class, definitionList);
-        }
-        definitionList.add(definitions);
-        if (definitions.size() > 0) {
-            paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
-        }
-    }
-
-    public static void addTOCsInParagraph(List<Token> newToc, CoreMap paragraph) {
-        List<Token> toc = paragraph.get(CoreAnnotations.TOCTokensAnnotation.class);
-        if (toc == null) {
-            toc = new ArrayList<>();
-            paragraph.set(CoreAnnotations.TOCTokensAnnotation.class, toc);
-        }
-        toc.addAll(newToc);
-        if (toc.size() > 0) {
-            paragraph.set(CoreAnnotations.IsTOCAnnotation.class, true);
-        }
-    }
-
-
-    public static List<List<Token>> getDefinedTermTokensInParagraph(CoreMap paragraph) {
-        return paragraph.get(CoreAnnotations.DefinedTermTokensAnnotation.class);
-    }
-*/
     public static List<Token> createTokens(List<String> strings) {
         List<Token> tokens = new ArrayList<Token>();
         for(String str: strings) {
@@ -210,24 +65,6 @@ public class DocumentHelper {
         return tokens;
     }
 
-    /*
-    public static List<CoreMap> getDefinitionParagraphs(Document doc){
-        List<CoreMap> definitionParagraphs= new ArrayList<>();
-        for (CoreMap paragraph: doc.getParagraphs()){
-            if (isDefinition(paragraph)) definitionParagraphs.add(paragraph);
-        }
-        return definitionParagraphs;
-    }
-
-    public static List<CoreMap> getTOCParagraphs(Document doc){
-        List<CoreMap> tocParagraphs= new ArrayList<>();
-        for (CoreMap paragraph: doc.getParagraphs()){
-            if (isTOC(paragraph)) tocParagraphs.add(paragraph);
-        }
-        return tocParagraphs;
-    }
-
-*/
     public static List<CoreMap> getObservedParagraphs(Document doc) {
         List<CoreMap> observedParagraphs = new ArrayList<>();
         for (CoreMap paragraph : doc.getParagraphs()) {
@@ -247,17 +84,7 @@ public class DocumentHelper {
         return tokens;
 
     }
-/*
-    public static void clearAnnotations(CoreMap paragraph){
 
-    //remove any existing annotations - definedTermList
-    paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class, null);
-    paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, false);
-    //remove any existing annotations - TOCList
-    paragraph.set(CoreAnnotations.TOCTokensAnnotation.class, null);
-    paragraph.set(CoreAnnotations.IsTOCAnnotation.class, false);
-    }
-*/
     public static List<Token> getDocumentTokens(Document document) {
         //get paragraph
         List<CoreMap> paragraphs = document.getParagraphs();

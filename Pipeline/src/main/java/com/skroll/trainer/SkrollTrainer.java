@@ -204,11 +204,9 @@ public class SkrollTrainer {
                             List<List<Token>> definedTokensList = new ArrayList();
                             definedTokensList.add(definedTokens);
                             CategoryAnnotationHelper.setDInCategoryAnnotation(paragraph, definedTokensList);
-                            //paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
+
                             defList.add(paragraph.getId() + "\t" + "DEFINITION" + "\t" + definedTokens + "\t" + paragraph.getText());
                         } else {
-                            //paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, false);
-                            //paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class, null);
                             defList.add(paragraph.getId() + "\t" + "NOT_DEFINITION" + "\t" + " " + "\t" + paragraph.getText());
                         }
                     }
@@ -224,7 +222,7 @@ public class SkrollTrainer {
     }
 
     public void  trainWithOverride(String folderName) throws IOException, ObjectPersistUtil.ObjectPersistException {
-            //Classifier documentClassifier = new DefinitionExperimentClassifier();
+
             FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(folderName));
             for (File f : iterable) {
                 if (f.isFile()) {
@@ -238,10 +236,6 @@ public class SkrollTrainer {
     }
 
     public  void classify(String testingFile) {
-
-        //Classifier documentClassifier = new DefinitionExperimentClassifier();
-        // String testingFile = "src/test/resources/parser/linker/test-linker-random.html";
-        //String testingFile = "src/main/resources/trainingDocuments/indentures/AMC Networks Indenture.html";
 
         Document document = null;
         try {

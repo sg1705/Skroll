@@ -126,13 +126,6 @@ public class CoreAnnotations {
         }
     }
 
-/*
-    public static class IsDefinitionAnnotation implements CoreAnnotation<Boolean> {
-        public Class<Boolean> getType() {
-            return Boolean.class;
-        }
-    }
-*/
     /**
      * annotation to indicate that a paragraph has a user observation
      */
