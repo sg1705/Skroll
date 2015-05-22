@@ -31,7 +31,6 @@ public class DocumentAnnotatingHelper {
         List<Token> tokens = paragraph.getTokens();
         List<Token> newTokens = new ArrayList<>();
 
-        //Set<String> wordSet = new HashSet<>();
         Set<String> wordSet = new LinkedHashSet<>(); //use LinkedHashSet to maintain order.
 
         if (tokens.size()>0 && WordHelper.isQuote(tokens.get(0).getText()))
@@ -185,8 +184,20 @@ public class DocumentAnnotatingHelper {
             case PARAGRAPH_HAS_DEFINITION:
                 CategoryAnnotationHelper.addDefinedTokensInCategoryAnnotation(paragraph, terms);
                 return;
-            case PARAGRAPH_HAS_TOC:
+            case PARAGRAPH_HAS_TOC_1:
                 CategoryAnnotationHelper.addTokensInCategoryAnnotation(paragraph, terms, Category.TOC_1);
+                return;
+            case PARAGRAPH_HAS_TOC_2:
+                CategoryAnnotationHelper.addTokensInCategoryAnnotation(paragraph, terms, Category.TOC_2);
+                return;
+            case PARAGRAPH_HAS_TOC_3:
+                CategoryAnnotationHelper.addTokensInCategoryAnnotation(paragraph, terms, Category.TOC_3);
+                return;
+            case PARAGRAPH_HAS_TOC_4:
+                CategoryAnnotationHelper.addTokensInCategoryAnnotation(paragraph, terms, Category.TOC_4);
+                return;
+            case PARAGRAPH_HAS_TOC_5:
+                CategoryAnnotationHelper.addTokensInCategoryAnnotation(paragraph, terms, Category.TOC_5);
                 return;
         }
         return;
@@ -259,8 +270,17 @@ public class DocumentAnnotatingHelper {
                 return booleanToInt(paragraph.get(CoreAnnotations.IsCenterAlignedAnnotation.class ));
             case PARAGRAPH_HAS_ANCHOR:
                 return booleanToInt(paragraph.get(CoreAnnotations.IsAnchorAnnotation.class ));
-            case PARAGRAPH_HAS_TOC:
+            case PARAGRAPH_HAS_TOC_1:
                 return booleanToInt(CategoryAnnotationHelper.isCategoryId(paragraph, Category.TOC_1));
+            case PARAGRAPH_HAS_TOC_2:
+                return booleanToInt(CategoryAnnotationHelper.isCategoryId(paragraph, Category.TOC_2));
+            case PARAGRAPH_HAS_TOC_3:
+                return booleanToInt(CategoryAnnotationHelper.isCategoryId(paragraph, Category.TOC_3));
+            case PARAGRAPH_HAS_TOC_4:
+                return booleanToInt(CategoryAnnotationHelper.isCategoryId(paragraph, Category.TOC_4));
+            case PARAGRAPH_HAS_TOC_5:
+                return booleanToInt(CategoryAnnotationHelper.isCategoryId(paragraph, Category.TOC_5));
+
             case PARAGRAPH_NOT_IN_TABLE:
                 return 1-booleanToInt(paragraph.get(CoreAnnotations.IsInTableAnnotation.class));
 
@@ -292,7 +312,6 @@ public class DocumentAnnotatingHelper {
                 for (List<Token> list: tokens)
                     for (Token t:list) //todo: matching string instead of matching token reference is a hack here.
                         if (t.getText().equals(word.getText())) return 1;
-                    //if (list.contains(word)) return 1;
                 return 0;
             case WORD_IN_QUOTES:
 
@@ -303,21 +322,48 @@ public class DocumentAnnotatingHelper {
                 return booleanToInt(word.get(CoreAnnotations.IsUnderlineAnnotation.class ));
             case WORD_IS_ITALIC:
                 return booleanToInt(word.get(CoreAnnotations.IsItalicAnnotation.class ));
-//            case WORD_HAS_SPECIAL_FORMAT:
-//                return booleanToInt(word.get(CoreAnnotations.InQuotesAnnotation.class )) |
-//                        booleanToInt(word.get(CoreAnnotations.IsUnderlineAnnotation.class ))|
-//                        booleanToInt(word.get(CoreAnnotations.IsBoldAnnotation.class ))|
-//                        booleanToInt(word.get(CoreAnnotations.IsItalicAnnotation.class ));
             case WORD_INDEX:  return word.get(CoreAnnotations.IndexInteger.class );
 
-            case WORD_IS_TOC_TERM:
-                //TODO: talk to wei regarding isTOCAnnotation class
+
+            case WORD_IS_TOC_1_TERM:
+
                 List<Token> tocTokens =  CategoryAnnotationHelper.getTokensInParagraph(paragraph, Category.TOC_1);
                 if (tocTokens==null) return 0;
-                    for (Token t:tocTokens)
-                        if (t.getText().equals(word.getText())) return 1;
-                //if (list.contains(word)) return 1;
+                for (Token t:tocTokens)
+                    if (t.getText().equals(word.getText())) return 1;
+
                 return 0;
+            case WORD_IS_TOC_2_TERM:
+
+                tocTokens =  CategoryAnnotationHelper.getTokensInParagraph(paragraph, Category.TOC_2);
+                if (tocTokens==null) return 0;
+                for (Token t:tocTokens)
+                    if (t.getText().equals(word.getText())) return 1;
+
+                return 0;
+            case WORD_IS_TOC_3_TERM:
+
+                tocTokens =  CategoryAnnotationHelper.getTokensInParagraph(paragraph, Category.TOC_3);
+                if (tocTokens==null) return 0;
+                for (Token t:tocTokens)
+                    if (t.getText().equals(word.getText())) return 1;
+                return 0;
+            case WORD_IS_TOC_4_TERM:
+
+                tocTokens =  CategoryAnnotationHelper.getTokensInParagraph(paragraph, Category.TOC_4);
+                if (tocTokens==null) return 0;
+                for (Token t:tocTokens)
+                    if (t.getText().equals(word.getText())) return 1;
+                return 0;
+            case WORD_IS_TOC_5_TERM:
+
+                tocTokens =  CategoryAnnotationHelper.getTokensInParagraph(paragraph, Category.TOC_5);
+                if (tocTokens==null) return 0;
+                for (Token t:tocTokens)
+                    if (t.getText().equals(word.getText())) return 1;
+
+                return 0;
+
         }
         return -1;
     }
@@ -348,19 +394,26 @@ public class DocumentAnnotatingHelper {
             System.out.print(i);
             System.out.println(CategoryAnnotationHelper.getDefinedTermTokensInParagraph(defParas.get(i)));
         }
-//        for (CoreMap para:DocumentHelper.getDefinitionParagraphs(doc)){
-//            System.out.println(para.getText());
-//            System.out.println(DocumentHelper.getDefinedTermTokensInParagraph(para));
-//        }
+
         System.out.println( CategoryAnnotationHelper.getParaWithCategoryAnnotation(doc, Category.DEFINITION).size());
     }
 
     public static void clearParagraphCateoryAnnotation(CoreMap para, RandomVariableType paraType){
         switch (paraType) {
-            case PARAGRAPH_HAS_TOC:
-                //para.set(CoreAnnotations.IsTOCAnnotation.class, false);
-                //para.set(CoreAnnotations.TOCTokensAnnotation.class, null);
+            case PARAGRAPH_HAS_TOC_1:
                 CategoryAnnotationHelper.clearCategoryAnnotation(para, Category.TOC_1);
+                return;
+            case PARAGRAPH_HAS_TOC_2:
+                CategoryAnnotationHelper.clearCategoryAnnotation(para, Category.TOC_2);
+                return;
+            case PARAGRAPH_HAS_TOC_3:
+                CategoryAnnotationHelper.clearCategoryAnnotation(para, Category.TOC_3);
+                return;
+            case PARAGRAPH_HAS_TOC_4:
+                CategoryAnnotationHelper.clearCategoryAnnotation(para, Category.TOC_4);
+                return;
+            case PARAGRAPH_HAS_TOC_5:
+                CategoryAnnotationHelper.clearCategoryAnnotation(para, Category.TOC_5);
                 return;
             case PARAGRAPH_HAS_DEFINITION:
                 CategoryAnnotationHelper.clearCategoryAnnotation(para, Category.DEFINITION);

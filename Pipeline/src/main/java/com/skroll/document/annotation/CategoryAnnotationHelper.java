@@ -12,6 +12,7 @@ import java.util.List;
 
 /**
  * Created by saurabhagarwal on 5/12/15.
+ *  CategoryAnnotationHelper provides the functionality related to categoryAnnotation
  */
 public class CategoryAnnotationHelper {
     public static final Logger logger = LoggerFactory
@@ -93,14 +94,14 @@ public class CategoryAnnotationHelper {
                         List<List<String>> definitionList = getDefinedTermLists(paragraph);
                         for (List<String> definition : definitionList) {
                             if(logger.isDebugEnabled())
-                                logger.debug(paragraph.getId() + "\t" + "DEFINITION" + "\t" + definition);
+                                logger.debug( "{} \t DEFINITION \t{}",paragraph.getId(), definition);
                         }
                     } else {
                         List<String> texts = getTexts(paragraph, categoryId);
                         if (texts!=null && !texts.isEmpty()) {
                             if (!(Joiner.on(" ").join(texts).equals(""))) {
                                 if(logger.isDebugEnabled())
-                                    logger.debug(paragraph.getId() + "\t" + categoryId + "\t" + texts);
+                                    logger.debug( "{} \t {} \t {}",paragraph.getId(),categoryId , texts);
                             }
                         }
                     }
@@ -194,6 +195,7 @@ public class CategoryAnnotationHelper {
         categoryAnnotation.remove(categoryId);
         paragraph.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
     }
+
     public static boolean setMatchedText(CoreMap coreMap, List<Token> addedTerm, int categoryId) {
 
         List<Token> tokenList = coreMap.getTokens();

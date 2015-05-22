@@ -138,7 +138,7 @@ public class DocAPI {
             Document fDoc = document;
             request.getClassifiers().parallelStream().forEach(c -> c.classify(fName, fDoc));
             request.getDocumentFactory().putDocument(fileName, document);
-            logger.debug("Added document into the documentMap with a generated hash key:" + fileName);
+            logger.debug("Added document into the documentMap with a generated hash key:{}" ,fileName);
 
         } catch (ParserException e) {
             return logErrorResponse("Failed to parse the uploaded file", e);
@@ -186,7 +186,7 @@ public class DocAPI {
         Document doc = request.getDocument();
         String jsonString = null;
         if (doc == null) {
-            logger.debug("Not found in documentMap, fetching from corpus:" + documentId.toString());
+            logger.debug("Not found in documentMap, fetching from corpus: {}", documentId.toString());
             try {
                 jsonString = Files.toString(new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
                 doc = JsonDeserializer.fromJson(jsonString);
@@ -223,7 +223,7 @@ public class DocAPI {
         List<Paragraph> termList = CategoryAnnotationHelper.getTerm(doc);
 
         String definitionJson = new GsonBuilder().create().toJson(termList);
-        logger.trace("definitionJson" + "\t" + definitionJson);
+        if (logger.isTraceEnabled()) logger.trace("definitionJson" + "\t" + definitionJson);
         Response r = Response.ok().status(Response.Status.OK).entity(definitionJson).build();
         return r;
     }
@@ -307,9 +307,9 @@ public class DocAPI {
                     }
                     // Add the userObserved paragraphs
                     parasForUpdateBNI.add(paragraph);
-                    logger.debug("userObserved paragraphs:" + "\t" + paragraph.getId());
+                    logger.debug("userObserved paragraphs:\t {}", paragraph.getId());
                     CategoryAnnotationHelper.displayTerm(paragraph);
-                    logger.debug("TrainingWeightAnnotation:" + paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class));
+                    logger.debug("TrainingWeightAnnotation: {}", paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class));
                     break;
                 }
             }
@@ -318,22 +318,17 @@ public class DocAPI {
         // persist the document using document id. Let's use the file name
         try {
             if (!parasForUpdateBNI.isEmpty()) {
-                //logger.debug("Number of Definition Paragraph before update BNI: {}", DocumentHelper.getDefinitionParagraphs(doc).size());
-                //logger.debug("Number of TOCs Paragraph before update BNI: {}", DocumentHelper.getTOCParagraphs(doc).size());
 
                 for (Classifier classifier : request.getClassifiers()) {
                     doc = (Document) classifier.updateBNI(documentId, doc, parasForUpdateBNI);
                 }
                 request.getDocumentFactory().putDocument(documentId, doc);
-                // Files.write(JsonDeserializer.getJson(doc), new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
-                //logger.debug("Number of Definition Paragraph After update BNI: {}", DocumentHelper.getDefinitionParagraphs(doc).size());
-                //logger.debug("Number of TOCs Paragraph after update BNI: {}", DocumentHelper.getTOCParagraphs(doc).size());
             }
         } catch (Exception e) {
             logger.error("Failed to update updateBNI, using existing document : {}", e);
         }
 
-        logger.debug("updated document is stored in {}", preEvaluatedFolder + documentId);
+        logger.debug("updated document is stored in {} {}", preEvaluatedFolder, documentId);
         return Response.status(Response.Status.OK).entity(doc.getTarget().getBytes(Constants.DEFAULT_CHARSET)).type(MediaType.TEXT_HTML).build();
     }
 
@@ -368,7 +363,7 @@ public class DocAPI {
         } catch (Exception e) {
             logErrorResponse("Failed to persist the document object: {}", e);
         }
-        logger.debug("train the model using document is stored in {}", preEvaluatedFolder + documentId);
+        logger.debug("train the model using document is stored in {} {}", preEvaluatedFolder, documentId);
         return Response.ok().status(Response.Status.OK).entity("model has been updated").build();
     }
 

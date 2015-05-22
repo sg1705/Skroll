@@ -12,7 +12,6 @@ public class Category {
 
     public static final int NONE = 0;
     public static final int DEFINITION = 1;
-    //public static final int TOC = 2;
     public static final int TOC_1 = 2;
     public static final int TOC_2 = 3;
     public static final int TOC_3 = 4;
@@ -67,6 +66,13 @@ public class Category {
     public Category(int id, String name){
         this.id =id;
         this.name=name;
+    }
+
+    public Category(int id, String name, RandomVariableType wordType, RandomVariableType paraType){
+        this.id =id;
+        this.name=name;
+        this.wordType=wordType;
+        this.paraType=paraType;
     }
     public String getName() {
         return name;

@@ -72,9 +72,25 @@ public class TrainingWeightAnnotationHelper {
         weights[1][0] = weightList.get(Category.NONE+LATEST_WEIGHT_INDEX);
 
         switch (paraType){
-            case PARAGRAPH_HAS_TOC:
+            case PARAGRAPH_HAS_TOC_1:
                 weights[0][1] = weightList.get(Category.TOC_1);
                 weights[1][1] = weightList.get(Category.TOC_1+LATEST_WEIGHT_INDEX);
+                return weights;
+            case PARAGRAPH_HAS_TOC_2:
+                weights[0][1] = weightList.get(Category.TOC_2);
+                weights[1][1] = weightList.get(Category.TOC_2+LATEST_WEIGHT_INDEX);
+                return weights;
+            case PARAGRAPH_HAS_TOC_3:
+                weights[0][1] = weightList.get(Category.TOC_3);
+                weights[1][1] = weightList.get(Category.TOC_3+LATEST_WEIGHT_INDEX);
+                return weights;
+            case PARAGRAPH_HAS_TOC_4:
+                weights[0][1] = weightList.get(Category.TOC_4);
+                weights[1][1] = weightList.get(Category.TOC_4+LATEST_WEIGHT_INDEX);
+                return weights;
+            case PARAGRAPH_HAS_TOC_5:
+                weights[0][1] = weightList.get(Category.TOC_5);
+                weights[1][1] = weightList.get(Category.TOC_5+LATEST_WEIGHT_INDEX);
                 return weights;
             case PARAGRAPH_HAS_DEFINITION:
                 weights[0][1] = weightList.get(Category.DEFINITION);

@@ -1,5 +1,6 @@
 package com.skroll.classifier;
 
+import com.skroll.analyzer.model.RandomVariableType;
 import com.skroll.analyzer.model.TrainingDocumentAnnotatingModel;
 import com.skroll.document.Document;
 
@@ -20,12 +21,11 @@ public class ClassifierFactory {
 
     static {
         categories.put(Category.DEFINITION,new DefinitionCategory());
-        //categories.put(Category.TOC,new TOCCategory());
-        categories.put(Category.TOC_1,new Category(Category.TOC_1,"com.skroll.classifier.TOC_1"));
-        categories.put(Category.TOC_2,new Category(Category.TOC_2,"com.skroll.classifier.TOC_2"));
-        categories.put(Category.TOC_3,new Category(Category.TOC_3,"com.skroll.classifier.TOC_3"));
-        categories.put(Category.TOC_4,new Category(Category.TOC_4,"com.skroll.classifier.TOC_4"));
-        categories.put(Category.TOC_5,new Category(Category.TOC_5,"com.skroll.classifier.TOC_5"));
+        categories.put(Category.TOC_1,new Category(Category.TOC_1,"com.skroll.classifier.TOC_1", RandomVariableType.WORD_IS_TOC_1_TERM,RandomVariableType.PARAGRAPH_HAS_TOC_1));
+        categories.put(Category.TOC_2,new Category(Category.TOC_2,"com.skroll.classifier.TOC_2",RandomVariableType.WORD_IS_TOC_2_TERM,RandomVariableType.PARAGRAPH_HAS_TOC_2));
+        categories.put(Category.TOC_3,new Category(Category.TOC_3,"com.skroll.classifier.TOC_3",RandomVariableType.WORD_IS_TOC_3_TERM,RandomVariableType.PARAGRAPH_HAS_TOC_3));
+        categories.put(Category.TOC_4,new Category(Category.TOC_4,"com.skroll.classifier.TOC_4",RandomVariableType.WORD_IS_TOC_4_TERM,RandomVariableType.PARAGRAPH_HAS_TOC_4));
+        categories.put(Category.TOC_5,new Category(Category.TOC_5,"com.skroll.classifier.TOC_5",RandomVariableType.WORD_IS_TOC_5_TERM,RandomVariableType.PARAGRAPH_HAS_TOC_5));
     }
 
     public Classifier getClassifier(int categoryId) throws Exception {
@@ -40,13 +40,6 @@ public class ClassifierFactory {
             return classifiers.get(categoryId);
         Classifier classifier =
                 new ClassifierImpl(modelFactory, trainingDocumentAnnotatingModel, category);
-        /*
-        if (categoryId == 1) {
-            classifier = new DefinitionExperimentClassifier(trainingDocumentAnnotatingModel);
-        } else {
-            classifier = new TOCExperimentClassifier();
-        }
-        */
         classifiers.put(categoryId, classifier);
         return classifier;
     }
@@ -54,7 +47,6 @@ public class ClassifierFactory {
    public List<Classifier> getClassifier(Document document) throws Exception {
        List<Classifier> classifierList = new ArrayList<>();
        classifierList.add(getClassifier(Category.DEFINITION));
-       //classifierList.add(getClassifier(Category.TOC));
        classifierList.add(getClassifier(Category.TOC_1));
        classifierList.add(getClassifier(Category.TOC_2));
        classifierList.add(getClassifier(Category.TOC_3));
