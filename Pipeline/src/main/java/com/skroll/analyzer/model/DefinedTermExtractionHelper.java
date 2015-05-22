@@ -1,9 +1,11 @@
 package com.skroll.analyzer.model;
 
 import com.skroll.analyzer.model.nb.DataTuple;
+import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
+import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.util.WordHelper;
 
@@ -53,18 +55,17 @@ public class DefinedTermExtractionHelper {
 
         // put defined terms from paragraph in trainingParagraph
         // todo: may remove this later if trainer creates a training paragraph and put defined terms there directly
-        List<List<Token>> definedTokens = paragraph.get(CoreAnnotations.DefinedTermTokensAnnotation.class);
-        if (definedTokens != null && definedTokens.size()>0) {
-            trainingParagraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
-        }
-        trainingParagraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class,
-                paragraph.get(CoreAnnotations.DefinedTermTokensAnnotation.class));
+        //List<List<Token>> definedTokens = paragraph.get(CoreAnnotations.DefinedTermTokensAnnotation.class);
+        //if (definedTokens != null && definedTokens.size()>0) {
+            //trainingParagraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
+        //}
+        CategoryAnnotationHelper.setDInCategoryAnnotation(trainingParagraph,CategoryAnnotationHelper.getDefinedTermTokensInParagraph(paragraph));
 
         return trainingParagraph;
     }
 
     static DataTuple makeNBDataTuple(CoreMap paragraph, List<RandomVariableType> features){
-        int category = (DocumentHelper.isDefinition(paragraph)) ? 1:0;
+        int category = (CategoryAnnotationHelper.isCategoryId(paragraph, Category.DEFINITION)) ? 1:0;
         String []tokens = getNBWords(paragraph);
 
         int [] featureValues = new int[features.size()];
@@ -85,7 +86,7 @@ public class DefinedTermExtractionHelper {
         List<Token> tokens = paragraph.getTokens();
         if (tokens==null || tokens.size()==0) return 0;
         switch (feature){
-            case PARAGRAPH_HAS_DEFINITION: return (DocumentHelper.isDefinition(paragraph)) ?1:0;
+            case PARAGRAPH_HAS_DEFINITION: return (CategoryAnnotationHelper.isCategoryId(paragraph, Category.DEFINITION)) ?1:0;
             case PARAGRAPH_NUMBER_TOKENS:
                 Set<String> words = paragraph.get(CoreAnnotations.WordSetForTrainingAnnotation.class);
                 int num=0;
@@ -126,7 +127,7 @@ public class DefinedTermExtractionHelper {
     static int getWordFeature(CoreMap paragraph, Token word, RandomVariableType feature){
         switch (feature){
             case WORD_IS_DEFINED_TERM:
-                List<List<Token>> tokens =  DocumentHelper.getDefinedTermTokensInParagraph(paragraph);
+                List<List<Token>> tokens =  CategoryAnnotationHelper.getDefinedTermTokensInParagraph(paragraph);
                 if (tokens==null) return 0;
                 for (List<Token> list: tokens)
                     for (Token t:list) // matching string instead of matching token reference is a hack here.

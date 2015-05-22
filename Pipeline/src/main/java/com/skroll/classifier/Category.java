@@ -12,12 +12,18 @@ public class Category {
 
     public static final int NONE = 0;
     public static final int DEFINITION = 1;
-    public static final int TOC = 2;
+    public static final int TOC_1 = 2;
+    public static final int TOC_2 = 3;
+    public static final int TOC_3 = 4;
+    public static final int TOC_4 = 5;
+    public static final int TOC_5 = 6;
 
     int id;
     String name;
 
-
+    public static List<Integer> getCategories()  {
+        return Arrays.asList(Category.DEFINITION,Category.TOC_1,Category.TOC_2,Category.TOC_3,Category.TOC_4,Category.TOC_5 );
+    }
 
     RandomVariableType wordType = RandomVariableType.WORD_IS_TOC_TERM;
     RandomVariableType paraType = RandomVariableType.PARAGRAPH_HAS_TOC;
@@ -60,6 +66,13 @@ public class Category {
     public Category(int id, String name){
         this.id =id;
         this.name=name;
+    }
+
+    public Category(int id, String name, RandomVariableType wordType, RandomVariableType paraType){
+        this.id =id;
+        this.name=name;
+        this.wordType=wordType;
+        this.paraType=paraType;
     }
     public String getName() {
         return name;

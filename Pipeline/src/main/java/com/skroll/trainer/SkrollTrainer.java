@@ -12,6 +12,7 @@ import com.skroll.classifier.Category;
 import com.skroll.classifier.Classifier;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.*;
+import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
 import com.skroll.parser.Parser;
@@ -57,7 +58,7 @@ public class SkrollTrainer {
     public SkrollTrainer(){
         try {
              documentClassifier = classifierFactory.getClassifier(Category.DEFINITION);
-             tocExperimentClassifier = classifierFactory.getClassifier(Category.TOC);
+             tocExperimentClassifier = classifierFactory.getClassifier(Category.TOC_1);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -117,9 +118,9 @@ public class SkrollTrainer {
             List<String> defList = new ArrayList<String>();
             int count = 0;
             for (CoreMap paragraph : doc.getParagraphs()) {
-                if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
+                if (CategoryAnnotationHelper.isCategoryId(paragraph,Category.DEFINITION)) {
 
-                    List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(
+                    List<List<String>> definitionList = CategoryAnnotationHelper.getDefinedTermLists(
                             paragraph);
                     for (List<String> definition: definitionList) {
                         String words = Joiner.on(",").join(definition);
@@ -194,7 +195,7 @@ public class SkrollTrainer {
                     if (paragraph.getId().equals(paragraphID)) {
                         logger.debug("Found Paragraph");
                         if (isDefinition) {
-                            paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
+                            //paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
                             List<Token> definedTokens = new ArrayList();
                             while (definedTermIterator.hasNext()) {
                                 definedTokens.add(new Token(definedTermIterator.next()));
@@ -202,12 +203,10 @@ public class SkrollTrainer {
                             //TODO: only one definition per paragraph supported right now.
                             List<List<Token>> definedTokensList = new ArrayList();
                             definedTokensList.add(definedTokens);
-                            paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class, definedTokensList);
-                            paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
+                            CategoryAnnotationHelper.setDInCategoryAnnotation(paragraph, definedTokensList);
+
                             defList.add(paragraph.getId() + "\t" + "DEFINITION" + "\t" + definedTokens + "\t" + paragraph.getText());
                         } else {
-                            paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, false);
-                            paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class, null);
                             defList.add(paragraph.getId() + "\t" + "NOT_DEFINITION" + "\t" + " " + "\t" + paragraph.getText());
                         }
                     }
@@ -223,7 +222,7 @@ public class SkrollTrainer {
     }
 
     public void  trainWithOverride(String folderName) throws IOException, ObjectPersistUtil.ObjectPersistException {
-            //Classifier documentClassifier = new DefinitionExperimentClassifier();
+
             FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(folderName));
             for (File f : iterable) {
                 if (f.isFile()) {
@@ -237,10 +236,6 @@ public class SkrollTrainer {
     }
 
     public  void classify(String testingFile) {
-
-        //Classifier documentClassifier = new DefinitionExperimentClassifier();
-        // String testingFile = "src/test/resources/parser/linker/test-linker-random.html";
-        //String testingFile = "src/main/resources/trainingDocuments/indentures/AMC Networks Indenture.html";
 
         Document document = null;
         try {

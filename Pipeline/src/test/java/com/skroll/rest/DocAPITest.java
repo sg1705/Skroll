@@ -8,6 +8,7 @@ import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.document.JsonDeserializer;
+import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.util.Constants;
 import com.skroll.util.Configuration;
@@ -32,26 +33,24 @@ public class DocAPITest extends APITest {
         String preEvaluatedFolder = configuration.get("preEvaluatedFolder","/tmp/");
         Document doc = JsonDeserializer.fromJson(Files.toString(new File(preEvaluatedFolder + documentId), Constants.DEFAULT_CHARSET));
         for(CoreMap coreMap: doc.getParagraphs()){
-            DocumentHelper.setMatchedText(coreMap, DocumentHelper.createTokens(Lists.newArrayList("Capital", "Stock")), Category.TOC);
-            if(coreMap.get(CoreAnnotations.IsTOCAnnotation.class)) {
-                System.out.println(DocumentHelper.getTOCLists(coreMap));
+            CategoryAnnotationHelper.setMatchedText(coreMap, DocumentHelper.createTokens(Lists.newArrayList("Capital", "Stock")), Category.TOC_1);
+            if(CategoryAnnotationHelper.isCategoryId(coreMap, Category.TOC_3)) {
+                System.out.println(CategoryAnnotationHelper.getTexts(coreMap,Category.TOC_3));
                 //assert(Joiner.on(" ").join(DocumentHelper.getTOCLists(coreMap)).equals("CapitalStock"));
             }
         }
         //API.documentMap.put("smaller-indenture.html",doc);
-        logger.debug("TOC Paragraph before calling updateTerm: {}", DocumentHelper.getTOCParagraphs((doc)));
+        logger.debug("TOC Paragraph before calling updateTerm: {}", CategoryAnnotationHelper.getParaWithCategoryAnnotation(doc, Category.TOC_1));
 
         testUpdateTerms();
 
         assert(doc.getTarget().contains("Capital Stock"));
 
         for (CoreMap paragraph : doc.getParagraphs()) {
-            if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
-                List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(
+                List<List<String>> definitionList = CategoryAnnotationHelper.getDefinedTermLists(
                         paragraph);
                 logger.debug(paragraph.getId() + " " + Joiner.on(" ").join(definitionList));
 
-            }
             if(paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)) {
                 logger.debug("TrainingWeight:" +paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class));
             }
@@ -66,12 +65,10 @@ public class DocAPITest extends APITest {
         Document doc = JsonDeserializer.fromJson(Files.toString(new File(preEvaluatedFolder + documentId), Constants.DEFAULT_CHARSET));
         assert(doc.getTarget().contains("Capital Stock"));
         for (CoreMap paragraph : doc.getParagraphs()) {
-            if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
-                List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(
+                List<List<String>> definitionList = CategoryAnnotationHelper.getDefinedTermLists(
                         paragraph);
                 logger.debug(paragraph.getId() + " " + Joiner.on(" ").join(definitionList));
 
-            }
             if(paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)) {
                 logger.debug("TrainingWeight:" +paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class));
             }
@@ -84,7 +81,7 @@ public class DocAPITest extends APITest {
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
 
-        String jsonString ="[{\"paragraphId\":\"p_1238\",\"term\":\"Cash Equivalents\", \"classificationId\":0}]";
+        String jsonString ="[{\"paragraphId\":\"p_1238\",\"term\":\"Cash Equivalents\", \"classificationId\":4}]";
         //String jsonString ="[{\"paragraphId\":\"p_1371\",\"term\":\"Disclosure Regarding Forward-Looking Statements\", \"classificationId\":2}]";
 
         Response response = webTarget.request(MediaType.TEXT_HTML).cookie(new  NewCookie("documentId", documentId))
@@ -98,6 +95,7 @@ public class DocAPITest extends APITest {
 
     @Test
     public void testUpdateModel() throws Exception {
+        testUpdateTerms();
         String TARGET_URL = "http://localhost:8888/restServices/doc/updateModel";
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
@@ -144,8 +142,8 @@ public class DocAPITest extends APITest {
         //logger.debug("Here is the response: "+response.getEntity().toString());
         logger.debug("Here is the response status: " + response.getStatus());
         assert(response.getStatus()==(200));
-        String responseString = testGetTerms(documentId);
-        assert(!responseString.contains("Cash Equivalents"));
+        //String responseString = testGetTerms();
+        //assert(!responseString.contains("Cash Equivalents"));
         client.close();
     }
 }

@@ -92,7 +92,6 @@ public class CoreAnnotations {
     }
 
 
-
     public static class TokenAnnotation implements CoreAnnotation<List<Token>> {
         public Class<List<Token>> getType() {
             return EraserUtils.<Class<List<Token>>> uncheckedCast(List.class);
@@ -124,13 +123,6 @@ public class CoreAnnotations {
     public static class ParagraphIdAnnotation implements CoreAnnotation<String> {
         public Class<String> getType() {
             return String.class;
-        }
-    }
-
-
-    public static class IsDefinitionAnnotation implements CoreAnnotation<Boolean> {
-        public Class<Boolean> getType() {
-            return Boolean.class;
         }
     }
 
@@ -287,15 +279,13 @@ public class CoreAnnotations {
         }
     }
 
-    // TOC Annotation
-    public static class TOCTokensAnnotation implements CoreAnnotation<List<Token>> {
-        public Class<List<Token>> getType() {
-            return EraserUtils.<Class<List<Token>>> uncheckedCast(List.class);
-        }
-    }
-    public static class IsTOCAnnotation implements CoreAnnotation<Boolean> {
-        public Class<Boolean> getType() {
-            return Boolean.class;
+ /**
+     * Annotation for training. It specifies the index of a word token in the paragraph.
+     */
+
+    public static class CategoryAnnotations implements CoreAnnotation<HashMap<Integer,CoreMap>> {
+        public Class<HashMap<Integer,CoreMap>> getType() {
+            return EraserUtils.<Class<HashMap<Integer,CoreMap>>> uncheckedCast(HashMap.class);
         }
     }
 

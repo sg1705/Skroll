@@ -14,7 +14,6 @@ import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
 import com.skroll.util.Visualizer;
 
-import javax.print.Doc;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -277,7 +276,23 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
             List<Token> tokens = processedPara.getTokens();
 
             //todo: a hack for TOC annotation. should implement HMM for TOC and annotate base on HMM result
-            if (paraCategory == RandomVariableType.PARAGRAPH_HAS_TOC && logPrioProbs[1]>logPrioProbs[0]) {
+            if (paraCategory == RandomVariableType.PARAGRAPH_HAS_TOC_1 && logPrioProbs[1]>logPrioProbs[0]) {
+                DocumentAnnotatingHelper.addParagraphTermAnnotation(paragraph, paraCategory, tokens);
+                continue;
+            }
+            if (paraCategory == RandomVariableType.PARAGRAPH_HAS_TOC_2 && logPrioProbs[1]>logPrioProbs[0]) {
+                DocumentAnnotatingHelper.addParagraphTermAnnotation(paragraph, paraCategory, tokens);
+                continue;
+            }
+            if (paraCategory == RandomVariableType.PARAGRAPH_HAS_TOC_3 && logPrioProbs[1]>logPrioProbs[0]) {
+                DocumentAnnotatingHelper.addParagraphTermAnnotation(paragraph, paraCategory, tokens);
+                continue;
+            }
+            if (paraCategory == RandomVariableType.PARAGRAPH_HAS_TOC_4 && logPrioProbs[1]>logPrioProbs[0]) {
+                DocumentAnnotatingHelper.addParagraphTermAnnotation(paragraph, paraCategory, tokens);
+                continue;
+            }
+            if (paraCategory == RandomVariableType.PARAGRAPH_HAS_TOC_5 && logPrioProbs[1]>logPrioProbs[0]) {
                 DocumentAnnotatingHelper.addParagraphTermAnnotation(paragraph, paraCategory, tokens);
                 continue;
             }

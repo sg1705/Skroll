@@ -11,9 +11,8 @@ import com.skroll.classifier.Classifier;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
-import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
-import com.skroll.document.annotation.CoreAnnotations;
+import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.ParserException;
 import com.skroll.pipeline.Pipeline;
@@ -53,7 +52,7 @@ public class TOCTrainer {
     static {
         try {
             documentClassifier = classifierFactory.getClassifier(Category.DEFINITION);
-            tocClassifier = classifierFactory.getClassifier(Category.TOC);
+            tocClassifier = classifierFactory.getClassifier(Category.TOC_1);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -95,20 +94,14 @@ public class TOCTrainer {
             //parse the file into document
             Document doc = Parser.parseDocumentFromHtmlFile(fileName);
 
-            // extract the definition from paragraph from html doc.
-//            Pipeline<Document, Document> pipeline =
-//                    new Pipeline.Builder()
-//                            .add(Pipes.EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC)
-//                            .build();
-//            doc = pipeline.process(doc);
 
             // Build the contents for csv file
             List<String> defList = new ArrayList<String>();
             int count = 0;
             for (CoreMap paragraph : doc.getParagraphs()) {
-                if (paragraph.containsKey(CoreAnnotations.IsDefinitionAnnotation.class)) {
+                if (CategoryAnnotationHelper.isCategoryId(paragraph, Category.DEFINITION)) {
 
-                    List<List<String>> definitionList = DocumentHelper.getDefinedTermLists(
+                    List<List<String>> definitionList = CategoryAnnotationHelper.getDefinedTermLists(
                             paragraph);
                     for (List<String> definition: definitionList) {
                         String words = Joiner.on(",").join(definition);
@@ -147,13 +140,6 @@ public class TOCTrainer {
             //read the file
             doc = Parser.parseDocumentFromHtmlFile(fileName);
 
-            // extract the definition from paragraph from html doc.
-//            Pipeline<Document, Document> pipeline =
-//                    new Pipeline.Builder()
-//                            .add(Pipes.EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC)
-//                            .build();
-//            doc = pipeline.process(doc);
-
             fileName = fileName.replaceAll("\\.", "_").concat("_override.txt");
             String fQFileName = configuration.get("model.persist.folder") + overrideFolder + fileName;
             logger.debug("Override File Name: "+ fQFileName);
@@ -163,7 +149,7 @@ public class TOCTrainer {
             }
             List<String> lines = Files.readLines(new File(fQFileName), Constants.DEFAULT_CHARSET);
             List<String> defList = new ArrayList<String>();
-// todo: replace the inner loop with hashmap lookup to speed up
+
             for (String line : lines) {
                 final Iterator<String> splitIterator = Splitter.on('\t').split(line).iterator();
                 String paragraphID = CharMatcher.DIGIT.retainFrom(splitIterator.next());
@@ -183,7 +169,6 @@ public class TOCTrainer {
                     if (paragraph.getId().equals(paragraphID)) {
                         logger.debug("Found Paragraph");
                         if (isDefinition) {
-                            paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
                             List<Token> definedTokens = new ArrayList();
                             while (definedTermIterator.hasNext()) {
                                 definedTokens.add(new Token(definedTermIterator.next()));
@@ -191,12 +176,9 @@ public class TOCTrainer {
                             //TODO: only one definition per paragraph supported right now.
                             List<List<Token>> definedTokensList = new ArrayList();
                             definedTokensList.add(definedTokens);
-                            paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class, definedTokensList);
-                            paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
+                            CategoryAnnotationHelper.setDInCategoryAnnotation(paragraph, definedTokensList);
                             defList.add(paragraph.getId() + "\t" + "DEFINITION" + "\t" + definedTokens + "\t" + paragraph.getText());
                         } else {
-                            paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, false);
-                            paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class, null);
                             defList.add(paragraph.getId() + "\t" + "NOT_DEFINITION" + "\t" + " " + "\t" + paragraph.getText());
                         }
                     }
@@ -212,8 +194,7 @@ public class TOCTrainer {
     }
 
     public static void  trainWithOverride(String folderName) throws IOException, ObjectPersistUtil.ObjectPersistException {
-            //TOCExperimentClassifier documentClassifier = new TOCExperimentClassifier(); // passing the flag to always create new model for testing purpose
-            FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(folderName));
+        FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(folderName));
             for (File f : iterable) {
                 if (f.isFile()) {
                     String fileName = f.getPath();
@@ -226,10 +207,6 @@ public class TOCTrainer {
     }
 
     public static void classify(String testingFile) {
-
-       // Classifier tocClassifier = new TOCExperimentClassifier();
-        // String testingFile = "src/test/resources/parser/linker/test-linker-random.html";
-        //String testingFile = "src/main/resources/trainingDocuments/indentures/AMC Networks Indenture.html";
 
         Document document = null;
         try {
