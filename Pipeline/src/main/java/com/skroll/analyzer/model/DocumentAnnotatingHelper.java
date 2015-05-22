@@ -65,17 +65,9 @@ public class DocumentAnnotatingHelper {
         CategoryAnnotationHelper.setDInCategoryAnnotation(trainingParagraph,CategoryAnnotationHelper.getDefinedTermTokensInParagraph(paragraph));
 
         CategoryAnnotationHelper.setCategoryAnnotation(trainingParagraph,CategoryAnnotationHelper.getTokensInParagraph(paragraph,Category.TOC_1),Category.TOC_1);
-        //trainingParagraph.set(CoreAnnotations.IsTOCAnnotation.class,
-        //        paragraph.get(CoreAnnotations.IsTOCAnnotation.class));
 
         return trainingParagraph;
     }
-
-//    public static SimpleDataTuple[] makeHMMTuples(int numStates, CoreMap paragraph, List<RandomVariableType> wordFeatures){
-//        SimpleDataTuple[] tuples = new SimpleDataTuple[numStates];
-//        String []tokens = getNBWords(paragraph);
-//        return tuples;
-//    }
 
 
     static List<String[]> getWordsList(CoreMap processedPara, List<RandomVariableType> wordVarList){
@@ -102,22 +94,6 @@ public class DocumentAnnotatingHelper {
         return new SimpleDataTuple( getWordsList(processedPara, wordVarList), values);
     }
 
-//    public static SimpleDataTuple[] makeHMMTuples(CoreMap paragraph, RandomVariableType wordCategory,
-//                                                List<RandomVariableType> wordFeatures, int[] documentFeatures){
-//        String []tokens = getNBWords(paragraph);
-//
-//        int [] values = new int[paraFeatures.size() + documentFeatures.length+1];
-//        int index=0;
-//        values[index++] = getParagraphFeature(paragraph, paraCategory);
-//
-//        for (int i=0; i<paraFeatures.size();i++){
-//            values[index++] = getParagraphFeature(paragraph, paraFeatures.get(i));
-//        }
-//        for (int i=0; i<documentFeatures.length; i++)
-//            values[index++] = documentFeatures[i];
-//
-//        return new SimpleDataTuple(tokens,values);
-//    }
 
 
 
@@ -241,11 +217,7 @@ public class DocumentAnnotatingHelper {
                 int num=0;
                 if (words!=null) num = words.size();
                 return Math.min(num, PFS_TOKENS_NUMBER_FEATURE_MAX);
-//            case PARAGRAPH_STARTS_WITH_SPECIAL_FORMAT:
-//                return booleanToInt(tokens.get(0).get(CoreAnnotations.InQuotesAnnotation.class )) |
-//                        booleanToInt(tokens.get(0).get(CoreAnnotations.IsUnderlineAnnotation.class ))|
-//                        booleanToInt(tokens.get(0).get(CoreAnnotations.IsBoldAnnotation.class ))|
-//                        booleanToInt(tokens.get(0).get(CoreAnnotations.IsItalicAnnotation.class ));
+
             case PARAGRAPH_STARTS_WITH_QUOTE:
                 return booleanToInt(processedPara.get(CoreAnnotations.StartsWithQuote.class));
             case PARAGRAPH_STARTS_WITH_BOLD:
