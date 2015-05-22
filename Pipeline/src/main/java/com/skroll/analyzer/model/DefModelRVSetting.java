@@ -42,8 +42,8 @@ public class DefModelRVSetting extends ModelRVSetting {
 
     );
     static final List<RandomVariable> DEFAULT_WORD_VARS = Arrays.asList(
-//            RVCreater.createWordsRVWithComputer(new UniqueWordsComputer(), "uniqueWords")
-            RVCreater.createRVFromAnnotation(CoreAnnotations.WordSetForTrainingAnnotation.class)
+            RVCreater.createWordsRVWithComputer(new UniqueWordsComputer(), "uniqueWords")
+//            RVCreater.createRVFromAnnotation(CoreAnnotations.WordSetForTrainingAnnotation.class)
     );
 
 

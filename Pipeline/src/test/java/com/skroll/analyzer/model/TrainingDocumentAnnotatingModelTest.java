@@ -80,7 +80,7 @@ public class TrainingDocumentAnnotatingModelTest{
                 DocProcessor.processParagraphs(doc.getParagraphs(), maxNumWords), setting.getNbfcConfig());
         System.out.println(Arrays.toString(docFeatureValues));
 
-        assert(Arrays.equals(docFeatureValues, new int[]{1,0,1,0,1}));
+        assert (Arrays.equals(docFeatureValues, new int[]{1, 1, 0, 1, 0}));
     }
     Document makeTrainingDoc(File file){
         String htmlString = null;

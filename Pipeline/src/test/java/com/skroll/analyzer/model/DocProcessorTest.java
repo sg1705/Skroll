@@ -21,7 +21,7 @@ public class DocProcessorTest {
 
     int maxNumWords = 20;
     static final RandomVariable DEFAULT_PARA_IS_DEF =
-            RVCreater.createRVFromAnnotation(CoreAnnotations.IsTOCAnnotation.class);
+            RVCreater.createRVFromAnnotation(CoreAnnotations.IsDefinitionAnnotation.class);
 
     static final List<RandomVariable> DEFAULT_PARA_FEATURE_VARS = Arrays.asList(
             RVCreater.createDiscreteRVWithComputer(new NumberTokensComputer(), "numTokens")
@@ -48,30 +48,11 @@ public class DocProcessorTest {
 
     @Before
     public void setUp() throws Exception {
-        List<CoreMap> paraList = new ArrayList<>();
-
-        CoreMap para = new CoreMap();
-        List<String> strings = Arrays.asList("\"", "in", "\"", "out", "out");
-        List<Token> tokens = DocumentHelper.createTokens(strings);
-        para.set(CoreAnnotations.TokenAnnotation.class, tokens);
-        para.set(CoreAnnotations.IsDefinitionAnnotation.class, Boolean.TRUE);
-
-        paraList.add(para);
-
-
-        para = new CoreMap();
-        strings = Arrays.asList("\"", "in", "\"", "out", "out");
-        tokens = DocumentHelper.createTokens(strings);
-        para.set(CoreAnnotations.TokenAnnotation.class, tokens);
-        para.set(CoreAnnotations.IsDefinitionAnnotation.class, Boolean.TRUE);
-        paraList.add(para);
-
-        doc.setParagraphs(paraList);
 
         // for testing with real file
-        doc = TestHelper.makeTrainingDoc(new File(trainingFileName));
+//        doc = TestHelper.makeTrainingDoc(new File(trainingFileName));
         //doc = TestHelper.makeDoc( new File(trainingFileName));
-        setting = new DefModelRVSetting();
+        doc = TestHelper.setUpTestDoc();
 
     }
 
@@ -104,7 +85,7 @@ public class DocProcessorTest {
                 System.out.print(rv.getName() + "=" + v + " ");
             }
             for (RandomVariable rv : setting.getNbfcConfig().getWordVarList()) {
-                System.out.print(RVValues.getWords(rv, processedParas.get(i)));
+                System.out.print(Arrays.toString(RVValues.getWords(rv, processedParas.get(i))));
             }
             System.out.println();
         }
@@ -123,4 +104,20 @@ public class DocProcessorTest {
         System.out.println(Arrays.toString(docFeatureVals));
     }
 
+
+    @Test
+    public void testGetFeaturesVals() throws Exception {
+
+    }
+
+    @Test
+    public void testIsParaObserved() throws Exception {
+
+    }
+
+
+    @Test
+    public void testGenerateDocumentFeatures1() throws Exception {
+
+    }
 }

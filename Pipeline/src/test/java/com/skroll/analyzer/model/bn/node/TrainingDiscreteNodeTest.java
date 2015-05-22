@@ -11,10 +11,11 @@ import org.junit.Test;
 import java.util.Arrays;
 
 public class TrainingDiscreteNodeTest {
+    static final int MAX_NUM_TOKENS = 10;
     DiscreteNode node;
     @Before
     public void initialize(){
-        node = NodeTrainingHelper.createTrainingDiscreteNode(Arrays.asList(new RandomVariable(2, "numberTokens")));
+        node = NodeTrainingHelper.createTrainingDiscreteNode(Arrays.asList(new RandomVariable(MAX_NUM_TOKENS, "numberTokens")));
     }
 
     @Test

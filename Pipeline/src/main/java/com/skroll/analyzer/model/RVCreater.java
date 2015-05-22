@@ -17,7 +17,7 @@ public class RVCreater {
 
     public static RandomVariable createParagraphStartsWithRV(Class wordAnnotation) {
         ParaStartsWithFeatureComputer computer = new ParaStartsWithFeatureComputer(wordAnnotation);
-        RandomVariable rv = new RandomVariable(2, "para" + wordAnnotation.getSimpleName());
+        RandomVariable rv = new RandomVariable(2, "paraStarts" + wordAnnotation.getSimpleName());
         RVValues.addValueComputer(rv, computer);
         return rv;
     }

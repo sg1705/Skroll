@@ -31,10 +31,10 @@ public class ParaProcessorTest {
     public void testProcessParagraph() throws Exception {
         CoreMap processedPara = ParaProcessor.processParagraph(para);
 
-        Set<String> wordSet = processedPara.get(CoreAnnotations.WordSetForTrainingAnnotation.class);
+//        Set<String> wordSet = processedPara.get(CoreAnnotations.WordSetForTrainingAnnotation.class);
         List<Token> processedTokens = processedPara.get(CoreAnnotations.TokenAnnotation.class);
 
-        assert (wordSet.size() == 2);
+//        assert (wordSet.size() == 2);
         assert (processedTokens.size() == 3);
         assert (processedTokens.get(0).get(CoreAnnotations.InQuotesAnnotation.class).equals(Boolean.TRUE));
 

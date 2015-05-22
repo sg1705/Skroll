@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model;
 
 import com.skroll.document.CoreMap;
+import com.skroll.document.Token;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -19,8 +20,9 @@ public class UniqueWordsComputer implements RVWordsComputer {
     // not really used for now, since the paragraphs are preprocessed to remove words in the back
     public String[] getWords(CoreMap m, int n) {
         Set<String> wordSet = new HashSet<>();
-        for (int i = 0; i < n; i++)
-            wordSet.add(m.getTokens().toString());
+        List<Token> tokens = m.getTokens();
+        for (Token token : tokens)
+            wordSet.add(token.toString());
 
         return wordSet.toArray(new String[wordSet.size()]);
 
