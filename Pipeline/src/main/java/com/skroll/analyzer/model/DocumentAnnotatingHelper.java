@@ -58,13 +58,12 @@ public class DocumentAnnotatingHelper {
 
         // put defined terms from paragraph in trainingParagraph
         // todo: may remove this later if trainer creates a training paragraph and put defined terms there directly
-       // List<List<Token>> definedTokens = paragraph.get(CoreAnnotations.DefinedTermTokensAnnotation.class);
-       // if (definedTokens != null && definedTokens.size()>0) {
-           //  trainingParagraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
-       // }
         CategoryAnnotationHelper.setDInCategoryAnnotation(trainingParagraph,CategoryAnnotationHelper.getDefinedTermTokensInParagraph(paragraph));
-
         CategoryAnnotationHelper.setCategoryAnnotation(trainingParagraph,CategoryAnnotationHelper.getTokensInParagraph(paragraph,Category.TOC_1),Category.TOC_1);
+        CategoryAnnotationHelper.setCategoryAnnotation(trainingParagraph,CategoryAnnotationHelper.getTokensInParagraph(paragraph,Category.TOC_2),Category.TOC_2);
+        CategoryAnnotationHelper.setCategoryAnnotation(trainingParagraph,CategoryAnnotationHelper.getTokensInParagraph(paragraph,Category.TOC_3),Category.TOC_3);
+        CategoryAnnotationHelper.setCategoryAnnotation(trainingParagraph,CategoryAnnotationHelper.getTokensInParagraph(paragraph,Category.TOC_4),Category.TOC_4);
+        CategoryAnnotationHelper.setCategoryAnnotation(trainingParagraph,CategoryAnnotationHelper.getTokensInParagraph(paragraph,Category.TOC_5),Category.TOC_5);
 
         return trainingParagraph;
     }
