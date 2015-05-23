@@ -1,11 +1,8 @@
 package com.skroll.analyzer.model.bn.node;
 
-import com.skroll.analyzer.model.RVCreater;
 import com.skroll.analyzer.model.RandomVariable;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Arrays;
 
 public class DiscreteNodeTest {
 

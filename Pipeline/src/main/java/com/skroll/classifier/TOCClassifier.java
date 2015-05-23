@@ -1,7 +1,9 @@
 package com.skroll.classifier;
 
 import com.skroll.analyzer.model.*;
-import com.skroll.analyzer.model.bn.config.NBFCConfig;
+import com.skroll.analyzer.model.applicationModel.ProbabilityDocumentAnnotatingModel;
+import com.skroll.analyzer.model.applicationModel.TOCModelRVSetting;
+import com.skroll.analyzer.model.applicationModel.TrainingDocumentAnnotatingModel;
 import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -25,7 +27,7 @@ public class TOCClassifier extends ClassifierImpl {
     private TrainingDocumentAnnotatingModel trainingModel = null;
     private Map<String, ProbabilityDocumentAnnotatingModel> bniMap = new HashMap<>();
 
-    private String modelName = "com.skroll.analyzer.model.TrainingDocumentAnnotatingModel.TOC";
+    private String modelName = "com.skroll.analyzer.model.applicationModel.TrainingDocumentAnnotatingModel.TOC";
 
     RandomVariableType wordType = RandomVariableType.WORD_IS_TOC_TERM;
     RandomVariableType paraType = RandomVariableType.PARAGRAPH_HAS_TOC;

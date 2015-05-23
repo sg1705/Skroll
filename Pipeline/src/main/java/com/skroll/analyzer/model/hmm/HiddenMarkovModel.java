@@ -9,7 +9,7 @@ import java.util.*;
  * Created by wei2learn on 12/23/2014.
  */
 public class HiddenMarkovModel {
-    static final int DEFAULT_MODEL_LENGTH = 12;
+    public static final int DEFAULT_MODEL_LENGTH = 12;
     static final int MAX_MODEL_LENGTH = 20;
     static final int DEFAULT_NUM_STATE_VALUES = 2;
     static final double PRIOR_COUNT = .1;// 40;

@@ -3,9 +3,7 @@ package com.skroll.util;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.skroll.analyzer.model.TrainingDocumentAnnotatingModel;
+import com.skroll.analyzer.model.applicationModel.TrainingDocumentAnnotatingModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

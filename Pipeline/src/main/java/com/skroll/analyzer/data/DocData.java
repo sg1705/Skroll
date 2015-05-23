@@ -1,12 +1,10 @@
 package com.skroll.analyzer.data;
 
-import com.skroll.analyzer.model.ModelRVSetting;
 import com.skroll.analyzer.model.bn.config.NBFCConfig;
 import com.skroll.analyzer.model.bn.SimpleDataTuple;
 import com.skroll.document.Document;
 
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by wei on 5/10/15.

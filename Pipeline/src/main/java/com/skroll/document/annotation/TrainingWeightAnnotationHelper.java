@@ -1,10 +1,9 @@
 package com.skroll.document.annotation;
 
 import com.google.common.collect.Lists;
-import com.skroll.analyzer.model.DefModelRVSetting;
+import com.skroll.analyzer.model.applicationModel.DefModelRVSetting;
 import com.skroll.analyzer.model.RandomVariable;
-import com.skroll.analyzer.model.RandomVariableType;
-import com.skroll.analyzer.model.TOCModelRVSetting;
+import com.skroll.analyzer.model.applicationModel.TOCModelRVSetting;
 import com.skroll.document.CoreMap;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 //package com.skroll.analyzer.model.bn;
 //
-//import com.skroll.analyzer.model.DocumentAnnotatingModel;
+//import com.skroll.analyzer.model.applicationModel.DocumentAnnotatingModel;
 //import com.skroll.analyzer.model.RandomVariableType;
 //import junit.framework.TestCase;
 //

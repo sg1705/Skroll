@@ -1,10 +1,7 @@
 package com.skroll.analyzer.model.bn.node;
 
-import com.skroll.analyzer.model.DocumentAnnotatingModel;
 import com.skroll.analyzer.model.RandomVariable;
-import com.skroll.analyzer.model.RandomVariableType;
 import com.skroll.analyzer.model.bn.inference.BNInference;
-import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 

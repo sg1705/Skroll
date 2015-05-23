@@ -1,8 +1,9 @@
 package com.skroll.classifier;
 
 import com.google.gson.reflect.TypeToken;
-import com.skroll.analyzer.model.*;
-import com.skroll.analyzer.model.bn.config.NBFCConfig;
+import com.skroll.analyzer.model.applicationModel.DefModelRVSetting;
+import com.skroll.analyzer.model.applicationModel.ProbabilityDocumentAnnotatingModel;
+import com.skroll.analyzer.model.applicationModel.TrainingDocumentAnnotatingModel;
 import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -34,7 +35,7 @@ public class DefinitionClassifier extends ClassifierImpl{
         return dtemModelName;
     }
 
-    private  String dtemModelName = "com.skroll.analyzer.model.TrainingDocumentAnnotatingModel.DefinitionDTEM";
+    private String dtemModelName = "com.skroll.analyzer.model.applicationModel.TrainingDocumentAnnotatingModel.DefinitionDTEM";
 
 
 
