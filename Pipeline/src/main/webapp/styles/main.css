@@ -81,12 +81,14 @@ sk-lhs .md-button {
     text-align: left;
 }
 
+/*
 md-content.sk-lhs-hover:hover {
     opacity: 1;
 }
+*/
 
 md-content.sk-lhs-hover {
-    opacity: 0.3;
+    opacity: 1;
     -webkit-transition: 0.25s cubic-bezier(0.35, 0, 0.25, 1);
     -webkit-transition-property: opacity;
     -moz-transition: 0.25s cubic-bezier(0.35, 0, 0.25, 1);
