@@ -25,6 +25,8 @@ public class ModelRVSetting {
                           List<RandomVariable> docFeatureVars,
                           List<RandomVariable> wordVars) {
         nbfcConfig = new NBFCConfig(paraType, paraFeatureVars, paraDocFeatureVars, docFeatureVars, wordVars);
+        this.wordType = wordType;
+        this.wordFeatures = wordFeatures;
     }
 
     public NBFCConfig getNbfcConfig() {

@@ -321,8 +321,10 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
             int[][] features = new int[length][wordFeatures.size()];
             for (int i=0; i<length ;i++){
                 for (int f=0; f<wordFeatures.size();f++){
-                    features[i][f] = RVValues.getValue(wordFeatures.get(f), tokens.get(i));
+//                    features[i][f] = RVValues.getValue(wordFeatures.get(f), tokens.get(i));
 //                    features[i][f] = DocumentAnnotatingHelper.getWordFeature(paragraph, tokens.get(i), wordFeatures.get(f));
+                    features[i][f] = ParaProcessor.getWordFeatureValue(wordFeatures.get(f),
+                            tokens.get(i), Arrays.asList(paragraph, processedPara));
                 }
             }
             int[] states = hmm.mostLikelyStateSequence(wordsArray, features, logPrioProbs);

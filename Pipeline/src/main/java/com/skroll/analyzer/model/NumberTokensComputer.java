@@ -17,7 +17,7 @@ public class NumberTokensComputer implements RVValueComputer {
     }
     public int getValue(CoreMap m) {
         int n = m.getTokens().size();
-        return n < numVals ? n : numVals;
+        return n < numVals ? n : numVals - 1;
 
     }
 

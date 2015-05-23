@@ -18,10 +18,7 @@ import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
 import com.skroll.util.Visualizer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by wei2learn on 2/16/2015.
@@ -32,8 +29,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
 
     public TrainingDocumentAnnotatingModel() {
-        this(DefModelRVSetting.WORD_IS_DEF, DefModelRVSetting.DEFAULT_WORD_FEATURES,
-                new DefModelRVSetting().getNbfcConfig());
+        this(new DefModelRVSetting());
     }
 
     public TrainingDocumentAnnotatingModel(ModelRVSetting setting) {
@@ -100,20 +96,21 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 //        }
 //    }
     //todo: this method should be changed. Definitions should be annotated with good training data.
-    void updateHMMWithParagraph(CoreMap paragraph){
-        List<Token> tokens = paragraph.get(CoreAnnotations.TokenAnnotation.class);
+    void updateHMMWithParagraph(CoreMap originalPara, CoreMap processedPara) {
+        List<Token> tokens = processedPara.get(CoreAnnotations.TokenAnnotation.class);
         int[] tokenType = new int[tokens.size()];
 
 
         for (int i = 0; i < tokenType.length; i++) {
-            tokenType[i] = RVValues.getWordLevelRVValue(wordType, tokens.get(i), paragraph);
+            tokenType[i] = RVValues.getWordLevelRVValue(wordType, tokens.get(i), originalPara);
         }
 
         int length = Math.min(hmm.size(), tokens.size());
         int[][] features = new int[length][wordFeatures.size()];
         for (int i=0; i<length ;i++){
             for (int f=0; f<wordFeatures.size();f++){
-                features[i][f] = RVValues.getWordLevelRVValue(wordFeatures.get(f), tokens.get(i), paragraph);
+                features[i][f] = ParaProcessor.getWordFeatureValue(wordFeatures.get(f),
+                        tokens.get(i), Arrays.asList(originalPara, processedPara));
             }
         }
 
@@ -177,9 +174,9 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
         }
 
-        for (CoreMap para : processedParas)
-            updateHMMWithParagraph(para);
-
+        for (int p = 0; p < originalParas.size(); p++) {
+            updateHMMWithParagraph(originalParas.get(p), processedParas.get(p));
+        }
     }
 
     public void updateWithDocument(Document doc){
@@ -189,8 +186,11 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
         DocData data = DocProcessor.getDataFromDoc(doc, processedParas, nbfcConfig);
         for (SimpleDataTuple tuple : data.getTuples())
             NBTrainingHelper.addSample(tnbfModel, tuple);
-        for (CoreMap para : processedParas)
-            updateHMMWithParagraph(para);
+//        for (CoreMap para : processedParas)
+//            updateHMMWithParagraph(para);
+        for (int p = 0; p < originalParas.size(); p++) {
+            updateHMMWithParagraph(originalParas.get(p), processedParas.get(p));
+        }
 //
 //
 //        for( CoreMap paragraph : originalParas) {

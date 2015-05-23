@@ -29,6 +29,15 @@ public class ParaProcessor {
         return result;
     }
 
+    static int getWordFeatureValue(RandomVariable v, Token token, List<CoreMap> mList) {
+        int result = 0; // return 0 in case of null.
+        for (CoreMap m : mList) {
+            int value = RVValues.getWordLevelRVValue(v, token, m);
+            if (value > result) result = value;
+        }
+        return result;
+    }
+
 
     public static int[] getFeatureVals(List<RandomVariable> rvs, List<CoreMap> m) {
         int[] vals = new int[rvs.size()];

@@ -1,5 +1,7 @@
 package com.skroll.analyzer.model;
 
+import java.util.Arrays;
+
 /**
  * Created by wei on 4/28/15.
  */
@@ -39,4 +41,12 @@ public class RandomVariable {
         return name;
     }
 
+    @Override
+    public String toString() {
+        return "RandomVariable{" +
+                "name='" + name + '\'' +
+                ", featureSize=" + featureSize +
+                ", valueNames=" + Arrays.toString(valueNames) +
+                '}';
+    }
 }

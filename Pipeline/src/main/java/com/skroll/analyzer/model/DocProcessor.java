@@ -23,7 +23,7 @@ public class DocProcessor {
 
     public static int[][] getFeaturesVals(List<RandomVariable> rvs,
                                           List<CoreMap> originalParas, List<CoreMap> processedParas) {
-        int nP = originalParas.get(0).size();
+        int nP = originalParas.size();
         int[][] features = new int[nP][rvs.size()];
         for (int p = 0; p < nP; p++) {
             List<CoreMap> paras = Arrays.asList(originalParas.get(p), processedParas.get(p));
