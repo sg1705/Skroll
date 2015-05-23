@@ -36,8 +36,27 @@ var LHSModel = {
     id: 3,
     name: 'TOC Level 2',
     isSelected: false,
-    isVisible: true
+    isVisible: false
+  },
+  {
+    id: 4,
+    name: 'TOC Level 3',
+    isSelected: false,
+    isVisible: false
+  },
+  {
+    id: 5,
+    name: 'TOC Level 4',
+    isSelected: false,
+    isVisible: false
+  },
+  {
+    id: 6,
+    name: 'TOC Level 5',
+    isSelected: false,
+    isVisible: false
   }
+
   ],
 
 	removePara: function(paraId) {
@@ -76,6 +95,24 @@ var LHSModel = {
     });
   },
 
+
+  getParaFromClassIdRange: function(startClassId, endClassId) {
+    var terms = [];
+    var prevTerm = null;
+    for(var ii = 0; ii < LHSModel.smodel.terms.length; ii++) {
+      var term = LHSModel.smodel.terms[ii];
+      if ((term.classificationId >= startClassId) && (term.classificationId <= endClassId)) {
+        if (term.term != prevTerm) {
+          terms.push(term);
+        }
+      }
+      prevTerm = term.term;
+    }
+    return terms;
+  },
+
+
+
   filterOutClassFromPara: function(classId, paraId) {
   	return [{
   		classificationId: classId,
@@ -98,33 +135,6 @@ var LHSModel = {
 				return true;
 		});
 		return paras;
-  },
-
-  /**
-  * Creates temporary levels in the terms to pain TOC
-  **/
-  createLevels: function() {
-    //for classId ==2 , check if a term starts with Item,
-    // if so, then it is level1, otherwise level 2
-    var terms = LHSModel.getTermsForClass(2);
-    var levelTerms = [ ];
-    for(var ii = 0; ii < terms.length; ii++) {
-    	var level = new Object();
-    	var term = terms[ii].term.toLowerCase();
-      if (term.indexOf('( continued )') > -1)
-        continue;
-      if (s.startsWith(term, 'item')) {
-      	//level 1
-      	level['level'] = 1;
-      } else {
-      	level['level'] = 2;
-      }
-     	level['paragraphId'] = terms[ii].paragraphId;
-    	level['term'] = terms[ii].term;
-    	levelTerms.push(level);
-    }
-    LHSModel.smodel.levelTerms = levelTerms;
-    console.log(LHSModel.smodel.levelTerms);
   }
 
 };
