@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -36,6 +38,15 @@ public class RVCreater {
         }
         return c;
 
+    }
+
+    // assuming all binary variables.
+    public static List<RandomVariable> createDocFeatureRVs(List<RandomVariable> paraDocFeatures) {
+        List<RandomVariable> docFeatures = new ArrayList<>();
+        for (RandomVariable rv : paraDocFeatures) {
+            docFeatures.add(new RandomVariable(2, "docFeature_" + rv.getName()));
+        }
+        return docFeatures;
     }
 
 

@@ -35,14 +35,6 @@ public class DefModelRVSetting extends ModelRVSetting {
 
     );
 
-    static final List<RandomVariable> DEFAULT_DOC_FEATURE_VARS = Arrays.asList(
-            new RandomVariable(2, "defsNotInTable"),
-            new RandomVariable(2, "defs in quotes"),
-            new RandomVariable(2, "defsIsItalic"),
-            new RandomVariable(2, "defsIsUnderLined"),
-            new RandomVariable(2, "defsIsBold")
-
-    );
     static final List<RandomVariable> DEFAULT_WORD_VARS = Arrays.asList(
             RVCreater.createWordsRVWithComputer(new UniqueWordsComputer(), "uniqueWords")
 //            RVCreater.createRVFromAnnotation(CoreAnnotations.WordSetForTrainingAnnotation.class)
@@ -51,8 +43,7 @@ public class DefModelRVSetting extends ModelRVSetting {
 
     public DefModelRVSetting() {
         super(WORD_IS_DEF, DEFAULT_WORD_FEATURES,
-                PARA_IS_DEF, DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS,
-                DEFAULT_DOC_FEATURE_VARS, DEFAULT_WORD_VARS);
+                PARA_IS_DEF, DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS, DEFAULT_WORD_VARS);
 
         RVValues.addValueSetter(PARA_IS_DEF, new RVValueSetter(
                 CoreAnnotations.IsDefinitionAnnotation.class,

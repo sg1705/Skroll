@@ -12,6 +12,7 @@ import com.skroll.document.annotation.CoreAnnotations;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,9 +32,6 @@ public class DocProcessorTest {
             RVCreater.createParagraphStartsWithRV(CoreAnnotations.InQuotesAnnotation.class)
     );
 
-    static final List<RandomVariable> DEFAULT_DOC_FEATURE_VARS = Arrays.asList(
-            new RandomVariable(2, "tocs in quotes")
-    );
     static final List<RandomVariable> DEFAULT_WORD_VARS = Arrays.asList(
             RVCreater.createWordsRVWithComputer(new UniqueWordsComputer(), "uniqueWords")
     );
@@ -42,7 +40,7 @@ public class DocProcessorTest {
     ModelRVSetting setting = new ModelRVSetting(
             DefModelRVSetting.WORD_IS_DEF, DefModelRVSetting.DEFAULT_WORD_FEATURES,
             DEFAULT_PARA_IS_DEF,
-            DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS, DEFAULT_DOC_FEATURE_VARS, DEFAULT_WORD_VARS
+            DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS, DEFAULT_WORD_VARS
     );
 
     static String trainingFileName = "src/test/resources/analyzer/definedTermExtractionTraining/AMC Networks CA.html";
@@ -50,10 +48,11 @@ public class DocProcessorTest {
     @Before
     public void setUp() throws Exception {
 
+        doc = TestHelper.setUpTestDoc();
+
         // for testing with real file
 //        doc = TestHelper.makeTrainingDoc(new File(trainingFileName));
-        //doc = TestHelper.makeDoc( new File(trainingFileName));
-        doc = TestHelper.setUpTestDoc();
+//        setting = new DefModelRVSetting();
 
     }
 

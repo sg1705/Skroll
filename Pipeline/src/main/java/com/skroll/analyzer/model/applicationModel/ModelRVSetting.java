@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model.applicationModel;
 
 import com.skroll.analyzer.model.RandomVariable;
+import com.skroll.analyzer.model.applicationModel.randomVariables.RVCreater;
 import com.skroll.analyzer.model.bn.config.NBFCConfig;
 
 import java.util.ArrayList;
@@ -23,9 +24,9 @@ public class ModelRVSetting {
                           RandomVariable paraType,
                           List<RandomVariable> paraFeatureVars,
                           List<RandomVariable> paraDocFeatureVars,
-                          List<RandomVariable> docFeatureVars,
                           List<RandomVariable> wordVars) {
-        nbfcConfig = new NBFCConfig(paraType, paraFeatureVars, paraDocFeatureVars, docFeatureVars, wordVars);
+        nbfcConfig = new NBFCConfig(paraType, paraFeatureVars, paraDocFeatureVars,
+                RVCreater.createDocFeatureRVs(paraDocFeatureVars), wordVars);
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;
     }
