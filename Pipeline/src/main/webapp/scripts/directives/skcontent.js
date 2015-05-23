@@ -22,7 +22,6 @@ angular.module('SkrollApp')
                 documentService.getTerms().then(function(terms) {
                 LHSModel.smodel.terms = terms;
                 console.log(terms);
-                LHSModel.createLevels();
                 element.replaceWith(documentModel.targetHtml);
                 ToolbarModel.toolbarInfo.title = documentModel.documentId;
                 documentModel.isProcessing = false;

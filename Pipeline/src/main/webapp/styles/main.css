@@ -43,7 +43,7 @@ md-sidenav.md-locked-open {
 /**
 * Styles related to sk-lhs
 */
-sk-lhs, sk-lhs-levels .menu-list {
+sk-lhs  .menu-list {
     background: #fff;
     overflow: hidden;
     position: relative;
@@ -73,13 +73,12 @@ md-icon {
     width: 24px;
 }
 
-sk-lhs-levels .md-button {
+sk-lhs .md-button {
     margin: 0px;
     min-height: 0px;
-    min-width: 0px;
+    width:100%;
     line-height:normal;
     text-align: left;
-
 }
 
 md-content.sk-lhs-hover:hover {
