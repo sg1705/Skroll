@@ -94,14 +94,14 @@ public class CategoryAnnotationHelper {
                         List<List<String>> definitionList = getDefinedTermLists(paragraph);
                         for (List<String> definition : definitionList) {
                             if(logger.isDebugEnabled())
-                                logger.debug( "{} \t DEFINITION \t{}",paragraph.getId(), definition);
+                                logger.trace( "{} \t DEFINITION \t{}",paragraph.getId(), definition);
                         }
                     } else {
                         List<String> texts = getTexts(paragraph, categoryId);
                         if (texts!=null && !texts.isEmpty()) {
                             if (!(Joiner.on(" ").join(texts).equals(""))) {
                                 if(logger.isDebugEnabled())
-                                    logger.debug( "{} \t {} \t {}",paragraph.getId(),categoryId , texts);
+                                    logger.trace( "{} \t {} \t {}",paragraph.getId(),categoryId , texts);
                             }
                         }
                     }

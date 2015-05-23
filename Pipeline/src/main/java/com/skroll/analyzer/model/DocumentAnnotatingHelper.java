@@ -285,7 +285,6 @@ public class DocumentAnnotatingHelper {
                         if (t.getText().equals(word.getText())) return 1;
                 return 0;
             case WORD_IN_QUOTES:
-
                 return booleanToInt(word.get(CoreAnnotations.InQuotesAnnotation.class ));
             case WORD_IS_BOLD:
                 return booleanToInt(word.get(CoreAnnotations.IsBoldAnnotation.class ));
@@ -294,45 +293,35 @@ public class DocumentAnnotatingHelper {
             case WORD_IS_ITALIC:
                 return booleanToInt(word.get(CoreAnnotations.IsItalicAnnotation.class ));
             case WORD_INDEX:  return word.get(CoreAnnotations.IndexInteger.class );
-
-
             case WORD_IS_TOC_1_TERM:
-
-                List<Token> tocTokens =  CategoryAnnotationHelper.getTokensInParagraph(paragraph, Category.TOC_1);
-                if (tocTokens==null) return 0;
-                for (Token t:tocTokens)
+                List<Token> toc1Tokens =  CategoryAnnotationHelper.getTokensInParagraph(paragraph, Category.TOC_1);
+                if (toc1Tokens==null) return 0;
+                for (Token t:toc1Tokens)
                     if (t.getText().equals(word.getText())) return 1;
-
                 return 0;
             case WORD_IS_TOC_2_TERM:
-
-                tocTokens =  CategoryAnnotationHelper.getTokensInParagraph(paragraph, Category.TOC_2);
-                if (tocTokens==null) return 0;
-                for (Token t:tocTokens)
+                List<Token> toc2Tokens =  CategoryAnnotationHelper.getTokensInParagraph(paragraph, Category.TOC_2);
+                if (toc2Tokens==null) return 0;
+                for (Token t:toc2Tokens)
                     if (t.getText().equals(word.getText())) return 1;
-
                 return 0;
             case WORD_IS_TOC_3_TERM:
-
-                tocTokens =  CategoryAnnotationHelper.getTokensInParagraph(paragraph, Category.TOC_3);
-                if (tocTokens==null) return 0;
-                for (Token t:tocTokens)
+                List<Token> toc3Tokens =  CategoryAnnotationHelper.getTokensInParagraph(paragraph, Category.TOC_3);
+                if (toc3Tokens==null) return 0;
+                for (Token t:toc3Tokens)
                     if (t.getText().equals(word.getText())) return 1;
                 return 0;
             case WORD_IS_TOC_4_TERM:
-
-                tocTokens =  CategoryAnnotationHelper.getTokensInParagraph(paragraph, Category.TOC_4);
-                if (tocTokens==null) return 0;
-                for (Token t:tocTokens)
+                List<Token> toc4Tokens =  CategoryAnnotationHelper.getTokensInParagraph(paragraph, Category.TOC_4);
+                if (toc4Tokens==null) return 0;
+                for (Token t:toc4Tokens)
                     if (t.getText().equals(word.getText())) return 1;
                 return 0;
             case WORD_IS_TOC_5_TERM:
-
-                tocTokens =  CategoryAnnotationHelper.getTokensInParagraph(paragraph, Category.TOC_5);
-                if (tocTokens==null) return 0;
-                for (Token t:tocTokens)
+                List<Token> toc5Tokens =  CategoryAnnotationHelper.getTokensInParagraph(paragraph, Category.TOC_5);
+                if (toc5Tokens==null) return 0;
+                for (Token t:toc5Tokens)
                     if (t.getText().equals(word.getText())) return 1;
-
                 return 0;
 
         }

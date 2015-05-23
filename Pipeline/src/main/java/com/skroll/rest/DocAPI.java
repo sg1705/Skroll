@@ -250,7 +250,7 @@ public class DocAPI {
             return logErrorResponse("Failed to parse the json document: {}", ex);
         }
         long startTime = System.currentTimeMillis();
-
+        int updateCategoryId =Category.NONE;
         Map<Paragraph, List<String>> paraMap = Paragraph.combineTerms(definitionJson);
         logger.debug("combineTerms:{}", paraMap);
 
@@ -281,7 +281,7 @@ public class DocAPI {
                             addedTerms.add(tokens);
                         }
                     }
-
+                    updateCategoryId = modifiedParagraph.getClassificationId();
                     // check whether the term is "" ro empty or not that received from client
                     //remove any existing annotations
                     CategoryAnnotationHelper.clearAnnotations(paragraph);
@@ -298,6 +298,7 @@ public class DocAPI {
                                 } else {
                                     if (CategoryAnnotationHelper.setMatchedText(paragraph, addedTerm, modifiedParagraph.getClassificationId())) {
                                         TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, modifiedParagraph.getClassificationId(), userWeight);
+
                                     } else {
                                         TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.NONE, userWeight);
                                     }
@@ -318,9 +319,11 @@ public class DocAPI {
         // persist the document using document id. Let's use the file name
         try {
             if (!parasForUpdateBNI.isEmpty()) {
-
                 for (Classifier classifier : request.getClassifiers()) {
-                    doc = (Document) classifier.updateBNI(documentId, doc, parasForUpdateBNI);
+                    logger.debug("updateCategoryId: {}, classifier.getCategory().getId(): {}", updateCategoryId, classifier.getCategory().getId());
+                    if(classifier.getCategory().getId() == updateCategoryId) {
+                        doc = (Document) classifier.updateBNI(documentId, doc, parasForUpdateBNI);
+                    }
                 }
                 request.getDocumentFactory().putDocument(documentId, doc);
             }
