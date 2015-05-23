@@ -1,4 +1,4 @@
-package com.skroll.analyzer.model.applicationModel;
+package com.skroll.analyzer.model.applicationModel.randomVariables;
 
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;

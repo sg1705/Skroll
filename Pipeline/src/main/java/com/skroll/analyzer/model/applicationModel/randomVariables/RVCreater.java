@@ -45,7 +45,7 @@ public class RVCreater {
         return rv;
     }
 
-    static RandomVariable createRVFromAnnotation(Class ann) {
+    public static RandomVariable createRVFromAnnotation(Class ann) {
         Class c = annotationType(ann);
         if (c.equals(Boolean.class)) {
             return createRVFromAnnotation(ann, 2);
@@ -56,20 +56,20 @@ public class RVCreater {
         return null; // not able to create RV automatically
     }
 
-    static RandomVariable createDiscreteRVWithComputer(RVValueComputer computer, String name) {
+    public static RandomVariable createDiscreteRVWithComputer(RVValueComputer computer, String name) {
         RandomVariable rv = new RandomVariable(computer.getNumVals(), name);
         RVValues.addValueComputer(rv, computer);
         return rv;
     }
 
-    static RandomVariable createWordsRVWithComputer(RVWordsComputer computer, String name) {
+    public static RandomVariable createWordsRVWithComputer(RVWordsComputer computer, String name) {
         RandomVariable rv = new RandomVariable(0, name);
         RVValues.addWordsComputer(rv, computer);
         return rv;
     }
 
 
-    static RandomVariable createWordLevelRVWithComputer(WRVValueComputer computer, String name) {
+    public static RandomVariable createWordLevelRVWithComputer(WRVValueComputer computer, String name) {
         RandomVariable rv = new RandomVariable(computer.getNumVals(), name);
         RVValues.addWRVValueComputer(rv, computer);
         return rv;

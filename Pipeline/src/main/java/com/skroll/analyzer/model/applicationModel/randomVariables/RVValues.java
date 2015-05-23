@@ -44,7 +44,7 @@ public class RVValues {
         valueComputerMap.put(rv, computer);
     }
 
-    static void addValueSetter(RandomVariable rv, RVValueSetter setter) {
+    public static void addValueSetter(RandomVariable rv, RVValueSetter setter) {
         valueSetterMap.put(rv, setter);
     }
 
@@ -53,14 +53,14 @@ public class RVValues {
     }
 
 
-    static String[] getWords(RandomVariable rv, CoreMap m) {
+    public static String[] getWords(RandomVariable rv, CoreMap m) {
         RVWordsComputer computer = wordsComputerMap.get(rv);
         if (computer != null) return computer.getWords(m);
         return null;
     }
 
     // not really used for now, since the paragraphs are preprocessed to remove words in the back
-    static String[] getWords(RandomVariable rv, CoreMap m, int maxNumWords) {
+    public static String[] getWords(RandomVariable rv, CoreMap m, int maxNumWords) {
         RVWordsComputer computer = wordsComputerMap.get(rv);
         if (computer != null) return computer.getWords(m, maxNumWords);
         return null;
@@ -128,7 +128,7 @@ public class RVValues {
         return rv;
     }
 
-    static RandomVariable createRVFromAnnotation(Class ann) throws Exception {
+    public static RandomVariable createRVFromAnnotation(Class ann) throws Exception {
         Class c = annotationType(ann);
         if (c.equals(Boolean.class)) {
             return createRVFromAnnotation(ann, 2);
