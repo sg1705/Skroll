@@ -110,4 +110,11 @@ public class ParaProcessor {
 
     }
 
+    static boolean isParaObserved(CoreMap para){
+        Boolean isObserved = para.get(CoreAnnotations.IsUserObservationAnnotation.class);
+        if (isObserved==null) isObserved = false;
+        return  isObserved;
+    }
+
+
 }

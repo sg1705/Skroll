@@ -162,6 +162,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
 
         for (int p = 0; p < originalParas.size(); p++) {
+            if (!ParaProcessor.isParaObserved(originalParas.get(p))) continue;
             double[] weights = getTrainingWeights(originalParas.get(p));
             int[] values = tuples[p].getDiscreteValues();
             int numCategories = nbfcConfig.getCategoryVar().getFeatureSize();
