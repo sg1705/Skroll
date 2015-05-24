@@ -13,13 +13,13 @@
       <md-autocomplete md-selected-item="ctrl.selectedItem" md-search-text="ctrl.searchText" md-items="item in ctrl.getMatches(ctrl.searchText)" md-item-text="item.display" placeholder="Search in document" 
       md-search-text-change="ctrl.searchTextChange(ctrl.searchText)"
       md-selected-item-change="ctrl.selectedItemChange(item)" md-min-length=3 md-delay=100 md-no-cache>
-        <md-item-template>
-          <div style="margin-top:5px; margin-bottom: 5px">
-            <span>{{item.header}}</span><br/>
+        <md-item-template md-theme>
+          <div md-theme style="word-wrap: break-word;margin-top:5px; margin-bottom: 5px">
+            <span class="md-primary">{{item.header}}</span><br/>
+            <div style="font-size: 11px; word-wrap: break-word; color:#0288d1;" class="md-primary md-hue-1" md-highlight-text="ctrl.searchText">
+              {{item.displayText}}
+            </div>
           </div>
-          <div>
-            <span class="md-primary md-hue-1">{{item.displayText}}</span>
-        </div>
         </md-item-template>
         <md-not-found>
           No matches found.
