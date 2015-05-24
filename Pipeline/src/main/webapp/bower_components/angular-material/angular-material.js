@@ -11277,6 +11277,10 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $timeout, $
     } else if (bot > elements.ul.scrollTop + hgt) {
       elements.ul.scrollTop = bot - hgt;
     }
+    //start hack this is added
+    var paragraphId = self.matches[self.index].paragraphId;
+    SelectionModel.scrollToParagraph(paragraphId);
+    //end hack
   }
 
   function handleQuery () {
@@ -11418,6 +11422,7 @@ function MdAutocomplete ($mdTheming, $mdUtil) {
                 ng-class="{ selected: index === $mdAutocompleteCtrl.index }"\
                 ng-hide="$mdAutocompleteCtrl.hidden"\
                 ng-click="$mdAutocompleteCtrl.select(index)"\
+                style="max-width:270px"\
                 md-autocomplete-list-item="$mdAutocompleteCtrl.itemName">\
                 ' + getItemTemplate() + '\
             </li>\
