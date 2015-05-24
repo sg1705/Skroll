@@ -20,6 +20,7 @@ Added scrolling in updateScroll method in MdAutocompleteCtrl
 
 4. MdAutocomplete added a width of 270px in the template
 
+5. MdAutocompleteCtrl changed the MAX_HEIGHT from 5.5 to 11
 */
 
 var SearchCtrl = function(SelectionModel) {
@@ -33,7 +34,8 @@ SearchCtrl.prototype.getMatches = function(searchText) {
 	var items = [];
 	var elements = $("[id^='p_']:contains('" + searchText + "')");
 	//convert level terms to integers
-	var headerItems = LHSModel.getTermsForClass(2);
+	//var headerItems = LHSModel.getTermsForClass(2);
+	var headerItems = LHSModel.getParaFromClassIdRange(2,4);
 	var levelsPara = [];
 	for (var ii = 0; ii < headerItems.length; ii++) {
 		var str = headerItems[ii].paragraphId.split("_")[1];

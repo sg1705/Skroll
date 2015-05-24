@@ -10922,7 +10922,9 @@ angular
     .controller('MdAutocompleteCtrl', MdAutocompleteCtrl);
 
 var ITEM_HEIGHT = 41,
-    MAX_HEIGHT = 5.5 * ITEM_HEIGHT,
+    //hack
+    //MAX_HEIGHT = 5.5 * ITEM_HEIGHT,
+    MAX_HEIGHT = 11 * ITEM_HEIGHT,
     MENU_PADDING = 8;
 
 function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $timeout, $mdTheming, $window, $animate, $rootElement) {
