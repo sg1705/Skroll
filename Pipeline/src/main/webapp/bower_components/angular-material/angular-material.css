@@ -2771,7 +2771,6 @@ md-autocomplete {
   list-style: none;
   padding: 0;
   overflow: auto;
-  height: 450px;
   max-height: 225.5px;
   z-index: 100; }
   .md-autocomplete-suggestions li {
