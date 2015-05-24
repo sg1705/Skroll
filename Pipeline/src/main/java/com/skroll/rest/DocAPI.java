@@ -136,7 +136,7 @@ public class DocAPI {
             //Streams require final objects
             String fName = fileName;
             Document fDoc = document;
-            request.getClassifiers().parallelStream().forEach(c -> c.classify(fName, fDoc));
+            request.getClassifiers().forEach(c -> c.classify(fName, fDoc));
             request.getDocumentFactory().putDocument(fileName, document);
             logger.debug("Added document into the documentMap with a generated hash key:{}" ,fileName);
 
@@ -197,7 +197,7 @@ public class DocAPI {
         //Streams require final objects
         final Document finalDoc = doc;
         try {
-            request.getClassifiers().parallelStream().forEach(c -> c.classify(documentId, finalDoc));
+            request.getClassifiers().forEach(c -> c.classify(documentId, finalDoc));
             request.getDocumentFactory().putDocument(documentId, doc);
         } catch (Exception e) {
             return logErrorResponse("Failed to classify/store document", e);
