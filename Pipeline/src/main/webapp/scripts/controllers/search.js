@@ -8,81 +8,73 @@
  * Controller of the SearchCtrl
  */
 
-var SearchCtrl = function() {
+var SearchCtrl = function(SelectionModel) {
 
 	//-- private variables
 	this.searchText;
-
+	this.SelectionModel = SelectionModel;
 }
 
 SearchCtrl.prototype.getMatches = function(searchText) {
 	var items = [];
 	var elements = $("[id^='p_']:contains('" + searchText + "')");
 	//convert level terms to integers
+	var headerItems = LHSModel.getTermsForClass(2);
 	var levelsPara = [];
-	for (var ii = 0; ii < LHSModel.smodel.terms.length; ii++) {
-		var str = LHSModel.smodel.terms[ii].paragraphId.split("_")[1];
+	for (var ii = 0; ii < headerItems.length; ii++) {
+		var str = headerItems[ii].paragraphId.split("_")[1];
 		var paraId = parseInt(str);
 		levelsPara.push(paraId);
 	}
 	//iterate over each search result
 	$.each(elements, function(i, val) {
 		var id = parseInt($(val).attr('id').split("_")[1]);
-		var header = 0;
+		var header;
 		var displayText;
-		var text = $('#p_' + id).text();
-		var indexOfSearch = text.indexOf(searchText);
-		if (indexOfSearch > 40) {
-			displayText = text.substring(0, 39) + '.....' + searchText + '....';
-		} else {
-			displayText = text.substring(0, indexOfSearch) + text.substring(indexOfSearch + 1, searchText.length) + '...';
+		var isItem = false;
+		//this is a hack
+		if (id > 1237) {
+			//iterate over each level 2 heading
+			for (var jj = 1; jj < levelsPara.length; jj++) {
+				//check if this heading is the heading for this paragraph
+				if (levelsPara[jj] > id) {
+					if (jj > 1) {
+						header = headerItems[jj - 1].term;
+						var text = $('#p_' + id).text();
+						var indexOfSearch = text.indexOf(searchText);
+						if (indexOfSearch > 40) {
+							displayText = text.substring(0, 39) + '..... ' + searchText + ' .... ';
+						} else {
+							displayText = text.substring(0, indexOfSearch) + text.substring(indexOfSearch + 1, searchText.length) + '...';
+						}
+						isItem = true;
+						break;
+					}
+				}
+			}
+			if (isItem) {
+				var item = new Object();
+				item['header'] = header;
+				item['paragraphId'] = 'p_' + id;
+				item['displayText'] = displayText;
+				items.push(item);				
+			}
 		}
-		// for (var jj = 1; jj < levelsPara.length; jj++) {
-		// 	if (id > levelsPara[jj]) {
-		// 		if (jj > 1) {
-		// 			header = LHSModel.smodel.terms[jj - 1].term;
-		// 			var paragraphId = 'p_' + levelsPara[jj];
-		// 			var text = $('#p_' + id).text();
-		// 			var indexOfSearch = text.indexOf(searchText);
-		// 			if (indexOfSearch > 40) {
-		// 				displayText = text.substring(0, 39) + '.....' + searchText + '....';
-		// 			} else {
-		// 				displayText = text.substring(0, indexOfSearch) + text.substring(indexOfSearch + 1, searchText.length) + '...';
-		// 			}
-		// 			//check for first 15 characters
-		// 		}
-		// 	}
-			var item = new Object();
-			item['display'] = header;
-			item['paragraphId'] = 'p_' + id;
-			item['displayText'] = displayText;
-			items.push(item);
-		//}
 	})
-	console.log(items);
 	return items;
 }
 
 SearchCtrl.prototype.searchTextChange = function(text) {
-  console.log('Text changed to ' + text);
+  
 }
 
 SearchCtrl.prototype.selectedItemChange = function(item) {
-  console.log('Item changed to ' + JSON.stringify(item));
+	if (item == null) {
+		return;
+	}
   var paragraphId = item.paragraphId;
-  var para = $("#" + paragraphId);
-  $("#" + SelectionModel.paragraphId).css("background-color", "");
-  if (para != null) {
-    var contentDiv = $("#skrollport");
-    $("#skrollport").animate({
-      scrollTop: ($("#skrollport").scrollTop() - 200 + $(
-        para).offset().top)
-    }, "slow");
-    $(para).css("background-color", "yellow");
-    SelectionModel.paragraphId = paragraphId;
-    ToolbarModel.trainerToolbar.lastJson = '';
-  }
+  this.SelectionModel.scrollToParagraph(paragraphId);
 }
 
 angular.module('SkrollApp')
-	.controller('SearchCtrl', SearchCtrl);
+	.controller('SearchCtrl', ['SelectionModel', SearchCtrl]);
