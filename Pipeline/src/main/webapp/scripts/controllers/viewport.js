@@ -228,7 +228,7 @@ ViewPortCtrl.prototype.showYesNoAllDialog = function(prompt, matchedItem) {
     }
     //answer is yes
     if (clicked == 0) {
-      this.documentService.approveClassForPara(matchedItem).
+      this.documentService.approveClassForPara(matchedItem.classificationId, matchedItem.paragraphId).
       then(angular.bind(this, function(contentHtml){
         this.updateDocument(contentHtml);  
       }));

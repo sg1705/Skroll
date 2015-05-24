@@ -14,8 +14,12 @@
       md-search-text-change="ctrl.searchTextChange(ctrl.searchText)"
       md-selected-item-change="ctrl.selectedItemChange(item)" md-min-length=3 md-delay=100 md-no-cache>
         <md-item-template>
-          <span>{{item.header}}</span>
-          <!-- <span style="width:300px">{{item.displayText}}</span> -->
+          <div style="margin-top:5px; margin-bottom: 5px">
+            <span>{{item.header}}</span><br/>
+          </div>
+          <div>
+            <span class="md-primary md-hue-1">{{item.displayText}}</span>
+        </div>
         </md-item-template>
         <md-not-found>
           No matches found.

@@ -2778,8 +2778,10 @@ md-autocomplete {
     font-size: 14px;
     overflow: hidden;
     padding: 0 15px;
+    /* start hack for search 
     line-height: 48px;
     height: 48px;
+    end hack for search */
     transition: background 0.15s linear;
     margin: 0;
     white-space: nowrap;

@@ -11,7 +11,7 @@
 /*
 TODO hacks for search
 1. angular-material.css
-Commented line-height and height for the md-autocomplete style
+Commented line-height and height for the .md-autocomplete-suggestions style
 
 2. angular-material.js
 Added scrolling in updateScroll method in MdAutocompleteCtrl 
@@ -19,6 +19,7 @@ Added scrolling in updateScroll method in MdAutocompleteCtrl
 3. start.html points to non-minified versions of angular-material
 
 4. MdAutocomplete added a width of 270px in the template
+
 */
 
 var SearchCtrl = function(SelectionModel) {

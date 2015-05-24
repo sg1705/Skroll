@@ -123,7 +123,7 @@ var LHSModel = {
 
   getParagraphsForClass: function(classId, paraId) {
 		var paras = _.filter(LHSModel.smodel.terms, function(obj){
-			if ((obj.paraId == paraId) && (obj.classificationId == classId))
+			if ((obj.paragraphId == paraId) && (obj.classificationId == classId))
 				return true;
 		});
 		return paras;
