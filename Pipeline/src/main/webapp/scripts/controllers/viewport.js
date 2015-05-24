@@ -199,7 +199,7 @@ ViewPortCtrl.prototype.handleTrainerParaSelection = function(paraId) {
 * Updates the viewport with fresh content html
 */
 ViewPortCtrl.prototype.updateDocument = function(contentHtml) {
-  $("#content").html(contentHtml);
+  //$("#content").html(contentHtml);
   this.documentService.getTerms().then(function(terms){
     LHSModel.smodel.terms = terms;
     console.log("Terms return by API");
