@@ -9,9 +9,9 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class NumberTokensComputerTest {
+public class ParaStartsWithFeatureComputerTest {
 
-    NumberTokensComputer nTC;
+    ParaStartsWithFeatureComputer nTC;
     CoreMap m = new CoreMap();
     Token token1;
     Token token2;
@@ -19,30 +19,29 @@ public class NumberTokensComputerTest {
 
     @Before
     public void setUp() throws Exception {
-        nTC = new NumberTokensComputer();
+        nTC = new ParaStartsWithFeatureComputer(CoreAnnotations.IsBoldAnnotation.class);
         m = new CoreMap();
         token1 = new Token("First");
+        token1.set(CoreAnnotations.IsBoldAnnotation.class, true);
         token2 = new Token("token");
+        token2.set(CoreAnnotations.IsBoldAnnotation.class, false);
         token3 = new Token("only");
         m.set(CoreAnnotations.TokenAnnotation.class, Lists.newArrayList(token1, token2, token3));
-        m.set(CoreAnnotations.IsInTableAnnotation.class, true);
-
     }
 
     @Test
     public void testGetValue() throws Exception {
-        assert (nTC.getNumVals() == RVCreater.DEFAULT_NUM_INT_VALS);
         int value = nTC.getValue(m);
-        assert(value == 3);
+        assert (value == 1);
 
-        m = new CoreMap();
-        token1 = new Token("First");
-        token2 = new Token("token");
-        token3 = new Token("only");
-        m.set(CoreAnnotations.TokenAnnotation.class, Lists.newArrayList(token1, token2, token3, token1, token2, token3, token1, token2, token3, token1, token2, token3, token1, token2, token3));
-
+        m.set(CoreAnnotations.TokenAnnotation.class, Lists.newArrayList(token2, token1, token3));
         value = nTC.getValue(m);
-        assert(value == 9);
+        assert (value == 0);
     }
 
+    @Test
+    public void testGetNumVals() throws Exception {
+        int value = nTC.getNumVals();
+        assert (value == 2);
+    }
 }
