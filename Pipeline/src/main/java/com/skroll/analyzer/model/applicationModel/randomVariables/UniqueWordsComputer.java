@@ -20,8 +20,9 @@ public class UniqueWordsComputer implements RVWordsComputer {
     public String[] getWords(CoreMap m, int n) {
         Set<String> wordSet = new HashSet<>();
         List<Token> tokens = m.getTokens();
-        for (Token token : tokens)
-            wordSet.add(token.toString());
+        for (int i = 0; i < n; i++) {
+            wordSet.add(tokens.get(i).toString());
+        }
 
         return wordSet.toArray(new String[wordSet.size()]);
 

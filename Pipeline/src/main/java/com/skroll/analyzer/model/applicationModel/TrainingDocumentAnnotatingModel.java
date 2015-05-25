@@ -156,6 +156,9 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 //        List<CoreMap> originalParagraphs = new ArrayList<>();
 
         List<CoreMap> originalParas = doc.getParagraphs();
+
+        // todo: the following two lines can cause a lot of inefficiency with the current approach of
+        // updating training model with the whole doc each time user makes an observation.
         List<CoreMap> processedParas = DocProcessor.processParagraphs(originalParas, hmm.size());
         DocData data = DocProcessor.getDataFromDoc(doc, processedParas, nbfcConfig);
         SimpleDataTuple[] tuples = data.getTuples();
