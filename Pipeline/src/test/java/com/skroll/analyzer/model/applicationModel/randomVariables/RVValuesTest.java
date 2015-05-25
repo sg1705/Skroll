@@ -32,7 +32,7 @@ public class RVValuesTest {
         Class ac = CoreAnnotations.IndexInteger.class;
 
         para.set(ac, 3);
-        RandomVariable rv = RVValues.createRVFromAnnotation(ac);
+        RandomVariable rv = RVCreater.createRVFromAnnotation(ac);
         int v = RVValues.getValue(rv, para);
         System.out.println(v);
         assert (v == 3);
@@ -46,7 +46,7 @@ public class RVValuesTest {
         Class ac = CoreAnnotations.IsBoldAnnotation.class;
 
         para.set(ac, Boolean.TRUE);
-        RandomVariable rv = RVValues.createRVFromAnnotation(ac);
+        RandomVariable rv = RVCreater.createRVFromAnnotation(ac);
         int v = RVValues.getValue(rv, para);
         System.out.println(v);
         assert (v == 1);
@@ -54,57 +54,6 @@ public class RVValuesTest {
 
     }
 
-    @Test
-    public void testAnnotationType() throws Exception {
-        Class ac = CoreAnnotations.IndexInteger.class;
-        System.out.println(RVValues.annotationType(ac));
-        assert (RVValues.annotationType(ac)).equals(Integer.class);
-    }
-
-    @Test
-    public void testCreateRVFromAnnotationInteger() throws Exception {
-        int featureSize = 5;
-        Class ac = CoreAnnotations.IndexInteger.class;
-        RandomVariable rv = RVValues.createRVFromAnnotation(ac, featureSize);
-        assert (rv.getFeatureSize() == featureSize);
-        System.out.println(rv.getName());
-        System.out.println(rv.getFeatureSize());
-
-        Class ac2 = RVValues.getAnnotationClass(rv);
-        System.out.println(ac2);
-        assert (ac.equals(ac2));
-
-    }
-
-    @Test
-    public void testCreateRVFromAnnotationBoolean() throws Exception {
-        Class ac = CoreAnnotations.IsBoldAnnotation.class;
-        RandomVariable rv = RVValues.createRVFromAnnotation(ac);
-        assert (rv.getFeatureSize() == 2);
-        System.out.println(rv.getName());
-        System.out.println(rv.getFeatureSize());
-
-        Class ac2 = RVValues.getAnnotationClass(rv);
-        System.out.println(ac2);
-        assert (ac.equals(ac2));
-
-
-    }
-
-    @Test
-    public void testCreateRVFromAnnotationIntegerDefault() throws Exception {
-
-        Class ac = CoreAnnotations.IndexInteger.class;
-        RandomVariable rv = RVValues.createRVFromAnnotation(ac);
-        assert (rv.getFeatureSize() == RVValues.DEFAULT_NUM_INT_VALS);
-        System.out.println(rv.getName());
-        System.out.println(rv.getFeatureSize());
-
-        Class ac2 = RVValues.getAnnotationClass(rv);
-        System.out.println(ac2);
-        assert (ac.equals(ac2));
-
-    }
 //    @Test
 //    public void testCreateRVFromAnnotationIntegerDefault() throws Exception {
 //

@@ -112,31 +112,7 @@ public class RVValues {
         return getValueFromMap(rv, token);
     }
 
-    static Class annotationType(Class ann) throws Exception {
-        Constructor constructor = ann.getConstructor(new Class[]{});
-        Object myObject = constructor.newInstance();
-        Method method = myObject.getClass().getMethod("getType");
-        Object c = method.invoke(myObject);
-        return (Class) c;
 
-    }
-
-
-    static RandomVariable createRVFromAnnotation(Class ann, int numValues) throws Exception {
-        RandomVariable rv = new RandomVariable(numValues, ann.getName());
-        rvaMap.put(rv, ann);
-        return rv;
-    }
-
-    public static RandomVariable createRVFromAnnotation(Class ann) throws Exception {
-        Class c = annotationType(ann);
-        if (c.equals(Boolean.class)) {
-            return createRVFromAnnotation(ann, 2);
-        } else if (c.equals(Integer.class)) {
-            return createRVFromAnnotation(ann, DEFAULT_NUM_INT_VALS);
-        }
-        return null; // not able to create RV automatically
-    }
 
     /**
      * returns 0 if input parameter false, 1 if true
