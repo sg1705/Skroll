@@ -1,40 +1,47 @@
 package com.skroll.analyzer.model.applicationModel.randomVariables;
 
+import com.google.common.collect.Lists;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.document.annotation.CoreAnnotations;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
+import java.util.List;
 
 /**
  * Created by wei on 5/25/15.
  */
 public class RVCreaterTest {
-
+    public static final Logger logger = LoggerFactory.getLogger(RVCreaterTest.class);
     @Test
     public void testCreateParagraphStartsWithRV() throws Exception {
-
+        RandomVariable rv = RVCreater.createParagraphStartsWithRV(CoreAnnotations.StartsWithQuote.class);
+        logger.info("RV.Name:{}", rv.getName());
+        assert(rv.getName().equals("paraStartsStartsWithQuote"));
     }
 
 
     @Test
     public void testCreateDocFeatureRVs() throws Exception {
 
+        RandomVariable rv1 = RVCreater.createParagraphStartsWithRV(CoreAnnotations.StartsWithQuote.class);
+        RandomVariable rv2 = RVCreater.createParagraphStartsWithRV(CoreAnnotations.IsBoldAnnotation.class);
+        List<RandomVariable> rvList = RVCreater.createDocFeatureRVs(Lists.newArrayList(rv1,rv2));
+        assert(rvList.size()==2);
+        logger.info("{}", rvList);
+        assert(rvList.get(0).getName().equals("docFeature_paraStartsStartsWithQuote"));
+        assert(rvList.get(1).getName().equals("docFeature_paraStartsIsBoldAnnotation"));
     }
 
-    @Test
-    public void testCreateRVFromAnnotation() throws Exception {
-
-    }
-
-    @Test
-    public void testCreateRVFromAnnotation1() throws Exception {
-
-    }
 
     @Test
     public void testCreateDiscreteRVWithComputer() throws Exception {
-
+        NumberTokensComputer numberTokensComputer = new NumberTokensComputer(10);
+        RandomVariable rv = RVCreater.createDiscreteRVWithComputer(numberTokensComputer, "NumberTokensComputer");
+        logger.info("{}", rv);
+        assert(rv.getName().equals("NumberTokensComputer"));
+        assert(rv.getFeatureSize()==10);
     }
 
     @Test
