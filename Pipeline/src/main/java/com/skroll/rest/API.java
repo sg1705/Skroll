@@ -244,7 +244,7 @@ public class API {
                 }
             }
             if (paragraph.get(CoreAnnotations.IsTOCAnnotation.class)) {
-                List<String> tocList = DocumentHelper.getTOCLists(
+                List<List<String>> tocList = DocumentHelper.getTOCLists(
                         paragraph);
                     if (!tocList.isEmpty()) {
                         if(!(Joiner.on(" ").join(tocList).equals(""))) {

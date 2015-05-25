@@ -173,7 +173,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
                 NBTrainingHelper.addSample(tnbfModel, tuples[p], weights[i]);
                 //tnbfModel.addSample(dataTuple, weights[i]);
             }
-            NBTrainingHelper.addSample(tnbfModel, tuples[p]);
+//            NBTrainingHelper.addSample(tnbfModel, tuples[p]);
 
         }
 

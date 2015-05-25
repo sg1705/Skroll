@@ -51,7 +51,7 @@ public class RVCreater {
 
 
     static RandomVariable createRVFromAnnotation(Class ann, int numValues) {
-        RandomVariable rv = new RandomVariable(numValues, ann.getName());
+        RandomVariable rv = new RandomVariable(numValues, ann.getSimpleName());
         RVValues.addAnnotationLink(rv, ann);
         return rv;
     }

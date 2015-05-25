@@ -279,9 +279,9 @@ public class CoreAnnotations {
     }
 
     // TOC Annotation
-    public static class TOCTokensAnnotation implements CoreAnnotation<List<Token>> {
-        public Class<List<Token>> getType() {
-            return EraserUtils.<Class<List<Token>>> uncheckedCast(List.class);
+    public static class TOCTokensAnnotation implements CoreAnnotation<List<List<Token>>> {
+        public Class<List<List<Token>>> getType() {
+            return EraserUtils.<Class<List<List<Token>>>>uncheckedCast(List.class);
         }
     }
     public static class IsTOCAnnotation implements CoreAnnotation<Boolean> {

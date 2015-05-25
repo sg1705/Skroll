@@ -17,7 +17,7 @@ public class TOCModelRVSetting extends ModelRVSetting {
 
     // todo: not used now. need to implement HMM for TOC later.
     static final RandomVariable WORD_IS_TOC =
-            RVCreater.createWordLevelRVWithComputer(new WordIsDefComputer(), "wordIsDef");
+            RVCreater.createWordLevelRVWithComputer(new WordIsDefComputer(), "wordIsTOC");
 
     static final List<RandomVariable> DEFAULT_WORD_FEATURES = Arrays.asList(
             RVCreater.createRVFromAnnotation(CoreAnnotations.InQuotesAnnotation.class),

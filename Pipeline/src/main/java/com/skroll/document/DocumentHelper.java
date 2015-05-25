@@ -138,10 +138,20 @@ public class DocumentHelper {
         return strings;
     }
 
-    public static List<String> getTOCLists(CoreMap coreMap) {
-        List<Token> tocList = coreMap.get(CoreAnnotations.TOCTokensAnnotation.class);
-        if (tocList==null) return new ArrayList<>();
-        return DocumentHelper.getTokenString(tocList);
+    public static List<List<String>> getTOCLists(CoreMap coreMap) {
+        List<List<Token>> tocList = coreMap.get(CoreAnnotations.TOCTokensAnnotation.class);
+//        List<List<Token>> definitionList = coreMap.get(CoreAnnotations.DefinedTermTokensAnnotation.class);
+        List<List<String>> strings = new ArrayList<>();
+        if (tocList == null) return strings;
+        for (List<Token> list : tocList) {
+            strings.add(DocumentHelper.getTokenString(list));
+        }
+        return strings;
+
+
+//        List<List<Token>> tocList = coreMap.get(CoreAnnotations.TOCTokensAnnotation.class);
+//        if (tocList==null) return new ArrayList<>();
+//        return DocumentHelper.getTokenString(tocList);
 
     }
 
@@ -178,12 +188,12 @@ public class DocumentHelper {
     }
 
     public static void addTOCsInParagraph(List<Token> newToc, CoreMap paragraph) {
-        List<Token> toc = paragraph.get(CoreAnnotations.TOCTokensAnnotation.class);
+        List<List<Token>> toc = paragraph.get(CoreAnnotations.TOCTokensAnnotation.class);
         if (toc == null) {
-            toc = new ArrayList<>();
+            toc = new ArrayList<List<Token>>();
             paragraph.set(CoreAnnotations.TOCTokensAnnotation.class, toc);
         }
-        toc.addAll(newToc);
+        toc.add(newToc);
         if (toc.size() > 0) {
             paragraph.set(CoreAnnotations.IsTOCAnnotation.class, true);
         }

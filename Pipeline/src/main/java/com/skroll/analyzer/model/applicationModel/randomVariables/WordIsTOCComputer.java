@@ -14,10 +14,12 @@ public class WordIsTOCComputer implements WRVValueComputer {
 
     @Override
     public int getValue(Token word, CoreMap para) {
-        List<Token> tokens = para.get(CoreAnnotations.TOCTokensAnnotation.class);
+        List<List<Token>> tokens = para.get(CoreAnnotations.TOCTokensAnnotation.class);
         if (tokens == null) return 0;
-        for (Token t : tokens) //todo: matching string instead of matching token reference is a hack here.
-            if (t.getText().equals(word.getText())) return 1;
+
+        for (List<Token> list : tokens)
+            for (Token t : list) //todo: matching string instead of matching token reference is a hack here.
+                if (t.getText().equals(word.getText())) return 1;
         //if (list.contains(word)) return 1;
         return 0;
     }
