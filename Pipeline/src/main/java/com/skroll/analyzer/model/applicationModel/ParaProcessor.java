@@ -31,6 +31,13 @@ public class ParaProcessor {
         return result;
     }
 
+    /**
+     * Gets the feature value of a given token. For example, if a token is Bold then it returns false
+     * @param v
+     * @param token
+     * @param mList
+     * @return
+     */
     static int getWordFeatureValue(RandomVariable v, Token token, List<CoreMap> mList) {
         int result = 0; // return 0 in case of null.
         for (CoreMap m : mList) {

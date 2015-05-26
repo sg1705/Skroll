@@ -17,6 +17,13 @@ import java.util.List;
  * Created by wei on 5/10/15.
  */
 public class DocProcessor {
+
+    /**
+     * Processes a paragraph by taking the number of starting words to use
+     * @param paras
+     * @param numWordsToUse
+     * @return
+     */
     static List<CoreMap> processParagraphs(List<CoreMap> paras, int numWordsToUse) {
         List<CoreMap> processedParas = new ArrayList<>();
         for (CoreMap para : paras) processedParas.add(ParaProcessor.processParagraph(para, numWordsToUse));
