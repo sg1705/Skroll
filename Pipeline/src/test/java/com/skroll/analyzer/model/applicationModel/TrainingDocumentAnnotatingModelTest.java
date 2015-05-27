@@ -1,13 +1,10 @@
 package com.skroll.analyzer.model.applicationModel;
 
-import com.skroll.analyzer.model.applicationModel.DefModelRVSetting;
-import com.skroll.analyzer.model.applicationModel.DocProcessor;
-import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
-import com.skroll.analyzer.model.applicationModel.TrainingDocumentAnnotatingModel;
 import com.skroll.analyzer.model.bn.NaiveBayesWithFeatureConditions;
-
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
+import com.skroll.document.annotation.CoreAnnotations;
+import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
 import com.skroll.parser.Parser;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
@@ -27,17 +24,25 @@ public class TrainingDocumentAnnotatingModelTest{
 
 
 
-
-    public void testUpdateWithParagraph() throws Exception {
-
-    }
-
-    public void testUpdateTNBFWithParagraph() throws Exception {
-
-    }
-
-    public void testUpdateHMMWithParagraph() throws Exception {
-
+    @Test
+    public void testUpdateWithDocumentAndWeight() throws Exception {
+        model = new TrainingDocumentAnnotatingModel();
+        File file = new File(trainingFolderName);
+        if (file.isDirectory()) {
+            File[] listOfFiles = file.listFiles();
+            for (File f : listOfFiles) {
+                Document doc = makeTrainingDoc(f);
+                for (CoreMap paragraph : doc.getParagraphs()) {
+                    paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
+                    paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
+                    TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.DEFINITION, (float) 1.0);
+                }
+                model.updateWithDocumentAndWeight(doc);
+            }
+        }
+        System.out.println("trained model: \n" + model);
+        assert(model.toString().contains("nextTokenCounts [Operations=5.0, Tiger=6.0]"));
+        assert(model.toString().contains("[WordNode{parameters=Operations=[0.0, 2.0] Tiger=[0.0, 1.0] Notwithstanding=[0.0, 2.0]"));
     }
 
     @Test
@@ -62,6 +67,8 @@ public class TrainingDocumentAnnotatingModelTest{
         }
 
         System.out.println("trained model: \n" + model);
+        assert(model.toString().contains("nextTokenCounts [Operations=5.0, Tiger=6.0]"));
+        assert(model.toString().contains("[WordNode{parameters=Operations=[2.0, 0.0] Tiger=[1.0, 0.0] Notwithstanding=[2.0, 0.0]"));
     }
 
     @Test

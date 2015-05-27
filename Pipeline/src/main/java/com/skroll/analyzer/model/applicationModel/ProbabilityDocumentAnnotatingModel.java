@@ -50,12 +50,12 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
                                               List<RandomVariable> wordFeatures,
                                                 NBFCConfig nbfcConfig){
 
-        this.nbfcConfig = nbfcConfig;
-            this.wordType = wordType;
-            this.wordFeatures = wordFeatures;
+        super.nbfcConfig = nbfcConfig;
+        super.wordType = wordType;
+        super.wordFeatures = wordFeatures;
 
         this.doc = doc;
-        lpnbfModel = NBInferenceHelper.createLogProbNBWithFeatureConditions(tnbf);
+        this.lpnbfModel = NBInferenceHelper.createLogProbNBWithFeatureConditions(tnbf);
         this.hmm = hmm;
 
         hmm.updateProbabilities();
@@ -78,22 +78,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
      */
 
     public void updateBeliefWithObservation(List<CoreMap> observedParagraphs){
-
         computeInitalBeliefs();
-//        for( CoreMap para : observedParagraphs) {
-//            if (para==null) continue;
-//            if (!DocumentAnnotatingHelper.isParaObserved(para)) continue;
-//            List<Token> tokens = para.getTokens();
-//            if (tokens==null || tokens.size()==0) continue;
-//            int pIndex = DocumentAnnotatingHelper.getParagraphFeature(para, RandomVariable.PARAGRAPH_INDEX);
-//            int value = DocumentAnnotatingHelper.getParagraphFeature(para, paraCategory);
-//
-//            for (int i=0; i<paraCategory.getFeatureSize(); i++){
-//                if (i==value) paragraphCategoryBelief[pIndex][i] = 0;
-//                else paragraphCategoryBelief[pIndex][i] = Double.NEGATIVE_INFINITY;
-//            }
-//        }
-
     }
 
     //todo: should probably set inital belief based on observations if a document is reopened by the trainer or the same user again.
