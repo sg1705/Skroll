@@ -17,6 +17,13 @@ public class NBConfig {
 
     }
 
+    /**
+     *
+     * @param categoryVar categoryType
+     * @param featureVarList features of a given category
+     * @param wordVarList type of words. For example - all the words in a paragraph, or first word,
+     *                    or other set of words.
+     */
     public NBConfig(RandomVariable categoryVar,
                     List<RandomVariable> featureVarList, List<RandomVariable> wordVarList) {
         this.categoryVar = categoryVar;

@@ -47,7 +47,12 @@ public class ParaProcessor {
         return result;
     }
 
-
+    /**
+     * Returns the feature values of the paragraph
+     * @param rvs
+     * @param m Two paragraphs, where first one is original and the second is processed
+     * @return
+     */
     public static int[] getFeatureVals(List<RandomVariable> rvs, List<CoreMap> m) {
         int[] vals = new int[rvs.size()];
         for (int f = 0; f < rvs.size(); f++) {

@@ -73,7 +73,7 @@ public class ParaProcessorTest {
         List<Token> tokens2 = DocumentHelper.createTokens(strings);
         tokens2.get(1).set(CoreAnnotations.IsBoldAnnotation.class, true);
         para2.set(CoreAnnotations.IsBoldAnnotation.class, true);
-        para2.set(CoreAnnotations.IsItalicAnnotation.class, false);
+        para2.set(CoreAnnotations.IsUnderlineAnnotation.class, false);
         para2.set(CoreAnnotations.TokenAnnotation.class, tokens);
 
         int[] values = ParaProcessor.getFeatureVals(Lists.newArrayList(
@@ -86,19 +86,14 @@ public class ParaProcessorTest {
         assert(values[1] == 1 );
 
         values = ParaProcessor.getFeatureVals(Lists.newArrayList(
-                        RVCreater.createRVFromAnnotation(CoreAnnotations.IsBoldAnnotation.class),
+                        RVCreater.createRVFromAnnotation(CoreAnnotations.IsUnderlineAnnotation.class),
                         RVCreater.createRVFromAnnotation(CoreAnnotations.IsItalicAnnotation.class)),
-                Lists.newArrayList(para2, para));
+                Lists.newArrayList(para, para2));
         System.out.println(Arrays.toString(values));
 
-        assert(values[0] == 1 );
-        assert(values[1] == 0 );
+        assert(values[0] == 0 );
+        assert(values[1] == 1 );
 
-
-    }
-
-    @Test
-    public void testProcessParagraph1() throws Exception {
 
     }
 

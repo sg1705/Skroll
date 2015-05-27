@@ -15,6 +15,15 @@ public class NBFCConfig extends NBConfig {
     List<RandomVariable> allParagraphFeatures;
 
 
+    /**
+     * Config for a classifier
+     * @param categoryVar category random variable
+     * @param featureVarList features for the category that is not used at document level.
+     *                       For example, token count is not used at document level.
+     * @param featureExistsAtDocLevelVarList  paragraph features that are considered at doc level
+     * @param documentFeatureVarList features considered at doc level.
+     * @param wordVarList
+     */
     public NBFCConfig(RandomVariable categoryVar,
                       List<RandomVariable> featureVarList,
                       List<RandomVariable> featureExistsAtDocLevelVarList,
