@@ -160,6 +160,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     public String toString() {
         return "TrainingDocumentAnnotatingModel{" +
                 "tnbfModel=" + tnbfModel +
+                        "hmmModel=" + hmm +
                 '}';
     }
 
