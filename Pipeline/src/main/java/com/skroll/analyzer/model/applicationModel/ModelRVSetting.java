@@ -19,6 +19,17 @@ public class ModelRVSetting {
     RandomVariable wordType;
     List<RandomVariable> wordFeatures;
 
+    /**
+     * Defines the model
+     *
+     * @param wordType category of the word. For example, variable to indicate if a word is a defined term.
+     *                 Used at HMM level.
+     * @param wordFeatures features for each. For example, if the word is in quota. Used at HMM level.
+     * @param paraType category for the paragraph.
+     * @param paraFeatureVars features for the paragraph
+     * @param paraDocFeatureVars paragraph that are considered at doc level
+     * @param wordVars type of words. For example - first words, unique words etc.
+     */
     public ModelRVSetting(RandomVariable wordType,
                           List<RandomVariable> wordFeatures,
                           RandomVariable paraType,
