@@ -64,9 +64,6 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
             wordFeatureSizes[i] =  wordFeatures.get(i).getFeatureSize();
         hmm = new HiddenMarkovModel(HMM_MODEL_LENGTH,
                 wordType.getFeatureSize(), wordFeatureSizes);
-        //initialize();
-
-
     }
 
 
@@ -84,19 +81,6 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     }
 
     //    //todo: need to use the right annotation for the weight.
-//    void updateTNBFWithParagraphAndWeight(CoreMap originalPara, CoreMap processedPara, int[] docFeatureValues, double[] weights) {
-//        SimpleDataTuple dataTuple = DocumentAnnotatingHelper.makeDataTuple(originalPara, processedPara,
-//                docFeatureValues, nbfcConfig);
-//        int[] values = dataTuple.getDiscreteValues();
-//        int numCategories = nbfcConfig.getCategoryVar().getFeatureSize();
-//
-//
-//        for (int i = 0; i < numCategories; i++) {
-//            values[0] = i;
-//            NBTrainingHelper.addSample( tnbfModel, dataTuple, weights[i]);
-//            //tnbfModel.addSample(dataTuple, weights[i]);
-//        }
-//    }
     //todo: this method should be changed. Definitions should be annotated with good training data.
     void updateHMMWithParagraph(CoreMap originalPara, CoreMap processedPara) {
         List<Token> tokens = processedPara.get(CoreAnnotations.TokenAnnotation.class);
@@ -121,40 +105,12 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
                 tokenType, features);
 
     }
-//    void updateHMMWithParagraphAndWeight(CoreMap paragraph, double[] weights){
-//        List<Token> tokens = paragraph.get(CoreAnnotations.TokenAnnotation.class);
-//
-//        int[] tokenType = new int[tokens.size()];
-//        for (int i = 0; i < tokenType.length; i++) {
-//
-//            tokenType[i] =  DocumentAnnotatingHelper.getWordFeature(
-//                    paragraph, tokens.get(i), wordType);
-//        }
-//
-//        int length = Math.min(hmm.size(), tokens.size());
-//        int[][] features = new int[length][wordFeatures.size()];
-//        for (int i=0; i<length ;i++){
-//            for (int f=0; f<wordFeatures.size();f++){
-//                features[i][f] = DocumentAnnotatingHelper.getWordFeature(paragraph, tokens.get(i), wordFeatures.get(f));
-//            }
-//        }
-//
-//        for (int i=0;i<nbfcConfig.getCategoryVar().getFeatureSize(); i++) {
-//            hmm.updateCountsWithWeight(
-//                    DocumentHelper.getTokenString(tokens).toArray(new String[tokens.size()]),
-//                    tokenType, features, weights[i]);
-//        }
-//
-//    }
 
     /**
      * todo: to reduce memory usage at the cost of more computation, can process training paragraph one by one later instead of process all and store them now
     * training involves updating Fij for each paragraph i and feature j.
     */
     public void updateWithDocumentAndWeight(Document doc){
-//        List<CoreMap> processedParas = new ArrayList<>();
-//        List<CoreMap> originalParagraphs = new ArrayList<>();
-
         List<CoreMap> originalParas = doc.getParagraphs();
 
         // todo: the following two lines can cause a lot of inefficiency with the current approach of
@@ -174,9 +130,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
             for (int i = 0; i < numCategories; i++) {
                 values[0] = i;
                 NBTrainingHelper.addSample(tnbfModel, tuples[p], weights[i]);
-                //tnbfModel.addSample(dataTuple, weights[i]);
             }
-//            NBTrainingHelper.addSample(tnbfModel, tuples[p]);
 
         }
 
@@ -192,24 +146,9 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
         DocData data = DocProcessor.getDataFromDoc(doc, processedParas, nbfcConfig);
         for (SimpleDataTuple tuple : data.getTuples())
             NBTrainingHelper.addSample(tnbfModel, tuple);
-//        for (CoreMap para : processedParas)
-//            updateHMMWithParagraph(para);
         for (int p = 0; p < originalParas.size(); p++) {
             updateHMMWithParagraph(originalParas.get(p), processedParas.get(p));
         }
-//
-//
-//        for( CoreMap paragraph : originalParas) {
-//             processedParas.add(DocumentAnnotatingHelper.processParagraph(paragraph, hmm.size()));
-//        }
-//        int[] docFeatureValues = DocumentAnnotatingHelper.generateDocumentFeatures(doc.getParagraphs(), processedParas,
-//                nbfcConfig);
-//
-//
-//        for (int i=0; i<processedParas.size(); i++)
-//            updateWithParagraph(originalParas.get(i), processedParas.get(i), docFeatureValues);
-////        for( CoreMap processedPara : processedParas)
-////            updateWithParagraph(processedPara, docFeatureValues);
     }
 
     public NaiveBayesWithFeatureConditions getTnbfModel() {
@@ -229,9 +168,6 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
         List<DiscreteNode> discreteNodes = this.tnbfModel.getAllDiscreteNodes();
         map.put("ParagraphFeatureNodes", Visualizer.nodesToMap(
                 discreteNodes.toArray(new DiscreteNode[discreteNodes.size()])));
-//        List<DiscreteNode> featureNodes = this.tnbfModel.getFeatureNodes();
-//        map.put("ParagraphFeatureNodes", Visualizer.nodesToMap(
-//                featureNodes.toArray(new DiscreteNode[featureNodes.size()])));
         return map;
     }
 
