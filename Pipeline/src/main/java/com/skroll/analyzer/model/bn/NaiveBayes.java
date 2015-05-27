@@ -15,10 +15,13 @@ import java.util.*;
 public class NaiveBayes {
 
 
-
+    @JsonProperty("categoryNode")
     DiscreteNode categoryNode;
+    @JsonProperty("wordNodes")
     List<WordNode> wordNodes;
+    @JsonProperty("featureNodes")
     List<DiscreteNode>  featureNodes;
+    @JsonProperty("allDiscreteNodes")
     List<DiscreteNode> allDiscreteNodes;
 
     // for training with complete observed data, we can set observation on all nodes,

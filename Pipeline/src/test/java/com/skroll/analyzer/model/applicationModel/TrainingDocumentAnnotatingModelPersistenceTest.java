@@ -52,7 +52,8 @@ public class TrainingDocumentAnnotatingModelPersistenceTest {
     public void testPersistModel() throws Exception {
         TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel();
         doc = TestHelper.setUpTestDoc();
-        //model.updateWithDocument(doc);
+        doc.getParagraphs().get(0).set(CoreAnnotations.IsTOCAnnotation.class, true);
+        model.updateWithDocument(doc);
         Writer writer = null;
         ByteArrayOutputStream f_out = new ByteArrayOutputStream();
         try {
