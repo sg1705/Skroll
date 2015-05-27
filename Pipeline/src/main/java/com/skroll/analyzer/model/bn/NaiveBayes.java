@@ -15,10 +15,13 @@ import java.util.*;
 public class NaiveBayes {
 
 
-
+    @JsonProperty("categoryNode")
     DiscreteNode categoryNode;
+    @JsonProperty("wordNodes")
     List<WordNode> wordNodes;
+    @JsonProperty("featureNodes")
     List<DiscreteNode>  featureNodes;
+    @JsonProperty("allDiscreteNodes")
     List<DiscreteNode> allDiscreteNodes;
 
     // for training with complete observed data, we can set observation on all nodes,
@@ -37,40 +40,49 @@ public class NaiveBayes {
         putAllDiscreteNodesInOneList();
     }
 
+    @JsonIgnore
     public void putAllDiscreteNodesInOneList(){
         allDiscreteNodes = new ArrayList<>();
         allDiscreteNodes.add(categoryNode);
         allDiscreteNodes.addAll(featureNodes);
     }
 
+    @JsonIgnore
     public void setCategoryNode(DiscreteNode categoryNode) {
         this.categoryNode = categoryNode;
     }
 
+    @JsonIgnore
     public List<WordNode> getWordNodes() {
         return wordNodes;
     }
 
+    @JsonIgnore
     public void setWordNodes(List<WordNode> wordNodes) {
         this.wordNodes = wordNodes;
     }
 
+    @JsonIgnore
     public List<DiscreteNode> getFeatureNodes() {
         return featureNodes;
     }
 
+    @JsonIgnore
     public void setFeatureNodes(List<DiscreteNode> featureNodes) {
         this.featureNodes = featureNodes;
     }
 
+    @JsonIgnore
     public List<DiscreteNode> getAllDiscreteNodes() {
         return allDiscreteNodes;
     }
 
+    @JsonIgnore
     public void setAllDiscreteNodes(List<DiscreteNode> allDiscreteNodes) {
         this.allDiscreteNodes = allDiscreteNodes;
     }
 
+    @JsonIgnore
     public void setObservation(SimpleDataTuple tuple){
         int[] values = tuple.getDiscreteValues();
         for (int i=0; i<values.length; i++){
@@ -81,6 +93,7 @@ public class NaiveBayes {
         }
     }
 
+    @JsonIgnore
     public void clearObservation(){
         for (DiscreteNode node: allDiscreteNodes){
             node.clearObservation();
