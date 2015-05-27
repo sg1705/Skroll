@@ -27,6 +27,7 @@ import java.util.*;
  */
 public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
+    @JsonProperty("tnbfModel")
     NaiveBayesWithFeatureConditions tnbfModel;
 
 
@@ -52,7 +53,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
             @JsonProperty("tnbfModel")NaiveBayesWithFeatureConditions tnbfModel,
             @JsonProperty("wordType") RandomVariable wordType,
             @JsonProperty("wordFeatures") List<RandomVariable> wordFeatures,
-            NBFCConfig nbfcConfig){
+            @JsonProperty("nbfcConfig")NBFCConfig nbfcConfig){
         this.nbfcConfig = nbfcConfig;
 
         this.tnbfModel = tnbfModel;

@@ -38,7 +38,10 @@ public class RandomVariable {
     }
 
     @JsonCreator
-    public RandomVariable(int featureSize, String[] valueNames, String name) {
+    public RandomVariable(
+            @JsonProperty("featureSize")int featureSize,
+            @JsonProperty("valueNames")String[] valueNames,
+            @JsonProperty("name")String name) {
         this.featureSize = featureSize;
         this.valueNames = valueNames;
         this.named = name;

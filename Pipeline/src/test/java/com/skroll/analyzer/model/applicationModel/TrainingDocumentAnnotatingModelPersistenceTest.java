@@ -70,7 +70,34 @@ public class TrainingDocumentAnnotatingModelPersistenceTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(new String(f_out.toByteArray()));
+        String json = new String(f_out.toByteArray());
+        //System.out.println(json);
+
+        ByteArrayInputStream b_in = new ByteArrayInputStream(json.getBytes());
+        Reader reader = null;
+        try {
+            reader = new InputStreamReader(b_in, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            throw e;
+        }
+
+        TrainingDocumentAnnotatingModel obj = null;
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+            obj = mapper.readValue(reader, TrainingDocumentAnnotatingModel.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            reader.close();
+            b_in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        assert (obj != null);
 
 
     }

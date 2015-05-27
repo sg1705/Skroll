@@ -12,13 +12,7 @@ import java.util.List;
 /**
  * Created by wei2learn on 3/1/2015.
  */
-@JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.PROPERTY,
-        property = "type")
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
-
-
 
 public class DiscreteNode{
 
@@ -36,6 +30,7 @@ public class DiscreteNode{
     private double[] parameters; // used to calculate probability and represent how much piror experience exists.
     // todo: in the future, when models are fixed and updated using a lot of data, may consider multiplying by some positive decaying constant less than 1 to reduce the weight of older experiences
 
+    @JsonProperty("parents")
     DiscreteNode[] parents;//, children;
     @JsonProperty("observedValue")
     int observedValue = -1; // -1 means unobserved
@@ -43,6 +38,20 @@ public class DiscreteNode{
     public DiscreteNode(DiscreteNode[] parents){
         this.parents = parents;
     }
+
+    @JsonCreator
+    public DiscreteNode(
+            @JsonProperty("parents")DiscreteNode[] parents,
+            @JsonProperty("parameters")double[] parameters,
+            @JsonProperty("observedValue")int observedValue,
+            @JsonProperty("familyVariables")RandomVariable[] familyVariables){
+        this.parents = parents;
+        this.parameters = parameters;
+        this.observedValue = observedValue;
+        this.familyVariables = familyVariables;
+    }
+
+
 
 
     // calculation of the size up to (not include) the variable at the specified index.

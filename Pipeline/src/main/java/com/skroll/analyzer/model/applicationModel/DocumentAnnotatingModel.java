@@ -1,5 +1,6 @@
 package com.skroll.analyzer.model.applicationModel;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.bn.config.NBFCConfig;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
@@ -14,6 +15,7 @@ import java.util.List;
 public abstract class DocumentAnnotatingModel {
     static final int HMM_MODEL_LENGTH = 12;
 
+    @JsonProperty("hmm")
     HiddenMarkovModel hmm;
 //
 //
@@ -71,9 +73,15 @@ public abstract class DocumentAnnotatingModel {
 
 //    List<RandomVariable> allParagraphFeatures;
 
+
+    @JsonProperty("modelRVSetting")
     ModelRVSetting modelRVSetting = new DefModelRVSetting();
+    @JsonProperty("wordFeatures")
     List<RandomVariable> wordFeatures = modelRVSetting.getWordFeatures();
+
+    @JsonProperty("nbfcConfig")
     NBFCConfig nbfcConfig = modelRVSetting.getNbfcConfig();
+    @JsonProperty("wordType")
     RandomVariable wordType = modelRVSetting.getWordType();
 
 //    @JsonIgnore
