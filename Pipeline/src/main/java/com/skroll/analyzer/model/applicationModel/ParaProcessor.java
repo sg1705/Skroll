@@ -67,8 +67,6 @@ public class ParaProcessor {
         List<Token> tokens = paragraph.getTokens();
         List<Token> newTokens = new ArrayList<>();
 
-//        Set<String> wordSet = new HashSet<>();
-//        Set<String> wordSet = new LinkedHashSet<>(); //use LinkedHashSet to maintain order.
         if (tokens.size() > 0 && WordHelper.isQuote(tokens.get(0).getText()))
             trainingParagraph.set(CoreAnnotations.StartsWithQuote.class, true);
 
@@ -84,11 +82,9 @@ public class ParaProcessor {
                 token.set(CoreAnnotations.InQuotesAnnotation.class, true);
             }
             token.set(CoreAnnotations.IndexInteger.class, i++);
-//            wordSet.add(token.getText());
             newTokens.add(token);
         }
 
-//        trainingParagraph.set(CoreAnnotations.WordSetForTrainingAnnotation.class, wordSet);
         trainingParagraph.set(CoreAnnotations.TokenAnnotation.class, newTokens);
 
         // put defined terms from paragraph in trainingParagraph
@@ -97,12 +93,6 @@ public class ParaProcessor {
         if (definedTokens != null && definedTokens.size() > 0) {
             trainingParagraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
         }
-//        trainingParagraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class,
-//                paragraph.get(CoreAnnotations.DefinedTermTokensAnnotation.class));
-//
-//        trainingParagraph.set(CoreAnnotations.IsTOCAnnotation.class,
-//                paragraph.get(CoreAnnotations.IsTOCAnnotation.class));
-
         return trainingParagraph;
     }
 

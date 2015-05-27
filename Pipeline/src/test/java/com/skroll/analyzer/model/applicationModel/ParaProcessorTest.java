@@ -27,8 +27,6 @@ public class ParaProcessorTest {
         para.set(CoreAnnotations.IsBoldAnnotation.class, true);
         para.set(CoreAnnotations.IsItalicAnnotation.class, true);
         para.set(CoreAnnotations.TokenAnnotation.class, tokens);
-
-
     }
 
     @Test

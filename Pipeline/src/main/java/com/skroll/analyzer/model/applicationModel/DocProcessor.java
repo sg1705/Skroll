@@ -54,10 +54,7 @@ public class DocProcessor {
     static DocData getDataFromDoc(Document doc, List<CoreMap> processedParas, NBFCConfig config) {
         DocData data = new DocData(doc, config);
         List<RandomVariable> features = config.getAllParagraphFeatures();
-
         List<CoreMap> originalParas = doc.getParagraphs();
-//        List<CoreMap> processedParas = processParagraphs(doc.getParagraphs());
-
         SimpleDataTuple[] tuples = new SimpleDataTuple[originalParas.size()];
 
         int[] docFeatureVals = generateDocumentFeatures(originalParas, processedParas, config);
@@ -78,7 +75,6 @@ public class DocProcessor {
 
             List<String[]> wordsList = new ArrayList<>();
             for (RandomVariable rv : config.getWordVarList()) {
-                //RVValues.getWords(rv, processedParas.get(p)).toArray(new String[]);
                 wordsList.add(RVValues.getWords(rv, processedParas.get(p)));
             }
             tuples[p] = new SimpleDataTuple(wordsList, vals);
@@ -97,7 +93,6 @@ public class DocProcessor {
         int[] docFeatureValues = new int[nbfcConfig.getDocumentFeatureVarList().size()];
 
         Arrays.fill(docFeatureValues, 1);
-        //for( CoreMap paragraph : processedParagraphs) {
         for (int p = 0; p < processedParagraphs.size(); p++) {
             CoreMap paragraph = processedParagraphs.get(p);
             for (int f = 0; f < docFeatureValues.length; f++) {

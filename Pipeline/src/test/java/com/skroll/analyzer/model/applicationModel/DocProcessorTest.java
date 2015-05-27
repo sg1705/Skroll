@@ -1,5 +1,6 @@
 package com.skroll.analyzer.model.applicationModel;
 
+import com.google.common.collect.Lists;
 import com.skroll.analyzer.data.DocData;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.NumberTokensComputer;
@@ -50,9 +51,6 @@ public class DocProcessorTest {
 
         doc = TestHelper.setUpTestDoc();
 
-        // for testing with real file
-//        doc = TestHelper.makeTrainingDoc(new File(trainingFileName));
-//        setting = new DefModelRVSetting();
 
     }
 
@@ -60,10 +58,10 @@ public class DocProcessorTest {
     public void testProcessParagraphs() throws Exception {
         List<CoreMap> processedParas = DocProcessor.processParagraphs(doc.getParagraphs(), maxNumWords);
         for (CoreMap para : processedParas) {
-            ParaProcessor.print(para);
+            assert (para.get(CoreAnnotations.StartsWithQuote.class));
+            System.out.println(para.getTokens().get(1).get(CoreAnnotations.IndexInteger.class));
+            assert (para.getTokens().get(1).get(CoreAnnotations.IndexInteger.class) == 1);
         }
-
-
     }
 
     @Test
@@ -71,7 +69,7 @@ public class DocProcessorTest {
         List<CoreMap> processedParas = DocProcessor.processParagraphs(doc.getParagraphs(), maxNumWords);
         DocData data = DocProcessor.getDataFromDoc(doc, processedParas, setting.getNbfcConfig());
         System.out.print(data);
-
+        assert (data.getTuples().length == 2);
     }
 
     @Test
@@ -102,22 +100,30 @@ public class DocProcessorTest {
         int[] docFeatureVals =
                 DocProcessor.generateDocumentFeatures(doc.getParagraphs(), processedParas, setting.getNbfcConfig());
         System.out.println(Arrays.toString(docFeatureVals));
+        assert (docFeatureVals.length == 1);
     }
 
 
     @Test
     public void testGetFeaturesVals() throws Exception {
+        List<CoreMap> processedParas = DocProcessor.processParagraphs(doc.getParagraphs(), maxNumWords);
+        List<RandomVariable> rv = Lists.newArrayList(
+                RVCreater.createRVFromAnnotation(CoreAnnotations.IsBoldAnnotation.class),
+                RVCreater.createRVFromAnnotation(CoreAnnotations.StartsWithQuote.class));
+        int[][] featureVals = DocProcessor.getFeaturesVals(rv, doc.getParagraphs(), processedParas);
+        assert(featureVals[0][0] == 0);
+        assert(featureVals[0][1] == 1);
+
+        assert(featureVals[1][0] == 0);
+        assert(featureVals[1][1] == 1);
 
     }
+
 
     @Test
     public void testIsParaObserved() throws Exception {
-
+        assert(!DocProcessor.isParaObserved(doc.getParagraphs().get(0)));
     }
 
 
-    @Test
-    public void testGenerateDocumentFeatures1() throws Exception {
-
-    }
 }
