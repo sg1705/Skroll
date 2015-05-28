@@ -1,5 +1,7 @@
 package com.skroll.analyzer.model.bn.config;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skroll.analyzer.model.RandomVariable;
 
 import java.util.ArrayList;
@@ -9,9 +11,12 @@ import java.util.List;
  * Created by wei on 4/16/15.
  */
 public class NBFCConfig extends NBConfig {
-    List<RandomVariable> featureExistsAtDocLevelVarList;
-    List<RandomVariable> documentFeatureVarList;
 
+    @JsonProperty("featureExistsAtDocLevelVarList")
+    List<RandomVariable> featureExistsAtDocLevelVarList;
+    @JsonProperty("documentFeatureVarList")
+    List<RandomVariable> documentFeatureVarList;
+    @JsonIgnore
     List<RandomVariable> allParagraphFeatures;
 
 
@@ -24,11 +29,11 @@ public class NBFCConfig extends NBConfig {
      * @param documentFeatureVarList features considered at doc level.
      * @param wordVarList
      */
-    public NBFCConfig(RandomVariable categoryVar,
-                      List<RandomVariable> featureVarList,
-                      List<RandomVariable> featureExistsAtDocLevelVarList,
-                      List<RandomVariable> documentFeatureVarList,
-                      List<RandomVariable> wordVarList) {
+    public NBFCConfig(@JsonProperty("categoryVar")RandomVariable categoryVar,
+                      @JsonProperty("featureVarList")List<RandomVariable> featureVarList,
+                      @JsonProperty("featureExistsAtDocLevelVarList")List<RandomVariable> featureExistsAtDocLevelVarList,
+                      @JsonProperty("documentFeatureVarList")List<RandomVariable> documentFeatureVarList,
+                      @JsonProperty("wordVarList")List<RandomVariable> wordVarList) {
         super(categoryVar, featureVarList, wordVarList);
         this.featureExistsAtDocLevelVarList = featureExistsAtDocLevelVarList;
         this.documentFeatureVarList = documentFeatureVarList;

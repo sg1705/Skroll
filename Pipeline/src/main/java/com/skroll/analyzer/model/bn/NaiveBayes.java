@@ -23,7 +23,7 @@ public class NaiveBayes {
     @JsonProperty("featureNodes")
     List<DiscreteNode>  featureNodes;
 
-    @JsonIgnore
+
     List<DiscreteNode> allDiscreteNodes;
 
     // for training with complete observed data, we can set observation on all nodes,

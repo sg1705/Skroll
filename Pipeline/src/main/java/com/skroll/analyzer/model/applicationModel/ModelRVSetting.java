@@ -1,5 +1,6 @@
 package com.skroll.analyzer.model.applicationModel;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVCreater;
 import com.skroll.analyzer.model.bn.config.NBFCConfig;
@@ -15,8 +16,11 @@ import java.util.List;
 public class ModelRVSetting {
 
     public static final int NUM_WORDS_TO_USE_PER_PARAGRAPH = 10;
+    @JsonProperty("nbfcConfig")
     NBFCConfig nbfcConfig;
+    @JsonProperty("wordType")
     RandomVariable wordType;
+    @JsonProperty("wordFeatures")
     List<RandomVariable> wordFeatures;
 
     /**
@@ -41,6 +45,18 @@ public class ModelRVSetting {
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;
     }
+
+
+    public ModelRVSetting(
+            @JsonProperty("nbfcConfig")NBFCConfig nbfcConfig,
+            @JsonProperty("wordType")RandomVariable wordType,
+            @JsonProperty("wordFeatures")List<RandomVariable> wordFeatures) {
+        this.nbfcConfig = nbfcConfig;
+        this.wordType = wordType;
+        this.wordFeatures = wordFeatures;
+    }
+
+
 
     public NBFCConfig getNbfcConfig() {
         return nbfcConfig;

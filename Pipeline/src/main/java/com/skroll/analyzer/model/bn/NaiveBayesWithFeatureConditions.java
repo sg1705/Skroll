@@ -27,7 +27,7 @@ public class NaiveBayesWithFeatureConditions extends NaiveBayes{
             @JsonProperty("categoryNode")DiscreteNode categoryNode,
             @JsonProperty("featureNodes")List<DiscreteNode> featureNodes,
             @JsonProperty("featureExistAtDocLevelNodes")List<DiscreteNode> featureExistAtDocLevelNodes,
-            @JsonProperty("docFeatureNodes")List<DiscreteNode> docFeatureNodes,
+            @JsonProperty("documentFeaturesNodes")List<DiscreteNode> docFeatureNodes,
             @JsonProperty("wordNodes")List<WordNode> wordNodes){
         this.categoryNode = categoryNode;
         this.featureNodes = featureNodes;

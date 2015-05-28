@@ -71,7 +71,7 @@ public class TrainingDocumentAnnotatingModelPersistenceTest {
             e.printStackTrace();
         }
         String json = new String(f_out.toByteArray());
-        //System.out.println(json);
+        System.out.println(json);
 
         ByteArrayInputStream b_in = new ByteArrayInputStream(json.getBytes());
         Reader reader = null;

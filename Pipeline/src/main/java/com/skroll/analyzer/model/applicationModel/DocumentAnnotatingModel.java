@@ -1,5 +1,6 @@
 package com.skroll.analyzer.model.applicationModel;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.bn.config.NBFCConfig;
@@ -30,7 +31,7 @@ public abstract class DocumentAnnotatingModel {
     RandomVariable wordType = modelRVSetting.getWordType();
 
 
-    // @JsonIgnore
+    @JsonIgnore
     public RandomVariable getParaCategory() {
         return nbfcConfig.getCategoryVar();
     }
@@ -38,10 +39,12 @@ public abstract class DocumentAnnotatingModel {
     public DocumentAnnotatingModel() {
     }
 
+    @JsonIgnore
     public HiddenMarkovModel getHmm() {
         return hmm;
     }
 
+    @JsonIgnore
     public NBFCConfig getNbfcConfig() {
         return nbfcConfig;
     }
