@@ -173,6 +173,15 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
         return map;
     }
 
+    public boolean equals(TrainingDocumentAnnotatingModel model) {
+        boolean isEqual = true;
+        isEqual = isEqual && this.wordType.equals(model.wordType);
+        isEqual = isEqual && RandomVariable.compareRVList(this.wordFeatures, model.wordFeatures);
+        isEqual = isEqual && this.nbfcConfig.equals(model.nbfcConfig);
+        isEqual = isEqual && this.tnbfModel.equals(model.getTnbfModel());
+        return isEqual;
+    }
+
 }
 
 

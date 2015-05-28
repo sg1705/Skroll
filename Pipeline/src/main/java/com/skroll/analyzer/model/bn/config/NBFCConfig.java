@@ -57,4 +57,13 @@ public class NBFCConfig extends NBConfig {
     public List<RandomVariable> getAllParagraphFeatures() {
         return allParagraphFeatures;
     }
+
+    public boolean equals(NBFCConfig nbfc) {
+        boolean isEquals = true;
+        isEquals = isEquals && RandomVariable.compareRVList(this.featureExistsAtDocLevelVarList, nbfc.featureExistsAtDocLevelVarList);
+        isEquals = isEquals && RandomVariable.compareRVList(this.documentFeatureVarList, nbfc.documentFeatureVarList);
+        isEquals = isEquals && RandomVariable.compareRVList(this.allParagraphFeatures, nbfc.allParagraphFeatures);
+        return isEquals;
+    }
+
 }

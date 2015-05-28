@@ -153,4 +153,35 @@ public class DiscreteNode{
                 ", parameters=" + Arrays.toString(parameters) +
                 '}';
     }
+
+    public boolean equals(DiscreteNode dn) {
+        boolean isEquals = true;
+        isEquals = isEquals && RandomVariable.compareRVList(this.familyVariables, dn.familyVariables);
+        isEquals = isEquals && compareDNList(this.parents, dn.parents);
+        return isEquals;
+    }
+
+    public static boolean compareDNList(DiscreteNode[] list, DiscreteNode[] list2) {
+        if (list.length != list2.length) {
+            return false;
+        }
+        boolean isEqual = true;
+        for(int ii = 0; ii < list.length; ii++) {
+            isEqual = isEqual && list[ii].equals(list2[ii]);
+        }
+        return isEqual;
+    }
+
+    public static boolean compareDNList(List<DiscreteNode> list, List<DiscreteNode> list2) {
+        if (list.size() != list2.size()) {
+            return false;
+        }
+        boolean isEqual = true;
+        for(int ii = 0; ii < list.size(); ii++) {
+            isEqual = isEqual && list.get(ii).equals(list2.get(ii));
+        }
+        return isEqual;
+    }
+
+
 }

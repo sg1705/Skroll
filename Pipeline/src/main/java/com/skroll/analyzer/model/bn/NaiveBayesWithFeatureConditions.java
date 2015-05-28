@@ -92,5 +92,11 @@ public class NaiveBayesWithFeatureConditions extends NaiveBayes{
                 '}';
     }
 
+    public boolean equals(NaiveBayesWithFeatureConditions nb) {
+        boolean isEquals = true;
+        isEquals = isEquals && DiscreteNode.compareDNList(this.documentFeatureNodes, nb.documentFeatureNodes);
+        return isEquals;
+    }
+
 
 }

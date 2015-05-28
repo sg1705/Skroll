@@ -1,5 +1,6 @@
 package com.skroll.analyzer.model.applicationModel;
 
+import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
@@ -93,5 +94,16 @@ public class TestHelper {
         doc.setParagraphs(paraList);
         return doc;
 
+    }
+
+    public static boolean compareRVList(List<RandomVariable> list, List<RandomVariable> list2) {
+        if (list.size() != list2.size()) {
+            return false;
+        }
+        boolean isEqual = true;
+        for(int ii = 0; ii < list.size(); ii++) {
+            isEqual = isEqual && list.get(ii).equals(list2.get(ii));
+        }
+        return isEqual;
     }
 }

@@ -98,8 +98,7 @@ public class TrainingDocumentAnnotatingModelPersistenceTest {
         }
 
         assert (obj != null);
-
-
+        assert (obj.equals(model));
     }
 
 }
