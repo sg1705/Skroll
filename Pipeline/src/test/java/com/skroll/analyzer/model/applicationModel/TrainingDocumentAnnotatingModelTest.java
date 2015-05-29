@@ -73,7 +73,7 @@ public class TrainingDocumentAnnotatingModelTest{
 
     @Test
     public void testGenerateDocumentFeatures() throws Exception {
-        String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining/AMC Networks CA.html";
+        String trainingFolderName = "src/test/resources/analyzer/evaluate/docclassifier/AMC Networks CA.html";
         File file = new File(trainingFolderName);
 
 
@@ -81,10 +81,6 @@ public class TrainingDocumentAnnotatingModelTest{
         Document doc = makeTrainingDoc(file);
 
         List<CoreMap> paragraphs = new ArrayList<>();
-//        for( CoreMap paragraph : doc.getParagraphs())
-//            paragraphs.add(DocumentAnnotatingHelper.processParagraph(paragraph, model.getHmm().size()));
-//        int[] docFeatureValues = DocumentAnnotatingHelper.generateDocumentFeatures(doc.getParagraphs(),paragraphs,
-//                model.getNbfcConfig());
         int[] docFeatureValues = DocProcessor.generateDocumentFeatures(doc.getParagraphs(),
                 DocProcessor.processParagraphs(doc.getParagraphs(), maxNumWords), setting.getNbfcConfig());
         System.out.println(Arrays.toString(docFeatureValues));
