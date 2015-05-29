@@ -9,6 +9,7 @@ import com.skroll.parser.Parser;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
@@ -18,28 +19,35 @@ import java.util.List;
 
 public class TrainingDocumentAnnotatingModelTest{
     int maxNumWords = 20;
-    String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining";
+    String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining/mini-indenture.html";
     ModelRVSetting setting = new DefModelRVSetting();
-    TrainingDocumentAnnotatingModel model;
-
-
+    TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel();
+    Document document;
+    @Before
+    public void setup() {
+        File f = new File(trainingFolderName);
+        document = makeTrainingDoc(f);
+    }
+    @Test
+    public void testGetTrainingWeights() {
+        for (CoreMap paragraph : document.getParagraphs()) {
+            TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.DEFINITION, (float) 1.0);
+            double[] trainingWeights = model.getTrainingWeights(paragraph);
+            for (int i=0; i<trainingWeights.length; i++)
+            System.out.println("paraId:" + paragraph.getId() + " TrainingWeight:" + trainingWeights[i]);
+            assert(trainingWeights[1]==1.0);
+        }
+    }
 
     @Test
     public void testUpdateWithDocumentAndWeight() throws Exception {
-        model = new TrainingDocumentAnnotatingModel();
-        File file = new File(trainingFolderName);
-        if (file.isDirectory()) {
-            File[] listOfFiles = file.listFiles();
-            for (File f : listOfFiles) {
-                Document doc = makeTrainingDoc(f);
-                for (CoreMap paragraph : doc.getParagraphs()) {
+                for (CoreMap paragraph : document.getParagraphs()) {
                     paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
                     paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
                     TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.DEFINITION, (float) 1.0);
                 }
-                model.updateWithDocumentAndWeight(doc);
-            }
-        }
+                model.updateWithDocumentAndWeight(document);
+
         System.out.println("trained model: \n" + model);
         assert(model.toString().contains("nextTokenCounts [Operations=5.0, Tiger=6.0]"));
         assert(model.toString().contains("[WordNode{parameters=Operations=[0.0, 2.0] Tiger=[0.0, 1.0] Notwithstanding=[0.0, 2.0]"));
@@ -48,28 +56,16 @@ public class TrainingDocumentAnnotatingModelTest{
     @Test
     public void testUpdateWithDocument() throws Exception {
 
-
-        model = new TrainingDocumentAnnotatingModel();
-
         System.out.println("initial model: \n" + model.getTnbfModel());
 
-        File file = new File(trainingFolderName);
-        if (file.isDirectory()) {
-            File[] listOfFiles = file.listFiles();
-            for (File f:listOfFiles) {
-                Document doc = makeTrainingDoc(f);
-                model.updateWithDocument(doc);
-            }
-        } else {
-            Document doc = makeTrainingDoc(file);
+         model.updateWithDocument(document);
 
-            model.updateWithDocument(doc);
-        }
 
         System.out.println("trained model: \n" + model);
         assert(model.toString().contains("nextTokenCounts [Operations=5.0, Tiger=6.0]"));
         assert(model.toString().contains("[WordNode{parameters=Operations=[2.0, 0.0] Tiger=[1.0, 0.0] Notwithstanding=[2.0, 0.0]"));
     }
+
 
     @Test
     public void testGenerateDocumentFeatures() throws Exception {
