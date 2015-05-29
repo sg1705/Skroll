@@ -23,11 +23,12 @@ public class NaiveBayesWithFeatureConditions extends NaiveBayes{
 
 
     @JsonCreator
-    public NaiveBayesWithFeatureConditions(DiscreteNode categoryNode,
-                                           List<DiscreteNode> featureNodes,
-                                           List<DiscreteNode> featureExistAtDocLevelNodes,
-                                           List<DiscreteNode> docFeatureNodes,
-                                           List<WordNode> wordNodes){
+    public NaiveBayesWithFeatureConditions(
+            @JsonProperty("categoryNode")DiscreteNode categoryNode,
+            @JsonProperty("featureNodes")List<DiscreteNode> featureNodes,
+            @JsonProperty("featureExistAtDocLevelNodes")List<DiscreteNode> featureExistAtDocLevelNodes,
+            @JsonProperty("documentFeaturesNodes")List<DiscreteNode> docFeatureNodes,
+            @JsonProperty("wordNodes")List<WordNode> wordNodes){
         this.categoryNode = categoryNode;
         this.featureNodes = featureNodes;
         this.featureExistAtDocLevelNodes = featureExistAtDocLevelNodes;
@@ -89,6 +90,12 @@ public class NaiveBayesWithFeatureConditions extends NaiveBayes{
                 "documentFeatureNodes=" + documentFeatureNodes +
                 ", featureExistAtDocLevelNodes=" + featureExistAtDocLevelNodes +
                 '}';
+    }
+
+    public boolean equals(NaiveBayesWithFeatureConditions nb) {
+        boolean isEquals = true;
+        isEquals = isEquals && DiscreteNode.compareDNList(this.documentFeatureNodes, nb.documentFeatureNodes);
+        return isEquals;
     }
 
 

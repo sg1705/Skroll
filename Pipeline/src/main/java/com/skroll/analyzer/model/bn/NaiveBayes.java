@@ -1,5 +1,6 @@
 package com.skroll.analyzer.model.bn;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skroll.analyzer.model.bn.node.DiscreteNode;
@@ -21,7 +22,8 @@ public class NaiveBayes {
     List<WordNode> wordNodes;
     @JsonProperty("featureNodes")
     List<DiscreteNode>  featureNodes;
-    @JsonProperty("allDiscreteNodes")
+
+
     List<DiscreteNode> allDiscreteNodes;
 
     // for training with complete observed data, we can set observation on all nodes,
@@ -31,9 +33,10 @@ public class NaiveBayes {
 
     }
 
-    public NaiveBayes(DiscreteNode categoryNode,
-                      List<DiscreteNode> featureNodes,
-                      List<WordNode> wordNodes){
+    @JsonCreator
+    public NaiveBayes(@JsonProperty("categoryNode")DiscreteNode categoryNode,
+                      @JsonProperty("featureNodes")List<DiscreteNode> featureNodes,
+                      @JsonProperty("wordNodes")List<WordNode> wordNodes){
         this.categoryNode = categoryNode;
         this.featureNodes = featureNodes;
         this.wordNodes = wordNodes;

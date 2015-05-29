@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by wei on 4/28/15.
@@ -38,7 +39,10 @@ public class RandomVariable {
     }
 
     @JsonCreator
-    public RandomVariable(int featureSize, String[] valueNames, String name) {
+    public RandomVariable(
+            @JsonProperty("featureSize")int featureSize,
+            @JsonProperty("valueNames")String[] valueNames,
+            @JsonProperty("name")String name) {
         this.featureSize = featureSize;
         this.valueNames = valueNames;
         this.named = name;
@@ -69,4 +73,36 @@ public class RandomVariable {
                 ", valueNames=" + Arrays.toString(valueNames) +
                 '}';
     }
+
+    public boolean equals(RandomVariable var) {
+        boolean isEqual = true;
+        isEqual = isEqual && this.getName().equals(var.getName());
+        isEqual = isEqual && (this.getFeatureSize() == var.getFeatureSize());
+        return isEqual;
+    }
+
+    public static boolean compareRVList(List<RandomVariable> list, List<RandomVariable> list2) {
+        if (list.size() != list2.size()) {
+            return false;
+        }
+        boolean isEqual = true;
+        for(int ii = 0; ii < list.size(); ii++) {
+            isEqual = isEqual && list.get(ii).equals(list2.get(ii));
+        }
+        return isEqual;
+    }
+
+
+    public static boolean compareRVList(RandomVariable[] list, RandomVariable[] list2) {
+        if (list.length != list2.length) {
+            return false;
+        }
+        boolean isEqual = true;
+        for(int ii = 0; ii < list.length; ii++) {
+            isEqual = isEqual && list[ii].equals(list2[ii]);
+        }
+        return isEqual;
+    }
+
+
 }

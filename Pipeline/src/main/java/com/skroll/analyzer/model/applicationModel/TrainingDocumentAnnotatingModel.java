@@ -27,6 +27,7 @@ import java.util.*;
  */
 public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
+    @JsonProperty("tnbfModel")
     NaiveBayesWithFeatureConditions tnbfModel;
 
 
@@ -52,7 +53,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
             @JsonProperty("tnbfModel")NaiveBayesWithFeatureConditions tnbfModel,
             @JsonProperty("wordType") RandomVariable wordType,
             @JsonProperty("wordFeatures") List<RandomVariable> wordFeatures,
-            NBFCConfig nbfcConfig){
+            @JsonProperty("nbfcConfig")NBFCConfig nbfcConfig){
         this.nbfcConfig = nbfcConfig;
 
         this.tnbfModel = tnbfModel;
@@ -170,6 +171,15 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
         map.put("ParagraphFeatureNodes", Visualizer.nodesToMap(
                 discreteNodes.toArray(new DiscreteNode[discreteNodes.size()])));
         return map;
+    }
+
+    public boolean equals(TrainingDocumentAnnotatingModel model) {
+        boolean isEqual = true;
+        isEqual = isEqual && this.wordType.equals(model.wordType);
+        isEqual = isEqual && RandomVariable.compareRVList(this.wordFeatures, model.wordFeatures);
+        isEqual = isEqual && this.nbfcConfig.equals(model.nbfcConfig);
+        isEqual = isEqual && this.tnbfModel.equals(model.getTnbfModel());
+        return isEqual;
     }
 
 }
