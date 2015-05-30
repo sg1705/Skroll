@@ -17,40 +17,26 @@ import java.util.List;
 //todo: prior count is not set properly, making the probability favoring positive class.
 public class ProbabilityDocumentAnnotatingModelTest {
 
-//    String testingFileName = "src/test/resources/classifier/mini-indenture.html";
-
-    //String testingFileName = "src/test/resources/classifier/smaller-indenture.html";
-    String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
-//    String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/AMD CA - Def No Quotes.html";
-
-
+    String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/mini-indenture.html";
 
     File file = new File(testingFileName);
 
-    TrainingDocumentAnnotatingModelTest traingTest = new TrainingDocumentAnnotatingModelTest();
+    TrainingDocumentAnnotatingModelTest trainingTest = new TrainingDocumentAnnotatingModelTest();
 
-    Document doc = traingTest.makeDoc(file);
+    Document doc = trainingTest.makeDoc(file);
 
     ProbabilityDocumentAnnotatingModel model;
     boolean doneSetup=false;
-    //
-//    RandomVariableType wordType = RandomVariableType.WORD_IS_DEFINED_TERM;
+
     RandomVariable paraType = DefModelRVSetting.PARA_IS_DEF;
-//    List<RandomVariableType> wordFeatures = model.DEFAULT_WORD_FEATURES;
-//    List<RandomVariableType> paraFeatures = model.DEFAULT_PARAGRAPH_FEATURES;
-//    List<RandomVariableType> paraDocFeatures = model.DEFAULT_PARAGRAPH_FEATURES_EXIST_AT_DOC_LEVEL;
-//    List<RandomVariableType> docFeatures = model.DEFAULT_DOCUMENT_FEATURES;
-//
-//    NBFCConfig nbfcConfig = new NBFCConfig(paraType, paraFeatures, paraDocFeatures, docFeatures,
-//            Arrays.asList(RandomVariableType.WORD));
 
     @Before
-    public void setupOnce() throws Exception{
+    public void setup() throws Exception{
         if (doneSetup) return;
         doneSetup = true;
 
-        traingTest.testUpdateWithDocument();
-        model= new ProbabilityDocumentAnnotatingModel( traingTest.getTnbf(), traingTest.getModel().getHmm(), doc,
+        trainingTest.testUpdateWithDocument();
+        model= new ProbabilityDocumentAnnotatingModel( trainingTest.getTnbf(), trainingTest.getModel().getHmm(), doc,
                 new DefModelRVSetting()
 //                wordType, wordFeatures, traingTest.getModel().getNbfcConfig()
                 );
@@ -63,8 +49,6 @@ public class ProbabilityDocumentAnnotatingModelTest {
     public void testInitialize() throws Exception {
 
         System.out.println(model);
-
-
         System.out.println("initial believes\n");
         printBelieves();
 

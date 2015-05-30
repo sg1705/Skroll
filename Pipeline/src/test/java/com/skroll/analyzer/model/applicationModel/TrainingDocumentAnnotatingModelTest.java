@@ -57,7 +57,8 @@ public class TrainingDocumentAnnotatingModelTest{
     public void testUpdateWithDocument() throws Exception {
 
         System.out.println("initial model: \n" + model.getTnbfModel());
-
+        File f = new File(trainingFolderName);
+        document = makeTrainingDoc(f);
          model.updateWithDocument(document);
 
 
