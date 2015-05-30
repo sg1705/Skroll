@@ -12,6 +12,7 @@ import java.util.List;
  */
 public class TOCModelRVSetting extends ModelRVSetting {
 
+    static final String NAME = "toc";
     public static final RandomVariable PARA_IS_TOC =
             RVCreater.createRVFromAnnotation(CoreAnnotations.IsTOCAnnotation.class);
 
@@ -43,7 +44,7 @@ public class TOCModelRVSetting extends ModelRVSetting {
 
 
     public TOCModelRVSetting() {
-        super(WORD_IS_TOC, DEFAULT_WORD_FEATURES,
+        super(NAME, WORD_IS_TOC, DEFAULT_WORD_FEATURES,
                 PARA_IS_TOC, DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS,
                 DEFAULT_WORD_VARS);
 

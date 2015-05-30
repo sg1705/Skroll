@@ -41,10 +41,10 @@ public class RVCreater {
     }
 
     // assuming all binary variables.
-    public static List<RandomVariable> createDocFeatureRVs(List<RandomVariable> paraDocFeatures) {
+    public static List<RandomVariable> createDocFeatureRVs(List<RandomVariable> paraDocFeatures, String name) {
         List<RandomVariable> docFeatures = new ArrayList<>();
         for (RandomVariable rv : paraDocFeatures) {
-            docFeatures.add(new RandomVariable(2, "docFeature_" + rv.getName()));
+            docFeatures.add(new RandomVariable(2, name + "_" + rv.getName()));
         }
         return docFeatures;
     }

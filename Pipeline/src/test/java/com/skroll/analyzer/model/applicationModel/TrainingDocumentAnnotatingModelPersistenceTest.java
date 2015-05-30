@@ -38,6 +38,7 @@ public class TrainingDocumentAnnotatingModelPersistenceTest {
 
     Document doc = new Document();
     ModelRVSetting setting = new ModelRVSetting(
+            DefModelRVSetting.NAME,
             DefModelRVSetting.WORD_IS_DEF, DefModelRVSetting.DEFAULT_WORD_FEATURES,
             DEFAULT_PARA_IS_DEF,
             DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS, DEFAULT_WORD_VARS

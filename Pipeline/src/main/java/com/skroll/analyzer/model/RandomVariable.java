@@ -74,12 +74,12 @@ public class RandomVariable {
                 '}';
     }
 
-    public boolean equals(RandomVariable var) {
-        boolean isEqual = true;
-        isEqual = isEqual && this.getName().equals(var.getName());
-        isEqual = isEqual && (this.getFeatureSize() == var.getFeatureSize());
-        return isEqual;
-    }
+//    public boolean equals(RandomVariable var) {
+//        boolean isEqual = true;
+//        isEqual = isEqual && this.getName().equals(var.getName());
+//        isEqual = isEqual && (this.getFeatureSize() == var.getFeatureSize());
+//        return isEqual;
+//    }
 
     public static boolean compareRVList(List<RandomVariable> list, List<RandomVariable> list2) {
         if (list.size() != list2.size()) {
@@ -104,5 +104,22 @@ public class RandomVariable {
         return isEqual;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
+        RandomVariable that = (RandomVariable) o;
+
+        if (getFeatureSize() != that.getFeatureSize()) return false;
+        return named.equals(that.named);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = named.hashCode();
+        result = 31 * result + getFeatureSize();
+        return result;
+    }
 }

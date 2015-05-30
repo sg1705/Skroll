@@ -23,6 +23,9 @@ public class ModelRVSetting {
     @JsonProperty("wordFeatures")
     List<RandomVariable> wordFeatures;
 
+    @JsonProperty("name")
+    String name;
+
     /**
      * Defines the model
      *
@@ -34,23 +37,27 @@ public class ModelRVSetting {
      * @param paraDocFeatureVars paragraph that are considered at doc level
      * @param wordVars type of words. For example - first words, unique words etc.
      */
-    public ModelRVSetting(RandomVariable wordType,
+    public ModelRVSetting(String name,
+                          RandomVariable wordType,
                           List<RandomVariable> wordFeatures,
                           RandomVariable paraType,
                           List<RandomVariable> paraFeatureVars,
                           List<RandomVariable> paraDocFeatureVars,
                           List<RandomVariable> wordVars) {
+        this.name = name;
         nbfcConfig = new NBFCConfig(paraType, paraFeatureVars, paraDocFeatureVars,
-                RVCreater.createDocFeatureRVs(paraDocFeatureVars), wordVars);
+                RVCreater.createDocFeatureRVs(paraDocFeatureVars, name), wordVars);
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;
     }
 
 
     public ModelRVSetting(
+            @JsonProperty("name") String name,
             @JsonProperty("nbfcConfig")NBFCConfig nbfcConfig,
             @JsonProperty("wordType")RandomVariable wordType,
             @JsonProperty("wordFeatures")List<RandomVariable> wordFeatures) {
+        this.name = name;
         this.nbfcConfig = nbfcConfig;
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;
