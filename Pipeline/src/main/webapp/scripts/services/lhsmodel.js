@@ -55,7 +55,15 @@ var LHSModel = {
     name: 'TOC Level 5',
     isSelected: false,
     isVisible: false
+  },
+
+  {
+    id: 7,
+    name: 'Bookmarks',
+    isSelected: false,
+    isVisible: true
   }
+
 
   ],
 
@@ -135,6 +143,15 @@ var LHSModel = {
 				return true;
 		});
 		return paras;
+  },
+
+  addBookmark: function(classId, paraId, termText, serializedSelection) {
+    var term = new Object();
+    term['classificationId'] = classId;
+    term['paragraphId'] = paraId;
+    term['term'] = termText;
+    term['serializedSelection'] = serializedSelection;
+    this.smodel.terms.push(term);
   }
 
 };
