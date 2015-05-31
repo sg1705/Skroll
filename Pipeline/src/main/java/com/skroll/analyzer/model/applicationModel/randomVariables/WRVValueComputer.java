@@ -8,6 +8,5 @@ import com.skroll.document.Token;
  */
 public interface WRVValueComputer {
     public int getValue(Token token, CoreMap para);
-
     public int getNumVals();
 }

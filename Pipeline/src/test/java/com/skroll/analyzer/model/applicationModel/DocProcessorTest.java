@@ -7,13 +7,13 @@ import com.skroll.analyzer.model.applicationModel.randomVariables.NumberTokensCo
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVCreater;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
 import com.skroll.analyzer.model.applicationModel.randomVariables.UniqueWordsComputer;
+import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,8 +23,8 @@ import java.util.List;
 public class DocProcessorTest {
 
     int maxNumWords = 20;
-    static final RandomVariable DEFAULT_PARA_IS_DEF =
-            RVCreater.createRVFromAnnotation(CoreAnnotations.IsDefinitionAnnotation.class);
+    //static final RandomVariable DEFAULT_PARA_IS_DEF =
+    //        RVCreater.createRVFromAnnotation(CoreAnnotations.IsDefinitionAnnotation.class);
 
     static final List<RandomVariable> DEFAULT_PARA_FEATURE_VARS = Arrays.asList(
             RVCreater.createDiscreteRVWithComputer(new NumberTokensComputer(), "numTokens")
@@ -39,10 +39,9 @@ public class DocProcessorTest {
 
     Document doc = new Document();
     ModelRVSetting setting = new ModelRVSetting(
-            DefModelRVSetting.WORD_IS_DEF, DefModelRVSetting.DEFAULT_WORD_FEATURES,
-            DEFAULT_PARA_IS_DEF,
-            DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS, DEFAULT_WORD_VARS
-    );
+             DefModelRVSetting.DEFAULT_WORD_FEATURES,
+            DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS, DEFAULT_WORD_VARS,
+            Category.DEFINITION, Category.DEFINITION_NAME);
 
     static String trainingFileName = "src/test/resources/analyzer/definedTermExtractionTraining/AMC Networks CA.html";
 

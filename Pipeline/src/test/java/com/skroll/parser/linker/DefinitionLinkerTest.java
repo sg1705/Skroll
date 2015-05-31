@@ -6,8 +6,6 @@ import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.Parser;
 import com.skroll.pipeline.util.Utils;
-import junit.framework.TestCase;
-import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +25,7 @@ public class DefinitionLinkerTest {
         for(CoreMap paragraph : document.getParagraphs()) {
             if (paragraph.getId().equals("p_2240")) {
                 //artificially make it a definition
-                paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
+               // paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
                 //iterate over each token and set these as defined terms
                 //set index of tokens[1-4] as defined terms
                 List<Token> definedTokens = new ArrayList();

@@ -1,7 +1,10 @@
 package com.skroll.analyzer.model.applicationModel;
 
 import com.skroll.analyzer.model.RandomVariable;
+import com.skroll.analyzer.model.applicationModel.randomVariables.ParaInCategoryComputer;
+import com.skroll.analyzer.model.applicationModel.randomVariables.RVCreater;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
+import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.Token;
@@ -28,7 +31,8 @@ public class ProbabilityDocumentAnnotatingModelTest {
     ProbabilityDocumentAnnotatingModel model;
     boolean doneSetup=false;
 
-    RandomVariable paraType = DefModelRVSetting.PARA_IS_DEF;
+    RandomVariable paraType = RVCreater.createDiscreteRVWithComputer(new ParaInCategoryComputer(Category.DEFINITION), "paraTypeIsCategory-" + Category.DEFINITION);
+
 
     @Before
     public void setup() throws Exception{
@@ -37,7 +41,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
         trainingTest.testUpdateWithDocument();
         model= new ProbabilityDocumentAnnotatingModel( trainingTest.getTnbf(), trainingTest.getModel().getHmm(), doc,
-                new DefModelRVSetting()
+                new DefModelRVSetting(Category.DEFINITION, Category.DEFINITION_NAME)
 //                wordType, wordFeatures, traingTest.getModel().getNbfcConfig()
                 );
         model.getHmm().updateProbabilities();

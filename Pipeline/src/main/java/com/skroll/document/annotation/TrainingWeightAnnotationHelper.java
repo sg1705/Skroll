@@ -1,35 +1,34 @@
 package com.skroll.document.annotation;
 
-import com.google.common.collect.Lists;
-import com.skroll.analyzer.model.applicationModel.DefModelRVSetting;
 import com.skroll.analyzer.model.RandomVariable;
-import com.skroll.analyzer.model.applicationModel.TOCModelRVSetting;
+import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by saurabhagarwal on 3/8/15.
  */
 public class TrainingWeightAnnotationHelper {
-    public final static int NONE =0;
-    public final static int DEFINITION =1;
-    public final static int TOC =2;
-    public final static int LATEST_WEIGHT_INDEX =3;
-    public final static int INDEX =3;
+    public final static int LATEST_WEIGHT_INDEX =7;
+    public final static int INDEX =6;
 
     public static void updateTrainingWeight(CoreMap paragraph, int index, float userWeight){
         List<Float>  userWeightList = paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class);
         if (userWeightList == null) {
             //First three float are previously trained weight - Definition, TOC and NONE
             //Second set of three floats are currently trained weight
-            userWeightList = Lists.newArrayList((float)0,(float)0,(float)0,(float)0,(float)0,(float)0);
+            userWeightList = new ArrayList();
+            for (int i=0; i<LATEST_WEIGHT_INDEX*2; i++) {
+                userWeightList.add((float)0);
+            }
             paragraph.set(CoreAnnotations.TrainingWeightAnnotationFloat.class, userWeightList);
         }
-
-        userWeightList.set(DEFINITION,userWeightList.get(DEFINITION + LATEST_WEIGHT_INDEX));
-        userWeightList.set(TOC,userWeightList.get(TOC+LATEST_WEIGHT_INDEX));
-        userWeightList.set(NONE,userWeightList.get(NONE+LATEST_WEIGHT_INDEX));
+        userWeightList.set(Category.NONE, userWeightList.get(Category.NONE + LATEST_WEIGHT_INDEX));
+        for (Integer categoryId : Category.getCategories()) {
+            userWeightList.set(categoryId, userWeightList.get(categoryId + LATEST_WEIGHT_INDEX));
+        }
 
     }
 
@@ -39,7 +38,10 @@ public class TrainingWeightAnnotationHelper {
         if (userWeightList == null) {
             //First three float are previously trained weight - Definition, TOC and NONE
             //Second set of three floats are currently trained weight
-            userWeightList = Lists.newArrayList((float)0,(float)0,(float)0,(float)0,(float)0,(float)0);
+            userWeightList = new ArrayList();
+            for (int i=0; i<LATEST_WEIGHT_INDEX*2; i++) {
+                userWeightList.add((float)0);
+            }
             paragraph.set(CoreAnnotations.TrainingWeightAnnotationFloat.class, userWeightList);
         }
 
@@ -63,23 +65,11 @@ public class TrainingWeightAnnotationHelper {
     }
     // method converts multi-class weight to binary class weight.
     // todo: this method is temporarily used to get the weights. Should probably be improved later to handle multi-class and others.
-    public static double[][] getParagraphWeight(CoreMap para, RandomVariable paraType) {
+    public static double[][] getParagraphWeight(CoreMap para, RandomVariable paraType, int categoryId) {
         List<Float>  weightList = para.get(CoreAnnotations.TrainingWeightAnnotationFloat.class);
         double[][] weights = new double[2][paraType.getFeatureSize()];
-        weights[0][0] = weightList.get(NONE);
-        weights[1][0] = weightList.get(NONE+LATEST_WEIGHT_INDEX);
-
-        // todo: this is bad. need to make it more general
-        if (paraType == DefModelRVSetting.PARA_IS_DEF) {
-                weights[0][1] = weightList.get(DEFINITION);
-                weights[1][1] = weightList.get(DEFINITION+LATEST_WEIGHT_INDEX);
-                return weights;
-        } else if (paraType == TOCModelRVSetting.PARA_IS_TOC) {
-            weights[0][1] = weightList.get(TOC);
-            weights[1][1] = weightList.get(TOC + LATEST_WEIGHT_INDEX);
+          weights[0][1] = weightList.get(categoryId);
+          weights[1][1] = weightList.get(categoryId+LATEST_WEIGHT_INDEX);
             return weights;
-        }
-
-        return weights;
     }
 }

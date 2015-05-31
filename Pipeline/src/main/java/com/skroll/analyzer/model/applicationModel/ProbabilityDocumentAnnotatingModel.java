@@ -1,5 +1,6 @@
 package com.skroll.analyzer.model.applicationModel;
 
+import com.aliasi.stats.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
@@ -42,6 +43,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
     public ProbabilityDocumentAnnotatingModel(NaiveBayesWithFeatureConditions tnbf, HiddenMarkovModel hmm,
                                               Document doc, ModelRVSetting setting) {
         this(tnbf, hmm, doc, setting.getWordType(), setting.getWordFeatures(), setting.getNbfcConfig());
+        modelRVSetting=setting;
     }
 
     public ProbabilityDocumentAnnotatingModel(NaiveBayesWithFeatureConditions tnbf, HiddenMarkovModel hmm,
@@ -253,12 +255,11 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
             List<Token> tokens = processedPara.getTokens();
 
             //todo: a hack for TOC annotation. should implement HMM for TOC and annotate base on HMM result
-            if (paraCategory == TOCModelRVSetting.PARA_IS_TOC && logPrioProbs[1] > logPrioProbs[0]) {
+            if ((this.modelRVSetting instanceof TOCModelRVSetting) && logPrioProbs[1] > logPrioProbs[0]) {
                 RVValues.addTerms(paraCategory, paragraph, tokens);
-//                DocumentAnnotatingHelper.addParagraphTermAnnotation(paragraph, paraCategory, tokens);
                 continue;
+//                DocumentAnnotatingHelper.addParagraphTermAnnotation(paragraph, paraCategory, tokens);
             }
-
 
             List<String> words = DocumentHelper.getTokenString(tokens);
 

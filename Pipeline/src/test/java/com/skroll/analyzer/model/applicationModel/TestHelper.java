@@ -1,10 +1,12 @@
 package com.skroll.analyzer.model.applicationModel;
 
 import com.skroll.analyzer.model.RandomVariable;
+import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
+import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.Parser;
 import com.skroll.pipeline.Pipeline;
@@ -77,9 +79,10 @@ public class TestHelper {
         CoreMap para = new CoreMap();
         List<String> strings = Arrays.asList("\"", "in", "\"", "out", "out");
         List<Token> tokens = DocumentHelper.createTokens(strings);
+        List<List<Token>> tokenList = new ArrayList<>();
+        tokenList.add(tokens);
         para.set(CoreAnnotations.TokenAnnotation.class, tokens);
-        para.set(CoreAnnotations.IsDefinitionAnnotation.class, Boolean.TRUE);
-
+        CategoryAnnotationHelper.setDInCategoryAnnotation(para,tokenList, Category.DEFINITION);
         paraList.add(para);
 
 
@@ -87,7 +90,7 @@ public class TestHelper {
         strings = Arrays.asList("\"", "in", "\"", "out", "out");
         tokens = DocumentHelper.createTokens(strings);
         para.set(CoreAnnotations.TokenAnnotation.class, tokens);
-        para.set(CoreAnnotations.IsDefinitionAnnotation.class, Boolean.TRUE);
+        CategoryAnnotationHelper.setDInCategoryAnnotation(para, tokenList, Category.DEFINITION);
         paraList.add(para);
 
         Document doc = new Document();

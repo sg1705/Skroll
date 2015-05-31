@@ -1,14 +1,15 @@
 package com.skroll.analyzer.model.applicationModel.randomVariables;
 
 import com.skroll.analyzer.model.RandomVariable;
+import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
-import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
+import com.skroll.document.annotation.CategoryAnnotationHelper;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by wei on 5/9/15.
@@ -128,16 +129,16 @@ public class RVValues {
 
     public static void printAnnotatedDoc(Document doc) {
 
-        List<CoreMap> defParas = DocumentHelper.getDefinitionParagraphs(doc);
+        List<CoreMap> defParas = CategoryAnnotationHelper.getParaWithCategoryAnnotation(doc, Category.DEFINITION);
         for (int i = 0; i < defParas.size(); i++) {
             System.out.println(defParas.get(i).getText());
             System.out.print(i);
-            System.out.println(DocumentHelper.getDefinedTermTokensInParagraph(defParas.get(i)));
+            System.out.println(CategoryAnnotationHelper.getDefinedTermTokensInParagraph(defParas.get(i), Category.DEFINITION));
         }
 //        for (CoreMap para:DocumentHelper.getDefinitionParagraphs(doc)){
 //            System.out.println(para.getText());
 //            System.out.println(DocumentHelper.getDefinedTermTokensInParagraph(para));
 //        }
-        System.out.println(DocumentHelper.getDefinitionParagraphs(doc).size());
+        System.out.println(CategoryAnnotationHelper.getParaWithCategoryAnnotation(doc,Category.DEFINITION).size());
     }
 }

@@ -1,10 +1,10 @@
 package com.skroll.analyzer.train.definition.data;
 
 import com.google.common.base.Joiner;
+import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
-import com.skroll.document.DocumentHelper;
-import com.skroll.document.annotation.CoreAnnotations;
+import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.parser.Parser;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
@@ -33,15 +33,15 @@ public class ExtractDefinitionsFromParagraphInHtmlDocumentPipeTest extends TestC
         int count = 0;
         for(CoreMap paragraph : htmlDoc.getParagraphs()) {
                 count++;
-                DocumentHelper.getDefinedTerms(paragraph);
+                ;
 //                DocumentHelper.getTokenString(
 //                        paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class));
-                String words = Joiner.on(",").join(DocumentHelper.getDefinedTerms(paragraph));
+                String words = Joiner.on(",").join(CategoryAnnotationHelper.getDefinedTermLists(paragraph, Category.DEFINITION));
                 System.out.println(words);
         }
         System.out.println(count);
         assert (count == 307);
-        assert (DocumentHelper.getDefinedTerms( htmlDoc.getParagraphs().get(306)).get(0).equals("property"));
+       // assert (CategoryAnnotationHelper.getDefinedTermLists(htmlDoc.getParagraphs().get(306)).get(0).equals("property"));
 
     }
 }

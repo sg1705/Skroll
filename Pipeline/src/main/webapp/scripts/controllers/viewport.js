@@ -9,13 +9,14 @@
  */
 
 var ViewPortCtrl = function(SelectionModel, documentService, $mdBottomSheet,
-  ToolbarModel, LHSModel, documentModel, $log) {
+  ToolbarModel, LHSModel, $log, $routeParams) {
   this.SelectionModel = SelectionModel;
   this.documentService = documentService;
   this.$mdBottomSheet = $mdBottomSheet;
   this.ToolbarModel = ToolbarModel;
   this.LHSModel = LHSModel;
   this.documentModel = documentModel;
+  this.documentModel.documentId = $routeParams.docId;
 }
 
 ViewPortCtrl.prototype.mouseDown = function($event) {
@@ -63,16 +64,6 @@ ViewPortCtrl.prototype.paraClicked = function($event) {
   this.SelectionModel.paragraphId = paraId;
   //highlight paragraph
   this.highlightParagraph(paraId);
-
-
-  // this.documentService
-  //   .getParagraphJson(paraId)
-  //   .then(function(data) {
-  //     $("#rightPane").html(JSON.stringify(data, null, 2));
-  //   }, function(data, status) {
-  //     console.log(status);
-  //   });
-
   this.loadParagraphJson(paraId);
 
   if (ToolbarModel.trainerToolbar.isTrainerMode) {
@@ -168,7 +159,7 @@ ViewPortCtrl.prototype.handleTrainerTextSelection = function(paraId,
     console.log(matchedItem);
     this.showYesNoDialog(prompt, items).then(angular.bind(this, function(clicked) {
       matchedItem.classificationId = clicked;
-
+      documentModel.isProcessing = true;
       this.documentService.addTermToPara(matchedItem).
       then(angular.bind(this, function(contentHtml){
         this.updateDocument(contentHtml);  
@@ -208,12 +199,12 @@ ViewPortCtrl.prototype.handleTrainerParaSelection = function(paraId) {
 * Updates the viewport with fresh content html
 */
 ViewPortCtrl.prototype.updateDocument = function(contentHtml) {
-  $("#content").html(contentHtml);
+  //$("#content").html(contentHtml);
   this.documentService.getTerms().then(function(terms){
     LHSModel.smodel.terms = terms;
     console.log("Terms return by API");
-    //console.log(JSON.stringify(terms, null,2));
     console.log(terms);
+    documentModel.isProcessing = false;
   }, function(data, status){
     console.log(status);
   });
@@ -228,6 +219,7 @@ ViewPortCtrl.prototype.showYesNoAllDialog = function(prompt, matchedItem) {
   //create a set of questions. In this case, yes or no
   var items = ['Yes', 'No', 'Yes to all ' + className];
   this.showYesNoDialog(prompt, items).then(angular.bind(this, function(clicked) {
+    documentModel.isProcessing = true;
     if (clicked == 1) {
       this.documentService.rejectClassFromPara(matchedItem.classificationId, matchedItem.paragraphId).
       then(angular.bind(this, function(contentHtml){
@@ -255,8 +247,10 @@ ViewPortCtrl.prototype.showYesNoDialog = function(text, items) {
   //true or false ; or item selection
   return this.$mdBottomSheet.show({
     templateUrl: 'partials/viewport-bottom-sheet.tmpl.html',
-    controller: 'TrainerPromptCtrl'
-  })
+    controller: 'TrainerPromptCtrl',
+    parent: angular.element(":root")
+
+  });
 }
 
 angular.module('SkrollApp').controller('TrainerPromptCtrl',function($scope,
@@ -286,5 +280,5 @@ ViewPortCtrl.prototype.clearSelection = function() {
 
 angular.module('SkrollApp')
   .controller('ViewPortCtrl', ['SelectionModel', 'documentService',
-    '$mdBottomSheet', 'ToolbarModel', 'LHSModel', ViewPortCtrl
+    '$mdBottomSheet', 'ToolbarModel', 'LHSModel', '$log', '$routeParams', ViewPortCtrl
   ]);

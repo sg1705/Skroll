@@ -33,15 +33,17 @@ sk-viewport .blurry-text {
 
 
 md-sidenav.md-locked-open {
-    width: 250px;
+    width: 300px;
+    /*width: 250px; before we got levels*/
     min-width: 250px;
-    max-width: 300px;
+    max-width: 350px;
 }
+
 
 /**
 * Styles related to sk-lhs
 */
-sk-lhs .menu-list {
+sk-lhs  .menu-list {
     background: #fff;
     overflow: hidden;
     position: relative;
@@ -58,8 +60,50 @@ sk-lhs .menu-list {
     padding: 0;
 }
 
+sk-toolbar .md-button {
+    margin: 0px;
+    min-height: 0px;
+    min-width: 0px;
+    line-height:normal;
+    text-align: left;
+}
 
-sk-lhs .menu-toggle-button {
+md-icon {
+    height: 24px;
+    width: 24px;
+}
+
+sk-lhs .md-button {
+    margin: 0px;
+    min-height: 0px;
+    width:100%;
+    line-height:normal;
+    text-align: left;
+}
+
+/*
+md-content.sk-lhs-hover:hover {
+    opacity: 1;
+}
+*/
+
+md-content.sk-lhs-hover {
+    opacity: 1;
+    -webkit-transition: 0.25s cubic-bezier(0.35, 0, 0.25, 1);
+    -webkit-transition-property: opacity;
+    -moz-transition: 0.25s cubic-bezier(0.35, 0, 0.25, 1);
+    -moz-transition-property: opacity;
+    transition: 0.25s cubic-bezier(0.35, 0, 0.25, 1);
+    transition-property: opacity;
+
+}
+
+
+.menu-item-level-2 {
+    padding-left: 10px;
+}
+
+sk-lhs.menu-toggle-button {
     text-align: left;
     width: 100%;
 }
@@ -78,6 +122,7 @@ sk-lhs .menu-toggle-button {
     list-style-position: inside;    
 }
 
+
 .menu-list button.md-button {
     font-size:16px;
     padding: 5px 5px 5px 5px;
@@ -87,4 +132,9 @@ sk-lhs .menu-toggle-button {
 
 sk-lhs .menu-list.ng-hide {
     max-height: 0px;
+}
+
+#content p {
+ line-height: 1;
+ margin:0px;
 }

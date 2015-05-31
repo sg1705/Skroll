@@ -1,0 +1,78 @@
+<!-- Start the layout of the doc -->
+<div layout="row" style="height:100%">
+  <!-- more comment -->
+  <!-- LHS -->
+  <md-sidenav layout="column" class="md-sidenav-left"
+              md-component-id="left" md-is-locked-open="$media('gt-sm')" >
+
+    <div layout="column" flex>
+      <md-toolbar class="skroll-toolbar">
+      </md-toolbar>
+
+    <div ng-controller="SearchCtrl as ctrl">
+      <md-autocomplete md-selected-item="ctrl.selectedItem" md-search-text="ctrl.searchText" md-items="item in ctrl.getMatches(ctrl.searchText)" md-item-text="item.display" placeholder="Search in document" 
+      md-search-text-change="ctrl.searchTextChange(ctrl.searchText)"
+      md-selected-item-change="ctrl.selectedItemChange(item)" md-min-length=3 md-delay=100 md-no-cache>
+        <md-item-template md-theme>
+          <div md-theme style="word-wrap: break-word;margin-top:5px; margin-bottom: 5px">
+            <span class="md-primary">{{item.header}}</span><br/>
+            <div style="font-size: 11px; word-wrap: break-word; color:#0288d1;" class="md-primary md-hue-1" md-highlight-text="ctrl.searchText">
+              {{item.displayText}}
+            </div>
+          </div>
+        </md-item-template>
+        <md-not-found>
+          No matches found.
+        </md-not-found>
+      </md-autocomplete>
+    </div>
+
+
+      <md-content md-scroll-y flex class="md-padding sk-lhs-hover" ng-controller="LHSLevelsCtrl as ctrl">
+        <sk-lhs/>
+      </md-content>
+
+<!--
+      <md-content md-scroll-y flex class="md-padding" ng-controller="LHSCtrl as ctrl">
+        <sk-lhs/>
+      </md-content>
+
+    -->
+    </div>
+  </md-sidenav>
+  <!-- end sidebar -->
+
+  <!-- content -->
+  <div layout="column" flex >
+
+    <md-toolbar class="skroll-toolbar">
+      <sk-toolbar />
+    </md-toolbar>
+
+    <md-content md-scroll-y id="skrollport">
+      <div layout="row" flex>
+        <div ng-controller="ViewPortCtrl as ctrl" >
+            <md-whiteframe class="md-whiteframe-z3">
+              <md-content flex id="content" class="md-padding" ng-click="ctrl.paraClicked($event)" ng-mouseup="ctrl.mouseUp($event)" ng-mousedown="ctrl.mouseDown($event)" layout-padding style="padding-left:40px">
+                <sk-content/>
+              </md-content>
+            </md-whiteframe>  
+        </div>
+        <!-- hide RHS when small media -->
+        <div hide-sm hide-md flex="25">
+        </div>
+      </div>
+    </md-content>
+
+  </div>
+  <!-- end content -->
+
+  <!-- right sidenav -->
+  <md-sidenav layout="column" class="md-sidenav-right "
+              md-component-id="right" md-is-locked-open="false" ng-swipe-left="toggleSidenav('left')">
+    <md-content>
+      <pre id="rightPane"></pre>
+    </md-content>
+  </md-sidenav>
+</div>
+<!-- end layout -->

@@ -1,9 +1,10 @@
 package com.skroll.analyzer.train.definition.data;
 
 import com.google.common.base.Joiner;
+import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
-import com.skroll.document.DocumentHelper;
+import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.pipeline.SyncPipe;
 import com.skroll.pipeline.util.Constants;
 
@@ -35,14 +36,14 @@ public class SaveTrainedData extends SyncPipe<Document, String> {
             // first line is the actual text
             paraString.append(paragraph.getText()).append(Constants.TRAINING_MODEL_LINE_SEPARATOR);
             // second line is the definition
-            if (DocumentHelper.isDefinition(paragraph)) {
+            if (CategoryAnnotationHelper.isCategoryId(paragraph, Category.DEFINITION)) {
                 // add a definition
                 paraString
                         .append(Constants.TRAINING_MODEL_TERM_IDENTIFIER)
                         .append(Constants.TRAINING_MODEL_TOKEN_SEPARATOR)
                         .append(Joiner.
                                 on(Constants.TRAINING_MODEL_TOKEN_SEPARATOR)
-                                .join(DocumentHelper.getDefinedTerms(paragraph)))
+                                .join(CategoryAnnotationHelper.getDefinedTermLists(paragraph, Category.DEFINITION)))
                         .append(Constants.TRAINING_MODEL_LINE_SEPARATOR);
             }
             // third line is a line ender

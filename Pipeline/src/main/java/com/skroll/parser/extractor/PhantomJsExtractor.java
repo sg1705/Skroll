@@ -3,6 +3,7 @@ package com.skroll.parser.extractor;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.ModelHelper;
+import com.skroll.document.annotation.CoreAnnotation;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.util.Constants;
 import com.skroll.pipeline.util.Utils;
@@ -44,6 +45,10 @@ public class PhantomJsExtractor {
         }
         cmdLine.addArgument(Constants.JQUERY_PARSER_JS);
         cmdLine.addArgument(fileName);
+        if (input.containsKey(CoreAnnotations.SourceUrlAnnotation.class)) {
+            System.out.println(input.get(CoreAnnotations.SourceUrlAnnotation.class));
+            cmdLine.addArgument(input.get(CoreAnnotations.SourceUrlAnnotation.class));
+        }
         DefaultExecutor executor = new DefaultExecutor();
         executor.setExitValue(1);
         executor.setStreamHandler(psh);
@@ -67,6 +72,7 @@ public class PhantomJsExtractor {
         byte[] output = stdout.toByteArray();
         String[] parserOutput = new String(output, Constants.DEFAULT_CHARSET).split(";---------------SKROLLJSON---------------------;");
         String[] result = parserOutput[1].split(";---------------SKROLL---------------------;");
+
         ModelHelper helper = new ModelHelper();
         Document newDoc = new Document();
         try {

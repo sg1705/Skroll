@@ -3,7 +3,9 @@ package com.skroll.document.annotation;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Token;
 import com.skroll.pipeline.util.EraserUtils;
+import org.reflections.Reflections;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -11,6 +13,17 @@ import java.util.Set;
  * Created by saurabh on 1/3/15.
  */
 public class CoreAnnotations {
+
+    public static HashMap<Class, String> aMap = new HashMap();
+
+    static {
+        Reflections reflections = new Reflections("com.skroll.document.annotation");
+        Set<Class<? extends CoreAnnotation>> annotationClasses = reflections.getSubTypesOf(CoreAnnotation.class);
+        for(Class annotationClass : annotationClasses) {
+            aMap.put(annotationClass, annotationClass.getSimpleName());
+        }
+
+    }
 
     /**
      * Static methods only
@@ -83,7 +96,6 @@ public class CoreAnnotations {
     }
 
 
-
     public static class TokenAnnotation implements CoreAnnotation<List<Token>> {
         public Class<List<Token>> getType() {
             return EraserUtils.<Class<List<Token>>> uncheckedCast(List.class);
@@ -115,13 +127,6 @@ public class CoreAnnotations {
     public static class ParagraphIdAnnotation implements CoreAnnotation<String> {
         public Class<String> getType() {
             return String.class;
-        }
-    }
-
-
-    public static class IsDefinitionAnnotation implements CoreAnnotation<Boolean> {
-        public Class<Boolean> getType() {
-            return Boolean.class;
         }
     }
 
@@ -278,15 +283,52 @@ public class CoreAnnotations {
         }
     }
 
-    // TOC Annotation
-    public static class TOCTokensAnnotation implements CoreAnnotation<List<List<Token>>> {
-        public Class<List<List<Token>>> getType() {
-            return EraserUtils.<Class<List<List<Token>>>>uncheckedCast(List.class);
+ /**
+     * Annotation for training. It specifies the index of a word token in the paragraph.
+     */
+
+    public static class CategoryAnnotations implements CoreAnnotation<HashMap<Integer,CoreMap>> {
+        public Class<HashMap<Integer,CoreMap>> getType() {
+            return EraserUtils.<Class<HashMap<Integer,CoreMap>>> uncheckedCast(HashMap.class);
         }
     }
-    public static class IsTOCAnnotation implements CoreAnnotation<Boolean> {
-        public Class<Boolean> getType() {
-            return Boolean.class;
+
+
+    /**
+     * CoreMap key identifying the tables
+     */
+    public static class TablesAnnotation implements CoreAnnotation<List<CoreMap>> {
+        public Class<List<CoreMap>> getType() {
+            return EraserUtils.<Class<List<CoreMap>>> uncheckedCast(List.class);
         }
     }
+
+    /**
+     * CoreMap key identifying the table rows
+     */
+    public static class RowsAnnotation implements CoreAnnotation<List<CoreMap>> {
+        public Class<List<CoreMap>> getType() {
+            return EraserUtils.<Class<List<CoreMap>>> uncheckedCast(List.class);
+        }
+    }
+
+    /**
+     * CoreMap key identifying the table cols
+     */
+    public static class ColsAnnotation implements CoreAnnotation<List<CoreMap>> {
+        public Class<List<CoreMap>> getType() {
+            return EraserUtils.<Class<List<CoreMap>>> uncheckedCast(List.class);
+        }
+    }
+
+    /**
+     * Annotation for original url
+     */
+    public static class SourceUrlAnnotation implements CoreAnnotation<String> {
+        public Class<String> getType() {
+            return String.class;
+        }
+    }
+
+
 }

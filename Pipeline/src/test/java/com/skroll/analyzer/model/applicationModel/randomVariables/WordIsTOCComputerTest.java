@@ -1,8 +1,10 @@
 package com.skroll.analyzer.model.applicationModel.randomVariables;
 
 import com.google.common.collect.Lists;
+import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Token;
+import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +17,7 @@ import java.util.List;
 public class WordIsTOCComputerTest {
     public static final Logger logger = LoggerFactory.getLogger(WordIsDefComputerTest.class);
 
-    WordIsTOCComputer wordIsTOCComputer;
+    WordIsInCategoryComputer wordIsTOCComputer;
     CoreMap m = null;
     Token token1;
     Token token2;
@@ -23,7 +25,7 @@ public class WordIsTOCComputerTest {
 
     @Before
     public void setUp() throws Exception {
-        wordIsTOCComputer = new WordIsTOCComputer();
+        wordIsTOCComputer = new WordIsInCategoryComputer(Category.TOC_1);
         m = new CoreMap();
         token1 = new Token("First");
         token2 = new Token("token");
@@ -31,7 +33,7 @@ public class WordIsTOCComputerTest {
         List<Token> tokenList = Lists.newArrayList(token1, token2, token3);
         List<List<Token>> tokens = new ArrayList<>();
         tokens.add(tokenList);
-        m.set(CoreAnnotations.TOCTokensAnnotation.class, tokens);
+        CategoryAnnotationHelper.setDInCategoryAnnotation(m, tokens, Category.TOC_1);
     }
     @Test
     public void testGetValue() throws Exception {

@@ -12,11 +12,6 @@ import java.util.List;
  */
 public class DefModelRVSetting extends ModelRVSetting {
 
-    public static final RandomVariable PARA_IS_DEF =
-            RVCreater.createRVFromAnnotation(CoreAnnotations.IsDefinitionAnnotation.class);
-    static final RandomVariable WORD_IS_DEF =
-            RVCreater.createWordLevelRVWithComputer(new WordIsDefComputer(), "wordIsDef");
-
     static final List<RandomVariable> DEFAULT_WORD_FEATURES = Arrays.asList(
             RVCreater.createRVFromAnnotation(CoreAnnotations.InQuotesAnnotation.class),
             RVCreater.createRVFromAnnotation(CoreAnnotations.IsUnderlineAnnotation.class)
@@ -37,18 +32,16 @@ public class DefModelRVSetting extends ModelRVSetting {
 
     static final List<RandomVariable> DEFAULT_WORD_VARS = Arrays.asList(
             RVCreater.createWordsRVWithComputer(new UniqueWordsComputer(), "uniqueWords")
-//            RVCreater.createRVFromAnnotation(CoreAnnotations.WordSetForTrainingAnnotation.class)
     );
 
 
-    public DefModelRVSetting() {
-        super(WORD_IS_DEF, DEFAULT_WORD_FEATURES,
-                PARA_IS_DEF, DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS, DEFAULT_WORD_VARS);
+    public DefModelRVSetting(int categoryId, String categoryName) {
+        super(
+                DEFAULT_WORD_FEATURES,
+                DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS,
+                DEFAULT_WORD_VARS, categoryId, categoryName);
 
-        RVValues.addValueSetter(PARA_IS_DEF, new RVValueSetter(
-                CoreAnnotations.IsDefinitionAnnotation.class,
-                CoreAnnotations.DefinedTermTokensAnnotation.class
-        ));
+
     }
 
 

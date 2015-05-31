@@ -11,7 +11,9 @@
 var LHSModel = {
 
 	smodel: {
-		terms: []
+		terms: [],
+		levelTerms: [],
+    hover: false
 	},
 
 	classes: [{
@@ -29,7 +31,33 @@ var LHSModel = {
 		name: 'Table of Contents',
 		isSelected: false,
 		isVisible: true
-	}],
+	},
+  {
+    id: 3,
+    name: 'TOC Level 2',
+    isSelected: false,
+    isVisible: false
+  },
+  {
+    id: 4,
+    name: 'TOC Level 3',
+    isSelected: false,
+    isVisible: false
+  },
+  {
+    id: 5,
+    name: 'TOC Level 4',
+    isSelected: false,
+    isVisible: false
+  },
+  {
+    id: 6,
+    name: 'TOC Level 5',
+    isSelected: false,
+    isVisible: false
+  }
+
+  ],
 
 	removePara: function(paraId) {
 		this.smodel.terms = _.reject(this.smodel.terms, function(obj) {
@@ -67,6 +95,24 @@ var LHSModel = {
     });
   },
 
+
+  getParaFromClassIdRange: function(startClassId, endClassId) {
+    var terms = [];
+    var prevTerm = null;
+    for(var ii = 0; ii < LHSModel.smodel.terms.length; ii++) {
+      var term = LHSModel.smodel.terms[ii];
+      if ((term.classificationId >= startClassId) && (term.classificationId <= endClassId)) {
+        if (term.term != prevTerm) {
+          terms.push(term);
+        }
+      }
+      prevTerm = term.term;
+    }
+    return terms;
+  },
+
+
+
   filterOutClassFromPara: function(classId, paraId) {
   	return [{
   		classificationId: classId,
@@ -81,7 +127,14 @@ var LHSModel = {
 				return true;
 		});
 		return paras;
+  },
 
+  getTermsForClass: function(classId) {
+		var paras = _.filter(LHSModel.smodel.terms, function(obj){
+			if ((obj.classificationId == classId))
+				return true;
+		});
+		return paras;
   }
 
 };

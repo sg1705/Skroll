@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model.applicationModel;
 
 import com.skroll.analyzer.model.bn.NaiveBayesWithFeatureConditions;
+import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
@@ -20,7 +21,7 @@ import java.util.List;
 public class TrainingDocumentAnnotatingModelTest{
     int maxNumWords = 20;
     String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining/mini-indenture.html";
-    ModelRVSetting setting = new DefModelRVSetting();
+    ModelRVSetting setting = new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME);
     TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel();
     Document document;
     @Before
@@ -31,7 +32,7 @@ public class TrainingDocumentAnnotatingModelTest{
     @Test
     public void testGetTrainingWeights() {
         for (CoreMap paragraph : document.getParagraphs()) {
-            TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.DEFINITION, (float) 1.0);
+            TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.DEFINITION, (float) 1.0);
             double[] trainingWeights = model.getTrainingWeights(paragraph);
             for (int i=0; i<trainingWeights.length; i++)
             System.out.println("paraId:" + paragraph.getId() + " TrainingWeight:" + trainingWeights[i]);
@@ -44,7 +45,7 @@ public class TrainingDocumentAnnotatingModelTest{
                 for (CoreMap paragraph : document.getParagraphs()) {
                     paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
                     paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
-                    TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, TrainingWeightAnnotationHelper.DEFINITION, (float) 1.0);
+                    TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.DEFINITION, (float) 1.0);
                 }
                 model.updateWithDocumentAndWeight(document);
 
