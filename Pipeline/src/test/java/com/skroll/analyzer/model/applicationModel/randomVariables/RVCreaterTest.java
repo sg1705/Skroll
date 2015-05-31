@@ -32,11 +32,11 @@ public class RVCreaterTest {
 
         RandomVariable rv1 = RVCreater.createParagraphStartsWithRV(CoreAnnotations.StartsWithQuote.class);
         RandomVariable rv2 = RVCreater.createParagraphStartsWithRV(CoreAnnotations.IsBoldAnnotation.class);
-        List<RandomVariable> rvList = RVCreater.createDocFeatureRVs(Lists.newArrayList(rv1,rv2));
+        List<RandomVariable> rvList = RVCreater.createDocFeatureRVs(Lists.newArrayList(rv1, rv2), "def");
         assert(rvList.size()==2);
         logger.info("{}", rvList);
-        assert(rvList.get(0).getName().equals("docFeature_paraStartsStartsWithQuote"));
-        assert(rvList.get(1).getName().equals("docFeature_paraStartsIsBoldAnnotation"));
+        assert (rvList.get(0).getName().equals("def_paraStartsStartsWithQuote"));
+        assert (rvList.get(1).getName().equals("def_paraStartsIsBoldAnnotation"));
     }
 
 

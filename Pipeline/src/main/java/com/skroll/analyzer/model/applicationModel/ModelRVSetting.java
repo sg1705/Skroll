@@ -44,6 +44,7 @@ public class ModelRVSetting {
 
     @JsonProperty("categoryName")
     String categoryName="";
+
     /**
      * Defines the model
      * @param wordFeatures features for each. For example, if the word is in quota. Used at HMM level.
@@ -52,6 +53,7 @@ public class ModelRVSetting {
      * @param wordVars type of words. For example - first words, unique words etc.
      * @param categoryId
      */
+
     public ModelRVSetting(
                           List<RandomVariable> wordFeatures,
                           List<RandomVariable> paraFeatureVars,
@@ -62,7 +64,7 @@ public class ModelRVSetting {
         RandomVariable wordType = RVCreater.createWordLevelRVWithComputer(new WordIsInCategoryComputer(categoryId), "wordIsInCategory-" + categoryId);
         RandomVariable paraType = RVCreater.createDiscreteRVWithComputer(new ParaInCategoryComputer(categoryId), "paraTypeIsCategory-" + categoryId);
         nbfcConfig = new NBFCConfig(paraType, paraFeatureVars, paraDocFeatureVars,
-                RVCreater.createDocFeatureRVs(paraDocFeatureVars), wordVars);
+                RVCreater.createDocFeatureRVs(paraDocFeatureVars,categoryName), wordVars);
         RVValues.addValueSetter(paraType, new RVValueSetter(categoryId, CoreAnnotations.CategoryAnnotations.class));
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;

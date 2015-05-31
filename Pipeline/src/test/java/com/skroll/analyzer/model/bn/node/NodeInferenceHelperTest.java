@@ -70,10 +70,6 @@ public class NodeInferenceHelperTest {
         double[] result = NodeInferenceHelper.getLogBelief(node, 1, new double[]{-1, -2});
         System.out.println("result = " + Arrays.toString(result));
         assert (Arrays.toString(result).equals("[-1.0, -1.0, -2.0, -2.0, -1.0, -1.0, -2.0, -2.0]"));
-
-
-
-
     }
 
     @Test
