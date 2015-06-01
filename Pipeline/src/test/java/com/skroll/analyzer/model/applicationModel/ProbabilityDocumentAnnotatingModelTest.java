@@ -20,13 +20,18 @@ import java.util.List;
 //todo: prior count is not set properly, making the probability favoring positive class.
 public class ProbabilityDocumentAnnotatingModelTest {
 
-    String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/mini-indenture.html";
+
+    ModelRVSetting setting = new DefModelRVSetting(Category.DEFINITION, Category.DEFINITION_NAME);
+    TrainingDocumentAnnotatingModel tModel = new TrainingDocumentAnnotatingModel();
+//    String testingFileName = "src/test/resources/classifier/mini-indenture.html";
+
+    //String testingFileName = "src/test/resources/classifier/smaller-indenture.html";
+    String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
+//    String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/AMD CA - Def No Quotes.html";
+
 
     File file = new File(testingFileName);
-
-    TrainingDocumentAnnotatingModelTest trainingTest = new TrainingDocumentAnnotatingModelTest();
-
-    Document doc = trainingTest.makeDoc(file);
+    Document doc = TestHelper.makeDoc(file);
 
     ProbabilityDocumentAnnotatingModel model;
     boolean doneSetup=false;
@@ -39,10 +44,9 @@ public class ProbabilityDocumentAnnotatingModelTest {
         if (doneSetup) return;
         doneSetup = true;
 
-        trainingTest.testUpdateWithDocument();
-        model= new ProbabilityDocumentAnnotatingModel( trainingTest.getTnbf(), trainingTest.getModel().getHmm(), doc,
+        tModel.updateWithDocument(doc);
+        model = new ProbabilityDocumentAnnotatingModel(tModel.getTnbfModel(), tModel.getHmm(), doc,
                 new DefModelRVSetting(Category.DEFINITION, Category.DEFINITION_NAME)
-//                wordType, wordFeatures, traingTest.getModel().getNbfcConfig()
                 );
         model.getHmm().updateProbabilities();
         System.out.println("HMM\n");
