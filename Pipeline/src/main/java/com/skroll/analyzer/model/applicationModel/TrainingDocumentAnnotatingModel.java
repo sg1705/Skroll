@@ -172,7 +172,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
             int i = op.get(CoreAnnotations.IndexInteger.class);
             double[] weights = getTrainingWeights(op);
             int numCategories = nbfcConfig.getCategoryVar().getFeatureSize();
-            for (int c = 0; c < numCategories; i++) {
+            for (int c = 0; c < numCategories; c++) {
                 int[] values = concatIntArrays(new int[]{c}, paraFeatures[i], paraDocFeatures[i], docFeatures);
                 NBTrainingHelper.addSample(tnbfModel, new SimpleDataTuple(wordsList[i], values), weights[c]);
             }

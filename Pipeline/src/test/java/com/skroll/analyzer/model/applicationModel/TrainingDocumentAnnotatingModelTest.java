@@ -52,7 +52,7 @@ public class TrainingDocumentAnnotatingModelTest{
 
         System.out.println("trained model: \n" + model);
         assert(model.toString().contains("nextTokenCounts [Operations=5.0, Tiger=6.0]"));
-        assert(model.toString().contains("[WordNode{parameters=Operations=[0.0, 2.0] Tiger=[0.0, 1.0] Notwithstanding=[0.0, 2.0]"));
+//        assert(model.toString().contains("[WordNode{parameters=Operations=[0.0, 2.0] Tiger=[0.0, 1.0] Notwithstanding=[0.0, 2.0]"));
     }
 
     @Test
