@@ -2,18 +2,17 @@ package com.skroll.analyzer.model.bn.config;
 
 import com.google.common.collect.Lists;
 import com.skroll.analyzer.model.RandomVariable;
-import com.skroll.analyzer.model.applicationModel.TOCModelRVSetting;
 import com.skroll.analyzer.model.applicationModel.randomVariables.FirstWordsComputer;
+import com.skroll.analyzer.model.applicationModel.randomVariables.ParaInCategoryComputer;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVCreater;
 import com.skroll.analyzer.model.applicationModel.randomVariables.UniqueWordsComputer;
+import com.skroll.classifier.Category;
 import com.skroll.document.annotation.CoreAnnotations;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class NBConfigTest {
 
@@ -25,7 +24,8 @@ public class NBConfigTest {
     @Before
     public void setUp() throws Exception {
 
-        categoryVar = TOCModelRVSetting.PARA_IS_TOC;
+        categoryVar =  RVCreater.createDiscreteRVWithComputer(new ParaInCategoryComputer(Category.DEFINITION), "paraTypeIsCategory-" + Category.DEFINITION);
+        ;
 
         featureVarList = Lists.newArrayList(Lists.newArrayList(
                 RVCreater.createRVFromAnnotation(CoreAnnotations.IsBoldAnnotation.class),

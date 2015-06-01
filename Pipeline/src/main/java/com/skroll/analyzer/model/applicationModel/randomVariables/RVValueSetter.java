@@ -2,11 +2,8 @@ package com.skroll.analyzer.model.applicationModel.randomVariables;
 
 import com.skroll.document.CoreMap;
 import com.skroll.document.Token;
-import com.skroll.document.annotation.CoreAnnotation;
-import com.skroll.document.annotation.CoreAnnotations;
-import com.skroll.document.annotation.TypesafeMap;
+import com.skroll.document.annotation.CategoryAnnotationHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,34 +11,24 @@ import java.util.List;
  */
 // may consider using interface if more types of needed
 public class RVValueSetter {
-    Class typeKey;
-    Class<TypesafeMap.Key<List<List<Token>>>> termsKey;
+    int categoryId;
+    Class categoryAnnotations;
 
-    public RVValueSetter(Class typeKey, Class termsKey) {
-        this.typeKey = typeKey;
-        this.termsKey = termsKey;
+    public RVValueSetter(int categoryId, Class categoryAnnotations) {
+        this.categoryId = categoryId;
+        this.categoryAnnotations = categoryAnnotations;
     }
 
     // assuming value represent boolean. 0== false, 1 ==true
     void setValue(int value, CoreMap m, List<List<Token>> terms) {
-        m.set(typeKey, value != 1);
-        m.set(termsKey, terms);
+        CategoryAnnotationHelper.setDInCategoryAnnotation(m, terms, categoryId);
     }
 
     void addTerms(CoreMap m, List<Token> terms) {
-        if (terms == null) return;
-        if (terms.size() > 0) m.set(typeKey, true);
-        List<List<Token>> termsList = m.get(termsKey);
-
-        if (termsList == null) {
-            termsList = new ArrayList<>();
-            m.set(termsKey, termsList);
-        }
-        termsList.add(terms);
+        CategoryAnnotationHelper.addDefinedTokensInCategoryAnnotation(m,terms, categoryId);
     }
 
     void clearValue(CoreMap m) {
-        m.set(typeKey, false);
-        m.set(termsKey, null);
+        CategoryAnnotationHelper.clearCategoryAnnotation(m,categoryId);
     }
 }

@@ -13,6 +13,7 @@ import com.skroll.analyzer.model.bn.SimpleDataTuple;
 import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.analyzer.model.bn.node.DiscreteNode;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
+import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
@@ -33,19 +34,21 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
 
     public TrainingDocumentAnnotatingModel() {
-        this(new DefModelRVSetting());
+        this(new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME));
+
     }
 
     public TrainingDocumentAnnotatingModel(ModelRVSetting setting) {
-        this(setting.getWordType(), setting.getWordFeatures(), setting.getNbfcConfig());
+        this(setting.getWordType(), setting.getWordFeatures(), setting.getNbfcConfig(),setting);
+        modelRVSetting = setting;
     }
 
-    public TrainingDocumentAnnotatingModel(RandomVariable wordType,
+    private TrainingDocumentAnnotatingModel(RandomVariable wordType,
                                            List<RandomVariable> wordFeatures,
-                                           NBFCConfig nbfcConfig ){
+                                           NBFCConfig nbfcConfig,ModelRVSetting modelRVSetting ){
 
-        this(NBTrainingHelper.createTrainingNBWithFeatureConditioning(nbfcConfig),
-                wordType, wordFeatures, nbfcConfig);
+        this(NBTrainingHelper.createTrainingNBWithFeatureConditioning(nbfcConfig ),
+                wordType, wordFeatures, nbfcConfig,modelRVSetting);
 
     }
 
@@ -54,13 +57,14 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
             @JsonProperty("tnbfModel")NaiveBayesWithFeatureConditions tnbfModel,
             @JsonProperty("wordType") RandomVariable wordType,
             @JsonProperty("wordFeatures") List<RandomVariable> wordFeatures,
-            @JsonProperty("nbfcConfig")NBFCConfig nbfcConfig){
+            @JsonProperty("nbfcConfig")NBFCConfig nbfcConfig,
+            @JsonProperty("ModelRVSetting")ModelRVSetting modelRVSetting){
         this.nbfcConfig = nbfcConfig;
 
         this.tnbfModel = tnbfModel;
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;
-
+        this.modelRVSetting = modelRVSetting;
         int []wordFeatureSizes = new int[wordFeatures.size()]; // include state at the feature index 0.
         for (int i=0; i<wordFeatureSizes.length;i++)
             wordFeatureSizes[i] =  wordFeatures.get(i).getFeatureSize();
@@ -70,7 +74,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
 
     double[] getTrainingWeights(CoreMap para){
-        double[][] weights = TrainingWeightAnnotationHelper.getParagraphWeight(para, nbfcConfig.getCategoryVar());
+        double[][] weights = TrainingWeightAnnotationHelper.getParagraphWeight(para, nbfcConfig.getCategoryVar(), modelRVSetting.getCategoryId());
         double[] oldWeights =weights[0];
         double[] newWeights = weights[1];
         double[] normalizedOldWeights = BNInference.normalize(oldWeights, 1);

@@ -28,7 +28,6 @@ public class TokenizeParagraphInHtmlDocumentPipe extends SyncPipe<Document, Docu
 
 
         List<CoreMap> newList = new ArrayList<CoreMap>();
-        List<Token> documentTokens = new ArrayList<Token>();
         for(CoreMap paragraph : input.getParagraphs()) {
             //get fragments
             List<CoreMap> fragments = paragraph.get(CoreAnnotations.ParagraphFragmentAnnotation.class);
@@ -134,15 +133,12 @@ public class TokenizeParagraphInHtmlDocumentPipe extends SyncPipe<Document, Docu
             }
             //set the count of tokens that start with uppercase
             paragraph.set(CoreAnnotations.StartsWithUpperCaseCountInteger.class, startsWithUppercaseCount);
-            //add tokens to master list
-            documentTokens.addAll(tokens);
             // check to see if it is a page break
             if ((tokens.size() > 0) || exceptions(paragraph))
                 newList.add(paragraph);
 
         }
         input.setParagraphs(newList);
-        input.set(CoreAnnotations.TokenAnnotation.class, documentTokens);
         return this.target.process(input);
     }
 

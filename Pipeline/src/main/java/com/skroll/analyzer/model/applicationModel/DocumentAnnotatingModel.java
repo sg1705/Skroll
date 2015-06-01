@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.bn.config.NBFCConfig;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
+import com.skroll.classifier.Category;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public abstract class DocumentAnnotatingModel {
 
 
     @JsonProperty("modelRVSetting")
-    ModelRVSetting modelRVSetting = new DefModelRVSetting();
+    ModelRVSetting modelRVSetting = new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME);
     @JsonProperty("wordFeatures")
     List<RandomVariable> wordFeatures = modelRVSetting.getWordFeatures();
 

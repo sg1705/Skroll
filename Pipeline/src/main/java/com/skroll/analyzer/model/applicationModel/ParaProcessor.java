@@ -97,12 +97,6 @@ public class ParaProcessor {
 
         trainingParagraph.set(CoreAnnotations.TokenAnnotation.class, newTokens);
 
-//        // put defined terms from paragraph in trainingParagraph
-//        // todo: may remove this later if trainer creates a training paragraph and put defined terms there directly
-//        List<List<Token>> definedTokens = paragraph.get(CoreAnnotations.DefinedTermTokensAnnotation.class);
-//        if (definedTokens != null && definedTokens.size() > 0) {
-//            trainingParagraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
-//        }
         return trainingParagraph;
     }
 

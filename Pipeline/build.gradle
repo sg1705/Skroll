@@ -1,10 +1,9 @@
 apply plugin: 'java'
 apply plugin: 'war'
-apply from: 'https://raw.github.com/akhikhl/gretty/master/pluginScripts/gretty.plugin'
 
 version = '1.0'
-sourceCompatibility = JavaVersion.VERSION_1_7
-targetCompatibility = JavaVersion.VERSION_1_7
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
     mavenCentral()
@@ -41,16 +40,10 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-core:2.5.1'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.5.1'
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.5.1'
-}
-
-gretty{
-    port = 8080
-    List<String> jvmArgs = []
-    jvmArgs.add("-Dcom.skroll.LEVEL=DEBUG")
-    managedClassReload=true
-    servletContainer = "jetty9"
-    fastReload = true
-    scanInterval = 1
+    compile 'com.google.inject:guice:3.0'
+    compile 'com.google.inject.extensions:guice-servlet:3.0'
+    compile "com.squarespace.jersey2-guice:jersey2-guice:0.5"
+    compile 'org.reflections:reflections:0.9.9'
 }
 
 
@@ -80,4 +73,10 @@ task fatJar(type: Jar) {
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
     with jar
+}
+
+task start(type: JavaExec) {
+    File workingDir = new File('Pipeline/')
+    main = 'com.skroll.rest.WebServer'
+    classpath = sourceSets.main.runtimeClasspath
 }

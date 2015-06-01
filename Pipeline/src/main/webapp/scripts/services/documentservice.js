@@ -8,17 +8,17 @@
  * Service in the myappApp.
  */
 angular.module('SkrollApp')
-  .service('documentService', function($http, $q, $log, LHSModel) {
+  .service('documentService', function($http, $q, $log, LHSModel, documentModel) {
     //context root of API
-    var documentServiceBase = 'restServices/jsonAPI/';
-
+    var documentServiceBase = 'restServices/doc/';
+    var instrumentServiceBase = 'restServices/instrument/';
     /**
      * Retrieves terms for a given document
      */
     this.getTerms = function() {
       var deferred = $q.defer();
       /** make a get request */
-      $http.get(documentServiceBase + 'getTerms')
+      $http.get(documentServiceBase + 'getTerms' + '?documentId=' + documentModel.documentId)
         .success(function(data, status) {
           deferred.resolve(data);
         })
@@ -36,7 +36,7 @@ angular.module('SkrollApp')
     this.updateTerms = function(terms) {
       var deferred = $q.defer();
       /** make a get request */
-      $http.post(documentServiceBase + 'updateTerms', terms)
+      $http.post(documentServiceBase + 'updateTerms' + '?documentId=' + documentModel.documentId, terms)
         .success(function(data, status) {
           deferred.resolve(data);
         })
@@ -55,8 +55,8 @@ angular.module('SkrollApp')
       $log.debug(paragraphId);
       var deferred = $q.defer();
       /** make a get request */
-      $http.get(documentServiceBase + 'getSimilarPara?paragraphId=' +
-          paragraphId)
+      $http.get(instrumentServiceBase + 'getSimilarPara?paragraphId=' +
+          paragraphId + '&documentId=' + documentModel.documentId)
         .success(function(data) {
           var paragraphs = [];
           for (var ii = 0; ii < data.length; ii++) {
@@ -81,8 +81,8 @@ angular.module('SkrollApp')
     this.getParagraphJson = function(paragraphId) {
       $log.debug("Fetching json for paragraphId:" + paragraphId);
       var deferred = $q.defer();
-      $http.get(documentServiceBase + 'getParagraphJson?paragraphId=' +
-          paragraphId)
+      $http.get(instrumentServiceBase + 'getParagraphJson?paragraphId=' +
+          paragraphId + '&documentId=' + documentModel.documentId)
         .success(function(data) {
           deferred.resolve(data);
         })
@@ -167,7 +167,7 @@ angular.module('SkrollApp')
      */
     this.updateModel = function() {
       /** make a get request */
-      $http.get(documentServiceBase + 'updateModel')
+      $http.get(documentServiceBase + 'updateModel' + '?documentId=' + documentModel.documentId)
         .success(function(data, status) {
           console.log("Updated model:");
           console.log(data);
@@ -183,7 +183,7 @@ angular.module('SkrollApp')
      */
     this.setFlags = function(flagName, flagValue) {
       /** make a get request */
-      $http.get(documentServiceBase + 'setFlags?flagName=' + flagName + '&flagValue=' + flagValue)
+      $http.get(instrumentServiceBase + 'setFlags?flagName=' + flagName + '&flagValue=' + flagValue + '&documentId=' + documentModel.documentId)
         .success(function(data, status) {
           console.log("flag set");
           console.log(data);
@@ -198,7 +198,7 @@ angular.module('SkrollApp')
      */
     this.observeNone = function() {
       /** make a get request */
-      $http.get(documentServiceBase + 'observeNone')
+      $http.get(documentServiceBase + 'observeNone' + '?documentId=' + documentModel.documentId)
         .success(function(data, status) {
           console.log("observed none");
           console.log(data);
@@ -215,7 +215,7 @@ angular.module('SkrollApp')
     this.getProbabilityDump = function() {
       var deferred = $q.defer();
       /** make a get request */
-      $http.get(documentServiceBase + 'getProbabilityDump')
+      $http.get(instrumentServiceBase + 'getProbabilityDump' + '?documentId=' + documentModel.documentId)
         .success(function(data, status) {
           deferred.resolve(data);
         })
@@ -226,6 +226,4 @@ angular.module('SkrollApp')
       /** done with get request */
       return deferred.promise;
     };
-
-
   });

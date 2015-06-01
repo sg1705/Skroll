@@ -1,15 +1,7 @@
 package com.skroll.analyzer.model.hmm;
 
-import com.google.common.base.Splitter;
-import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
-import com.skroll.document.DocumentHelper;
-import com.skroll.document.Token;
-import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.SyncPipe;
-
-import java.util.HashSet;
-import java.util.List;
 
 /**
  * Trains a document with the given HtmlDocument
@@ -20,6 +12,7 @@ public class HTMLHiddenMarkovModelTrainingPipe extends SyncPipe<Document, Docume
 
     @Override
     public Document process(Document input) {
+        /*
         HiddenMarkovModel model = (HiddenMarkovModel)config.get(0);
 
         List<CoreMap> paragraphs = input.getParagraphs();
@@ -54,6 +47,8 @@ public class HTMLHiddenMarkovModelTrainingPipe extends SyncPipe<Document, Docume
                     tokenType);
         }
         return this.target.process(input);
+        */
+        return input;
     }
 
 

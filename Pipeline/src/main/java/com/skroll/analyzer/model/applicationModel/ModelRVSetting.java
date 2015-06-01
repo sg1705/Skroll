@@ -2,10 +2,10 @@ package com.skroll.analyzer.model.applicationModel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skroll.analyzer.model.RandomVariable;
-import com.skroll.analyzer.model.applicationModel.randomVariables.RVCreater;
+import com.skroll.analyzer.model.applicationModel.randomVariables.*;
 import com.skroll.analyzer.model.bn.config.NBFCConfig;
+import com.skroll.document.annotation.CoreAnnotations;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,47 +23,68 @@ public class ModelRVSetting {
     @JsonProperty("wordFeatures")
     List<RandomVariable> wordFeatures;
 
-    @JsonProperty("name")
-    String name;
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    @JsonProperty("categoryId")
+    int categoryId=0;
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    @JsonProperty("categoryName")
+    String categoryName="";
 
     /**
      * Defines the model
-     *
-     * @param wordType category of the word. For example, variable to indicate if a word is a defined term.
-     *                 Used at HMM level.
      * @param wordFeatures features for each. For example, if the word is in quota. Used at HMM level.
-     * @param paraType category for the paragraph.
      * @param paraFeatureVars features for the paragraph
      * @param paraDocFeatureVars paragraph that are considered at doc level
      * @param wordVars type of words. For example - first words, unique words etc.
+     * @param categoryId
      */
-    public ModelRVSetting(String name,
-                          RandomVariable wordType,
+
+    public ModelRVSetting(
                           List<RandomVariable> wordFeatures,
-                          RandomVariable paraType,
                           List<RandomVariable> paraFeatureVars,
                           List<RandomVariable> paraDocFeatureVars,
-                          List<RandomVariable> wordVars) {
-        this.name = name;
+                          List<RandomVariable> wordVars,
+                          int categoryId,
+                          String categoryName) {
+        RandomVariable wordType = RVCreater.createWordLevelRVWithComputer(new WordIsInCategoryComputer(categoryId), "wordIsInCategory-" + categoryId);
+        RandomVariable paraType = RVCreater.createDiscreteRVWithComputer(new ParaInCategoryComputer(categoryId), "paraTypeIsCategory-" + categoryId);
         nbfcConfig = new NBFCConfig(paraType, paraFeatureVars, paraDocFeatureVars,
-                RVCreater.createDocFeatureRVs(paraDocFeatureVars, name), wordVars);
+                RVCreater.createDocFeatureRVs(paraDocFeatureVars,categoryName), wordVars);
+        RVValues.addValueSetter(paraType, new RVValueSetter(categoryId, CoreAnnotations.CategoryAnnotations.class));
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;
+        this.categoryId=categoryId;
+        this.categoryName=categoryName;
     }
 
 
     public ModelRVSetting(
-            @JsonProperty("name") String name,
-            @JsonProperty("nbfcConfig")NBFCConfig nbfcConfig,
-            @JsonProperty("wordType")RandomVariable wordType,
-            @JsonProperty("wordFeatures")List<RandomVariable> wordFeatures) {
-        this.name = name;
+            @JsonProperty("nbfcConfig") NBFCConfig nbfcConfig,
+            @JsonProperty("wordType") RandomVariable wordType,
+            @JsonProperty("wordFeatures") List<RandomVariable> wordFeatures,
+            @JsonProperty("categoryId") int categoryId,
+            @JsonProperty("categoryName") String categoryName) {
         this.nbfcConfig = nbfcConfig;
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;
+        this.categoryId = categoryId;
+        this.categoryName=categoryName;
     }
-
-
 
     public NBFCConfig getNbfcConfig() {
         return nbfcConfig;

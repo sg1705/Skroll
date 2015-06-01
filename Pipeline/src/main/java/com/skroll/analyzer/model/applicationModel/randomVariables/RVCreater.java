@@ -85,6 +85,12 @@ public class RVCreater {
         RVValues.addWRVValueComputer(rv, computer);
         return rv;
     }
+
+    public static RandomVariable createWordLevelRVWithComputer(WRVValueComputer computer, String name, int categoryId) {
+        RandomVariable rv = new RandomVariable(computer.getNumVals(), name);
+        RVValues.addWRVValueComputer(rv, computer);
+        return rv;
+    }
 }
 
 
