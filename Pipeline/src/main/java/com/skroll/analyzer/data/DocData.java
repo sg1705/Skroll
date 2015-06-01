@@ -11,14 +11,14 @@ import java.util.Arrays;
  */
 public class DocData {
 
-    NBFCConfig config;
+    //    NBFCConfig config;
     SimpleDataTuple[] tuples;
     int[] docFeatureValues;
 
-    public DocData(Document doc, NBFCConfig config) {
-        this.config = config;
-        tuples = new SimpleDataTuple[doc.getParagraphs().size()];
-    }
+//    public DocData(Document doc, NBFCConfig config) {
+//        this.config = config;
+//        tuples = new SimpleDataTuple[doc.getParagraphs().size()];
+//    }
 
     public SimpleDataTuple[] getTuples() {
         return tuples;
@@ -39,7 +39,7 @@ public class DocData {
     @Override
     public String toString() {
         return "DocData{" +
-                "config=" + config +
+//                "config=" + config +
                 ", tuples=" + Arrays.toString(tuples) +
                 ",\n docFeatureValues=" + Arrays.toString(docFeatureValues) +
                 '}';

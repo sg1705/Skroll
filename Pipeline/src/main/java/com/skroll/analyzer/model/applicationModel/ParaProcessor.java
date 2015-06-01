@@ -61,6 +61,16 @@ public class ParaProcessor {
         return vals;
     }
 
+    public static List<String[]> getWordsList(List<RandomVariable> rvs, CoreMap para) {
+        List<String[]> wordsListOfOnePara = new ArrayList<>();
+        for (int w = 0; w < rvs.size(); w++) {
+            wordsListOfOnePara.add(RVValues.getWords(rvs.get(w), para));
+        }
+
+        return wordsListOfOnePara;
+
+    }
+
     // set inquote annotation and make word sets
     static CoreMap processParagraph(CoreMap paragraph, int numWordsToUse) {
         CoreMap trainingParagraph = new CoreMap();
@@ -87,12 +97,12 @@ public class ParaProcessor {
 
         trainingParagraph.set(CoreAnnotations.TokenAnnotation.class, newTokens);
 
-        // put defined terms from paragraph in trainingParagraph
-        // todo: may remove this later if trainer creates a training paragraph and put defined terms there directly
-        List<List<Token>> definedTokens = paragraph.get(CoreAnnotations.DefinedTermTokensAnnotation.class);
-        if (definedTokens != null && definedTokens.size() > 0) {
-            trainingParagraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
-        }
+//        // put defined terms from paragraph in trainingParagraph
+//        // todo: may remove this later if trainer creates a training paragraph and put defined terms there directly
+//        List<List<Token>> definedTokens = paragraph.get(CoreAnnotations.DefinedTermTokensAnnotation.class);
+//        if (definedTokens != null && definedTokens.size() > 0) {
+//            trainingParagraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
+//        }
         return trainingParagraph;
     }
 

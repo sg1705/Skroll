@@ -3,6 +3,7 @@ package com.skroll.analyzer.model.applicationModel;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skroll.analyzer.data.DocData;
+import com.skroll.analyzer.data.NBFCData;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
 import com.skroll.analyzer.model.bn.config.NBFCConfig;
@@ -43,7 +44,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
                                            List<RandomVariable> wordFeatures,
                                            NBFCConfig nbfcConfig ){
 
-        this(NBTrainingHelper.createTrainingNBWithFeatureConditioning(nbfcConfig ),
+        this(NBTrainingHelper.createTrainingNBWithFeatureConditioning(nbfcConfig),
                 wordType, wordFeatures, nbfcConfig);
 
     }
@@ -107,6 +108,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
     }
 
+
     /**
      * todo: to reduce memory usage at the cost of more computation, can process training paragraph one by one later instead of process all and store them now
     * training involves updating Fij for each paragraph i and feature j.
@@ -117,20 +119,58 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
         // todo: the following two lines can cause a lot of inefficiency with the current approach of
         // updating training model with the whole doc each time user makes an observation.
         List<CoreMap> processedParas = DocProcessor.processParagraphs(originalParas, hmm.size());
-        DocData data = DocProcessor.getDataFromDoc(doc, processedParas, nbfcConfig);
-        SimpleDataTuple[] tuples = data.getTuples();
+
+        // in NBFCData, para features can be preprocessed for the whole doc,
+        // but doc features depends on the set of the observed paras and cannot be preprocessed just once.
+        NBFCData data = DocProcessor.getParaDataFromDoc(doc.getParagraphs(), processedParas, nbfcConfig);
+
+        updateWithProcessedParasAndWeight(originalParas, processedParas, data);
+
+    }
+
+    public int[] concatIntArrays(int[]... intArrays) {
+        int totalLen = 0;
+        for (int[] intArray : intArrays) totalLen += intArray.length;
+
+        int[] result = new int[totalLen];
+        int i = 0;
+        for (int[] intArray : intArrays) {
+            for (int n : intArray)
+                result[i++] = n;
+        }
+        return result;
+    }
 
 
-        for (int p = 0; p < originalParas.size(); p++) {
-            if (!ParaProcessor.isParaObserved(originalParas.get(p))) continue;
-            double[] weights = getTrainingWeights(originalParas.get(p));
-            int[] values = tuples[p].getDiscreteValues();
+    /**
+     * This method can be used with already processed paras, and precomputed feature values for better efficiency.
+     * <p/>
+     * currently assuming the paras parameters contain all paragraphs in the doc.
+     * todo: to improve performance, consider making viewer passing only observed paras.
+     *
+     * @param originalParas
+     * @param processedParas
+     * @param data
+     */
+    public void updateWithProcessedParasAndWeight(List<CoreMap> originalParas,
+                                                  List<CoreMap> processedParas, NBFCData data) {
+//        List<CoreMap> originalParas = doc.getParagraphs();
+        if (processedParas == null) processedParas = DocProcessor.processParagraphs(originalParas, hmm.size());
+        if (data == null) data = DocProcessor.getParaDataFromDoc(originalParas, processedParas, nbfcConfig);
+        List<CoreMap> observedParas = DocumentHelper.getObservedParagraphs(originalParas);
+
+        int[] docFeatures = DocProcessor.generateDocumentFeatures(observedParas, data.getParaFeatures(), nbfcConfig);
+        int[][] paraFeatures = data.getParaFeatures();
+        int[][] paraDocFeatures = data.getParaDocFeatures();
+        List<String[]>[] wordsList = data.getWordsLists();
+
+        for (CoreMap op : observedParas) {
+            int i = op.get(CoreAnnotations.IndexInteger.class);
+            double[] weights = getTrainingWeights(op);
             int numCategories = nbfcConfig.getCategoryVar().getFeatureSize();
-
-
-            for (int i = 0; i < numCategories; i++) {
-                values[0] = i;
-                NBTrainingHelper.addSample(tnbfModel, tuples[p], weights[i]);
+            for (int c = 0; c < numCategories; i++) {
+                int[] values = concatIntArrays(new int[]{c}, paraFeatures[i], paraDocFeatures[i], docFeatures);
+                NBTrainingHelper.addSample(tnbfModel, new SimpleDataTuple(wordsList[i], values), weights[c]);
             }
 
         }
@@ -140,16 +180,37 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
         }
     }
 
+    /**
+     * the old method for training with doc. Does not use weight and go through all paragraphs, not just the observed.
+     * @param doc
+     */
     public void updateWithDocument(Document doc){
 
         List<CoreMap> originalParas = doc.getParagraphs();
         List<CoreMap> processedParas = DocProcessor.processParagraphs(originalParas, hmm.size());
-        DocData data = DocProcessor.getDataFromDoc(doc, processedParas, nbfcConfig);
-        for (SimpleDataTuple tuple : data.getTuples())
-            NBTrainingHelper.addSample(tnbfModel, tuple);
+        NBFCData data = DocProcessor.getParaDataFromDoc(doc.getParagraphs(), processedParas, nbfcConfig);
+        updateWithDocument(originalParas, processedParas, data);
+    }
+
+    public void updateWithDocument(List<CoreMap> originalParas, List<CoreMap> processedParas, NBFCData data) {
+        int[] docFeatures = DocProcessor.generateDocumentFeatures(originalParas, data.getParaFeatures(), nbfcConfig);
         for (int p = 0; p < originalParas.size(); p++) {
-            updateHMMWithParagraph(originalParas.get(p), processedParas.get(p));
+            CoreMap oPara = originalParas.get(p);
+            CoreMap pPara = processedParas.get(p);
+            List<CoreMap> opParas = Arrays.asList(oPara, pPara);
+            int categoryValue = RVValues.getValue(getParaCategory(), oPara);
+            int[] paraFeatures = ParaProcessor.getFeatureVals(nbfcConfig.getFeatureVarList(), opParas);
+            int[] paraDocFeatures =
+                    ParaProcessor.getFeatureVals(nbfcConfig.getFeatureExistsAtDocLevelVarList(), opParas);
+            List<String[]> wordsList = ParaProcessor.getWordsList(nbfcConfig.getWordVarList(), pPara);
+
+            int[] values = concatIntArrays(new int[]{categoryValue}, paraFeatures, paraDocFeatures, docFeatures);
+
+            NBTrainingHelper.addSample(tnbfModel, new SimpleDataTuple(wordsList, values));
+
+            updateHMMWithParagraph(oPara, pPara);
         }
+
     }
 
     public NaiveBayesWithFeatureConditions getTnbfModel() {

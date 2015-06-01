@@ -229,13 +229,17 @@ public class DocumentHelper {
         return tocParagraphs;
     }
 
-
-    public static List<CoreMap> getObservedParagraphs(Document doc) {
+    public static List<CoreMap> getObservedParagraphs(List<CoreMap> paras) {
         List<CoreMap> observedParagraphs = new ArrayList<>();
-        for (CoreMap paragraph : doc.getParagraphs()) {
+        for (CoreMap paragraph : paras) {
             if (isObserved(paragraph)) observedParagraphs.add(paragraph);
         }
         return observedParagraphs;
+
+    }
+
+    public static List<CoreMap> getObservedParagraphs(Document doc) {
+        return getObservedParagraphs(doc.getParagraphs());
 
     }
 
