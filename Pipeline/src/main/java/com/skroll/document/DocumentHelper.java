@@ -65,7 +65,7 @@ public class DocumentHelper {
         return tokens;
     }
 
-    public static List<CoreMap> getObservedParagraphs(Document doc) {
+    public static List<CoreMap> getObservedParagraphs(List<CoreMap> paras) {
         List<CoreMap> observedParagraphs = new ArrayList<>();
         for (CoreMap paragraph : paras) {
             if (isObserved(paragraph)) observedParagraphs.add(paragraph);
