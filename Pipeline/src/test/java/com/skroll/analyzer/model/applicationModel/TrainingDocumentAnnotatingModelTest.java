@@ -57,7 +57,7 @@ public class TrainingDocumentAnnotatingModelTest{
 
     @Test
     public void testUpdateWithDocument() throws Exception {
-
+//        String trainingFolderName = "src/test/resources/analyzer/evaluate/docclassifier/AMC Networks CA.html";
         System.out.println("initial model: \n" + model.getTnbfModel());
         File f = new File(trainingFolderName);
         document = makeTrainingDoc(f);

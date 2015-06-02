@@ -197,7 +197,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     }
 
     public void updateWithDocument(List<CoreMap> originalParas, List<CoreMap> processedParas, NBFCData data) {
-        int[] docFeatures = DocProcessor.generateDocumentFeatures(originalParas, data.getParaFeatures(), nbfcConfig);
+        int[] docFeatures = DocProcessor.generateDocumentFeatures(originalParas, data.getParaDocFeatures(), nbfcConfig);
         for (int p = 0; p < originalParas.size(); p++) {
             CoreMap oPara = originalParas.get(p);
             CoreMap pPara = processedParas.get(p);
