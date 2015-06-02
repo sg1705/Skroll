@@ -33,7 +33,7 @@ public class ClassifierImpl implements Classifier {
 
     protected ModelRVSetting modelRVSetting;
 
-    public ClassifierImpl(ModelFactory modelFactory, TrainingDocumentAnnotatingModel trainingDocumentAnnotatingModel, ModelRVSetting category) {
+    public ClassifierImpl(ModelFactory modelFactory, TrainingDocumentAnnotatingModel trainingDocumentAnnotatingModel, ModelRVSetting modelRVSetting) {
         this.modelFactory = modelFactory;
         this.trainingDocumentAnnotatingModel = trainingDocumentAnnotatingModel;
         this.modelRVSetting = modelRVSetting;

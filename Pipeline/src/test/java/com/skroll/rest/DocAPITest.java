@@ -34,9 +34,9 @@ public class DocAPITest extends APITest {
         Document doc = JsonDeserializer.fromJson(Files.toString(new File(preEvaluatedFolder + documentId), Constants.DEFAULT_CHARSET));
         for(CoreMap coreMap: doc.getParagraphs()){
             CategoryAnnotationHelper.setMatchedText(coreMap, DocumentHelper.createTokens(Lists.newArrayList("Capital", "Stock")), Category.TOC_1);
-            if(CategoryAnnotationHelper.isCategoryId(coreMap, Category.TOC_3)) {
-                System.out.println(CategoryAnnotationHelper.getDefinedTermLists(coreMap, Category.TOC_3));
-                //assert(Joiner.on(" ").join(DocumentHelper.getTOCLists(coreMap)).equals("CapitalStock"));
+            if(CategoryAnnotationHelper.isCategoryId(coreMap, Category.TOC_4)) {
+                System.out.println(CategoryAnnotationHelper.getDefinedTermLists(coreMap, Category.TOC_4));
+                 assert(Joiner.on(" ").join(CategoryAnnotationHelper.getDefinedTermLists(coreMap, Category.TOC_4)).equals("CapitalStock"));
             }
         }
         //API.documentMap.put("smaller-indenture.html",doc);
@@ -81,7 +81,7 @@ public class DocAPITest extends APITest {
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
 
-        String jsonString ="[{\"paragraphId\":\"p_1238\",\"term\":\"Cash Equivalents\", \"classificationId\":4}]";
+        String jsonString ="[{\"paragraphId\":\"p_1238\",\"term\":\"Cash Equivalents\", \"classificationId\":5}]";
         //String jsonString ="[{\"paragraphId\":\"p_1371\",\"term\":\"Disclosure Regarding Forward-Looking Statements\", \"classificationId\":2}]";
 
         Response response = webTarget.request(MediaType.TEXT_HTML).cookie(new  NewCookie("documentId", documentId))
