@@ -44,7 +44,7 @@ public class ParaProcessorTest {
         assert (result == 1);
 
         result = ParaProcessor.getFeatureValue(RVCreater.createRVFromAnnotation(CoreAnnotations.IsItalicAnnotation.class), Lists.newArrayList(para));
-        assert (result == 0);
+        assert (result == 1);
     }
 
     @Test

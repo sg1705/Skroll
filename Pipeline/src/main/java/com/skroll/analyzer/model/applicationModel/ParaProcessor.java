@@ -61,6 +61,16 @@ public class ParaProcessor {
         return vals;
     }
 
+    public static List<String[]> getWordsList(List<RandomVariable> rvs, CoreMap para) {
+        List<String[]> wordsListOfOnePara = new ArrayList<>();
+        for (int w = 0; w < rvs.size(); w++) {
+            wordsListOfOnePara.add(RVValues.getWords(rvs.get(w), para));
+        }
+
+        return wordsListOfOnePara;
+
+    }
+
     // set inquote annotation and make word sets
     static CoreMap processParagraph(CoreMap paragraph, int numWordsToUse) {
         CoreMap trainingParagraph = new CoreMap();

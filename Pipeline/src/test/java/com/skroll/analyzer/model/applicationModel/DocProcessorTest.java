@@ -2,6 +2,7 @@ package com.skroll.analyzer.model.applicationModel;
 
 import com.google.common.collect.Lists;
 import com.skroll.analyzer.data.DocData;
+import com.skroll.analyzer.data.NBFCData;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.NumberTokensComputer;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVCreater;
@@ -64,11 +65,14 @@ public class DocProcessorTest {
     }
 
     @Test
-    public void testGetDataFromDoc() throws Exception {
+    public void testParaGetDataFromDoc() throws Exception {
         List<CoreMap> processedParas = DocProcessor.processParagraphs(doc.getParagraphs(), maxNumWords);
-        DocData data = DocProcessor.getDataFromDoc(doc, processedParas, setting.getNbfcConfig());
+        NBFCData data = DocProcessor.getParaDataFromDoc(doc.getParagraphs(), processedParas, setting.getNbfcConfig());
         System.out.print(data);
-        assert (data.getTuples().length == 2);
+        assert (Arrays.deepToString(data.getParaFeatures()).equals("[[3], [3]]"));
+        assert (Arrays.deepToString(data.getParaDocFeatures()).equals("[[1], [1]]"));
+        assert (Arrays.toString(data.getWordsLists()[0].get(0)).equals("[in, out]"));
+        assert (Arrays.toString(data.getWordsLists()[1].get(0)).equals("[in, out]"));
     }
 
     @Test
@@ -87,7 +91,7 @@ public class DocProcessorTest {
             System.out.println();
         }
         assert (ParaProcessor.getFeatureValue(setting.getNbfcConfig().getAllParagraphFeatures().get(0),
-                Arrays.asList(doc.getParagraphs().get(0), processedParas.get(0))) == 5);
+                Arrays.asList(doc.getParagraphs().get(0), processedParas.get(0))) == 3);
 
         assert (ParaProcessor.getFeatureValue(setting.getNbfcConfig().getAllParagraphFeatures().get(1),
                 Arrays.asList(doc.getParagraphs().get(0), processedParas.get(0))) == 1);
@@ -96,8 +100,9 @@ public class DocProcessorTest {
     @Test
     public void testGenerateDocumentFeatures() throws Exception {
         List<CoreMap> processedParas = DocProcessor.processParagraphs(doc.getParagraphs(), maxNumWords);
-        int[] docFeatureVals =
-                DocProcessor.generateDocumentFeatures(doc.getParagraphs(), processedParas, setting.getNbfcConfig());
+        NBFCData data = DocProcessor.getParaDataFromDoc(doc.getParagraphs(), processedParas, setting.getNbfcConfig());
+        int[] docFeatureVals = DocProcessor.generateDocumentFeatures(
+                doc.getParagraphs(), data.getParaDocFeatures(), setting.getNbfcConfig());
         System.out.println(Arrays.toString(docFeatureVals));
         assert (docFeatureVals.length == 1);
     }
