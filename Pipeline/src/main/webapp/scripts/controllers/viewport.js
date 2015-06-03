@@ -29,6 +29,7 @@ ViewPortCtrl.prototype.mouseUp = function($event) {
   console.log("mouseup clicked");
   //should mouse click handle it
   //find out if this is a selection
+  rangy.getSelection().expand("word", { trim: true });
   var selection = window.getSelection().toString();
   if (selection == '')
     return;
@@ -267,6 +268,10 @@ angular.module('SkrollApp').controller('TrainerPromptCtrl',function($scope,
 ViewPortCtrl.prototype.saveSelection = function(paraId, selectedText) {
   this.SelectionModel.paragraphId = paraId;
   this.SelectionModel.selectedText = selectedText;
+  rangy.getSelection().expand("word", { trim: true });
+  this.SelectionModel.serializedSelection = rangy.serializeSelection(window, $("#"+paraId));
+  this.SelectionModel.serializedParagraphId = paraId;
+  this.LHSModel.addBookmark(7, paraId, selectedText.substring(0,10), rangy.serializeSelection(window, $("#"+paraId)));
 }
 
 ViewPortCtrl.prototype.clearSelection = function() {
