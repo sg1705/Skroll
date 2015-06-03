@@ -163,7 +163,7 @@ function processNode(index, element) {
 
     }
 
-    //processFont(element);
+    processFont(element);
 
     //check to see if the new element is in table
     if (isElementInTable(element)) {
@@ -222,8 +222,14 @@ function setParaAnnotations(newParagraph) {
 function processFont(element) {
     if (element.style != null) {
         if (element.style.fontFamily != null) {
-            $(element).css("font-family","'Roboto', sans-serif");
+            $(element).css("font-family","freight-text-pro, Georgia, Cambria, 'Times New Roman', Times, serif");
+            $(element).css("line-height","25px");
+            $(element).css("font-size", "18px");
+            //$(element).css("font-family","'Roboto', sans-serif");
             //$(element).css("font-family","TiemposTextWeb-Regular, Georgia, serif");
+            //font-family: freight-text-pro, Georgia, Cambria, 'Times New Roman', Times, serif;
+            //line-height:33px;
+            //font-size: 26px
         }
     }
 }
