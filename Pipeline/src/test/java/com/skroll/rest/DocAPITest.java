@@ -56,8 +56,8 @@ public class DocAPITest extends APITest {
         for(CoreMap coreMap: doc.getParagraphs()){
             CategoryAnnotationHelper.setMatchedText(coreMap, DocumentHelper.createTokens(Lists.newArrayList("Capital", "Stock")), Category.TOC_4);
             if(CategoryAnnotationHelper.isCategoryId(coreMap, Category.TOC_4)) {
-                System.out.println(CategoryAnnotationHelper.getDefinedTermLists(coreMap, Category.TOC_4));
-                // assert(Joiner.on(" ").join(CategoryAnnotationHelper.getDefinedTermLists(coreMap, Category.TOC_4)).equals("CapitalStock"));
+                System.out.println("TOC_4:" + CategoryAnnotationHelper.getDefinedTermLists(coreMap, Category.TOC_4));
+                //assert(Joiner.on(" ").join(CategoryAnnotationHelper.getDefinedTermLists(coreMap, Category.TOC_4)).equals("CapitalStock"));
             }
         }
         //API.documentMap.put("smaller-indenture.html",doc);
@@ -69,7 +69,7 @@ public class DocAPITest extends APITest {
 
         for (CoreMap paragraph : doc.getParagraphs()) {
                 List<List<String>> definitionList = CategoryAnnotationHelper.getDefinedTermLists(
-                        paragraph, Category.DEFINITION);
+                        paragraph, Category.TOC_4);
                 logger.debug(paragraph.getId() + " " + Joiner.on(" ").join(definitionList));
 
             if(paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)) {
@@ -102,7 +102,7 @@ public class DocAPITest extends APITest {
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
 
-        String jsonString ="[{\"paragraphId\":\"p_1238\",\"term\":\"Cash Equivalents\", \"classificationId\":5}]";
+        String jsonString ="[{\"paragraphId\":\"p_1238\",\"term\":\"Cash Equivalents\", \"classificationId\":1}]";
         //String jsonString ="[{\"paragraphId\":\"p_1371\",\"term\":\"Disclosure Regarding Forward-Looking Statements\", \"classificationId\":2}]";
 
         Response response = webTarget.request(MediaType.TEXT_HTML).cookie(new  NewCookie("documentId", documentId))

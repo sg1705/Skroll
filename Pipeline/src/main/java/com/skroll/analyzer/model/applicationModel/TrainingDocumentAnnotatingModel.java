@@ -2,14 +2,13 @@ package com.skroll.analyzer.model.applicationModel;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.skroll.analyzer.data.DocData;
 import com.skroll.analyzer.data.NBFCData;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
-import com.skroll.analyzer.model.bn.config.NBFCConfig;
 import com.skroll.analyzer.model.bn.NBTrainingHelper;
 import com.skroll.analyzer.model.bn.NaiveBayesWithFeatureConditions;
 import com.skroll.analyzer.model.bn.SimpleDataTuple;
+import com.skroll.analyzer.model.bn.config.NBFCConfig;
 import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.analyzer.model.bn.node.DiscreteNode;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
@@ -22,7 +21,9 @@ import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
 import com.skroll.util.Visualizer;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by wei2learn on 2/16/2015.
@@ -163,7 +164,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
         if (data == null) data = DocProcessor.getParaDataFromDoc(originalParas, processedParas, nbfcConfig);
         List<CoreMap> observedParas = DocumentHelper.getObservedParagraphs(originalParas);
 
-        int[] docFeatures = DocProcessor.generateDocumentFeatures(observedParas, data.getParaFeatures(), nbfcConfig);
+        int[] docFeatures = DocProcessor.generateDocumentFeatures(observedParas, data.getParaDocFeatures(), nbfcConfig);
         int[][] paraFeatures = data.getParaFeatures();
         int[][] paraDocFeatures = data.getParaDocFeatures();
         List<String[]>[] wordsList = data.getWordsLists();

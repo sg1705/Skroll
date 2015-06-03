@@ -23,8 +23,10 @@ ToolbarCtrl.prototype.toggleTrainerMode = function() {
 }
 
 ToolbarCtrl.prototype.toggleUpdateBNI = function() {
-	ToolbarModel.trainerToolbar.isUpdateBNI = !ToolbarModel.trainerToolbar.isUpdateBNI;
-	this.documentService.setFlags("ENABLE_UPDATE_BNI", ToolbarModel.trainerToolbar.isUpdateBNI);
+	// ToolbarModel.trainerToolbar.isUpdateBNI = !ToolbarModel.trainerToolbar.isUpdateBNI;
+	// this.documentService.setFlags("ENABLE_UPDATE_BNI", ToolbarModel.trainerToolbar.isUpdateBNI);
+	rangy.deserializeSelection(this.SelectionModel.serializedSelection);
+	this.SelectionModel.scrollToParagraph(this.SelectionModel.serializedParagraphId);
 }
 
 ToolbarCtrl.prototype.observeNone = function() {
