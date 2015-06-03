@@ -15,7 +15,6 @@ public class Category {
     public static final int TOC_3 = 4;
     public static final int TOC_4 = 5;
     public static final int TOC_5 = 6;
-    public static final int TOC_6 = 6;
 
     public static final String DEFINITION_NAME = "com.skroll.classifier.DefinitionCategory";
     public static final String TOC_1_NAME ="com.skroll.classifier.TOC_1";

@@ -175,7 +175,7 @@ public class CoreAnnotations {
      * </pre>
      */
 
-    public static class DefinedTermTokensAnnotation implements CoreAnnotation<List<List<Token>>> {
+    public static class TermTokensAnnotation implements CoreAnnotation<List<List<Token>>> {
         public Class<List<List<Token>>> getType() {
             return EraserUtils.<Class<List<List<Token>>>> uncheckedCast(List.class);
         }

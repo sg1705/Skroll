@@ -5,7 +5,6 @@ import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
-import com.skroll.document.annotation.CoreAnnotations;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -37,7 +36,7 @@ public class WordIsTOCComputerTest {
     }
     @Test
     public void testGetValue() throws Exception {
-        logger.info("{}",m.get(CoreAnnotations.DefinedTermTokensAnnotation.class));;
+        logger.info("{}",CategoryAnnotationHelper.getDefinedTermLists(m,Category.DEFINITION));;
         assert(wordIsTOCComputer.getValue(token1,m)==1);
     }
 

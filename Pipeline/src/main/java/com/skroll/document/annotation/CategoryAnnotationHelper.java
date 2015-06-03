@@ -37,7 +37,7 @@ public class CategoryAnnotationHelper {
         HashMap<Integer, CoreMap> categoryAnnotation = coreMap.get(CoreAnnotations.CategoryAnnotations.class);
         if (categoryAnnotation==null) return new ArrayList<>();
         if(categoryAnnotation.get(categoryId)==null) return new ArrayList<>();
-        List<List<Token>> definitionList = categoryAnnotation.get(categoryId).get(CoreAnnotations.DefinedTermTokensAnnotation.class);
+        List<List<Token>> definitionList = categoryAnnotation.get(categoryId).get(CoreAnnotations.TermTokensAnnotation.class);
         List<List<String>> strings = new ArrayList<>();
         if (definitionList==null) return strings;
         for (List<Token> list: definitionList){
@@ -50,7 +50,7 @@ public class CategoryAnnotationHelper {
         HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
         if (categoryAnnotation==null) return new ArrayList<>();
         if(categoryAnnotation.get(categoryId)==null) return new ArrayList<>();
-        return categoryAnnotation.get(categoryId).get(CoreAnnotations.DefinedTermTokensAnnotation.class);
+        return categoryAnnotation.get(categoryId).get(CoreAnnotations.TermTokensAnnotation.class);
     }
 
     public static List<Paragraph> getTerm(Document document) {
@@ -135,10 +135,10 @@ public class CategoryAnnotationHelper {
     public static void addDefinedTokensInCategoryAnnotation(CoreMap paragraph, List<Token> newTokens, int categoryId) {
         HashMap<Integer, CoreMap> categoryAnnotation = checkNull(paragraph, categoryId);
         CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
-        List<List<Token>>  definitionList = annotationCoreMap.get(CoreAnnotations.DefinedTermTokensAnnotation.class);
+        List<List<Token>>  definitionList = annotationCoreMap.get(CoreAnnotations.TermTokensAnnotation.class);
         if (definitionList == null) {
             definitionList = new ArrayList<>();
-            annotationCoreMap.set(CoreAnnotations.DefinedTermTokensAnnotation.class, definitionList);
+            annotationCoreMap.set(CoreAnnotations.TermTokensAnnotation.class, definitionList);
         }
         definitionList.add(newTokens);
         paragraph.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
@@ -147,7 +147,7 @@ public class CategoryAnnotationHelper {
     public static void setDInCategoryAnnotation(CoreMap paragraph, List<List<Token>> definitions, int categoryId) {
         HashMap<Integer, CoreMap> categoryAnnotation = checkNull(paragraph, categoryId);
         CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
-        annotationCoreMap.set(CoreAnnotations.DefinedTermTokensAnnotation.class, definitions);
+        annotationCoreMap.set(CoreAnnotations.TermTokensAnnotation.class, definitions);
         paragraph.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
     }
 

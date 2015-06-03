@@ -1,9 +1,10 @@
 package com.skroll.parser.linker;
 
+import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.Token;
-import com.skroll.document.annotation.CoreAnnotations;
+import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.parser.Parser;
 import com.skroll.pipeline.util.Utils;
 
@@ -35,7 +36,7 @@ public class DefinitionLinkerTest {
                 definedTokens.add(paragraph.getTokens().get(4));
                 List<List<Token>> definedTokenList = new ArrayList();
                 definedTokenList.add(definedTokens);
-                paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class,definedTokenList);
+                CategoryAnnotationHelper.setDInCategoryAnnotation(paragraph, definedTokenList, Category.DEFINITION);
                 // perform all the linking
                 DefinitionLinker linker = new DefinitionLinker();
                 document = linker.linkDefinition(document);

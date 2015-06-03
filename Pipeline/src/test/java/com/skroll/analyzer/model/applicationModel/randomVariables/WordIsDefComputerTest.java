@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Token;
-import com.skroll.document.annotation.CoreAnnotations;
+import com.skroll.document.annotation.CategoryAnnotationHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -32,11 +32,11 @@ public class WordIsDefComputerTest {
         List<Token> tokenList = Lists.newArrayList(token1,token2,token3);
         List<List<Token>> tokens = new ArrayList<>();
         tokens.add(tokenList);
-        m.set(CoreAnnotations.DefinedTermTokensAnnotation.class, tokens);
+        CategoryAnnotationHelper.setDInCategoryAnnotation(m, tokens, Category.DEFINITION);
     }
     @Test
     public void testGetValue() throws Exception {
-        logger.info("{}",m.get(CoreAnnotations.DefinedTermTokensAnnotation.class));
+        logger.info("{}",CategoryAnnotationHelper.getDefinedTermLists(m, Category.DEFINITION));;
         wordIsDefComputer.getValue(token1,m);
         assert(wordIsDefComputer.getValue(token1,m)==1);
     }
