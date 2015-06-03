@@ -49,5 +49,7 @@ public abstract class DocumentAnnotatingModel {
     public NBFCConfig getNbfcConfig() {
         return nbfcConfig;
     }
+
+
 }
 

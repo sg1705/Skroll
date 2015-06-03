@@ -123,6 +123,8 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
             //todo: consider not using paradoc features here, which should make the code simpler.
             int[] paraFeatures = ParaProcessor.getFeatureVals(nbfcConfig.getFeatureVarList(),
                     Arrays.asList(originalParagraphs.get(p), processedParagraphs.get(p)));
+            lpnbfModel.setWordsObservation(ParaProcessor.getWordsList(
+                    nbfcConfig.getWordVarList(), processedParagraphs.get(p)));
             lpnbfModel.setParaFeatureObservation(paraFeatures);
             lpnbfModel.setObservationOfFeatureNodesExistAtDocLevel(paraFeatureValsExistAtDocLevel[p]);
             paragraphCategoryBelief[p] = categoryNode.getParameters().clone();

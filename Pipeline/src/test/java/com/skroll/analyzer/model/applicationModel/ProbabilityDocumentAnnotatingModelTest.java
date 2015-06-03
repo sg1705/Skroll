@@ -31,7 +31,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
 
     File file = new File(testingFileName);
-    Document doc = TestHelper.makeDoc(file);
+    Document doc = TestHelper.makeTrainingDoc(file);
 
     ProbabilityDocumentAnnotatingModel model;
     boolean doneSetup=false;

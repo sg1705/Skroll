@@ -97,4 +97,6 @@ public class ModelRVSetting {
     public List<RandomVariable> getWordFeatures() {
         return wordFeatures;
     }
+
+
 }

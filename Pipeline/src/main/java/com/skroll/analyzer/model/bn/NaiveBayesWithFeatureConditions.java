@@ -58,6 +58,12 @@ public class NaiveBayesWithFeatureConditions extends NaiveBayes{
     }
 
     @JsonIgnore
+    public void setWordsObservation(List<String[]> wordsList) {
+        for (int i = 0; i < wordsList.size(); i++)
+            wordNodes.get(i).setObservation(wordsList.get(i));
+    }
+
+    @JsonIgnore
     public List<DiscreteNode> getDocumentFeatureNodes() {
         return documentFeatureNodes;
     }
