@@ -81,6 +81,16 @@ sk-lhs .md-button {
     text-align: left;
 }
 
+::selection {
+    background:#F5BCA9;
+}
+
+::-moz-selection {
+    background:#F5BCA9;
+}
+
+
+
 /*
 md-content.sk-lhs-hover:hover {
     opacity: 1;
