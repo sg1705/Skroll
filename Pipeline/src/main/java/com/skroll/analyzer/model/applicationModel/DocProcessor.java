@@ -135,7 +135,7 @@ public class DocProcessor {
     // this method is assuming all the doc features are binary
     // also assumes that originalParas contains index annotation,
     // since observed paragraphs to be processed may not be all the paragraphs in the document.
-    public static int[] generateDocumentFeatures(List<CoreMap> observedParas, int[][] allParaFeatures,
+    public static int[] generateDocumentFeatures(List<CoreMap> observedParas, int[][] allParaDocFeatures,
                                                  NBFCConfig nbfcConfig) {
 
         int[] docFeatureValues = new int[nbfcConfig.getDocumentFeatureVarList().size()];
@@ -146,7 +146,7 @@ public class DocProcessor {
             int paraIndex = paragraph.get(CoreAnnotations.IndexInteger.class);
             for (int f = 0; f < docFeatureValues.length; f++) {
                 if (RVValues.getValue(nbfcConfig.getCategoryVar(), observedParas.get(p)) == 1)
-                    docFeatureValues[f] &= allParaFeatures[paraIndex][f];
+                    docFeatureValues[f] &= allParaDocFeatures[paraIndex][f];
             }
         }
         return docFeatureValues;
