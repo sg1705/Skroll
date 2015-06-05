@@ -23,7 +23,7 @@ public class ModelFactory {
     public static final Logger logger = LoggerFactory.getLogger(ModelFactory.class);
 
     Configuration configuration = new Configuration();
-    private String modelFolderName = configuration.get("modelFolder","/tmp");
+    protected String modelFolderName = configuration.get("modelFolder","/tmp");
     protected ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil(modelFolderName);
     protected  Map<Integer, TrainingDocumentAnnotatingModel> TrainingModelMap = new HashMap<>();
     protected  Map<Integer, ProbabilityDocumentAnnotatingModel> bniModelMap = new HashMap<>();

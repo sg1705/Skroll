@@ -33,7 +33,7 @@ public class ModelFactoryTest extends TestCase {
     public void testGetBNIModel() throws Exception {
          ModelFactory modelFactory = new ModelFactory();
         Document doc =  Parser.parseDocumentFromHtml(Files.toString(new File("src/test/resources/classifier/smaller-indenture.html"), Constants.DEFAULT_CHARSET));
-        ProbabilityDocumentAnnotatingModel model = modelFactory.getBNIModel(new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME), doc);
+        ProbabilityDocumentAnnotatingModel model = modelFactory.createBNIModel(new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME), doc);
         if(model==null){
             fail("failed to create training model");
         }
