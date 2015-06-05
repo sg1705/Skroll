@@ -79,7 +79,7 @@ public class CategoryAnnotationHelper {
                         List<List<String>> definitionList = getDefinedTermLists(paragraph, categoryId);
                         for (List<String> definition : definitionList) {
                             if (logger.isDebugEnabled())
-                                logger.trace("{} \t {} \t {}", paragraph.getId(), categoryId, definition);
+                                logger.debug("{} \t {} \t {}", paragraph.getId(), categoryId, definition);
                         }
             }
     }

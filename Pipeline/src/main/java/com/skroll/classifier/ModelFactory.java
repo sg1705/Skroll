@@ -25,12 +25,12 @@ public class ModelFactory {
     Configuration configuration = new Configuration();
     private String modelFolderName = configuration.get("modelFolder","/tmp");
     protected ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil(modelFolderName);
-    protected static Map<String, TrainingDocumentAnnotatingModel> TrainingModelMap = new HashMap<>();
-    protected Map<String, ProbabilityDocumentAnnotatingModel> bniModelMap = new HashMap<>();
+    protected  Map<Integer, TrainingDocumentAnnotatingModel> TrainingModelMap = new HashMap<>();
+    protected  Map<Integer, ProbabilityDocumentAnnotatingModel> bniModelMap = new HashMap<>();
 
     TrainingDocumentAnnotatingModel getTrainingModel(ModelRVSetting modelRVSetting) {
-        if (TrainingModelMap.containsKey(modelRVSetting.getCategoryName())){
-            return TrainingModelMap.get(modelRVSetting.getCategoryName());
+        if (TrainingModelMap.containsKey(modelRVSetting.getCategoryId())){
+            return TrainingModelMap.get(modelRVSetting.getCategoryId());
         }
         return createModel(modelRVSetting);
     }
@@ -54,11 +54,11 @@ public class ModelFactory {
             localTrainingModel = new TrainingDocumentAnnotatingModel(modelRVSetting);
         }
 
-        TrainingModelMap.put(modelRVSetting.getCategoryName(), localTrainingModel);
+        TrainingModelMap.put(modelRVSetting.getCategoryId(), localTrainingModel);
         return localTrainingModel;
     }
 
-    ProbabilityDocumentAnnotatingModel getBNIModel(ModelRVSetting modelRVSetting, Document document) {
+    ProbabilityDocumentAnnotatingModel createBNIModel(ModelRVSetting modelRVSetting, Document document) {
 
         TrainingDocumentAnnotatingModel trainingModel = getTrainingModel(modelRVSetting);
         trainingModel.updateWithDocumentAndWeight(document);
@@ -67,8 +67,17 @@ public class ModelFactory {
                 trainingModel.getHmm(), document,modelRVSetting );
         bniModel.annotateDocument();
         //printBelieves(bniModel, document);
+        bniModelMap.put(modelRVSetting.getCategoryId(),bniModel);
         return bniModel;
     }
+
+    ProbabilityDocumentAnnotatingModel getBNIModel(ModelRVSetting modelRVSetting) {
+        if (bniModelMap.containsKey(modelRVSetting.getCategoryId())){
+            return bniModelMap.get(modelRVSetting.getCategoryId());
+        }
+        return null;
+    }
+
     public void saveTrainingModel(ModelRVSetting modelRVSetting) throws ObjectPersistUtil.ObjectPersistException {
         objectPersistUtil.persistObject(null, getTrainingModel(modelRVSetting), modelRVSetting.getCategoryName());
     }
