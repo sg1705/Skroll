@@ -41,4 +41,5 @@ public interface Classifier {
     public List<Double> getProbabilityDataForDoc(Document doc);
 
     public void persistModel() throws ObjectPersistUtil.ObjectPersistException;
+
 }
