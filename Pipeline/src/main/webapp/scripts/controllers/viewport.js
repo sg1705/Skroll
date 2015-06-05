@@ -17,7 +17,7 @@ var ViewPortCtrl = function(SelectionModel, documentService, $mdBottomSheet,
   this.LHSModel = LHSModel;
   this.documentModel = documentModel;
   this.documentModel.documentId = $routeParams.docId;
-  this.SelectionModel.serializedParagraphId = decodeURIComponent(decodeURIComponent($routeParams.linkId));
+  this.SelectionModel.serializedSelection = decodeURIComponent(decodeURIComponent($routeParams.linkId));
 }
 
 ViewPortCtrl.prototype.mouseDown = function($event) {
