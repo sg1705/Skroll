@@ -18,17 +18,16 @@ import java.util.*;
  */
 public class DocProcessor {
 
-    static Map<Document, List<CoreMap>> processedDataMap = new HashMap<>();
+    static Map<Document, List<CoreMap>> processedParasMap = new HashMap<>();
 
-//    static List<CoreMap> processParagraphs(Document doc, int numWordsToUse) {
-//        List<CoreMap> processedParas = processedDataMap.get()
-//        List<CoreMap> processedParas = new ArrayList<>();
-//        for (int i = 0; i < paras.size(); i++) {
-//            processedParas.add(ParaProcessor.processParagraph(paras.get(i), numWordsToUse));
-//            paras.get(i).set(CoreAnnotations.IndexInteger.class, i);
-//        }
-//        return processedParas;
-//    }
+    static List<CoreMap> processParagraphs(Document doc, int numWordsToUse) {
+        List<CoreMap> processedParas = processedParasMap.get(doc);
+        if (processedParas != null) return processedParas;
+        processedParas = processParagraphs(doc.getParagraphs(), numWordsToUse);
+        processedParasMap.put(doc, processedParas);
+
+        return processedParas;
+    }
     /**
      * Processes a paragraph by taking the number of starting words to use
      * @param paras
@@ -36,7 +35,6 @@ public class DocProcessor {
      * @return
      */
     static List<CoreMap> processParagraphs(List<CoreMap> paras, int numWordsToUse) {
-//        List<CoreMap> processedParas = processedDataMap.get()
         List<CoreMap> processedParas = new ArrayList<>();
         for (int i = 0; i < paras.size(); i++) {
             processedParas.add(ParaProcessor.processParagraph(paras.get(i), numWordsToUse));

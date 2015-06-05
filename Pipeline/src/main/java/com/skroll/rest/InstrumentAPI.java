@@ -20,6 +20,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Path("/instrument")
@@ -81,14 +82,14 @@ public class InstrumentAPI {
 
         // get the json from BNI
         try {
-//            HashMap<String, HashMap<String, Double>> map = classifierFactory.getClassifier(Category.DEFINITION).getBNIVisualMap(doc, paraIndex);
-//            HashMap<String, HashMap<String, HashMap<String, Double>>> modelMap = classifierFactory.getClassifier(Category.DEFINITION).getModelVisualMap();
-//            probabilityJson = gson.toJson(map);
-//            buf.append(probabilityJson);
-//            buf.append(",");
-//            probabilityJson = gson.toJson(modelMap);
-//            buf.append(probabilityJson);
-//            buf.append(",");
+            HashMap<String, HashMap<String, Double>> map = classifierFactory.getClassifier(Category.DEFINITION).getBNIVisualMap(doc, paraIndex);
+            HashMap<String, HashMap<String, HashMap<String, Double>>> modelMap = classifierFactory.getClassifier(Category.DEFINITION).getModelVisualMap();
+            probabilityJson = gson.toJson(map);
+            buf.append(probabilityJson);
+            buf.append(",");
+            probabilityJson = gson.toJson(modelMap);
+            buf.append(probabilityJson);
+            buf.append(",");
 //            for (Classifier classifier : request.getClassifiers()) {
 //                map = classifier.getBNIVisualMap(doc, paraIndex);
 //                probabilityJson = gson.toJson(map);

@@ -68,8 +68,10 @@ public class TrainingWeightAnnotationHelper {
     public static double[][] getParagraphWeight(CoreMap para, RandomVariable paraType, int categoryId) {
         List<Float>  weightList = para.get(CoreAnnotations.TrainingWeightAnnotationFloat.class);
         double[][] weights = new double[2][paraType.getFeatureSize()];
-          weights[0][1] = weightList.get(categoryId);
-          weights[1][1] = weightList.get(categoryId+LATEST_WEIGHT_INDEX);
-            return weights;
+        weights[0][0] = weightList.get(Category.NONE);
+        weights[1][0] = weightList.get(Category.NONE + LATEST_WEIGHT_INDEX);
+        weights[0][1] = weightList.get(categoryId);
+        weights[1][1] = weightList.get(categoryId + LATEST_WEIGHT_INDEX);
+        return weights;
     }
 }

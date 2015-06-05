@@ -2,6 +2,7 @@ package com.skroll.analyzer.model.applicationModel;
 
 import com.aliasi.stats.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.skroll.analyzer.data.NBFCData;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
 import com.skroll.analyzer.model.bn.config.NBFCConfig;
@@ -33,6 +34,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
     // todo: should probably store paragraphs, otherwise, need to recreate it everytime when model has new observations
     List<CoreMap> processedParagraphs = new ArrayList<>();
     int [][] paraFeatureValsExistAtDocLevel;
+    NBFCData data;
 
     double[][][] messagesToParagraphCategory; //From feature ij to paragraph i category
     double[][][] messagesToDocumentFeature; //From feature ij to documentFeature j
