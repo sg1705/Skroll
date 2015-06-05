@@ -3,7 +3,6 @@ package com.skroll.classifier;
 import com.skroll.analyzer.model.applicationModel.DefModelRVSetting;
 import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
 import com.skroll.analyzer.model.applicationModel.TOCModelRVSetting;
-import com.skroll.analyzer.model.applicationModel.TrainingDocumentAnnotatingModel;
 import com.skroll.document.Document;
 
 import javax.inject.Inject;
@@ -37,11 +36,11 @@ public class ClassifierFactory {
         } else {
             throw new Exception("No category id found: "+ categoryId);
         }
-        TrainingDocumentAnnotatingModel trainingDocumentAnnotatingModel = modelFactory.getTrainingModel(modelRVSetting);
+        //TrainingDocumentAnnotatingModel trainingDocumentAnnotatingModel = modelFactory.getTrainingModel(modelRVSetting);
         if (classifiers.containsKey(categoryId))
             return classifiers.get(categoryId);
         Classifier classifier =
-                new ClassifierImpl(modelFactory, trainingDocumentAnnotatingModel, modelRVSetting);
+                new ClassifierImpl(modelFactory, modelRVSetting);
         classifiers.put(categoryId, classifier);
         return classifier;
     }

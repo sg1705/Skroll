@@ -37,8 +37,7 @@ public class ModelFactory {
 
 
     public TrainingDocumentAnnotatingModel createModel(ModelRVSetting modelRVSetting) {
-        TrainingDocumentAnnotatingModel localTrainingModel =
-                null;
+        TrainingDocumentAnnotatingModel localTrainingModel = null;
 
         if (localTrainingModel == null) {
             try {
@@ -60,11 +59,11 @@ public class ModelFactory {
 
     ProbabilityDocumentAnnotatingModel createBNIModel(ModelRVSetting modelRVSetting, Document document) {
 
-        TrainingDocumentAnnotatingModel trainingModel = getTrainingModel(modelRVSetting);
-        trainingModel.updateWithDocumentAndWeight(document);
+        TrainingDocumentAnnotatingModel tmpModel = createModel(modelRVSetting);
+        tmpModel.updateWithDocumentAndWeight(document);
 
-        ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(trainingModel.getTnbfModel(),
-                trainingModel.getHmm(), document,modelRVSetting );
+        ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(tmpModel.getTnbfModel(),
+                tmpModel.getHmm(), document,modelRVSetting );
         bniModel.annotateDocument();
         //printBelieves(bniModel, document);
         bniModelMap.put(modelRVSetting.getCategoryId(),bniModel);

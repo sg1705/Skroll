@@ -1,7 +1,6 @@
 package com.skroll.classifier;
 
 import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
-import com.skroll.analyzer.model.applicationModel.TrainingDocumentAnnotatingModel;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.Token;
@@ -25,7 +24,7 @@ public class ClassifierImpl implements Classifier {
     public static final Logger logger = LoggerFactory.getLogger(ClassifierImpl.class);
 
     protected ModelFactory modelFactory;
-    protected TrainingDocumentAnnotatingModel trainingDocumentAnnotatingModel;
+    //protected TrainingDocumentAnnotatingModel trainingDocumentAnnotatingModel;
     @Override
     public ModelRVSetting getModelRVSetting() {
         return modelRVSetting;
@@ -33,9 +32,8 @@ public class ClassifierImpl implements Classifier {
 
     protected ModelRVSetting modelRVSetting;
 
-    public ClassifierImpl(ModelFactory modelFactory, TrainingDocumentAnnotatingModel trainingDocumentAnnotatingModel, ModelRVSetting modelRVSetting) {
+    public ClassifierImpl(ModelFactory modelFactory,  ModelRVSetting modelRVSetting) {
         this.modelFactory = modelFactory;
-        this.trainingDocumentAnnotatingModel = trainingDocumentAnnotatingModel;
         this.modelRVSetting = modelRVSetting;
     }
 
@@ -71,12 +69,12 @@ public class ClassifierImpl implements Classifier {
 
     @Override
     public void train(Document doc) {
-        trainingDocumentAnnotatingModel.updateWithDocument(doc);
+        modelFactory.getTrainingModel(modelRVSetting).updateWithDocument(doc);
 
     }
     @Override
     public void trainWithWeight( Document doc) {
-        trainingDocumentAnnotatingModel.updateWithDocumentAndWeight(doc);
+        modelFactory.getTrainingModel(modelRVSetting).updateWithDocumentAndWeight(doc);
 
     }
 
