@@ -3,7 +3,6 @@ package com.skroll.rest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.skroll.classifier.Category;
-import com.skroll.classifier.Classifier;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -21,7 +20,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @Path("/instrument")
@@ -104,6 +102,7 @@ public class InstrumentAPI {
 //            buf.append(",");
             buf.append(annotationJson);
             buf.append("]");
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -59,7 +59,7 @@ public class ClassifierImpl implements Classifier {
 
         logger.debug("Before annotate");
         CategoryAnnotationHelper.displayCategoryOfDoc(document);
-        modelFactory.getBNIModel(modelRVSetting, document);
+        modelFactory.createBNIModel(modelRVSetting, document);
 
         logger.debug("After annotate");
         CategoryAnnotationHelper.displayCategoryOfDoc(document);
@@ -110,7 +110,7 @@ public class ClassifierImpl implements Classifier {
 
     @Override
     public HashMap<String, HashMap<String, Double>> getBNIVisualMap( Document document, int paraIndex) {
-        return modelFactory.getBNIModel(modelRVSetting, document).toVisualMap(paraIndex);
+        return modelFactory.getBNIModel(modelRVSetting).toVisualMap(paraIndex);
     }
 
 
@@ -121,7 +121,7 @@ public class ClassifierImpl implements Classifier {
 
     @Override
     public List<Double> getProbabilityDataForDoc(Document document) {
-        return modelFactory.getBNIModel(modelRVSetting,document).toParaCategoryDump();
+        return modelFactory.getBNIModel(modelRVSetting).toParaCategoryDump();
     }
 
     @Override
