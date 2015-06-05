@@ -17,6 +17,7 @@ var ViewPortCtrl = function(SelectionModel, documentService, $mdBottomSheet,
   this.LHSModel = LHSModel;
   this.documentModel = documentModel;
   this.documentModel.documentId = $routeParams.docId;
+  this.SelectionModel.serializedParagraphId = decodeURIComponent(decodeURIComponent($routeParams.linkId));
 }
 
 ViewPortCtrl.prototype.mouseDown = function($event) {
@@ -29,18 +30,21 @@ ViewPortCtrl.prototype.mouseUp = function($event) {
   console.log("mouseup clicked");
   //should mouse click handle it
   //find out if this is a selection
-  rangy.getSelection().expand("word", { trim: true });
+  if (rangy.getSelection().toString() != '') {
+    rangy.getSelection().expand("word", { trim: true });  
+  }
+  
   var selection = window.getSelection().toString();
   if (selection == '')
     return;
 
   //clear selection
-  this.clearSelection();
+  this.SelectionModel.clearSelection();
   var paraId = this.inferParagraphId($event);
   if (paraId == null)
     return;
   //save selection
-  this.saveSelection(paraId, selection);
+  this.SelectionModel.saveSelection(paraId, selection);
 
   if (ToolbarModel.trainerToolbar.isTrainerMode) {
     this.handleTrainerTextSelection(paraId, selection);
@@ -56,7 +60,7 @@ ViewPortCtrl.prototype.paraClicked = function($event) {
   if (selection != '')
     return;
   //clear highlight
-  this.clearSelection();
+  this.SelectionModel.clearSelection();
   var paraId = this.inferParagraphId($event);
   if (paraId == null)
     return;
@@ -107,9 +111,9 @@ ViewPortCtrl.prototype.highlightParagraph = function(paraId) {
   $("#" + paraId).css("background-color", "yellow");
 }
 
-ViewPortCtrl.prototype.removeHighlightParagraph = function(paraId) {
-  $("#" + paraId).css("background-color", "");
-}
+// ViewPortCtrl.prototype.removeHighlightParagraph = function(paraId) {
+//   $("#" + paraId).css("background-color", "");
+// }
 
 ViewPortCtrl.prototype.inferParagraphId = function($event) {
 
@@ -265,23 +269,24 @@ angular.module('SkrollApp').controller('TrainerPromptCtrl',function($scope,
   }
 });
 
-ViewPortCtrl.prototype.saveSelection = function(paraId, selectedText) {
-  this.SelectionModel.paragraphId = paraId;
-  this.SelectionModel.selectedText = selectedText;
-  rangy.getSelection().expand("word", { trim: true });
-  this.SelectionModel.serializedSelection = rangy.serializeSelection(window, $("#"+paraId));
-  this.SelectionModel.serializedParagraphId = paraId;
-  this.LHSModel.addBookmark(7, paraId, selectedText.substring(0,10), rangy.serializeSelection(window, $("#"+paraId)));
-}
+// ViewPortCtrl.prototype.saveSelection = function(paraId, selectedText) {
+//   this.SelectionModel.paragraphId = paraId;
+//   this.SelectionModel.selectedText = selectedText;
+//   this.SelectionModel.serializedSelection = rangy.serializeSelection(rangy.getSelection($("#content").get(0)), false, $("#content").get(0));
+//   console.log(this.SelectionModel.serializedSelection);
+//   console.log(encodeURIComponent(encodeURIComponent(this.SelectionModel.serializedSelection)));
+//   this.SelectionModel.serializedParagraphId = paraId;
+//   this.LHSModel.addBookmark(7, paraId, selectedText.substring(0,10), rangy.serializeSelection(window, $("#content")));
+// }
 
-ViewPortCtrl.prototype.clearSelection = function() {
-  //clear highlight
-  if (this.SelectionModel.paragraphId != '') {
-    this.removeHighlightParagraph(this.SelectionModel.paragraphId);
-  }
-  this.SelectionModel.paragraphId = '';
-  this.SelectionModel.selectedText = '';
-}
+// ViewPortCtrl.prototype.clearSelection = function() {
+//   //clear highlight
+//   if (this.SelectionModel.paragraphId != '') {
+//     this.removeHighlightParagraph(this.SelectionModel.paragraphId);
+//   }
+//   this.SelectionModel.paragraphId = '';
+//   this.SelectionModel.selectedText = '';
+// }
 
 angular.module('SkrollApp')
   .controller('ViewPortCtrl', ['SelectionModel', 'documentService',
