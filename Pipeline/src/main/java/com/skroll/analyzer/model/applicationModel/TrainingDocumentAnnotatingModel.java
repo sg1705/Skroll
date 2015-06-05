@@ -178,11 +178,9 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
                 NBTrainingHelper.addSample(tnbfModel, new SimpleDataTuple(wordsList[i], values), weights[c]);
             }
 
+            updateHMMWithParagraph(originalParas.get(i), processedParas.get(i));
         }
 
-        for (int p = 0; p < originalParas.size(); p++) {
-            updateHMMWithParagraph(originalParas.get(p), processedParas.get(p));
-        }
     }
 
     /**
