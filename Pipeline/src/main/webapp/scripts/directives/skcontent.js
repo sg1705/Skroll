@@ -7,8 +7,8 @@
  * # fileUpload
  */
 angular.module('SkrollApp')
-  .directive('skContent', ['documentModel', 'documentService', 'LHSModel',
-    function(documentModel, documentService, LHSModel) {
+  .directive('skContent', ['documentModel', 'documentService', 'LHSModel', 'SelectionModel', '$timeout',
+    function(documentModel, documentService, LHSModel, SelectionModel, $timeout) {
     return {
       restricted: 'E',
       transclude: true,
@@ -24,7 +24,16 @@ angular.module('SkrollApp')
                 console.log(terms);
                 element.replaceWith(documentModel.targetHtml);
                 ToolbarModel.toolbarInfo.title = documentModel.documentId;
-                documentModel.isProcessing = false;
+                $timeout(function() {
+                  console.log(SelectionModel.serializedSelection);
+                  if ((SelectionModel.serializedSelection === undefined) || (SelectionModel.serializedSelection == "undefined")) {
+                    
+                  } else {
+                    SelectionModel.scrollToSelection(SelectionModel.serializedSelection);
+                  }
+                  documentModel.isProcessing = false;
+                }, 0);
+                //documentModel.isProcessing = false;
               }, function(data, status) {
                 console.log(status);
               });

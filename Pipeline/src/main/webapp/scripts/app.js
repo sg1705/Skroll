@@ -9,7 +9,7 @@
  * Main module of the application.
  */
 
-angular.module('SkrollApp', ['ngMaterial', 'ngSanitize', 'ngTouch', 'ngRoute']);
+angular.module('SkrollApp', ['ngMaterial', 'ngSanitize', 'ngTouch', 'ngRoute', 'ngSilent']);
 
 //** when newer version of material comes out
 //this is lifted from http://goo.gl/mrWZ0F
@@ -33,6 +33,11 @@ angular.module('SkrollApp')
 			controller: 'ContentCtrl',
 			reloadOnSearch: false
 		}).
+		when('/view/docId/:docId/linkId/:linkId', {
+			templateUrl: 'partials/viewport.tmpl.html',
+			controller: 'ContentCtrl',
+			reloadOnSearch: false
+		}).		
 		otherwise({
 			redirectTo: '/list'
 		});
