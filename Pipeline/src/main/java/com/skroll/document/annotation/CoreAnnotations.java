@@ -279,7 +279,18 @@ public class CoreAnnotations {
         }
     }
 
- /**
+    /**
+     * Annotation to indicate that this paragraph has an outgoing href
+     */
+    public static class IsHrefAnnotation implements CoreAnnotation<Boolean> {
+        public Class<Boolean> getType() {
+            return Boolean.class;
+        }
+    }
+
+
+
+    /**
      * Annotation for training. It specifies the index of a word token in the paragraph.
      */
 
