@@ -290,6 +290,7 @@ public class CoreAnnotations {
 
 
 
+
     /**
      * Annotation for training. It specifies the index of a word token in the paragraph.
      */
@@ -334,6 +335,16 @@ public class CoreAnnotations {
     public static class SourceUrlAnnotation implements CoreAnnotation<String> {
         public Class<String> getType() {
             return String.class;
+        }
+    }
+
+
+    /**
+     * Annotation for version of parser
+     */
+    public static class ParserVersionAnnotationInteger implements CoreAnnotation<Integer> {
+        public Class<Integer> getType() {
+            return Integer.class;
         }
     }
 

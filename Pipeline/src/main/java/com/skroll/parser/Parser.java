@@ -13,6 +13,8 @@ import com.skroll.pipeline.util.Utils;
  */
 public class Parser {
 
+    public static final int VERSION = 1;
+
     private static Document parseInDoc(Document document) throws ParserException {
         //create a pipeline
         Pipeline<Document, Document> pipeline =
@@ -22,6 +24,7 @@ public class Parser {
                         .add(Pipes.TOKENIZE_PARAGRAPH_IN_HTML_DOC)
                         .build();
         document = pipeline.process(document);
+        setVersion(document);
         return document;
     }
 
@@ -69,6 +72,10 @@ public class Parser {
         }
         Document document = parseDocumentFromHtml(htmlText);
         return document;
+    }
+
+    private static void setVersion(Document doc) {
+        doc.set(CoreAnnotations.ParserVersionAnnotationInteger.class, VERSION);
     }
 
 }
