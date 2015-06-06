@@ -184,15 +184,9 @@ public class DocAPI {
     public Response getDoc(@QueryParam("documentId") String documentId, @Context HttpHeaders hh, @BeanParam RequestBean request) {
 
         Document doc = request.getDocument();
-        String jsonString = null;
         if (doc == null) {
             logger.debug("Not found in documentMap, fetching from corpus: {}", documentId.toString());
-            try {
-                jsonString = Files.toString(new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
-                doc = JsonDeserializer.fromJson(jsonString);
-            } catch (Exception e) {
-                return logErrorResponse("Failed to read/deserialize document from Pre Evaluated Folder", e);
-            }
+            return logErrorResponse("Failed to read/deserialize document from Pre Evaluated Folder");
         }
         //Streams require final objects
         final Document finalDoc = doc;
