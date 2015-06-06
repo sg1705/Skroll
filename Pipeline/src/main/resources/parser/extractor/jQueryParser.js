@@ -81,6 +81,7 @@ var DEBUG = false;
 var isAnchor = false;
 var isFirstChunkOfPara = true;
 var isBlockInTable = false;
+var isHref = false;
 
 // core annotations
 var ID_ANNOTATION = "IdAnnotation";
@@ -96,6 +97,7 @@ var IS_CENTER_ALIGNED_ANNOTATION = "IsCenterAlignedAnnotation";
 var FONTSIZE_ANNOTATION = "FontSizeAnnotation";
 var IS_ANCHOR_ANNOTATION = "IsAnchorAnnotation";
 var IS_TABLE_ANNOTATION = "IsInTableAnnotation";
+var IS_HREF_ANNOTATION = "IsHrefAnnotation";
 
  function CoreMap(chunkId, text) {
 
@@ -216,6 +218,9 @@ function setParaAnnotations(newParagraph) {
       newParagraph[IS_ANCHOR_ANNOTATION] = true;
     }
 
+    if (isHref) {
+        newParagraph[IS_HREF_ANNOTATION] = true;
+    }
 
 }
 
@@ -239,6 +244,7 @@ function resetPara() {
     pageBreak = false;
     isAnchor = false;
     isFirstChunkOfPara = true;
+    isHref = false;
 }
 
 
@@ -419,6 +425,7 @@ function isAnchorElement(element) {
         var href = $(element).attr('href');
         if (href != null) {
             //check to see if an external link or anchor
+            isHref = true;
             var lastIndexOfHash = href.lastIndexOf("#");
             var lastIndexOfSlash = href.lastIndexOf("/");
             if (lastIndexOfHash > lastIndexOfSlash) {

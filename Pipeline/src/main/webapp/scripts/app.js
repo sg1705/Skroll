@@ -9,7 +9,7 @@
  * Main module of the application.
  */
 
-angular.module('SkrollApp', ['ngMaterial', 'ngSanitize', 'ngTouch', 'ngRoute', 'ngSilent']);
+angular.module('SkrollApp', ['ngMaterial', 'ngSanitize', 'ngTouch', 'ngRoute', 'ngSilent', 'feature-flags']);
 
 //** when newer version of material comes out
 //this is lifted from http://goo.gl/mrWZ0F
@@ -45,3 +45,17 @@ angular.module('SkrollApp')
 	    $locationProvider.hashPrefix("!");
 
 	});
+
+angular.module('SkrollApp')
+	.run(function(featureFlags, $http) {
+		var flags = [ 
+			{
+				"key" : "trainer",
+				"active" : false,
+				"name" : "flag for trainer",
+				"description" : "no description"
+			}
+		];
+  		featureFlags.set(flags);
+		}
+	);
