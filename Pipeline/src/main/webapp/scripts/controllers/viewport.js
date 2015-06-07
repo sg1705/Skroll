@@ -206,7 +206,7 @@ ViewPortCtrl.prototype.handleTrainerParaSelection = function(paraId) {
 ViewPortCtrl.prototype.updateDocument = function(contentHtml) {
   //$("#content").html(contentHtml);
   this.documentService.getTerms().then(function(terms){
-    LHSModel.smodel.terms = terms;
+    LHSModel.setTerms(terms);
     console.log("Terms return by API");
     console.log(terms);
     documentModel.isProcessing = false;

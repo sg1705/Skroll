@@ -20,7 +20,7 @@ angular.module('SkrollApp')
 
               //$(element).html(documentModel.targetHtml)
                 documentService.getTerms().then(function(terms) {
-                LHSModel.smodel.terms = terms;
+                LHSModel.setTerms(terms);
                 console.log(terms);
                 element.replaceWith(documentModel.targetHtml);
                 ToolbarModel.toolbarInfo.title = documentModel.documentId;
