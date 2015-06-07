@@ -316,8 +316,8 @@ public class DocAPI {
         try {
             if (!parasForUpdateBNI.isEmpty()) {
                 for (Classifier classifier : request.getClassifiers()) {
-                    logger.debug("updateCategoryId: {}, classifier.getCategory().getId(): {}", updateCategoryId, classifier.getCategory().getId());
-                    if(classifier.getCategory().getId() == updateCategoryId) {
+                    logger.debug("updateCategoryId: {}, classifier.getCategory().getId(): {}", updateCategoryId, classifier.getModelRVSetting().getCategoryId());
+                    if(classifier.getModelRVSetting().getCategoryId() == updateCategoryId) {
                         doc = (Document) classifier.updateBNI(documentId, doc, parasForUpdateBNI);
                     }
                 }
@@ -346,7 +346,7 @@ public class DocAPI {
             classifier.trainWithWeight(doc);
             for (CoreMap paragraph : doc.getParagraphs()) {
                 if (paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)) {
-                    TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, classifier.getCategory().getId(), userWeight);
+                    TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, classifier.getModelRVSetting().getCategoryId(), userWeight);
                 }
             }
             try {

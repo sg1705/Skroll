@@ -1,8 +1,9 @@
 package com.skroll.util;
 
-import com.skroll.analyzer.model.TrainingDocumentAnnotatingModel;
+import com.skroll.analyzer.model.applicationModel.DefModelRVSetting;
+import com.skroll.analyzer.model.applicationModel.TrainingDocumentAnnotatingModel;
 import com.skroll.classifier.Category;
-import com.skroll.classifier.DefinitionCategory;
+import com.skroll.classifier.ModelFactory;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,15 +15,8 @@ public class ObjectPersistUtilTest {
             .getLogger(ObjectPersistUtilTest.class);
     @Test
     public void testPersistReadObject() throws Exception {
-
-        Category category = new DefinitionCategory();
-        TrainingDocumentAnnotatingModel localTrainingModel = new TrainingDocumentAnnotatingModel(category.getWordType(),
-                category.getWordFeatures(),
-                category.getParaType(),
-                category.getParaFeatures(),
-                category.getParaDocFeatures(),
-                category.getDocFeatures(),
-                category.getWordVarList());
+        ModelFactory modelFactory = new ModelFactory();
+        TrainingDocumentAnnotatingModel model = modelFactory.createModel(new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME));
 
         ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil("/tmp");
 

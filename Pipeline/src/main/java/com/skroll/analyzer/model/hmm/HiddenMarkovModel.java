@@ -9,7 +9,7 @@ import java.util.*;
  * Created by wei2learn on 12/23/2014.
  */
 public class HiddenMarkovModel {
-    static final int DEFAULT_MODEL_LENGTH = 12;
+    public static final int DEFAULT_MODEL_LENGTH = 12;
     static final int MAX_MODEL_LENGTH = 20;
     static final int DEFAULT_NUM_STATE_VALUES = 2;
     static final double PRIOR_COUNT = .1;// 40;
@@ -152,42 +152,42 @@ public class HiddenMarkovModel {
         return modelLength;
     }
     public String showProbabilities(){
-        String s="";
-        s+= "stateValueProbability " + Arrays.toString(stateValueProbability) +'\n';
-        s+= "transitionProbability " + Arrays.deepToString(transitionProbability) +'\n';
-        s+= "featureValueProbabilityGivenState \n";
+        StringBuffer stringBuffer=new StringBuffer();
+        stringBuffer.append("stateValueProbability " + Arrays.toString(stateValueProbability) +'\n');
+        stringBuffer.append("transitionProbability " + Arrays.deepToString(transitionProbability) +'\n');
+        stringBuffer.append("featureValueProbabilityGivenState \n");
         for (List<double[]> featureValueProb: featureValueProbabilityGivenState){
             for( double[] values: featureValueProb){
-                s += Arrays.toString(values);
+                stringBuffer.append(Arrays.toString(values));
             }
             System.out.println();
         }
 
         //s+= "stateNumberProbabilityGivenStateValue " + Arrays.deepToString(stateNumberProbabilityGivenStateValue) +'\n';
         for (Map<String, Double> m: tokenProbabilityGivenStateValue)
-            s+= "tokenCounts " +  Arrays.toString(m.entrySet().toArray())  +'\n';
+            stringBuffer.append("tokenCounts " +  Arrays.toString(m.entrySet().toArray())  +'\n');
         for (Map<String, Double> m: nextTokenProbabilityGivenStateValue)
-            s+= "nextTokenProbabilityGivenStateValue " + Arrays.toString(m.entrySet().toArray())  +'\n';
-        return s;
+            stringBuffer.append("nextTokenProbabilityGivenStateValue " + Arrays.toString(m.entrySet().toArray())  +'\n');
+        return stringBuffer.toString();
     }
 
     public String showCounts(){
-        String s="";
-        s+= "totalStateValueCounts " + Arrays.toString(totalStateValueCounts) +'\n';
-        s+= "transitionCounts " + Arrays.deepToString(transitionCounts) +'\n';
+        StringBuffer stringBuffer=new StringBuffer();
+        stringBuffer.append("totalStateValueCounts " + Arrays.toString(totalStateValueCounts) +'\n');
+        stringBuffer.append("transitionCounts " + Arrays.deepToString(transitionCounts) +'\n');
         //s+= "stateNumberCounts " + Arrays.deepToString(stateNumberCounts) +'\n';
         for (List<double[]> featureValueCount: stateFeatureValueCounts){
             for( double[] values: featureValueCount){
-                s += Arrays.toString(values);
+                stringBuffer.append( Arrays.toString(values));
             }
-            s+='\n';
+            stringBuffer.append('\n');
         }
 
         for (Map<String, Double> m: tokenCounts)
-            s+= "tokenCounts " +  Arrays.toString(m.entrySet().toArray())  +'\n';
+            stringBuffer.append("tokenCounts " +  Arrays.toString(m.entrySet().toArray())  +'\n');
         for (Map<String, Double> m: nextTokenCounts)
-            s+= "nextTokenCounts " + Arrays.toString(m.entrySet().toArray())  +'\n';
-        return s;
+            stringBuffer.append("nextTokenCounts " + Arrays.toString(m.entrySet().toArray())  +'\n');
+        return stringBuffer.toString();
     }
 
     // todo: need to think more about the correct way to set PRIOR count. But this becomes insignificant with enough data.

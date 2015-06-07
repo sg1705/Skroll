@@ -1,5 +1,6 @@
 package com.skroll.analyzer.model.bn;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -7,11 +8,11 @@ import java.util.List;
  */
 public class SimpleDataTuple {
 
-    List<String[]> words;
+    List<String[]> wordsList;
     int[] values;
 
     public String[] getWords(int i) {
-        return words.get(i);
+        return wordsList.get(i);
     }
 
     public int[] getDiscreteValues() {
@@ -19,9 +20,18 @@ public class SimpleDataTuple {
     }
 
     public SimpleDataTuple(List<String[]> words, int[] values) {
-        this.words = words;
+        this.wordsList = words;
         this.values = values;
     }
 
-
+    @Override
+    public String toString() {
+        String wordsListString = "";
+        for (String[] words : wordsList)
+            wordsListString += Arrays.toString(words) + "\n  ";
+        return "\nSimpleDataTuple{\n" +
+                " words=\n  " + wordsListString +
+                " values=" + Arrays.toString(values) +
+                '}';
+    }
 }

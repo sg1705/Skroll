@@ -13,6 +13,8 @@ import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.util.Constants;
 import com.skroll.util.Configuration;
 import com.skroll.util.ObjectPersistUtil;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -26,6 +28,25 @@ import java.util.List;
 
 public class DocAPITest extends APITest {
 
+    @Before
+    public void setup () throws Exception {
+
+        try {
+            jettyServer.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        documentId = testFileUpload();
+    }
+    @After
+    public void shutdown() {
+        try {
+            Thread.sleep(1000);
+            jettyServer.stop();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     @Test
     public void test_UploadFile_UpdateTerms() throws Exception, ObjectPersistUtil.ObjectPersistException {
 
@@ -33,14 +54,14 @@ public class DocAPITest extends APITest {
         String preEvaluatedFolder = configuration.get("preEvaluatedFolder","/tmp/");
         Document doc = JsonDeserializer.fromJson(Files.toString(new File(preEvaluatedFolder + documentId), Constants.DEFAULT_CHARSET));
         for(CoreMap coreMap: doc.getParagraphs()){
-            CategoryAnnotationHelper.setMatchedText(coreMap, DocumentHelper.createTokens(Lists.newArrayList("Capital", "Stock")), Category.TOC_1);
-            if(CategoryAnnotationHelper.isCategoryId(coreMap, Category.TOC_3)) {
-                System.out.println(CategoryAnnotationHelper.getTexts(coreMap,Category.TOC_3));
-                //assert(Joiner.on(" ").join(DocumentHelper.getTOCLists(coreMap)).equals("CapitalStock"));
+            CategoryAnnotationHelper.setMatchedText(coreMap, DocumentHelper.createTokens(Lists.newArrayList("Capital", "Stock")), Category.TOC_4);
+            if(CategoryAnnotationHelper.isCategoryId(coreMap, Category.TOC_4)) {
+                System.out.println("TOC_4:" + CategoryAnnotationHelper.getDefinedTermLists(coreMap, Category.TOC_4));
+                //assert(Joiner.on(" ").join(CategoryAnnotationHelper.getDefinedTermLists(coreMap, Category.TOC_4)).equals("CapitalStock"));
             }
         }
         //API.documentMap.put("smaller-indenture.html",doc);
-        logger.debug("TOC Paragraph before calling updateTerm: {}", CategoryAnnotationHelper.getParaWithCategoryAnnotation(doc, Category.TOC_1));
+        logger.debug("TOC Paragraph before calling updateTerm: {}", CategoryAnnotationHelper.getParaWithCategoryAnnotation(doc, Category.TOC_4));
 
         testUpdateTerms();
 
@@ -48,7 +69,7 @@ public class DocAPITest extends APITest {
 
         for (CoreMap paragraph : doc.getParagraphs()) {
                 List<List<String>> definitionList = CategoryAnnotationHelper.getDefinedTermLists(
-                        paragraph);
+                        paragraph, Category.TOC_4);
                 logger.debug(paragraph.getId() + " " + Joiner.on(" ").join(definitionList));
 
             if(paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)) {
@@ -66,7 +87,7 @@ public class DocAPITest extends APITest {
         assert(doc.getTarget().contains("Capital Stock"));
         for (CoreMap paragraph : doc.getParagraphs()) {
                 List<List<String>> definitionList = CategoryAnnotationHelper.getDefinedTermLists(
-                        paragraph);
+                        paragraph,Category.DEFINITION );
                 logger.debug(paragraph.getId() + " " + Joiner.on(" ").join(definitionList));
 
             if(paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)) {
@@ -81,7 +102,7 @@ public class DocAPITest extends APITest {
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
 
-        String jsonString ="[{\"paragraphId\":\"p_1238\",\"term\":\"Cash Equivalents\", \"classificationId\":4}]";
+        String jsonString ="[{\"paragraphId\":\"p_1238\",\"term\":\"Cash Equivalents\", \"classificationId\":1}]";
         //String jsonString ="[{\"paragraphId\":\"p_1371\",\"term\":\"Disclosure Regarding Forward-Looking Statements\", \"classificationId\":2}]";
 
         Response response = webTarget.request(MediaType.TEXT_HTML).cookie(new  NewCookie("documentId", documentId))

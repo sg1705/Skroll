@@ -1,6 +1,5 @@
 package com.skroll.analyzer.model.bn.inference;
 
-import com.skroll.analyzer.model.bn.node.ProbabilityDiscreteNode;
 
 /**
  * This is a very specialized belif propagation just for our network.
@@ -8,7 +7,6 @@ import com.skroll.analyzer.model.bn.node.ProbabilityDiscreteNode;
  * Created by wei2learn on 3/11/2015.
  */
 public class BNInference {
-    ProbabilityDiscreteNode[] nodes;
 
     /**
      * specialized method for updating beliefs with messages of the same sizes

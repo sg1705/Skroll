@@ -1,7 +1,8 @@
 package com.skroll.classifier;
 
-import com.skroll.analyzer.model.RandomVariableType;
-import com.skroll.analyzer.model.TrainingDocumentAnnotatingModel;
+import com.skroll.analyzer.model.applicationModel.DefModelRVSetting;
+import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
+import com.skroll.analyzer.model.applicationModel.TOCModelRVSetting;
 import com.skroll.document.Document;
 
 import javax.inject.Inject;
@@ -15,31 +16,31 @@ import java.util.List;
 public class ClassifierFactory {
 
     private static HashMap<Integer, Classifier> classifiers = new HashMap();
-    private static HashMap<Integer, Category> categories = new HashMap();
+    private static HashMap<Integer, ModelRVSetting> modelRVSettings = new HashMap();
     @Inject
     private ModelFactory modelFactory;
 
     static {
-        categories.put(Category.DEFINITION,new DefinitionCategory());
-        categories.put(Category.TOC_1,new Category(Category.TOC_1,"com.skroll.classifier.TOC_1", RandomVariableType.WORD_IS_TOC_1_TERM,RandomVariableType.PARAGRAPH_HAS_TOC_1));
-        categories.put(Category.TOC_2,new Category(Category.TOC_2,"com.skroll.classifier.TOC_2",RandomVariableType.WORD_IS_TOC_2_TERM,RandomVariableType.PARAGRAPH_HAS_TOC_2));
-        categories.put(Category.TOC_3,new Category(Category.TOC_3,"com.skroll.classifier.TOC_3",RandomVariableType.WORD_IS_TOC_3_TERM,RandomVariableType.PARAGRAPH_HAS_TOC_3));
-        categories.put(Category.TOC_4,new Category(Category.TOC_4,"com.skroll.classifier.TOC_4",RandomVariableType.WORD_IS_TOC_4_TERM,RandomVariableType.PARAGRAPH_HAS_TOC_4));
-        categories.put(Category.TOC_5,new Category(Category.TOC_5,"com.skroll.classifier.TOC_5",RandomVariableType.WORD_IS_TOC_5_TERM,RandomVariableType.PARAGRAPH_HAS_TOC_5));
+        modelRVSettings.put(Category.DEFINITION, new DefModelRVSetting(Category.DEFINITION, Category.DEFINITION_NAME));
+        modelRVSettings.put(Category.TOC_1, new TOCModelRVSetting(Category.TOC_1, Category.TOC_1_NAME));
+        modelRVSettings.put(Category.TOC_2, new TOCModelRVSetting(Category.TOC_2, Category.TOC_2_NAME));
+        modelRVSettings.put(Category.TOC_3, new TOCModelRVSetting(Category.TOC_3, Category.TOC_3_NAME));
+        modelRVSettings.put(Category.TOC_4, new TOCModelRVSetting(Category.TOC_4, Category.TOC_4_NAME));
+        modelRVSettings.put(Category.TOC_5, new TOCModelRVSetting(Category.TOC_5, Category.TOC_5_NAME));
     }
 
     public Classifier getClassifier(int categoryId) throws Exception {
-        Category category = null;
-        if(categories.containsKey(categoryId)){
-            category = categories.get(categoryId);
+        ModelRVSetting modelRVSetting = null;
+        if(modelRVSettings.containsKey(categoryId)){
+            modelRVSetting = modelRVSettings.get(categoryId);
         } else {
             throw new Exception("No category id found: "+ categoryId);
         }
-        TrainingDocumentAnnotatingModel trainingDocumentAnnotatingModel = modelFactory.getTrainingModel(category);
+        //TrainingDocumentAnnotatingModel trainingDocumentAnnotatingModel = modelFactory.getTrainingModel(modelRVSetting);
         if (classifiers.containsKey(categoryId))
             return classifiers.get(categoryId);
         Classifier classifier =
-                new ClassifierImpl(modelFactory, trainingDocumentAnnotatingModel, category);
+                new ClassifierImpl(modelFactory, modelRVSetting);
         classifiers.put(categoryId, classifier);
         return classifier;
     }

@@ -3,6 +3,7 @@ package com.skroll.analyzer.train.definition.data;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
+import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
@@ -177,7 +178,7 @@ public class GenerateTrainingData {
                 int count = 0;
                 for(CoreMap paragraph : htmlDoc.getParagraphs()) {
                     List<List<String>> definitionList = CategoryAnnotationHelper.getDefinedTermLists(
-                            paragraph);
+                            paragraph, Category.DEFINITION);
                     for (List<String> definition: definitionList) {
                         String words = Joiner.on(",").join(definition);
                         defList.add(words);

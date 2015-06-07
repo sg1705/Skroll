@@ -1,8 +1,8 @@
 package com.skroll.classifier;
 
+import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
-import com.skroll.parser.extractor.ParserException;
 import com.skroll.util.ObjectPersistUtil;
 
 import java.util.HashMap;
@@ -24,15 +24,13 @@ public interface Classifier {
 
     public void train(Document doc);
 
-    public void train(Category category, String fileName, int numOfLines) throws ParserException;
-
     public Object classify(String documentId, Document doc);
 
     public Object classify(Document doc, int numOfTokens);
 
     public Object classify(String fileName, int numOfLines);
 
-    public Category getCategory();
+    public ModelRVSetting getModelRVSetting();
 
     public Object updateBNI(String documentId, Document document, List<CoreMap> observedParas) throws Exception;
 
@@ -43,4 +41,5 @@ public interface Classifier {
     public List<Double> getProbabilityDataForDoc(Document doc);
 
     public void persistModel() throws ObjectPersistUtil.ObjectPersistException;
+
 }

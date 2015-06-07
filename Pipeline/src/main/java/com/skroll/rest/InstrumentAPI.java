@@ -3,7 +3,6 @@ package com.skroll.rest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.skroll.classifier.Category;
-import com.skroll.classifier.Classifier;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -85,12 +84,14 @@ public class InstrumentAPI {
         try {
 //            HashMap<String, HashMap<String, Double>> map = classifierFactory.getClassifier(Category.DEFINITION).getBNIVisualMap(doc, paraIndex);
 //            HashMap<String, HashMap<String, HashMap<String, Double>>> modelMap = classifierFactory.getClassifier(Category.DEFINITION).getModelVisualMap();
-//            probabilityJson = gson.toJson(map);
-//            buf.append(probabilityJson);
-//            buf.append(",");
-//            probabilityJson = gson.toJson(modelMap);
-//            buf.append(probabilityJson);
-//            buf.append(",");
+            HashMap<String, HashMap<String, Double>> map = classifierFactory.getClassifier(Category.TOC_1).getBNIVisualMap(doc, paraIndex);
+            HashMap<String, HashMap<String, HashMap<String, Double>>> modelMap = classifierFactory.getClassifier(Category.TOC_1).getModelVisualMap();
+            probabilityJson = gson.toJson(map);
+            buf.append(probabilityJson);
+            buf.append(",");
+            probabilityJson = gson.toJson(modelMap);
+            buf.append(probabilityJson);
+            buf.append(",");
 //            for (Classifier classifier : request.getClassifiers()) {
 //                map = classifier.getBNIVisualMap(doc, paraIndex);
 //                probabilityJson = gson.toJson(map);
@@ -104,6 +105,7 @@ public class InstrumentAPI {
 //            buf.append(",");
             buf.append(annotationJson);
             buf.append("]");
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }

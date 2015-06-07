@@ -13,8 +13,8 @@ public class TrainingHMM extends HMM {
                        List<RandomVariableType> featureExistsAtDocLevelVarList,
                        List<RandomVariableType> documentFeatureVarList, List<RandomVariableType> wordVarList ){
 
-        nb = new TrainingNaiveBayesWithFeatureConditions(stateType, featureVarList,
-                featureExistsAtDocLevelVarList, documentFeatureVarList, wordVarList );
+//        nb = new TrainingNaiveBayesWithFeatureConditions(stateType, featureVarList,
+//                featureExistsAtDocLevelVarList, documentFeatureVarList, wordVarList );
     }
 
     public void addSample(SimpleDataTuple[] tuples, double weight){
@@ -24,7 +24,7 @@ public class TrainingHMM extends HMM {
                 int nextState = tuples[i+1].getDiscreteValues()[0];
                 transitionParameters[state][nextState] += weight;
             }
-            ((TrainingNaiveBayesWithFeatureConditions) nb).addSample(tuples[i]);
+//            ((TrainingNaiveBayesWithFeatureConditions) nb).addSample(tuples[i]);
         }
     }
 }

@@ -18,26 +18,12 @@ public class CategoryAnnotationHelper {
     public static final Logger logger = LoggerFactory
             .getLogger(CategoryAnnotationHelper.class);
 
-    public static List<String> getTexts(CoreMap coreMap, int categoryId) {
+
+    public static List<List<String>> getDefinedTermLists(CoreMap coreMap, int categoryId) {
         HashMap<Integer, CoreMap> categoryAnnotation = coreMap.get(CoreAnnotations.CategoryAnnotations.class);
         if (categoryAnnotation==null) return new ArrayList<>();
         if(categoryAnnotation.get(categoryId)==null) return new ArrayList<>();
-        return DocumentHelper.getTokenString(categoryAnnotation.get(categoryId).getTokens());
-    }
-
-    public static List<Token> getTokensInParagraph(CoreMap paragraph, int categoryId) {
-        HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
-        if (categoryAnnotation==null) return new ArrayList<>();
-        if(categoryAnnotation.get(categoryId)==null) return new ArrayList<>();
-        return categoryAnnotation.get(categoryId).getTokens();
-    }
-
-    public static List<List<String>> getDefinedTermLists(CoreMap coreMap) {
-        int categoryId = Category.DEFINITION;
-        HashMap<Integer, CoreMap> categoryAnnotation = coreMap.get(CoreAnnotations.CategoryAnnotations.class);
-        if (categoryAnnotation==null) return new ArrayList<>();
-        if(categoryAnnotation.get(categoryId)==null) return new ArrayList<>();
-        List<List<Token>> definitionList = categoryAnnotation.get(categoryId).get(CoreAnnotations.DefinedTermTokensAnnotation.class);
+        List<List<Token>> definitionList = categoryAnnotation.get(categoryId).get(CoreAnnotations.TermTokensAnnotation.class);
         List<List<String>> strings = new ArrayList<>();
         if (definitionList==null) return strings;
         for (List<Token> list: definitionList){
@@ -46,12 +32,11 @@ public class CategoryAnnotationHelper {
         return strings;
     }
 
-    public static List<List<Token>> getDefinedTermTokensInParagraph(CoreMap paragraph) {
-        int categoryId = Category.DEFINITION;
+    public static List<List<Token>> getDefinedTermTokensInParagraph(CoreMap paragraph, int categoryId) {
         HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
         if (categoryAnnotation==null) return new ArrayList<>();
         if(categoryAnnotation.get(categoryId)==null) return new ArrayList<>();
-        return categoryAnnotation.get(categoryId).get(CoreAnnotations.DefinedTermTokensAnnotation.class);
+        return categoryAnnotation.get(categoryId).get(CoreAnnotations.TermTokensAnnotation.class);
     }
 
     public static List<Paragraph> getTerm(Document document) {
@@ -59,28 +44,16 @@ public class CategoryAnnotationHelper {
 
         for (CoreMap paragraph : document.getParagraphs()) {
             for (int categoryId : Category.getCategories()) {
-                if (isCategoryId(paragraph, categoryId)) {
-                    if (categoryId == Category.DEFINITION) {
-                        List<List<String>> definitionList = getDefinedTermLists(paragraph);
+                        List<List<String>> definitionList = getDefinedTermLists(paragraph,categoryId );
                         for (List<String> definition : definitionList) {
                             if(logger.isTraceEnabled())
-                                logger.trace(paragraph.getId() + "\t" + "DEFINITION" + "\t" + definition);
+                                logger.trace( "{} \t {} \t {}",paragraph.getId(),categoryId , definition);
                             if (!definition.isEmpty()) {
                                 if (!(Joiner.on(" ").join(definition).equals(""))) {
                                     termList.add(new Paragraph(paragraph.getId(), Joiner.on(" ").join(definition), categoryId));
                                 }
                             }
-                        }
-                    } else {
-                        List<String> texts = getTexts(paragraph, categoryId);
-                        if (!texts.isEmpty()) {
-                            if (!(Joiner.on(" ").join(texts).equals(""))) {
-                                if(logger.isTraceEnabled())
-                                    logger.trace(paragraph.getId() + "\t" + categoryId + "\t" + texts);
-                                termList.add(new Paragraph(paragraph.getId(), Joiner.on(" ").join(texts), categoryId));
-                            }
-                        }
-                    }
+
                 }
             }
         }
@@ -89,23 +62,11 @@ public class CategoryAnnotationHelper {
 
     public static void displayTerm(CoreMap paragraph) {
         for (int categoryId : Category.getCategories()) {
-                if (isCategoryId(paragraph, categoryId)) {
-                    if (categoryId == Category.DEFINITION) {
-                        List<List<String>> definitionList = getDefinedTermLists(paragraph);
+                        List<List<String>> definitionList = getDefinedTermLists(paragraph, categoryId);
                         for (List<String> definition : definitionList) {
-                            if(logger.isDebugEnabled())
-                                logger.trace( "{} \t DEFINITION \t{}",paragraph.getId(), definition);
+                            if (logger.isDebugEnabled())
+                                logger.debug("{} \t {} \t {}", paragraph.getId(), categoryId, definition);
                         }
-                    } else {
-                        List<String> texts = getTexts(paragraph, categoryId);
-                        if (texts!=null && !texts.isEmpty()) {
-                            if (!(Joiner.on(" ").join(texts).equals(""))) {
-                                if(logger.isDebugEnabled())
-                                    logger.trace( "{} \t {} \t {}",paragraph.getId(),categoryId , texts);
-                            }
-                        }
-                    }
-                }
             }
     }
 
@@ -122,6 +83,7 @@ public class CategoryAnnotationHelper {
         }
         return false;
     }
+
 
     public static List<CoreMap> getParaWithCategoryAnnotation(Document doc, int categoryId){
         List<CoreMap> paragraphs= new ArrayList<>();
@@ -143,43 +105,23 @@ public class CategoryAnnotationHelper {
         }
         return categoryAnnotation;
     }
-    public static void addTokensInCategoryAnnotation(CoreMap paragraph, List<Token> newTokens,  int category) {
-        HashMap<Integer, CoreMap> categoryAnnotation = checkNull(paragraph, category);
-        CoreMap annotationCoreMap = categoryAnnotation.get(category);
-        List<Token> tokens = annotationCoreMap.getTokens();
-        if (tokens == null) {
-                tokens = new ArrayList<>();
-        }
-            tokens.addAll(newTokens);
-            annotationCoreMap.set(CoreAnnotations.TokenAnnotation.class, tokens);
-            paragraph.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
-        }
 
-    public static void addDefinedTokensInCategoryAnnotation(CoreMap paragraph, List<Token> newTokens) {
-        int categoryId = Category.DEFINITION;
+    public static void addDefinedTokensInCategoryAnnotation(CoreMap paragraph, List<Token> newTokens, int categoryId) {
         HashMap<Integer, CoreMap> categoryAnnotation = checkNull(paragraph, categoryId);
         CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
-        List<List<Token>>  definitionList = annotationCoreMap.get(CoreAnnotations.DefinedTermTokensAnnotation.class);
+        List<List<Token>>  definitionList = annotationCoreMap.get(CoreAnnotations.TermTokensAnnotation.class);
         if (definitionList == null) {
             definitionList = new ArrayList<>();
-            annotationCoreMap.set(CoreAnnotations.DefinedTermTokensAnnotation.class, definitionList);
+            annotationCoreMap.set(CoreAnnotations.TermTokensAnnotation.class, definitionList);
         }
         definitionList.add(newTokens);
         paragraph.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
     }
 
-    public static void setDInCategoryAnnotation(CoreMap paragraph, List<List<Token>> definitions) {
-        int categoryId = Category.DEFINITION;
+    public static void setDInCategoryAnnotation(CoreMap paragraph, List<List<Token>> definitions, int categoryId) {
         HashMap<Integer, CoreMap> categoryAnnotation = checkNull(paragraph, categoryId);
         CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
-        annotationCoreMap.set(CoreAnnotations.DefinedTermTokensAnnotation.class, definitions);
-        paragraph.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
-    }
-
-    public static void setCategoryAnnotation(CoreMap paragraph, List<Token> tokens ,int categoryId) {
-        HashMap<Integer, CoreMap> categoryAnnotation = checkNull(paragraph, categoryId);
-        CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
-        annotationCoreMap.set(CoreAnnotations.TokenAnnotation.class, tokens);
+        annotationCoreMap.set(CoreAnnotations.TermTokensAnnotation.class, definitions);
         paragraph.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
     }
 
@@ -196,54 +138,53 @@ public class CategoryAnnotationHelper {
         paragraph.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
     }
 
-    public static boolean setMatchedText(CoreMap coreMap, List<Token> addedTerm, int categoryId) {
+    public static boolean setMatchedText(CoreMap paragraph, List<Token> selectedTerm, int categoryId) {
 
-        List<Token> tokenList = coreMap.getTokens();
-        String tokenStringList = Joiner.on("").join(tokenList);
-        String addedTermList = Joiner.on("").join(addedTerm);
+        List<Token> paragraphTokens = paragraph.getTokens();
+        String paraTokenString = Joiner.on("").join(paragraphTokens).toLowerCase();
+        String selectedTermString = Joiner.on("").join(selectedTerm).toLowerCase();
 
-        if (!tokenStringList.contains(addedTermList)) {
+        if (!paraTokenString.contains(selectedTermString)) {
+            logger.error("Existing document's paragraph {} does not contains Selected text {} ", paraTokenString,selectedTermString);
             return false;
         }
 
+
         List<Token> returnList = new ArrayList<>();
-        int j=0;
-        int l=0;
-        int remainingAddedTermLength = 0;
+        int lastTokenPointer=0;
+        int runner=0;
+        int remainingSelectedTermLength = 0;
+        //outer loop to find sequence of selected tokens in the para
 
-        while (remainingAddedTermLength < addedTermList.length()) {
-            for(int i=l; i<tokenList.size(); i++){
-                int tokenLength = tokenList.get(i).getText().length();
-                //check if the selected text is not the complete word or token
-                if(addedTermList.length() < remainingAddedTermLength + tokenLength ){
-                    logger.error("One of Selected text {} does not contain the complete word [{}] ", addedTerm,tokenList.get(i).getText());
-                    return false;
-                }
-                String addedTermSubString = addedTermList.substring(remainingAddedTermLength,remainingAddedTermLength + tokenLength);
-                if(tokenList.get(i).getText().equals(addedTermSubString)) {
-                    remainingAddedTermLength+=tokenLength;
-                    if (j==0) {
-                        j=i;
+            while (remainingSelectedTermLength < selectedTermString.length()) {
+                //inner loop to find the first selectedToken in the paragraph
+                for (int current = runner; current < paragraphTokens.size(); current++) {
+                    int paragraphTokenLength = paragraphTokens.get(current).getText().length();
+                    //check if the selected text is not the complete word or token
+                    if (selectedTermString.length() < remainingSelectedTermLength + paragraphTokenLength) {
+                        logger.error("One of Selected text {} does not contain the complete word [{}] ", selectedTerm, paragraphTokens.get(current).getText());
+                        return false;
                     }
-                    if (i>j+1) {
-                        returnList.clear();
-                        j=i;
-                        continue;
+                    String selectedTermSubString = selectedTermString.substring(remainingSelectedTermLength, remainingSelectedTermLength + paragraphTokenLength);
+                    if (paragraphTokens.get(current).getText().equalsIgnoreCase(selectedTermSubString)) {
+                        remainingSelectedTermLength += paragraphTokenLength;
+                        if (lastTokenPointer == 0) {
+                            lastTokenPointer = current;
+                        }
+                        if (current > lastTokenPointer + 1) {
+                            returnList.clear();
+                            lastTokenPointer = current;
+                            continue;
+                        }
+                        returnList.add(paragraphTokens.get(current));
+                        lastTokenPointer = current;
+                        runner++;
+                        break;
                     }
-                    returnList.add(tokenList.get(i));
-                    j=i;
-                    l++;
-                    break;
+                    runner++;
                 }
-                l++;
             }
-        }
-        if (categoryId == Category.DEFINITION){
-            addDefinedTokensInCategoryAnnotation(coreMap, returnList);
-        } else {
-            addTokensInCategoryAnnotation(coreMap,returnList,categoryId);
-        }
-
+        addDefinedTokensInCategoryAnnotation(paragraph, returnList, categoryId);
         return true;
 
     }

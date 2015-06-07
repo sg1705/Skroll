@@ -1,6 +1,6 @@
 package com.skroll.document.annotation;
 
-import com.skroll.analyzer.model.RandomVariableType;
+import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 
@@ -65,38 +65,13 @@ public class TrainingWeightAnnotationHelper {
     }
     // method converts multi-class weight to binary class weight.
     // todo: this method is temporarily used to get the weights. Should probably be improved later to handle multi-class and others.
-    public static double[][] getParagraphWeight(CoreMap para, RandomVariableType paraType){
+    public static double[][] getParagraphWeight(CoreMap para, RandomVariable paraType, int categoryId) {
         List<Float>  weightList = para.get(CoreAnnotations.TrainingWeightAnnotationFloat.class);
         double[][] weights = new double[2][paraType.getFeatureSize()];
         weights[0][0] = weightList.get(Category.NONE);
-        weights[1][0] = weightList.get(Category.NONE+LATEST_WEIGHT_INDEX);
-
-        switch (paraType){
-            case PARAGRAPH_HAS_TOC_1:
-                weights[0][1] = weightList.get(Category.TOC_1);
-                weights[1][1] = weightList.get(Category.TOC_1+LATEST_WEIGHT_INDEX);
-                return weights;
-            case PARAGRAPH_HAS_TOC_2:
-                weights[0][1] = weightList.get(Category.TOC_2);
-                weights[1][1] = weightList.get(Category.TOC_2+LATEST_WEIGHT_INDEX);
-                return weights;
-            case PARAGRAPH_HAS_TOC_3:
-                weights[0][1] = weightList.get(Category.TOC_3);
-                weights[1][1] = weightList.get(Category.TOC_3+LATEST_WEIGHT_INDEX);
-                return weights;
-            case PARAGRAPH_HAS_TOC_4:
-                weights[0][1] = weightList.get(Category.TOC_4);
-                weights[1][1] = weightList.get(Category.TOC_4+LATEST_WEIGHT_INDEX);
-                return weights;
-            case PARAGRAPH_HAS_TOC_5:
-                weights[0][1] = weightList.get(Category.TOC_5);
-                weights[1][1] = weightList.get(Category.TOC_5+LATEST_WEIGHT_INDEX);
-                return weights;
-            case PARAGRAPH_HAS_DEFINITION:
-                weights[0][1] = weightList.get(Category.DEFINITION);
-                weights[1][1] = weightList.get(Category.DEFINITION+LATEST_WEIGHT_INDEX);
-                return weights;
-        }
+        weights[1][0] = weightList.get(Category.NONE + LATEST_WEIGHT_INDEX);
+        weights[0][1] = weightList.get(categoryId);
+        weights[1][1] = weightList.get(categoryId + LATEST_WEIGHT_INDEX);
         return weights;
     }
 }

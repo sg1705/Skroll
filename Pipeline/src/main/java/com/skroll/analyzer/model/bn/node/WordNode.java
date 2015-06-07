@@ -1,9 +1,7 @@
 package com.skroll.analyzer.model.bn.node;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.*;
+import com.skroll.analyzer.model.RandomVariable;
 import org.eclipse.persistence.internal.jaxb.many.MapEntry;
 
 import java.util.Arrays;
@@ -16,18 +14,11 @@ import java.util.Map;
  * Created by wei2learn on 3/1/2015.
  */
 
-@JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.PROPERTY,
-        property = "type")
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = com.skroll.analyzer.model.bn.node.LogProbabilityWordNode.class, name = "LogProbabilityWordNode"),
-        @JsonSubTypes.Type(value = com.skroll.analyzer.model.bn.node.ProbabilityWordNode.class, name = "ProbabilityWordNode"),
-        @JsonSubTypes.Type(value = com.skroll.analyzer.model.bn.node.TrainingWordNode.class, name = "TrainingWordNode")})
 public class WordNode                                                                                                                                                       {
 
     @JsonProperty("parameters")
     Map<String, double[]> parameters = new HashMap<>();
+    @JsonProperty("parent")
     DiscreteNode parent;
 
     String[] observedWords = new String[0];
@@ -48,11 +39,20 @@ public class WordNode                                                           
      * Constructor requires a parent node already exists
      */
 
+
     public WordNode(DiscreteNode parent){
         this.parent = parent;
     }
-    public WordNode(){
+
+    @JsonCreator
+    public WordNode( @JsonProperty("parent")DiscreteNode parent,
+                     @JsonProperty("parameters")Map<String, double[]> parameters,
+                     @JsonProperty("observedWords")String[] observedWords){
+        this.parent = parent;
+        this.parameters = parameters;
+        this.observedWords = observedWords;
     }
+
 
     String mapToString(){
         String s="";
@@ -62,8 +62,20 @@ public class WordNode                                                           
         return s;
     }
 
+    public DiscreteNode getParent() {
+        return parent;
+    }
+
     public void setParent(DiscreteNode parent) {
         this.parent = parent;
+    }
+
+    public Map<String, double[]> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(Map<String, double[]> parameters) {
+        this.parameters = parameters;
     }
 
     public Map<String, double[]> getCopyOfParameters() {
@@ -76,7 +88,7 @@ public class WordNode                                                           
     public String toString() {
         return "WordNode{" +
                 "parameters=" + mapToString() +
-                ", parent=" + parent +
+                ", parent=" + parent.getVariable() +
                 '}';
     }
 }

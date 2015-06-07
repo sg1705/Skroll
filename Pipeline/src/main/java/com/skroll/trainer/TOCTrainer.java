@@ -102,7 +102,7 @@ public class TOCTrainer {
                 if (CategoryAnnotationHelper.isCategoryId(paragraph, Category.DEFINITION)) {
 
                     List<List<String>> definitionList = CategoryAnnotationHelper.getDefinedTermLists(
-                            paragraph);
+                            paragraph,Category.DEFINITION );
                     for (List<String> definition: definitionList) {
                         String words = Joiner.on(",").join(definition);
                         defList.add(paragraph.getId() + "\t" + "DEFINITION" + "\t" + words + "\t" + paragraph.getText());
@@ -176,7 +176,7 @@ public class TOCTrainer {
                             //TODO: only one definition per paragraph supported right now.
                             List<List<Token>> definedTokensList = new ArrayList();
                             definedTokensList.add(definedTokens);
-                            CategoryAnnotationHelper.setDInCategoryAnnotation(paragraph, definedTokensList);
+                            CategoryAnnotationHelper.setDInCategoryAnnotation(paragraph, definedTokensList, Category.DEFINITION);
                             defList.add(paragraph.getId() + "\t" + "DEFINITION" + "\t" + definedTokens + "\t" + paragraph.getText());
                         } else {
                             defList.add(paragraph.getId() + "\t" + "NOT_DEFINITION" + "\t" + " " + "\t" + paragraph.getText());

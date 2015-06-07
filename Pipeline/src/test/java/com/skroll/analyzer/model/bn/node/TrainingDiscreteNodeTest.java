@@ -1,46 +1,53 @@
 package com.skroll.analyzer.model.bn.node;
 
-import com.skroll.analyzer.model.DocumentAnnotatingModel;
-import com.skroll.analyzer.model.RandomVariableType;
-import junit.framework.TestCase;
+import com.skroll.analyzer.model.RandomVariable;
+import com.skroll.analyzer.model.bn.inference.BNInference;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.Arrays;
 
-public class TrainingDiscreteNodeTest extends TestCase {
-    TrainingDiscreteNode node;
-    void initialize(){
-        node = new TrainingDiscreteNode(
-                Arrays.asList(RandomVariableType.PARAGRAPH_NUMBER_TOKENS));
-        node.setParents(new TrainingDiscreteNode[0]);
+public class TrainingDiscreteNodeTest {
+    static final int MAX_NUM_TOKENS = 10;
+    DiscreteNode node;
+    @Before
+    public void initialize(){
+        node = NodeTrainingHelper.createTrainingDiscreteNode(Arrays.asList(new RandomVariable(MAX_NUM_TOKENS, "numberTokens")));
     }
 
+    @Test
     public void testUpdateCount() throws Exception {
 
         initialize();
         System.out.println(node);
         node.setObservation(3);
-        node.updateCount();
+        NodeTrainingHelper.updateCount(node);
         System.out.println("after update count");
         System.out.println(node);
-        node.updateCount(-0.2);
+        NodeTrainingHelper.updateCount(node, -0.2);
         System.out.println("after update count by -0.2");
         System.out.println(node);
 
     }
 
 
+    @Test
     public void testGetProbabilities() throws Exception {
 
         initialize();
         testUpdateCount();
+        System.out.println("log probabilities:");
+        System.out.println(Arrays.toString(NodeTrainingHelper.getLogProbabilities(node)));
+
         System.out.println("probabilities:");
-        System.out.println(Arrays.toString(node.getProbabilities()));
+        double[] prob = NodeTrainingHelper.getLogProbabilities(node).clone();
+        BNInference.convertLogBeliefToProb(prob);
+        System.out.println(Arrays.toString(prob));
 
     }
 
+    @Test
     public void testToString() throws Exception {
-        TrainingDiscreteNode node = new TrainingDiscreteNode(
-                Arrays.asList(RandomVariableType.PARAGRAPH_NUMBER_TOKENS));
         System.out.println(node);
     }
 }

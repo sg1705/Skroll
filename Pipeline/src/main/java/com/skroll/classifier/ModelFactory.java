@@ -1,7 +1,8 @@
 package com.skroll.classifier;
 
-import com.skroll.analyzer.model.ProbabilityDocumentAnnotatingModel;
-import com.skroll.analyzer.model.TrainingDocumentAnnotatingModel;
+import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
+import com.skroll.analyzer.model.applicationModel.ProbabilityDocumentAnnotatingModel;
+import com.skroll.analyzer.model.applicationModel.TrainingDocumentAnnotatingModel;
 import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -22,27 +23,26 @@ public class ModelFactory {
     public static final Logger logger = LoggerFactory.getLogger(ModelFactory.class);
 
     Configuration configuration = new Configuration();
-    private String modelFolderName = configuration.get("modelFolder","/tmp");
+    protected String modelFolderName = configuration.get("modelFolder","/tmp");
     protected ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil(modelFolderName);
-    protected static Map<String, TrainingDocumentAnnotatingModel> TrainingModelMap = new HashMap<>();
-    protected Map<String, ProbabilityDocumentAnnotatingModel> bniModelMap = new HashMap<>();
+    protected  Map<Integer, TrainingDocumentAnnotatingModel> TrainingModelMap = new HashMap<>();
+    protected  Map<Integer, ProbabilityDocumentAnnotatingModel> bniModelMap = new HashMap<>();
 
-    TrainingDocumentAnnotatingModel getTrainingModel(Category category) {
-        if (TrainingModelMap.containsKey(category.getName())){
-            return TrainingModelMap.get(category.getName());
+    TrainingDocumentAnnotatingModel getTrainingModel(ModelRVSetting modelRVSetting) {
+        if (TrainingModelMap.containsKey(modelRVSetting.getCategoryId())){
+            return TrainingModelMap.get(modelRVSetting.getCategoryId());
         }
-        return createModel(category);
+        return createModel(modelRVSetting);
     }
 
 
-    public TrainingDocumentAnnotatingModel createModel(Category category) {
-        TrainingDocumentAnnotatingModel localTrainingModel =
-                null;
+    public TrainingDocumentAnnotatingModel createModel(ModelRVSetting modelRVSetting) {
+        TrainingDocumentAnnotatingModel localTrainingModel = null;
 
         if (localTrainingModel == null) {
             try {
 
-                    localTrainingModel = (TrainingDocumentAnnotatingModel) objectPersistUtil.readObject(null,category.getName());
+                    localTrainingModel = (TrainingDocumentAnnotatingModel) objectPersistUtil.readObject(null,modelRVSetting.getCategoryName());
             } catch (Throwable e) {
                 logger.warn("TrainingDocumentAnnotatingModel is not found. creating new one" );
                 localTrainingModel = null;
@@ -50,33 +50,35 @@ public class ModelFactory {
         }
         if (localTrainingModel == null) {
 
-            localTrainingModel = new TrainingDocumentAnnotatingModel(category.wordType,
-                    category.wordFeatures,
-                    category.paraType,
-                    category.paraFeatures,
-                    category.paraDocFeatures,
-                    category.docFeatures,
-                    category.wordVarList);
+            localTrainingModel = new TrainingDocumentAnnotatingModel(modelRVSetting);
         }
 
-        TrainingModelMap.put(category.getName(), localTrainingModel);
+        TrainingModelMap.put(modelRVSetting.getCategoryId(), localTrainingModel);
         return localTrainingModel;
     }
 
-    ProbabilityDocumentAnnotatingModel getBNIModel(Category category, Document document) {
+    ProbabilityDocumentAnnotatingModel createBNIModel(ModelRVSetting modelRVSetting, Document document) {
 
-        TrainingDocumentAnnotatingModel trainingModel = getTrainingModel(category);
-        trainingModel.updateWithDocumentAndWeight(document);
+        TrainingDocumentAnnotatingModel tmpModel = createModel(modelRVSetting);
+        tmpModel.updateWithDocumentAndWeight(document);
 
-        ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(trainingModel.getTnbfModel(),
-                trainingModel.getHmm(), document, category.wordType, category.wordFeatures, category.paraType,category. paraFeatures,
-                category.paraDocFeatures, category.docFeatures, category.wordVarList);
+        ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(tmpModel.getTnbfModel(),
+                tmpModel.getHmm(), document,modelRVSetting );
         bniModel.annotateDocument();
         //printBelieves(bniModel, document);
+        bniModelMap.put(modelRVSetting.getCategoryId(),bniModel);
         return bniModel;
     }
-    public void saveTrainingModel(Category category) throws ObjectPersistUtil.ObjectPersistException {
-        objectPersistUtil.persistObject(null, getTrainingModel(category), category.getName());
+
+    ProbabilityDocumentAnnotatingModel getBNIModel(ModelRVSetting modelRVSetting) {
+        if (bniModelMap.containsKey(modelRVSetting.getCategoryId())){
+            return bniModelMap.get(modelRVSetting.getCategoryId());
+        }
+        return null;
+    }
+
+    public void saveTrainingModel(ModelRVSetting modelRVSetting) throws ObjectPersistUtil.ObjectPersistException {
+        objectPersistUtil.persistObject(null, getTrainingModel(modelRVSetting), modelRVSetting.getCategoryName());
     }
 
     void printBelieves(ProbabilityDocumentAnnotatingModel model, Document doc ){
@@ -84,7 +86,6 @@ public class ModelFactory {
 
         double[][] dBelieves = model.getDocumentFeatureBelief();
         for (int i=0; i<dBelieves.length; i++){
-            logger.trace(" " + model.DEFAULT_DOCUMENT_FEATURES);
             logger.trace(Arrays.toString(dBelieves[i]));
         }
 

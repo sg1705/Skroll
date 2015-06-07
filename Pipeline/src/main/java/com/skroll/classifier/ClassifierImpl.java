@@ -1,6 +1,6 @@
 package com.skroll.classifier;
 
-import com.skroll.analyzer.model.TrainingDocumentAnnotatingModel;
+import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.Token;
@@ -24,18 +24,17 @@ public class ClassifierImpl implements Classifier {
     public static final Logger logger = LoggerFactory.getLogger(ClassifierImpl.class);
 
     protected ModelFactory modelFactory;
-    protected TrainingDocumentAnnotatingModel trainingDocumentAnnotatingModel;
+    //protected TrainingDocumentAnnotatingModel trainingDocumentAnnotatingModel;
     @Override
-    public Category getCategory() {
-        return category;
+    public ModelRVSetting getModelRVSetting() {
+        return modelRVSetting;
     }
 
-    protected Category category;
+    protected ModelRVSetting modelRVSetting;
 
-    public ClassifierImpl(ModelFactory modelFactory, TrainingDocumentAnnotatingModel trainingDocumentAnnotatingModel, Category category) {
+    public ClassifierImpl(ModelFactory modelFactory,  ModelRVSetting modelRVSetting) {
         this.modelFactory = modelFactory;
-        this.trainingDocumentAnnotatingModel = trainingDocumentAnnotatingModel;
-        this.category = category;
+        this.modelRVSetting = modelRVSetting;
     }
 
     public List<String> extractTokenFromDoc(Document doc) {
@@ -58,7 +57,7 @@ public class ClassifierImpl implements Classifier {
 
         logger.debug("Before annotate");
         CategoryAnnotationHelper.displayCategoryOfDoc(document);
-        modelFactory.getBNIModel(category, document);
+        modelFactory.createBNIModel(modelRVSetting, document);
 
         logger.debug("After annotate");
         CategoryAnnotationHelper.displayCategoryOfDoc(document);
@@ -70,27 +69,23 @@ public class ClassifierImpl implements Classifier {
 
     @Override
     public void train(Document doc) {
-        trainingDocumentAnnotatingModel.updateWithDocument(doc);
+        modelFactory.getTrainingModel(modelRVSetting).updateWithDocument(doc);
 
     }
     @Override
     public void trainWithWeight( Document doc) {
-        trainingDocumentAnnotatingModel.updateWithDocumentAndWeight(doc);
+        modelFactory.getTrainingModel(modelRVSetting).updateWithDocumentAndWeight(doc);
 
     }
 
-    @Override
-    public void train(Category category, String fileName, int numOfLines) throws ParserException {
-        Document document = Parser.parseDocumentFromHtmlFile(fileName);
-        train( document);
-    }
 
     @Override
     public Object classify(String documentId, Document document) {
         try {
             return updateBNI(documentId, document, new ArrayList<CoreMap>());
         } catch (Exception e) {
-            logger.error(String.format("Cannot classify documentId:%s for categoryId:%s",documentId, this.category.getId()), e);
+            e.printStackTrace();
+            logger.error(String.format("Cannot classify documentId:%s for categoryId:%s",documentId, this.modelRVSetting.getCategoryId(), e));
         }
         return document;
     }
@@ -114,22 +109,22 @@ public class ClassifierImpl implements Classifier {
 
     @Override
     public HashMap<String, HashMap<String, Double>> getBNIVisualMap( Document document, int paraIndex) {
-        return modelFactory.getBNIModel(category, document).toVisualMap(paraIndex);
+        return modelFactory.getBNIModel(modelRVSetting).toVisualMap(paraIndex);
     }
 
 
     @Override
     public HashMap<String, HashMap<String, HashMap<String, Double>>> getModelVisualMap() {
-        return modelFactory.getTrainingModel(category).toVisualMap();
+        return modelFactory.getTrainingModel(modelRVSetting).toVisualMap();
     }
 
     @Override
     public List<Double> getProbabilityDataForDoc(Document document) {
-        return modelFactory.getBNIModel(category,document).toParaCategoryDump();
+        return modelFactory.getBNIModel(modelRVSetting).toParaCategoryDump();
     }
 
     @Override
     public void persistModel() throws ObjectPersistUtil.ObjectPersistException {
-        modelFactory.saveTrainingModel(category);
+        modelFactory.saveTrainingModel(modelRVSetting);
     }
 }

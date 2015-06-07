@@ -50,7 +50,7 @@ public class JsonDeserializerTest {
             logger.debug("paragraph:" +paragraph.getText());
             if (CategoryAnnotationHelper.isCategoryId(paragraph, Category.DEFINITION) ){
                 List<List<String>> definitionList = CategoryAnnotationHelper.getDefinedTermLists(
-                        paragraph);
+                        paragraph, Category.DEFINITION);
                 logger.debug("definitionList:" +Joiner.on(" ").join(definitionList));
               //  assert((Joiner.on(" ").join(definitionList).contains("susan")));
             }
@@ -72,19 +72,19 @@ public class JsonDeserializerTest {
 
         List<String> addedDefinition = Lists.newArrayList("jack", "susan");
         List<Token> tokens = DocumentHelper.getTokens(addedDefinition);
-        CategoryAnnotationHelper.addDefinedTokensInCategoryAnnotation( paragraph, tokens);
+        CategoryAnnotationHelper.addDefinedTokensInCategoryAnnotation( paragraph, tokens, Category.DEFINITION);
         //paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
         paragraph.set(CoreAnnotations.ParagraphIdAnnotation.class, "1");
         paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
         paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
-        CategoryAnnotationHelper.addTokensInCategoryAnnotation(paragraph, tokens, Category.TOC_1);
+        CategoryAnnotationHelper.addDefinedTokensInCategoryAnnotation(paragraph, tokens, Category.TOC_1);
         TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, Category.DEFINITION, (float) 1.0);
         TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, Category.TOC_1, (float)0.5);
         paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
         paralist.add(paragraph);
 
         List<List<String>> definitionList = CategoryAnnotationHelper.getDefinedTermLists(
-                paragraph);
+                paragraph,Category.DEFINITION );
         for (List<String> definition : definitionList) {
             logger.debug(paragraph.getId() + "\t" + " annotation:" + "\t" + definition);
 

@@ -1,5 +1,7 @@
 package com.skroll.analyzer.model;
 
+import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
+
 /**
  * Possible types of random variables and their properties.
  * Each type of random variable may have multiple instances of random variables.
@@ -41,7 +43,7 @@ public enum RandomVariableType {
     WORD_IS_UNDERLINED (2),
     WORD_IS_ITALIC (2),
     WORD_HAS_SPECIAL_FORMAT(2),
-    WORD_INDEX (DefinedTermExtractionModel.HMM_MODEL_LENGTH),
+    WORD_INDEX(HiddenMarkovModel.DEFAULT_MODEL_LENGTH),
 
     WORD(0),
     FIRST_WORD(0),
