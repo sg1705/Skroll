@@ -59,7 +59,8 @@ public class ProbabilityDocumentAnnotatingModelTest {
         System.out.println(model);
         System.out.println("initial believes\n");
         printBelieves();
-
+        double[][] pBelieves = model.getParagraphCategoryProbabilities();
+        assert (Math.round(100 * pBelieves[51][1]) == 100);
     }
 
     @Test
@@ -69,7 +70,9 @@ public class ProbabilityDocumentAnnotatingModelTest {
             model.passMessagesToParagraphCategories();
             model.passMessageToDocumentFeatures();
             System.out.println("After passing messages :\n");
-
+            double[][] dBelieves = model.getDocumentFeatureBelief();
+            System.out.println(Arrays.toString(dBelieves[0]));
+            assert (Arrays.toString(dBelieves[0]).equals("[-9.460476328353993, -7.787252271960058E-5]"));
             printDocBeliefs();
         }
     }

@@ -18,7 +18,8 @@ import java.util.*;
  */
 public class DocProcessor {
 
-    static Map<Document, ProcessedData> processedDataMap = new HashMap<>();
+    static Map<Document, ProcessedData> processedParasMap = new HashMap<>();
+    static Map<String, ProcessedData> processedDataMap = new HashMap<>();
 
     static ProcessedData processDoc(Document doc, int numWordsToUse, NBFCConfig config) {
         ProcessedData data = processedDataMap.get(doc);
@@ -27,11 +28,13 @@ public class DocProcessor {
         NBFCData nbfcData = getParaDataFromDoc(doc.getParagraphs(), processedParas, config);
 
         data = new ProcessedData(processedParas, nbfcData);
-        processedDataMap.put(doc, data);
+//        processedDataMap.put(doc, data);
 
         return data;
 
     }
+
+
     /**
      * Processes a paragraph by taking the number of starting words to use
      * @param paras
