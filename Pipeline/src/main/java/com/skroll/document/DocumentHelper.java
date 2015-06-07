@@ -115,4 +115,34 @@ public class DocumentHelper {
         return false;
     }
 
+    public static boolean areDocumentsEqual(Document doc1, Document doc2) {
+        //compare paragraph sizes
+        if (doc1.getParagraphs().size() != doc2.getParagraphs().size()) {
+            return false;
+        }
+
+        //compare doc id
+        if (!(doc1.getId().equals(doc2.getId()))) {
+            return false;
+        }
+
+        //compare source html
+        if (!doc1.getSource().equals(doc2.getSource())) {
+            return false;
+        }
+
+        //compare each paragraph
+        int count = doc1.getParagraphs().size();
+        for(int ii = 0; ii < count; ii++) {
+            CoreMap map1 = doc1.getParagraphs().get(ii);
+            CoreMap map2 = doc2.getParagraphs().get(ii);
+            //check if text is the same
+            if (!map1.getText().equals(map2.getText())) {
+                return false;
+            }
+        }
+        //looks good
+        return true;
+    }
+
 }

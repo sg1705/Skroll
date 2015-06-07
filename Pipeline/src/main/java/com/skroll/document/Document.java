@@ -63,5 +63,9 @@ public class Document extends CoreMap {
         this.target = target;
     }
 
+    public boolean equals(Document doc) {
+        return DocumentHelper.areDocumentsEqual(this, doc);
+    }
+
 
 }
