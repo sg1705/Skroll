@@ -1,12 +1,17 @@
 package com.skroll.parser;
 
+import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.extractor.ParserException;
-import com.skroll.parser.tokenizer.PostExtractionPipe;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by saurabh on 12/28/14.
@@ -14,6 +19,7 @@ import com.skroll.pipeline.util.Utils;
 public class Parser {
 
     public static final int VERSION = 1;
+    public static final Logger logger = LoggerFactory.getLogger(Parser.class);
 
     private static Document parseInDoc(Document document) throws ParserException {
         //create a pipeline
@@ -76,6 +82,37 @@ public class Parser {
 
     private static void setVersion(Document doc) {
         doc.set(CoreAnnotations.ParserVersionAnnotationInteger.class, VERSION);
+    }
+
+    public static Document reParse(Document document) throws ParserException {
+        //get the source html
+        Document newDoc = Parser.parseDocumentFromHtml(document.getSource());
+        // if parsed documents has different paragraphs then log error
+        if (newDoc.getParagraphs().size() != document.getParagraphs().size()) {
+            logger.error("Reparsed document is not the same as the old doc. " +
+                    "Number of paragraphs are different {}", document.get(CoreAnnotations.IdAnnotation.class));
+
+        }
+        for(int ii = 0; ii < newDoc.getParagraphs().size(); ii++) {
+            //copy annotations over
+            CoreMap paragraph = document.getParagraphs().get(ii);
+            CoreMap nPara = newDoc.getParagraphs().get(ii);
+            if (paragraph.containsKey(CoreAnnotations.CategoryAnnotations.class)) {
+                HashMap classId = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
+                nPara.set(CoreAnnotations.CategoryAnnotations.class, classId);
+            }
+
+            if (paragraph.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)) {
+                boolean userObservation = paragraph.get(CoreAnnotations.IsUserObservationAnnotation.class);
+                nPara.set(CoreAnnotations.IsUserObservationAnnotation.class, userObservation);
+            }
+
+            if (paragraph.containsKey(CoreAnnotations.TrainingWeightAnnotationFloat.class)) {
+                List<Float> trainingW = paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class);
+                nPara.set(CoreAnnotations.TrainingWeightAnnotationFloat.class, trainingW);
+            }
+        }
+        return newDoc;
     }
 
 }

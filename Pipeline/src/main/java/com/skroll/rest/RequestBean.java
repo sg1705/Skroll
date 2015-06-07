@@ -50,13 +50,10 @@ public class RequestBean {
                  documentId = pathParams.get("documentId").getValue();
         }
 
-        System.out.println("DocumentId:"+documentId);
-
         if (documentId != null) {
             //fetch it from factory
             this.documentId = documentId;
             this.document = documentFactory.get(documentId);
-            System.out.println(this.document);
         }
 
         this.classifiers = classifierFactory.getClassifier(this.document);

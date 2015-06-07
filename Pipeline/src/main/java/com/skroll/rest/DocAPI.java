@@ -133,6 +133,7 @@ public class DocAPI {
         fileName = strs[strs.length - 1];
         try {
             document = Parser.parseDocumentFromHtml(content, url);
+            document.setId(fileName);
             //Streams require final objects
             String fName = fileName;
             Document fDoc = document;
@@ -183,6 +184,7 @@ public class DocAPI {
     @Produces(MediaType.TEXT_HTML)
     public Response getDoc(@QueryParam("documentId") String documentId, @Context HttpHeaders hh, @BeanParam RequestBean request) {
 
+        logger.info("Opening [{}]", documentId);
         Document doc = request.getDocument();
         if (doc == null) {
             logger.debug("Not found in documentMap, fetching from corpus: {}", documentId.toString());
