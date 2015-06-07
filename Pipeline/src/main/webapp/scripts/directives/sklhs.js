@@ -57,8 +57,5 @@ LHSLevelsCtrl.prototype.toggleSection = function(index) {
   this.classes[index].isSelected = !this.classes[index].isSelected;
 }
 
-
-
-
 angular.module('SkrollApp')
   .controller('LHSLevelsCtrl', LHSLevelsCtrl);
