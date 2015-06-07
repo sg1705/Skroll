@@ -18,15 +18,19 @@ import java.util.*;
  */
 public class DocProcessor {
 
-    static Map<Document, List<CoreMap>> processedParasMap = new HashMap<>();
+    static Map<Document, ProcessedData> processedDataMap = new HashMap<>();
 
-    static List<CoreMap> processParagraphs(Document doc, int numWordsToUse) {
-        List<CoreMap> processedParas = processedParasMap.get(doc);
-        if (processedParas != null) return processedParas;
-        processedParas = processParagraphs(doc.getParagraphs(), numWordsToUse);
-        processedParasMap.put(doc, processedParas);
+    static ProcessedData processDoc(Document doc, int numWordsToUse, NBFCConfig config) {
+        ProcessedData data = processedDataMap.get(doc);
+        if (data != null) return data;
+        List<CoreMap> processedParas = processParagraphs(doc.getParagraphs(), numWordsToUse);
+        NBFCData nbfcData = getParaDataFromDoc(doc.getParagraphs(), processedParas, config);
 
-        return processedParas;
+        data = new ProcessedData(processedParas, nbfcData);
+        processedDataMap.put(doc, data);
+
+        return data;
+
     }
     /**
      * Processes a paragraph by taking the number of starting words to use
