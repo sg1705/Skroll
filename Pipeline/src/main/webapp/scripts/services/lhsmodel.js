@@ -21,15 +21,12 @@ var LHSModel = {
 		name: 'None',
 		isSelected: false,
 		isVisible: false
-	},{
-		id: 1,
-		name: 'Definition',
-		isSelected: true,
-		isVisible: true
-	}, {
+	},
+
+  {
 		id: 2,
 		name: 'Table of Contents',
-		isSelected: false,
+		isSelected: true,
 		isVisible: true
 	},
   {
@@ -62,8 +59,14 @@ var LHSModel = {
     name: 'Bookmarks',
     isSelected: false,
     isVisible: true
-  }
+  },
 
+  {
+    id: 1,
+    name: 'Definition',
+    isSelected: false,
+    isVisible: true
+  }
 
   ],
 

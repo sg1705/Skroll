@@ -78,7 +78,7 @@ public class PhantomJsExtractor {
         try {
             newDoc = helper.fromJson(result[0]);
             newDoc.setTarget(result[1]);
-            newDoc.setSource(result[1]);
+            newDoc.setSource(htmlText);
         } catch (Exception e) {
             // error TODO needs to be logged
             e.printStackTrace();

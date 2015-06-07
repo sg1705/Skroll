@@ -3,6 +3,8 @@ package com.skroll.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
@@ -60,24 +62,23 @@ public class Configuration {
                     .getContextClassLoader();
             inStream = clazzLoader.getResourceAsStream(fileName);
             if (inStream == null) {
-               logger.error("Cannot find file {} file", fileName);
-                System.exit(-1);
-            } else {
-                prop.load(inStream);
-
-                for (Object key :prop.keySet()) {
-                    // Properties that is defined in properties file can be overridden by -D options on command line
-                    String override = System.getProperty((String) key);
-
-                    if (override != null) {
-
-                        prop.put(key, override);
-                    }
+                //check in file system
+                inStream = new FileInputStream(fileName);
+                if (inStream == null) {
+                    logger.error("Cannot find file {}", fileName);
+                    System.exit(-1);
                 }
-
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Number of properties read {}", prop.size());
+            }
+            prop.load(inStream);
+            for (Object key :prop.keySet()) {
+                // Properties that is defined in properties file can be overridden by -D options on command line
+                String override = System.getProperty((String) key);
+                if (override != null) {
+                    prop.put(key, override);
                 }
+            }
+            if (logger.isDebugEnabled()) {
+                logger.debug("Number of properties read {}", prop.size());
             }
         } catch (IOException e) {
             // logger.error("systemConf.properties is not loaded correctly.", e);

@@ -172,50 +172,55 @@ public class CategoryAnnotationHelper {
         paragraph.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
     }
 
-    public static boolean setMatchedText(CoreMap coreMap, List<Token> addedTerm, int categoryId) {
+    public static boolean setMatchedText(CoreMap paragraph, List<Token> selectedTerm, int categoryId) {
 
-        List<Token> tokenList = coreMap.getTokens();
-        String tokenStringList = Joiner.on("").join(tokenList);
-        String addedTermList = Joiner.on("").join(addedTerm);
+        List<Token> paragraphTokens = paragraph.getTokens();
+        String paraTokenString = Joiner.on("").join(paragraphTokens).toLowerCase();
+        String selectedTermString = Joiner.on("").join(selectedTerm).toLowerCase();
 
-        if (!tokenStringList.contains(addedTermList)) {
+        if (!paraTokenString.contains(selectedTermString)) {
+            logger.error("Existing document's paragraph {} does not contains Selected text {} ", paraTokenString,selectedTermString);
             return false;
         }
 
+        if(paraTokenString.equals(selectedTermString)){
+            return true;
+        }
         List<Token> returnList = new ArrayList<>();
-        int j=0;
-        int l=0;
-        int remainingAddedTermLength = 0;
-
-        while (remainingAddedTermLength < addedTermList.length()) {
-            for(int i=l; i<tokenList.size(); i++){
-                int tokenLength = tokenList.get(i).getText().length();
+        int lastTokenPointer=0;
+        int runner=0;
+        int remainingSelectedTermLength = 0;
+        //outer loop to find sequence of selected tokens in the para
+        while (remainingSelectedTermLength < selectedTermString.length()) {
+            //inner loop to find the first selectedToken in the paragraph
+            for(int current=runner; current<paragraphTokens.size(); current++){
+                int paragraphTokenLength = paragraphTokens.get(current).getText().length();
                 //check if the selected text is not the complete word or token
-                if(addedTermList.length() < remainingAddedTermLength + tokenLength ){
-                    logger.error("One of Selected text {} does not contain the complete word [{}] ", addedTerm,tokenList.get(i).getText());
+                if(selectedTermString.length() < remainingSelectedTermLength + paragraphTokenLength ){
+                    logger.error("One of Selected text {} does not contain the complete word [{}] ", selectedTerm,paragraphTokens.get(current).getText());
                     return false;
                 }
-                String addedTermSubString = addedTermList.substring(remainingAddedTermLength,remainingAddedTermLength + tokenLength);
-                if(tokenList.get(i).getText().equals(addedTermSubString)) {
-                    remainingAddedTermLength+=tokenLength;
-                    if (j==0) {
-                        j=i;
+                String selectedTermSubString = selectedTermString.substring(remainingSelectedTermLength,remainingSelectedTermLength + paragraphTokenLength);
+                if(paragraphTokens.get(current).getText().equalsIgnoreCase(selectedTermSubString)) {
+                    remainingSelectedTermLength+=paragraphTokenLength;
+                    if (lastTokenPointer==0) {
+                        lastTokenPointer=current;
                     }
-                    if (i>j+1) {
+                    if (current>lastTokenPointer+1) {
                         returnList.clear();
-                        j=i;
+                        lastTokenPointer=current;
                         continue;
                     }
-                    returnList.add(tokenList.get(i));
-                    j=i;
-                    l++;
+                    returnList.add(paragraphTokens.get(current));
+                    lastTokenPointer=current;
+                    runner++;
                     break;
                 }
-                l++;
+                runner++;
             }
         }
-            addDefinedTokensInCategoryAnnotation(coreMap, returnList, categoryId);
 
+        addDefinedTokensInCategoryAnnotation(paragraph, returnList, categoryId);
         return true;
 
     }
