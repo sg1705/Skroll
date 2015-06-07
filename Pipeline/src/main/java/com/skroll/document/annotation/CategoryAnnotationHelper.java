@@ -18,21 +18,7 @@ public class CategoryAnnotationHelper {
     public static final Logger logger = LoggerFactory
             .getLogger(CategoryAnnotationHelper.class);
 
-    /*
-    public static List<String> getTexts(CoreMap coreMap, int categoryId) {
-        HashMap<Integer, CoreMap> categoryAnnotation = coreMap.get(CoreAnnotations.CategoryAnnotations.class);
-        if (categoryAnnotation==null) return new ArrayList<>();
-        if(categoryAnnotation.get(categoryId)==null) return new ArrayList<>();
-        return DocumentHelper.getTokenString(categoryAnnotation.get(categoryId).getTokens());
-    }
 
-    public static List<Token> getTokensInParagraph(CoreMap paragraph, int categoryId) {
-        HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
-        if (categoryAnnotation==null) return new ArrayList<>();
-        if(categoryAnnotation.get(categoryId)==null) return new ArrayList<>();
-        return categoryAnnotation.get(categoryId).getTokens();
-    }
-    */
     public static List<List<String>> getDefinedTermLists(CoreMap coreMap, int categoryId) {
         HashMap<Integer, CoreMap> categoryAnnotation = coreMap.get(CoreAnnotations.CategoryAnnotations.class);
         if (categoryAnnotation==null) return new ArrayList<>();
@@ -119,19 +105,7 @@ public class CategoryAnnotationHelper {
         }
         return categoryAnnotation;
     }
-   /*
-    public static void addTokensInCategoryAnnotation(CoreMap paragraph, List<Token> newTokens,  int category) {
-        HashMap<Integer, CoreMap> categoryAnnotation = checkNull(paragraph, category);
-        CoreMap annotationCoreMap = categoryAnnotation.get(category);
-        List<Token> tokens = annotationCoreMap.getTokens();
-        if (tokens == null) {
-                tokens = new ArrayList<>();
-        }
-            tokens.addAll(newTokens);
-            annotationCoreMap.set(CoreAnnotations.TokenAnnotation.class, tokens);
-            paragraph.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
-        }
-*/
+
     public static void addDefinedTokensInCategoryAnnotation(CoreMap paragraph, List<Token> newTokens, int categoryId) {
         HashMap<Integer, CoreMap> categoryAnnotation = checkNull(paragraph, categoryId);
         CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
@@ -151,14 +125,6 @@ public class CategoryAnnotationHelper {
         paragraph.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
     }
 
-   /*
-    public static void setCategoryAnnotation(CoreMap paragraph, List<Token> tokens ,int categoryId) {
-        HashMap<Integer, CoreMap> categoryAnnotation = checkNull(paragraph, categoryId);
-        CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
-        annotationCoreMap.set(CoreAnnotations.TokenAnnotation.class, tokens);
-        paragraph.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
-    }
-   */
     public static void clearAnnotations(CoreMap paragraph){
         paragraph.set(CoreAnnotations.CategoryAnnotations.class, null);
     }
@@ -183,43 +149,41 @@ public class CategoryAnnotationHelper {
             return false;
         }
 
-        if(paraTokenString.equals(selectedTermString)){
-            return true;
-        }
+
         List<Token> returnList = new ArrayList<>();
         int lastTokenPointer=0;
         int runner=0;
         int remainingSelectedTermLength = 0;
         //outer loop to find sequence of selected tokens in the para
-        while (remainingSelectedTermLength < selectedTermString.length()) {
-            //inner loop to find the first selectedToken in the paragraph
-            for(int current=runner; current<paragraphTokens.size(); current++){
-                int paragraphTokenLength = paragraphTokens.get(current).getText().length();
-                //check if the selected text is not the complete word or token
-                if(selectedTermString.length() < remainingSelectedTermLength + paragraphTokenLength ){
-                    logger.error("One of Selected text {} does not contain the complete word [{}] ", selectedTerm,paragraphTokens.get(current).getText());
-                    return false;
-                }
-                String selectedTermSubString = selectedTermString.substring(remainingSelectedTermLength,remainingSelectedTermLength + paragraphTokenLength);
-                if(paragraphTokens.get(current).getText().equalsIgnoreCase(selectedTermSubString)) {
-                    remainingSelectedTermLength+=paragraphTokenLength;
-                    if (lastTokenPointer==0) {
-                        lastTokenPointer=current;
-                    }
-                    if (current>lastTokenPointer+1) {
-                        returnList.clear();
-                        lastTokenPointer=current;
-                        continue;
-                    }
-                    returnList.add(paragraphTokens.get(current));
-                    lastTokenPointer=current;
-                    runner++;
-                    break;
-                }
-                runner++;
-            }
-        }
 
+            while (remainingSelectedTermLength < selectedTermString.length()) {
+                //inner loop to find the first selectedToken in the paragraph
+                for (int current = runner; current < paragraphTokens.size(); current++) {
+                    int paragraphTokenLength = paragraphTokens.get(current).getText().length();
+                    //check if the selected text is not the complete word or token
+                    if (selectedTermString.length() < remainingSelectedTermLength + paragraphTokenLength) {
+                        logger.error("One of Selected text {} does not contain the complete word [{}] ", selectedTerm, paragraphTokens.get(current).getText());
+                        return false;
+                    }
+                    String selectedTermSubString = selectedTermString.substring(remainingSelectedTermLength, remainingSelectedTermLength + paragraphTokenLength);
+                    if (paragraphTokens.get(current).getText().equalsIgnoreCase(selectedTermSubString)) {
+                        remainingSelectedTermLength += paragraphTokenLength;
+                        if (lastTokenPointer == 0) {
+                            lastTokenPointer = current;
+                        }
+                        if (current > lastTokenPointer + 1) {
+                            returnList.clear();
+                            lastTokenPointer = current;
+                            continue;
+                        }
+                        returnList.add(paragraphTokens.get(current));
+                        lastTokenPointer = current;
+                        runner++;
+                        break;
+                    }
+                    runner++;
+                }
+            }
         addDefinedTokensInCategoryAnnotation(paragraph, returnList, categoryId);
         return true;
 
