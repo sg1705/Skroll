@@ -34,7 +34,8 @@ angular.module('SkrollApp')
                       //use get terms
                       documentService.getTerms().then(function(terms){
                         //create new LHS model items
-                        LHSModel.smodel.terms = terms;
+                        LHSModel.setTerms(terms);
+                        //LHSModel.smodel.terms = terms;
                       }, function(msg) {
                         console.log(msg);
                       });

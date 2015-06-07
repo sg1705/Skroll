@@ -1,5 +1,5 @@
-<div ng-repeat="class in ctrl.classes" ng-show="{{class.isVisible}}" >
-	
+<div ng-repeat="class in ctrl.classes">
+	<div ng-show="class.isActive">
 		<md-button class="menu-toggle-button" ng-click="ctrl.toggleSection($index)">
 		  <div layout="row" layout-align="space-between center">
 			<span>{{class.name}}</span>
@@ -38,4 +38,5 @@
 		</li>
 	</ul>
 	<md-divider></md-divider>
+</div>
 </div>
