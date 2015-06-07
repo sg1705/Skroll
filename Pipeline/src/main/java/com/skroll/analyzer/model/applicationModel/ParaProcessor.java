@@ -15,7 +15,7 @@ import java.util.*;
  */
 public class ParaProcessor {
     // create a copy of paragraph and annotate it further for training
-    static CoreMap processParagraph(CoreMap paragraph) {
+    public static CoreMap processParagraph(CoreMap paragraph) {
         return processParagraph(paragraph, ModelRVSetting.NUM_WORDS_TO_USE_PER_PARAGRAPH);
     }
 
@@ -72,7 +72,7 @@ public class ParaProcessor {
     }
 
     // set inquote annotation and make word sets
-    static CoreMap processParagraph(CoreMap paragraph, int numWordsToUse) {
+    public static CoreMap processParagraph(CoreMap paragraph, int numWordsToUse) {
         CoreMap trainingParagraph = new CoreMap();
         List<Token> tokens = paragraph.getTokens();
         List<Token> newTokens = new ArrayList<>();

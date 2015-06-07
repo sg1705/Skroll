@@ -11,7 +11,10 @@ import com.google.inject.Injector;
 import com.skroll.classifier.Category;
 import com.skroll.classifier.Classifier;
 import com.skroll.classifier.ClassifierFactory;
-import com.skroll.document.*;
+import com.skroll.document.CoreMap;
+import com.skroll.document.Document;
+import com.skroll.document.DocumentFactory;
+import com.skroll.document.Token;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
@@ -29,7 +32,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -51,6 +53,8 @@ public class SkrollTrainer {
             .getLogger(SkrollTrainer.class);
     Injector injector = Guice.createInjector(new SkrollGuiceModule());
     ClassifierFactory classifierFactory = injector.getInstance(ClassifierFactory.class);
+    Configuration configuration = new Configuration();
+    DocumentFactory documentFactory = new DocumentFactory(configuration);
     private static Classifier documentClassifier = null;
     private static Classifier tocExperimentClassifier = null;
 
@@ -91,27 +95,8 @@ public class SkrollTrainer {
 
     }
 
-    public Document getDocument(String preEvaluatedFile) {
-        String jsonString = null;
-        Document doc = null;
-        try {
-            logger.info("training file {}", preEvaluatedFile);
-            jsonString = Files.toString(new File(preEvaluatedFile), Charset.defaultCharset());
-        } catch (Exception e) {
-            logger.error("Failed to read document from Corpus:" + e.toString());
-            e.printStackTrace();
-        }
-        try {
-            doc = JsonDeserializer.fromJson(jsonString);
-        } catch (Exception e) {
-            logger.error("Failed to deserialize the message:" + e.toString());
-            e.printStackTrace();
-        }
-        return doc;
-    }
-
     public  void trainFileUsingTrainingWeight (String preEvaluatedFile) {
-        Document doc = getDocument(preEvaluatedFile);
+        Document doc = documentFactory.get(preEvaluatedFile);
         //iterate over each paragraph
         for(CoreMap paragraph : doc.getParagraphs()) {
             if (paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)) {
@@ -136,8 +121,8 @@ public class SkrollTrainer {
 
     public QC qcDocument(String file1, String file2){
         QC qc = new QC();
-        Document firstDoc = getDocument(file1);
-        Document secondDoc = getDocument(file2);
+        Document firstDoc = documentFactory.get(file1);
+        Document secondDoc = documentFactory.get(file2);
         for(CoreMap firstDocParagraph : firstDoc.getParagraphs()) {
             for(CoreMap secondDocParagraph : secondDoc.getParagraphs()) {
                 if (firstDocParagraph.getId().equalsIgnoreCase(secondDocParagraph.getId())) {
