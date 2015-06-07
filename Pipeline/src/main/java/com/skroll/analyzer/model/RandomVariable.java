@@ -122,4 +122,6 @@ public class RandomVariable {
         result = 31 * result + getFeatureSize();
         return result;
     }
+
+
 }

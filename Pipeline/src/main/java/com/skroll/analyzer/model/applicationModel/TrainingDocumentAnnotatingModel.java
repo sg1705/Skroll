@@ -123,11 +123,11 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
         // todo: the following two lines can cause a lot of inefficiency with the current approach of
         // updating training model with the whole doc each time user makes an observation.
-        List<CoreMap> processedParas = DocProcessor.processParagraphs(originalParas, hmm.size());
+        List<CoreMap> processedParas = DocProcessor.processParas(doc, hmm.size());
 
         // in NBFCData, para features can be preprocessed for the whole doc,
         // but doc features depends on the set of the observed paras and cannot be preprocessed just once.
-        NBFCData data = DocProcessor.getParaDataFromDoc(doc.getParagraphs(), processedParas, nbfcConfig);
+        NBFCData data = DocProcessor.getParaDataFromDoc(doc, processedParas, nbfcConfig);
 
         updateWithProcessedParasAndWeight(originalParas, processedParas, data);
 
@@ -157,11 +157,9 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
      * @param processedParas
      * @param data
      */
-    public void updateWithProcessedParasAndWeight(List<CoreMap> originalParas,
+    private void updateWithProcessedParasAndWeight(List<CoreMap> originalParas,
                                                   List<CoreMap> processedParas, NBFCData data) {
 //        List<CoreMap> originalParas = doc.getParagraphs();
-        if (processedParas == null) processedParas = DocProcessor.processParagraphs(originalParas, hmm.size());
-        if (data == null) data = DocProcessor.getParaDataFromDoc(originalParas, processedParas, nbfcConfig);
         List<CoreMap> observedParas = DocumentHelper.getObservedParagraphs(originalParas);
 
         int[] docFeatures = DocProcessor.generateDocumentFeatures(observedParas, data.getParaDocFeatures(), nbfcConfig);
@@ -190,8 +188,8 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     public void updateWithDocument(Document doc){
 
         List<CoreMap> originalParas = doc.getParagraphs();
-        List<CoreMap> processedParas = DocProcessor.processParagraphs(originalParas, hmm.size());
-        NBFCData data = DocProcessor.getParaDataFromDoc(doc.getParagraphs(), processedParas, nbfcConfig);
+        List<CoreMap> processedParas = DocProcessor.processParas(doc, hmm.size());
+        NBFCData data = DocProcessor.getParaDataFromDoc(doc, processedParas, nbfcConfig);
         updateWithDocument(originalParas, processedParas, data);
     }
 

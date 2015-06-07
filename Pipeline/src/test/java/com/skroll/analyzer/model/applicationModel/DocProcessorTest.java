@@ -56,7 +56,7 @@ public class DocProcessorTest {
 
     @Test
     public void testProcessParagraphs() throws Exception {
-        List<CoreMap> processedParas = DocProcessor.processParagraphs(doc.getParagraphs(), maxNumWords);
+        List<CoreMap> processedParas = DocProcessor.processParas(doc, maxNumWords);
         for (CoreMap para : processedParas) {
             assert (para.get(CoreAnnotations.StartsWithQuote.class));
             System.out.println(para.getTokens().get(1).get(CoreAnnotations.IndexInteger.class));
@@ -66,8 +66,8 @@ public class DocProcessorTest {
 
     @Test
     public void testParaGetDataFromDoc() throws Exception {
-        List<CoreMap> processedParas = DocProcessor.processParagraphs(doc.getParagraphs(), maxNumWords);
-        NBFCData data = DocProcessor.getParaDataFromDoc(doc.getParagraphs(), processedParas, setting.getNbfcConfig());
+        List<CoreMap> processedParas = DocProcessor.processParas(doc, maxNumWords);
+        NBFCData data = DocProcessor.getParaDataFromDoc(doc, processedParas, setting.getNbfcConfig());
         System.out.print(data);
         assert (Arrays.deepToString(data.getParaFeatures()).equals("[[3], [3]]"));
         assert (Arrays.deepToString(data.getParaDocFeatures()).equals("[[1], [1]]"));
@@ -77,7 +77,7 @@ public class DocProcessorTest {
 
     @Test
     public void testGetFeatureValue() throws Exception {
-        List<CoreMap> processedParas = DocProcessor.processParagraphs(doc.getParagraphs(), maxNumWords);
+        List<CoreMap> processedParas = DocProcessor.processParas(doc, maxNumWords);
         for (int i = 0; i < processedParas.size(); i++) {
             System.out.print("paragraph " + i + ": \n");
             for (RandomVariable rv : setting.getNbfcConfig().getAllParagraphFeatures()) {
@@ -99,8 +99,8 @@ public class DocProcessorTest {
 
     @Test
     public void testGenerateDocumentFeatures() throws Exception {
-        List<CoreMap> processedParas = DocProcessor.processParagraphs(doc.getParagraphs(), maxNumWords);
-        NBFCData data = DocProcessor.getParaDataFromDoc(doc.getParagraphs(), processedParas, setting.getNbfcConfig());
+        List<CoreMap> processedParas = DocProcessor.processParas(doc, maxNumWords);
+        NBFCData data = DocProcessor.getParaDataFromDoc(doc, processedParas, setting.getNbfcConfig());
         int[] docFeatureVals = DocProcessor.generateDocumentFeatures(
                 doc.getParagraphs(), data.getParaDocFeatures(), setting.getNbfcConfig());
         System.out.println(Arrays.toString(docFeatureVals));
@@ -110,7 +110,7 @@ public class DocProcessorTest {
 
     @Test
     public void testGetFeaturesVals() throws Exception {
-        List<CoreMap> processedParas = DocProcessor.processParagraphs(doc.getParagraphs(), maxNumWords);
+        List<CoreMap> processedParas = DocProcessor.processParas(doc, maxNumWords);
         List<RandomVariable> rv = Lists.newArrayList(
                 RVCreater.createRVFromAnnotation(CoreAnnotations.IsBoldAnnotation.class),
                 RVCreater.createRVFromAnnotation(CoreAnnotations.StartsWithQuote.class));

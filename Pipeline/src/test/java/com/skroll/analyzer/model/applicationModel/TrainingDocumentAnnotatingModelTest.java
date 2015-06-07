@@ -79,8 +79,8 @@ public class TrainingDocumentAnnotatingModelTest{
         TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel();
         Document doc = makeTrainingDoc(file);
 
-        List<CoreMap> processedParas = DocProcessor.processParagraphs(doc.getParagraphs(), maxNumWords);
-        NBFCData data = DocProcessor.getParaDataFromDoc(doc.getParagraphs(), processedParas, setting.getNbfcConfig());
+        List<CoreMap> processedParas = DocProcessor.processParas(doc, maxNumWords);
+        NBFCData data = DocProcessor.getParaDataFromDoc(doc, processedParas, setting.getNbfcConfig());
         int[] docFeatureValues = DocProcessor.generateDocumentFeatures(
                 doc.getParagraphs(), data.getParaDocFeatures(), setting.getNbfcConfig());
 

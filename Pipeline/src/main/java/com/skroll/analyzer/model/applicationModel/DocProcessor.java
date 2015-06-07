@@ -18,19 +18,18 @@ import java.util.*;
  */
 public class DocProcessor {
 
-    static Map<Document, ProcessedData> processedParasMap = new HashMap<>();
-    static Map<String, ProcessedData> processedDataMap = new HashMap<>();
+    static Map<Document, List<CoreMap>> processedParasMap = new HashMap<>();
+    static Map<String, NBFCData> processedDataMap = new HashMap<>();
 
-    static ProcessedData processDoc(Document doc, int numWordsToUse, NBFCConfig config) {
-        ProcessedData data = processedDataMap.get(doc);
-        if (data != null) return data;
-        List<CoreMap> processedParas = processParagraphs(doc.getParagraphs(), numWordsToUse);
-        NBFCData nbfcData = getParaDataFromDoc(doc.getParagraphs(), processedParas, config);
+    static List<CoreMap> processParas(Document doc, int numWordsToUse) {
 
-        data = new ProcessedData(processedParas, nbfcData);
-//        processedDataMap.put(doc, data);
+        List<CoreMap> processedParas = processedParasMap.get(doc);
+        if (processedParas != null) return processedParas;
+        processedParas = processParagraphs(doc.getParagraphs(), numWordsToUse);
 
-        return data;
+        processedParasMap.put(doc, processedParas);
+
+        return processedParas;
 
     }
 
@@ -41,7 +40,7 @@ public class DocProcessor {
      * @param numWordsToUse
      * @return
      */
-    static List<CoreMap> processParagraphs(List<CoreMap> paras, int numWordsToUse) {
+    private static List<CoreMap> processParagraphs(List<CoreMap> paras, int numWordsToUse) {
         List<CoreMap> processedParas = new ArrayList<>();
         for (int i = 0; i < paras.size(); i++) {
             processedParas.add(ParaProcessor.processParagraph(paras.get(i), numWordsToUse));
@@ -134,9 +133,20 @@ public class DocProcessor {
 //        return data;
 //    }
 //
+    static NBFCData getParaDataFromDoc(Document doc, List<CoreMap> processedParas, NBFCConfig config) {
+        String key = doc.getId() + config.getAllParagraphFeatures();
+        NBFCData data = processedDataMap.get(key);
+        if (data != null) return data;
+
+        List<CoreMap> originalParas = doc.getParagraphs();
+        data = getParaDataFromDoc(originalParas, processedParas, config);
+        processedDataMap.put(key, data);
+
+        return data;
+    }
 
 
-    static NBFCData getParaDataFromDoc(List<CoreMap> originalParas, List<CoreMap> processedParas, NBFCConfig config) {
+    private static NBFCData getParaDataFromDoc(List<CoreMap> originalParas, List<CoreMap> processedParas, NBFCConfig config) {
         NBFCData data = new NBFCData();
         data.setParaFeatures(getFeaturesVals(config.getFeatureVarList(), originalParas, processedParas));
         data.setParaDocFeatures(getFeaturesVals(config.getFeatureExistsAtDocLevelVarList(), originalParas, processedParas));

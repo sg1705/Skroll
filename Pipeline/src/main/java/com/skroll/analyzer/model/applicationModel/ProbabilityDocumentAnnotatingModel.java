@@ -32,9 +32,10 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
     Document doc;
     // todo: should probably store paragraphs, otherwise, need to recreate it everytime when model has new observations
-//    List<CoreMap> processedParagraphs = new ArrayList<>();
+    List<CoreMap> processedParagraphs = new ArrayList<>();
+    NBFCData data;
 //    int [][] paraFeatureValsExistAtDocLevel;
-    ProcessedData data;
+//    ProcessedData data;
 
     double[][][] messagesToParagraphCategory; //From feature ij to paragraph i category
     double[][][] messagesToDocumentFeature; //From feature ij to documentFeature j
@@ -68,7 +69,8 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
     void initialize(){
 //        List<CoreMap> originalParagraphs = doc.getParagraphs();
-        data = DocProcessor.processDoc(doc, hmm.size(), nbfcConfig);
+        processedParagraphs = DocProcessor.processParas(doc, hmm.size());
+        data = DocProcessor.getParaDataFromDoc(doc, processedParagraphs, nbfcConfig);
 //
 //        processedParagraphs = DocProcessor.processParagraphs(originalParagraphs, hmm.size());
 //        paraFeatureValsExistAtDocLevel = DocProcessor.getFeaturesVals(
@@ -90,9 +92,8 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
     //todo: should probably set inital belief based on observations if a document is reopened by the trainer or the same user again.
     void computeInitalBeliefs() {
 
-        int[][] allParaFeatures = data.getData().getParaFeatures();
-        int[][] allParaDocFeatures = data.getData().getParaDocFeatures();
-        List<CoreMap> processedParagraphs = data.getParas();
+        int[][] allParaFeatures = data.getParaFeatures();
+        int[][] allParaDocFeatures = data.getParaDocFeatures();
 
         List<RandomVariable> docFeatures = nbfcConfig.getDocumentFeatureVarList();
         List<RandomVariable> paraDocFeatures = nbfcConfig.getFeatureExistsAtDocLevelVarList();
@@ -161,7 +162,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
         List<DiscreteNode> dfna = lpnbfModel.getDocumentFeatureNodes();
         List<DiscreteNode> fedna = lpnbfModel.getFeatureExistAtDocLevelNodes();
 
-        int[][] paraFeatureValsExistAtDocLevel = data.getData().getParaDocFeatures();
+        int[][] paraFeatureValsExistAtDocLevel = data.getParaDocFeatures();
         for (int p=0; p<paragraphCategoryBelief.length; p++){
 
             lpnbfModel.setObservationOfFeatureNodesExistAtDocLevel(paraFeatureValsExistAtDocLevel[p]);
@@ -182,7 +183,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
     }
 
     void passMessageToDocumentFeatures(){
-        int[][] allParaDocFeatures = data.getData().getParaDocFeatures();
+        int[][] allParaDocFeatures = data.getParaDocFeatures();
         List<DiscreteNode> dfna = lpnbfModel.getDocumentFeatureNodes();
         List<DiscreteNode> fedna = lpnbfModel.getFeatureExistAtDocLevelNodes();
 //        LogProbabilityDiscreteNode[] dfna = (LogProbabilityDiscreteNode[]) lpnbfModel.getDocumentFeatureNodeArray();
@@ -237,7 +238,6 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
     public void annotateDocument(){
 
 
-        List<CoreMap> processedParagraphs = data.getParas();
         passMessagesToParagraphCategories();
 
         for (int i=0; i<NUM_ITERATIONS;i++) {
@@ -350,7 +350,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
     @Override
     public String toString() {
-        int[][] paraFeatureValsExistAtDocLevel = data.getData().getParaDocFeatures();
+        int[][] paraFeatureValsExistAtDocLevel = data.getParaDocFeatures();
         return "ProbabilityDocumentAnnotatingModel{" +
                 "\nlpnbfModel=\n" + lpnbfModel +
                 ", \nparaFeatureValsExistAtDocLevel=\n" + Arrays.deepToString(paraFeatureValsExistAtDocLevel) +
