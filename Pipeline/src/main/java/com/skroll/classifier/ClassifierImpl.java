@@ -84,6 +84,7 @@ public class ClassifierImpl implements Classifier {
         try {
             return updateBNI(documentId, document, new ArrayList<CoreMap>());
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error(String.format("Cannot classify documentId:%s for categoryId:%s",documentId, this.modelRVSetting.getCategoryId(), e));
         }
         return document;
