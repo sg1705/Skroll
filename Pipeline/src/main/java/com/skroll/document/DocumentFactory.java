@@ -39,12 +39,18 @@ public class DocumentFactory {
         } else {
             //document does not exist in map
             //let's fetch it from the filesystem
+            String jsonString;
             try {
                 logger.debug("Fetching [{}] from filesystem", documentId);
-                String jsonString = Files.toString(new File(PRE_EVALUATED_FOLDER + documentId), Charset.defaultCharset());
+                jsonString = Files.toString(new File(PRE_EVALUATED_FOLDER + documentId), Charset.defaultCharset());
+            } catch (IOException e) {
+                logger.info("[{}] cannot be found", documentId);
+                return null;
+            }
+            try {
                 doc = JsonDeserializer.fromJson(jsonString);
             } catch (Exception e) {
-                logger.error("Document [{}] cannot be parsed", documentId);
+                logger.error("[{}] cannot be parsed", documentId);
                 return null;
             }
         }
@@ -53,6 +59,9 @@ public class DocumentFactory {
     }
 
     public void putDocument(String documentId, Document document) {
+        if (document.getId() == null) {
+            document.setId(documentId);
+        }
         documents.put(documentId, document);
     }
 
@@ -67,7 +76,7 @@ public class DocumentFactory {
             document = Parser.reParse(document);
             //save it back since it is reparsed
             this.putDocument(document.getId(), document);
-            saveFile(document);
+            this.saveDocument(document);
         } catch (ParserException e) {
             logger.error("Cannot reparse document {}", document.getId());
         }
@@ -75,7 +84,7 @@ public class DocumentFactory {
         return document;
     }
 
-    private void saveFile(Document document) {
+    public void saveDocument(Document document) {
         try {
             Files.write(
                     JsonDeserializer.getJson(document),
