@@ -50,26 +50,19 @@ public class SkrollTrainer {
     public static final Logger logger = LoggerFactory
             .getLogger(SkrollTrainer.class);
     Injector injector = Guice.createInjector(new SkrollGuiceModule());
-     ClassifierFactory classifierFactory = injector.getInstance(ClassifierFactory.class);
-
+    ClassifierFactory classifierFactory = injector.getInstance(ClassifierFactory.class);
     private static Classifier documentClassifier = null;
     private static Classifier tocExperimentClassifier = null;
 
-    public SkrollTrainer(){
-        try {
-             documentClassifier = classifierFactory.getClassifier(Category.DEFINITION);
-             tocExperimentClassifier = classifierFactory.getClassifier(Category.TOC_1);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-    }
 
     public static void main(String[] args) throws IOException, ObjectPersistUtil.ObjectPersistException {
 
         SkrollTrainer skrollTrainer = new SkrollTrainer();
+
+        QC qc = skrollTrainer.qcDocument("build/resources/main/preEvaluated/mini-indenture.html", "build/resources/main/preEvaluated/smaller-indenture.html");
+        System.out.println("QC:" +qc.stats);
         //ToDO: use the apache common commandline
+        /*
         if (args[0].equals("--generateHRFs")) {
             skrollTrainer.generateHRFs(args[1]);
         }
@@ -84,11 +77,90 @@ public class SkrollTrainer {
             logger.debug("folder Name :" + args[1]);
             skrollTrainer.trainFolderUsingTrainingWeight(args[1]);
         }
+*/
+    }
 
+    public void trainFolderUsingTrainingWeight (String preEvaluatedFolder)  {
+        FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(preEvaluatedFolder));
+        List<String> docLists = new ArrayList<String>();
+        for (File f : iterable) {
+            if (f.isFile()) {
+                trainFileUsingTrainingWeight(f.getPath());
+            }
+        }
+
+    }
+
+    public Document getDocument(String preEvaluatedFile) {
+        String jsonString = null;
+        Document doc = null;
+        try {
+            logger.info("training file {}", preEvaluatedFile);
+            jsonString = Files.toString(new File(preEvaluatedFile), Charset.defaultCharset());
+        } catch (Exception e) {
+            logger.error("Failed to read document from Corpus:" + e.toString());
+            e.printStackTrace();
+        }
+        try {
+            doc = JsonDeserializer.fromJson(jsonString);
+        } catch (Exception e) {
+            logger.error("Failed to deserialize the message:" + e.toString());
+            e.printStackTrace();
+        }
+        return doc;
+    }
+
+    public  void trainFileUsingTrainingWeight (String preEvaluatedFile) {
+        Document doc = getDocument(preEvaluatedFile);
+        //iterate over each paragraph
+        for(CoreMap paragraph : doc.getParagraphs()) {
+            if (paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)) {
+                TrainingWeightAnnotationHelper.clearOldTrainingWeight(paragraph);
+            }
+        }
+        final Document finalDoc = doc;
+        try {
+            classifierFactory.getClassifier(doc).forEach(c -> c.trainWithWeight(finalDoc));
+            classifierFactory.getClassifier(doc).forEach(c -> {
+                try {
+                    c.persistModel();
+                } catch (ObjectPersistUtil.ObjectPersistException e) {
+                    logger.error("Failed to persist classifier: %s"+ c.toString(), e);
+                    e.printStackTrace();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public QC qcDocument(String file1, String file2){
+        QC qc = new QC();
+        Document firstDoc = getDocument(file1);
+        Document secondDoc = getDocument(file2);
+        for(CoreMap firstDocParagraph : firstDoc.getParagraphs()) {
+            for(CoreMap secondDocParagraph : secondDoc.getParagraphs()) {
+                if (firstDocParagraph.getId().equalsIgnoreCase(secondDocParagraph.getId())) {
+                    for (QC.Stats stats : qc.stats) {
+                        if (CategoryAnnotationHelper.isCategoryId(firstDocParagraph, stats.categoyId)){
+                            stats.overallOccurance++;
+                        }
+                        if (CategoryAnnotationHelper.isCategoryId(firstDocParagraph, stats.categoyId) &&
+                            !CategoryAnnotationHelper.isCategoryId(secondDocParagraph, stats.categoyId)) {
+                             stats.typeAError++;
+                            } else if (!CategoryAnnotationHelper.isCategoryId(firstDocParagraph, stats.categoyId) &&
+                                CategoryAnnotationHelper.isCategoryId(secondDocParagraph, stats.categoyId)) {
+                                stats.typeBError++;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        return qc;
     }
     // Generate CSV file for override.
     public void generateHRFs(String folderName) throws IOException {
-
         FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(folderName));
         for (File f : iterable) {
             if (f.isFile()) {
@@ -249,49 +321,6 @@ public class SkrollTrainer {
         }
         logger.debug ("Number fo Paragraphs returned: " + document.getParagraphs().size());
         Utils.writeToFile("build/classes/test/test-linker-random.html", document.getTarget());
-
-    }
-
-
-    public void trainFolderUsingTrainingWeight (String preEvaluatedFolder) throws ObjectPersistUtil.ObjectPersistException {
-
-        FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(preEvaluatedFolder));
-        List<String> docLists = new ArrayList<String>();
-        for (File f : iterable) {
-            if (f.isFile()) {
-                trainFileUsingTrainingWeight(f.getPath());
-            }
-        }
-        documentClassifier.persistModel();
-        tocExperimentClassifier.persistModel();
-    }
-
-
-    public  void trainFileUsingTrainingWeight (String preEvaluatedFile) {
-
-        String jsonString = null;
-        Document doc =null;
-        try {
-            logger.info ("training file {}" ,preEvaluatedFile);
-            jsonString = Files.toString(new File(preEvaluatedFile), Charset.defaultCharset());
-        } catch (Exception e) {
-            logger.error("Failed to read document from Corpus:" + e.toString());
-            e.printStackTrace();
-        }
-        try {
-            doc = JsonDeserializer.fromJson(jsonString);
-        } catch (Exception e) {
-            logger.error("Failed to deserialize the message:" + e.toString());
-            e.printStackTrace();
-        }
-        //iterate over each paragraph
-        for(CoreMap paragraph : doc.getParagraphs()) {
-            if (paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)) {
-                TrainingWeightAnnotationHelper.clearOldTrainingWeight(paragraph);
-            }
-        }
-        documentClassifier.trainWithWeight(doc);
-        tocExperimentClassifier.trainWithWeight(doc);
 
     }
 }

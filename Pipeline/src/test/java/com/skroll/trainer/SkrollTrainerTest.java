@@ -58,9 +58,6 @@ public class SkrollTrainerTest {
         } catch (Exception e) {
             e.printStackTrace();
             fail(" failed to create overwrite files");
-        } catch (ObjectPersistUtil.ObjectPersistException e) {
-            e.printStackTrace();
-            fail(" failed to persist the model");
         }
     }
 }
