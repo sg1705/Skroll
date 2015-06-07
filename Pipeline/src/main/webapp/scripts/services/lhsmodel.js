@@ -20,53 +20,62 @@ var LHSModel = {
 		id: 0,
 		name: 'None',
 		isSelected: false,
-		isVisible: false
+		isVisible: false,
+    isActive: false
 	},
+
+  {
+    id: 1,
+    name: 'Definition',
+    isSelected: false,
+    isVisible: true,
+    isActive: true
+  },
+
 
   {
 		id: 2,
 		name: 'Table of Contents',
 		isSelected: true,
-		isVisible: true
+		isVisible: true,
+    isActive: true
 	},
   {
     id: 3,
     name: 'TOC Level 2',
     isSelected: false,
-    isVisible: false
+    isVisible: false,
+    isActive: false
   },
   {
     id: 4,
     name: 'TOC Level 3',
     isSelected: false,
-    isVisible: false
+    isVisible: false,
+    isActive: false
   },
   {
     id: 5,
     name: 'TOC Level 4',
     isSelected: false,
-    isVisible: false
+    isVisible: false,
+    isActive: false
   },
   {
     id: 6,
     name: 'TOC Level 5',
     isSelected: false,
-    isVisible: false
+    isVisible: false,
+    isActive: false
   },
 
   {
     id: 7,
     name: 'Bookmarks',
     isSelected: false,
-    isVisible: true
+    isVisible: false,
+    isActive: false
   },
-
-  {
-    id: 1,
-    name: 'Definition',
-    isSelected: false,
-    isVisible: true
-  }
 
   ],
 
@@ -155,6 +164,36 @@ var LHSModel = {
     term['term'] = termText;
     term['serializedSelection'] = serializedSelection;
     this.smodel.terms.push(term);
+  },
+
+  setActiveClasses: function(terms) {
+    //anything that is not visible cannot be active
+    for(var ii = 0; ii < this.classes.length; ii++) {
+      if (this.classes[ii].isVisible) {
+        //get terms for classId
+        var classId = this.classes[ii].id;
+        var paras = _.filter(terms, function(obj){
+          if ((obj.classificationId == classId))
+            return true;
+          });
+
+        if (paras.length > 0) {
+          this.classes[ii].isActive = true;
+          console.log("active is true"+this.classes[ii].id);
+        } else {
+          this.classes[ii].isActive = false;
+          console.log("active is false"+this.classes[ii].id);
+        }
+
+      } else {
+        this.classes[ii].isActive = false;
+      }
+    }
+  },
+
+  setTerms: function (terms) {
+    this.smodel.terms = terms;
+    this.setActiveClasses(terms);
   }
 
 };

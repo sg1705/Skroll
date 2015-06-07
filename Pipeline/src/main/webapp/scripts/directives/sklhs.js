@@ -26,6 +26,7 @@ LHSCtrl.prototype.toggleSection = function(index) {
   this.classes[index].isSelected = !this.classes[index].isSelected;
 }
 
+
 angular.module('SkrollApp')
 	.controller('LHSCtrl', LHSCtrl);
 
