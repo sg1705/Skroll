@@ -1,6 +1,7 @@
 package com.skroll.document;
 
 import com.skroll.document.annotation.CoreAnnotations;
+import com.skroll.parser.Parser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,4 +102,22 @@ public class DocumentHelper {
         }
         return tokens;
     }
+
+    /**
+     * Returns true if the document is parsed with the latest version
+     * of the parser (see Parser.VERSION)
+     * @param doc
+     * @return
+     */
+    public static boolean isLatestParser(Document doc) {
+        Integer version = doc.get(CoreAnnotations.ParserVersionAnnotationInteger.class);
+        if (version != null) {
+            if (version != Parser.VERSION) {
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
 }

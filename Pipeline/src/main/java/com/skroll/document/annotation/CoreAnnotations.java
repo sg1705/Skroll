@@ -283,7 +283,19 @@ public class CoreAnnotations {
         }
     }
 
- /**
+    /**
+     * Annotation to indicate that this paragraph has an outgoing href
+     */
+    public static class IsHrefAnnotation implements CoreAnnotation<Boolean> {
+        public Class<Boolean> getType() {
+            return Boolean.class;
+        }
+    }
+
+
+
+
+    /**
      * Annotation for training. It specifies the index of a word token in the paragraph.
      */
 
@@ -327,6 +339,16 @@ public class CoreAnnotations {
     public static class SourceUrlAnnotation implements CoreAnnotation<String> {
         public Class<String> getType() {
             return String.class;
+        }
+    }
+
+
+    /**
+     * Annotation for version of parser
+     */
+    public static class ParserVersionAnnotationInteger implements CoreAnnotation<Integer> {
+        public Class<Integer> getType() {
+            return Integer.class;
         }
     }
 
