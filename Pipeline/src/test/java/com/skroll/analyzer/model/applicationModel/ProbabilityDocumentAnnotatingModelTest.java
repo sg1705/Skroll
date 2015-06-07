@@ -69,12 +69,12 @@ public class ProbabilityDocumentAnnotatingModelTest {
         for (int i=0; i<250;i++) {
             model.passMessagesToParagraphCategories();
             model.passMessageToDocumentFeatures();
-            System.out.println("After passing messages :\n");
-            double[][] dBelieves = model.getDocumentFeatureBelief();
-            System.out.println(Arrays.toString(dBelieves[0]));
-            assert (Arrays.toString(dBelieves[0]).equals("[-9.460476328353993, -7.787252271960058E-5]"));
             printDocBeliefs();
         }
+        System.out.println("After passing messages :\n");
+        double[][] dBelieves = model.getDocumentFeatureBelief();
+        System.out.println(Arrays.toString(dBelieves[0]));
+        assert (Arrays.toString(dBelieves[0]).equals("[-222459.7349654401, 0.0]"));
     }
 
     void printDocBeliefs(){
