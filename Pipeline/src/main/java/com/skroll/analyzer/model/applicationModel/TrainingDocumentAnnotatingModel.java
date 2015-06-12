@@ -123,7 +123,8 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
         // todo: the following two lines can cause a lot of inefficiency with the current approach of
         // updating training model with the whole doc each time user makes an observation.
-        List<CoreMap> processedParas = DocProcessor.processParas(doc, hmm.size());
+//        List<CoreMap> processedParas = DocProcessor.processParas(doc, hmm.size());
+        List<CoreMap> processedParas = DocProcessor.processParas(doc, modelRVSetting.NUM_WORDS_TO_USE_PER_PARAGRAPH);
 
         // in NBFCData, para features can be preprocessed for the whole doc,
         // but doc features depends on the set of the observed paras and cannot be preprocessed just once.
@@ -188,7 +189,8 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     public void updateWithDocument(Document doc){
 
         List<CoreMap> originalParas = doc.getParagraphs();
-        List<CoreMap> processedParas = DocProcessor.processParas(doc, hmm.size());
+//        List<CoreMap> processedParas = DocProcessor.processParas(doc, hmm.size());
+        List<CoreMap> processedParas = DocProcessor.processParas(doc, modelRVSetting.NUM_WORDS_TO_USE_PER_PARAGRAPH);
         NBFCData data = DocProcessor.getParaDataFromDoc(doc, processedParas, nbfcConfig);
         updateWithDocument(originalParas, processedParas, data);
     }

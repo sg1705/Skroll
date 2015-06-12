@@ -69,7 +69,8 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
     void initialize(){
 //        List<CoreMap> originalParagraphs = doc.getParagraphs();
-        processedParagraphs = DocProcessor.processParas(doc, hmm.size());
+//        processedParagraphs = DocProcessor.processParas(doc, hmm.size());
+        processedParagraphs = DocProcessor.processParas(doc, modelRVSetting.NUM_WORDS_TO_USE_PER_PARAGRAPH);
         data = DocProcessor.getParaDataFromDoc(doc, processedParagraphs, nbfcConfig);
 //
 //        processedParagraphs = DocProcessor.processParagraphs(originalParagraphs, hmm.size());

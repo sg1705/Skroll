@@ -13,23 +13,24 @@ import java.util.List;
 public class TOCModelRVSetting extends ModelRVSetting {
 
     static final List<RandomVariable> DEFAULT_WORD_FEATURES = Arrays.asList(
-            RVCreater.createRVFromAnnotation(CoreAnnotations.InQuotesAnnotation.class),
             RVCreater.createRVFromAnnotation(CoreAnnotations.IsUnderlineAnnotation.class)
     );
     static final List<RandomVariable> DEFAULT_PARA_FEATURE_VARS = Arrays.asList(
             RVCreater.createDiscreteRVWithComputer(new NumberTokensComputer(), "numTokens")
     );
     static final List<RandomVariable> DEFAULT_PARA_DOC_FEATURE_VARS = Arrays.asList(
-            RVCreater.createDiscreteRVWithComputer(new NotInTableRVComputer(), "notInTable"),
-            RVCreater.createParagraphStartsWithRV(CoreAnnotations.IsItalicAnnotation.class),
-            RVCreater.createParagraphStartsWithRV(CoreAnnotations.IsUnderlineAnnotation.class),
-            RVCreater.createParagraphStartsWithRV(CoreAnnotations.IsBoldAnnotation.class)
+            RVCreater.createDiscreteRVWithComputer(new NotInTableRVComputer(), "notInTable")
+//            RVCreater.createParagraphStartsWithRV(CoreAnnotations.IsItalicAnnotation.class),
+//            RVCreater.createParagraphStartsWithRV(CoreAnnotations.IsUnderlineAnnotation.class),
+//            RVCreater.createParagraphStartsWithRV(CoreAnnotations.IsBoldAnnotation.class),
+//            RVCreater.createRVFromAnnotation(CoreAnnotations.IsCenterAlignedAnnotation.class)
 
     );
     static final List<RandomVariable> DEFAULT_WORD_VARS = Arrays.asList(
-            RVCreater.createWordsRVWithComputer(new UniqueWordsComputer(), "uniqueWords"),
+//            RVCreater.createWordsRVWithComputer(new UniqueWordsComputer(), "uniqueWords"),
             RVCreater.createWordsRVWithComputer(new FirstWordsComputer(), "firstWord")
     );
+
 
     public TOCModelRVSetting(int categoryId, String categoryName) {
         super(  DEFAULT_WORD_FEATURES,
