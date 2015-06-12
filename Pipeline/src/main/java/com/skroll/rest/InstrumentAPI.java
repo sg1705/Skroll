@@ -84,8 +84,8 @@ public class InstrumentAPI {
         try {
 //            HashMap<String, HashMap<String, Double>> map = classifierFactory.getClassifier(Category.DEFINITION).getBNIVisualMap(doc, paraIndex);
 //            HashMap<String, HashMap<String, HashMap<String, Double>>> modelMap = classifierFactory.getClassifier(Category.DEFINITION).getModelVisualMap();
-            HashMap<String, HashMap<String, Double>> map = classifierFactory.getClassifier(Category.TOC_1).getBNIVisualMap(doc, paraIndex);
-            HashMap<String, HashMap<String, HashMap<String, Double>>> modelMap = classifierFactory.getClassifier(Category.TOC_1).getModelVisualMap();
+            HashMap<String, HashMap<String, Double>> map = classifierFactory.getClassifier(Category.TOC_2).getBNIVisualMap(doc, paraIndex);
+            HashMap<String, HashMap<String, HashMap<String, Double>>> modelMap = classifierFactory.getClassifier(Category.TOC_2).getModelVisualMap();
             probabilityJson = gson.toJson(map);
             buf.append(probabilityJson);
             buf.append(",");

@@ -8,6 +8,9 @@ import com.skroll.document.annotation.CoreAnnotations;
  */
 public class NotInTableRVComputer implements RVValueComputer {
     public int getValue(CoreMap m) {
+        // a hack to check if paragraph is original. Only original has IdAnnotation
+        if (!m.containsKey(CoreAnnotations.IdAnnotation.class)) return -1;
+
         return 1 - RVValues.booleanToInt(m.get(CoreAnnotations.IsInTableAnnotation.class));
     }
 
