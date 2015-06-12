@@ -98,7 +98,7 @@ public class DocAPI {
                 for (Classifier classifier : request.getClassifiers()) {
                     document = (Document) classifier.classify(fileName, document);
                 }
-                request.getDocumentFactory().putDocument(fileName, document);
+                request.getDocumentFactory().putDocument(DocumentFactory.PRE_EVALUATED_FOLDER,fileName, document);
                 logger.debug("Added document into the documentMap with a generated hash key:" + fileName);
                 reader.close();
             } catch (ParserException e) {
@@ -138,7 +138,7 @@ public class DocAPI {
             String fName = fileName;
             Document fDoc = document;
             request.getClassifiers().forEach(c -> c.classify(fName, fDoc));
-            request.getDocumentFactory().putDocument(fileName, document);
+            request.getDocumentFactory().putDocument(DocumentFactory.PRE_EVALUATED_FOLDER,fileName, document);
             logger.debug("Added document into the documentMap with a generated hash key:{}" ,fileName);
 
         } catch (ParserException e) {
@@ -194,7 +194,7 @@ public class DocAPI {
         final Document finalDoc = doc;
         try {
             request.getClassifiers().forEach(c -> c.classify(documentId, finalDoc));
-            request.getDocumentFactory().putDocument(documentId, doc);
+            request.getDocumentFactory().putDocument(DocumentFactory.PRE_EVALUATED_FOLDER,documentId, doc);
         } catch (Exception e) {
             return logErrorResponse("Failed to classify/store document", e);
         }
@@ -321,7 +321,7 @@ public class DocAPI {
                         doc = (Document) classifier.updateBNI(documentId, doc, parasForUpdateBNI);
                     }
                 }
-                request.getDocumentFactory().putDocument(documentId, doc);
+                request.getDocumentFactory().putDocument(DocumentFactory.PRE_EVALUATED_FOLDER,documentId, doc);
             }
         } catch (Exception e) {
             logger.error("Failed to update updateBNI, using existing document : {}", e);
@@ -355,7 +355,7 @@ public class DocAPI {
                 return logErrorResponse("Failed to persist the model:" + classifier.toString());
             }
         }
-        request.getDocumentFactory().putDocument(documentId, doc);
+        request.getDocumentFactory().putDocument(DocumentFactory.PRE_EVALUATED_FOLDER,documentId, doc);
 
         try {
             Files.write(JsonDeserializer.getJson(doc), new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
@@ -381,8 +381,10 @@ public class DocAPI {
             paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
             paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
             for (int categoryId : Category.getCategories()) {
-                TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, categoryId, userWeight);
-                IsNoCategoryExist = false;
+                if (CategoryAnnotationHelper.isCategoryId(paragraph,categoryId)) {
+                    TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, categoryId, userWeight);
+                    IsNoCategoryExist = false;
+                }
             }
             if (IsNoCategoryExist) {
                 CategoryAnnotationHelper.clearAnnotations(paragraph);

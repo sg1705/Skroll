@@ -8,6 +8,7 @@ import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentFactory;
+import com.skroll.document.DocumentHelper;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
@@ -49,7 +50,7 @@ public class SkrollTrainer {
 
         //ToDO: use the apache common commandline
         if (args[0].equals("--qc")) {
-            QC qc = skrollTrainer.qcDocument(args[1], args[2]);
+            QC qc = skrollTrainer.runQCOnBenchmarkFolder();
             System.out.println("QC:" + qc.stats);
         }
         if (args[0].equals("--trainWithWeight")) {
@@ -70,7 +71,7 @@ public class SkrollTrainer {
     }
 
     public  void trainFileUsingTrainingWeight (String preEvaluatedFile) {
-        Document doc = documentFactory.get(preEvaluatedFile);
+        Document doc = documentFactory.get(DocumentFactory.PRE_EVALUATED_FOLDER,preEvaluatedFile);
         //iterate over each paragraph
         for(CoreMap paragraph : doc.getParagraphs()) {
             if (paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)) {
@@ -93,10 +94,8 @@ public class SkrollTrainer {
         }
     }
 
-    public QC qcDocument(String file1, String file2){
-        QC qc = new QC();
-        Document firstDoc = documentFactory.get(file1);
-        Document secondDoc = documentFactory.get(file2);
+
+    public QC qcDocument(Document firstDoc, Document secondDoc, QC qc){
         for(CoreMap firstDocParagraph : firstDoc.getParagraphs()) {
             for(CoreMap secondDocParagraph : secondDoc.getParagraphs()) {
                 if (firstDocParagraph.getId().equalsIgnoreCase(secondDocParagraph.getId())) {
@@ -118,4 +117,30 @@ public class SkrollTrainer {
         }
         return qc;
     }
+
+    public QC runQCForBenchmark(String file, QC qc){
+        Document firstDoc = documentFactory.get(DocumentFactory.BENCHMARK,file);
+        Document secondDoc = documentFactory.get(DocumentFactory.BENCHMARK, file);
+        DocumentHelper.clearObservedParagraphs(secondDoc);
+        return qcDocument(firstDoc, secondDoc, qc);
+
+    }
+
+    public QC runQCOnBenchmarkFile (String file){
+        QC qc = new QC();
+        return runQCForBenchmark(file, qc);
+
+    }
+    public QC runQCOnBenchmarkFolder()  {
+        QC qc = new QC();
+        FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(configuration.get(DocumentFactory.BENCHMARK, "/tmp/")));
+        for (File f : iterable) {
+            if (f.isFile()) {
+                qc = runQCForBenchmark(f.getName(), qc);
+            }
+        }
+
+        return qc;
+    }
+
 }

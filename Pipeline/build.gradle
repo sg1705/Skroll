@@ -78,5 +78,6 @@ task fatJar(type: Jar) {
 task start(type: JavaExec) {
     File workingDir = new File('Pipeline/')
     main = 'com.skroll.rest.WebServer'
+    args '--port', '8080'
     classpath = sourceSets.main.runtimeClasspath
 }
