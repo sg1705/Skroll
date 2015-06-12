@@ -9,11 +9,11 @@
  */
 
 var SelectionModel = {
-	paragraphId: "",
-	selectedText: "",
-	mouseDownParaId: "",
-	serializedSelection: "",
-	serializedParagraphId: "",
+	paragraphId: '',
+	selectedText: '',
+	mouseDownParaId: '',
+	serializedSelection: '',
+	serializedParagraphId: '',
 
 	scrollToParagraph: function(paragraphId) {
 	  var para = $("#" + paragraphId);
