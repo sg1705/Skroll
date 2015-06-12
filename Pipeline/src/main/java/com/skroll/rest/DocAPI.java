@@ -395,4 +395,26 @@ public class DocAPI {
         return Response.ok().status(Response.Status.OK).entity("").build();
     }
 
+    @GET
+    @Path("/saveBenchmarkFile")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response saveBenchmarkFile(@Context HttpHeaders hh, @BeanParam RequestBean request) {
+
+        String documentId = request.getDocumentId();
+        Document doc = request.getDocument();
+        if (doc == null) {
+            return logErrorResponse("document cannot be found for document id: " + documentId);
+        }
+
+        request.getDocumentFactory().putDocument(DocumentFactory.BENCHMARK,documentId, doc);
+
+        try {
+            request.getDocumentFactory().saveDocument(DocumentFactory.BENCHMARK,doc);
+        } catch (Exception e) {
+            logErrorResponse("Failed to store the benchmark file: {}", e);
+        }
+        logger.debug("benchmark file {} is stored..", documentId);
+        return Response.ok().status(Response.Status.OK).entity("benchmark file is stored").build();
+    }
+
 }
