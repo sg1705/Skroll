@@ -4,15 +4,21 @@ var fs = require('fs');
 
 var args = system.args;
 
-var fileName = args[1];
+var fileName = args[2];
 
 /* process url argument */
-var globalSourceUrl = args[2];
+var globalSourceUrl = args[3];
 var globalSourceUrlFile = (new Date()).getTime();
 if (globalSourceUrl == null) {
     globalSourceUrl = '';
 }
-fs.write('/tmp/' + globalSourceUrlFile + '.js', "var sourceUrl = '" + globalSourceUrl + "'", "w");
+var testFlags = args[1];
+if ((testFlags == null) || (testFlags == 'false')) {
+    testFlags = false;
+} else if (testFlags == 'true') {
+    testFlags = true;
+}
+fs.write('/tmp/' + globalSourceUrlFile + '.js', "var sourceUrl = '" + globalSourceUrl + "'; var testFlags = " + testFlags + ";", "w");
 /* -- end process url argument */
 
 var htmlText = fs.read(fileName);
@@ -45,9 +51,17 @@ var parsedJson = page.evaluate(function(globalSourceUrl) {
     //measure
     var startTime = Date.now();
 
+    if (testFlags) {
+        processingFlags.table = true;
+        processingFlags.fonts = true;
+        processingFlags.pageBreak = true;
+    }
+
+
     $(":root").contents().each(function(index, element) {
         processNode(index, element);
     });
+
 
     // done
     //move chunks to paragraphs

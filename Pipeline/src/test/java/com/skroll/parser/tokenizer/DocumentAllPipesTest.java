@@ -7,6 +7,7 @@ import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.Parser;
+import com.skroll.parser.extractor.PhantomJsExtractor;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
@@ -23,7 +24,7 @@ public class DocumentAllPipesTest extends TestCase {
     @Test
     public void testAllProcess() throws Exception {
         String fileName = "src/test/resources/parser/tokenizer/experiment-jsoup-node-extraction.html";
-
+        PhantomJsExtractor.TEST_FLAGS = true;
         Document doc = Parser.parseDocumentFromHtmlFile(fileName);
         //find out how many tokens have bold
         List<Token> tokens = DocumentHelper.getDocumentTokens(doc);
