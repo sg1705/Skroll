@@ -406,7 +406,7 @@ public class DocAPI {
             return logErrorResponse("document cannot be found for document id: " + documentId);
         }
         try {
-            request.getDocumentFactory().saveDocument(DocumentFactory.DocType.benchmarkFolder,doc);
+            request.getDocumentFactory().saveDocument(DocumentFactory.DocType.BENCHMARK,doc);
         } catch (Exception e) {
             logErrorResponse("Failed to store the benchmark file: {}", e);
         }

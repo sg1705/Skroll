@@ -33,7 +33,7 @@ public class DocumentFactoryTest {
         factory.putDocument("xyz", doc);
         assert (factory.get("xyz")!=null);
         factory.saveDocument(doc);
-        File f = new File(configuration.get(DocumentFactory.DocType.preEvaluatedFolder.toString(), "/tmp/") + "xyz");
+        File f = new File(configuration.get("preEvaluatedFolder", "/tmp/") + "xyz");
         assert (f.exists());
 
     }

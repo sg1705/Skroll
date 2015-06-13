@@ -23,7 +23,7 @@ public class DocumentFactory {
     private Configuration configuration;
     private static String PRE_EVALUATED_FOLDER;
     public static enum DocType {
-        preEvaluatedFolder, benchmarkFolder
+        DEFAULT, BENCHMARK
     };
 
     @Inject
@@ -87,11 +87,19 @@ public class DocumentFactory {
     }
 
     public void saveDocument(Document document) {
-        saveDocument(DocType.preEvaluatedFolder, document);
+        saveDocument(DocType.DEFAULT, document);
     }
 
     public void saveDocument(DocType docType, Document document) {
-        String folder = configuration.get(docType.toString(), "/tmp/");
+        String folder = null;
+        if (docType == DocType.DEFAULT) {
+            folder = PRE_EVALUATED_FOLDER;
+        } else if (docType == DocType.BENCHMARK) {
+            folder = configuration.get("benchmarkFolder", "/tmp/");
+        } else {
+            logger.error("Error Invalid DocType {}", docType);
+            return;
+        }
         try {
             Files.write(
                     JsonDeserializer.getJson(document),
