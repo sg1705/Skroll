@@ -11,6 +11,8 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.PumpStreamHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 
@@ -23,7 +25,11 @@ import java.util.List;
  */
 public class PhantomJsExtractor {
 
+    public static final Logger logger = LoggerFactory.getLogger(PhantomJsExtractor.class);
+
+
     public Document process(Document input) throws Exception {
+        long startTime = System.currentTimeMillis();
         //extract html from document
         String htmlText = input.get(CoreAnnotations.TextAnnotation.class);
         //remove newline
@@ -72,6 +78,7 @@ public class PhantomJsExtractor {
         byte[] output = stdout.toByteArray();
         String[] parserOutput = new String(output, Constants.DEFAULT_CHARSET).split(";---------------SKROLLJSON---------------------;");
         String[] result = parserOutput[1].split(";---------------SKROLL---------------------;");
+        String[] execTime = parserOutput[1].split(";---------------SKROLLTIME---------------------;");
 
         ModelHelper helper = new ModelHelper();
         Document newDoc = new Document();
@@ -91,6 +98,8 @@ public class PhantomJsExtractor {
             throw new Exception("No paragraphs were identified:");
         }
         newDoc = postExtraction(newDoc);
+        logger.info("[{}]ms taken by jQuery during parsing", execTime[1]);
+        logger.info("[{}]ms total extraction time", (System.currentTimeMillis() - startTime));
         return newDoc;
     }
 

@@ -42,6 +42,9 @@ page.injectJs('./jQueryTableParser.js', function() {
 
 var parsedJson = page.evaluate(function(globalSourceUrl) {
 
+    //measure
+    var startTime = Date.now();
+
     $(":root").contents().each(function(index, element) {
         processNode(index, element);
     });
@@ -51,10 +54,13 @@ var parsedJson = page.evaluate(function(globalSourceUrl) {
     createLastPara();
     docObject.set(PARAGRAPH_ANNOTATION, paragraphs);
     docObject.set(TABLES_ANNOTATION, tables);
+    var totalTime = Date.now() - startTime;
     return ( ";---------------SKROLLJSON---------------------;"
              + JSON.stringify(docObject, null, 2)
              + ";---------------SKROLL---------------------;"
-             + $(":root").html() );
+             + $(":root").html()
+             + ";---------------SKROLLTIME---------------------;"
+             + totalTime);
 });
 console.log(parsedJson);
 //write the file

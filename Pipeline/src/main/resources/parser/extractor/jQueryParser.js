@@ -137,9 +137,9 @@ function processNode(index, element) {
     }
 
     // does the element have page break
-    if (isPageBreak(element)) {
-        processPageBreak(index, element);
-    }
+//    if (isPageBreak(element)) {
+//        processPageBreak(index, element);
+//    }
 
     if ($(element).is('img')) {
         var srcurl = $(element).attr('src');
