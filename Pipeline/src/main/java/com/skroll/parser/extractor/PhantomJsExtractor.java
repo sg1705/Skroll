@@ -27,6 +27,7 @@ public class PhantomJsExtractor {
 
     public static final Logger logger = LoggerFactory.getLogger(PhantomJsExtractor.class);
 
+    public static Boolean TEST_FLAGS = false;
 
     public Document process(Document input) throws Exception {
         long startTime = System.currentTimeMillis();
@@ -50,11 +51,12 @@ public class PhantomJsExtractor {
             cmdLine = CommandLine.parse(Constants.PHANTOM_JS_BIN_MAC);
         }
         cmdLine.addArgument(Constants.JQUERY_PARSER_JS);
+        cmdLine.addArgument(TEST_FLAGS.toString());
         cmdLine.addArgument(fileName);
         if (input.containsKey(CoreAnnotations.SourceUrlAnnotation.class)) {
-            System.out.println(input.get(CoreAnnotations.SourceUrlAnnotation.class));
             cmdLine.addArgument(input.get(CoreAnnotations.SourceUrlAnnotation.class));
         }
+
         DefaultExecutor executor = new DefaultExecutor();
         executor.setExitValue(1);
         executor.setStreamHandler(psh);
@@ -84,7 +86,9 @@ public class PhantomJsExtractor {
         Document newDoc = new Document();
         try {
             newDoc = helper.fromJson(result[0]);
-            newDoc.setTarget(result[1]);
+            //replace target
+
+            newDoc.setTarget(result[1].replaceAll("(<!--sk)|(sk-->)", ""));
             newDoc.setSource(htmlText);
         } catch (Exception e) {
             // error TODO needs to be logged
