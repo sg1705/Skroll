@@ -32,7 +32,7 @@ public class NodeInferenceHelper {
      */
     static double[] getLogBelief(DiscreteNode node, int index, double[] message){
         double[] belief = node.copyOfParameters();
-        int sizeUnderIndexFrom = node.sizeUpTo(index);
+        int sizeUnderIndexFrom = NodeHelper.sizeUpTo(node, index);
         for (int i=0,k=0,messageIndex=0; i<belief.length; i++,k++){
             if (k == sizeUnderIndexFrom){
                 k=0;
@@ -54,7 +54,7 @@ public class NodeInferenceHelper {
     static double[] sumOutOtherNodesWithObservationAndBelief(DiscreteNode node, double[] belief, int indexTo ){
         RandomVariable[] familyVariables = node.getFamilyVariables();
         double[] probs = new double[ familyVariables[indexTo].getFeatureSize() ];
-        int sizeUnder = node.sizeUpTo(indexTo);
+        int sizeUnder = NodeHelper.sizeUpTo(node, indexTo);
 
         for (int i=0,k=0,probsIndex=0; i<belief.length;i++,k++){
 

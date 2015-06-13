@@ -26,7 +26,7 @@ public class NodeTrainingHelper {
         RandomVariable[] variables =
                 randomVariables.toArray(new RandomVariable[randomVariables.size()]);
         node.setFamilyVariables( variables);
-        int totalSize = node.sizeUpTo(randomVariables.size());
+        int totalSize = NodeHelper.sizeUpTo(node, randomVariables.size());
         double[] parameters = new double[totalSize];
         Arrays.fill(parameters, PRIOR_COUNT);
         node.setParameters(parameters);
