@@ -18,25 +18,4 @@ public class SkrollTrainerTest {
             fail(" failed to create overwrite files");
         }
     }
-    @Test
-    public void TestBenchmark(){
-        SkrollTrainer skrollTrainer = new SkrollTrainer();
-        try {
-            System.out.println(skrollTrainer.runQCOnBenchmarkFile("d452134d10k.htm"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail(" failed to create overwrite files");
-        }
-    }
-
-    @Test
-    public void TestQCOnBenchmarkFolder(){
-        SkrollTrainer skrollTrainer = new SkrollTrainer();
-        try {
-            System.out.println(skrollTrainer.runQCOnBenchmarkFolder());
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail(" failed to create overwrite files");
-        }
-    }
 }

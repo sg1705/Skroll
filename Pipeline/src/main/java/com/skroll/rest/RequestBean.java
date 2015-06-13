@@ -53,7 +53,7 @@ public class RequestBean {
         if (documentId != null) {
             //fetch it from factory
             this.documentId = documentId;
-            this.document = documentFactory.get(DocumentFactory.PRE_EVALUATED_FOLDER,documentId);
+            this.document = documentFactory.get(documentId);
         }
 
         this.classifiers = classifierFactory.getClassifier(this.document);

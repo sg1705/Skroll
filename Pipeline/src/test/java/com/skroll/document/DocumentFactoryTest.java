@@ -12,7 +12,7 @@ public class DocumentFactoryTest {
     public void testGetFromPRE_EVALUATED_FOLDER() throws Exception {
         Configuration configuration = new Configuration("src/test/resources/skroll-test.properties");
         DocumentFactory factory = new DocumentFactory(configuration);
-        Document doc = factory.get(DocumentFactory.PRE_EVALUATED_FOLDER,"d629534d10k.htm");
+        Document doc = factory.get("d629534d10k.htm");
         assert (doc != null);
         System.out.println(doc.get(CoreAnnotations.ParserVersionAnnotationInteger.class));
     }
@@ -20,29 +20,20 @@ public class DocumentFactoryTest {
     public void testGetFromBENCHMARK() throws Exception {
         Configuration configuration = new Configuration("src/test/resources/skroll-test.properties");
         DocumentFactory factory = new DocumentFactory(configuration);
-        Document doc = factory.get(DocumentFactory.BENCHMARK,"d629534d10k.htm");
+        Document doc = factory.get("d629534d10k.htm");
         assert (doc != null);
         System.out.println(doc.get(CoreAnnotations.ParserVersionAnnotationInteger.class));
     }
-    @Test
-    public void testGetFromTEST() throws Exception {
-        Configuration configuration = new Configuration("src/test/resources/skroll-test.properties");
-        DocumentFactory factory = new DocumentFactory(configuration);
-        Document doc = factory.get(DocumentFactory.TEST,"d629534d10k.htm");
-        assert (doc != null);
-        System.out.println(doc.get(CoreAnnotations.ParserVersionAnnotationInteger.class));
-    }
-
 
     @Test
     public void testPutDocument() throws Exception {
         Configuration configuration = new Configuration("src/test/resources/skroll-test.properties");
         DocumentFactory factory = new DocumentFactory(configuration);
-        Document doc = factory.get(DocumentFactory.TEST,"d629534d10k.htm");
-        factory.putDocument(DocumentFactory.TEST, "xyz", doc);
-        assert (factory.get(DocumentFactory.TEST,"xyz")!=null);
-        factory.saveDocument(DocumentFactory.TEST, doc);
-        File f = new File(configuration.get(DocumentFactory.TEST, "/tmp/") + "xyz");
+        Document doc = factory.get("d629534d10k.htm");
+        factory.putDocument("xyz", doc);
+        assert (factory.get("xyz")!=null);
+        factory.saveDocument(doc);
+        File f = new File(configuration.get(DocumentFactory.DocType.preEvaluatedFolder.toString(), "/tmp/") + "xyz");
         assert (f.exists());
 
     }

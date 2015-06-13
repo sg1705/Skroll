@@ -8,8 +8,6 @@ import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentFactory;
-import com.skroll.document.DocumentHelper;
-import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
 import com.skroll.util.Configuration;
@@ -49,10 +47,6 @@ public class SkrollTrainer {
         SkrollTrainer skrollTrainer = new SkrollTrainer();
 
         //ToDO: use the apache common commandline
-        if (args[0].equals("--qc")) {
-            QC qc = skrollTrainer.runQCOnBenchmarkFolder();
-            System.out.println("QC:" + qc.stats);
-        }
         if (args[0].equals("--trainWithWeight")) {
             logger.debug("folder Name :" + args[1]);
             skrollTrainer.trainFolderUsingTrainingWeight(args[1]);
@@ -71,7 +65,7 @@ public class SkrollTrainer {
     }
 
     public  void trainFileUsingTrainingWeight (String preEvaluatedFile) {
-        Document doc = documentFactory.get(DocumentFactory.PRE_EVALUATED_FOLDER,preEvaluatedFile);
+        Document doc = documentFactory.get(preEvaluatedFile);
         //iterate over each paragraph
         for(CoreMap paragraph : doc.getParagraphs()) {
             if (paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)) {
@@ -93,54 +87,4 @@ public class SkrollTrainer {
             e.printStackTrace();
         }
     }
-
-
-    public QC qcDocument(Document firstDoc, Document secondDoc, QC qc){
-        for(CoreMap firstDocParagraph : firstDoc.getParagraphs()) {
-            for(CoreMap secondDocParagraph : secondDoc.getParagraphs()) {
-                if (firstDocParagraph.getId().equalsIgnoreCase(secondDocParagraph.getId())) {
-                    for (QC.Stats stats : qc.stats) {
-                        if (CategoryAnnotationHelper.isCategoryId(firstDocParagraph, stats.categoyId)){
-                            stats.overallOccurance++;
-                        }
-                        if (CategoryAnnotationHelper.isCategoryId(firstDocParagraph, stats.categoyId) &&
-                            !CategoryAnnotationHelper.isCategoryId(secondDocParagraph, stats.categoyId)) {
-                             stats.typeAError++;
-                            } else if (!CategoryAnnotationHelper.isCategoryId(firstDocParagraph, stats.categoyId) &&
-                                CategoryAnnotationHelper.isCategoryId(secondDocParagraph, stats.categoyId)) {
-                                stats.typeBError++;
-                        }
-                    }
-                    break;
-                }
-            }
-        }
-        return qc;
-    }
-
-    public QC runQCForBenchmark(String file, QC qc){
-        Document firstDoc = documentFactory.get(DocumentFactory.BENCHMARK,file);
-        Document secondDoc = documentFactory.get(DocumentFactory.BENCHMARK, file);
-        DocumentHelper.clearObservedParagraphs(secondDoc);
-        return qcDocument(firstDoc, secondDoc, qc);
-
-    }
-
-    public QC runQCOnBenchmarkFile (String file){
-        QC qc = new QC();
-        return runQCForBenchmark(file, qc);
-
-    }
-    public QC runQCOnBenchmarkFolder()  {
-        QC qc = new QC();
-        FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(configuration.get(DocumentFactory.BENCHMARK, "/tmp/")));
-        for (File f : iterable) {
-            if (f.isFile()) {
-                qc = runQCForBenchmark(f.getName(), qc);
-            }
-        }
-
-        return qc;
-    }
-
 }
