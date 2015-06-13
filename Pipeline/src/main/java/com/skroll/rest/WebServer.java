@@ -15,6 +15,8 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.slf4j.LoggerFactory;
+
 import javax.servlet.DispatcherType;
 import javax.servlet.ServletContextListener;
 import java.io.File;
@@ -22,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.logging.Level;
@@ -40,11 +43,19 @@ public class WebServer {
 
     // Resource path pointing to where the WEBROOT is
     private static final String WEBROOT_INDEX = "/webroot/";
-
+    public static final org.slf4j.Logger logger = LoggerFactory
+            .getLogger(WebServer.class);
     public static void main(String[] args) throws Exception
     {
         int port = 8088;
+        logger.info("Main arguments:"+ Arrays.toString(args));
+        if (args!=null && args.length>1) {
+            if (args[0].equals("--port")) {
+                if (args[1]!=null)
+                    port =Integer.parseInt(args[1]);
+            }
 
+        }
         WebServer main = new WebServer(port);
         main.start();
         main.waitForInterrupt();

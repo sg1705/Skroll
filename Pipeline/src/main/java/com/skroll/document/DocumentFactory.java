@@ -1,7 +1,6 @@
 package com.skroll.document;
 
 import com.google.common.io.Files;
-import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.ParserException;
 import com.skroll.util.Configuration;
@@ -9,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -22,13 +20,17 @@ public class DocumentFactory {
 
     public static final Logger logger = LoggerFactory.getLogger(DocumentFactory.class);
     private static HashMap<String, Document> documents = new HashMap();
-    //private Configuration configuration;
+    private Configuration configuration;
     private static String PRE_EVALUATED_FOLDER;
+    public static enum DocType {
+        DEFAULT, BENCHMARK
+    };
 
     @Inject
     public DocumentFactory(Configuration configuration ) {
-        //this.configuration = configuration;
+        this.configuration = configuration;
         PRE_EVALUATED_FOLDER = configuration.get("preEvaluatedFolder", "/tmp/");
+
     }
 
 
@@ -41,7 +43,7 @@ public class DocumentFactory {
             //let's fetch it from the filesystem
             String jsonString;
             try {
-                logger.debug("Fetching [{}] from filesystem", documentId);
+                logger.debug("Fetching [{}] from filesystem [{}]", documentId, PRE_EVALUATED_FOLDER);
                 jsonString = Files.toString(new File(PRE_EVALUATED_FOLDER + documentId), Charset.defaultCharset());
             } catch (IOException e) {
                 logger.info("[{}] cannot be found", documentId);
@@ -85,10 +87,23 @@ public class DocumentFactory {
     }
 
     public void saveDocument(Document document) {
+        saveDocument(DocType.DEFAULT, document);
+    }
+
+    public void saveDocument(DocType docType, Document document) {
+        String folder = null;
+        if (docType == DocType.DEFAULT) {
+            folder = PRE_EVALUATED_FOLDER;
+        } else if (docType == DocType.BENCHMARK) {
+            folder = configuration.get("benchmarkFolder", "/tmp/");
+        } else {
+            logger.error("Error Invalid DocType {}", docType);
+            return;
+        }
         try {
             Files.write(
                     JsonDeserializer.getJson(document),
-                    new File(PRE_EVALUATED_FOLDER + document.getId()),
+                    new File(folder + document.getId()),
                     Charset.defaultCharset());
         } catch (IOException e) {
             logger.error("Error when saving file {}", document.getId(), e);

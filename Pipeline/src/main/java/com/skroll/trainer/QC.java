@@ -2,16 +2,27 @@ package com.skroll.trainer;
 
 import com.skroll.classifier.Category;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by saurabhagarwal on 6/6/15.
  */
 public class QC {
-    String docName;
-    double QCScore;
-    List<Stats> stats = Arrays.asList(new Stats(Category.DEFINITION),new Stats(Category.TOC_1),new Stats(Category.TOC_2),new Stats(Category.TOC_3),new Stats(Category.TOC_4),new Stats(Category.TOC_5 ));
+
+    List<Stats> stats = new ArrayList<>();
+
+    public QC() {
+        for (int category : Category.getCategories()){
+            stats.add(new Stats(category));
+        }
+    }
+    @Override
+    public String toString() {
+        return "QC{" +
+                ", stats=" + stats +
+                '}';
+    }
 
     public static class Stats {
         int categoyId;
@@ -29,7 +40,12 @@ public class QC {
                     ", overallOccurance=" + overallOccurance +
                     ", typeAError=" + typeAError +
                     ", typeBError=" + typeBError +
+                    ", qcScore=" + getQCScore() +
                     '}';
         }
+        public double getQCScore(){
+            return (typeAError*2 +typeBError)/100;
+        }
     }
+
 }
