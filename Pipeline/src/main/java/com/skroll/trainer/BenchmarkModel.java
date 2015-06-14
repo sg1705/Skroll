@@ -52,7 +52,7 @@ public class BenchmarkModel {
         Document document;
         String jsonString;
         try {
-            logger.debug("Fetching [{}] from filesystem [{}]", documentId,BENCHMARK);
+            logger.debug("Fetching [{}] from filesystem [{}]", documentId, BENCHMARK);
             jsonString = Files.toString(new File(BENCHMARK + documentId), Charset.defaultCharset());
         } catch (IOException e) {
             logger.info("[{}] cannot be found", documentId);
@@ -80,12 +80,12 @@ public class BenchmarkModel {
         return document;
     }
 
-    public QC qcDocument(Document firstDoc, Document secondDoc, QC qc){
-        for(CoreMap firstDocParagraph : firstDoc.getParagraphs()) {
-            for(CoreMap secondDocParagraph : secondDoc.getParagraphs()) {
+    public QC qcDocument(Document firstDoc, Document secondDoc, QC qc) {
+        for (CoreMap firstDocParagraph : firstDoc.getParagraphs()) {
+            for (CoreMap secondDocParagraph : secondDoc.getParagraphs()) {
                 if (firstDocParagraph.getId().equalsIgnoreCase(secondDocParagraph.getId())) {
                     for (QC.Stats stats : qc.stats) {
-                        if (CategoryAnnotationHelper.isCategoryId(firstDocParagraph, stats.categoyId)){
+                        if (CategoryAnnotationHelper.isCategoryId(firstDocParagraph, stats.categoyId)) {
                             stats.overallOccurance++;
                         }
                         if (CategoryAnnotationHelper.isCategoryId(firstDocParagraph, stats.categoyId) &&
@@ -103,24 +103,25 @@ public class BenchmarkModel {
         return qc;
     }
 
-    public QC runQCForBenchmark(String file, QC qc){
+    public QC runQCForBenchmark(String file, QC qc) {
         Document firstDoc = fetchBenchmarkDocument(file);
         Document secondDoc = fetchBenchmarkDocument(file);
         DocumentHelper.clearObservedParagraphs(secondDoc);
         try {
-            classifierFactory.getClassifier(secondDoc).forEach(c -> c.classify(secondDoc.getId(),secondDoc));
+            classifierFactory.getClassifier(secondDoc).forEach(c -> c.classify(secondDoc.getId(), secondDoc));
         } catch (Exception e) {
             e.printStackTrace();
         }
         return qcDocument(firstDoc, secondDoc, qc);
     }
 
-    public QC runQCOnBenchmarkFile (String file){
+    public QC runQCOnBenchmarkFile(String file) {
         QC qc = new QC();
         return runQCForBenchmark(file, qc);
 
     }
-    public QC runQCOnBenchmarkFolder()  {
+
+    public QC runQCOnBenchmarkFolder() {
         QC qc = new QC();
         FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(BENCHMARK));
         List<String> docLists = new ArrayList<String>();

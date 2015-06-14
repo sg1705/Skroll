@@ -48,11 +48,11 @@ public class WebServer {
     public static void main(String[] args) throws Exception
     {
         int port = 8088;
-        logger.info("Main arguments:"+ Arrays.toString(args));
-        if (args!=null && args.length>1) {
+        logger.info("Main arguments:" + Arrays.toString(args));
+        if (args != null && args.length > 1) {
             if (args[0].equals("--port")) {
-                if (args[1]!=null)
-                    port =Integer.parseInt(args[1]);
+                if (args[1] != null)
+                    port = Integer.parseInt(args[1]);
             }
 
         }

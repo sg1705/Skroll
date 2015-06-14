@@ -134,9 +134,9 @@ public class DocAPITest extends APITest {
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
 
-        String response = webTarget.request(MediaType.APPLICATION_JSON).cookie(new  NewCookie("documentId", documentId)).get(String.class);
+        String response = webTarget.request(MediaType.APPLICATION_JSON).cookie(new NewCookie("documentId", documentId)).get(String.class);
         logger.debug("Here is the response: " + response);
-        assert(response.contains("benchmark file is stored"));
+        assert (response.contains("benchmark file is stored"));
         client.close();
     }
 

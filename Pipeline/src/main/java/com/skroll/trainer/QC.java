@@ -13,10 +13,11 @@ public class QC {
     List<Stats> stats = new ArrayList<>();
 
     public QC() {
-        for (int category : Category.getCategories()){
+        for (int category : Category.getCategories()) {
             stats.add(new Stats(category));
         }
     }
+
     @Override
     public String toString() {
         return "QC{" +
@@ -43,8 +44,9 @@ public class QC {
                     ", qcScore=" + getQCScore() +
                     '}';
         }
-        public double getQCScore(){
-            return (typeAError*2 +typeBError)/100;
+
+        public double getQCScore() {
+            return (typeAError * 2 + typeBError) / 100;
         }
     }
 

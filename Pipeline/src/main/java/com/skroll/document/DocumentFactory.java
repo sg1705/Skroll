@@ -22,9 +22,12 @@ public class DocumentFactory {
     private static HashMap<String, Document> documents = new HashMap();
     private Configuration configuration;
     private static String PRE_EVALUATED_FOLDER;
+
     public static enum DocType {
         DEFAULT, BENCHMARK
-    };
+    }
+
+    ;
 
     @Inject
     public DocumentFactory(Configuration configuration ) {

@@ -381,7 +381,7 @@ public class DocAPI {
             paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
             paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
             for (int categoryId : Category.getCategories()) {
-                if (CategoryAnnotationHelper.isCategoryId(paragraph,categoryId)) {
+                if (CategoryAnnotationHelper.isCategoryId(paragraph, categoryId)) {
                     TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, categoryId, userWeight);
                     IsNoCategoryExist = false;
                 }
@@ -406,7 +406,7 @@ public class DocAPI {
             return logErrorResponse("document cannot be found for document id: " + documentId);
         }
         try {
-            request.getDocumentFactory().saveDocument(DocumentFactory.DocType.BENCHMARK,doc);
+            request.getDocumentFactory().saveDocument(DocumentFactory.DocType.BENCHMARK, doc);
         } catch (Exception e) {
             logErrorResponse("Failed to store the benchmark file: {}", e);
         }

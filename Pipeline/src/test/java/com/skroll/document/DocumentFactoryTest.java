@@ -16,6 +16,7 @@ public class DocumentFactoryTest {
         assert (doc != null);
         System.out.println(doc.get(CoreAnnotations.ParserVersionAnnotationInteger.class));
     }
+
     @Test
     public void testGetFromBENCHMARK() throws Exception {
         Configuration configuration = new Configuration("src/test/resources/skroll-test.properties");
@@ -31,7 +32,7 @@ public class DocumentFactoryTest {
         DocumentFactory factory = new DocumentFactory(configuration);
         Document doc = factory.get("d629534d10k.htm");
         factory.putDocument("xyz", doc);
-        assert (factory.get("xyz")!=null);
+        assert (factory.get("xyz") != null);
         factory.saveDocument(doc);
         File f = new File(configuration.get("preEvaluatedFolder", "/tmp/") + "xyz");
         assert (f.exists());
