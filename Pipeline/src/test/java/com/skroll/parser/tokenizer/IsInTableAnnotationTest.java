@@ -20,7 +20,6 @@ public class IsInTableAnnotationTest extends TestCase {
         // read a sample file
         String fileName = "src/test/resources/document/test-table.html";
         String htmlString = Utils.readStringFromFile(fileName);
-        PhantomJsExtractor.TEST_FLAGS = true;
 
         Document htmlDoc = new Document();
         htmlDoc.setSource(htmlString);
@@ -39,7 +38,6 @@ public class IsInTableAnnotationTest extends TestCase {
     }
 
     public void testComplex10kIsInTableAnnotation() throws Exception {
-        PhantomJsExtractor.TEST_FLAGS = true;
         // read a sample file
         String fileName = "src/test/resources/document/test-10k-table.html";
         String htmlString = Utils.readStringFromFile(fileName);
@@ -64,7 +62,6 @@ public class IsInTableAnnotationTest extends TestCase {
 
 
     public void test10kIsInTableAnnotation() throws Exception {
-        PhantomJsExtractor.TEST_FLAGS = true;
         // read a sample file
         String fileName = "src/test/resources/document/random10k.html";
         String htmlString = Utils.readStringFromFile(fileName);

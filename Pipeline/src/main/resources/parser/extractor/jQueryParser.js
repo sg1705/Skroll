@@ -85,7 +85,7 @@ var isHref = false;
 
 var processingFlags = {
     table: false,
-    fonts: false,
+    fonts: true,
     pageBreak: false
 }
 
@@ -183,8 +183,8 @@ function processNode(index, element) {
         if (processingFlags.table) {
             processTableAnnotation(element);
             //create new para
-            processTableText(element);
         }
+        processTableText(element);
         return;
     }
 
@@ -238,9 +238,10 @@ function setParaAnnotations(newParagraph) {
 }
 
 function processFont(element) {
-    if (element.style != null) {
+    if ($(element).attr('style') != null) {
         if (element.style.fontFamily != null) {
             $(element).css("font-family","freight-text-pro, Georgia, Cambria, 'Times New Roman', Times, serif");
+            //$(element).css("font-family","");
             $(element).css("line-height","25px");
             $(element).css("font-size", "18px");
             //$(element).css("font-family","'Roboto', sans-serif");

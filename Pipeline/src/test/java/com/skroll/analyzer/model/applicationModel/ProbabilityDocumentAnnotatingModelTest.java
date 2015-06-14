@@ -9,6 +9,7 @@ import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
+import com.skroll.parser.extractor.PhantomJsExtractor;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -186,7 +187,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
     @Test
     public void testUpdateBeliefWithZeroObservations() throws Exception {
-
+        PhantomJsExtractor.TEST_FLAGS = true;
         List<CoreMap> paraList = doc.getParagraphs();
         List<Token> definedTerms = new ArrayList<>();
         List<CoreMap> observedParas = new ArrayList<>();
