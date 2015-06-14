@@ -47,27 +47,6 @@ var LHSModel = {
     isVisible: false,
     isActive: false
   },
-  {
-    id: 4,
-    name: 'TOC Level 3',
-    isSelected: false,
-    isVisible: false,
-    isActive: false
-  },
-  {
-    id: 5,
-    name: 'TOC Level 4',
-    isSelected: false,
-    isVisible: false,
-    isActive: false
-  },
-  {
-    id: 6,
-    name: 'TOC Level 5',
-    isSelected: false,
-    isVisible: false,
-    isActive: false
-  },
 
   {
     id: 7,
