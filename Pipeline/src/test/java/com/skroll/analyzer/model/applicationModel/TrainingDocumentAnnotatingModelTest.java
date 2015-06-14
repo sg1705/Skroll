@@ -8,6 +8,7 @@ import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
 import com.skroll.parser.Parser;
+import com.skroll.parser.extractor.PhantomJsExtractor;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
@@ -72,6 +73,7 @@ public class TrainingDocumentAnnotatingModelTest{
 
     @Test
     public void testGenerateDocumentFeatures() throws Exception {
+        PhantomJsExtractor.TEST_FLAGS = true;
         String trainingFolderName = "src/test/resources/analyzer/evaluate/docclassifier/AMC Networks CA.html";
         File file = new File(trainingFolderName);
 

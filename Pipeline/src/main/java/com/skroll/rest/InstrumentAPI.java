@@ -56,7 +56,9 @@ public class InstrumentAPI {
 
         String documentId = request.getDocumentId();
         Document doc = request.getDocument();
-        if (doc == null) return logErrorResponse("document cannot be found for document id: " + documentId);
+        if (doc == null) {
+            return logErrorResponse("document cannot be found for document id: " + documentId);
+        }
 
         Gson gson = new GsonBuilder().create();
         StringBuffer buf = new StringBuffer();
