@@ -81,6 +81,44 @@ public class NodeTrainingHelper {
     }
 
 
+    /**
+     * MutiplexNode should have at least 2 parents, so the randomVariables size should be at least 3,
+     * and parents size should be at least 2.
+     *
+     * @param randomVariables
+     * @param parents
+     * @return
+     */
+    public static MultiplexNode createTrainingMultiplexNode(List<RandomVariable> randomVariables,
+                                                            List<DiscreteNode> parents) {
+        MultiplexNode multiNode = new MultiplexNode(parents.toArray(new DiscreteNode[parents.size()]));
+        DiscreteNode[] nodes = new DiscreteNode[parents.size() - 1];
+        for (int n = 0; n < parents.size() - 1; n++) {
+            nodes[n] = createTrainingDiscreteNode(
+                    Arrays.asList(randomVariables.get(0), randomVariables.get(n + 2)), Arrays.asList(parents.get(n + 1)));
+        }
+        multiNode.setNodes(nodes);
+
+        return multiNode;
+
+    }
+
+    public static void updateCount(MultiplexNode multiNode) {
+        updateCount(multiNode.getActiveNode(), 1);
+    }
+
+    public static void updateCount(MultiplexNode multiNode, double weight) {
+        updateCount(multiNode.getActiveNode(), weight);
+    }
+
+    public static double[][] getLogProbabilities(MultiplexNode multiNode) {
+        DiscreteNode[] nodes = multiNode.getNodes();
+        double[][] probs = new double[nodes.length][];
+        for (int n = 0; n < nodes.length; n++)
+            probs[n] = getLogProbabilities(nodes[n]);
+        return probs;
+
+    }
 
 
     public static WordNode createTrainingWordNode(DiscreteNode parent){

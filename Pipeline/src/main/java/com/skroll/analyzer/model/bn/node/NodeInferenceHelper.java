@@ -104,7 +104,45 @@ public class NodeInferenceHelper {
         return sumOutOtherNodesWithObservation(node, node.getParentNodeIndex(parentNode)+1);
     }
 
+    public static MultiplexNode createLogProbabilityMultiplexNode(MultiplexNode trainingNode, List<DiscreteNode> parents) {
+        MultiplexNode multiNode = new MultiplexNode(parents.toArray(new DiscreteNode[parents.size()]));
+        DiscreteNode[] nodes = multiNode.getNodes();
+        double[][] probs = NodeTrainingHelper.getLogProbabilities(trainingNode);
+        for (int n = 0; n < nodes.length; n++)
+            nodes[n].setParameters(probs[n]);
+        return multiNode;
+    }
 
+    /**
+     * Message passing for multiplex node.
+     * Pass messages to selectingNode from all other parents.
+     * Requiring the node observed.
+     *
+     * @param multiNode
+     * @param messages
+     * @return
+     */
+    public static double[] updateMessageToSelectingNode(MultiplexNode multiNode, double[][] messages) {
+        DiscreteNode[] nodes = multiNode.getNodes();
+        double[] newMessage = new double[nodes.length];
+        for (int n = 0; n < nodes.length; n++) {
+            newMessage[n] = sumOutOtherNodesWithObservationAndMessage(nodes[n], nodes[n].getParents()[0],
+                    messages[n], multiNode.getSelectingNode())[0];
+        }
+        return newMessage;
+
+    }
+
+    public static double[][] updateMessagesFromSelectingNode(MultiplexNode multiNode, double[] messages) {
+        DiscreteNode[] nodes = multiNode.getNodes();
+        double[][] newMessages = new double[nodes.length][2];
+        for (int n = 0; n < nodes.length; n++) {
+            newMessages[n] = nodes[n].getParameters().clone();
+            newMessages[n][0] *= messages[n];
+            newMessages[n][1] *= messages[n];
+        }
+        return newMessages;
+    }
 
 
     public static WordNode createLogProbabilityWordNode(WordNode trainingNode, DiscreteNode parentNode){
