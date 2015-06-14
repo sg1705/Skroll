@@ -40,7 +40,7 @@ public class SkrollTrainer {
     ClassifierFactory classifierFactory = injector.getInstance(ClassifierFactory.class);
     Configuration configuration = new Configuration();
     DocumentFactory documentFactory = new DocumentFactory(configuration);
-
+    String PRE_EVALUATED_FOLDER = configuration.get("preEvaluatedFolder", "/tmp/");
 
     public static void main(String[] args) throws IOException, ObjectPersistUtil.ObjectPersistException {
 
@@ -50,6 +50,8 @@ public class SkrollTrainer {
         if (args[0].equals("--trainWithWeight")) {
             logger.debug("folder Name :" + args[1]);
             skrollTrainer.trainFolderUsingTrainingWeight(args[1]);
+        } else {
+            skrollTrainer.trainFolderUsingTrainingWeight(skrollTrainer.PRE_EVALUATED_FOLDER);
         }
     }
 

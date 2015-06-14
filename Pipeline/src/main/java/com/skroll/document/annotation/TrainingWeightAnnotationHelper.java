@@ -14,7 +14,11 @@ public class TrainingWeightAnnotationHelper {
     public final static int LATEST_WEIGHT_INDEX =7;
     public final static int INDEX =6;
 
-    public static void updateTrainingWeight(CoreMap paragraph, int index, float userWeight){
+    /**
+     * Ensure that the model will not train using this training weight. Copy the current training weights to previous training weights.
+     * @param paragraph
+     */
+    public static void updatePreviousTrainingWeight(CoreMap paragraph){
         List<Float>  userWeightList = paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class);
         if (userWeightList == null) {
             //First three float are previously trained weight - Definition, TOC and NONE
