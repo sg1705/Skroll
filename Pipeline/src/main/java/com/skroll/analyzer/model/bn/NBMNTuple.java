@@ -9,12 +9,17 @@ import java.util.List;
 public class NBMNTuple {
 
     List<String[]> wordsList;
+    int categoryValue;
     int[] featureValues;
     int[] multiNodeValues;
     int[] docFeatureValues;
 
     public String[] getWords(int i) {
         return wordsList.get(i);
+    }
+
+    public int getCategoryValue() {
+        return categoryValue;
     }
 
     public int[] getFeatureValues() {
@@ -33,8 +38,9 @@ public class NBMNTuple {
         return wordsList;
     }
 
-    public NBMNTuple(List<String[]> words, int[] featureValues, int[] multiNodeValues, int[] docFeatureValues) {
+    public NBMNTuple(List<String[]> words, int catgoryValue, int[] featureValues, int[] multiNodeValues, int[] docFeatureValues) {
         this.wordsList = words;
+        this.categoryValue = catgoryValue;
         this.featureValues = featureValues;
         this.multiNodeValues = multiNodeValues;
         this.docFeatureValues = docFeatureValues;

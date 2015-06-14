@@ -16,7 +16,7 @@ public class NaiveBayesWithMultiNodes extends NaiveBayes {
 
     @JsonProperty("documentFeaturesNodes")
     List<DiscreteNode> documentFeatureNodes;
-    @JsonProperty("featureExistAtDocLevelNodes")
+    @JsonProperty("multiNodes")
     List<MultiplexNode> multiNodes;
 
 
@@ -24,7 +24,7 @@ public class NaiveBayesWithMultiNodes extends NaiveBayes {
     public NaiveBayesWithMultiNodes(
             @JsonProperty("categoryNode") DiscreteNode categoryNode,
             @JsonProperty("featureNodes") List<DiscreteNode> featureNodes,
-            @JsonProperty("featureExistAtDocLevelNodes") List<MultiplexNode> multiNodes,
+            @JsonProperty("multiNodes") List<MultiplexNode> multiNodes,
             @JsonProperty("documentFeaturesNodes") List<DiscreteNode> docFeatureNodes,
             @JsonProperty("wordNodes") List<WordNode> wordNodes) {
         this.categoryNode = categoryNode;
@@ -93,7 +93,7 @@ public class NaiveBayesWithMultiNodes extends NaiveBayes {
     @Override
     @JsonIgnore
     public String toString() {
-        return "NaiveBayesWithFeatureConditions{" +
+        return "NaiveBayesWithMultiplexNodes{" +
 
                 "category=" + categoryNode +
                 "\nwordNode=\n" + wordNodes +
