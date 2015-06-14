@@ -346,15 +346,15 @@ public class DocAPI {
 
         for (Classifier classifier : request.getClassifiers()) {
             classifier.trainWithWeight(doc);
-            for (CoreMap paragraph : doc.getParagraphs()) {
-                if (paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)) {
-                    TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, classifier.getModelRVSetting().getCategoryId(), userWeight);
-                }
-            }
             try {
                 classifier.persistModel();
             } catch (ObjectPersistUtil.ObjectPersistException e) {
                 return logErrorResponse("Failed to persist the model:" + classifier.toString());
+            }
+        }
+        for (CoreMap paragraph : doc.getParagraphs()) {
+            if (paragraph.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)) {
+                TrainingWeightAnnotationHelper.updatePreviousTrainingWeight(paragraph);
             }
         }
         request.getDocumentFactory().putDocument(documentId, doc);

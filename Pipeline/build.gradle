@@ -47,10 +47,9 @@ dependencies {
 }
 
 
-task trainWithOverride(type: JavaExec) {
-    args = ['--trainWithOverride', 'src/main/resources/trainingDocuments/']
+task runBenchmark(type: JavaExec) {
     File workingDir = new File('Pipeline/')
-    main = 'com.skroll.trainer.ExperiementTrainer'
+    main = 'com.skroll.trainer.BenchmarkModel'
     classpath = sourceSets.main.runtimeClasspath
 }
 
@@ -58,7 +57,7 @@ task trainWithOverride(type: JavaExec) {
 task trainWithWeight(type: JavaExec) {
     args = ['--trainWithWeight', 'build/resources/main/preEvaluated/']
     File workingDir = new File('Pipeline/')
-    main = 'com.skroll.trainer.ExperiementTrainer'
+    main = 'com.skroll.trainer.SkrollTrainer'
     classpath = sourceSets.main.runtimeClasspath
 }
 
