@@ -78,8 +78,8 @@ public class JsonDeserializerTest {
         paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
         paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
         CategoryAnnotationHelper.addDefinedTokensInCategoryAnnotation(paragraph, tokens, Category.TOC_1);
-        TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, Category.DEFINITION, (float) 1.0);
-        TrainingWeightAnnotationHelper.updateTrainingWeight(paragraph, Category.TOC_1, (float)0.5);
+        TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.DEFINITION, (float) 1.0);
+        TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.TOC_1, (float)0.5);
         paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
         paralist.add(paragraph);
 

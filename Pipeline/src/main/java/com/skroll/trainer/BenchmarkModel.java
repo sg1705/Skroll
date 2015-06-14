@@ -36,16 +36,14 @@ public class BenchmarkModel {
     public static void main(String[] args) throws IOException, ObjectPersistUtil.ObjectPersistException {
         Configuration configuration = new Configuration();
         BenchmarkModel benchmark = new BenchmarkModel(configuration);
-        //ToDO: use the apache common commandline
-        if (args[0].equals("--qc")) {
             QC qc = benchmark.runQCOnBenchmarkFolder();
             System.out.println("QC:" + qc.stats);
-        }
     }
 
     public BenchmarkModel(Configuration configuration) {
         //this.configuration = configuration;
         BENCHMARK = configuration.get("benchmarkFolder", "/tmp/");
+        System.out.println("BENCHMARK Folder:" + BENCHMARK);
     }
 
     public Document fetchBenchmarkDocument(String documentId) {
@@ -87,13 +85,20 @@ public class BenchmarkModel {
                     for (QC.Stats stats : qc.stats) {
                         if (CategoryAnnotationHelper.isCategoryId(firstDocParagraph, stats.categoyId)){
                             stats.overallOccurance++;
+                        } else {
+                            stats.noOccurance++;
                         }
-                        if (CategoryAnnotationHelper.isCategoryId(firstDocParagraph, stats.categoyId) &&
+                        if (!CategoryAnnotationHelper.isCategoryId(firstDocParagraph, stats.categoyId) &&
+                                CategoryAnnotationHelper.isCategoryId(secondDocParagraph, stats.categoyId))
+                         {
+                             // false positive
+                             logger.debug("category [{}] type1Error[{}]",stats.categoyId, firstDocParagraph.getText());
+                            stats.type1Error++;
+                        } else if (CategoryAnnotationHelper.isCategoryId(firstDocParagraph, stats.categoyId) &&
                                 !CategoryAnnotationHelper.isCategoryId(secondDocParagraph, stats.categoyId)) {
-                            stats.typeAError++;
-                        } else if (!CategoryAnnotationHelper.isCategoryId(firstDocParagraph, stats.categoyId) &&
-                                CategoryAnnotationHelper.isCategoryId(secondDocParagraph, stats.categoyId)) {
-                            stats.typeBError++;
+                            // false negative
+                            logger.debug("category [{}] type2Error [{}]",stats.categoyId, firstDocParagraph.getText());
+                            stats.type2Error++;
                         }
                     }
                     break;
@@ -125,7 +130,9 @@ public class BenchmarkModel {
         FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(BENCHMARK));
         List<String> docLists = new ArrayList<String>();
         for (File f : iterable) {
-            qc = runQCForBenchmark(f.getName(), qc);
+            if (f.isFile()) {
+                qc = runQCForBenchmark(f.getName(), qc);
+            }
         }
 
         return qc;
