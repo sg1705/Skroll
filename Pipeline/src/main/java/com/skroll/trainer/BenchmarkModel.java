@@ -92,11 +92,13 @@ public class BenchmarkModel {
                                 CategoryAnnotationHelper.isCategoryId(secondDocParagraph, stats.categoyId))
                          {
                              // false positive
-                            stats.typeAError++;
+                             logger.debug("category [{}] type1Error[{}]",stats.categoyId, firstDocParagraph.getText());
+                            stats.type1Error++;
                         } else if (CategoryAnnotationHelper.isCategoryId(firstDocParagraph, stats.categoyId) &&
                                 !CategoryAnnotationHelper.isCategoryId(secondDocParagraph, stats.categoyId)) {
                             // false negative
-                            stats.typeBError++;
+                            logger.debug("category [{}] type2Error [{}]",stats.categoyId, firstDocParagraph.getText());
+                            stats.type2Error++;
                         }
                     }
                     break;
