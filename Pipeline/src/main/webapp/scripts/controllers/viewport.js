@@ -31,7 +31,7 @@ ViewPortCtrl.prototype.mouseUp = function($event) {
   //should mouse click handle it
   //find out if this is a selection
   if (rangy.getSelection().toString() != '') {
-    rangy.getSelection().expand("word", { trim: true });  
+    //rangy.getSelection().expand("word", { trim: true });  
   }
   
   var selection = window.getSelection().toString();
