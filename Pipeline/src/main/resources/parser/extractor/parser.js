@@ -57,11 +57,11 @@ var parsedJson = page.evaluate(function(globalSourceUrl) {
         processingFlags.pageBreak = true;
     }
 
-
+    $(":root").css('display', 'none');
     $(":root").contents().each(function(index, element) {
         processNode(index, element);
     });
-
+    $(":root").css('display', '');
 
     // done
     //move chunks to paragraphs
