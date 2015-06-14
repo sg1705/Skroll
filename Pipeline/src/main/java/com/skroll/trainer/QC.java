@@ -28,8 +28,8 @@ public class QC {
         int categoyId;
         int overallOccurance;
         int noOccurance;
-        int typeAError;
-        int typeBError;
+        int type1Error;
+        int type2Error;
         public Stats(int categoyId){
             this.categoyId = categoyId;
         }
@@ -38,18 +38,21 @@ public class QC {
         public String toString() {
             return "Stats{" +
                     "categoyId=" + categoyId +
-                    ", overallOccurance=" + overallOccurance +
+                    ", type1Error=" + type1Error +
                     ", noOccurance=" + noOccurance +
-                    ", typeAError=" + typeAError +
-                    ", typeBError=" + typeBError +
+                    ", type2Error=" + type2Error +
+                    ", overallOccurance=" + overallOccurance +
                     ", qcScore=" + getQCScore() +
                     '}';
         }
         public double getQCScore(){
             if (overallOccurance <1){
-                return 0;
+                overallOccurance= 1;
             }
-            return (((typeAError*100)/(overallOccurance))*2 +((typeBError*100)/(overallOccurance)))/3;
+            if (noOccurance <1){
+                noOccurance= 1;
+            }
+            return 100 - (((type1Error *100)/(noOccurance))*2 +((type2Error*100)/(overallOccurance)))/3;
         }
     }
 
