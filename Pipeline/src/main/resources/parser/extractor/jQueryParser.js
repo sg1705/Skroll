@@ -83,6 +83,12 @@ var isFirstChunkOfPara = true;
 var isBlockInTable = false;
 var isHref = false;
 
+var processingFlags = {
+    table: false,
+    fonts: false,
+    pageBreak: false
+}
+
 // core annotations
 var ID_ANNOTATION = "IdAnnotation";
 var TEXT_ANNOTATION = "TextAnnotation";
@@ -137,8 +143,10 @@ function processNode(index, element) {
     }
 
     // does the element have page break
-    if (isPageBreak(element)) {
-        processPageBreak(index, element);
+    if (processingFlags.pageBreak) {
+        if (isPageBreak(element)) {
+            processPageBreak(index, element);
+        }
     }
 
     if ($(element).is('img')) {
@@ -165,13 +173,18 @@ function processNode(index, element) {
 
     }
 
-    processFont(element);
+    if (processingFlags.fonts) {
+        processFont(element);
+    }
+
 
     //check to see if the new element is in table
     if (isElementInTable(element)) {
-        processTableAnnotation(element);
-        //create new para
-        processTableText(element);
+        if (processingFlags.table) {
+            processTableAnnotation(element);
+            //create new para
+            processTableText(element);
+        }
         return;
     }
 
@@ -346,7 +359,14 @@ function insertMarker(paragraphId, element) {
     //$(element).prepend("<a id=\""+(paragraphId+1)+"\" name=\"" + (paragraphId+1) + "\"/>");
     //tried with web components.. need to figure out background
     //$(element ).wrap( "<skroll-id id=\""+(paragraphId+1)+"\"></skroll-id>");
-    $(element ).wrap( "<div id=\"p_"+(paragraphId+1)+"\"></div>");
+
+    //$(element ).wrap( "<div id=\"p_"+(paragraphId+1)+"\"></div>");
+    //$(element ).wrap( "<a name=\"p_"+(paragraphId+1)+"\"></a>");
+    //fastest
+    //$(element ).attr('id','p_' + (paragraphId +1) );
+    //$('"p_' + (paragraphId +1) + '"').insertBefore($(element));
+    $('<!--sk <div id="p_' + (paragraphId +1) + '"> sk-->').insertBefore($(element));
+    $('<!--sk </div> sk-->').insertAfter($(element));
 }
 
 function printNodes(index, element, block) {

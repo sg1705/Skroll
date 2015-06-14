@@ -11,6 +11,8 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.PumpStreamHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 
@@ -23,7 +25,12 @@ import java.util.List;
  */
 public class PhantomJsExtractor {
 
+    public static final Logger logger = LoggerFactory.getLogger(PhantomJsExtractor.class);
+
+    public static Boolean TEST_FLAGS = false;
+
     public Document process(Document input) throws Exception {
+        long startTime = System.currentTimeMillis();
         //extract html from document
         String htmlText = input.get(CoreAnnotations.TextAnnotation.class);
         //remove newline
@@ -44,11 +51,12 @@ public class PhantomJsExtractor {
             cmdLine = CommandLine.parse(Constants.PHANTOM_JS_BIN_MAC);
         }
         cmdLine.addArgument(Constants.JQUERY_PARSER_JS);
+        cmdLine.addArgument(TEST_FLAGS.toString());
         cmdLine.addArgument(fileName);
         if (input.containsKey(CoreAnnotations.SourceUrlAnnotation.class)) {
-            System.out.println(input.get(CoreAnnotations.SourceUrlAnnotation.class));
             cmdLine.addArgument(input.get(CoreAnnotations.SourceUrlAnnotation.class));
         }
+
         DefaultExecutor executor = new DefaultExecutor();
         executor.setExitValue(1);
         executor.setStreamHandler(psh);
@@ -72,12 +80,15 @@ public class PhantomJsExtractor {
         byte[] output = stdout.toByteArray();
         String[] parserOutput = new String(output, Constants.DEFAULT_CHARSET).split(";---------------SKROLLJSON---------------------;");
         String[] result = parserOutput[1].split(";---------------SKROLL---------------------;");
+        String[] execTime = parserOutput[1].split(";---------------SKROLLTIME---------------------;");
 
         ModelHelper helper = new ModelHelper();
         Document newDoc = new Document();
         try {
             newDoc = helper.fromJson(result[0]);
-            newDoc.setTarget(result[1]);
+            //replace target
+
+            newDoc.setTarget(result[1].replaceAll("(<!--sk)|(sk-->)", ""));
             newDoc.setSource(htmlText);
         } catch (Exception e) {
             // error TODO needs to be logged
@@ -91,6 +102,8 @@ public class PhantomJsExtractor {
             throw new Exception("No paragraphs were identified:");
         }
         newDoc = postExtraction(newDoc);
+        logger.info("[{}]ms taken by jQuery during parsing", execTime[1]);
+        logger.info("[{}]ms total extraction time", (System.currentTimeMillis() - startTime));
         return newDoc;
     }
 

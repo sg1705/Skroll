@@ -9,17 +9,17 @@
  */
 
 var documentModel = {
-  targetHtml: "",
-  isDocAvailable: false,
-  isProcessing: false,
-  fileName: "",
-  selectedParagraphId: "",
-  documentId: ""
-
+  targetHtml					: "",
+  isDocAvailable			: false,
+  isProcessing				: false,
+  fileName						: "",
+  selectedParagraphId	: "",
+  documentId					: ""
 };
 
 
-angular.module('SkrollApp')
+angular
+	.module('SkrollApp')
   .factory('documentModel', function () {
     return documentModel;
   });

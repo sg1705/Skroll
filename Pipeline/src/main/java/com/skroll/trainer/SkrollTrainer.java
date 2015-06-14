@@ -8,7 +8,6 @@ import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentFactory;
-import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
 import com.skroll.util.Configuration;
@@ -48,10 +47,6 @@ public class SkrollTrainer {
         SkrollTrainer skrollTrainer = new SkrollTrainer();
 
         //ToDO: use the apache common commandline
-        if (args[0].equals("--qc")) {
-            QC qc = skrollTrainer.qcDocument(args[1], args[2]);
-            System.out.println("QC:" + qc.stats);
-        }
         if (args[0].equals("--trainWithWeight")) {
             logger.debug("folder Name :" + args[1]);
             skrollTrainer.trainFolderUsingTrainingWeight(args[1]);
@@ -91,31 +86,5 @@ public class SkrollTrainer {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public QC qcDocument(String file1, String file2){
-        QC qc = new QC();
-        Document firstDoc = documentFactory.get(file1);
-        Document secondDoc = documentFactory.get(file2);
-        for(CoreMap firstDocParagraph : firstDoc.getParagraphs()) {
-            for(CoreMap secondDocParagraph : secondDoc.getParagraphs()) {
-                if (firstDocParagraph.getId().equalsIgnoreCase(secondDocParagraph.getId())) {
-                    for (QC.Stats stats : qc.stats) {
-                        if (CategoryAnnotationHelper.isCategoryId(firstDocParagraph, stats.categoyId)){
-                            stats.overallOccurance++;
-                        }
-                        if (CategoryAnnotationHelper.isCategoryId(firstDocParagraph, stats.categoyId) &&
-                            !CategoryAnnotationHelper.isCategoryId(secondDocParagraph, stats.categoyId)) {
-                             stats.typeAError++;
-                            } else if (!CategoryAnnotationHelper.isCategoryId(firstDocParagraph, stats.categoyId) &&
-                                CategoryAnnotationHelper.isCategoryId(secondDocParagraph, stats.categoyId)) {
-                                stats.typeBError++;
-                        }
-                    }
-                    break;
-                }
-            }
-        }
-        return qc;
     }
 }

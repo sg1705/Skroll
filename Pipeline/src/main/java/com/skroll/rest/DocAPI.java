@@ -381,8 +381,10 @@ public class DocAPI {
             paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
             paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
             for (int categoryId : Category.getCategories()) {
-                TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, categoryId, userWeight);
-                IsNoCategoryExist = false;
+                if (CategoryAnnotationHelper.isCategoryId(paragraph,categoryId)) {
+                    TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, categoryId, userWeight);
+                    IsNoCategoryExist = false;
+                }
             }
             if (IsNoCategoryExist) {
                 CategoryAnnotationHelper.clearAnnotations(paragraph);
@@ -391,6 +393,25 @@ public class DocAPI {
         }
         Files.write(JsonDeserializer.getJson(doc), new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
         return Response.ok().status(Response.Status.OK).entity("").build();
+    }
+
+    @GET
+    @Path("/saveBenchmarkFile")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response saveBenchmarkFile(@Context HttpHeaders hh, @BeanParam RequestBean request) {
+
+        String documentId = request.getDocumentId();
+        Document doc = request.getDocument();
+        if (doc == null) {
+            return logErrorResponse("document cannot be found for document id: " + documentId);
+        }
+        try {
+            request.getDocumentFactory().saveDocument(DocumentFactory.DocType.BENCHMARK,doc);
+        } catch (Exception e) {
+            logErrorResponse("Failed to store the benchmark file: {}", e);
+        }
+        logger.debug("benchmark file {} is stored..", documentId);
+        return Response.ok().status(Response.Status.OK).entity("benchmark file is stored").build();
     }
 
 }
