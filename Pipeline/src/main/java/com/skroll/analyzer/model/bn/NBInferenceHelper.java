@@ -74,4 +74,32 @@ public class NBInferenceHelper {
         return featureExistAtDocLevelNodes;
     }
 
+
+    public static NaiveBayesWithMultiNodes createLogProbNBMN(
+            NaiveBayesWithMultiNodes tnbm) {
+        DiscreteNode categoryNode = NodeInferenceHelper.createLogProbabilityDiscreteNode(tnbm.getCategoryNode());
+        List<DiscreteNode> docFeatureNodes = createDocFeatureNodes(tnbm.getDocumentFeatureNodes());
+
+        return new NaiveBayesWithMultiNodes(
+                categoryNode,
+                createFeatureNodes(tnbm.getFeatureNodes(), categoryNode),
+                createMultiNodes(tnbm.getMultiNodes(), categoryNode, docFeatureNodes),
+                docFeatureNodes,
+                createWordNodes(tnbm.getWordNodes(), categoryNode)
+        );
+
+    }
+
+
+    static List<MultiplexNode> createMultiNodes(List<MultiplexNode> trainingFeatureExistAtDocLevelNodes,
+                                                DiscreteNode categoryNode,
+                                                List<DiscreteNode> docFeatureNodes) {
+        List<MultiplexNode> multiplexNodes = new ArrayList<>();
+        for (int i = 0; i < trainingFeatureExistAtDocLevelNodes.size(); i++) {
+            multiplexNodes.add(
+                    NodeInferenceHelper.createLogProbabilityMultiplexNode(trainingFeatureExistAtDocLevelNodes.get(i),
+                            Arrays.asList(categoryNode, docFeatureNodes.get(i))));
+        }
+        return multiplexNodes;
+    }
 }

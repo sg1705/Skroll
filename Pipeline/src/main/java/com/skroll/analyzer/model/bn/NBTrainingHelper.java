@@ -99,4 +99,34 @@ public class NBTrainingHelper {
 
     }
 
+    public static NaiveBayesWithMultiNodes createTrainingNBMN(NBFCConfig config) {
+
+        DiscreteNode categoryNode = NodeTrainingHelper.createTrainingDiscreteNode(
+                Arrays.asList(config.getCategoryVar()));
+        List<DiscreteNode> docFeatureNodes = createDocFeatureNodes(config);
+
+        return new NaiveBayesWithMultiNodes(
+                categoryNode,
+                createFeatureNodes(config, categoryNode),
+                createMultiNodes(config, docFeatureNodes, categoryNode),
+                docFeatureNodes,
+                createWordNodes(config, categoryNode)
+        );
+    }
+
+    static List<MultiplexNode> createMultiNodes(
+            NBFCConfig config, List<DiscreteNode> docFeatureNodes, DiscreteNode categoryNode) {
+
+        List<RandomVariable> featureExistsAtDocLevelVarList = config.getFeatureExistsAtDocLevelVarList();
+        List<MultiplexNode> nodes = new ArrayList<>();
+        for (int i = 0; i < featureExistsAtDocLevelVarList.size(); i++) {
+            nodes.add(NodeTrainingHelper.createTrainingMultiplexNode(
+                    Arrays.asList(featureExistsAtDocLevelVarList.get(i), categoryNode.getVariable(),
+                            docFeatureNodes.get(i).getVariable()),
+                    Arrays.asList(categoryNode, docFeatureNodes.get(i))));
+        }
+        return nodes;
+
+    }
+
 }
