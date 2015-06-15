@@ -33,7 +33,6 @@ public class MultiplexNode {
      */
     public MultiplexNode(DiscreteNode[] parents) {
         selectingNode = parents[0];
-        nodes = Arrays.copyOfRange(parents, 1, parents.length);
     }
 
     @JsonCreator
@@ -82,6 +81,13 @@ public class MultiplexNode {
         return selectingNode;
     }
 
+    @Override
+    public String toString() {
+        return "MultiplexNode{" +
+                "selectingNode=" + selectingNode +
+                ", nodes=" + Arrays.toString(nodes) +
+                '}';
+    }
 //
 //    @JsonIgnore
 //    int getParentNodeIndex(MultiplexNode parentNode){

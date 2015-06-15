@@ -92,10 +92,13 @@ public class NodeTrainingHelper {
     public static MultiplexNode createTrainingMultiplexNode(List<RandomVariable> randomVariables,
                                                             List<DiscreteNode> parents) {
         MultiplexNode multiNode = new MultiplexNode(parents.toArray(new DiscreteNode[parents.size()]));
-        DiscreteNode[] nodes = new DiscreteNode[parents.size() - 1];
-        for (int n = 0; n < parents.size() - 1; n++) {
+        DiscreteNode[] nodes = new DiscreteNode[parents.size()];
+
+        // first node represent none. It has no parents.
+        nodes[0] = createTrainingDiscreteNode(Arrays.asList(randomVariables.get(0)));
+        for (int n = 1; n < parents.size(); n++) {
             nodes[n] = createTrainingDiscreteNode(
-                    Arrays.asList(randomVariables.get(0), randomVariables.get(n + 2)), Arrays.asList(parents.get(n + 1)));
+                    Arrays.asList(randomVariables.get(0), randomVariables.get(n + 1)), Arrays.asList(parents.get(n)));
         }
         multiNode.setNodes(nodes);
 
@@ -110,15 +113,15 @@ public class NodeTrainingHelper {
     public static void updateCount(MultiplexNode multiNode, double weight) {
         updateCount(multiNode.getActiveNode(), weight);
     }
-
-    public static double[][] getLogProbabilities(MultiplexNode multiNode) {
-        DiscreteNode[] nodes = multiNode.getNodes();
-        double[][] probs = new double[nodes.length][];
-        for (int n = 0; n < nodes.length; n++)
-            probs[n] = getLogProbabilities(nodes[n]);
-        return probs;
-
-    }
+//
+//    public static double[][] getLogProbabilities(MultiplexNode multiNode) {
+//        DiscreteNode[] nodes = multiNode.getNodes();
+//        double[][] probs = new double[nodes.length][];
+//        for (int n = 0; n < nodes.length; n++)
+//            probs[n] = getLogProbabilities(nodes[n]);
+//        return probs;
+//
+//    }
 
 
     public static WordNode createTrainingWordNode(DiscreteNode parent){

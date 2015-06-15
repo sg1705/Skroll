@@ -3,6 +3,7 @@ package com.skroll.analyzer.model.bn.node;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.bn.inference.BNInference;
 
+import javax.xml.soap.Node;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -67,6 +68,8 @@ public class NodeInferenceHelper {
             }
             // skip if observed some other value
             int observedValue = node.getObservation();
+
+            //require the node to be observed. Otherwise, all probabilities will sum up to 1.
             if (observedValue >=0 && observedValue != i%familyVariables[0].getFeatureSize()) continue;
 
             probs[probsIndex] += belief[i];
@@ -101,15 +104,18 @@ public class NodeInferenceHelper {
 
     public static double[] sumOutOtherNodesWithObservation (DiscreteNode node, DiscreteNode parentNode){
         // +1 to include the current node
-        return sumOutOtherNodesWithObservation(node, node.getParentNodeIndex(parentNode)+1);
+        return sumOutOtherNodesWithObservation(node, node.getParentNodeIndex(parentNode) + 1);
     }
 
     public static MultiplexNode createLogProbabilityMultiplexNode(MultiplexNode trainingNode, List<DiscreteNode> parents) {
         MultiplexNode multiNode = new MultiplexNode(parents.toArray(new DiscreteNode[parents.size()]));
-        DiscreteNode[] nodes = multiNode.getNodes();
-        double[][] probs = NodeTrainingHelper.getLogProbabilities(trainingNode);
-        for (int n = 0; n < nodes.length; n++)
-            nodes[n].setParameters(probs[n]);
+        DiscreteNode[] tNodes = trainingNode.getNodes();
+        DiscreteNode[] nodes = new DiscreteNode[tNodes.length];
+        nodes[0] = NodeInferenceHelper.createLogProbabilityDiscreteNode(tNodes[0]);
+        for (int n = 1; n < nodes.length; n++) {
+            nodes[n] = NodeInferenceHelper.createLogProbabilityDiscreteNode(tNodes[n], Arrays.asList(parents.get(n)));
+        }
+        multiNode.setNodes(nodes);
         return multiNode;
     }
 
@@ -137,9 +143,14 @@ public class NodeInferenceHelper {
         DiscreteNode[] nodes = multiNode.getNodes();
         double[][] newMessages = new double[nodes.length][2];
         for (int n = 0; n < nodes.length; n++) {
-            newMessages[n] = nodes[n].getParameters().clone();
-            newMessages[n][0] *= messages[n];
-            newMessages[n][1] *= messages[n];
+            int observedValue = multiNode.getObservation();
+
+            // make use of the fact the parent var is binary.
+            newMessages[n][0] = nodes[n].getParameters()[observedValue];
+            newMessages[n][1] = nodes[n].getParameters()[observedValue + nodes[n].getVariable().getFeatureSize()];
+
+            newMessages[n][0] += messages[n];
+            newMessages[n][1] += messages[n];
         }
         return newMessages;
     }

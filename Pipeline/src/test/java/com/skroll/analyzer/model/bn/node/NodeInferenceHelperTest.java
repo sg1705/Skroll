@@ -15,23 +15,26 @@ public class NodeInferenceHelperTest {
     RandomVariable prv2 = new RandomVariable(2, "defsAreBold");
 
     private DiscreteNode node;
-    private DiscreteNode parentNode;
-    private DiscreteNode parentNode2;
+    private DiscreteNode parentNode = NodeTrainingHelper.createTrainingDiscreteNode(Arrays.asList(prv));
+    private DiscreteNode parentNode2 = NodeTrainingHelper.createTrainingDiscreteNode(Arrays.asList(prv2));
+    private List<DiscreteNode> parentNodes = Arrays.asList(parentNode, parentNode2);
 
     private RandomVariable[] parentVariables = new RandomVariable[]{prv, prv2};
     private RandomVariable nodeVar = new RandomVariable(2, "bold");
-    private List<RandomVariable> familyVariables = new ArrayList<>();
+    private List<RandomVariable> familyVariables = Arrays.asList(rv, prv, prv2);
 
     private WordNode wNode;
     private String observedString = "abc";
 
+    MultiplexNode tMultiNode = NodeTrainingHelper
+            .createTrainingMultiplexNode(this.familyVariables,
+                    parentNodes);
+
 
     @Before
     public void setup() {
-        this.parentNode = NodeTrainingHelper.createTrainingDiscreteNode(Arrays.asList(prv));
-        this.parentNode2 = NodeTrainingHelper.createTrainingDiscreteNode(Arrays.asList(prv2));
         node = NodeTrainingHelper
-                .createTrainingDiscreteNode(Arrays.asList(rv, prv, prv2),
+                .createTrainingDiscreteNode(familyVariables,
                         Arrays.asList(parentNode, parentNode2));
 
         wNode = NodeTrainingHelper.createTrainingWordNode(parentNode);
@@ -40,6 +43,7 @@ public class NodeInferenceHelperTest {
 
         node.setParameters(new double[]{1, 2, 3, 4, 5, 6, 7, 8});
         parentNode.setParameters(new double[]{1, 2});
+
     }
 
 
@@ -79,6 +83,11 @@ public class NodeInferenceHelperTest {
 
     @Test
     public void testSumOutOtherNodesWithObservationAndMessage() throws Exception {
+        node.setObservation(1);
+        double[] newMessage = NodeInferenceHelper.sumOutOtherNodesWithObservationAndMessage(
+                node, parentNode, new double[]{1, -1}, parentNode2);
+        System.out.println(Arrays.toString(newMessage));
+        assert (Arrays.toString(newMessage).equals("[3.6931471805599454, 7.693147180559945]"));
 
     }
 
@@ -104,6 +113,24 @@ public class NodeInferenceHelperTest {
 
     @Test
     public void testSumOutWordsWithObservation() throws Exception {
+
+    }
+
+    @Test
+    public void testCreateLogProbabilityMultiplexNode() throws Exception {
+
+        MultiplexNode pMultiNode = NodeInferenceHelper.createLogProbabilityMultiplexNode(tMultiNode, parentNodes);
+        System.out.println(pMultiNode);
+    }
+
+    @Test
+    public void testUpdateMessageToSelectingNode() throws Exception {
+
+
+    }
+
+    @Test
+    public void testUpdateMessagesFromSelectingNode() throws Exception {
 
     }
 }

@@ -215,19 +215,19 @@ public class NodeTrainingHelperTest {
 
     }
 
-    @Test
-    public void testGetLogProbabilitiesMultiNode() throws Exception {
-        String result = "[[-0.6931471805599453, -0.6931471805599453, -2.4849066497880004, -0.08701137698962981]]";
-        MultiplexNode node = NodeTrainingHelper
-                .createTrainingMultiplexNode(this.familyVariables,
-                        parentNodes);
-
-        parentNode.setObservation(1);
-        catNode.setObservation(0);
-        node.setObservation(1);
-        NodeTrainingHelper.updateCount(node);
-        System.out.println(Arrays.deepToString(NodeTrainingHelper.getLogProbabilities(node)));
-        assert (Arrays.deepToString(NodeTrainingHelper.getLogProbabilities(node)).equals(result));
-
-    }
+//    @Test
+//    public void testGetLogProbabilitiesMultiNode() throws Exception {
+//        String result = "[[-0.6931471805599453, -0.6931471805599453, -2.4849066497880004, -0.08701137698962981]]";
+//        MultiplexNode node = NodeTrainingHelper
+//                .createTrainingMultiplexNode(this.familyVariables,
+//                        parentNodes);
+//
+//        parentNode.setObservation(1);
+//        catNode.setObservation(0);
+//        node.setObservation(1);
+//        NodeTrainingHelper.updateCount(node);
+//        System.out.println(Arrays.deepToString(NodeTrainingHelper.getLogProbabilities(node)));
+//        assert (Arrays.deepToString(NodeTrainingHelper.getLogProbabilities(node)).equals(result));
+//
+//    }
 }
