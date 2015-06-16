@@ -1,12 +1,9 @@
 package com.skroll.util;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.name.Names;
 import com.skroll.classifier.ClassifierFactory;
-import com.skroll.document.DocumentFactory;
 import com.skroll.classifier.ModelFactory;
-
-import javax.inject.Named;
+import com.skroll.document.factory.*;
 
 /**
  * Created by saurabhagarwal on 4/26/15.
@@ -14,8 +11,24 @@ import javax.inject.Named;
 public class SkrollGuiceModule extends AbstractModule {
     @Override
     protected void configure() {
-        bind(DocumentFactory.class);
         bind(ModelFactory.class);
         bind(ClassifierFactory.class);
+        bind(Configuration.class);
+
+        //default binding
+        bind(IDocumentFactory.class)
+                .to(CorpusFSDocumentFactoryImpl.class);
+
+
+        bind(IDocumentFactory.class)
+                .annotatedWith(CorpusFSDocumentFactory.class)
+                .to(CorpusFSDocumentFactoryImpl.class);
+
+        bind(IDocumentFactory.class)
+                .annotatedWith(BenchmarkFSDocumentFactory.class)
+                .to(BenchmarkFSDocumentFactoryImpl.class);
+
+
+
     }
 }
