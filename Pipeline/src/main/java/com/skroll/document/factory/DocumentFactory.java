@@ -8,7 +8,7 @@ import com.skroll.document.Document;
  *
  * Created by saurabh on 6/14/15.
  */
-public interface IDocumentFactory {
+public interface DocumentFactory {
 
     /**
      * Returns a document with the given id

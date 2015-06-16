@@ -4,8 +4,7 @@ import com.skroll.classifier.Classifier;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.Document;
 import com.skroll.document.factory.BenchmarkFSDocumentFactory;
-import com.skroll.document.factory.CorpusFSDocumentFactory;
-import com.skroll.document.factory.IDocumentFactory;
+import com.skroll.document.factory.DocumentFactory;
 
 import javax.inject.Inject;
 import javax.ws.rs.QueryParam;
@@ -24,7 +23,7 @@ public class BenchmarkRequestBean {
     private String documentId;
     private Document document;
     private List<Classifier> classifiers;
-    private IDocumentFactory documentFactory;
+    private DocumentFactory documentFactory;
 
     public String getDocumentId() {
         return documentId;
@@ -40,7 +39,7 @@ public class BenchmarkRequestBean {
     @Inject
     public BenchmarkRequestBean(@QueryParam("documentId") String documentId,
                                 @Context HttpHeaders hh,
-                                @BenchmarkFSDocumentFactory IDocumentFactory documentFactory,
+                                @BenchmarkFSDocumentFactory DocumentFactory documentFactory,
                                 ClassifierFactory classifierFactory) throws Exception {
 
 
@@ -65,5 +64,5 @@ public class BenchmarkRequestBean {
     public List<Classifier> getClassifiers() {
         return classifiers;
     }
-    public IDocumentFactory getDocumentFactory() { return documentFactory;}
+    public DocumentFactory getDocumentFactory() { return documentFactory;}
 }

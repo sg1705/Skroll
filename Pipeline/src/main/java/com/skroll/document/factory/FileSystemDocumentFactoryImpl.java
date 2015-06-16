@@ -18,7 +18,7 @@ import java.util.HashMap;
 /**
  * Created by saurabh on 4/16/15.
  */
-public abstract class FileSystemDocumentFactoryImpl implements IDocumentFactory {
+public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory {
 
     public static final Logger logger = LoggerFactory.getLogger(FileSystemDocumentFactoryImpl.class);
     private static HashMap<String, Document> documents = new HashMap();

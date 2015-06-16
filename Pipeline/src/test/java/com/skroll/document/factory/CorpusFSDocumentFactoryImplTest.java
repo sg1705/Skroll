@@ -15,7 +15,7 @@ import java.io.File;
 
 public class CorpusFSDocumentFactoryImplTest {
 
-    protected IDocumentFactory factory;
+    protected DocumentFactory factory;
     protected Configuration configuration;
 
     @Before
@@ -24,14 +24,14 @@ public class CorpusFSDocumentFactoryImplTest {
             Injector injector = Guice.createInjector(new AbstractModule() {
                 @Override
                 protected void configure() {
-                    bind(IDocumentFactory.class)
+                    bind(DocumentFactory.class)
                             .to(CorpusFSDocumentFactoryImpl.class);
 
                     bind(Configuration.class).to(TestConfiguration.class);
                 }
             });
 
-            factory = injector.getInstance(IDocumentFactory.class);
+            factory = injector.getInstance(DocumentFactory.class);
             configuration = injector.getInstance(Configuration.class);
         } catch (Exception e) {
             e.printStackTrace();

@@ -9,7 +9,7 @@ import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
-import com.skroll.document.factory.IDocumentFactory;
+import com.skroll.document.factory.DocumentFactory;
 import com.skroll.util.Configuration;
 import com.skroll.util.ObjectPersistUtil;
 import com.skroll.util.SkrollGuiceModule;
@@ -39,7 +39,7 @@ public class SkrollTrainer {
     Injector injector = Guice.createInjector(new SkrollGuiceModule());
     ClassifierFactory classifierFactory = injector.getInstance(ClassifierFactory.class);
     Configuration configuration = new Configuration();
-    IDocumentFactory documentFactory = injector.getInstance(IDocumentFactory.class);
+    DocumentFactory documentFactory = injector.getInstance(DocumentFactory.class);
     String PRE_EVALUATED_FOLDER = configuration.get("preEvaluatedFolder", "/tmp/");
 
     public static void main(String[] args) throws IOException, ObjectPersistUtil.ObjectPersistException, Exception {

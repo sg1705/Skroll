@@ -16,15 +16,15 @@ public class SkrollGuiceModule extends AbstractModule {
         bind(Configuration.class);
 
         //default binding
-        bind(IDocumentFactory.class)
+        bind(DocumentFactory.class)
                 .to(CorpusFSDocumentFactoryImpl.class);
 
 
-        bind(IDocumentFactory.class)
+        bind(DocumentFactory.class)
                 .annotatedWith(CorpusFSDocumentFactory.class)
                 .to(CorpusFSDocumentFactoryImpl.class);
 
-        bind(IDocumentFactory.class)
+        bind(DocumentFactory.class)
                 .annotatedWith(BenchmarkFSDocumentFactory.class)
                 .to(BenchmarkFSDocumentFactoryImpl.class);
 
