@@ -7,6 +7,7 @@ import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.Parser;
 import com.skroll.util.Configuration;
+import com.skroll.util.TestConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 import java.io.File;
@@ -86,12 +87,6 @@ public class CorpusFSDocumentFactoryImplTest {
         factory.saveDocument(doc);
         assert (isDocExist(doc));
 
-    }
-
-    public static class TestConfiguration extends Configuration {
-        public TestConfiguration() {
-            super("src/test/resources/skroll-test.properties");
-        }
     }
 
     private boolean isDocExist(Document doc) {
