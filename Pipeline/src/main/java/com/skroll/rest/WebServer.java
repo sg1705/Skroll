@@ -1,8 +1,10 @@
 package com.skroll.rest;
 
 
-import com.google.inject.servlet.GuiceFilter;
-import com.skroll.util.WebGuiceModule;
+import com.google.inject.Injector;
+import com.google.inject.servlet.ServletModule;
+import com.skroll.util.SkrollGuiceModule;
+import com.squarespace.jersey2.guice.BootstrapUtils;
 import org.apache.tomcat.InstanceManager;
 import org.apache.tomcat.SimpleInstanceManager;
 import org.eclipse.jetty.annotations.ServletContainerInitializersStarter;
@@ -15,17 +17,14 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.glassfish.hk2.api.ServiceLocator;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.DispatcherType;
-import javax.servlet.ServletContextListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -93,9 +92,14 @@ public class WebServer {
 
         server.setHandler(webAppContext);
 
-        ServletContextListener guiceListener = new WebGuiceModule();
-        webAppContext.addFilter(GuiceFilter.class, "/", EnumSet.of(DispatcherType.INCLUDE, DispatcherType.REQUEST));
-        webAppContext.addEventListener(guiceListener);
+        ServiceLocator locator = BootstrapUtils.newServiceLocator();
+        Injector injector = BootstrapUtils.newInjector(locator, Arrays.asList(new ServletModule(), new SkrollGuiceModule()));
+        BootstrapUtils.install(locator);
+
+//        ServletContextListener guiceListener = new WebGuiceModule();
+//        webAppContext.addFilter(GuiceFilter.class, "/", EnumSet.of(DispatcherType.INCLUDE, DispatcherType.REQUEST));
+//        webAppContext.addEventListener(guiceListener);
+
 
         // Start Server
         server.start();
@@ -167,15 +171,6 @@ public class WebServer {
         context.addServlet(exampleJspFileMappedServletHolder(), "/test/foo/");
         context.addServlet(defaultServletHolder(baseUri), "/");
 
-
-//        ServletHolder jerseyServlet = context.addServlet(
-//                org.glassfish.jersey.servlet.ServletContainer.class, "/restServices/*");
-//        jerseyServlet.setInitOrder(0);
-//
-//        jerseyServlet.setInitParameter(
-//                "javax.ws.rs.Application",
-//                MultiPartApplication.class.getCanonicalName());
-
         return context;
     }
 
@@ -235,10 +230,19 @@ public class WebServer {
      */
     private ServletHolder defaultServletHolder(URI baseUri)
     {
-        ServletHolder holderDefault = new ServletHolder("default", DefaultServlet.class);
+
+//        ResourceConfig config = new ResourceConfig();
+//        config.register(DocAPI.class);
+//        config.register(RequestBean.class);
+//        ServletContainer container = new ServletContainer(config);
+//        ServletHolder holderDefault = new ServletHolder(container);
+//        holderDefault.setServlet(new DefaultServlet());
+
+       ServletHolder holderDefault = new ServletHolder("default", DefaultServlet.class);
         LOG.info("Base URI: " + baseUri);
         holderDefault.setInitParameter("resourceBase", baseUri.toASCIIString());
         holderDefault.setInitParameter("dirAllowed", "true");
+
         return holderDefault;
     }
 
