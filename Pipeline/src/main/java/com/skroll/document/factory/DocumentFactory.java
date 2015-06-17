@@ -19,7 +19,7 @@ public interface DocumentFactory {
     Document get(String documentId) throws Exception;
 
     /**
-     * Puts the document in cache and saves it
+     * Puts the document in cache
      * @param documentId
      * @param document
      * @throws Exception

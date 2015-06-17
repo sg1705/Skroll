@@ -1,6 +1,7 @@
 package com.skroll.rest;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.name.Names;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.classifier.ModelFactory;
 import com.skroll.document.factory.*;
@@ -22,11 +23,12 @@ public class APITestGuiceModule extends AbstractModule {
 
 
         bind(DocumentFactory.class)
-                .annotatedWith(CorpusFSDocumentFactory.class)
+                .annotatedWith(Names.named("CorpusFSDocumentFactory"))
                 .to(CorpusFSDocumentFactoryImpl.class);
 
+
         bind(DocumentFactory.class)
-                .annotatedWith(BenchmarkFSDocumentFactory.class)
+                .annotatedWith(Names.named("BenchmarkFSDocumentFactory"))
                 .to(BenchmarkFSDocumentFactoryImpl.class);
 
         bind(Configuration.class).to(TestConfiguration.class);
