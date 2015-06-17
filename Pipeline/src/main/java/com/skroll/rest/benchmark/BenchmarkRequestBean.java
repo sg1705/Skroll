@@ -1,9 +1,9 @@
-package com.skroll.rest;
+package com.skroll.rest.benchmark;
 
 import com.skroll.classifier.Classifier;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.Document;
-import com.skroll.document.factory.CorpusFSDocumentFactory;
+import com.skroll.document.factory.BenchmarkFSDocumentFactory;
 import com.skroll.document.factory.DocumentFactory;
 
 import javax.inject.Inject;
@@ -18,27 +18,32 @@ import java.util.Map;
 /**
  * Created by saurabh on 4/17/15.
  */
-public class RequestBean {
+public class BenchmarkRequestBean {
 
     private String documentId;
     private Document document;
     private List<Classifier> classifiers;
-
     private DocumentFactory documentFactory;
 
     public String getDocumentId() {
         return documentId;
     }
 
+
+
     public Document getDocument() {
         return document;
     }
 
+
     @Inject
-    public RequestBean(@QueryParam("documentId") String documentId,
-                       @Context HttpHeaders hh,
-                       @CorpusFSDocumentFactory DocumentFactory documentFactory,
-                       ClassifierFactory classifierFactory) throws Exception {
+    public BenchmarkRequestBean(@QueryParam("documentId") String documentId,
+                                @Context HttpHeaders hh,
+                                @BenchmarkFSDocumentFactory DocumentFactory documentFactory,
+                                ClassifierFactory classifierFactory) throws Exception {
+
+
+
         if(documentId == null) {
             MultivaluedMap<String, String> headerParams = hh.getRequestHeaders();
             Map<String, Cookie> pathParams = hh.getCookies();

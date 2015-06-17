@@ -21,11 +21,11 @@ import java.io.File;
  * Created by saurabh on 5/10/15.
  */
 public class APITest {
-    public static final Logger logger = LoggerFactory
-            .getLogger(DocAPITest.class);
+    public static final Logger logger = LoggerFactory.getLogger(DocAPITest.class);
 
-    WebServer jettyServer = new WebServer(8888);
-    String documentId=null;
+    WebServer jettyServer = new WebServer(8888, new APITestGuiceModule());
+    protected String documentId=null;
+
     @Before
     public void setup () throws Exception {
 

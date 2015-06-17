@@ -1,19 +1,20 @@
-package com.skroll.util;
+package com.skroll.rest;
 
 import com.google.inject.AbstractModule;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.classifier.ModelFactory;
 import com.skroll.document.factory.*;
+import com.skroll.util.Configuration;
+import com.skroll.util.TestConfiguration;
 
 /**
- * Created by saurabhagarwal on 4/26/15.
+ * Created by saurabh on 6/16/15.
  */
-public class SkrollGuiceModule extends AbstractModule {
+public class APITestGuiceModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(ModelFactory.class);
         bind(ClassifierFactory.class);
-        bind(Configuration.class);
 
         //default binding
         bind(DocumentFactory.class)
@@ -28,7 +29,7 @@ public class SkrollGuiceModule extends AbstractModule {
                 .annotatedWith(BenchmarkFSDocumentFactory.class)
                 .to(BenchmarkFSDocumentFactoryImpl.class);
 
-
-
+        bind(Configuration.class).to(TestConfiguration.class);
     }
+
 }

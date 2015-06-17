@@ -12,6 +12,7 @@ angular.module('SkrollApp')
     //context root of API
     var documentServiceBase = 'restServices/doc/';
     var instrumentServiceBase = 'restServices/instrument/';
+
     /**
      * Retrieves terms for a given document
      */
@@ -91,6 +92,27 @@ angular.module('SkrollApp')
         })
       return deferred.promise;
     }
+
+    /**
+     * Saves current document in benchmark
+     */
+    this.saveAsBenchmark = function() {
+      var deferred = $q.defer();
+      /** make a get request */
+      $http.get(documentServiceBase + 'saveBenchmarkFile' + '?documentId=' + documentModel.documentId)
+        .success(function(data, status) {
+          deferred.resolve(data);
+        })
+        .error(function(msg, code) {
+          deferred.reject(msg);
+          $log.error(msg, code);
+        });;
+      /** done with get request */
+      return deferred.promise;
+    };
+
+
+
 
     /**
     * Removes all instances of paraId from smodel.terms and updates it

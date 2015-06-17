@@ -1,13 +1,15 @@
-package com.skroll.document;
+package com.skroll.document.factory;
 
 import com.google.common.io.Files;
+import com.skroll.document.Document;
+import com.skroll.document.DocumentHelper;
+import com.skroll.document.JsonDeserializer;
 import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.ParserException;
 import com.skroll.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -16,25 +18,16 @@ import java.util.HashMap;
 /**
  * Created by saurabh on 4/16/15.
  */
-public class DocumentFactory {
+public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory {
 
-    public static final Logger logger = LoggerFactory.getLogger(DocumentFactory.class);
+    public static final Logger logger = LoggerFactory.getLogger(FileSystemDocumentFactoryImpl.class);
     private static HashMap<String, Document> documents = new HashMap();
-    private Configuration configuration;
-    private static String PRE_EVALUATED_FOLDER;
-    public static enum DocType {
-        DEFAULT, BENCHMARK
-    };
-
-    @Inject
-    public DocumentFactory(Configuration configuration ) {
-        this.configuration = configuration;
-        PRE_EVALUATED_FOLDER = configuration.get("preEvaluatedFolder", "/tmp/");
-
-    }
+    protected Configuration configuration;
+    protected String folder;
 
 
-    public Document get(String documentId) {
+    @Override
+    public Document get(String documentId) throws Exception {
         Document doc;
         if (documents.containsKey(documentId)) {
             doc = documents.get(documentId);
@@ -43,8 +36,8 @@ public class DocumentFactory {
             //let's fetch it from the filesystem
             String jsonString;
             try {
-                logger.debug("Fetching [{}] from filesystem [{}]", documentId, PRE_EVALUATED_FOLDER);
-                jsonString = Files.toString(new File(PRE_EVALUATED_FOLDER + documentId), Charset.defaultCharset());
+                logger.debug("Fetching [{}] from filesystem [{}]", documentId, folder);
+                jsonString = Files.toString(new File(folder + documentId), Charset.defaultCharset());
             } catch (IOException e) {
                 logger.info("[{}] cannot be found", documentId);
                 return null;
@@ -60,14 +53,18 @@ public class DocumentFactory {
         return doc;
     }
 
-    public void putDocument(String documentId, Document document) {
+    @Override
+    public void putDocument(String documentId, Document document) throws Exception {
+        if (documentId == null) {
+            throw new Exception("Cannot put document with [null] id");
+        }
         if (document.getId() == null) {
             document.setId(documentId);
         }
         documents.put(documentId, document);
     }
 
-    private Document getLatestParsed(Document document) {
+    private Document getLatestParsed(Document document) throws Exception {
         if (DocumentHelper.isLatestParser(document)) {
             //latest doc
             return document;
@@ -86,27 +83,22 @@ public class DocumentFactory {
         return document;
     }
 
-    public void saveDocument(Document document) {
-        saveDocument(DocType.DEFAULT, document);
-    }
-
-    public void saveDocument(DocType docType, Document document) {
-        String folder = null;
-        if (docType == DocType.DEFAULT) {
-            folder = PRE_EVALUATED_FOLDER;
-        } else if (docType == DocType.BENCHMARK) {
-            folder = configuration.get("benchmarkFolder", "/tmp/");
-        } else {
-            logger.error("Error Invalid DocType {}", docType);
-            return;
-        }
+    @Override
+    public void saveDocument(Document document) throws Exception {
         try {
+            if (document.getId() == null) {
+                throw new Exception("Cannot save a document with [null] documentId");
+            }
             Files.write(
                     JsonDeserializer.getJson(document),
                     new File(folder + document.getId()),
                     Charset.defaultCharset());
         } catch (IOException e) {
             logger.error("Error when saving file {}", document.getId(), e);
+            throw e;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw e;
         }
 
     }

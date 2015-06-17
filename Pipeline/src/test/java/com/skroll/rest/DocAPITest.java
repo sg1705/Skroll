@@ -128,19 +128,6 @@ public class DocAPITest extends APITest {
     }
 
     @Test
-    public void testSaveBenchmarkFile() throws Exception {
-        testUpdateTerms();
-        String TARGET_URL = "http://localhost:8888/restServices/doc/saveBenchmarkFile";
-        Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(TARGET_URL);
-
-        String response = webTarget.request(MediaType.APPLICATION_JSON).cookie(new  NewCookie("documentId", documentId)).get(String.class);
-        logger.debug("Here is the response: " + response);
-        assert(response.contains("benchmark file is stored"));
-        client.close();
-    }
-
-    @Test
     public void testUploadListDocs() throws Exception {
         String TARGET_URL = "http://localhost:8888/restServices/doc/listDocs";
         Client client = ClientBuilder.newClient();

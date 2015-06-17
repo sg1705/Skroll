@@ -9,26 +9,32 @@
  */
 
 var ToolbarModel = {
-	trainerToolbar : {
+	trainerToolbar: {
 		isTrainerMode: true,
 		isUpdateBNI: false,
+		isBenchmarkMode: false,
 		lastJson: "",
 		lastSelectedParaId: ''
 	},
 
-	toolbarInfo : {
-		title: ""		
+	toolbarInfo: {
+		title: ""
 	},
 
 	trainerPrompt: {
 		text: '',
 		items: []
+	},
+
+	enableBenchmarkMode: function() {
+		this.trainerToolbar.isTrainerMode = false;
+		this.benchmarkToolbar.isBenchMarkMode = true;
 	}
 
 };
 
 
 angular.module('SkrollApp')
-  .factory('ToolbarModel', function () {
-    return ToolbarModel;
-  });
+	.factory('ToolbarModel', function() {
+		return ToolbarModel;
+	});
