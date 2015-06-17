@@ -7,9 +7,9 @@ import com.google.inject.Injector;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
-import com.skroll.document.DocumentFactory;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
+import com.skroll.document.factory.DocumentFactory;
 import com.skroll.util.Configuration;
 import com.skroll.util.ObjectPersistUtil;
 import com.skroll.util.SkrollGuiceModule;
@@ -39,10 +39,10 @@ public class SkrollTrainer {
     Injector injector = Guice.createInjector(new SkrollGuiceModule());
     ClassifierFactory classifierFactory = injector.getInstance(ClassifierFactory.class);
     Configuration configuration = new Configuration();
-    DocumentFactory documentFactory = new DocumentFactory(configuration);
+    DocumentFactory documentFactory = injector.getInstance(DocumentFactory.class);
     String PRE_EVALUATED_FOLDER = configuration.get("preEvaluatedFolder", "/tmp/");
 
-    public static void main(String[] args) throws IOException, ObjectPersistUtil.ObjectPersistException {
+    public static void main(String[] args) throws IOException, ObjectPersistUtil.ObjectPersistException, Exception {
 
         SkrollTrainer skrollTrainer = new SkrollTrainer();
 
@@ -55,7 +55,7 @@ public class SkrollTrainer {
         }
     }
 
-    public void trainFolderUsingTrainingWeight (String preEvaluatedFolder)  {
+    public void trainFolderUsingTrainingWeight (String preEvaluatedFolder) throws Exception {
         FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(preEvaluatedFolder));
         List<String> docLists = new ArrayList<String>();
         for (File f : iterable) {
@@ -66,7 +66,7 @@ public class SkrollTrainer {
 
     }
 
-    public  void trainFileUsingTrainingWeight (String preEvaluatedFile) {
+    public  void trainFileUsingTrainingWeight (String preEvaluatedFile) throws Exception {
         Document doc = documentFactory.get(preEvaluatedFile);
         //iterate over each paragraph
         for(CoreMap paragraph : doc.getParagraphs()) {

@@ -8,12 +8,12 @@ import com.skroll.document.factory.*;
 /**
  * Created by saurabhagarwal on 4/26/15.
  */
-public class SkrollGuiceModule extends AbstractModule {
+public class SkrollTestGuiceModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(ModelFactory.class);
         bind(ClassifierFactory.class);
-        bind(Configuration.class);
+        bind(TestConfiguration.class);
 
         //default binding
         bind(DocumentFactory.class)
