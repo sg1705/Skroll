@@ -1,6 +1,7 @@
 package com.skroll.rest;
 
 import com.skroll.rest.benchmark.BenchmarkAPI;
+import com.skroll.rest.benchmark.BenchmarkRequestBean;
 import com.skroll.util.WebGuiceModule;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 

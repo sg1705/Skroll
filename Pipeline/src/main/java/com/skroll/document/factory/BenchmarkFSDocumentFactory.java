@@ -1,7 +1,6 @@
 package com.skroll.document.factory;
 
 import com.google.inject.BindingAnnotation;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 

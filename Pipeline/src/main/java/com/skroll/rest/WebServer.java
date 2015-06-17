@@ -4,6 +4,7 @@ package com.skroll.rest;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.servlet.ServletModule;
+import com.skroll.rest.benchmark.BenchmarkAPI;
 import com.skroll.util.SkrollGuiceModule;
 import com.squarespace.jersey2.guice.BootstrapUtils;
 import org.apache.tomcat.InstanceManager;
@@ -19,8 +20,9 @@ import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.glassfish.hk2.api.ServiceLocator;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -220,6 +222,7 @@ public class WebServer {
 
 //        ResourceConfig config = new ResourceConfig();
 //        config.register(DocAPI.class);
+//        config.register(BenchmarkAPI.class);
 //        config.register(RequestBean.class);
 //        ServletContainer container = new ServletContainer(config);
 //        ServletHolder holderDefault = new ServletHolder(container);
