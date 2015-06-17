@@ -92,7 +92,7 @@ public class BenchmarkModel {
                                 CategoryAnnotationHelper.isCategoryId(secondDocParagraph, stats.categoyId))
                          {
                              // false positive
-                             logger.debug("category [{}] type1Error[{}]",stats.categoyId, firstDocParagraph.getText());
+                             logger.debug("category [{}] type1Error [{}]",stats.categoyId, firstDocParagraph.getText());
                             stats.type1Error++;
                         } else if (CategoryAnnotationHelper.isCategoryId(firstDocParagraph, stats.categoyId) &&
                                 !CategoryAnnotationHelper.isCategoryId(secondDocParagraph, stats.categoyId)) {
@@ -122,7 +122,9 @@ public class BenchmarkModel {
 
     public QC runQCOnBenchmarkFile (String file){
         QC qc = new QC();
-        return runQCForBenchmark(file, qc);
+        qc = runQCForBenchmark(file, qc);
+        qc.calculateQCScore();
+        return qc;
 
     }
     public QC runQCOnBenchmarkFolder()  {
@@ -134,7 +136,7 @@ public class BenchmarkModel {
                 qc = runQCForBenchmark(f.getName(), qc);
             }
         }
-
+        qc.calculateQCScore();
         return qc;
     }
 

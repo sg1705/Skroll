@@ -28,4 +28,17 @@ public class BenchmarkModelTest {
             fail(" failed to run benchmark");
         }
     }
+    @Test
+    public void TestBenchmarkFolder(){
+
+        try {
+            QC qc = benchmark.runQCOnBenchmarkFolder();
+            System.out.println("QC output:"+ qc);
+            assertNotEquals(qc.stats.get(0).overallOccurance,0);
+            assertNotEquals(qc.stats.get(1).overallOccurance,0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(" failed to run benchmark");
+        }
+    }
 }
