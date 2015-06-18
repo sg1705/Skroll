@@ -1,5 +1,6 @@
 package com.skroll.document.factory;
 
+import com.google.common.collect.FluentIterable;
 import com.google.common.io.Files;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
@@ -13,7 +14,9 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by saurabh on 4/16/15.
@@ -101,6 +104,17 @@ public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory {
             throw e;
         }
 
+    }
+    @Override
+    public List<String> getDocLists() throws Exception {
+        FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(this.folder));
+        List<String> docLists = new ArrayList<String>();
+        for (File f : iterable) {
+            if (f.isFile()) {
+                docLists.add(f.getName());
+            }
+        }
+        return docLists;
     }
 
 }

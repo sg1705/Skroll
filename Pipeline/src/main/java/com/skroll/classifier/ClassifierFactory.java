@@ -45,7 +45,10 @@ public class ClassifierFactory {
         return classifier;
     }
    //Todo: need to add the classifier per document. currently returning all classifiers no matter what document is.
-   public List<Classifier> getClassifier(Document document) throws Exception {
+   public List<Classifier> getClassifier() throws Exception {
+       return getClassifier(null);
+   }
+       public List<Classifier> getClassifier(Document document) throws Exception {
        List<Classifier> classifierList = new ArrayList<>();
        classifierList.add(getClassifier(Category.DEFINITION));
        classifierList.add(getClassifier(Category.TOC_1));

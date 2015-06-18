@@ -7,8 +7,6 @@ import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
-import com.skroll.trainer.BenchmarkModel;
-import com.skroll.trainer.QC;
 import com.skroll.util.Configuration;
 import com.skroll.util.Flags;
 import org.slf4j.Logger;
@@ -198,15 +196,6 @@ public class InstrumentAPI {
         return Response.ok().status(Response.Status.OK).entity("").build();
     }
 
-    @GET
-    @Path("/getBenchmarkScore")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getBenchmarkScore() {
-        BenchmarkModel benchmarkModel = new BenchmarkModel(configuration);
-        QC qc = benchmarkModel.runQCOnBenchmarkFolder();
-        String qcJson = new GsonBuilder().create().toJson(qc);
-        return Response.ok().status(Response.Status.OK).entity(qcJson).build();
-    }
 
     @GET
     @Path("/getProbabilityDump")

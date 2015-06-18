@@ -1,24 +1,16 @@
 package com.skroll.trainer;
 
-import com.google.common.collect.FluentIterable;
-import com.google.common.io.Files;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.skroll.classifier.ClassifierFactory;
-import com.skroll.document.*;
+import com.skroll.classifier.Classifier;
+import com.skroll.document.CoreMap;
+import com.skroll.document.Document;
+import com.skroll.document.DocumentHelper;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
-import com.skroll.parser.Parser;
-import com.skroll.parser.extractor.ParserException;
-import com.skroll.util.Configuration;
+import com.skroll.document.factory.DocumentFactory;
 import com.skroll.util.ObjectPersistUtil;
-import com.skroll.util.SkrollGuiceModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -29,53 +21,29 @@ public class BenchmarkModel {
 
     public static final Logger logger = LoggerFactory
             .getLogger(BenchmarkModel.class);
-    Injector injector = Guice.createInjector(new SkrollGuiceModule());
-    ClassifierFactory classifierFactory = injector.getInstance(ClassifierFactory.class);
-    private static String BENCHMARK;
+
+    DocumentFactory documentFactory;
+    List<Classifier> classifiers;
 
     public static void main(String[] args) throws IOException, ObjectPersistUtil.ObjectPersistException {
-        Configuration configuration = new Configuration();
-        BenchmarkModel benchmark = new BenchmarkModel(configuration);
-            QC qc = benchmark.runQCOnBenchmarkFolder();
-            System.out.println("QC:" + qc.stats);
-    }
 
-    public BenchmarkModel(Configuration configuration) {
-        //this.configuration = configuration;
-        BENCHMARK = configuration.get("benchmarkFolder", "/tmp/");
-        System.out.println("BENCHMARK Folder:" + BENCHMARK);
-    }
-
-    public Document fetchBenchmarkDocument(String documentId) {
-        Document document;
-        String jsonString;
+       /* Injector injector = Guice.createInjector(new SkrollGuiceModule());
+        ClassifierFactory classifierFactory = injector.getInstance(ClassifierFactory.class);
+        DocumentFactory documentFactory = injector.getInstance(BenchmarkFSDocumentFactoryImpl.class);
+        BenchmarkModel benchmark = new BenchmarkModel(documentFactory,classifiers);
+        QC qc = null;
         try {
-            logger.debug("Fetching [{}] from filesystem [{}]", documentId,BENCHMARK);
-            jsonString = Files.toString(new File(BENCHMARK + documentId), Charset.defaultCharset());
-        } catch (IOException e) {
-            logger.info("[{}] cannot be found", documentId);
-            return null;
-        }
-        try {
-            document = JsonDeserializer.fromJson(jsonString);
+            qc = benchmark.runQCOnBenchmarkFolder();
         } catch (Exception e) {
-            logger.error("[{}] cannot be parsed", documentId);
-            return null;
+            e.printStackTrace();
         }
-        if (DocumentHelper.isLatestParser(document)) {
-            //latest doc
-            return document;
-        }
-        //doc is not the latest
-        //now need to parse and return the latest
-        try {
-            document = Parser.reParse(document);
-            //save it back since it is reparsed
-        } catch (ParserException e) {
-            logger.error("Cannot reparse document {}", document.getId());
-        }
+        System.out.println("QC:" + qc.stats);
+        */
+    }
 
-        return document;
+    public BenchmarkModel(DocumentFactory documentFactory, List<Classifier> classifiers ){
+        this.documentFactory = documentFactory;
+        this.classifiers = classifiers;
     }
 
     public QC qcDocument(Document firstDoc, Document secondDoc, QC qc){
@@ -109,11 +77,18 @@ public class BenchmarkModel {
     }
 
     public QC runQCForBenchmark(String file, QC qc){
-        Document firstDoc = fetchBenchmarkDocument(file);
-        Document secondDoc = fetchBenchmarkDocument(file);
-        DocumentHelper.clearObservedParagraphs(secondDoc);
+        Document firstDoc = null;
+        Document secondDoc = null;
         try {
-            classifierFactory.getClassifier(secondDoc).forEach(c -> c.classify(secondDoc.getId(),secondDoc));
+            firstDoc = documentFactory.get(file);
+            secondDoc = documentFactory.get(file);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        DocumentHelper.clearObservedParagraphs(secondDoc);
+        final Document finalSecondDoc =secondDoc;
+        try {
+            classifiers.forEach(c -> c.classify(finalSecondDoc.getId(), finalSecondDoc));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -127,14 +102,11 @@ public class BenchmarkModel {
         return qc;
 
     }
-    public QC runQCOnBenchmarkFolder()  {
+    public QC runQCOnBenchmarkFolder() throws Exception {
         QC qc = new QC();
-        FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(BENCHMARK));
-        List<String> docLists = new ArrayList<String>();
-        for (File f : iterable) {
-            if (f.isFile()) {
-                qc = runQCForBenchmark(f.getName(), qc);
-            }
+        List<String> docLists = documentFactory.getDocLists();
+        for (String docName : docLists) {
+                qc = runQCForBenchmark(docName, qc);
         }
         qc.calculateQCScore();
         return qc;

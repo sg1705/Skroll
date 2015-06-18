@@ -1,6 +1,9 @@
 package com.skroll.rest.benchmark;
 
+import com.google.gson.GsonBuilder;
 import com.skroll.document.*;
+import com.skroll.trainer.BenchmarkModel;
+import com.skroll.trainer.QC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.ws.rs.*;
@@ -44,6 +47,22 @@ public class BenchmarkAPI {
         }
         logger.debug("benchmark file {} is stored..", documentId);
         return Response.ok().status(Response.Status.OK).entity("benchmark file is stored").build();
+    }
+
+    @GET
+    @Path("/getBenchmarkScore")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getBenchmarkScore(@BeanParam BenchmarkRequestBean request) {
+        BenchmarkModel benchmarkModel = new BenchmarkModel(request.getDocumentFactory(), request.getClassifiers());
+        QC qc = null;
+        try {
+            qc = benchmarkModel.runQCOnBenchmarkFolder();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return logErrorResponse("getBenchmarkScore failed: +" + e);
+        }
+        String qcJson = new GsonBuilder().create().toJson(qc);
+        return Response.ok().status(Response.Status.OK).entity(qcJson).build();
     }
 
 }
