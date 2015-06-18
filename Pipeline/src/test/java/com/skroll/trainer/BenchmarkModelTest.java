@@ -27,6 +27,7 @@ public class BenchmarkModelTest {
     public void TestBenchmark(){
 
         try {
+
             QC qc = benchmark.runQCOnBenchmarkFile("d629534d10k.htm");
             System.out.println("QC output:"+ qc);
             assertNotEquals(qc.stats.get(0).overallOccurance,0);

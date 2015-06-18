@@ -3,10 +3,12 @@ package com.skroll.rest;
 import com.skroll.classifier.Classifier;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.Document;
+import com.skroll.document.factory.BenchmarkFSDocumentFactory;
 import com.skroll.document.factory.CorpusFSDocumentFactory;
 import com.skroll.document.factory.DocumentFactory;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Cookie;
@@ -44,6 +46,7 @@ public class RequestBean {
             Map<String, Cookie> pathParams = hh.getCookies();
              if(pathParams.get("documentId")!=null)
                  documentId = pathParams.get("documentId").getValue();
+
         }
 
         if (documentId != null) {

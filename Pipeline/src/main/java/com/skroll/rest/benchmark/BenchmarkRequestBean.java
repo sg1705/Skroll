@@ -5,8 +5,8 @@ import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.Document;
 import com.skroll.document.factory.BenchmarkFSDocumentFactory;
 import com.skroll.document.factory.DocumentFactory;
-
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Cookie;
@@ -29,20 +29,15 @@ public class BenchmarkRequestBean {
         return documentId;
     }
 
-
-
     public Document getDocument() {
         return document;
     }
-
 
     @Inject
     public BenchmarkRequestBean(@QueryParam("documentId") String documentId,
                                 @Context HttpHeaders hh,
                                 @BenchmarkFSDocumentFactory DocumentFactory documentFactory,
                                 ClassifierFactory classifierFactory) throws Exception {
-
-
 
         if(documentId == null) {
             MultivaluedMap<String, String> headerParams = hh.getRequestHeaders();
