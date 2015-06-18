@@ -3,9 +3,11 @@ package com.skroll.rest;
 
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.google.inject.servlet.GuiceFilter;
 import com.google.inject.servlet.ServletModule;
 import com.skroll.rest.benchmark.BenchmarkAPI;
 import com.skroll.util.SkrollGuiceModule;
+import com.skroll.util.WebGuiceModule;
 import com.squarespace.jersey2.guice.BootstrapUtils;
 import org.apache.tomcat.InstanceManager;
 import org.apache.tomcat.SimpleInstanceManager;
@@ -17,18 +19,26 @@ import org.eclipse.jetty.server.ConnectionFactory;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.DefaultServlet;
+import org.eclipse.jetty.servlet.FilterHolder;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.glassfish.hk2.api.ServiceLocator;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.DispatcherType;
+import javax.servlet.Servlet;
+import javax.servlet.ServletContextListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -81,28 +91,31 @@ public class WebServer {
     }
 
     public void start() throws Exception {
+        ServiceLocator locator = BootstrapUtils.newServiceLocator();
+        Injector injector = BootstrapUtils.newInjector(locator, Arrays.asList(skrollModule, new ServletModule()));
+        BootstrapUtils.install(locator);
+
+
+
         server = new Server();
         ServerConnector connector = connector();
         server.addConnector(connector);
 
         URI baseUri = getWebRootResourceUri();
-
         // Set JSP to use Standard JavaC always
         System.setProperty("org.apache.jasper.compiler.disablejsr199", "false");
 
         WebAppContext webAppContext = getWebAppContext(baseUri, getScratchDir());
 
-        server.setHandler(webAppContext);
-
-        ServiceLocator locator = BootstrapUtils.newServiceLocator();
-        Injector injector = BootstrapUtils.newInjector(locator, Arrays.asList(new ServletModule(), skrollModule));
-        BootstrapUtils.install(locator);
-
 //        ServletContextListener guiceListener = new WebGuiceModule();
-//        webAppContext.addFilter(GuiceFilter.class, "/", EnumSet.of(DispatcherType.INCLUDE, DispatcherType.REQUEST));
+
+        FilterHolder filterHolder = new FilterHolder(GuiceFilter.class);
+        webAppContext.addFilter(filterHolder, "/*", EnumSet.of(DispatcherType.INCLUDE, DispatcherType.REQUEST));
+
+        webAppContext.addServlet(this.getJerseyServlet(), "/restServices/*");
+
 //        webAppContext.addEventListener(guiceListener);
-
-
+        server.setHandler(webAppContext);
         // Start Server
         server.start();
 
@@ -164,7 +177,6 @@ public class WebServer {
 
         context.addServlet(exampleJspFileMappedServletHolder(), "/test/foo/");
         context.addServlet(defaultServletHolder(baseUri), "/");
-
         return context;
     }
 
@@ -269,4 +281,15 @@ public class WebServer {
         server.join();
     }
 
+
+    private ServletHolder getJerseyServlet() {
+        ResourceConfig config = new ResourceConfig();
+        config.register(DocAPI.class);
+        config.register(BenchmarkAPI.class);
+        config.register(MultiPartFeature.class);
+        config.register(InstrumentAPI.class);
+        ServletContainer container = new ServletContainer(config);
+        ServletHolder holderDefault = new ServletHolder(container);
+        return holderDefault;
+    }
 }

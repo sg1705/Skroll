@@ -3,6 +3,8 @@ package com.skroll.rest;
 import com.skroll.classifier.Classifier;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.Document;
+import com.skroll.document.factory.BenchmarkFSDocumentFactory;
+import com.skroll.document.factory.CorpusFSDocumentFactory;
 import com.skroll.document.factory.DocumentFactory;
 
 import javax.inject.Inject;
@@ -24,7 +26,6 @@ public class RequestBean {
     private Document document;
     private List<Classifier> classifiers;
 
-    @Inject
     private DocumentFactory documentFactory;
 
     public String getDocumentId() {
@@ -38,13 +39,14 @@ public class RequestBean {
     @Inject
     public RequestBean(@QueryParam("documentId") String documentId,
                        @Context HttpHeaders hh,
-                       @Named("CorpusFSDocumentFactory") DocumentFactory documentFactory,
+                       @CorpusFSDocumentFactory DocumentFactory documentFactory,
                        ClassifierFactory classifierFactory) throws Exception {
         if(documentId == null) {
             MultivaluedMap<String, String> headerParams = hh.getRequestHeaders();
             Map<String, Cookie> pathParams = hh.getCookies();
              if(pathParams.get("documentId")!=null)
                  documentId = pathParams.get("documentId").getValue();
+
         }
 
         if (documentId != null) {

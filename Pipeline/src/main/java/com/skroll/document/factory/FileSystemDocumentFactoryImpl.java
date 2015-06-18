@@ -89,6 +89,9 @@ public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory {
             if (document.getId() == null) {
                 throw new Exception("Cannot save a document with [null] documentId");
             }
+            //check to see if folder exists
+            File file = new File(folder + document.getId());
+            Files.createParentDirs(file);
             Files.write(
                     JsonDeserializer.getJson(document),
                     new File(folder + document.getId()),
