@@ -49,8 +49,11 @@ public class DocAPI {
 
     @Inject
     private ClassifierFactory classifierFactory;
-    private static Configuration configuration = new Configuration();
-    private static String preEvaluatedFolder = configuration.get("preEvaluatedFolder", "/tmp/");
+
+    @Inject
+    private Configuration configuration;
+    //private String preEvaluatedFolder = configuration.get("preEvaluatedFolder", "/tmp/");
+    //private String preEvaluatedFolder = null;
 
     // by default,
     private float userWeight = 95;
@@ -73,7 +76,7 @@ public class DocAPI {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.TEXT_HTML)
     public Response upload(MultiPart multiPart, @Context HttpHeaders hh, @BeanParam RequestBean request) {
-
+        String preEvaluatedFolder = configuration.get("preEvaluatedFolder", "/tmp/");
         List<BodyPart> bodyParts = multiPart.getBodyParts();
         logger.debug("BodyParts:" + bodyParts);
         // get the second part which is the project logo
@@ -140,6 +143,7 @@ public class DocAPI {
             Document fDoc = document;
             request.getClassifiers().forEach(c -> c.classify(fName, fDoc));
             request.getDocumentFactory().putDocument(fileName, document);
+            request.getDocumentFactory().saveDocument(document);
             logger.debug("Added document into the documentMap with a generated hash key:{}" ,fileName);
 
         } catch (ParserException e) {
@@ -148,12 +152,12 @@ public class DocAPI {
             return logErrorResponse("Failed to classify", e);
         }
         // persist the document using document id. Let's use the file name
-        try {
-            Files.createParentDirs(new File(preEvaluatedFolder + fileName));
-            Files.write(JsonDeserializer.getJson(document), new File(preEvaluatedFolder + fileName), Charset.defaultCharset());
-        } catch (Exception e) {
-            return logErrorResponse("Failed to persist the document object", e);
-        }
+//        try {
+//            Files.createParentDirs(new File(preEvaluatedFolder + fileName));
+//            Files.write(JsonDeserializer.getJson(document), new File(preEvaluatedFolder + fileName), Charset.defaultCharset());
+//        } catch (Exception e) {
+//            return logErrorResponse("Failed to persist the document object", e);
+//        }
         logger.info(fileName);
         return Response.status(Response.Status.OK).cookie(new NewCookie("documentId", fileName)).entity("").type(MediaType.APPLICATION_JSON).build();
     }
@@ -168,6 +172,7 @@ public class DocAPI {
     @Path("/listDocs")
     @Produces(MediaType.APPLICATION_JSON)
     public Response listDocs(@Context HttpHeaders hh) {
+        String preEvaluatedFolder = configuration.get("preEvaluatedFolder", "/tmp/");
         FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(preEvaluatedFolder));
         List<String> docLists = new ArrayList<>();
         for (File f : iterable) {
@@ -328,7 +333,7 @@ public class DocAPI {
             logger.error("Failed to update updateBNI, using existing document : {}", e);
         }
 
-        logger.debug("updated document is stored in {} {}", preEvaluatedFolder, documentId);
+        //logger.debug("updated document is stored in {} {}", preEvaluatedFolder, documentId);
         return Response.status(Response.Status.OK).entity(doc.getTarget().getBytes(Constants.DEFAULT_CHARSET)).type(MediaType.TEXT_HTML).build();
     }
 
@@ -359,11 +364,12 @@ public class DocAPI {
 
         try {
             request.getDocumentFactory().putDocument(documentId, doc);
-            Files.write(JsonDeserializer.getJson(doc), new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
+            request.getDocumentFactory().saveDocument(doc);
+//            Files.write(JsonDeserializer.getJson(doc), new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
         } catch (Exception e) {
             logErrorResponse("Failed to persist the document object: {}", e);
         }
-        logger.debug("train the model using document is stored in {} {}", preEvaluatedFolder, documentId);
+//        logger.debug("train the model using document is stored in {} {}", preEvaluatedFolder, documentId);
         return Response.ok().status(Response.Status.OK).entity("model has been updated").build();
     }
 
@@ -371,7 +377,6 @@ public class DocAPI {
     @Path("/observeNone")
     @Produces(MediaType.TEXT_PLAIN)
     public Response observeNone(@Context HttpHeaders hh, @BeanParam RequestBean request) throws IOException {
-
         String documentId = request.getDocumentId();
         Document doc = request.getDocument();
         if (doc == null) return logErrorResponse("document cannot be found for document id: " + documentId);
@@ -392,7 +397,13 @@ public class DocAPI {
                 TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.NONE, userWeight);
             }
         }
-        Files.write(JsonDeserializer.getJson(doc), new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
+        try {
+            request.getDocumentFactory().putDocument(documentId, doc);
+            request.getDocumentFactory().saveDocument(doc);
+        } catch (Exception e) {
+            logErrorResponse("Failed to persist the document object: {}", e);
+        }
+//        Files.write(JsonDeserializer.getJson(doc), new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
         return Response.ok().status(Response.Status.OK).entity("").build();
     }
 

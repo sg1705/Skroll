@@ -3,6 +3,7 @@ package com.skroll.rest.benchmark;
 import com.skroll.classifier.Classifier;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.Document;
+import com.skroll.document.factory.BenchmarkFSDocumentFactory;
 import com.skroll.document.factory.DocumentFactory;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -35,7 +36,7 @@ public class BenchmarkRequestBean {
     @Inject
     public BenchmarkRequestBean(@QueryParam("documentId") String documentId,
                                 @Context HttpHeaders hh,
-                                @Named("BenchmarkFSDocumentFactory") DocumentFactory documentFactory,
+                                @BenchmarkFSDocumentFactory DocumentFactory documentFactory,
                                 ClassifierFactory classifierFactory) throws Exception {
 
         if(documentId == null) {

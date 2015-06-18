@@ -3,6 +3,9 @@ package com.skroll.rest;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -10,9 +13,12 @@ import com.skroll.document.DocumentHelper;
 import com.skroll.document.JsonDeserializer;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
+import com.skroll.document.factory.CorpusFSDocumentFactoryImpl;
+import com.skroll.document.factory.DocumentFactory;
 import com.skroll.pipeline.util.Constants;
 import com.skroll.util.Configuration;
 import com.skroll.util.ObjectPersistUtil;
+import com.skroll.util.TestConfiguration;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,16 +34,15 @@ import java.util.List;
 
 public class DocAPITest extends APITest {
 
-    @Before
-    public void setup () throws Exception {
-
-        try {
-            jettyServer.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        documentId = testFileUpload();
-    }
+//    @Before
+//    public void setup () throws Exception {
+//        try {
+//            jettyServer.start();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        documentId = testFileUpload();
+//    }
     @After
     public void shutdown() {
         try {
