@@ -17,7 +17,6 @@ public class BenchmarkModelTest {
     BenchmarkModel benchmark = null;
     @Before
     public void setup() throws Exception {
-        //Configuration configuration = new Configuration("src/test/resources/skroll-test.properties");
         Injector injector = Guice.createInjector(new APITestGuiceModule());
         ClassifierFactory classifierFactory = injector.getInstance(ClassifierFactory.class);
         DocumentFactory documentFactory = injector.getInstance(BenchmarkFSDocumentFactoryImpl.class);

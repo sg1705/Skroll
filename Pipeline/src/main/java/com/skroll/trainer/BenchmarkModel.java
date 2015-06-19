@@ -1,16 +1,20 @@
 package com.skroll.trainer;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.skroll.classifier.Classifier;
+import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
+import com.skroll.document.factory.BenchmarkFSDocumentFactoryImpl;
 import com.skroll.document.factory.DocumentFactory;
 import com.skroll.util.ObjectPersistUtil;
+import com.skroll.util.SkrollGuiceModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.List;
 
 
@@ -25,12 +29,12 @@ public class BenchmarkModel {
     DocumentFactory documentFactory;
     List<Classifier> classifiers;
 
-    public static void main(String[] args) throws IOException, ObjectPersistUtil.ObjectPersistException {
+    public static void main(String[] args) throws Exception, ObjectPersistUtil.ObjectPersistException {
 
-       /* Injector injector = Guice.createInjector(new SkrollGuiceModule());
+       Injector injector = Guice.createInjector(new SkrollGuiceModule());
         ClassifierFactory classifierFactory = injector.getInstance(ClassifierFactory.class);
         DocumentFactory documentFactory = injector.getInstance(BenchmarkFSDocumentFactoryImpl.class);
-        BenchmarkModel benchmark = new BenchmarkModel(documentFactory,classifiers);
+        BenchmarkModel benchmark = new BenchmarkModel(documentFactory,classifierFactory.getClassifier());
         QC qc = null;
         try {
             qc = benchmark.runQCOnBenchmarkFolder();
@@ -38,7 +42,7 @@ public class BenchmarkModel {
             e.printStackTrace();
         }
         System.out.println("QC:" + qc.stats);
-        */
+
     }
 
     public BenchmarkModel(DocumentFactory documentFactory, List<Classifier> classifiers ){

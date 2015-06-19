@@ -1,15 +1,20 @@
 package com.skroll.rest.benchmark;
 
 import com.google.gson.GsonBuilder;
-import com.skroll.document.*;
+import com.skroll.document.Document;
 import com.skroll.trainer.BenchmarkModel;
 import com.skroll.trainer.QC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.ws.rs.*;
-import javax.ws.rs.core.*;
+import javax.ws.rs.BeanParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Path("/doc")
 public class BenchmarkAPI {
