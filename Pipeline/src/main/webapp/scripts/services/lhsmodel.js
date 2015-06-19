@@ -128,6 +128,21 @@ var LHSModel = {
 		return paras;
   },
 
+  filterInvalidClass: function(terms) {
+    var paras = _.filter(terms, function(obj){
+      //loop over each class
+      var filteredClass = _.where(LHSModel.classes, {'id': obj.classificationId })
+      if (filteredClass.length > 0) {
+        //valid
+        return true;
+      }
+      return false;
+    });
+    return paras;
+  },
+
+
+
   getTermsForClass: function(classId) {
 		var paras = _.filter(LHSModel.smodel.terms, function(obj){
 			if ((obj.classificationId == classId))
@@ -171,7 +186,7 @@ var LHSModel = {
   },
 
   setTerms: function (terms) {
-    this.smodel.terms = terms;
+    this.smodel.terms = this.filterInvalidClass(terms);
     this.setActiveClasses(terms);
   }
 

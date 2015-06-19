@@ -42,9 +42,10 @@ public class ClassifierLogicTest {
         // this doc has three paragraphs
         assert (doc.getParagraphs().size() == 3);
 
-        // one paragraphs are User train
+        // one paragraphs as user trained
         CoreMap paragraph = doc.getParagraphs().get(0);
         paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
+        // set training weight on that paragrpah
         TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.TOC_1, 1);
         CategoryAnnotationHelper.setMatchedText(paragraph, Lists.newArrayList(paragraph.getTokens().get(0)), Category.TOC_1);
         // classify

@@ -6,6 +6,8 @@ import com.skroll.trainer.BenchmarkModel;
 import com.skroll.trainer.QC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
@@ -46,7 +48,8 @@ public class BenchmarkAPI {
             logErrorResponse("Failed to store the benchmark file: {}", e);
         }
         logger.debug("benchmark file {} is stored..", documentId);
-        return Response.ok().status(Response.Status.OK).entity("benchmark file is stored").build();
+        //return Response.ok().status(Response.Status.OK).entity("{'ok': 'benchmark file is stored'}").build();
+        return Response.ok().status(Response.Status.OK).entity("").build();
     }
 
     @GET

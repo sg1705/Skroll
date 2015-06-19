@@ -100,7 +100,7 @@ angular.module('SkrollApp')
       var deferred = $q.defer();
       /** make a get request */
       $http.get(documentServiceBase + 'saveBenchmarkFile' + '?documentId=' + documentModel.documentId)
-        .success(function(data, status) {
+        .success(function(data) {
           deferred.resolve(data);
         })
         .error(function(msg, code) {

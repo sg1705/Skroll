@@ -99,6 +99,7 @@ public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory {
                     JsonDeserializer.getJson(document),
                     new File(folder + document.getId()),
                     Charset.defaultCharset());
+            logger.info("[{}] saved in [{}]", document.getId(), this.folder);
         } catch (IOException e) {
             logger.error("Error when saving file {}", document.getId(), e);
             throw e;

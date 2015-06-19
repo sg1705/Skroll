@@ -12,9 +12,11 @@ var ToolbarModel = {
 	trainerToolbar: {
 		isTrainerMode: true,
 		isUpdateBNI: false,
-		isBenchmarkMode: false,
+		isBenchmark: false,
 		lastJson: "",
-		lastSelectedParaId: ''
+		lastSelectedParaId: '',
+		typeAError: 0,
+		typeBError: 0
 	},
 
 	toolbarInfo: {
