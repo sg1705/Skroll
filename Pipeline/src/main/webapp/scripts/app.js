@@ -59,3 +59,10 @@ angular.module('SkrollApp')
   		featureFlags.set(flags);
 		}
 	);
+
+angular.module('SkrollApp')
+.config(function($mdThemingProvider) {
+  $mdThemingProvider.theme('default-dark')
+  	.primaryPalette('blue')
+    .dark();
+});
