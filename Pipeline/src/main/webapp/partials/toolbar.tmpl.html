@@ -6,6 +6,9 @@
 
 		<h1>{{ctrl.toolbarInfo.title}}</h1>
 
+		<md-button>{{ctrl.trainerToolbar.typeAError}}</md-button>
+		<md-button>|</md-button>
+		<md-button>{{ctrl.trainerToolbar.typeBError}}</md-button>
 		<md-button feature-flag="trainer" ng-click="ctrl.showProbabilityDump()" aria-label="trainer">
 		  <md-icon md-svg-icon="images/icons/ic_insert_chart_24px.svg" ></md-icon>
 		</md-button>
@@ -43,7 +46,7 @@
 		</md-button>
 
 
-		<md-button feature-flag="trainer" ng-click="ctrl.updateModelByTrainer()" aria-label="annotation" ng-show="!ctrl.trainerToolbar.isBenchmarkMode">
+		<md-button feature-flag="trainer" ng-click="ctrl.updateModelByTrainer()" aria-label="annotation" ng-disabled="ctrl.trainerToolbar.isBenchmark">
 		  <md-icon md-svg-icon="images/icons/ic_visibility_24px.svg"></md-icon>
 		</md-button>
 	</div>

@@ -16,7 +16,6 @@ var ToolbarCtrl = function(ToolbarModel, documentService, documentModel, Selecti
 	this.documentModel = documentModel;
 	this.$mdSidenav = $mdSidenav;
 
-	var self = this;
 	//load google chart
 	//google.load("visualization", "1", {packages:["corechart"]});
 }
@@ -24,10 +23,10 @@ var ToolbarCtrl = function(ToolbarModel, documentService, documentModel, Selecti
 ToolbarCtrl.prototype.convertToBenchmark = function() {
 	console.log("need to call save benchmark");
 	this.documentModel.isProcessing = true;
+	var self = this;
 	this.documentService.saveAsBenchmark().then(function() {
-		console.log("successfully saved as benchmark");
 		documentModel.isProcessing = false;
-		self.trainerToolbar.isBenchmarkMode = true;
+		self.trainerToolbar.isBenchmark = true;
 	}, function(data, status) {
 		console.log(status);
 	});
