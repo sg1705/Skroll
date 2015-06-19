@@ -177,7 +177,11 @@ public class NodeTrainingHelperTest {
                 .createTrainingMultiplexNode(this.familyVariables,
                         parentNodes);
 
-        assert (node.getNodes().length == 1);
+        System.out.println(Arrays.toString(node.getNodes()[0].getParameters()));
+        System.out.println(Arrays.toString(node.getNodes()[1].getParameters()));
+        assert (node.getNodes().length == 2);
+        assert (Arrays.toString(node.getNodes()[0].getParameters()).equals("[0.1, 0.1]"));
+        assert (Arrays.toString(node.getNodes()[1].getParameters()).equals("[0.1, 0.1, 0.1, 0.1]"));
     }
 
     @Test
@@ -191,7 +195,11 @@ public class NodeTrainingHelperTest {
         catNode.setObservation(0);
         node.setObservation(1);
         NodeTrainingHelper.updateCount(node, 12.0);
-        assert (node.getNodes()[0].getParameter(3) == 12 + NodeTrainingHelper.PRIOR_COUNT);
+        System.out.println(Arrays.toString(node.getNodes()[0].getParameters()));
+        System.out.println(Arrays.toString(node.getNodes()[1].getParameters()));
+        assert (Arrays.toString(node.getNodes()[0].getParameters()).equals("[0.1, 12.1]"));
+        assert (Arrays.toString(node.getNodes()[1].getParameters()).equals("[0.1, 0.1, 0.1, 0.1]"));
+//        assert (node.getNodes()[0].getParameter(3) == 12 + NodeTrainingHelper.PRIOR_COUNT);
         NodeTrainingHelper.updateCount(node, -12.0);
         System.out.println("after update count by -12");
         System.out.println(node);
@@ -211,7 +219,11 @@ public class NodeTrainingHelperTest {
         catNode.setObservation(0);
         node.setObservation(1);
         NodeTrainingHelper.updateCount(node, 1.0);
-        assert (node.getNodes()[0].getParameter(3) == 1 + NodeTrainingHelper.PRIOR_COUNT);
+        System.out.println(Arrays.toString(node.getNodes()[0].getParameters()));
+        System.out.println(Arrays.toString(node.getNodes()[1].getParameters()));
+        assert (Arrays.toString(node.getNodes()[0].getParameters()).equals("[0.1, 1.1]"));
+        assert (Arrays.toString(node.getNodes()[1].getParameters()).equals("[0.1, 0.1, 0.1, 0.1]"));
+//        assert (node.getNodes()[0].getParameter(3) == 1 + NodeTrainingHelper.PRIOR_COUNT);
 
     }
 

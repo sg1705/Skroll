@@ -130,10 +130,16 @@ public class NodeInferenceHelper {
      */
     public static double[] updateMessageToSelectingNode(MultiplexNode multiNode, double[][] messages) {
         DiscreteNode[] nodes = multiNode.getNodes();
-        double[] newMessage = new double[nodes.length];
-        for (int n = 0; n < nodes.length; n++) {
-            newMessage[n] = sumOutOtherNodesWithObservationAndMessage(nodes[n], nodes[n].getParents()[0],
-                    messages[n], multiNode.getSelectingNode())[0];
+        int observedValue = multiNode.getObservation();
+        double[] newMessage = new double[nodes.length - 1];
+        // todo: for the none node in the multinode, should we pass message here for consistency, or just do it in the initial belief update?
+        for (int n = 1; n < nodes.length; n++) {
+            double[] parameters = nodes[n].getParameters();
+            newMessage[n - 1] = Math.exp(parameters[observedValue] + messages[n - 1][0]);
+            newMessage[n - 1] += Math.exp(parameters[observedValue + nodes[n].getVariable().getFeatureSize()] + messages[n - 1][1]);
+            newMessage[n - 1] = Math.log(newMessage[n - 1]);
+//            newMessage[n-1] = sumOutOtherNodesWithObservationAndMessage(nodes[n], nodes[n].getParents()[0],
+//                    messages[n-1], multiNode.getSelectingNode())[0];
         }
         return newMessage;
 
@@ -141,16 +147,16 @@ public class NodeInferenceHelper {
 
     public static double[][] updateMessagesFromSelectingNode(MultiplexNode multiNode, double[] messages) {
         DiscreteNode[] nodes = multiNode.getNodes();
-        double[][] newMessages = new double[nodes.length][2];
-        for (int n = 0; n < nodes.length; n++) {
-            int observedValue = multiNode.getObservation();
+        double[][] newMessages = new double[nodes.length - 1][2]; // the none node does not pass message
+        int observedValue = multiNode.getObservation();
+        for (int n = 1; n < nodes.length; n++) {
 
             // make use of the fact the parent var is binary.
-            newMessages[n][0] = nodes[n].getParameters()[observedValue];
-            newMessages[n][1] = nodes[n].getParameters()[observedValue + nodes[n].getVariable().getFeatureSize()];
+            newMessages[n - 1][0] = nodes[n].getParameters()[observedValue];
+            newMessages[n - 1][1] = nodes[n].getParameters()[observedValue + nodes[n].getVariable().getFeatureSize()];
 
-            newMessages[n][0] += messages[n];
-            newMessages[n][1] += messages[n];
+            newMessages[n - 1][0] += messages[n];
+            newMessages[n - 1][1] += messages[n];
         }
         return newMessages;
     }

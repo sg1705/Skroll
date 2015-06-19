@@ -125,12 +125,22 @@ public class NodeInferenceHelperTest {
 
     @Test
     public void testUpdateMessageToSelectingNode() throws Exception {
-
-
+        MultiplexNode pMultiNode = NodeInferenceHelper.createLogProbabilityMultiplexNode(tMultiNode, parentNodes);
+        pMultiNode.setObservation(1);
+        pMultiNode.getNodes()[1].setParameters(new double[]{1, 2, 3, 4});
+        double[] message = NodeInferenceHelper.updateMessageToSelectingNode(pMultiNode, new double[][]{{1, -1}});
+        System.out.println(Arrays.toString(message));
+        assert (Arrays.toString(message).equals("[3.6931471805599454]"));
     }
 
     @Test
     public void testUpdateMessagesFromSelectingNode() throws Exception {
+        MultiplexNode pMultiNode = NodeInferenceHelper.createLogProbabilityMultiplexNode(tMultiNode, parentNodes);
+        pMultiNode.setObservation(1);
+        pMultiNode.getNodes()[1].setParameters(new double[]{3, 4, 7, 8});
+        double[][] message = NodeInferenceHelper.updateMessagesFromSelectingNode(pMultiNode, new double[]{1, -1});
+        System.out.println(Arrays.deepToString(message));
+        assert (Arrays.deepToString(message).equals("[[3.0, 7.0]]"));
 
     }
 }
