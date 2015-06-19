@@ -22,13 +22,14 @@ import java.util.Map;
 public class ModelFactory {
     public static final Logger logger = LoggerFactory.getLogger(ModelFactory.class);
 
-    Configuration configuration = new Configuration();
+    Configuration configuration =new Configuration();
     protected String modelFolderName = configuration.get("modelFolder","/tmp");
     protected ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil(modelFolderName);
     protected  Map<Integer, TrainingDocumentAnnotatingModel> TrainingModelMap = new HashMap<>();
     protected  Map<Integer, ProbabilityDocumentAnnotatingModel> bniModelMap = new HashMap<>();
 
-    TrainingDocumentAnnotatingModel getTrainingModel(ModelRVSetting modelRVSetting) {
+
+        TrainingDocumentAnnotatingModel getTrainingModel(ModelRVSetting modelRVSetting) {
         if (TrainingModelMap.containsKey(modelRVSetting.getCategoryId())){
             return TrainingModelMap.get(modelRVSetting.getCategoryId());
         }
