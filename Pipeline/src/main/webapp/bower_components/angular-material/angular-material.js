@@ -11458,7 +11458,7 @@ function MdAutocomplete ($mdTheming, $mdUtil) {
       function getInputElement() {
         if (attr.mdFloatingLabel) {
           return '\
-            <md-input-container ng-if="floatingLabel">\
+            <md-input-container md-theme="default-dark" ng-if="floatingLabel">\
               <label>{{floatingLabel}}</label>\
               <input type="search"\
                   id="fl-input-{{$mdAutocompleteCtrl.id}}"\
@@ -11478,7 +11478,8 @@ function MdAutocomplete ($mdTheming, $mdUtil) {
             </md-input-container>';
         } else {
           return '\
-            <input type="search"\
+            <md-input-container md-theme="default-dark" md-no-float>\
+              <input type="search"\
                 id="input-{{$mdAutocompleteCtrl.id}}"\
                 name="{{name}}"\
                 ng-if="!floatingLabel"\
@@ -11494,7 +11495,8 @@ function MdAutocomplete ($mdTheming, $mdUtil) {
                 aria-autocomplete="list"\
                 aria-haspopup="true"\
                 aria-activedescendant=""\
-                aria-expanded="{{!$mdAutocompleteCtrl.hidden}}"/>';
+                aria-expanded="{{!$mdAutocompleteCtrl.hidden}}"/>\
+              </md-input-container>';
         }
       }
     }
