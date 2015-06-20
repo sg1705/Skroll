@@ -21,10 +21,10 @@ import java.util.List;
 /**
  * Created by saurabhagarwal on 6/13/15.
  */
-public class BenchmarkModel {
+public class ClassifierBenchmark {
 
     public static final Logger logger = LoggerFactory
-            .getLogger(BenchmarkModel.class);
+            .getLogger(ClassifierBenchmark.class);
 
     DocumentFactory documentFactory;
     List<Classifier> classifiers;
@@ -34,7 +34,7 @@ public class BenchmarkModel {
        Injector injector = Guice.createInjector(new SkrollGuiceModule());
         ClassifierFactory classifierFactory = injector.getInstance(ClassifierFactory.class);
         DocumentFactory documentFactory = injector.getInstance(BenchmarkFSDocumentFactoryImpl.class);
-        BenchmarkModel benchmark = new BenchmarkModel(documentFactory,classifierFactory.getClassifiers());
+        ClassifierBenchmark benchmark = new ClassifierBenchmark(documentFactory,classifierFactory.getClassifiers());
         QC qc = null;
         try {
             qc = benchmark.runQCOnBenchmarkFolder();
@@ -45,7 +45,7 @@ public class BenchmarkModel {
 
     }
 
-    public BenchmarkModel(DocumentFactory documentFactory, List<Classifier> classifiers ){
+    public ClassifierBenchmark(DocumentFactory documentFactory, List<Classifier> classifiers){
         this.documentFactory = documentFactory;
         this.classifiers = classifiers;
     }

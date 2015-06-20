@@ -2,8 +2,6 @@ package com.skroll.benchmark;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.skroll.benchmark.BenchmarkModel;
-import com.skroll.benchmark.QC;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.factory.BenchmarkFSDocumentFactoryImpl;
 import com.skroll.document.factory.DocumentFactory;
@@ -14,15 +12,15 @@ import org.junit.Test;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.fail;
 
-public class BenchmarkModelTest {
+public class ClassifierBenchmarkTest {
 
-    BenchmarkModel benchmark = null;
+    ClassifierBenchmark benchmark = null;
     @Before
     public void setup() throws Exception {
         Injector injector = Guice.createInjector(new SkrollTestGuiceModule());
         ClassifierFactory classifierFactory = injector.getInstance(ClassifierFactory.class);
         DocumentFactory documentFactory = injector.getInstance(BenchmarkFSDocumentFactoryImpl.class);
-        benchmark = new BenchmarkModel(documentFactory,classifierFactory.getClassifiers());
+        benchmark = new ClassifierBenchmark(documentFactory,classifierFactory.getClassifiers());
     }
     @Test
     public void testBenchmark(){
