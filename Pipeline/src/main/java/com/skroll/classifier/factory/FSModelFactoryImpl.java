@@ -23,8 +23,8 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
 
     protected String modelFolderName = null;
     protected ObjectPersistUtil objectPersistUtil = null;
-    protected  Map<Integer, TrainingDocumentAnnotatingModel> TrainingModelMap = new HashMap<>();
-    protected  Map<Integer, ProbabilityDocumentAnnotatingModel> bniModelMap = new HashMap<>();
+    protected  static Map<Integer, TrainingDocumentAnnotatingModel> TrainingModelMap = new HashMap<>();
+    protected  static Map<Integer, ProbabilityDocumentAnnotatingModel> bniModelMap = new HashMap<>();
 
 
     public TrainingDocumentAnnotatingModel getTrainingModel(ModelRVSetting modelRVSetting) {
@@ -75,8 +75,14 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
         return null;
     }
 
-    public void saveTrainingModel(ModelRVSetting modelRVSetting) throws ObjectPersistUtil.ObjectPersistException {
-        objectPersistUtil.persistObject(null, getTrainingModel(modelRVSetting), modelRVSetting.getCategoryName());
+    public void saveTrainingModel(ModelRVSetting modelRVSetting) throws Exception {
+        try {
+            objectPersistUtil.persistObject(null, getTrainingModel(modelRVSetting), modelRVSetting.getCategoryName());
+        } catch (ObjectPersistUtil.ObjectPersistException e) {
+            logger.error("failed to persist the model", e);
+            throw new Exception(e);
+
+        }
     }
 
     void printBelieves(ProbabilityDocumentAnnotatingModel model, Document doc ){

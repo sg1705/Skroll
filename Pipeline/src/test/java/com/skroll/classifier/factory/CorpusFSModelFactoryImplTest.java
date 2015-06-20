@@ -11,7 +11,6 @@ import com.skroll.document.Document;
 import com.skroll.parser.Parser;
 import com.skroll.pipeline.util.Constants;
 import com.skroll.util.Configuration;
-import com.skroll.util.ObjectPersistUtil;
 import com.skroll.util.SkrollTestGuiceModule;
 import com.skroll.util.TestConfiguration;
 import org.junit.Before;
@@ -70,7 +69,7 @@ public class CorpusFSModelFactoryImplTest {
     public void testSaveTrainingModel() throws Exception {
         try {
             factory.saveTrainingModel(new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME));
-        } catch (ObjectPersistUtil.ObjectPersistException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             fail("failed to persist the model");
         }

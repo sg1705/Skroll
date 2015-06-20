@@ -20,7 +20,6 @@ import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Constants;
 import com.skroll.pipeline.util.Utils;
 import com.skroll.util.Configuration;
-import com.skroll.util.ObjectPersistUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +57,7 @@ public class TOCTrainer {
         }
 
     }
-    public static void main(String[] args) throws IOException, ObjectPersistUtil.ObjectPersistException {
+    public static void main(String[] args) throws Exception {
 
         //ToDO: use the apache common commandline
         if (args[0].equals("--generateHRFs")) {
@@ -193,7 +192,7 @@ public class TOCTrainer {
         return doc;
     }
 
-    public static void  trainWithOverride(String folderName) throws IOException, ObjectPersistUtil.ObjectPersistException {
+    public static void  trainWithOverride(String folderName) throws IOException, Exception {
         FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(folderName));
             for (File f : iterable) {
                 if (f.isFile()) {

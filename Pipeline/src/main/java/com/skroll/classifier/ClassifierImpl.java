@@ -10,7 +10,6 @@ import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.ParserException;
 import com.skroll.parser.linker.DefinitionLinker;
-import com.skroll.util.ObjectPersistUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,7 +124,7 @@ public class ClassifierImpl implements Classifier {
     }
 
     @Override
-    public void persistModel() throws ObjectPersistUtil.ObjectPersistException {
+    public void persistModel() throws Exception {
         modelFactory.saveTrainingModel(modelRVSetting);
     }
 }

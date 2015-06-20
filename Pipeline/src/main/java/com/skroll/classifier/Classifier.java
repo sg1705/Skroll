@@ -3,7 +3,6 @@ package com.skroll.classifier;
 import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
-import com.skroll.util.ObjectPersistUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +39,6 @@ public interface Classifier {
 
     public List<Double> getProbabilityDataForDoc(Document doc);
 
-    public void persistModel() throws ObjectPersistUtil.ObjectPersistException;
+    public void persistModel() throws  Exception;
 
 }

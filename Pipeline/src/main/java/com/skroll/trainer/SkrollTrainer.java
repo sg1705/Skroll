@@ -70,6 +70,7 @@ public class SkrollTrainer {
         Document doc = documentFactory.get(preEvaluatedFile);
         //iterate over each paragraph
         if(doc== null){
+            logger.error("Document can't be parsed. failed to train the model");
             return;
         }
         for(CoreMap paragraph : doc.getParagraphs()) {
@@ -83,7 +84,7 @@ public class SkrollTrainer {
             classifierFactory.getClassifiers(doc).forEach(c -> {
                 try {
                     c.persistModel();
-                } catch (ObjectPersistUtil.ObjectPersistException e) {
+                } catch (Exception e) {
                     logger.error("Failed to persist classifier: %s"+ c.toString(), e);
                     e.printStackTrace();
                 }

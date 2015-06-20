@@ -18,13 +18,13 @@ import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.ParserException;
 import com.skroll.pipeline.util.Constants;
 import com.skroll.util.Configuration;
-import com.skroll.util.ObjectPersistUtil;
 import org.glassfish.jersey.media.multipart.BodyPart;
 import org.glassfish.jersey.media.multipart.BodyPartEntity;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
@@ -352,7 +352,7 @@ public class DocAPI {
             classifier.trainWithWeight(doc);
             try {
                 classifier.persistModel();
-            } catch (ObjectPersistUtil.ObjectPersistException e) {
+            } catch (Exception e) {
                 return logErrorResponse("Failed to persist the model:" + classifier.toString());
             }
         }
