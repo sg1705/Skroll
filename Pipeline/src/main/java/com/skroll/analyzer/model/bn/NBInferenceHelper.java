@@ -1,5 +1,7 @@
 package com.skroll.analyzer.model.bn;
 
+import com.skroll.analyzer.model.RandomVariable;
+import com.skroll.analyzer.model.bn.config.NBMNConfig;
 import com.skroll.analyzer.model.bn.node.*;
 
 import java.util.ArrayList;
@@ -62,6 +64,18 @@ public class NBInferenceHelper {
         return docFeatureNodes;
     }
 
+    static List<List<DiscreteNode>> createNBMNDocFeatureNodes(List<List<DiscreteNode>> trainingDocFeatureNodes) {
+        List<List<DiscreteNode>> docFeatureNodes = new ArrayList<>();
+        for (List<DiscreteNode> trainingNodesForOneFeature : trainingDocFeatureNodes) {
+            List<DiscreteNode> probNodes = new ArrayList<>();
+            for (DiscreteNode tNode : trainingNodesForOneFeature) {
+                probNodes.add(NodeInferenceHelper.createLogProbabilityDiscreteNode(tNode));
+            }
+            docFeatureNodes.add(probNodes);
+        }
+        return docFeatureNodes;
+    }
+
     static List<DiscreteNode> createFeatureExistAtDocLevelNodes(List<DiscreteNode> trainingFeatureExistAtDocLevelNodes,
                                                                 DiscreteNode categoryNode,
                                                                 List<DiscreteNode> docFeatureNodes){
@@ -78,7 +92,7 @@ public class NBInferenceHelper {
     public static NaiveBayesWithMultiNodes createLogProbNBMN(
             NaiveBayesWithMultiNodes tnbm) {
         DiscreteNode categoryNode = NodeInferenceHelper.createLogProbabilityDiscreteNode(tnbm.getCategoryNode());
-        List<DiscreteNode> docFeatureNodes = createDocFeatureNodes(tnbm.getDocumentFeatureNodes());
+        List<List<DiscreteNode>> docFeatureNodes = createNBMNDocFeatureNodes(tnbm.getDocumentFeatureNodes());
 
         return new NaiveBayesWithMultiNodes(
                 categoryNode,
@@ -93,12 +107,15 @@ public class NBInferenceHelper {
 
     static List<MultiplexNode> createMultiNodes(List<MultiplexNode> trainingFeatureExistAtDocLevelNodes,
                                                 DiscreteNode categoryNode,
-                                                List<DiscreteNode> docFeatureNodes) {
+                                                List<List<DiscreteNode>> docFeatureNodes) {
         List<MultiplexNode> multiplexNodes = new ArrayList<>();
         for (int i = 0; i < trainingFeatureExistAtDocLevelNodes.size(); i++) {
+            List<DiscreteNode> parentNodes = new ArrayList<>();
+            parentNodes.add(categoryNode);
+            parentNodes.addAll(docFeatureNodes.get(i));
             multiplexNodes.add(
                     NodeInferenceHelper.createLogProbabilityMultiplexNode(trainingFeatureExistAtDocLevelNodes.get(i),
-                            Arrays.asList(categoryNode, docFeatureNodes.get(i))));
+                            parentNodes));
         }
         return multiplexNodes;
     }

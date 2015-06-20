@@ -12,7 +12,7 @@ public class NBMNTuple {
     int categoryValue;
     int[] featureValues;
     int[] multiNodeValues;
-    int[] docFeatureValues;
+    int[][] docFeatureValues;
 
     public String[] getWords(int i) {
         return wordsList.get(i);
@@ -30,7 +30,7 @@ public class NBMNTuple {
         return multiNodeValues;
     }
 
-    public int[] getDocFeatureValues() {
+    public int[][] getDocFeatureValues() {
         return docFeatureValues;
     }
 
@@ -38,7 +38,7 @@ public class NBMNTuple {
         return wordsList;
     }
 
-    public NBMNTuple(List<String[]> words, int catgoryValue, int[] featureValues, int[] multiNodeValues, int[] docFeatureValues) {
+    public NBMNTuple(List<String[]> words, int catgoryValue, int[] featureValues, int[] multiNodeValues, int[][] docFeatureValues) {
         this.wordsList = words;
         this.categoryValue = catgoryValue;
         this.featureValues = featureValues;
@@ -55,7 +55,7 @@ public class NBMNTuple {
                 " words=\n  " + wordsListString +
                 ", featureValues=" + Arrays.toString(featureValues) +
                 ", multiNodeValues=" + Arrays.toString(multiNodeValues) +
-                ", docFeatureValues=" + Arrays.toString(docFeatureValues) +
+                ", docFeatureValues=" + Arrays.deepToString(docFeatureValues) +
 
                 '}';
     }

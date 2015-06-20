@@ -15,7 +15,8 @@ import java.util.List;
 public class NaiveBayesWithMultiNodes extends NaiveBayes {
 
     @JsonProperty("documentFeaturesNodes")
-    List<DiscreteNode> documentFeatureNodes;
+//    List<DiscreteNode> documentFeatureNodes;
+            List<List<DiscreteNode>> documentFeatureNodes; //indexed by feature number, category number.
     @JsonProperty("multiNodes")
     List<MultiplexNode> multiNodes;
 
@@ -25,11 +26,12 @@ public class NaiveBayesWithMultiNodes extends NaiveBayes {
             @JsonProperty("categoryNode") DiscreteNode categoryNode,
             @JsonProperty("featureNodes") List<DiscreteNode> featureNodes,
             @JsonProperty("multiNodes") List<MultiplexNode> multiNodes,
-            @JsonProperty("documentFeaturesNodes") List<DiscreteNode> docFeatureNodes,
+            @JsonProperty("documentFeaturesNodes") List<List<DiscreteNode>> docFeatureNodes,
             @JsonProperty("wordNodes") List<WordNode> wordNodes) {
         this.categoryNode = categoryNode;
         this.featureNodes = featureNodes;
         this.multiNodes = multiNodes;
+//        this.documentFeatureNodes = docFeatureNodes;
         this.documentFeatureNodes = docFeatureNodes;
         this.wordNodes = wordNodes;
         putAllDiscreteNodesInOneList();
@@ -49,9 +51,10 @@ public class NaiveBayesWithMultiNodes extends NaiveBayes {
     }
 
     @JsonIgnore
-    public void setDocFeatureObservation(int[] values) {
+    public void setDocFeatureObservation(int[][] values) {
         for (int i = 0; i < values.length; i++)
-            documentFeatureNodes.get(i).setObservation(values[i]);
+            for (int c = 0; c < values[0].length; c++)
+                documentFeatureNodes.get(i).get(c).setObservation(values[i][c]);
     }
 
 
@@ -71,12 +74,12 @@ public class NaiveBayesWithMultiNodes extends NaiveBayes {
     }
 
     @JsonIgnore
-    public List<DiscreteNode> getDocumentFeatureNodes() {
+    public List<List<DiscreteNode>> getDocumentFeatureNodes() {
         return documentFeatureNodes;
     }
 
     @JsonIgnore
-    public void setDocumentFeatureNodes(List<DiscreteNode> documentFeatureNodes) {
+    public void setDocumentFeatureNodes(List<List<DiscreteNode>> documentFeatureNodes) {
         this.documentFeatureNodes = documentFeatureNodes;
     }
 
@@ -107,7 +110,9 @@ public class NaiveBayesWithMultiNodes extends NaiveBayes {
 
     public boolean equals(NaiveBayesWithMultiNodes nb) {
         boolean isEquals = true;
-        isEquals = isEquals && DiscreteNode.compareDNList(this.documentFeatureNodes, nb.documentFeatureNodes);
+        for (int i = 0; i < documentFeatureNodes.size(); i++)
+            isEquals = isEquals && DiscreteNode.compareDNList(
+                    this.documentFeatureNodes.get(i), nb.documentFeatureNodes.get(i));
         return isEquals;
     }
 

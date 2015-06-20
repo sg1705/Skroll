@@ -72,18 +72,18 @@ public class ProbabilityDocumentAnnotatingModelTest {
             printDocBeliefs();
         }
         System.out.println("After passing messages :\n");
-        double[][] dBelieves = model.getDocumentFeatureBelief();
-        System.out.println(Arrays.toString(dBelieves[0]));
-        assert (Arrays.toString(dBelieves[0]).equals("[-222459.7349654401, 0.0]"));
+        double[][][] dBelieves = model.getDocumentFeatureBelief();
+        System.out.println(Arrays.deepToString(dBelieves[0]));
+        assert (Arrays.toString(dBelieves[0][0]).equals("[-222459.7349654401, 0.0]"));
     }
 
     void printDocBeliefs(){
         System.out.print("document level feature believes\n");
 //        System.out.println(model.DEFAULT_DOCUMENT_FEATURES);
         System.out.print(" " + model.getNbfcConfig().getDocumentFeatureVarList());
-        double[][] dBelieves = model.getDocumentFeatureBelief();
+        double[][][] dBelieves = model.getDocumentFeatureBelief();
         for (int i=0; i<dBelieves.length; i++){
-            System.out.println(Arrays.toString(dBelieves[i]));
+            System.out.println(Arrays.deepToString(dBelieves[i]));
         }
     }
 
@@ -91,9 +91,9 @@ public class ProbabilityDocumentAnnotatingModelTest {
         System.out.print("document level feature believes\n");
 //        System.out.println(model.DEFAULT_DOCUMENT_FEATURES);
         System.out.print(" " + model.getNbfcConfig().getDocumentFeatureVarList());
-        double[][] dBelieves = model.getDocumentFeatureProbabilities();
+        double[][][] dBelieves = model.getDocumentFeatureProbabilities();
         for (int i=0; i<dBelieves.length; i++){
-            System.out.println(Arrays.toString(dBelieves[i]));
+            System.out.println(Arrays.deepToString(dBelieves[i]));
         }
 
         List<CoreMap> paraList = doc.getParagraphs();

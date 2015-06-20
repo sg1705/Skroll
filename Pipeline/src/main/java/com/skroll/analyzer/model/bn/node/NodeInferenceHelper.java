@@ -135,12 +135,14 @@ public class NodeInferenceHelper {
         // todo: for the none node in the multinode, should we pass message here for consistency, or just do it in the initial belief update?
         for (int n = 1; n < nodes.length; n++) {
             double[] parameters = nodes[n].getParameters();
-            newMessage[n - 1] = Math.exp(parameters[observedValue] + messages[n - 1][0]);
-            newMessage[n - 1] += Math.exp(parameters[observedValue + nodes[n].getVariable().getFeatureSize()] + messages[n - 1][1]);
-            newMessage[n - 1] = Math.log(newMessage[n - 1]);
+            newMessage[n] = Math.exp(parameters[observedValue] + messages[n - 1][0]);
+            newMessage[n] += Math.exp(parameters[observedValue + nodes[n].getVariable().getFeatureSize()] + messages[n - 1][1]);
+            newMessage[n] = Math.log(newMessage[n - 1]);
 //            newMessage[n-1] = sumOutOtherNodesWithObservationAndMessage(nodes[n], nodes[n].getParents()[0],
 //                    messages[n-1], multiNode.getSelectingNode())[0];
         }
+
+        newMessage[0] = nodes[0].getParameter(observedValue);
         return newMessage;
 
     }

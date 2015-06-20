@@ -1,7 +1,9 @@
 package com.skroll.analyzer.model.applicationModel;
 
 import com.skroll.analyzer.data.NBFCData;
+import com.skroll.analyzer.data.NBMNData;
 import com.skroll.analyzer.model.bn.NaiveBayesWithFeatureConditions;
+import com.skroll.analyzer.model.bn.NaiveBayesWithMultiNodes;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -80,9 +82,9 @@ public class TrainingDocumentAnnotatingModelTest{
         Document doc = makeTrainingDoc(file);
 
         List<CoreMap> processedParas = DocProcessor.processParas(doc, maxNumWords);
-        NBFCData data = DocProcessor.getParaDataFromDoc(doc, processedParas, setting.getNbfcConfig());
+        NBMNData data = DocProcessor.getParaDataFromDoc(doc, processedParas, setting.getNbmnConfig());
         int[] docFeatureValues = DocProcessor.generateDocumentFeatures(
-                doc.getParagraphs(), data.getParaDocFeatures(), setting.getNbfcConfig());
+                doc.getParagraphs(), data.getParaDocFeatures(), setting.getNbmnConfig());
 
         System.out.println(Arrays.toString(docFeatureValues));
 
@@ -133,10 +135,6 @@ public class TrainingDocumentAnnotatingModelTest{
             System.err.println("Error reading file");
         }
         return null;
-    }
-
-    public NaiveBayesWithFeatureConditions getTnbf() {
-        return model.getTnbfModel();
     }
 
     public TrainingDocumentAnnotatingModel getModel() {

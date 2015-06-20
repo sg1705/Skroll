@@ -84,9 +84,9 @@ public class ModelFactory {
     void printBelieves(ProbabilityDocumentAnnotatingModel model, Document doc ){
         logger.trace("document level feature believes\n");
 
-        double[][] dBelieves = model.getDocumentFeatureBelief();
+        double[][][] dBelieves = model.getDocumentFeatureBelief();
         for (int i=0; i<dBelieves.length; i++){
-            logger.trace(Arrays.toString(dBelieves[i]));
+            logger.trace(Arrays.deepToString(dBelieves[i]));
         }
 
         List<CoreMap> paraList = doc.getParagraphs();

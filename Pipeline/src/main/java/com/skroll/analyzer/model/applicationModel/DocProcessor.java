@@ -1,11 +1,12 @@
 package com.skroll.analyzer.model.applicationModel;
 
 import com.skroll.analyzer.data.DocData;
-import com.skroll.analyzer.data.NBFCData;
+import com.skroll.analyzer.data.NBMNData;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
 import com.skroll.analyzer.model.bn.SimpleDataTuple;
-import com.skroll.analyzer.model.bn.config.NBFCConfig;
+import com.skroll.analyzer.model.bn.config.NBMNConfig;
+import com.skroll.analyzer.model.bn.config.NBMNConfig;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
@@ -19,7 +20,7 @@ import java.util.*;
 public class DocProcessor {
 
     static Map<Document, List<CoreMap>> processedParasMap = new HashMap<>();
-    static Map<String, NBFCData> processedDataMap = new HashMap<>();
+    static Map<String, NBMNData> processedDataMap = new HashMap<>();
 
     static List<CoreMap> processParas(Document doc, int numWordsToUse) {
 
@@ -99,7 +100,7 @@ public class DocProcessor {
 //     * @param config
 //     * @return
 //     */
-//    static DocData getDataFromDoc(List<CoreMap> originalParas, List<CoreMap> processedParas, NBFCConfig config) {
+//    static DocData getDataFromDoc(List<CoreMap> originalParas, List<CoreMap> processedParas, NBMNConfig config) {
 ////        DocData data = new DocData(doc, config);
 //        DocData data = new DocData();
 //        List<RandomVariable> features = config.getAllParagraphFeatures();
@@ -133,9 +134,9 @@ public class DocProcessor {
 //        return data;
 //    }
 //
-    static NBFCData getParaDataFromDoc(Document doc, List<CoreMap> processedParas, NBFCConfig config) {
+    static NBMNData getParaDataFromDoc(Document doc, List<CoreMap> processedParas, NBMNConfig config) {
         String key = doc.getId() + config.getAllParagraphFeatures();
-        NBFCData data = processedDataMap.get(key);
+        NBMNData data = processedDataMap.get(key);
         if (data != null) return data;
 
         List<CoreMap> originalParas = doc.getParagraphs();
@@ -146,8 +147,8 @@ public class DocProcessor {
     }
 
 
-    private static NBFCData getParaDataFromDoc(List<CoreMap> originalParas, List<CoreMap> processedParas, NBFCConfig config) {
-        NBFCData data = new NBFCData();
+    private static NBMNData getParaDataFromDoc(List<CoreMap> originalParas, List<CoreMap> processedParas, NBMNConfig config) {
+        NBMNData data = new NBMNData();
         data.setParaFeatures(getFeaturesVals(config.getFeatureVarList(), originalParas, processedParas));
         data.setParaDocFeatures(getFeaturesVals(config.getFeatureExistsAtDocLevelVarList(), originalParas, processedParas));
         data.setWordsLists(getWordsLists(config.getWordVarList(), processedParas));
@@ -161,7 +162,7 @@ public class DocProcessor {
     // also assumes that originalParas contains index annotation,
     // since observed paragraphs to be processed may not be all the paragraphs in the document.
     public static int[] generateDocumentFeatures(List<CoreMap> observedParas, int[][] allParaDocFeatures,
-                                                 NBFCConfig nbfcConfig) {
+                                                 NBMNConfig nbfcConfig) {
 
         int[] docFeatureValues = new int[nbfcConfig.getDocumentFeatureVarList().size()];
 
@@ -178,7 +179,7 @@ public class DocProcessor {
     }
 
 //    public static int[] generateDocumentFeatures(List<CoreMap> originalParas, List<CoreMap> processedParagraphs,
-//                                                 NBFCConfig nbfcConfig) {
+//                                                 NBMNConfig nbfcConfig) {
 //
 //        int[] docFeatureValues = new int[nbfcConfig.getDocumentFeatureVarList().size()];
 //
