@@ -148,3 +148,17 @@ sk-lhs .menu-list.ng-hide {
  line-height: 1;
  margin:0px;
 }
+
+
+/**
+* search
+**/
+
+md-toolbar md-autocomplete.md-default-dark-theme {
+  background: none;
+  box-shadow: none
+}
+
+md-toolbar md-autocomplete md-input-container.md-default-dark-theme .md-input {
+    text-shadow: none;
+}
