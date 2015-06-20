@@ -69,6 +69,9 @@ public class SkrollTrainer {
     public  void trainFileUsingTrainingWeight (String preEvaluatedFile) throws Exception {
         Document doc = documentFactory.get(preEvaluatedFile);
         //iterate over each paragraph
+        if(doc== null){
+            return;
+        }
         for(CoreMap paragraph : doc.getParagraphs()) {
             if (paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)) {
                 TrainingWeightAnnotationHelper.clearOldTrainingWeight(paragraph);
@@ -76,8 +79,8 @@ public class SkrollTrainer {
         }
         final Document finalDoc = doc;
         try {
-            classifierFactory.getClassifier(doc).forEach(c -> c.trainWithWeight(finalDoc));
-            classifierFactory.getClassifier(doc).forEach(c -> {
+            classifierFactory.getClassifiers(doc).forEach(c -> c.trainWithWeight(finalDoc));
+            classifierFactory.getClassifiers(doc).forEach(c -> {
                 try {
                     c.persistModel();
                 } catch (ObjectPersistUtil.ObjectPersistException e) {

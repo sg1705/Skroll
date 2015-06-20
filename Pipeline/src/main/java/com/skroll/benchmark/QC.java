@@ -1,4 +1,4 @@
-package com.skroll.trainer;
+package com.skroll.benchmark;
 
 import com.skroll.classifier.Category;
 

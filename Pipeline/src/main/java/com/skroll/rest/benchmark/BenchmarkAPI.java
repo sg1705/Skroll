@@ -1,9 +1,9 @@
 package com.skroll.rest.benchmark;
 
 import com.google.gson.GsonBuilder;
+import com.skroll.benchmark.BenchmarkModel;
+import com.skroll.benchmark.QC;
 import com.skroll.document.Document;
-import com.skroll.trainer.BenchmarkModel;
-import com.skroll.trainer.QC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +15,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.HashMap;
+import java.util.Map;
 
 @Path("/doc")
 public class BenchmarkAPI {
@@ -69,8 +71,12 @@ public class BenchmarkAPI {
             e.printStackTrace();
             return logErrorResponse("getBenchmarkScore failed: +" + e);
         }
-        String qcJson = new GsonBuilder().create().toJson(qc);
-        return Response.ok().status(Response.Status.OK).entity(qcJson).build();
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("qc", qc);
+        resultMap.put("isFileBenchmarked", false);
+        resultMap.put("isFileTrained", false);
+        String resultJson = new GsonBuilder().create().toJson(resultMap);
+        return Response.ok().status(Response.Status.OK).entity(resultJson).build();
     }
 
 }

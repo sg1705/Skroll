@@ -47,6 +47,7 @@ public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory {
             }
             try {
                 doc = JsonDeserializer.fromJson(jsonString);
+                doc.setId(documentId);
             } catch (Exception e) {
                 logger.error("[{}] cannot be parsed", documentId);
                 return null;
@@ -110,7 +111,7 @@ public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory {
 
     }
     @Override
-    public List<String> getDocLists() throws Exception {
+    public List<String> getDocumentIds() throws Exception {
         FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(this.folder));
         List<String> docLists = new ArrayList<String>();
         for (File f : iterable) {

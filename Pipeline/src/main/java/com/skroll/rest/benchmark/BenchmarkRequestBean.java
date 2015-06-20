@@ -6,7 +6,6 @@ import com.skroll.document.Document;
 import com.skroll.document.factory.BenchmarkFSDocumentFactory;
 import com.skroll.document.factory.DocumentFactory;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Cookie;
@@ -52,7 +51,7 @@ public class BenchmarkRequestBean {
             this.document = documentFactory.get(documentId);
         }
 
-        this.classifiers = classifierFactory.getClassifier(this.document);
+        this.classifiers = classifierFactory.getClassifiers(this.document);
         this.documentFactory = documentFactory;
     }
 

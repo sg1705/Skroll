@@ -1,11 +1,13 @@
-package com.skroll.trainer;
+package com.skroll.benchmark;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.skroll.benchmark.BenchmarkModel;
+import com.skroll.benchmark.QC;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.factory.BenchmarkFSDocumentFactoryImpl;
 import com.skroll.document.factory.DocumentFactory;
-import com.skroll.rest.APITestGuiceModule;
+import com.skroll.util.SkrollTestGuiceModule;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,13 +19,13 @@ public class BenchmarkModelTest {
     BenchmarkModel benchmark = null;
     @Before
     public void setup() throws Exception {
-        Injector injector = Guice.createInjector(new APITestGuiceModule());
+        Injector injector = Guice.createInjector(new SkrollTestGuiceModule());
         ClassifierFactory classifierFactory = injector.getInstance(ClassifierFactory.class);
         DocumentFactory documentFactory = injector.getInstance(BenchmarkFSDocumentFactoryImpl.class);
-        benchmark = new BenchmarkModel(documentFactory,classifierFactory.getClassifier());
+        benchmark = new BenchmarkModel(documentFactory,classifierFactory.getClassifiers());
     }
     @Test
-    public void TestBenchmark(){
+    public void testBenchmark(){
 
         try {
 
@@ -37,7 +39,7 @@ public class BenchmarkModelTest {
         }
     }
     @Test
-    public void TestBenchmarkFolder(){
+    public void testBenchmarkFolder(){
 
         try {
             QC qc = benchmark.runQCOnBenchmarkFolder();

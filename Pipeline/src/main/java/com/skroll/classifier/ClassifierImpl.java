@@ -1,6 +1,7 @@
 package com.skroll.classifier;
 
 import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
+import com.skroll.classifier.factory.ModelFactory;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.Token;

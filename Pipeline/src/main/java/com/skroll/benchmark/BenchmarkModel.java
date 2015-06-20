@@ -1,4 +1,4 @@
-package com.skroll.trainer;
+package com.skroll.benchmark;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -34,7 +34,7 @@ public class BenchmarkModel {
        Injector injector = Guice.createInjector(new SkrollGuiceModule());
         ClassifierFactory classifierFactory = injector.getInstance(ClassifierFactory.class);
         DocumentFactory documentFactory = injector.getInstance(BenchmarkFSDocumentFactoryImpl.class);
-        BenchmarkModel benchmark = new BenchmarkModel(documentFactory,classifierFactory.getClassifier());
+        BenchmarkModel benchmark = new BenchmarkModel(documentFactory,classifierFactory.getClassifiers());
         QC qc = null;
         try {
             qc = benchmark.runQCOnBenchmarkFolder();
@@ -108,7 +108,7 @@ public class BenchmarkModel {
     }
     public QC runQCOnBenchmarkFolder() throws Exception {
         QC qc = new QC();
-        List<String> docLists = documentFactory.getDocLists();
+        List<String> docLists = documentFactory.getDocumentIds();
         for (String docName : docLists) {
                 qc = runQCForBenchmark(docName, qc);
         }

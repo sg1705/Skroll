@@ -20,7 +20,7 @@ public class BenchmarkAPITest extends APITest {
 
         String response = webTarget.request(MediaType.APPLICATION_JSON).cookie(new NewCookie("documentId", documentId)).get(String.class);
         logger.debug("Here is the response: " + response);
-        assert(response.contains("benchmark file is stored"));
+        assert(response.contains("benchmark file"));
         client.close();
     }
 
@@ -47,6 +47,7 @@ public class BenchmarkAPITest extends APITest {
         WebTarget webTarget = client.target(TARGET_URL);
         String response = webTarget.request().get(String.class);
         logger.debug("Here is the response: "+response);
+        assert(response.contains("{\"stats\":[{\"categoyId\""));
     }
 
 

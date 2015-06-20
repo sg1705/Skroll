@@ -39,5 +39,5 @@ public interface DocumentFactory {
      * return the list of document names in corpus.
      * @throws Exception
      */
-    List<String> getDocLists() throws Exception;
+    List<String> getDocumentIds() throws Exception;
 }
