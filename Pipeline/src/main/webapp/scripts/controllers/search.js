@@ -14,7 +14,16 @@ TODO hacks for search
 Commented line-height and height for the .md-autocomplete-suggestions style
 
 2. angular-material.js
-Added scrolling in updateScroll method in MdAutocompleteCtrl 
+Added scrolling in updateScroll method in MdAutocompleteCtrl
+
+There are four hacks in angularjs-material
+
+a) handleQuery() method sets a max-width to 270px
+b) updateScroll() add an action to scroll to paragraph
+c) angular-material.css; commented height: 450px
+d) angular-material.js changed the height section.. commented some assumptions about height
+c) angular-material.js .. added <md-input-container> to md-autocomplete directive
+   with default-dark theme
 
 3. start.html points to non-minified versions of angular-material
 

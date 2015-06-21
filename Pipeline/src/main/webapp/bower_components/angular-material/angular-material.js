@@ -10991,7 +10991,11 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $timeout, $
         root   = elements.root.getBoundingClientRect(),
         top    = vrect.bottom - root.top,
         bot    = root.bottom - vrect.top,
-        left   = hrect.left - root.left,
+        //start hack
+        //set left to 0
+        left = 0,
+        //left   = hrect.left - root.left,
+        //end hack
         width  = hrect.width,
         styles = {
           left:     left + 'px',
@@ -11454,7 +11458,10 @@ function MdAutocomplete ($mdTheming, $mdUtil) {
             : '';
 
       }
-
+      //start hack here
+      // added a theme to input-container
+      // also added input container
+      //end hack
       function getInputElement() {
         if (attr.mdFloatingLabel) {
           return '\
