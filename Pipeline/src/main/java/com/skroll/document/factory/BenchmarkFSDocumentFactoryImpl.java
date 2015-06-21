@@ -16,4 +16,5 @@ public class BenchmarkFSDocumentFactoryImpl extends
         this.folder = configuration.get("benchmarkFolder");
     }
 
+
 }

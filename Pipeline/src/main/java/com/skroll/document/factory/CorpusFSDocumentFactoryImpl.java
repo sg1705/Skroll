@@ -1,6 +1,7 @@
 package com.skroll.document.factory;
 
 import com.skroll.util.Configuration;
+
 import javax.inject.Inject;
 
 /**

@@ -1,8 +1,6 @@
 package com.skroll.rest.benchmark;
 
 import com.skroll.rest.APITest;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import javax.ws.rs.client.Client;
@@ -10,8 +8,6 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
-
-import static org.junit.Assert.*;
 
 public class BenchmarkAPITest extends APITest {
 
@@ -24,7 +20,7 @@ public class BenchmarkAPITest extends APITest {
 
         String response = webTarget.request(MediaType.APPLICATION_JSON).cookie(new NewCookie("documentId", documentId)).get(String.class);
         logger.debug("Here is the response: " + response);
-        assert(response.contains("benchmark file is stored"));
+        assert(response.contains("benchmark file"));
         client.close();
     }
 
@@ -42,7 +38,17 @@ public class BenchmarkAPITest extends APITest {
             client.close();
             throw new Exception();
         }
-
     }
+
+    @Test
+    public void testGetBenchmarkScore() throws Exception {
+        String TARGET_URL = "http://localhost:8888/restServices/doc/getBenchmarkScore";
+        Client client = ClientBuilder.newClient();
+        WebTarget webTarget = client.target(TARGET_URL);
+        String response = webTarget.request().get(String.class);
+        logger.debug("Here is the response: "+response);
+        assert(response.contains("{\"stats\":[{\"categoyId\""));
+    }
+
 
 }

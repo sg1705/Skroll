@@ -1,6 +1,7 @@
 package com.skroll.classifier;
 
 import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
+import com.skroll.classifier.factory.ModelFactory;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.Token;
@@ -9,7 +10,6 @@ import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.ParserException;
 import com.skroll.parser.linker.DefinitionLinker;
-import com.skroll.util.ObjectPersistUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -124,7 +124,7 @@ public class ClassifierImpl implements Classifier {
     }
 
     @Override
-    public void persistModel() throws ObjectPersistUtil.ObjectPersistException {
+    public void persistModel() throws Exception {
         modelFactory.saveTrainingModel(modelRVSetting);
     }
 }
