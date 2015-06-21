@@ -53,6 +53,16 @@ public class DocumentHelper {
         }
         return false;
     }
+    public static boolean isObserved(Document document) {
+        if(document==null) return false;
+        for (CoreMap para : document.getParagraphs()) {
+            if (DocumentHelper.isObserved(para)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static boolean startsWithQuote(CoreMap coreMap) {
         if (coreMap.containsKey(CoreAnnotations.StartsWithQuote.class)) {
             return coreMap.get(CoreAnnotations.StartsWithQuote.class);

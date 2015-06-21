@@ -39,6 +39,11 @@ public class CorpusFSDocumentFactoryImplTest {
     }
 
     @Test
+    public void testIsDocumentExist() throws Exception {
+        assert (factory.isDocumentExist("d629534d10k.htm"));
+    }
+
+    @Test
     public void testGet() throws Exception {
         Document doc = factory.get("d629534d10k.htm");
         assert (doc != null);
