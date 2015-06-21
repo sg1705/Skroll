@@ -125,10 +125,7 @@ public class DocAPI {
     @Produces(MediaType.APPLICATION_JSON)
     public Response importDoc(@QueryParam("documentId") String documentId, @Context HttpHeaders hh, @BeanParam RequestBean request) throws Exception {
         Document document = null;
-        long startTime = System.currentTimeMillis();
-        //fetch the document
-        String content = Resources.asCharSource(new URL(documentId), Charset.forName("UTF-8")).read();
-        logger.info("[{}]ms to fetch document", (System.currentTimeMillis() - startTime));
+        String content = DocumentHelper.fetchHtml(documentId);
         String fileName = new URL(documentId).getPath();
         String[] strs = fileName.split("/");
         int lastIndexOfSlash = documentId.lastIndexOf('/');
