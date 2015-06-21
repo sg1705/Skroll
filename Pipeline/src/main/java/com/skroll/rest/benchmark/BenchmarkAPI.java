@@ -55,8 +55,7 @@ public class BenchmarkAPI {
             logErrorResponse("Failed to store the benchmark file: {}", e);
         }
         logger.debug("benchmark file {} is stored..", documentId);
-        //return Response.ok().status(Response.Status.OK).entity("{'ok': 'benchmark file is stored'}").build();
-        return Response.ok().status(Response.Status.OK).entity("").build();
+        return Response.ok().status(Response.Status.OK).entity("benchmark file is stored").build();
     }
 
     @GET
