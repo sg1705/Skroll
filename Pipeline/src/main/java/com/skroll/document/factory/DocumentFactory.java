@@ -40,4 +40,10 @@ public interface DocumentFactory {
      * @throws Exception
      */
     List<String> getDocumentIds() throws Exception;
+
+    /**
+     * Check if the document exist in corpus.
+     * @throws Exception
+     */
+    boolean isDocumentExist(String documentId) throws Exception;
 }

@@ -4,6 +4,7 @@ import com.skroll.classifier.Classifier;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.Document;
 import com.skroll.document.factory.BenchmarkFSDocumentFactory;
+import com.skroll.document.factory.CorpusFSDocumentFactory;
 import com.skroll.document.factory.DocumentFactory;
 import javax.inject.Inject;
 import javax.ws.rs.QueryParam;
@@ -22,7 +23,8 @@ public class BenchmarkRequestBean {
     private String documentId;
     private Document document;
     private List<Classifier> classifiers;
-    private DocumentFactory documentFactory;
+    private DocumentFactory benchmarkDocumentFactory;
+    private DocumentFactory corpusDocumentFactory;
 
     public String getDocumentId() {
         return documentId;
@@ -35,7 +37,8 @@ public class BenchmarkRequestBean {
     @Inject
     public BenchmarkRequestBean(@QueryParam("documentId") String documentId,
                                 @Context HttpHeaders hh,
-                                @BenchmarkFSDocumentFactory DocumentFactory documentFactory,
+                                @BenchmarkFSDocumentFactory DocumentFactory benchmarkDocumentFactory,
+                                @CorpusFSDocumentFactory DocumentFactory corpusDocumentFactory,
                                 ClassifierFactory classifierFactory) throws Exception {
 
         if(documentId == null) {
@@ -48,15 +51,17 @@ public class BenchmarkRequestBean {
         if (documentId != null) {
             //fetch it from factory
             this.documentId = documentId;
-            this.document = documentFactory.get(documentId);
+            this.document = benchmarkDocumentFactory.get(documentId);
         }
 
         this.classifiers = classifierFactory.getClassifiers(this.document);
-        this.documentFactory = documentFactory;
+        this.benchmarkDocumentFactory = benchmarkDocumentFactory;
+        this.corpusDocumentFactory = corpusDocumentFactory;
     }
 
     public List<Classifier> getClassifiers() {
         return classifiers;
     }
-    public DocumentFactory getDocumentFactory() { return documentFactory;}
+    public DocumentFactory getBenchmarkDocumentFactory() { return benchmarkDocumentFactory;}
+    public DocumentFactory getCorpusDocumentFactory() { return corpusDocumentFactory;}
 }

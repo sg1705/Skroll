@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder;
 import com.skroll.benchmark.ClassifierBenchmark;
 import com.skroll.benchmark.QC;
 import com.skroll.document.Document;
+import com.skroll.document.DocumentHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +51,7 @@ public class BenchmarkAPI {
             return logErrorResponse("document cannot be found for document id: " + documentId);
         }
         try {
-            request.getDocumentFactory().saveDocument(doc);
+            request.getBenchmarkDocumentFactory().saveDocument(doc);
         } catch (Exception e) {
             logErrorResponse("Failed to store the benchmark file: {}", e);
         }
@@ -62,18 +63,34 @@ public class BenchmarkAPI {
     @Path("/getBenchmarkScore")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getBenchmarkScore(@BeanParam BenchmarkRequestBean request) {
-        ClassifierBenchmark classifierBenchmark = new ClassifierBenchmark(request.getDocumentFactory(), request.getClassifiers());
-        QC qc = null;
+        ClassifierBenchmark classifierBenchmark = new ClassifierBenchmark(request.getBenchmarkDocumentFactory(), request.getClassifiers());
+        logger.info("Document Id: {}" ,request.getDocumentId());
+        QC qc;
         try {
             qc = classifierBenchmark.runQCOnBenchmarkFolder();
         } catch (Exception e) {
             e.printStackTrace();
             return logErrorResponse("getBenchmarkScore failed: +" + e);
         }
+        boolean isFileBenchmarked = false;
+        boolean isFileTrained = false;
+        try {
+            isFileBenchmarked = request.getBenchmarkDocumentFactory().isDocumentExist(request.getDocumentId());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            if (request.getCorpusDocumentFactory().isDocumentExist(request.getDocumentId())) {
+                isFileTrained = DocumentHelper.isObserved(request.getCorpusDocumentFactory().get(request.getDocumentId()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("qc", qc);
-        resultMap.put("isFileBenchmarked", false);
-        resultMap.put("isFileTrained", false);
+        resultMap.put("isFileBenchmarked", isFileBenchmarked);
+        resultMap.put("isFileTrained", isFileTrained);
         String resultJson = new GsonBuilder().create().toJson(resultMap);
         return Response.ok().status(Response.Status.OK).entity(resultJson).build();
     }

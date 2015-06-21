@@ -28,7 +28,18 @@ public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory {
     protected Configuration configuration;
     protected String folder;
 
-
+    @Override
+    public boolean isDocumentExist(String documentId) throws Exception {
+        if (documents.containsKey(documentId)) {
+            return true;
+        } else {
+            File file = new File(folder + documentId);
+            if(file.exists()){
+                return true;
+            }
+        }
+        return false;
+    }
     @Override
     public Document get(String documentId) throws Exception {
         Document doc;

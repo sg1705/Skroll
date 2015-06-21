@@ -110,6 +110,7 @@ public class ClassifierBenchmark {
         QC qc = new QC();
         List<String> docLists = documentFactory.getDocumentIds();
         for (String docName : docLists) {
+                logger.info("Running Benchmark on the file: {}", docName);
                 qc = runQCForBenchmark(docName, qc);
         }
         qc.calculateQCScore();

@@ -45,9 +45,11 @@ public class BenchmarkAPITest extends APITest {
         String TARGET_URL = "http://localhost:8888/restServices/doc/getBenchmarkScore";
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
-        String response = webTarget.request().get(String.class);
-        logger.debug("Here is the response: "+response);
+        String response = webTarget.request().cookie(new NewCookie("documentId", "d629534d10k.htm")).get(String.class);
+        logger.info("Here is the response: " + response);
         assert(response.contains("{\"stats\":[{\"categoyId\""));
+        // test setup upload
+        assert(response.contains("{\"isFileBenchmarked\":true"));
     }
 
 
