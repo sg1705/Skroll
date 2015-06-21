@@ -91,7 +91,7 @@ angular.module('SkrollApp')
           deferred.reject(msg);
         })
       return deferred.promise;
-    }
+    };
 
     /**
      * Saves current document in benchmark
@@ -100,6 +100,25 @@ angular.module('SkrollApp')
       var deferred = $q.defer();
       /** make a get request */
       $http.get(documentServiceBase + 'saveBenchmarkFile' + '?documentId=' + documentModel.documentId)
+        .success(function(data) {
+          deferred.resolve(data);
+        })
+        .error(function(msg, code) {
+          deferred.reject(msg);
+          $log.error(msg, code);
+        });;
+      /** done with get request */
+      return deferred.promise;
+    };
+
+
+    /**
+     * Get benchmark score
+     */
+    this.getBenchmarkScore = function() {
+      var deferred = $q.defer();
+      /** make a get request */
+      $http.get(documentServiceBase + 'getBenchmarkScore')
         .success(function(data) {
           deferred.resolve(data);
         })

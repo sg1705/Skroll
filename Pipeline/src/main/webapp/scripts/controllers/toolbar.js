@@ -33,8 +33,6 @@ ToolbarCtrl.prototype.convertToBenchmark = function() {
 	this.documentModel.isProcessing = false;
 }
 
-
-
 ToolbarCtrl.prototype.toggleTrainerMode = function() {
 	ToolbarModel.trainerToolbar.isTrainerMode = !ToolbarModel.trainerToolbar.isTrainerMode;
 }
