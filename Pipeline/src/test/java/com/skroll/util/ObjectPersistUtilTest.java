@@ -1,9 +1,12 @@
 package com.skroll.util;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.skroll.analyzer.model.applicationModel.DefModelRVSetting;
 import com.skroll.analyzer.model.applicationModel.TrainingDocumentAnnotatingModel;
 import com.skroll.classifier.Category;
-import com.skroll.classifier.ModelFactory;
+import com.skroll.classifier.factory.ModelFactory;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,9 +16,21 @@ import static org.junit.Assert.fail;
 public class ObjectPersistUtilTest {
     public static final Logger logger = LoggerFactory
             .getLogger(ObjectPersistUtilTest.class);
+    ModelFactory modelFactory;
+    @Before
+    public void setup(){
+        try {
+            Injector injector = Guice.createInjector(new SkrollTestGuiceModule());
+            modelFactory = injector.getInstance(ModelFactory.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
     @Test
     public void testPersistReadObject() throws Exception {
-        ModelFactory modelFactory = new ModelFactory();
+
         TrainingDocumentAnnotatingModel model = modelFactory.createModel(new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME));
 
         ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil("/tmp");

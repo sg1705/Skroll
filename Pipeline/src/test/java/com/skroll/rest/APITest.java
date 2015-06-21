@@ -3,11 +3,10 @@ package com.skroll.rest;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.Key;
 import com.skroll.document.Document;
-import com.skroll.document.factory.CorpusFSDocumentFactory;
 import com.skroll.document.factory.CorpusFSDocumentFactoryImpl;
 import com.skroll.document.factory.DocumentFactory;
+import com.skroll.util.SkrollTestGuiceModule;
 import com.skroll.util.Configuration;
 import com.skroll.util.TestConfiguration;
 import org.glassfish.jersey.media.multipart.MultiPart;
@@ -33,7 +32,7 @@ import java.io.File;
 public class APITest {
     public static final Logger logger = LoggerFactory.getLogger(DocAPITest.class);
 
-    WebServer jettyServer = new WebServer(8888, new APITestGuiceModule());
+    WebServer jettyServer = new WebServer(8888, new SkrollTestGuiceModule());
     protected String documentId = null;
 
     protected DocumentFactory factory;

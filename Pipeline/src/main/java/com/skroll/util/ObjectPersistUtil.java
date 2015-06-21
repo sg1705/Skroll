@@ -3,6 +3,7 @@ package com.skroll.util;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.io.Files;
 import com.skroll.analyzer.model.applicationModel.TrainingDocumentAnnotatingModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,10 +34,11 @@ public class ObjectPersistUtil {
             file.delete();
         }
         try {
+            Files.createParentDirs(file);
             f_out = new FileOutputStream(objectPersistFolder + "/" + objectName);
             logger.info("writing object to file: " + objectPersistFolder + "/" + objectName);
 
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             throw new ObjectPersistException("Folder to persist are not accessible. Check the directory where the file are getting persisted:");
 

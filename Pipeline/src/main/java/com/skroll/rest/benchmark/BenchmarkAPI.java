@@ -1,12 +1,22 @@
 package com.skroll.rest.benchmark;
 
-import com.skroll.document.*;
+import com.google.gson.GsonBuilder;
+import com.skroll.benchmark.ClassifierBenchmark;
+import com.skroll.benchmark.QC;
+import com.skroll.document.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.ws.rs.*;
-import javax.ws.rs.core.*;
+import javax.ws.rs.BeanParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.util.HashMap;
+import java.util.Map;
 
 @Path("/doc")
 public class BenchmarkAPI {
@@ -45,8 +55,27 @@ public class BenchmarkAPI {
             logErrorResponse("Failed to store the benchmark file: {}", e);
         }
         logger.debug("benchmark file {} is stored..", documentId);
-        //return Response.ok().status(Response.Status.OK).entity("{'ok': 'benchmark file is stored'}").build();
-        return Response.ok().status(Response.Status.OK).entity("").build();
+        return Response.ok().status(Response.Status.OK).entity("benchmark file is stored").build();
+    }
+
+    @GET
+    @Path("/getBenchmarkScore")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getBenchmarkScore(@BeanParam BenchmarkRequestBean request) {
+        ClassifierBenchmark classifierBenchmark = new ClassifierBenchmark(request.getDocumentFactory(), request.getClassifiers());
+        QC qc = null;
+        try {
+            qc = classifierBenchmark.runQCOnBenchmarkFolder();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return logErrorResponse("getBenchmarkScore failed: +" + e);
+        }
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("qc", qc);
+        resultMap.put("isFileBenchmarked", false);
+        resultMap.put("isFileTrained", false);
+        String resultJson = new GsonBuilder().create().toJson(resultMap);
+        return Response.ok().status(Response.Status.OK).entity(resultJson).build();
     }
 
 }

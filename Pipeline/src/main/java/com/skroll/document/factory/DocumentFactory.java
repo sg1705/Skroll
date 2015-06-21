@@ -2,6 +2,8 @@ package com.skroll.document.factory;
 
 import com.skroll.document.Document;
 
+import java.util.List;
+
 /**
  * Operations performed on a document factory.
  * Factories can be of many types - FileSystem (FS) or a Service based
@@ -32,4 +34,10 @@ public interface DocumentFactory {
      * @throws Exception
      */
     void saveDocument(Document document) throws Exception;
+
+    /**
+     * return the list of document names in corpus.
+     * @throws Exception
+     */
+    List<String> getDocumentIds() throws Exception;
 }

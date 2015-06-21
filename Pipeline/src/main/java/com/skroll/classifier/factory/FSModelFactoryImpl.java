@@ -1,4 +1,4 @@
-package com.skroll.classifier;
+package com.skroll.classifier.factory;
 
 import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
 import com.skroll.analyzer.model.applicationModel.ProbabilityDocumentAnnotatingModel;
@@ -6,7 +6,6 @@ import com.skroll.analyzer.model.applicationModel.TrainingDocumentAnnotatingMode
 import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
-import com.skroll.util.Configuration;
 import com.skroll.util.ObjectPersistUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,22 +18,21 @@ import java.util.Map;
 /**
  * Created by saurabhagarwal on 4/25/15.
  */
-public class ModelFactory {
-    public static final Logger logger = LoggerFactory.getLogger(ModelFactory.class);
+public abstract class FSModelFactoryImpl implements ModelFactory {
+    public static final Logger logger = LoggerFactory.getLogger(FSModelFactoryImpl.class);
 
-    Configuration configuration = new Configuration();
-    protected String modelFolderName = configuration.get("modelFolder","/tmp");
-    protected ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil(modelFolderName);
-    protected  Map<Integer, TrainingDocumentAnnotatingModel> TrainingModelMap = new HashMap<>();
-    protected  Map<Integer, ProbabilityDocumentAnnotatingModel> bniModelMap = new HashMap<>();
+    protected String modelFolderName = null;
+    protected ObjectPersistUtil objectPersistUtil = null;
+    protected  static Map<Integer, TrainingDocumentAnnotatingModel> TrainingModelMap = new HashMap<>();
+    protected  static Map<Integer, ProbabilityDocumentAnnotatingModel> bniModelMap = new HashMap<>();
 
-    TrainingDocumentAnnotatingModel getTrainingModel(ModelRVSetting modelRVSetting) {
+
+    public TrainingDocumentAnnotatingModel getTrainingModel(ModelRVSetting modelRVSetting) {
         if (TrainingModelMap.containsKey(modelRVSetting.getCategoryId())){
             return TrainingModelMap.get(modelRVSetting.getCategoryId());
         }
         return createModel(modelRVSetting);
     }
-
 
     public TrainingDocumentAnnotatingModel createModel(ModelRVSetting modelRVSetting) {
         TrainingDocumentAnnotatingModel localTrainingModel = null;
@@ -57,7 +55,7 @@ public class ModelFactory {
         return localTrainingModel;
     }
 
-    ProbabilityDocumentAnnotatingModel createBNIModel(ModelRVSetting modelRVSetting, Document document) {
+    public ProbabilityDocumentAnnotatingModel createBNIModel(ModelRVSetting modelRVSetting, Document document) {
 
         TrainingDocumentAnnotatingModel tmpModel = createModel(modelRVSetting);
         tmpModel.updateWithDocumentAndWeight(document);
@@ -70,15 +68,21 @@ public class ModelFactory {
         return bniModel;
     }
 
-    ProbabilityDocumentAnnotatingModel getBNIModel(ModelRVSetting modelRVSetting) {
+    public ProbabilityDocumentAnnotatingModel getBNIModel(ModelRVSetting modelRVSetting) {
         if (bniModelMap.containsKey(modelRVSetting.getCategoryId())){
             return bniModelMap.get(modelRVSetting.getCategoryId());
         }
         return null;
     }
 
-    public void saveTrainingModel(ModelRVSetting modelRVSetting) throws ObjectPersistUtil.ObjectPersistException {
-        objectPersistUtil.persistObject(null, getTrainingModel(modelRVSetting), modelRVSetting.getCategoryName());
+    public void saveTrainingModel(ModelRVSetting modelRVSetting) throws Exception {
+        try {
+            objectPersistUtil.persistObject(null, getTrainingModel(modelRVSetting), modelRVSetting.getCategoryName());
+        } catch (ObjectPersistUtil.ObjectPersistException e) {
+            logger.error("failed to persist the model", e);
+            throw new Exception(e);
+
+        }
     }
 
     void printBelieves(ProbabilityDocumentAnnotatingModel model, Document doc ){
