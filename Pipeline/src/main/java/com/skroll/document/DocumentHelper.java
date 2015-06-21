@@ -1,10 +1,13 @@
 package com.skroll.document;
 
+import com.google.common.io.Resources;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.Parser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -166,6 +169,14 @@ public class DocumentHelper {
         }
         //looks good
         return true;
+    }
+
+    public static String fetchHtml(String url) throws Exception {
+        long startTime = System.currentTimeMillis();
+        //fetch the document
+        String content = Resources.asCharSource(new URL(url), Charset.forName("UTF-8")).read();
+        logger.info("[{}]ms to fetch document", (System.currentTimeMillis() - startTime));
+        return content;
     }
 
 }

@@ -57,14 +57,6 @@ public class JsonDeserializer {
                 target=element.getAsString();
                 counter++;
             }
-            if(key.equals("source")){
-                source = element.getAsString();
-                counter++;
-            }
-            if(key.equals("id")){
-                id = element.getAsString();
-                counter++;
-            }
             if (key.equals("map")) {
                 //it is a coremap
                 //let's start
@@ -80,8 +72,6 @@ public class JsonDeserializer {
             return null;
         }
         document.setTarget(target);
-        document.setSource(source);
-        document.setId(id);
         return document;
     }
 

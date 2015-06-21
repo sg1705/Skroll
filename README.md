@@ -5,9 +5,22 @@
 git clone https://github.com/sg1705/Skroll
 gradlew compileJava
 gradlew trainWithOverride
-gradlew appStart
+gradlew start
+```
 
+## How to train from command line
+
+```
 gradlew trainWithWeight
+```
+
+## How to run benchmark from command line
+
+```
+gradlew runBenchmark
+```
+
+
 
 ## How run Skroll in AWS
 
@@ -29,4 +42,4 @@ sudo apt-get install git
 git clone https://github.com/sg1705/Skroll
 sudo apt-get install phantomjs
 cd Skroll
-./gradlew appStart
+./gradlew start
