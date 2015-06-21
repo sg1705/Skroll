@@ -16,7 +16,8 @@ var ToolbarModel = {
 		lastJson: "",
 		lastSelectedParaId: '',
 		typeAError: 0,
-		typeBError: 0
+		typeBError: 0,
+		benchmarkScore: ''
 	},
 
 	toolbarInfo: {
@@ -31,12 +32,23 @@ var ToolbarModel = {
 	enableBenchmarkMode: function() {
 		this.trainerToolbar.isTrainerMode = false;
 		this.benchmarkToolbar.isBenchMarkMode = true;
+	},
+
+	updateBenchmark: function(documentService) {
+	    console.log("fetching score");
+	    var self = this;
+	    documentService.getBenchmarkScore().then(function(benchmarkScore){
+	      self.trainerToolbar.benchmarkScore = benchmarkScore;
+	      console.log(benchmarkScore);	      
+	      self.trainerToolbar.typeAError = benchmarkScore.qc.stats[1].type1Error;
+	      self.trainerToolbar.typeBError = benchmarkScore.qc.stats[1].type2Error;
+	    });                
 	}
 
 };
 
 
 angular.module('SkrollApp')
-	.factory('ToolbarModel', function() {
+	.factory('ToolbarModel', ['documentService', function(documentService) {
 		return ToolbarModel;
-	});
+	}]);

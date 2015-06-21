@@ -18,6 +18,8 @@ var ViewPortCtrl = function(SelectionModel, documentService, $mdBottomSheet,
   this.documentModel = documentModel;
   this.documentModel.documentId = $routeParams.docId;
   this.SelectionModel.serializedSelection = decodeURIComponent(decodeURIComponent($routeParams.linkId));
+
+  
 }
 
 ViewPortCtrl.prototype.mouseDown = function($event) {
@@ -205,11 +207,14 @@ ViewPortCtrl.prototype.handleTrainerParaSelection = function(paraId) {
 */
 ViewPortCtrl.prototype.updateDocument = function(contentHtml) {
   //$("#content").html(contentHtml);
+  var self = this;
   this.documentService.getTerms().then(function(terms){
     LHSModel.setTerms(terms);
     console.log("Terms return by API");
     console.log(terms);
     documentModel.isProcessing = false;
+    //fetch score
+    self.ToolbarModel.updateBenchmark(self.documentService);
   }, function(data, status){
     console.log(status);
   });
