@@ -86,19 +86,21 @@ public class NodeTrainingHelper {
      * and parents size should be at least 2.
      *
      * @param randomVariables
-     * @param parents
+     * @param selectingNode
      * @return
      */
     public static MultiplexNode createTrainingMultiplexNode(List<RandomVariable> randomVariables,
+                                                            DiscreteNode selectingNode,
                                                             List<DiscreteNode> parents) {
-        MultiplexNode multiNode = new MultiplexNode(parents.toArray(new DiscreteNode[parents.size()]));
+        MultiplexNode multiNode = new MultiplexNode(selectingNode);
         DiscreteNode[] nodes = new DiscreteNode[parents.size()];
 
         // first node represent none. It has no parents.
-        nodes[0] = createTrainingDiscreteNode(Arrays.asList(randomVariables.get(0)));
-        for (int n = 1; n < parents.size(); n++) {
+//        nodes[0] = createTrainingDiscreteNode(Arrays.asList(randomVariables.get(0)));
+        for (int n = 0; n < parents.size(); n++) {
             nodes[n] = createTrainingDiscreteNode(
-                    Arrays.asList(randomVariables.get(0), randomVariables.get(n + 1)), Arrays.asList(parents.get(n)));
+                    // the second family variable starts at index 2 to skip the node var and the category var.
+                    Arrays.asList(randomVariables.get(0), randomVariables.get(n + 2)), Arrays.asList(parents.get(n)));
         }
         multiNode.setNodes(nodes);
 

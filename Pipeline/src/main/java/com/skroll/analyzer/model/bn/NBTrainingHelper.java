@@ -158,9 +158,9 @@ public class NBTrainingHelper {
 
             List<DiscreteNode> parentNodes = new ArrayList<>();
             parentNodes.add(categoryNode);
-            parentNodes.addAll(docFeatureNodes.get(i));
+//            parentNodes.addAll(docFeatureNodes.get(i));
 
-            nodes.add(NodeTrainingHelper.createTrainingMultiplexNode(familyVars, parentNodes));
+            nodes.add(NodeTrainingHelper.createTrainingMultiplexNode(familyVars, categoryNode, docFeatureNodes.get(i)));
         }
         return nodes;
 

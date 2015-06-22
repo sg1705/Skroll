@@ -107,12 +107,14 @@ public class NodeInferenceHelper {
         return sumOutOtherNodesWithObservation(node, node.getParentNodeIndex(parentNode) + 1);
     }
 
-    public static MultiplexNode createLogProbabilityMultiplexNode(MultiplexNode trainingNode, List<DiscreteNode> parents) {
-        MultiplexNode multiNode = new MultiplexNode(parents.toArray(new DiscreteNode[parents.size()]));
+    public static MultiplexNode createLogProbabilityMultiplexNode(MultiplexNode trainingNode,
+                                                                  DiscreteNode selectingNode,
+                                                                  List<DiscreteNode> parents) {
+        MultiplexNode multiNode = new MultiplexNode(selectingNode);
         DiscreteNode[] tNodes = trainingNode.getNodes();
         DiscreteNode[] nodes = new DiscreteNode[tNodes.length];
-        nodes[0] = NodeInferenceHelper.createLogProbabilityDiscreteNode(tNodes[0]);
-        for (int n = 1; n < nodes.length; n++) {
+//        nodes[0] = NodeInferenceHelper.createLogProbabilityDiscreteNode(tNodes[0]);
+        for (int n = 0; n < nodes.length; n++) {
             nodes[n] = NodeInferenceHelper.createLogProbabilityDiscreteNode(tNodes[n], Arrays.asList(parents.get(n)));
         }
         multiNode.setNodes(nodes);
@@ -131,34 +133,33 @@ public class NodeInferenceHelper {
     public static double[] updateMessageToSelectingNode(MultiplexNode multiNode, double[][] messages) {
         DiscreteNode[] nodes = multiNode.getNodes();
         int observedValue = multiNode.getObservation();
-        double[] newMessage = new double[nodes.length - 1];
+        double[] newMessage = new double[nodes.length];
         // todo: for the none node in the multinode, should we pass message here for consistency, or just do it in the initial belief update?
-        for (int n = 1; n < nodes.length; n++) {
+        for (int n = 0; n < nodes.length; n++) {
             double[] parameters = nodes[n].getParameters();
-            newMessage[n] = Math.exp(parameters[observedValue] + messages[n - 1][0]);
-            newMessage[n] += Math.exp(parameters[observedValue + nodes[n].getVariable().getFeatureSize()] + messages[n - 1][1]);
-            newMessage[n] = Math.log(newMessage[n - 1]);
+            newMessage[n] = Math.exp(parameters[observedValue] + messages[n][0]);
+            newMessage[n] += Math.exp(parameters[observedValue + nodes[n].getVariable().getFeatureSize()] + messages[n][1]);
+            newMessage[n] = Math.log(newMessage[n]);
 //            newMessage[n-1] = sumOutOtherNodesWithObservationAndMessage(nodes[n], nodes[n].getParents()[0],
 //                    messages[n-1], multiNode.getSelectingNode())[0];
         }
 
-        newMessage[0] = nodes[0].getParameter(observedValue);
         return newMessage;
 
     }
 
     public static double[][] updateMessagesFromSelectingNode(MultiplexNode multiNode, double[] messages) {
         DiscreteNode[] nodes = multiNode.getNodes();
-        double[][] newMessages = new double[nodes.length - 1][2]; // the none node does not pass message
+        double[][] newMessages = new double[nodes.length][2]; // the none node does not pass message
         int observedValue = multiNode.getObservation();
-        for (int n = 1; n < nodes.length; n++) {
+        for (int n = 0; n < nodes.length; n++) {
 
             // make use of the fact the parent var is binary.
-            newMessages[n - 1][0] = nodes[n].getParameters()[observedValue];
-            newMessages[n - 1][1] = nodes[n].getParameters()[observedValue + nodes[n].getVariable().getFeatureSize()];
+            newMessages[n][0] = nodes[n].getParameters()[observedValue];
+            newMessages[n][1] = nodes[n].getParameters()[observedValue + nodes[n].getVariable().getFeatureSize()];
 
-            newMessages[n - 1][0] += messages[n];
-            newMessages[n - 1][1] += messages[n];
+            newMessages[n][0] += messages[n];
+            newMessages[n][1] += messages[n];
         }
         return newMessages;
     }

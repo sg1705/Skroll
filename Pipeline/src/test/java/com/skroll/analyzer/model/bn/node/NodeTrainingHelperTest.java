@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model.bn.node;
 
 import com.skroll.analyzer.model.RandomVariable;
+import com.skroll.analyzer.model.applicationModel.randomVariables.RVCreater;
 import com.skroll.analyzer.model.bn.NBMNTuple;
 import com.skroll.analyzer.model.bn.NBTrainingHelper;
 import org.junit.Before;
@@ -18,11 +19,18 @@ public class NodeTrainingHelperTest {
     private DiscreteNode parentNode = NodeTrainingHelper.createTrainingDiscreteNode(Arrays.asList(parentVar));
     private RandomVariable var = new RandomVariable(2, "paraIsBold");
 
+    private List<List<RandomVariable>> nbmnDocFeature = RVCreater.createNBMNDocFeatureRVs(Arrays.asList(var), catVar, parentVar.getName());
+    private List<DiscreteNode> nbmnParentNodes = Arrays.asList(
+            NodeTrainingHelper.createTrainingDiscreteNode(Arrays.asList(nbmnDocFeature.get(0).get(0))),
+            NodeTrainingHelper.createTrainingDiscreteNode(Arrays.asList(nbmnDocFeature.get(0).get(1))));
+
     private List<DiscreteNode> parentNodes = Arrays.asList(catNode, parentNode);
     private RandomVariable[] parentVariables = new RandomVariable[]{catVar, parentVar};
 
     //    private List<RandomVariable> nodeVariables = Arrays.asList(var, catVar, parentVar);
     private List<RandomVariable> familyVariables = Arrays.asList(var, catVar, parentVar);
+    private List<RandomVariable> nbmnFamilyVariables = new ArrayList(Arrays.asList(var, catVar));
+
     private double[] parameters = {NodeTrainingHelper.PRIOR_COUNT, NodeTrainingHelper.PRIOR_COUNT,
                 NodeTrainingHelper.PRIOR_COUNT, NodeTrainingHelper.PRIOR_COUNT,};
 
@@ -37,6 +45,7 @@ public class NodeTrainingHelperTest {
         wNode = NodeTrainingHelper.createTrainingWordNode(parentNode);
         wNode.getParent().setObservation(1);
         wNode.setObservation(new String[]{observedString});
+        nbmnFamilyVariables.addAll(nbmnDocFeature.get(0));
     }
 
 
@@ -174,31 +183,38 @@ public class NodeTrainingHelperTest {
     @Test
     public void testCreateTrainingMultiplexNode() throws Exception {
         MultiplexNode node = NodeTrainingHelper
-                .createTrainingMultiplexNode(this.familyVariables,
-                        parentNodes);
+                .createTrainingMultiplexNode(this.nbmnFamilyVariables, catNode,
+                        nbmnParentNodes);
 
         System.out.println(Arrays.toString(node.getNodes()[0].getParameters()));
         System.out.println(Arrays.toString(node.getNodes()[1].getParameters()));
         assert (node.getNodes().length == 2);
-        assert (Arrays.toString(node.getNodes()[0].getParameters()).equals("[0.1, 0.1]"));
+        assert (Arrays.toString(node.getNodes()[0].getParameters()).equals("[0.1, 0.1, 0.1, 0.1]"));
         assert (Arrays.toString(node.getNodes()[1].getParameters()).equals("[0.1, 0.1, 0.1, 0.1]"));
     }
 
     @Test
     public void testUpdateMultiNodeCount() throws Exception {
+
         MultiplexNode node = NodeTrainingHelper
-                .createTrainingMultiplexNode(this.familyVariables,
-                        parentNodes);
+                .createTrainingMultiplexNode(this.nbmnFamilyVariables, catNode, nbmnParentNodes);
 
-
-        parentNode.setObservation(1);
+        nbmnParentNodes.get(0).setObservation(0);
+        nbmnParentNodes.get(1).setObservation(1);
         catNode.setObservation(0);
         node.setObservation(1);
         NodeTrainingHelper.updateCount(node, 12.0);
         System.out.println(Arrays.toString(node.getNodes()[0].getParameters()));
         System.out.println(Arrays.toString(node.getNodes()[1].getParameters()));
-        assert (Arrays.toString(node.getNodes()[0].getParameters()).equals("[0.1, 12.1]"));
+        assert (Arrays.toString(node.getNodes()[0].getParameters()).equals("[0.1, 12.1, 0.1, 0.1]"));
         assert (Arrays.toString(node.getNodes()[1].getParameters()).equals("[0.1, 0.1, 0.1, 0.1]"));
+
+        catNode.setObservation(1);
+        NodeTrainingHelper.updateCount(node, 12.0);
+        assert (Arrays.toString(node.getNodes()[0].getParameters()).equals("[0.1, 12.1, 0.1, 0.1]"));
+        assert (Arrays.toString(node.getNodes()[1].getParameters()).equals("[0.1, 0.1, 0.1, 12.1]"));
+
+
 //        assert (node.getNodes()[0].getParameter(3) == 12 + NodeTrainingHelper.PRIOR_COUNT);
         NodeTrainingHelper.updateCount(node, -12.0);
         System.out.println("after update count by -12");
@@ -210,18 +226,19 @@ public class NodeTrainingHelperTest {
 
     @Test
     public void testUpdateMultiNodeCountWithDefaultWeight() throws Exception {
+
+
         MultiplexNode node = NodeTrainingHelper
-                .createTrainingMultiplexNode(this.familyVariables,
-                        parentNodes);
+                .createTrainingMultiplexNode(this.nbmnFamilyVariables, catNode, nbmnParentNodes);
 
-
-        parentNode.setObservation(1);
+        nbmnParentNodes.get(0).setObservation(0);
+        nbmnParentNodes.get(1).setObservation(1);
         catNode.setObservation(0);
         node.setObservation(1);
         NodeTrainingHelper.updateCount(node, 1.0);
         System.out.println(Arrays.toString(node.getNodes()[0].getParameters()));
         System.out.println(Arrays.toString(node.getNodes()[1].getParameters()));
-        assert (Arrays.toString(node.getNodes()[0].getParameters()).equals("[0.1, 1.1]"));
+        assert (Arrays.toString(node.getNodes()[0].getParameters()).equals("[0.1, 1.1, 0.1, 0.1]"));
         assert (Arrays.toString(node.getNodes()[1].getParameters()).equals("[0.1, 0.1, 0.1, 0.1]"));
 //        assert (node.getNodes()[0].getParameter(3) == 1 + NodeTrainingHelper.PRIOR_COUNT);
 

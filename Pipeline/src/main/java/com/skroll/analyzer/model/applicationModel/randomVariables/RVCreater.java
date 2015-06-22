@@ -54,7 +54,7 @@ public class RVCreater {
         List<List<RandomVariable>> docFeatures = new ArrayList<>();
         for (RandomVariable feature : paraDocFeatures) {
             List<RandomVariable> docFeaturesForOneFeature = new ArrayList<>();
-            for (int c = 1; c < category.getFeatureSize(); c++) {
+            for (int c = 0; c < category.getFeatureSize(); c++) {
                 docFeaturesForOneFeature.add(new RandomVariable(2, name + "_" + c + "_" + feature.getName()));
             }
             docFeatures.add(docFeaturesForOneFeature);

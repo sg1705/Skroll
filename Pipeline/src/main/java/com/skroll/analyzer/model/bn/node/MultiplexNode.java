@@ -29,12 +29,14 @@ public class MultiplexNode {
     /**
      * this constructor assumes the 1st parent is the selectingNode.
      *
-     * @param parents
+//     * @param parents
      */
-    public MultiplexNode(DiscreteNode[] parents) {
-        selectingNode = parents[0];
+//    public MultiplexNode(DiscreteNode[] parents) {
+//        selectingNode = parents[0];
+//    }
+    public MultiplexNode(DiscreteNode selectingNode) {
+       this.selectingNode = selectingNode;
     }
-
     @JsonCreator
     public MultiplexNode(
             @JsonProperty("nodes") DiscreteNode[] nodes,

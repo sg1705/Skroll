@@ -102,9 +102,9 @@ public class DocProcessorTest {
     public void testGenerateDocumentFeatures() throws Exception {
         List<CoreMap> processedParas = DocProcessor.processParas(doc, maxNumWords);
         NBMNData data = DocProcessor.getParaDataFromDoc(doc, processedParas, setting.getNbmnConfig());
-        int[] docFeatureVals = DocProcessor.generateDocumentFeatures(
+        int[][] docFeatureVals = DocProcessor.generateDocumentFeatures(
                 doc.getParagraphs(), data.getParaDocFeatures(), setting.getNbmnConfig());
-        System.out.println(Arrays.toString(docFeatureVals));
+        System.out.println(Arrays.deepToString(docFeatureVals));
         assert (docFeatureVals.length == 1);
     }
 

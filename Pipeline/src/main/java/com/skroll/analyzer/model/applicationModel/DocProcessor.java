@@ -161,18 +161,24 @@ public class DocProcessor {
     // this method is assuming all the doc features are binary
     // also assumes that originalParas contains index annotation,
     // since observed paragraphs to be processed may not be all the paragraphs in the document.
-    public static int[] generateDocumentFeatures(List<CoreMap> observedParas, int[][] allParaDocFeatures,
-                                                 NBMNConfig nbfcConfig) {
+    public static int[][] generateDocumentFeatures(List<CoreMap> observedParas, int[][] allParaDocFeatures,
+                                                   NBMNConfig nbmnConfig) {
 
-        int[] docFeatureValues = new int[nbfcConfig.getDocumentFeatureVarList().size()];
+        RandomVariable categoryVar = nbmnConfig.getCategoryVar();
+        int numCategories = categoryVar.getFeatureSize();
+        int[][] docFeatureValues = new int[nbmnConfig.getDocumentFeatureVarList().size()][numCategories];
 
-        Arrays.fill(docFeatureValues, 1);
+        for (int[] vals : docFeatureValues)
+            Arrays.fill(vals, 1);
         for (int p = 0; p < observedParas.size(); p++) {
             CoreMap paragraph = observedParas.get(p);
+            int categoryValue = RVValues.getValue(categoryVar, observedParas.get(p));
             int paraIndex = paragraph.get(CoreAnnotations.IndexInteger.class);
             for (int f = 0; f < docFeatureValues.length; f++) {
-                if (RVValues.getValue(nbfcConfig.getCategoryVar(), observedParas.get(p)) == 1)
-                    docFeatureValues[f] &= allParaDocFeatures[paraIndex][f];
+                docFeatureValues[f][categoryValue] &= allParaDocFeatures[paraIndex][f];
+//                for (int c=0; c<numCategories; c++)
+//                    if (RVValues.getValue(categoryVar, observedParas.get(p)) == 1)
+//                        docFeatureValues[f][c] &= allParaDocFeatures[paraIndex][f];
             }
         }
         return docFeatureValues;

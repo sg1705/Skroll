@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skroll.analyzer.data.NBMNData;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
-import com.skroll.analyzer.model.bn.NBTrainingHelper;
-import com.skroll.analyzer.model.bn.NaiveBayesWithFeatureConditions;
-import com.skroll.analyzer.model.bn.NaiveBayesWithMultiNodes;
-import com.skroll.analyzer.model.bn.SimpleDataTuple;
+import com.skroll.analyzer.model.bn.*;
 import com.skroll.analyzer.model.bn.config.NBFCConfig;
 import com.skroll.analyzer.model.bn.config.NBMNConfig;
 import com.skroll.analyzer.model.bn.inference.BNInference;
@@ -165,7 +162,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 //        List<CoreMap> originalParas = doc.getParagraphs();
         List<CoreMap> observedParas = DocumentHelper.getObservedParagraphs(originalParas);
 
-        int[] docFeatures = DocProcessor.generateDocumentFeatures(observedParas, data.getParaDocFeatures(), nbmnConfig);
+        int[][] docFeatures = DocProcessor.generateDocumentFeatures(observedParas, data.getParaDocFeatures(), nbmnConfig);
         int[][] paraFeatures = data.getParaFeatures();
         int[][] paraDocFeatures = data.getParaDocFeatures();
         List<String[]>[] wordsList = data.getWordsLists();
@@ -175,8 +172,10 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
             double[] weights = getTrainingWeights(op);
             int numCategories = nbmnConfig.getCategoryVar().getFeatureSize();
             for (int c = 0; c < numCategories; c++) {
-                int[] values = concatIntArrays(new int[]{c}, paraFeatures[i], paraDocFeatures[i], docFeatures);
-                NBTrainingHelper.addSample(tnbmModel, new SimpleDataTuple(wordsList[i], values), weights[c]);
+//                int[] values = concatIntArrays(new int[]{c}, paraFeatures[i], paraDocFeatures[i], docFeatures);
+//                NBTrainingHelper.addSample(tnbmModel, new NBMNTuple(wordsList[i], values), weights[c]);
+                NBTrainingHelper.addSample(tnbmModel, new NBMNTuple(
+                        wordsList[i], c, paraFeatures[i], paraDocFeatures[i], docFeatures), weights[c]);
             }
 
             updateHMMWithParagraph(originalParas.get(i), processedParas.get(i));
@@ -198,7 +197,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     }
 
     public void updateWithDocument(List<CoreMap> originalParas, List<CoreMap> processedParas, NBMNData data) {
-        int[] docFeatures = DocProcessor.generateDocumentFeatures(originalParas, data.getParaDocFeatures(), nbmnConfig);
+        int[][] docFeatures = DocProcessor.generateDocumentFeatures(originalParas, data.getParaDocFeatures(), nbmnConfig);
         for (int p = 0; p < originalParas.size(); p++) {
             CoreMap oPara = originalParas.get(p);
             CoreMap pPara = processedParas.get(p);
@@ -209,9 +208,11 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
                     ParaProcessor.getFeatureVals(nbmnConfig.getFeatureExistsAtDocLevelVarList(), opParas);
             List<String[]> wordsList = ParaProcessor.getWordsList(nbmnConfig.getWordVarList(), pPara);
 
-            int[] values = concatIntArrays(new int[]{categoryValue}, paraFeatures, paraDocFeatures, docFeatures);
+//            int[] values = concatIntArrays(new int[]{categoryValue}, paraFeatures, paraDocFeatures, docFeatures);
 
-            NBTrainingHelper.addSample(tnbmModel, new SimpleDataTuple(wordsList, values));
+            NBTrainingHelper.addSample(tnbmModel, new NBMNTuple(
+                    wordsList, categoryValue, paraFeatures, paraDocFeatures, docFeatures));
+//            NBTrainingHelper.addSample(tnbmModel, new NBMNTuple(wordsList, values));
 
             updateHMMWithParagraph(oPara, pPara);
         }

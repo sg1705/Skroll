@@ -111,11 +111,12 @@ public class NBInferenceHelper {
         List<MultiplexNode> multiplexNodes = new ArrayList<>();
         for (int i = 0; i < trainingFeatureExistAtDocLevelNodes.size(); i++) {
             List<DiscreteNode> parentNodes = new ArrayList<>();
-            parentNodes.add(categoryNode);
-            parentNodes.addAll(docFeatureNodes.get(i));
+//            parentNodes.add(categoryNode);
+//            parentNodes.addAll(docFeatureNodes.get(i));
             multiplexNodes.add(
                     NodeInferenceHelper.createLogProbabilityMultiplexNode(trainingFeatureExistAtDocLevelNodes.get(i),
-                            parentNodes));
+                            categoryNode,
+                            docFeatureNodes.get(i)));
         }
         return multiplexNodes;
     }
