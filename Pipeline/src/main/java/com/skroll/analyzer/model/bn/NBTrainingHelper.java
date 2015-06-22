@@ -71,7 +71,10 @@ public class NBTrainingHelper {
         }
 
         for (MultiplexNode node : bn.getMultiNodes()) {
-            NodeTrainingHelper.updateCount(node);
+            DiscreteNode activeNode = node.getActiveNode();
+            DiscreteNode activeParent = node.getActiveNode().getParents()[0];
+            NodeTrainingHelper.updateCount(activeNode, weight);
+            NodeTrainingHelper.updateCount(activeParent, weight);
         }
 
         for (WordNode node : bn.getWordNodes()) {

@@ -113,7 +113,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
                 new double[numParagraphs][docFeatures.size()][getParaCategory().getFeatureSize()][2];
         messagesToParagraphCategory = new double[numParagraphs][paraDocFeatures.size()][2];
         paragraphCategoryBelief = new double[numParagraphs][2];
-        documentFeatureBelief = new double[docFeatures.size()][paraDocFeatures.size()][2];
+        documentFeatureBelief = new double[docFeatures.size()][getParaCategory().getFeatureSize()][2];
 
         // compute initial beliefs
         List<List<DiscreteNode>> docFeatureNodes = lpnbmModel.getDocumentFeatureNodes();
@@ -146,7 +146,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
             lpnbmModel.setWordsObservation(ParaProcessor.getWordsList(
                     nbmnConfig.getWordVarList(), processedParagraphs.get(p)));
             lpnbmModel.setParaFeatureObservation(paraFeatures);
-            lpnbmModel.setMultiNodesObservation(allParaDocFeatures[p]);
+//            lpnbmModel.setMultiNodesObservation(allParaDocFeatures[p]);
             paragraphCategoryBelief[p] = categoryNode.getParameters().clone();
             for (int i=0; i<fnl.size(); i++){
                 double[] message = NodeInferenceHelper.sumOutOtherNodesWithObservation(fnl.get(i), categoryNode);
@@ -178,10 +178,11 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
             for (int f = 0; f < nbmnConfig.getFeatureExistsAtDocLevelVarList().size(); f++) {
                 double[][] messageFromDocFeature = documentFeatureBelief[f].clone();
-                for (int i = 0; i < messageFromDocFeature.length; i++) {
-                    for (int c = 1; c < getParaCategory().getFeatureSize(); c++) { //skip none at index 0
-                        messageFromDocFeature[i][c - 1] -= messagesToDocumentFeature[p][f][i][c];
-                    }
+//                for (int i = 0; i < messageFromDocFeature.length; i++) {
+                for (int c = 0; c < getParaCategory().getFeatureSize(); c++) { //skip none at index 0
+                    for (int b = 0; b <= 1; b++)
+                        messageFromDocFeature[c][b] -= messagesToDocumentFeature[p][f][c][b];
+//                    }
                 }
 
                 messagesToParagraphCategory[p][f] = NodeInferenceHelper.updateMessageToSelectingNode(
@@ -219,8 +220,8 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 //                        fedna[f].sumOutOtherNodesWithObservationAndMessage(
 //                                (LogProbabilityDiscreteNode) lpnbmModel.getCategoryNode(),
 //                                messageFromParaCategory, dfna[f]);
-                for (int c = 0; c < getParaCategory().getFeatureSize() - 1; c++) {
-                    for (int i = 0; i < documentFeatureBelief[f].length; i++) {
+                for (int c = 0; c < getParaCategory().getFeatureSize(); c++) {
+                    for (int i = 0; i < 2; i++) {
                         documentFeatureBelief[f][c][i] += messagesToDocumentFeature[p][f][c][i];
                     }
                 }

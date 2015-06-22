@@ -4,6 +4,7 @@ import com.skroll.analyzer.data.NBFCData;
 import com.skroll.analyzer.data.NBMNData;
 import com.skroll.analyzer.model.bn.NaiveBayesWithFeatureConditions;
 import com.skroll.analyzer.model.bn.NaiveBayesWithMultiNodes;
+import com.skroll.analyzer.model.bn.node.MultiplexNode;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -70,6 +71,13 @@ public class TrainingDocumentAnnotatingModelTest{
         System.out.println("trained model: \n" + model);
         assert(model.toString().contains("nextTokenCounts [Operations=5.0, Tiger=6.0]"));
 //        assert(model.toString().contains("[WordNode{parameters=Operations=[2.0, 0.0] Tiger=[1.0, 0.0] Notwithstanding=[2.0, 0.0]"));
+        MultiplexNode node = model.getTnbfModel().getMultiNodes().get(0);
+        assert (Arrays.equals(node.getSelectingNode().getParameters(), new double[]{3.1, 1.1}));
+        assert (Arrays.equals(node.getNodes()[0].getParameters(), new double[]{0.1, 0.1, 0.1, 3.1}));
+        assert (Arrays.equals(node.getNodes()[1].getParameters(), new double[]{0.1, 0.1, 0.1, 1.1}));
+        assert (Arrays.equals(node.getNodes()[0].getParents()[0].getParameters(), new double[]{0.1, 3.1}));
+        assert (Arrays.equals(node.getNodes()[1].getParents()[0].getParameters(), new double[]{0.1, 1.1}));
+
     }
 
 

@@ -35,6 +35,7 @@ public class NaiveBayesWithMultiNodes extends NaiveBayes {
         this.documentFeatureNodes = docFeatureNodes;
         this.wordNodes = wordNodes;
         putAllDiscreteNodesInOneList();
+
     }
 
 
@@ -103,9 +104,9 @@ public class NaiveBayesWithMultiNodes extends NaiveBayes {
                 "\nwordNode=\n" + wordNodes +
                 "\nfeatureArray=\n" + featureNodes +
 
-                "NaiveBayesWithFeatureConditions{" +
-                "documentFeatureNodes=" + documentFeatureNodes +
-                ", featureExistAtDocLevelNodes=" + multiNodes +
+                "\nNaiveBayesWithMultiNodes{" +
+                "\n documentFeatureNodes=" + documentFeatureNodes +
+                ",\n featureExistAtDocLevelNodes=" + multiNodes +
                 '}';
     }
 
