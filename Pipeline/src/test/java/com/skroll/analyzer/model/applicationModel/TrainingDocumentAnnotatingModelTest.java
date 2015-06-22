@@ -24,6 +24,7 @@ import java.util.List;
 public class TrainingDocumentAnnotatingModelTest{
     int maxNumWords = 20;
     String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining/mini-indenture.html";
+    //    String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
     ModelRVSetting setting = new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME);
     TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel();
     Document document;
@@ -74,7 +75,7 @@ public class TrainingDocumentAnnotatingModelTest{
 
     @Test
     public void testGenerateDocumentFeatures() throws Exception {
-        String trainingFolderName = "src/test/resources/analyzer/evaluate/docclassifier/AMC Networks CA.html";
+//        String trainingFolderName = "src/test/resources/analyzer/evaluate/docclassifier/AMC Networks CA.html";
         File file = new File(trainingFolderName);
 
 
@@ -88,7 +89,7 @@ public class TrainingDocumentAnnotatingModelTest{
 
         System.out.println(Arrays.deepToString(docFeatureValues));
 
-//        assert (Arrays.equals(docFeatureValues, new int[]{1, 1, 0, 1, 0}));
+        assert (Arrays.deepEquals(docFeatureValues, new int[][]{{1, 1}, {0, 1}, {0, 0}, {0, 0}, {0, 1}}));
     }
     Document makeTrainingDoc(File file){
         String htmlString = null;

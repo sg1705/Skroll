@@ -60,6 +60,7 @@ public class NaiveBayesWithMultiNodes extends NaiveBayes {
 
     @JsonIgnore
     public void setObservation(NBMNTuple tuple) {
+        categoryNode.setObservation(tuple.categoryValue);
         setParaFeatureObservation(tuple.getFeatureValues());
         setMultiNodesObservation(tuple.getMultiNodeValues());
         setDocFeatureObservation(tuple.getDocFeatureValues());
