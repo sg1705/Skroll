@@ -51,12 +51,14 @@ SearchCtrl.prototype.getMatches = function(searchText) {
 		var paraId = parseInt(str);
 		levelsPara.push(paraId);
 	}
+	var self = this;
 	//iterate over each search result
 	$.each(elements, function(i, val) {
 		var id = parseInt($(val).attr('id').split("_")[1]);
 		var header;
 		var displayText;
 		var isItem = false;
+		var surroundingStartIndex = 80;
 		//this is a hack
 		if (id > 1237) {
 			//iterate over each level 2 heading
@@ -66,12 +68,13 @@ SearchCtrl.prototype.getMatches = function(searchText) {
 					if (jj > 1) {
 						header = headerItems[jj - 1].term;
 						var text = $('#p_' + id).text();
-						var indexOfSearch = text.indexOf(searchText);
-						if (indexOfSearch > 40) {
-							displayText = text.substring(0, 39) + '..... ' + searchText + ' .... ';
-						} else {
-							displayText = text.substring(0, indexOfSearch) + text.substring(indexOfSearch + 1, searchText.length) + '...';
-						}
+						displayText = self.getSurroundingText(text, searchText);
+						// var indexOfSearch = text.indexOf(searchText);
+						// if (indexOfSearch > surroundingStartIndex) {
+						// 	displayText = text.substring(0, surroundingStartIndex - 1) + '..... ' + searchText + ' .... ';
+						// } else {
+						// 	displayText = text.substring(0, indexOfSearch) + text.substring(indexOfSearch + 1, searchText.length) + '...';
+						// }
 						isItem = true;
 						break;
 					}
@@ -88,6 +91,42 @@ SearchCtrl.prototype.getMatches = function(searchText) {
 	})
 	return items;
 }
+
+SearchCtrl.prototype.getSurroundingText = function(paragraphText, searchString) {
+	var indexOfSearch = paragraphText.indexOf(searchString);
+	var lengthOfSearch = searchString.length;
+	var expandLeft = 50;
+	var expandRight = 50;
+	var startLeft = 0;
+	var endRight = 0;
+	var length = paragraphText.length;
+	if (indexOfSearch < expandLeft) {
+		startLeft = 0;
+	} else {
+		startLeft = indexOfSearch - expandLeft
+	}
+
+	if ( (length - (indexOfSearch + lengthOfSearch)) < expandRight) {
+		endRight = length -1;
+	} else {
+		endRight = (indexOfSearch + lengthOfSearch + expandRight);
+	}
+	console.log(indexOfSearch + ":"+ endRight);
+	var text = paragraphText.substr(startLeft, endRight - startLeft);
+	return text;
+}
+
+SearchCtrl.prototype.enterSearchBox = function() {
+  LHSModel.smodel.hover = true;
+  console.log(LHSModel.smodel.hover);
+}
+
+SearchCtrl.prototype.leaveSearchBox = function() {
+	console.log("leaving");
+  LHSModel.smodel.hover = false;
+}
+
+
 
 SearchCtrl.prototype.searchTextChange = function(text) {
   

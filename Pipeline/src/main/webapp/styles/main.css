@@ -91,14 +91,12 @@ sk-lhs .md-button {
 
 
 
-/*
-md-content.sk-lhs-hover:hover {
-    opacity: 1;
+md-content.sk-lhs-search-hover {
+    opacity: 0.15;
 }
-*/
 
 md-content.sk-lhs-hover {
-    opacity: 1;
+    opacity: 1.0;
     -webkit-transition: 0.25s cubic-bezier(0.35, 0, 0.25, 1);
     -webkit-transition-property: opacity;
     -moz-transition: 0.25s cubic-bezier(0.35, 0, 0.25, 1);
