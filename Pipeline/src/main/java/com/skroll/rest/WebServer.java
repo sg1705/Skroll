@@ -7,20 +7,15 @@ import com.google.inject.servlet.GuiceFilter;
 import com.google.inject.servlet.ServletModule;
 import com.skroll.rest.benchmark.BenchmarkAPI;
 import com.skroll.util.SkrollGuiceModule;
-import com.skroll.util.WebGuiceModule;
 import com.squarespace.jersey2.guice.BootstrapUtils;
 import org.apache.tomcat.InstanceManager;
 import org.apache.tomcat.SimpleInstanceManager;
 import org.eclipse.jetty.annotations.ServletContainerInitializersStarter;
-import org.eclipse.jetty.apache.jsp.JettyJasperInitializer;
-import org.eclipse.jetty.jsp.JettyJspServlet;
-import org.eclipse.jetty.plus.annotation.ContainerInitializer;
 import org.eclipse.jetty.server.ConnectionFactory;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.FilterHolder;
-import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.glassfish.hk2.api.ServiceLocator;
@@ -28,18 +23,12 @@ import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.LoggerFactory;
-
 import javax.servlet.DispatcherType;
-import javax.servlet.Servlet;
-import javax.servlet.ServletContextListener;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,9 +48,6 @@ public class WebServer {
     private Server server;
     private URI serverURI;
     private Module skrollModule;
-
-    // Resource path pointing to where the WEBROOT is
-    private static final String WEBROOT_INDEX = "/webroot/";
 
     public static void main(String[] args) throws Exception {
         int port = 8088;
@@ -85,36 +71,21 @@ public class WebServer {
         this.port = port;
         this.skrollModule = module;
     }
-
-    public URI getServerURI() {
-        return serverURI;
-    }
-
+    
     public void start() throws Exception {
         ServiceLocator locator = BootstrapUtils.newServiceLocator();
-        Injector injector = BootstrapUtils.newInjector(locator, Arrays.asList(skrollModule, new ServletModule()));
+        BootstrapUtils.newInjector(locator, Arrays.asList(skrollModule, new ServletModule()));
         BootstrapUtils.install(locator);
-
-
 
         server = new Server();
         ServerConnector connector = connector();
         server.addConnector(connector);
 
         URI baseUri = getWebRootResourceUri();
-        // Set JSP to use Standard JavaC always
-        System.setProperty("org.apache.jasper.compiler.disablejsr199", "false");
-
-        WebAppContext webAppContext = getWebAppContext(baseUri, getScratchDir());
-
-//        ServletContextListener guiceListener = new WebGuiceModule();
-
+        WebAppContext webAppContext = getWebAppContext(baseUri);
         FilterHolder filterHolder = new FilterHolder(GuiceFilter.class);
         webAppContext.addFilter(filterHolder, "/*", EnumSet.of(DispatcherType.INCLUDE, DispatcherType.REQUEST));
-
         webAppContext.addServlet(this.getJerseyServlet(), "/restServices/*");
-
-//        webAppContext.addEventListener(guiceListener);
         server.setHandler(webAppContext);
         // Start Server
         server.start();
@@ -133,118 +104,33 @@ public class WebServer {
     }
 
     private URI getWebRootResourceUri() throws FileNotFoundException, URISyntaxException {
-        //URI indexUri = new File("build/inplaceWebapp").toURI();
         URI indexUri = new File("src/main/webapp").toURI();
-        if (indexUri == null) {
-            throw new FileNotFoundException("Unable to find resource " + WEBROOT_INDEX);
-        }
         LOG.info("indexUri:" + indexUri);
         return indexUri;
-    }
-
-    /**
-     * Establish Scratch directory for the servlet context (used by JSP compilation)
-     */
-    private File getScratchDir() throws IOException {
-        File tempDir = new File(System.getProperty("java.io.tmpdir"));
-        File scratchDir = new File(tempDir.toString(), "embedded-jetty-jsp");
-
-        if (!scratchDir.exists()) {
-            if (!scratchDir.mkdirs()) {
-                throw new IOException("Unable to create scratch directory: " + scratchDir);
-            }
-        }
-        return scratchDir;
     }
 
     /**
      * Setup the basic application "context" for this application at "/"
      * This is also known as the handler tree (in jetty speak)
      */
-    private WebAppContext getWebAppContext(URI baseUri, File scratchDir) {
+    private WebAppContext getWebAppContext(URI baseUri) {
         WebAppContext context = new WebAppContext();
         context.setContextPath("/");
-        context.setAttribute("javax.servlet.context.tempdir", scratchDir);
-        context.setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern",
-                ".*/[^/]*servlet-api-[^/]*\\.jar$|.*/javax.servlet.jsp.jstl-.*\\.jar$|.*/.*taglibs.*\\.jar$");
         context.setResourceBase(baseUri.toASCIIString());
-        context.setAttribute("org.eclipse.jetty.containerInitializers", jspInitializers());
         context.setAttribute(InstanceManager.class.getName(), new SimpleInstanceManager());
         context.addBean(new ServletContainerInitializersStarter(context), true);
-        context.setClassLoader(getUrlClassLoader());
-
-        context.addServlet(jspServletHolder(), "*.jsp");
-
-        context.addServlet(exampleJspFileMappedServletHolder(), "/test/foo/");
         context.addServlet(defaultServletHolder(baseUri), "/");
         return context;
-    }
-
-    /**
-     * Ensure the jsp engine is initialized correctly
-     */
-    private List<ContainerInitializer> jspInitializers() {
-        JettyJasperInitializer sci = new JettyJasperInitializer();
-        ContainerInitializer initializer = new ContainerInitializer(sci, null);
-        List<ContainerInitializer> initializers = new ArrayList<ContainerInitializer>();
-        initializers.add(initializer);
-        return initializers;
-    }
-
-    /**
-     * Set Classloader of Context to be sane (needed for JSTL)
-     * JSP requires a non-System classloader, this simply wraps the
-     * embedded System classloader in a way that makes it suitable
-     * for JSP to use
-     */
-    private ClassLoader getUrlClassLoader() {
-        ClassLoader jspClassLoader = new URLClassLoader(new URL[0], this.getClass().getClassLoader());
-        return jspClassLoader;
-    }
-
-    /**
-     * Create JSP Servlet (must be named "jsp")
-     */
-    private ServletHolder jspServletHolder() {
-        ServletHolder holderJsp = new ServletHolder("jsp", JettyJspServlet.class);
-        holderJsp.setInitOrder(0);
-        holderJsp.setInitParameter("logVerbosityLevel", "DEBUG");
-        holderJsp.setInitParameter("fork", "false");
-        holderJsp.setInitParameter("xpoweredBy", "false");
-        holderJsp.setInitParameter("compilerTargetVM", "1.7");
-        holderJsp.setInitParameter("compilerSourceVM", "1.7");
-        holderJsp.setInitParameter("keepgenerated", "true");
-        return holderJsp;
-    }
-
-    /**
-     * Create Example of mapping jsp to path spec
-     */
-    private ServletHolder exampleJspFileMappedServletHolder() {
-        ServletHolder holderAltMapping = new ServletHolder();
-        holderAltMapping.setName("foo.jsp");
-        holderAltMapping.setForcedPath("/test/foo/foo.jsp");
-        return holderAltMapping;
     }
 
     /**
      * Create Default Servlet (must be named "default")
      */
     private ServletHolder defaultServletHolder(URI baseUri) {
-
-//        ResourceConfig config = new ResourceConfig();
-//        config.register(DocAPI.class);
-//        config.register(BenchmarkAPI.class);
-//        config.register(RequestBean.class);
-//        ServletContainer container = new ServletContainer(config);
-//        ServletHolder holderDefault = new ServletHolder(container);
-//        holderDefault.setServlet(new DefaultServlet());
-
         ServletHolder holderDefault = new ServletHolder("default", DefaultServlet.class);
         LOG.info("Base URI: " + baseUri);
         holderDefault.setInitParameter("resourceBase", baseUri.toASCIIString());
         holderDefault.setInitParameter("dirAllowed", "true");
-
         return holderDefault;
     }
 
@@ -289,7 +175,6 @@ public class WebServer {
         config.register(MultiPartFeature.class);
         config.register(InstrumentAPI.class);
         ServletContainer container = new ServletContainer(config);
-        ServletHolder holderDefault = new ServletHolder(container);
-        return holderDefault;
+        return new ServletHolder(container);
     }
 }
