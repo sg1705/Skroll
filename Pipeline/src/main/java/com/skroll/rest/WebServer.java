@@ -71,7 +71,7 @@ public class WebServer {
         this.port = port;
         this.skrollModule = module;
     }
-    
+
     public void start() throws Exception {
         ServiceLocator locator = BootstrapUtils.newServiceLocator();
         BootstrapUtils.newInjector(locator, Arrays.asList(skrollModule, new ServletModule()));
