@@ -56,6 +56,19 @@ angular.module('SkrollApp')
         $scope.isEdit = !$scope.isEdit;
       };
 
+      $scope.overrideControlF = function($event) {
+        if ((event.keyCode == 114) || (event.ctrlKey && event.keyCode == 70)) { 
+          // Block CTRL + F event
+          event.preventDefault();
+          var inputElement = $("#searchBox").find("input");
+          if (inputElement.length > 0) {
+            $(inputElement[0]).focus();
+            LHSModel.smodel.hover = true;
+          }
+
+        }
+      };
+
       // /*
       // * Someday I should remove this method. Not being used
       // */
