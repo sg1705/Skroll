@@ -23,8 +23,9 @@ public class TOCModelRVSetting extends ModelRVSetting {
             RVCreater.createDiscreteRVWithComputer(new NotInTableRVComputer(), "notInTable"),
             RVCreater.createParagraphStartsWithRV(CoreAnnotations.IsItalicAnnotation.class),
             RVCreater.createParagraphStartsWithRV(CoreAnnotations.IsUnderlineAnnotation.class),
-            RVCreater.createParagraphStartsWithRV(CoreAnnotations.IsBoldAnnotation.class)
-
+            RVCreater.createParagraphStartsWithRV(CoreAnnotations.IsBoldAnnotation.class),
+            RVCreater.createRVFromAnnotation(CoreAnnotations.IsAnchorAnnotation.class),
+            RVCreater.createRVFromAnnotation(CoreAnnotations.IsHrefAnnotation.class)
     );
     static final List<RandomVariable> DEFAULT_WORD_VARS = Arrays.asList(
             RVCreater.createWordsRVWithComputer(new UniqueWordsComputer(), "uniqueWords"),
