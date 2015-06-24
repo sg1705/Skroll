@@ -49,7 +49,7 @@ dependencies {
 
 task runBenchmark(type: JavaExec) {
     File workingDir = new File('Pipeline/')
-    main = 'com.skroll.benchmark.ClassifierBenchmarkModel'
+    main = 'com.skroll.benchmark.ClassifierBenchmark'
     classpath = sourceSets.main.runtimeClasspath
 }
 
