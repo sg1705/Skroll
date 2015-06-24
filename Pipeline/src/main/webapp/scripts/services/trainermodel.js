@@ -13,6 +13,7 @@ var ToolbarModel = {
 		isTrainerMode: true,
 		isUpdateBNI: false,
 		isBenchmark: false,
+		isTrainModel: false,
 		lastJson: "",
 		lastSelectedParaId: '',
 		typeAError: 0,
@@ -42,6 +43,16 @@ var ToolbarModel = {
 	      console.log(benchmarkScore);	      
 	      self.trainerToolbar.typeAError = benchmarkScore.qc.stats[1].type1Error;
 	      self.trainerToolbar.typeBError = benchmarkScore.qc.stats[1].type2Error;
+	      if (benchmarkScore.isFileBenchmarked && !benchmarkScore.isFileTrained) {
+	      	self.trainerToolbar.isBenchmark = true;
+	      	self.trainerToolbar.isTrainModel = false;
+	      } else if (benchmarkScore.isFileTrained) {
+	      	self.trainerToolbar.isBenchmark = false;
+	      	self.trainerToolbar.isTrainModel = true;
+	      } else if (!benchmarkScore.isFileBenchmarked && !benchmarkScore.isFileTrained) {
+	      	self.trainerToolbar.isBenchmark = true;
+	      	self.trainerToolbar.isTrainModel = true;
+	      }
 	    });                
 	}
 
