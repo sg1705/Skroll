@@ -54,7 +54,7 @@ task runBenchmark(type: JavaExec) {
 }
 
 
-task trainWithWeight(type: JavaExec) {
+task trainBenchmarkModelWithWeight(type: JavaExec) {
     args = ['--trainBenchmarkModelWithWeight', 'build/resources/main/preEvaluated/']
     File workingDir = new File('Pipeline/')
     main = 'com.skroll.benchmark.BenchmarkModelTrainer'
