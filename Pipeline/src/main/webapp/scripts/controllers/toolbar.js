@@ -30,6 +30,7 @@ ToolbarCtrl.prototype.convertToBenchmark = function() {
 	}, function(data, status) {
 		console.log(status);
 	});
+	ToolbarModel.updateBenchmark(self.documentService);
 	this.documentModel.isProcessing = false;
 }
 

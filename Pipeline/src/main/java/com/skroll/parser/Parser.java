@@ -111,7 +111,7 @@ public class Parser {
         if (!document.equals(newDoc)) {
             logger.info("Reparsed document is not the same as the old doc. " +
                     "Number of paragraphs are different {}", document.get(CoreAnnotations.IdAnnotation.class));
-
+            return document;
         }
         for(int ii = 0; ii < newDoc.getParagraphs().size(); ii++) {
             //copy annotations over
