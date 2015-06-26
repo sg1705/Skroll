@@ -118,11 +118,9 @@ SearchCtrl.prototype.getSurroundingText = function(paragraphText, searchString) 
 
 SearchCtrl.prototype.enterSearchBox = function() {
   LHSModel.smodel.hover = true;
-  console.log(LHSModel.smodel.hover);
 }
 
 SearchCtrl.prototype.leaveSearchBox = function() {
-	console.log("leaving");
   LHSModel.smodel.hover = false;
 }
 
