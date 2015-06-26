@@ -2668,7 +2668,9 @@ md-autocomplete {
     display: block;
     position: relative;
     overflow: visible;
-    height: 40px; }
+    /* start hack */
+    height: 44px; }
+    /* end hack */
     md-autocomplete md-autocomplete-wrap md-progress-linear {
       position: absolute;
       bottom: 0;
