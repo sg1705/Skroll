@@ -25,7 +25,6 @@ import java.util.List;
 public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory {
 
     public static final Logger logger = LoggerFactory.getLogger(FileSystemDocumentFactoryImpl.class);
-   // protected static HashMap<String, Document> documents;
     protected Configuration configuration;
     protected String folder;
     CacheLoader<String, Document> loader = new CacheLoader<String, Document>() {

@@ -18,7 +18,8 @@ import java.util.*;
 public class DocProcessor {
     public static final Logger logger = LoggerFactory.getLogger(DocProcessor.class);
 
-    //static Map<Document, List<CoreMap>> processedParasMap = new HashMap<>();
+    //ToDO: commented out the cache
+    // static Map<Document, List<CoreMap>> processedParasMap = new HashMap<>();
     static Map<String, NBFCData> processedDataMap = new HashMap<>();
 
     static List<CoreMap> processParas(Document doc, int numWordsToUse) {
