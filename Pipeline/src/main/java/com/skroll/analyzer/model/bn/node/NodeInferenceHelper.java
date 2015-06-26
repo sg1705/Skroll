@@ -152,7 +152,19 @@ public class NodeInferenceHelper {
         DiscreteNode[] nodes = multiNode.getNodes();
         double[][] newMessages = new double[nodes.length][2]; // the none node does not pass message
         int observedValue = multiNode.getObservation();
+
+        int featureSize = nodes[0].getVariable().getFeatureSize();
+        double pF = 0; // the probability of the observed feature value. This involves summing the probabilities, so not in log space
         for (int n = 0; n < nodes.length; n++) {
+            pF += Math.exp(messages[n] + nodes[n].getParameter(observedValue));
+            pF += Math.exp(messages[n] + nodes[n].getParameter(observedValue + featureSize));
+        }
+
+        for (int n = 0; n < nodes.length; n++) {
+
+            double pFC = Math.exp(messages[n] + nodes[n].getParameter(observedValue)) +
+                    Math.exp(messages[n] + nodes[n].getParameter(observedValue + featureSize));
+            double pFNotC = pF - pFC; // here pFNotC is used to approximate p(F|notC,D) and p(F|notC,notD)
 
             // make use of the fact the parent var is binary.
             newMessages[n][0] = nodes[n].getParameters()[observedValue];
@@ -160,6 +172,9 @@ public class NodeInferenceHelper {
 
             newMessages[n][0] += messages[n];
             newMessages[n][1] += messages[n];
+
+            newMessages[n][0] = Math.log(Math.exp(messages[n]) + pFNotC);
+            newMessages[n][1] = Math.log(Math.exp(messages[n]) + pFNotC);
         }
         return newMessages;
     }

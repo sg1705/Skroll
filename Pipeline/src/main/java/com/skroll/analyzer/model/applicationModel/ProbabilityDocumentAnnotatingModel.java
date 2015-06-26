@@ -177,7 +177,11 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
             lpnbmModel.setMultiNodesObservation(paraFeatureValsExistAtDocLevel[p]);
 
             for (int f = 0; f < nbmnConfig.getFeatureExistsAtDocLevelVarList().size(); f++) {
-                double[][] messageFromDocFeature = documentFeatureBelief[f].clone();
+
+                double[][] messageFromDocFeature = new double[documentFeatureBelief[f].length][];
+                for (int i = 0; i < messageFromDocFeature.length; i++)
+                    messageFromDocFeature[i] = documentFeatureBelief[f][i].clone();
+
 //                for (int i = 0; i < messageFromDocFeature.length; i++) {
                 for (int c = 0; c < getParaCategory().getFeatureSize(); c++) { //skip none at index 0
                     for (int b = 0; b <= 1; b++)
@@ -357,7 +361,18 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
     public double[][][] getDocumentFeatureProbabilities() {
 //        double[][][] docFeatureProbs = new double[documentFeatureBelief.length][getParaCategory().getFeatureSize()-1][2];
-        double[][][] docFeatureProbs = documentFeatureBelief.clone();
+//        double[][][] docFeatureProbs = documentFeatureBelief.clone();
+
+        // clone only does a shallow copy. The following nested loop does a deep copy.
+        double[][][] docFeatureProbs = new double[documentFeatureBelief.length][][];
+        for (int i = 0; i < docFeatureProbs.length; i++) {
+            docFeatureProbs[i] = new double[documentFeatureBelief[0].length][];
+            for (int j = 0; j < docFeatureProbs[0].length; j++) {
+                docFeatureProbs[i][j] = documentFeatureBelief[i][j].clone();
+            }
+        }
+
+
 //        for (int i=0; i<documentFeatureBelief.length; i++)
 //                docFeatureProbs[i] = documentFeatureBelief[i].clone();
         for (int i=0; i<documentFeatureBelief.length; i++)

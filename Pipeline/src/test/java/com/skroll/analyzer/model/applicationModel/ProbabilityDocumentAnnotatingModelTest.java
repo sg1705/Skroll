@@ -24,10 +24,10 @@ public class ProbabilityDocumentAnnotatingModelTest {
     ModelRVSetting setting = new DefModelRVSetting(Category.DEFINITION, Category.DEFINITION_NAME);
     TrainingDocumentAnnotatingModel tModel = new TrainingDocumentAnnotatingModel();
 
-    //String testingFileName = "src/test/resources/classifier/smaller-indenture.html";
-    String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/mini-indenture.html";
-//    String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
-//    String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/AMD CA - Def No Quotes.html";
+    //    String testingFileName = "src/test/resources/classifier/smaller-indenture.html";
+//    String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/mini-indenture.html";
+    String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
+//    String testingFileName = "src/test/resources/analyzer/hmmTrainingDocs/AMD CA - Def No Quotes.html";
 
 
     File file = new File(testingFileName);
@@ -91,7 +91,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
     void printBelieves(){
         System.out.print("document level feature believes\n");
 //        System.out.println(model.DEFAULT_DOCUMENT_FEATURES);
-        System.out.print(" " + model.getNbfcConfig().getDocumentFeatureVarList());
+        System.out.println(" " + model.getNbfcConfig().getDocumentFeatureVarList());
         double[][][] dBelieves = model.getDocumentFeatureProbabilities();
         for (int i=0; i<dBelieves.length; i++){
             System.out.println(Arrays.deepToString(dBelieves[i]));
