@@ -1,34 +1,34 @@
 package com.skroll.analyzer.model.applicationModel;
 
-import com.skroll.analyzer.data.DocData;
 import com.skroll.analyzer.data.NBFCData;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
-import com.skroll.analyzer.model.bn.SimpleDataTuple;
 import com.skroll.analyzer.model.bn.config.NBFCConfig;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.print.Doc;
 import java.util.*;
 
 /**
  * Created by wei on 5/10/15.
  */
 public class DocProcessor {
+    public static final Logger logger = LoggerFactory.getLogger(DocProcessor.class);
 
-    static Map<Document, List<CoreMap>> processedParasMap = new HashMap<>();
+    //static Map<Document, List<CoreMap>> processedParasMap = new HashMap<>();
     static Map<String, NBFCData> processedDataMap = new HashMap<>();
 
     static List<CoreMap> processParas(Document doc, int numWordsToUse) {
 
-        List<CoreMap> processedParas = processedParasMap.get(doc);
-        if (processedParas != null) return processedParas;
-        processedParas = processParagraphs(doc.getParagraphs(), numWordsToUse);
+        //List<CoreMap> processedParas = processedParasMap.get(doc);
+        //if (processedParas != null) return processedParas;
+        List<CoreMap> processedParas = processParagraphs(doc.getParagraphs(), numWordsToUse);
 
-        processedParasMap.put(doc, processedParas);
-
+        //processedParasMap.put(doc, processedParas);
+        //logger.debug ("processedParasMap.size: {}", processedParasMap.size());
         return processedParas;
 
     }

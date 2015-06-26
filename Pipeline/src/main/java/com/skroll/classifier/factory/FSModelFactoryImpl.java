@@ -31,7 +31,10 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
         if (TrainingModelMap.containsKey(modelRVSetting.getCategoryId())){
             return TrainingModelMap.get(modelRVSetting.getCategoryId());
         }
-        return createModel(modelRVSetting);
+        TrainingDocumentAnnotatingModel model = createModel(modelRVSetting);
+        logger.debug("training model Map Size:{}",TrainingModelMap.size());
+        logger.debug("bni model Map Size:{}",bniModelMap.size());
+        return model;
     }
 
     public TrainingDocumentAnnotatingModel createModel(ModelRVSetting modelRVSetting) {

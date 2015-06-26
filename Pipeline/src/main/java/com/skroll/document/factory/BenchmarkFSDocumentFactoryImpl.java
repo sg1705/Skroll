@@ -1,5 +1,6 @@
 package com.skroll.document.factory;
 
+import com.google.common.cache.CacheBuilder;
 import com.skroll.util.Configuration;
 
 import javax.inject.Inject;
@@ -14,7 +15,6 @@ public class BenchmarkFSDocumentFactoryImpl extends
     public BenchmarkFSDocumentFactoryImpl(Configuration configuration) {
         this.configuration = configuration;
         this.folder = configuration.get("benchmarkFolder");
+        this.documents = CacheBuilder.newBuilder().maximumSize(0).build(loader);
     }
-
-
 }

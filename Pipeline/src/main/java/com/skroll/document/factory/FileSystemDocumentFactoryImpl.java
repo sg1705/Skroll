@@ -1,5 +1,7 @@
 package com.skroll.document.factory;
 
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.FluentIterable;
 import com.google.common.io.Files;
 import com.skroll.document.Document;
@@ -15,7 +17,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -24,30 +25,13 @@ import java.util.List;
 public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory {
 
     public static final Logger logger = LoggerFactory.getLogger(FileSystemDocumentFactoryImpl.class);
-    private static HashMap<String, Document> documents = new HashMap();
+   // protected static HashMap<String, Document> documents;
     protected Configuration configuration;
     protected String folder;
-
-    @Override
-    public boolean isDocumentExist(String documentId) throws Exception {
-        if (documents.containsKey(documentId)) {
-            return true;
-        } else {
-            File file = new File(folder + documentId);
-            if(file.exists()){
-                return true;
-            }
-        }
-        return false;
-    }
-    @Override
-    public Document get(String documentId) throws Exception {
-        Document doc;
-        if (documents.containsKey(documentId)) {
-            doc = documents.get(documentId);
-        } else {
-            //document does not exist in map
-            //let's fetch it from the filesystem
+    CacheLoader<String, Document> loader = new CacheLoader<String, Document>() {
+        @Override
+        public Document load(String documentId) throws Exception {
+            Document doc = null;
             String jsonString;
             try {
                 logger.debug("Fetching [{}] from filesystem [{}]", documentId, folder);
@@ -63,8 +47,30 @@ public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory {
                 logger.error("[{}] cannot be parsed", documentId);
                 return null;
             }
+            doc = getLatestParsed(doc);
+            return doc;
         }
-        doc = this.getLatestParsed(doc);
+    };
+
+    LoadingCache<String, Document> documents = null;
+
+    @Override
+    public boolean isDocumentExist(String documentId) throws Exception {
+        if (documents.get(documentId)!=null) {
+            return true;
+        } else {
+            File file = new File(folder + documentId);
+            if(file.exists()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public Document get(String documentId) throws Exception {
+        Document doc = documents.get(documentId);
+        logger.debug("document map size: {}",documents.size());
         return doc;
     }
 
@@ -79,7 +85,7 @@ public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory {
         documents.put(documentId, document);
     }
 
-    private Document getLatestParsed(Document document) throws Exception {
+    protected Document getLatestParsed(Document document) throws Exception {
         if (DocumentHelper.isLatestParser(document)) {
             //latest doc
             return document;

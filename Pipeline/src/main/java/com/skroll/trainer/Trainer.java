@@ -2,6 +2,7 @@ package com.skroll.trainer;
 
 import com.google.common.collect.FluentIterable;
 import com.google.common.io.Files;
+import com.skroll.classifier.Classifier;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -37,15 +38,39 @@ public class Trainer {
     public DocumentFactory documentFactory;
     public String PRE_EVALUATED_FOLDER;
 
+    public void displayHeapStats (){
+        int mb = 1024*1024;
+
+        //Getting the runtime reference from system
+        Runtime runtime = Runtime.getRuntime();
+
+        logger.debug("##### Heap utilization statistics [MB] #####");
+
+        //Print used memory
+        logger.debug("Used Memory:{} MB",
+                (runtime.totalMemory() - runtime.freeMemory()) / mb);
+
+        //Print free memory
+        logger.debug("Free Memory:{} MB", runtime.freeMemory() / mb);
+
+        //Print total available memory
+        logger.debug("Total Memory: {} MB", runtime.totalMemory() / mb);
+
+        //Print Maximum available memory
+        logger.debug("Max Memory:{} MB", runtime.maxMemory() / mb);
+    }
     public void trainFolderUsingTrainingWeight (String preEvaluatedFolder) throws Exception {
         FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(preEvaluatedFolder));
         List<String> docLists = new ArrayList<String>();
         for (File f : iterable) {
             if (f.isFile()) {
+                displayHeapStats ();
                 trainFileUsingTrainingWeight(f.getName());
             }
         }
-
+        for ( Classifier classifier : classifierFactory.getClassifiers()) {
+            classifier.persistModel();
+        }
     }
 
     public  void trainFileUsingTrainingWeight (String preEvaluatedFile) throws Exception {
@@ -60,17 +85,10 @@ public class Trainer {
                 TrainingWeightAnnotationHelper.clearOldTrainingWeight(paragraph);
             }
         }
-        final Document finalDoc = doc;
         try {
-            classifierFactory.getClassifiers(doc).forEach(c -> c.trainWithWeight(finalDoc));
-            classifierFactory.getClassifiers(doc).forEach(c -> {
-                try {
-                    c.persistModel();
-                } catch (Exception e) {
-                    logger.error("Failed to persist classifier: %s"+ c.toString(), e);
-                    e.printStackTrace();
-                }
-            });
+            for ( Classifier classifier : classifierFactory.getClassifiers(doc)) {
+                classifier.trainWithWeight(doc);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

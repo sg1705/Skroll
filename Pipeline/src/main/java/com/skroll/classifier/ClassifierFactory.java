@@ -53,10 +53,10 @@ public class ClassifierFactory {
        List<Classifier> classifierList = new ArrayList<>();
        classifierList.add(getClassifier(Category.DEFINITION));
        classifierList.add(getClassifier(Category.TOC_1));
-       classifierList.add(getClassifier(Category.TOC_2));
-       classifierList.add(getClassifier(Category.TOC_3));
-       classifierList.add(getClassifier(Category.TOC_4));
-       classifierList.add(getClassifier(Category.TOC_5));
+       //classifierList.add(getClassifier(Category.TOC_2));
+       //classifierList.add(getClassifier(Category.TOC_3));
+       //classifierList.add(getClassifier(Category.TOC_4));
+       //classifierList.add(getClassifier(Category.TOC_5));
        return classifierList;
    }
 }
