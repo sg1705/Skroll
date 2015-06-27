@@ -8,8 +8,8 @@
  * Controller of the SkrollApp
  */
 angular.module('SkrollApp')
-  .controller('ContentCtrl', ['documentModel', 'documentService', '$scope', '$mdSidenav', '$http', '$mdMedia', '$location',
-    function(documentModel, documentService, $scope, $mdSidenav, $http, $mdMedia, $location) {
+  .controller('ContentCtrl', ['documentModel', 'documentService', '$scope', '$mdSidenav', '$http', '$mdMedia', '$location', 'searchService',
+    function(documentModel, documentService, $scope, $mdSidenav, $http, $mdMedia, $location, searchService) {
       $scope.targetHtml = documentModel.targetHtml;
       $scope.isDocAvailable = documentModel.isDocAvailable;
       $scope.fileName = documentModel.fileName;
@@ -19,6 +19,7 @@ angular.module('SkrollApp')
       $scope.userDocumentIds = [];
       $scope.documentModel = documentModel;
       $scope.documentService = documentService;
+      $scope.searchService = searchService;
       $scope.$location = $location;
       $scope.smodel = LHSModel.smodel;
 
@@ -60,12 +61,7 @@ angular.module('SkrollApp')
         if ((event.keyCode == 114) || (event.ctrlKey && event.keyCode == 70)) { 
           // Block CTRL + F event
           event.preventDefault();
-          var inputElement = $("#searchBox").find("input");
-          if (inputElement.length > 0) {
-            $(inputElement[0]).focus();
-            LHSModel.smodel.hover = true;
-          }
-
+          searchService.focusOnSearchBox();
         }
       };
 
