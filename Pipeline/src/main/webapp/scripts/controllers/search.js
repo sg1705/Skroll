@@ -88,6 +88,10 @@ SearchCtrl.prototype.getMatches = function(searchText) {
 				items.push(item);				
 			}
 		}
+		if ((searchText.length <=2) && (items.length > 10)) {
+			return false;
+		}
+
 	})
 	return items;
 }
