@@ -10924,7 +10924,7 @@ angular
 var ITEM_HEIGHT = 41,
     //hack
     //MAX_HEIGHT = 5.5 * ITEM_HEIGHT,
-    MAX_HEIGHT = 11 * ITEM_HEIGHT,
+    MAX_HEIGHT = 15 * ITEM_HEIGHT,
     MENU_PADDING = 8;
 
 function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $timeout, $mdTheming, $window, $animate, $rootElement) {
@@ -10991,7 +10991,11 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $timeout, $
         root   = elements.root.getBoundingClientRect(),
         top    = vrect.bottom - root.top,
         bot    = root.bottom - vrect.top,
-        left   = hrect.left - root.left,
+        //start hack
+        //set left to 0
+        left = 0,
+        //left   = hrect.left - root.left,
+        //end hack
         width  = hrect.width,
         styles = {
           left:     left + 'px',
@@ -11454,11 +11458,14 @@ function MdAutocomplete ($mdTheming, $mdUtil) {
             : '';
 
       }
-
+      //start hack here
+      // added a theme to input-container
+      // also added input container
+      //end hack
       function getInputElement() {
         if (attr.mdFloatingLabel) {
           return '\
-            <md-input-container ng-if="floatingLabel">\
+            <md-input-container md-theme="default-dark" ng-if="floatingLabel">\
               <label>{{floatingLabel}}</label>\
               <input type="search"\
                   id="fl-input-{{$mdAutocompleteCtrl.id}}"\
@@ -11478,7 +11485,8 @@ function MdAutocomplete ($mdTheming, $mdUtil) {
             </md-input-container>';
         } else {
           return '\
-            <input type="search"\
+            <md-input-container md-theme="default-dark" md-no-float>\
+              <input type="search"\
                 id="input-{{$mdAutocompleteCtrl.id}}"\
                 name="{{name}}"\
                 ng-if="!floatingLabel"\
@@ -11494,7 +11502,8 @@ function MdAutocomplete ($mdTheming, $mdUtil) {
                 aria-autocomplete="list"\
                 aria-haspopup="true"\
                 aria-activedescendant=""\
-                aria-expanded="{{!$mdAutocompleteCtrl.hidden}}"/>';
+                aria-expanded="{{!$mdAutocompleteCtrl.hidden}}"/>\
+              </md-input-container>';
         }
       }
     }

@@ -3,6 +3,7 @@ package com.skroll.classifier;
 import com.skroll.analyzer.model.applicationModel.DefModelRVSetting;
 import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
 import com.skroll.analyzer.model.applicationModel.TOCModelRVSetting;
+import com.skroll.classifier.factory.ModelFactory;
 import com.skroll.document.Document;
 
 import javax.inject.Inject;
@@ -45,14 +46,17 @@ public class ClassifierFactory {
         return classifier;
     }
    //Todo: need to add the classifier per document. currently returning all classifiers no matter what document is.
-   public List<Classifier> getClassifier(Document document) throws Exception {
+   public List<Classifier> getClassifiers() throws Exception {
+       return getClassifiers(null);
+   }
+       public List<Classifier> getClassifiers(Document document) throws Exception {
        List<Classifier> classifierList = new ArrayList<>();
        classifierList.add(getClassifier(Category.DEFINITION));
        classifierList.add(getClassifier(Category.TOC_1));
        classifierList.add(getClassifier(Category.TOC_2));
-       classifierList.add(getClassifier(Category.TOC_3));
-       classifierList.add(getClassifier(Category.TOC_4));
-       classifierList.add(getClassifier(Category.TOC_5));
+       //classifierList.add(getClassifier(Category.TOC_3));
+       //classifierList.add(getClassifier(Category.TOC_4));
+       //classifierList.add(getClassifier(Category.TOC_5));
        return classifierList;
    }
 }

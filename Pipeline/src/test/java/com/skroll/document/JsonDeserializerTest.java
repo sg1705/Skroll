@@ -60,6 +60,10 @@ public class JsonDeserializerTest {
            // assert((trainingWeight.get(0).floatValue()==1.0));
             logger.debug("JSON:" + JsonDeserializer.getJson(document));
         }
+        assert (document.getSource().equals("source"));
+        assert (document.getId() != null);
+        assert (document.getId().equals("101"));
+        assert (document.getTarget().equals("target"));
     }
 
     private Document createDoc() {

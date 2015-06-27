@@ -1,5 +1,14 @@
 package com.skroll.rest;
 
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.skroll.document.Document;
+import com.skroll.document.factory.CorpusFSDocumentFactoryImpl;
+import com.skroll.document.factory.DocumentFactory;
+import com.skroll.util.SkrollTestGuiceModule;
+import com.skroll.util.Configuration;
+import com.skroll.util.TestConfiguration;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
@@ -21,15 +30,32 @@ import java.io.File;
  * Created by saurabh on 5/10/15.
  */
 public class APITest {
-    public static final Logger logger = LoggerFactory
-            .getLogger(DocAPITest.class);
+    public static final Logger logger = LoggerFactory.getLogger(DocAPITest.class);
 
-    WebServer jettyServer = new WebServer(8888);
-    String documentId=null;
+    WebServer jettyServer = new WebServer(8888, new SkrollTestGuiceModule());
+    protected String documentId = null;
+
+    protected DocumentFactory factory;
+    protected Configuration configuration;
+
+
     @Before
     public void setup () throws Exception {
 
         try {
+            Injector injector = Guice.createInjector(new AbstractModule() {
+                @Override
+                protected void configure() {
+                    bind(DocumentFactory.class)
+                            .to(CorpusFSDocumentFactoryImpl.class);
+
+                    bind(Configuration.class).to(TestConfiguration.class);
+                }
+            });
+
+            factory = injector.getInstance(DocumentFactory.class);
+            configuration = injector.getInstance(Configuration.class);
+
             jettyServer.start();
         } catch (Exception e) {
             e.printStackTrace();
@@ -54,12 +80,9 @@ public class APITest {
         multiPart.setMediaType(MediaType.MULTIPART_FORM_DATA_TYPE);
 
         FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file",
-                //new File("src/main/resources/parser/extractor/jQuery/dish-10k.html"),
                 new File("src/test/resources/classifier/smaller-indenture.html"),
                 MediaType.APPLICATION_OCTET_STREAM_TYPE);
-        //byte[] bytes = new byte[10];
-        multiPart.
-                bodyPart(fileDataBodyPart);
+        multiPart.bodyPart(fileDataBodyPart);
         Response response =null;
         try {
             response = webTarget.request(MediaType.TEXT_HTML)
@@ -68,8 +91,10 @@ public class APITest {
             logger.error("SEVERE: An I/O error has occurred while writing a response message entity to the container output stream.");
         }
         logger.debug("Cookies:" + response.getCookies().get("documentId").getValue());
+        Document doc = this.factory.get("smaller-indenture.html");
+        assert (doc != null);
+        //check existence of file in the folder
 
-        //System.out.println(response.readEntity(String.class));
         return response.getCookies().get("documentId").getValue();
     }
 

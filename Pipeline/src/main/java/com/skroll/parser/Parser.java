@@ -2,6 +2,7 @@ package com.skroll.parser;
 
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
+import com.skroll.document.DocumentHelper;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.extractor.ParserException;
 import com.skroll.pipeline.Pipeline;
@@ -86,12 +87,32 @@ public class Parser {
 
     public static Document reParse(Document document) throws ParserException {
         //get the source html
+        if (document.getSource() == null) {
+            //source is null
+            logger.info("Source html is not available for [{}]", document.getId());
+            String url = document.get(CoreAnnotations.SourceUrlAnnotation.class);
+            if (url != null) {
+                logger.info("Fetching source from [{}]", document.get(CoreAnnotations.SourceUrlAnnotation.class));
+                try {
+                    document.setSource(DocumentHelper.fetchHtml(url));
+                } catch (Exception e) {
+                    logger.error("Cannot fetch new html during re-parsing");
+                    return document;
+                }
+
+            } else {
+                logger.info("Source html is null and SourceUrl is null during reparsing");
+                return document;
+            }
+            // will try to fetch from SourceUrl
+        }
         Document newDoc = Parser.parseDocumentFromHtml(document.getSource());
+        newDoc.setId(document.getId());
         // if parsed documents has different paragraphs then log error
         if (!document.equals(newDoc)) {
-            logger.error("Reparsed document is not the same as the old doc. " +
+            logger.info("Reparsed document is not the same as the old doc. " +
                     "Number of paragraphs are different {}", document.get(CoreAnnotations.IdAnnotation.class));
-
+            return document;
         }
         for(int ii = 0; ii < newDoc.getParagraphs().size(); ii++) {
             //copy annotations over
@@ -112,7 +133,6 @@ public class Parser {
                 nPara.set(CoreAnnotations.TrainingWeightAnnotationFloat.class, trainingW);
             }
         }
-        newDoc.setId(document.getId());
         return newDoc;
     }
 

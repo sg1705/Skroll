@@ -14,7 +14,16 @@ TODO hacks for search
 Commented line-height and height for the .md-autocomplete-suggestions style
 
 2. angular-material.js
-Added scrolling in updateScroll method in MdAutocompleteCtrl 
+Added scrolling in updateScroll method in MdAutocompleteCtrl
+
+There are four hacks in angularjs-material
+
+a) handleQuery() method sets a max-width to 270px
+b) updateScroll() add an action to scroll to paragraph
+c) angular-material.css; commented height: 450px
+d) angular-material.js changed the height section.. commented some assumptions about height
+c) angular-material.js .. added <md-input-container> to md-autocomplete directive
+   with default-dark theme
 
 3. start.html points to non-minified versions of angular-material
 
@@ -42,12 +51,14 @@ SearchCtrl.prototype.getMatches = function(searchText) {
 		var paraId = parseInt(str);
 		levelsPara.push(paraId);
 	}
+	var self = this;
 	//iterate over each search result
 	$.each(elements, function(i, val) {
 		var id = parseInt($(val).attr('id').split("_")[1]);
 		var header;
 		var displayText;
 		var isItem = false;
+		var surroundingStartIndex = 80;
 		//this is a hack
 		if (id > 1237) {
 			//iterate over each level 2 heading
@@ -57,12 +68,13 @@ SearchCtrl.prototype.getMatches = function(searchText) {
 					if (jj > 1) {
 						header = headerItems[jj - 1].term;
 						var text = $('#p_' + id).text();
-						var indexOfSearch = text.indexOf(searchText);
-						if (indexOfSearch > 40) {
-							displayText = text.substring(0, 39) + '..... ' + searchText + ' .... ';
-						} else {
-							displayText = text.substring(0, indexOfSearch) + text.substring(indexOfSearch + 1, searchText.length) + '...';
-						}
+						displayText = self.getSurroundingText(text, searchText);
+						// var indexOfSearch = text.indexOf(searchText);
+						// if (indexOfSearch > surroundingStartIndex) {
+						// 	displayText = text.substring(0, surroundingStartIndex - 1) + '..... ' + searchText + ' .... ';
+						// } else {
+						// 	displayText = text.substring(0, indexOfSearch) + text.substring(indexOfSearch + 1, searchText.length) + '...';
+						// }
 						isItem = true;
 						break;
 					}
@@ -76,9 +88,47 @@ SearchCtrl.prototype.getMatches = function(searchText) {
 				items.push(item);				
 			}
 		}
+		if ((searchText.length <=2) && (items.length > 10)) {
+			return false;
+		}
+
 	})
 	return items;
 }
+
+SearchCtrl.prototype.getSurroundingText = function(paragraphText, searchString) {
+	var indexOfSearch = paragraphText.indexOf(searchString);
+	var lengthOfSearch = searchString.length;
+	var expandLeft = 50;
+	var expandRight = 50;
+	var startLeft = 0;
+	var endRight = 0;
+	var length = paragraphText.length;
+	if (indexOfSearch < expandLeft) {
+		startLeft = 0;
+	} else {
+		startLeft = indexOfSearch - expandLeft
+	}
+
+	if ( (length - (indexOfSearch + lengthOfSearch)) < expandRight) {
+		endRight = length -1;
+	} else {
+		endRight = (indexOfSearch + lengthOfSearch + expandRight);
+	}
+	console.log(indexOfSearch + ":"+ endRight);
+	var text = paragraphText.substr(startLeft, endRight - startLeft);
+	return text;
+}
+
+SearchCtrl.prototype.enterSearchBox = function() {
+  LHSModel.smodel.hover = true;
+}
+
+SearchCtrl.prototype.leaveSearchBox = function() {
+  LHSModel.smodel.hover = false;
+}
+
+
 
 SearchCtrl.prototype.searchTextChange = function(text) {
   

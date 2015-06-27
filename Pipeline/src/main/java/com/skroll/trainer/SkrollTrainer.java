@@ -1,25 +1,20 @@
 package com.skroll.trainer;
 
-import com.google.common.collect.FluentIterable;
-import com.google.common.io.Files;
+import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.skroll.classifier.ClassifierFactory;
-import com.skroll.document.CoreMap;
-import com.skroll.document.Document;
-import com.skroll.document.DocumentFactory;
-import com.skroll.document.annotation.CoreAnnotations;
-import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
+import com.skroll.classifier.factory.CorpusFSModelFactoryImpl;
+import com.skroll.classifier.factory.ModelFactory;
+import com.skroll.document.factory.CorpusFSDocumentFactoryImpl;
+import com.skroll.document.factory.DocumentFactory;
 import com.skroll.util.Configuration;
 import com.skroll.util.ObjectPersistUtil;
-import com.skroll.util.SkrollGuiceModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
+import javax.inject.Inject;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -32,61 +27,46 @@ import java.util.List;
 --classify src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html
 */
 
-public class SkrollTrainer {
+public class SkrollTrainer extends Trainer {
     //The following line needs to be added to enable log4j
     public static final Logger logger = LoggerFactory
             .getLogger(SkrollTrainer.class);
-    Injector injector = Guice.createInjector(new SkrollGuiceModule());
-    ClassifierFactory classifierFactory = injector.getInstance(ClassifierFactory.class);
-    Configuration configuration = new Configuration();
-    DocumentFactory documentFactory = new DocumentFactory(configuration);
-    String PRE_EVALUATED_FOLDER = configuration.get("preEvaluatedFolder", "/tmp/");
 
-    public static void main(String[] args) throws IOException, ObjectPersistUtil.ObjectPersistException {
+    @Inject
+    public SkrollTrainer() {
+        try {
+
+        Injector injector = Guice.createInjector(new AbstractModule() {
+            @Override
+            protected void configure() {
+                bind(DocumentFactory.class)
+                        .to(CorpusFSDocumentFactoryImpl.class);
+                bind(ModelFactory.class)
+                        .to(CorpusFSModelFactoryImpl.class);
+                bind(Configuration.class).to(TrainerConfiguration.class);
+                bind(ClassifierFactory.class);
+            }
+        });
+        classifierFactory = injector.getInstance(ClassifierFactory.class);
+        documentFactory = injector.getInstance(DocumentFactory.class);
+        configuration = injector.getInstance(Configuration.class);
+        PRE_EVALUATED_FOLDER = configuration.get("preEvaluatedFolder", "/tmp/");
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    }
+    public static void main(String[] args) throws IOException, ObjectPersistUtil.ObjectPersistException, Exception {
 
         SkrollTrainer skrollTrainer = new SkrollTrainer();
 
         //ToDO: use the apache common commandline
-        if (args[0].equals("--trainWithWeight")) {
-            logger.debug("folder Name :" + args[1]);
-            skrollTrainer.trainFolderUsingTrainingWeight(args[1]);
+        if (args!= null && args.length >1) {
+            if (args[0].equals("--trainWithWeight")) {
+                logger.debug("folder Name :" + args[1]);
+                skrollTrainer.trainFolderUsingTrainingWeight(args[1]);
+            }
         } else {
             skrollTrainer.trainFolderUsingTrainingWeight(skrollTrainer.PRE_EVALUATED_FOLDER);
-        }
-    }
-
-    public void trainFolderUsingTrainingWeight (String preEvaluatedFolder)  {
-        FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(preEvaluatedFolder));
-        List<String> docLists = new ArrayList<String>();
-        for (File f : iterable) {
-            if (f.isFile()) {
-                trainFileUsingTrainingWeight(f.getName());
-            }
-        }
-
-    }
-
-    public  void trainFileUsingTrainingWeight (String preEvaluatedFile) {
-        Document doc = documentFactory.get(preEvaluatedFile);
-        //iterate over each paragraph
-        for(CoreMap paragraph : doc.getParagraphs()) {
-            if (paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)) {
-                TrainingWeightAnnotationHelper.clearOldTrainingWeight(paragraph);
-            }
-        }
-        final Document finalDoc = doc;
-        try {
-            classifierFactory.getClassifier(doc).forEach(c -> c.trainWithWeight(finalDoc));
-            classifierFactory.getClassifier(doc).forEach(c -> {
-                try {
-                    c.persistModel();
-                } catch (ObjectPersistUtil.ObjectPersistException e) {
-                    logger.error("Failed to persist classifier: %s"+ c.toString(), e);
-                    e.printStackTrace();
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

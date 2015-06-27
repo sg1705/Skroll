@@ -91,14 +91,12 @@ sk-lhs .md-button {
 
 
 
-/*
-md-content.sk-lhs-hover:hover {
-    opacity: 1;
+md-content.sk-lhs-search-hover {
+    opacity: 0.05;
 }
-*/
 
 md-content.sk-lhs-hover {
-    opacity: 1;
+    opacity: 1.0;
     -webkit-transition: 0.25s cubic-bezier(0.35, 0, 0.25, 1);
     -webkit-transition-property: opacity;
     -moz-transition: 0.25s cubic-bezier(0.35, 0, 0.25, 1);
@@ -147,4 +145,18 @@ sk-lhs .menu-list.ng-hide {
 #content p {
  line-height: 1;
  margin:0px;
+}
+
+
+/**
+* search
+**/
+
+md-toolbar md-autocomplete.md-default-dark-theme {
+  background: none;
+  box-shadow: none
+}
+
+md-toolbar md-autocomplete md-input-container.md-default-dark-theme .md-input {
+    text-shadow: none;
 }

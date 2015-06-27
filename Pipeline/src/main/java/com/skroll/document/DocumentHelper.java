@@ -1,10 +1,13 @@
 package com.skroll.document;
 
+import com.google.common.io.Resources;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.Parser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +53,19 @@ public class DocumentHelper {
         }
         return false;
     }
+    public static boolean isObserved(Document document) {
+        if(document==null) {
+            logger.info("Document is not found. returning null");
+            return false;
+        }
+        for (CoreMap para : document.getParagraphs()) {
+            if (DocumentHelper.isObserved(para)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static boolean startsWithQuote(CoreMap coreMap) {
         if (coreMap.containsKey(CoreAnnotations.StartsWithQuote.class)) {
             return coreMap.get(CoreAnnotations.StartsWithQuote.class);
@@ -156,6 +172,14 @@ public class DocumentHelper {
         }
         //looks good
         return true;
+    }
+
+    public static String fetchHtml(String url) throws Exception {
+        long startTime = System.currentTimeMillis();
+        //fetch the document
+        String content = Resources.asCharSource(new URL(url), Charset.forName("UTF-8")).read();
+        logger.info("[{}]ms to fetch document", (System.currentTimeMillis() - startTime));
+        return content;
     }
 
 }

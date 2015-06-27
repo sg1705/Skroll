@@ -3,6 +3,9 @@ package com.skroll.rest;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -10,9 +13,12 @@ import com.skroll.document.DocumentHelper;
 import com.skroll.document.JsonDeserializer;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
+import com.skroll.document.factory.CorpusFSDocumentFactoryImpl;
+import com.skroll.document.factory.DocumentFactory;
 import com.skroll.pipeline.util.Constants;
 import com.skroll.util.Configuration;
 import com.skroll.util.ObjectPersistUtil;
+import com.skroll.util.TestConfiguration;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,16 +34,15 @@ import java.util.List;
 
 public class DocAPITest extends APITest {
 
-    @Before
-    public void setup () throws Exception {
-
-        try {
-            jettyServer.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        documentId = testFileUpload();
-    }
+//    @Before
+//    public void setup () throws Exception {
+//        try {
+//            jettyServer.start();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        documentId = testFileUpload();
+//    }
     @After
     public void shutdown() {
         try {
@@ -50,7 +55,6 @@ public class DocAPITest extends APITest {
     @Test
     public void test_UploadFile_UpdateTerms() throws Exception, ObjectPersistUtil.ObjectPersistException {
 
-        Configuration configuration = new Configuration();
         String preEvaluatedFolder = configuration.get("preEvaluatedFolder","/tmp/");
         Document doc = JsonDeserializer.fromJson(Files.toString(new File(preEvaluatedFolder + documentId), Constants.DEFAULT_CHARSET));
         for(CoreMap coreMap: doc.getParagraphs()){
@@ -81,7 +85,6 @@ public class DocAPITest extends APITest {
     @Test
     public void test_UploadFile_RemoveTerms() throws Exception, ObjectPersistUtil.ObjectPersistException {
         testRemoveTerms();
-        Configuration configuration = new Configuration();
         String preEvaluatedFolder = configuration.get("preEvaluatedFolder","/tmp/");
         Document doc = JsonDeserializer.fromJson(Files.toString(new File(preEvaluatedFolder + documentId), Constants.DEFAULT_CHARSET));
         assert(doc.getTarget().contains("Capital Stock"));
@@ -124,19 +127,6 @@ public class DocAPITest extends APITest {
         String response = webTarget.request(MediaType.APPLICATION_JSON).cookie(new  NewCookie("documentId", documentId)).get(String.class);
         logger.debug("Here is the response: " + response);
         assert(response.contains("model has been updated"));
-        client.close();
-    }
-
-    @Test
-    public void testSaveBenchmarkFile() throws Exception {
-        testUpdateTerms();
-        String TARGET_URL = "http://localhost:8888/restServices/doc/saveBenchmarkFile";
-        Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(TARGET_URL);
-
-        String response = webTarget.request(MediaType.APPLICATION_JSON).cookie(new NewCookie("documentId", documentId)).get(String.class);
-        logger.debug("Here is the response: " + response);
-        assert (response.contains("benchmark file is stored"));
         client.close();
     }
 
