@@ -10,7 +10,7 @@ public class SkrollTrainerTest {
     @Test
     public void TestTrainWithWeight(){
         SkrollTrainer skrollTrainer = new SkrollTrainer();
-        String fileName = "build/resources/main/preEvaluated/";
+        String fileName = "src/test/resources/document/documentFactory/";
         try {
             skrollTrainer.trainFolderUsingTrainingWeight(fileName);
         } catch (Exception e) {

@@ -43,7 +43,7 @@ public class SkrollTrainer extends Trainer {
                         .to(CorpusFSDocumentFactoryImpl.class);
                 bind(ModelFactory.class)
                         .to(CorpusFSModelFactoryImpl.class);
-                bind(Configuration.class);
+                bind(Configuration.class).to(TrainerConfiguration.class);
                 bind(ClassifierFactory.class);
             }
         });

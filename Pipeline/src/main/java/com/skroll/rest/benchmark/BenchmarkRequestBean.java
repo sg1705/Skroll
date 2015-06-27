@@ -2,10 +2,10 @@ package com.skroll.rest.benchmark;
 
 import com.skroll.classifier.Classifier;
 import com.skroll.classifier.ClassifierFactory;
-import com.skroll.document.Document;
 import com.skroll.document.factory.BenchmarkFSDocumentFactory;
 import com.skroll.document.factory.CorpusFSDocumentFactory;
 import com.skroll.document.factory.DocumentFactory;
+
 import javax.inject.Inject;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
@@ -21,7 +21,6 @@ import java.util.Map;
 public class BenchmarkRequestBean {
 
     private String documentId;
-    private Document document;
     private List<Classifier> classifiers;
     private DocumentFactory benchmarkDocumentFactory;
     private DocumentFactory corpusDocumentFactory;
@@ -30,9 +29,6 @@ public class BenchmarkRequestBean {
         return documentId;
     }
 
-    public Document getDocument() {
-        return document;
-    }
 
     @Inject
     public BenchmarkRequestBean(@QueryParam("documentId") String documentId,
@@ -51,10 +47,9 @@ public class BenchmarkRequestBean {
         if (documentId != null) {
             //fetch it from factory
             this.documentId = documentId;
-            this.document = benchmarkDocumentFactory.get(documentId);
         }
 
-        this.classifiers = classifierFactory.getClassifiers(this.document);
+        this.classifiers = classifierFactory.getClassifiers();
         this.benchmarkDocumentFactory = benchmarkDocumentFactory;
         this.corpusDocumentFactory = corpusDocumentFactory;
     }

@@ -46,7 +46,13 @@ public class BenchmarkAPI {
     public Response saveBenchmarkFile(@Context HttpHeaders hh, @BeanParam BenchmarkRequestBean request) {
 
         String documentId = request.getDocumentId();
-        Document doc = request.getDocument();
+        Document doc = null;
+        try {
+            doc = request.getCorpusDocumentFactory().get(documentId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return logErrorResponse("document cannot be found for document id: " + documentId);
+        }
         if (doc == null) {
             return logErrorResponse("document cannot be found for document id: " + documentId);
         }
