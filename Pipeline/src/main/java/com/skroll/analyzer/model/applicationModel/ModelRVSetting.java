@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.*;
 import com.skroll.analyzer.model.bn.config.NBFCConfig;
+import com.skroll.analyzer.model.bn.config.NBMNConfig;
 import com.skroll.document.annotation.CoreAnnotations;
 
 import java.util.List;
@@ -16,8 +17,8 @@ import java.util.List;
 public class ModelRVSetting {
 
     public static final int NUM_WORDS_TO_USE_PER_PARAGRAPH = 20;
-    @JsonProperty("nbfcConfig")
-    NBFCConfig nbfcConfig;
+    @JsonProperty("nbmnConfig")
+    NBMNConfig nbmnConfig;
     @JsonProperty("wordType")
     RandomVariable wordType;
     @JsonProperty("wordFeatures")
@@ -63,8 +64,8 @@ public class ModelRVSetting {
                           String categoryName) {
         RandomVariable wordType = RVCreater.createWordLevelRVWithComputer(new WordIsInCategoryComputer(categoryId), "wordIsInCategory-" + categoryId);
         RandomVariable paraType = RVCreater.createDiscreteRVWithComputer(new ParaInCategoryComputer(categoryId), "paraTypeIsCategory-" + categoryId);
-        nbfcConfig = new NBFCConfig(paraType, paraFeatureVars, paraDocFeatureVars,
-                RVCreater.createDocFeatureRVs(paraDocFeatureVars,categoryName), wordVars);
+        nbmnConfig = new NBMNConfig(paraType, paraFeatureVars, paraDocFeatureVars,
+                RVCreater.createNBMNDocFeatureRVs(paraDocFeatureVars, paraType, categoryName), wordVars);
         RVValues.addValueSetter(paraType, new RVValueSetter(categoryId, CoreAnnotations.CategoryAnnotations.class));
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;
@@ -74,20 +75,20 @@ public class ModelRVSetting {
 
 
     public ModelRVSetting(
-            @JsonProperty("nbfcConfig") NBFCConfig nbfcConfig,
+            @JsonProperty("nbmnConfig") NBMNConfig nbmnConfig,
             @JsonProperty("wordType") RandomVariable wordType,
             @JsonProperty("wordFeatures") List<RandomVariable> wordFeatures,
             @JsonProperty("categoryId") int categoryId,
             @JsonProperty("categoryName") String categoryName) {
-        this.nbfcConfig = nbfcConfig;
+        this.nbmnConfig = nbmnConfig;
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;
         this.categoryId = categoryId;
         this.categoryName=categoryName;
     }
 
-    public NBFCConfig getNbfcConfig() {
-        return nbfcConfig;
+    public NBMNConfig getNbmnConfig() {
+        return nbmnConfig;
     }
 
     public RandomVariable getWordType() {

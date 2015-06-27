@@ -24,11 +24,11 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
     ModelRVSetting setting = new DefModelRVSetting(Category.DEFINITION, Category.DEFINITION_NAME);
     TrainingDocumentAnnotatingModel tModel = new TrainingDocumentAnnotatingModel();
-//    String testingFileName = "src/test/resources/classifier/mini-indenture.html";
 
-    //String testingFileName = "src/test/resources/classifier/smaller-indenture.html";
+    //    String testingFileName = "src/test/resources/classifier/smaller-indenture.html";
+//    String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/mini-indenture.html";
     String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
-//    String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/AMD CA - Def No Quotes.html";
+//    String testingFileName = "src/test/resources/analyzer/hmmTrainingDocs/AMD CA - Def No Quotes.html";
 
 
     File file = new File(testingFileName);
@@ -46,7 +46,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
         doneSetup = true;
 
         tModel.updateWithDocument(doc);
-        model = new ProbabilityDocumentAnnotatingModel(tModel.getTnbfModel(), tModel.getHmm(), doc,
+        model = new ProbabilityDocumentAnnotatingModel(tModel.getTnbmModel(), tModel.getHmm(), doc,
                 new DefModelRVSetting(Category.DEFINITION, Category.DEFINITION_NAME)
                 );
         model.getHmm().updateProbabilities();
@@ -68,33 +68,35 @@ public class ProbabilityDocumentAnnotatingModelTest {
     public void testDocBeliefs(){
         printDocBeliefs();
         for (int i=0; i<250;i++) {
+            System.out.println("iteration " + i);
             model.passMessagesToParagraphCategories();
             model.passMessageToDocumentFeatures();
             printDocBeliefs();
         }
         System.out.println("After passing messages :\n");
-        double[][] dBelieves = model.getDocumentFeatureBelief();
-        System.out.println(Arrays.toString(dBelieves[0]));
-        assert (Arrays.toString(dBelieves[0]).equals("[-222459.7349654401, 0.0]"));
+        double[][][] dBelieves = model.getDocumentFeatureBelief();
+        System.out.println(Arrays.deepToString(dBelieves[0]));
+        assert (Arrays.toString(dBelieves[0][1]).equals("[-24590.28375297469, 0.0]"));
     }
 
     void printDocBeliefs(){
         System.out.print("document level feature believes\n");
 //        System.out.println(model.DEFAULT_DOCUMENT_FEATURES);
-        System.out.print(" " + model.getNbfcConfig().getDocumentFeatureVarList());
-        double[][] dBelieves = model.getDocumentFeatureBelief();
+        System.out.print(" " + model.getNbmnConfig().getDocumentFeatureVarList());
+        System.out.println();
+        double[][][] dBelieves = model.getDocumentFeatureBelief();
         for (int i=0; i<dBelieves.length; i++){
-            System.out.println(Arrays.toString(dBelieves[i]));
+            System.out.println(Arrays.deepToString(dBelieves[i]));
         }
     }
 
     void printBelieves(){
         System.out.print("document level feature believes\n");
 //        System.out.println(model.DEFAULT_DOCUMENT_FEATURES);
-        System.out.print(" " + model.getNbfcConfig().getDocumentFeatureVarList());
-        double[][] dBelieves = model.getDocumentFeatureProbabilities();
+        System.out.println(" " + model.getNbmnConfig().getDocumentFeatureVarList());
+        double[][][] dBelieves = model.getDocumentFeatureProbabilities();
         for (int i=0; i<dBelieves.length; i++){
-            System.out.println(Arrays.toString(dBelieves[i]));
+            System.out.println(Arrays.deepToString(dBelieves[i]));
         }
 
         List<CoreMap> paraList = doc.getParagraphs();
@@ -223,7 +225,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
         }
         model.updateBeliefWithObservation(observedParas);
 
-        testDocBeliefs();
+//        testDocBeliefs();
 
 //        for (int i=0;i<5;i++) {
 //            model.passMessagesToParagraphCategories();

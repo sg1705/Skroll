@@ -11,6 +11,7 @@ import com.skroll.classifier.Category;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.io.*;
 import java.util.Arrays;
@@ -45,6 +46,7 @@ public class TrainingDocumentAnnotatingModelPersistenceTest {
     }
 
     //TODO: need to rewrite this test case
+    @Test
     public void testPersistModel() throws Exception {
         TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel();
         doc = TestHelper.setUpTestDoc();

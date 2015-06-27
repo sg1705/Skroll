@@ -91,4 +91,28 @@ public class WordNode                                                           
                 ", parent=" + parent.getVariable() +
                 '}';
     }
+
+
+//  todo: the parameters Map equals method doesn't work directly because it has arrays used for values in the map. need to implement manual check through all entry.
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//
+//        WordNode wordNode = (WordNode) o;
+//
+//        if (!getParameters().equals(wordNode.getParameters())) return false;
+//        if (!getParent().equals(wordNode.getParent())) return false;
+//        // Probably incorrect - comparing Object[] arrays with Arrays.equals
+//        return Arrays.equals(observedWords, wordNode.observedWords);
+//
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        int result = getParameters().hashCode();
+//        result = 31 * result + getParent().hashCode();
+//        result = 31 * result + Arrays.hashCode(observedWords);
+//        return result;
+//    }
 }
