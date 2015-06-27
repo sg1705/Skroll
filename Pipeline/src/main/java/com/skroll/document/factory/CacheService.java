@@ -38,6 +38,6 @@ public class CacheService<T> extends CacheLoader<String, T> implements RemovalLi
 
     @Override
     public void onRemoval(RemovalNotification<String, T> removal) {
-        cacheHandler.actionOnRemoval(removal.getKey(),removal.getValue());
+        cacheHandler.onRemoval(removal.getKey(),removal.getValue());
     }
 }

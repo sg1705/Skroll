@@ -50,7 +50,7 @@ public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory, 
         }
 
     @Override
-    public void actionOnRemoval(String key, Document value) {
+    public void onRemoval(String key, Document value) {
         if(getSaveLaterDocumentId().contains(key)) {
             try {
                 saveDocument(value);

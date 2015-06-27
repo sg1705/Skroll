@@ -16,7 +16,7 @@ public class BenchmarkFSDocumentFactoryImpl extends
 
     CacheService<Document> documentCache;
 
-    static ConcurrentHashSet<String> saveLaterDocumentIds = new ConcurrentHashSet<>();
+    protected ConcurrentHashSet<String> saveLaterDocumentIds = new ConcurrentHashSet<>();
 
     @Override
     protected CacheService<Document>  getDocumentCache() {

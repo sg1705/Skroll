@@ -20,7 +20,7 @@ public class CorpusFSDocumentFactoryImpl extends
         return documentCache;
     }
 
-    static ConcurrentHashSet<String> saveLaterDocumentIds= new ConcurrentHashSet<>();;
+    protected ConcurrentHashSet<String> saveLaterDocumentIds= new ConcurrentHashSet<>();;
 
     @Override
     protected ConcurrentHashSet<String> getSaveLaterDocumentId() {
