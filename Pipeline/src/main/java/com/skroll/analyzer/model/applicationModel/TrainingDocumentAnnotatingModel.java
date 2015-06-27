@@ -1,12 +1,12 @@
 package com.skroll.analyzer.model.applicationModel;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skroll.analyzer.data.NBMNData;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
 import com.skroll.analyzer.model.bn.*;
-import com.skroll.analyzer.model.bn.config.NBFCConfig;
 import com.skroll.analyzer.model.bn.config.NBMNConfig;
 import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.analyzer.model.bn.node.DiscreteNode;
@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
-    @JsonProperty("tnbfModel")
+    @JsonProperty("tnbmModel")
     NaiveBayesWithMultiNodes tnbmModel;
 
 
@@ -54,7 +54,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
     @JsonCreator
     public TrainingDocumentAnnotatingModel(
-            @JsonProperty("tnbfModel") NaiveBayesWithMultiNodes tnbmModel,
+            @JsonProperty("tnbmModel") NaiveBayesWithMultiNodes tnbmModel,
             @JsonProperty("wordType") RandomVariable wordType,
             @JsonProperty("wordFeatures") List<RandomVariable> wordFeatures,
             @JsonProperty("nbmnConfig") NBMNConfig nbmnConfig,
@@ -219,14 +219,15 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
     }
 
-    public NaiveBayesWithMultiNodes getTnbfModel() {
+    @JsonIgnore
+    public NaiveBayesWithMultiNodes getTnbmModel() {
         return tnbmModel;
     }
 
     @Override
     public String toString() {
         return "TrainingDocumentAnnotatingModel{" +
-                "tnbfModel=" + tnbmModel +
+                "tnbmModel=" + tnbmModel +
                         "hmmModel=" + hmm +
                 '}';
     }
@@ -245,7 +246,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
         isEqual = isEqual && this.wordType.equals(model.wordType);
         isEqual = isEqual && RandomVariable.compareRVList(this.wordFeatures, model.wordFeatures);
         isEqual = isEqual && this.nbmnConfig.equals(model.nbmnConfig);
-        isEqual = isEqual && this.tnbmModel.equals(model.getTnbfModel());
+        isEqual = isEqual && this.tnbmModel.equals(model.getTnbmModel());
         return isEqual;
     }
 

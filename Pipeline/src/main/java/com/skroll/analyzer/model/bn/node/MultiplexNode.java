@@ -74,6 +74,7 @@ public class MultiplexNode {
         this.nodes = nodes;
     }
 
+    @JsonIgnore
     public DiscreteNode getActiveNode() {
         int selectedIndex = selectingNode.getObservation();
         return nodes[selectedIndex];
@@ -166,12 +167,13 @@ public class MultiplexNode {
 //                '}';
 //    }
 //
-//    public boolean equals(MultiplexNode dn) {
-//        boolean isEquals = true;
-//        isEquals = isEquals && RandomVariable.compareRVList(this.familyVariables, dn.familyVariables);
-//        isEquals = isEquals && compareDNList(this.parents, dn.parents);
-//        return isEquals;
-//    }
+public boolean equals(MultiplexNode dn) {
+    boolean isEquals = true;
+    isEquals = isEquals && DiscreteNode.compareDNList(
+            Arrays.asList(this.getNodes()), Arrays.asList(dn.getNodes()));
+    isEquals = isEquals && selectingNode.equals(dn.getSelectingNode());
+    return isEquals;
+}
 //
 //    public static boolean compareDNList(MultiplexNode[] list, MultiplexNode[] list2) {
 //        if (list.length != list2.length) {

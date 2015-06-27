@@ -27,7 +27,7 @@ public abstract class DocumentAnnotatingModel {
     @JsonProperty("wordFeatures")
     List<RandomVariable> wordFeatures = modelRVSetting.getWordFeatures();
 
-    @JsonProperty("nbfcConfig")
+    @JsonProperty("nbmnConfig")
     NBMNConfig nbmnConfig = modelRVSetting.getNbmnConfig();
     @JsonProperty("wordType")
     RandomVariable wordType = modelRVSetting.getWordType();
@@ -47,7 +47,7 @@ public abstract class DocumentAnnotatingModel {
     }
 
     @JsonIgnore
-    public NBMNConfig getNbfcConfig() {
+    public NBMNConfig getNbmnConfig() {
         return nbmnConfig;
     }
 

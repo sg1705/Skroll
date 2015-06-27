@@ -155,7 +155,8 @@ public class NodeInferenceHelperTest {
         pMultiNode.getNodes()[1].setParameters(new double[]{4, 5, 6, 7});
         double[][] message = NodeInferenceHelper.updateMessagesFromSelectingNode(pMultiNode, new double[]{1, -1});
         System.out.println(Arrays.deepToString(message));
-        assert (Arrays.deepToString(message).equals("[[2.0, 4.0], [4.0, 6.0]]"));
+        assert (Arrays.deepToString(message).
+                equals("[[4.126928011042972, 4.693147180559945], [4.126928011042972, 6.0181499279178094]]"));
 
     }
 }

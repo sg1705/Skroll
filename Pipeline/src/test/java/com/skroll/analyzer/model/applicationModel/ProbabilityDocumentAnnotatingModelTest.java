@@ -45,7 +45,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
         doneSetup = true;
 
         tModel.updateWithDocument(doc);
-        model = new ProbabilityDocumentAnnotatingModel(tModel.getTnbfModel(), tModel.getHmm(), doc,
+        model = new ProbabilityDocumentAnnotatingModel(tModel.getTnbmModel(), tModel.getHmm(), doc,
                 new DefModelRVSetting(Category.DEFINITION, Category.DEFINITION_NAME)
                 );
         model.getHmm().updateProbabilities();
@@ -81,7 +81,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
     void printDocBeliefs(){
         System.out.print("document level feature believes\n");
 //        System.out.println(model.DEFAULT_DOCUMENT_FEATURES);
-        System.out.print(" " + model.getNbfcConfig().getDocumentFeatureVarList());
+        System.out.print(" " + model.getNbmnConfig().getDocumentFeatureVarList());
         System.out.println();
         double[][][] dBelieves = model.getDocumentFeatureBelief();
         for (int i=0; i<dBelieves.length; i++){
@@ -92,7 +92,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
     void printBelieves(){
         System.out.print("document level feature believes\n");
 //        System.out.println(model.DEFAULT_DOCUMENT_FEATURES);
-        System.out.println(" " + model.getNbfcConfig().getDocumentFeatureVarList());
+        System.out.println(" " + model.getNbmnConfig().getDocumentFeatureVarList());
         double[][][] dBelieves = model.getDocumentFeatureProbabilities();
         for (int i=0; i<dBelieves.length; i++){
             System.out.println(Arrays.deepToString(dBelieves[i]));

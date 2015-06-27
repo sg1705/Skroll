@@ -111,10 +111,12 @@ public class NaiveBayesWithMultiNodes extends NaiveBayes {
     }
 
     public boolean equals(NaiveBayesWithMultiNodes nb) {
-        boolean isEquals = true;
+        boolean isEquals = super.equals(nb);
         for (int i = 0; i < documentFeatureNodes.size(); i++)
             isEquals = isEquals && DiscreteNode.compareDNList(
                     this.documentFeatureNodes.get(i), nb.documentFeatureNodes.get(i));
+        for (int i = 0; i < multiNodes.size(); i++)
+            isEquals = isEquals && multiNodes.get(i).equals(nb.getMultiNodes().get(i));
         return isEquals;
     }
 
