@@ -15,6 +15,7 @@ import org.junit.Test;
 public class CorpusFSDocumentFactoryImplTest {
 
     protected DocumentFactory factory;
+    protected DocumentFactory factory_for_SingletonTest;
     protected Configuration configuration;
 
     @Before
@@ -31,6 +32,7 @@ public class CorpusFSDocumentFactoryImplTest {
             });
 
             factory = injector.getInstance(DocumentFactory.class);
+            factory_for_SingletonTest = injector.getInstance(DocumentFactory.class);
             configuration = injector.getInstance(Configuration.class);
         } catch (Exception e) {
             e.printStackTrace();
@@ -55,10 +57,29 @@ public class CorpusFSDocumentFactoryImplTest {
         factory.putDocument(doc1);
         doc2.setId("testId2");
         factory.putDocument(doc2);
-        assert(((CorpusFSDocumentFactoryImpl)factory).getDocumentCache().size()==1);
+        assert(((CorpusFSDocumentFactoryImpl)factory).getDocumentCache().getLoadingCache().size()==1);
         assert(((CorpusFSDocumentFactoryImpl)factory).getSaveLaterDocumentId().contains("testId2"));
+
         assert(factory.getDocumentIds().contains("testId1"));
         assert(factory.getDocumentIds().contains("testId2"));
+    }
+
+    @Test
+    public void testSingleton() throws Exception {
+        Document doc1 = Parser.parseDocumentFromHtml("<div><u>this is a awesome</u></div>" +
+                "<div>This is second paragraph</div>" +
+                "<div>This is third paragraph</div");
+        Document doc2 = Parser.parseDocumentFromHtml("<div><u>this is a awesome</u></div>" +
+                "<div>This is second paragraph</div>" +
+                "<div>This is third paragraph</div");
+        // this doc has three paragraphs
+        doc1.setId("testId1");
+        factory.putDocument(doc1);
+        doc2.setId("testId2");
+        factory.putDocument(doc2);
+        assert(((CorpusFSDocumentFactoryImpl)factory).getDocumentCache().getLoadingCache().size()==1);
+        assert(((CorpusFSDocumentFactoryImpl)factory_for_SingletonTest).getDocumentCache().getLoadingCache().size()==1);
+        assert(factory.equals(factory_for_SingletonTest));
     }
 
     @Test

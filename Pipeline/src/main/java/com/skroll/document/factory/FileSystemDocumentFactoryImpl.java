@@ -1,9 +1,6 @@
 package com.skroll.document.factory;
 
 import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.google.common.cache.RemovalListener;
-import com.google.common.cache.RemovalNotification;
 import com.google.common.collect.FluentIterable;
 import com.google.common.io.Files;
 import com.skroll.document.Document;
@@ -12,6 +9,7 @@ import com.skroll.document.JsonDeserializer;
 import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.ParserException;
 import com.skroll.util.Configuration;
+import org.eclipse.jetty.util.ConcurrentHashSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,15 +22,13 @@ import java.util.List;
 /**
  * Created by saurabh on 4/16/15.
  */
-public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory {
+public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory, CacheHandler<Document> {
 
     public static final Logger logger = LoggerFactory.getLogger(FileSystemDocumentFactoryImpl.class);
     protected Configuration configuration;
     protected String folder;
-    protected boolean isDocChanged =false;
-    CacheLoader<String, Document> loader = new CacheLoader<String, Document>() {
-        @Override
-        public Document load(String documentId) throws Exception {
+
+    public Document load(String documentId) throws Exception {
             Document doc = null;
             String jsonString;
             try {
@@ -52,39 +48,40 @@ public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory {
             doc = getLatestParsed(doc);
             return doc;
         }
-    };
+
+    @Override
+    public void actionOnRemoval(String key, Document value) {
+        if(getSaveLaterDocumentId().contains(key)) {
+            try {
+                saveDocument(value);
+            } catch (Exception e) {
+                logger.error("Error in saving Document", e);
+            }
+            getSaveLaterDocumentId().remove(key);
+        }
+    }
 
     /**
      * abstract method to getDocumentsCache
      * @return
      */
-    protected abstract  LoadingCache<String, Document>  getDocumentCache();
+    protected abstract  CacheService<Document>  getDocumentCache();
 
     /**
      * abstract method to getDocumentsCache
      * @return
      */
-    protected abstract  List<String>  getSaveLaterDocumentId();
+    protected abstract ConcurrentHashSet<String> getSaveLaterDocumentId();
 
 
     /**
      * When the document evict from the cache, the removelListener will save that document in file
      */
-    RemovalListener<String, Document> removalListener = new RemovalListener<String, Document>() {
-        public void onRemoval(RemovalNotification<String, Document> removal) {
-            if(getSaveLaterDocumentId().contains(removal.getKey())) {
-                try {
-                    saveDocument(removal.getValue());
-                } catch (Exception e) {
-                    logger.error("Error in saving Document", e);
-                }
-                getSaveLaterDocumentId().remove(removal.getKey());
-            }
-        }
-    };
+
+
     @Override
     public boolean isDocumentExist(String documentId) throws Exception {
-        if (getDocumentCache().get(documentId)!=null) {
+        if (getDocumentCache().getLoadingCache().asMap().keySet().contains(documentId)) {
             return true;
         } else {
             File file = new File(folder + documentId);
@@ -99,12 +96,12 @@ public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory {
     public Document get(String documentId) throws Exception {
         Document doc = null;
         try {
-            doc = getDocumentCache().get(documentId);
+            doc = getDocumentCache().getLoadingCache().get(documentId);
         } catch (CacheLoader.InvalidCacheLoadException e){
             logger.error("doc is not Found in cache: {}", e.getMessage());
             return null;
         }
-        logger.debug("document map size: {}",getDocumentCache().size());
+        logger.debug("document map size: {}", getDocumentCache().getLoadingCache().size());
         return doc;
     }
 
@@ -114,7 +111,7 @@ public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory {
             throw new Exception("Cannot put document with [null] id");
         }
         getSaveLaterDocumentId().add(document.getId());
-        getDocumentCache().put(document.getId(),document);
+        getDocumentCache().getLoadingCache().put(document.getId(),document);
     }
 
     protected Document getLatestParsed(Document document) throws Exception {
@@ -139,7 +136,7 @@ public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory {
     @Override
     public void saveDocument(Document document) throws Exception {
         // call explicitly to cleanup the guava cache
-        getDocumentCache().cleanUp();
+        getDocumentCache().getLoadingCache().cleanUp();
         try {
             if (document.getId() == null) {
                 throw new Exception("Cannot save a document with [null] documentId");
@@ -164,7 +161,7 @@ public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory {
     @Override
     public List<String> getDocumentIds() throws Exception {
         List<String> docLists = new ArrayList<String>();
-        docLists.addAll(getDocumentCache().asMap().keySet());
+        docLists.addAll(getDocumentCache().getLoadingCache().asMap().keySet());
         FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(this.folder));
         for (File f : iterable) {
             if (f.isFile()) {

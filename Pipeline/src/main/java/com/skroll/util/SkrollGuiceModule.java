@@ -15,7 +15,6 @@ public class SkrollGuiceModule extends AbstractModule {
         bind(Configuration.class);
         bind(ClassifierFactory.class);
 
-
         //default binding for document factory
         bind(DocumentFactory.class)
                 .to(CorpusFSDocumentFactoryImpl.class);
@@ -40,7 +39,5 @@ public class SkrollGuiceModule extends AbstractModule {
         bind(ModelFactory.class)
                 .annotatedWith(BenchmarkFSModelFactory.class)
                 .to(BenchmarkFSModelFactoryImpl.class);
-
-
     }
 }
