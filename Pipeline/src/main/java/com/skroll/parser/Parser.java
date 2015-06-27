@@ -107,6 +107,7 @@ public class Parser {
             // will try to fetch from SourceUrl
         }
         Document newDoc = Parser.parseDocumentFromHtml(document.getSource());
+        newDoc.setId(document.getId());
         // if parsed documents has different paragraphs then log error
         if (!document.equals(newDoc)) {
             logger.info("Reparsed document is not the same as the old doc. " +
@@ -132,7 +133,6 @@ public class Parser {
                 nPara.set(CoreAnnotations.TrainingWeightAnnotationFloat.class, trainingW);
             }
         }
-        newDoc.setId(document.getId());
         return newDoc;
     }
 
