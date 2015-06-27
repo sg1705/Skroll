@@ -62,10 +62,18 @@ public class Trainer {
     public void trainFolderUsingTrainingWeight (String preEvaluatedFolder) throws Exception {
         FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(preEvaluatedFolder));
         List<String> docLists = new ArrayList<String>();
+        int counter=0;
         for (File f : iterable) {
             if (f.isFile()) {
                 displayHeapStats ();
                 trainFileUsingTrainingWeight(f.getName());
+            }
+            counter++;
+            if (counter ==10) {
+                for ( Classifier classifier : classifierFactory.getClassifiers()) {
+                    classifier.persistModel();
+                }
+                counter=0;
             }
         }
         for ( Classifier classifier : classifierFactory.getClassifiers()) {

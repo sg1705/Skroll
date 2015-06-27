@@ -44,7 +44,6 @@ public class RequestBean {
             Map<String, Cookie> pathParams = hh.getCookies();
              if(pathParams.get("documentId")!=null)
                  documentId = pathParams.get("documentId").getValue();
-
         }
 
         if (documentId != null) {
