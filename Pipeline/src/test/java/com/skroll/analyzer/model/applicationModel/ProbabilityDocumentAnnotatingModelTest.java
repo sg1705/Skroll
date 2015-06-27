@@ -67,6 +67,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
     public void testDocBeliefs(){
         printDocBeliefs();
         for (int i=0; i<250;i++) {
+            System.out.println("iteration " + i);
             model.passMessagesToParagraphCategories();
             model.passMessageToDocumentFeatures();
             printDocBeliefs();
@@ -74,7 +75,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
         System.out.println("After passing messages :\n");
         double[][][] dBelieves = model.getDocumentFeatureBelief();
         System.out.println(Arrays.deepToString(dBelieves[0]));
-        assert (Arrays.toString(dBelieves[0][0]).equals("[-222459.7349654401, 0.0]"));
+        assert (Arrays.toString(dBelieves[0][1]).equals("[-24590.28375297469, 0.0]"));
     }
 
     void printDocBeliefs(){
@@ -223,7 +224,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
         }
         model.updateBeliefWithObservation(observedParas);
 
-        testDocBeliefs();
+//        testDocBeliefs();
 
 //        for (int i=0;i<5;i++) {
 //            model.passMessagesToParagraphCategories();

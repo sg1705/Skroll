@@ -148,36 +148,62 @@ public class NodeInferenceHelper {
 
     }
 
+    /**
+     * this method trys to compute p(dik)*sum_j{ p(f|cj,dik) * p(cj) } = p(dik,f) ~ p(dik|f) for each di,
+     * where ~ means proportional to
+     * f is the observed paragraph feature, dik is the ith doc feature, k represent true or false,
+     * cj is the jth paragraph category.
+     * Now if i==j, then p(f|cj,djk) can be directly read from the parameters
+     * if i!=j, then we use an approximation p(f|cj,dik) ~= p(f|cj, dj0), where dj0 represent doc feature j is false.
+     * The idea behind this approximation is that if the doc feature doesn't match the category we're looking at, then
+     * the doc feature condition is treated disabled, and so we approximate it with no doc feature conditions,
+     * which is approximated the doc feature condition set to false.
+     * <p>
+     * So now with this approximation,
+     * p(dik)*sum_j{ p(f|cj,dik) * p(cj) }  ~= p(dik)*(p(f|ci,dik) * p(ci) + sum_{j!=i}p(f|cj,dj0) * p(cj) )
+     * <p>
+     * for efficiency, calculate  sum_{j}p(f|cj,dj0) * p(cj) and then determine sum_{j!=i}p(f|cj,dj0) * p(cj)
+     * todo: check to see how good is this aproaximation.
+     *
+     * @param multiNode
+     * @param messages
+     * @return
+     */
     public static double[][] updateMessagesFromSelectingNode(MultiplexNode multiNode, double[] messages) {
         DiscreteNode[] nodes = multiNode.getNodes();
         double[][] newMessages = new double[nodes.length][2]; // the none node does not pass message
         int observedValue = multiNode.getObservation();
 
         int featureSize = nodes[0].getVariable().getFeatureSize();
-        double pF = 0; // the probability of the observed feature value. This involves summing the probabilities, so not in log space
+        double sum = 0; // the probability of the observed feature value. This involves summing the probabilities, so not in log space
+        // calculates sum_cd{ p(c) * p(f|c,d) } = sum_cd{ p(fcd)/p(d) } ~
         for (int n = 0; n < nodes.length; n++) {
-            pF += Math.exp(messages[n] + nodes[n].getParameter(observedValue));
-            pF += Math.exp(messages[n] + nodes[n].getParameter(observedValue + featureSize));
+            sum += Math.exp(messages[n] + nodes[n].getParameter(observedValue));
+//            pF += Math.exp(messages[n] + nodes[n].getParameter(observedValue + featureSize));
         }
 
         for (int n = 0; n < nodes.length; n++) {
 
-            double pFC = Math.exp(messages[n] + nodes[n].getParameter(observedValue)) +
-                    Math.exp(messages[n] + nodes[n].getParameter(observedValue + featureSize));
-            double pFNotC = pF - pFC; // here pFNotC is used to approximate p(F|notC,D) and p(F|notC,notD)
+////            double pFC = Math.exp(messages[n] + nodes[n].getParameter(observedValue)) +
+////                    Math.exp(messages[n] + nodes[n].getParameter(observedValue + featureSize));
+//            double pFNotC = pF - pFC; // here pFNotC is used to approximate p(F|notC,D) and p(F|notC,notD)
+            double pFNotC = sum - Math.exp(messages[n] + nodes[n].getParameter(observedValue));
 
             // make use of the fact the parent var is binary.
-            newMessages[n][0] = nodes[n].getParameters()[observedValue];
+//            newMessages[n][0] = nodes[n].getParameters()[observedValue];
             newMessages[n][1] = nodes[n].getParameters()[observedValue + nodes[n].getVariable().getFeatureSize()];
 
-            newMessages[n][0] += messages[n];
+//            newMessages[n][0] += messages[n];
             newMessages[n][1] += messages[n];
 
-            newMessages[n][0] = Math.log(Math.exp(messages[n]) + pFNotC);
-            newMessages[n][1] = Math.log(Math.exp(messages[n]) + pFNotC);
+//            newMessages[n][0] = Math.log(Math.exp(messages[n]) + pFNotC);
+            newMessages[n][0] = Math.log(sum);
+            newMessages[n][1] = Math.log(Math.exp(newMessages[n][1]) + pFNotC);
         }
         return newMessages;
-    }
+    } // todo: the current implementation would make all newMessage[n][0] the same? does it make sense?
+    //   is this going to make all the corresponding doc beliefs the same?
+    //     does this mean we do not need to store or compute those values?
 
 
     public static WordNode createLogProbabilityWordNode(WordNode trainingNode, DiscreteNode parentNode){
