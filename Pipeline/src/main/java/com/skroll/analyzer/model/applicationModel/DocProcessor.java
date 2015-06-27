@@ -23,7 +23,7 @@ public class DocProcessor {
 
     //ToDO: commented out the cache
     // static Map<Document, List<CoreMap>> processedParasMap = new HashMap<>();
-    static Map<String, NBMN> processedDataMap = new HashMap<>();
+    static Map<String, NBMNData> processedDataMap = new HashMap<>();
 
     static List<CoreMap> processParas(Document doc, int numWordsToUse) {
 
