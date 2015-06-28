@@ -166,6 +166,10 @@ public class DocumentHelper {
             if (!map1.getText().equals(map2.getText())) {
                 return false;
             }
+            boolean isEqual = map1.equals(map2);
+            if (!isEqual) {
+                return false;
+            }
         }
         //looks good
         return true;

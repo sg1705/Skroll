@@ -82,7 +82,10 @@ public class ClassifierLogicTest {
         //now persist the file
         String json = JsonDeserializer.getJson(doc);
         Document newDoc = JsonDeserializer.fromJson(json);
+        String newJson = JsonDeserializer.getJson(newDoc);
         assert (doc.equals(newDoc));
+        
+        assert (newJson.equals(json));
 
     }
 
