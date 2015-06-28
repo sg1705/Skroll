@@ -81,7 +81,6 @@ public class TrainingDocumentAnnotatingModelTest{
     @Test
     public void testGenerateDocumentFeatures() throws Exception {
         PhantomJsExtractor.TEST_FLAGS = true;
-        String trainingFolderName = "src/test/resources/analyzer/evaluate/docclassifier/AMC Networks CA.html";
 //        String trainingFolderName = "src/test/resources/analyzer/evaluate/docclassifier/AMC Networks CA.html";
         File file = new File(trainingFolderName);
 

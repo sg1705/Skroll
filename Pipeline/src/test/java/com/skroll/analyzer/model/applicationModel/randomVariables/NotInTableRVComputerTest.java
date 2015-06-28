@@ -23,6 +23,7 @@ public class NotInTableRVComputerTest {
         token1 = new Token("First");
         token2 = new Token("token");
         token3 = new Token("only");
+        m.set(CoreAnnotations.IdAnnotation.class, "testPara");
         m.set(CoreAnnotations.IsInTableAnnotation.class, true);
 
     }
