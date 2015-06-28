@@ -73,7 +73,7 @@ public class ClassifierLogicTest {
         CategoryAnnotationHelper.setMatchedText(paragraph, Lists.newArrayList(paragraph.getTokens().get(0)), this.categoryId);
         // classify
         classifierFactory.getClassifier(this.categoryId).classify(doc.getId(),doc );
-        //print categories for each para
+        //test to see if all paragraphs were assigned categories
         assert (CategoryAnnotationHelper.isCategoryId(paragraph, this.categoryId));
         paragraph = doc.getParagraphs().get(1);
         assert (CategoryAnnotationHelper.isCategoryId(paragraph, this.categoryId));
@@ -83,10 +83,14 @@ public class ClassifierLogicTest {
         String json = JsonDeserializer.getJson(doc);
         Document newDoc = JsonDeserializer.fromJson(json);
         String newJson = JsonDeserializer.getJson(newDoc);
+        //check to see if the new document is the same as the old document
         assert (doc.equals(newDoc));
-        
         assert (newJson.equals(json));
-
+        //test reparsing
+        Document reParsed = Parser.reParse(newDoc);
+        doc.setId("test");
+        assert (newDoc.equals(reParsed));
+        //test the model by creating a new model
     }
 
     @Test

@@ -33,8 +33,5 @@ public class ParserTest {
         assert (doc.getParagraphs().get(0).get(CoreAnnotations.IsUserObservationAnnotation.class));
         assert (doc.getParagraphs().get(1).get(CoreAnnotations.TrainingWeightAnnotationFloat.class).equals(weights));
         assert (doc.equals(htmlDoc));
-        //add an observation
-        //change version
-        //reparse
     }
 }
