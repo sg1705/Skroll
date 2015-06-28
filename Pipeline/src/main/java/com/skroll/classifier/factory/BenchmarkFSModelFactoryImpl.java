@@ -1,6 +1,7 @@
 package com.skroll.classifier.factory;
 
 import com.skroll.util.Configuration;
+import com.skroll.util.ObjectPersistUtil;
 
 import javax.inject.Inject;
 
@@ -13,5 +14,6 @@ public class BenchmarkFSModelFactoryImpl extends
     @Inject
     public BenchmarkFSModelFactoryImpl(Configuration configuration) {
         modelFolderName = configuration.get("benchmarkModelFolder", "/tmp");
+        objectPersistUtil = new ObjectPersistUtil(modelFolderName);
     }
 }

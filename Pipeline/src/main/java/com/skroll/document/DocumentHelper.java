@@ -54,7 +54,10 @@ public class DocumentHelper {
         return false;
     }
     public static boolean isObserved(Document document) {
-        if(document==null) return false;
+        if(document==null) {
+            logger.info("Document is not found. returning null");
+            return false;
+        }
         for (CoreMap para : document.getParagraphs()) {
             if (DocumentHelper.isObserved(para)) {
                 return true;

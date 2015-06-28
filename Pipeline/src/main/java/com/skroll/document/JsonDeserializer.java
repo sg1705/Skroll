@@ -99,16 +99,6 @@ public class JsonDeserializer {
         return null;
     }
 
-    private static HashMap processCategoryId(String key, JsonElement element) throws Exception {
-        HashMap map = new HashMap();
-        Set<Map.Entry<String, JsonElement>> set = element.getAsJsonObject().entrySet();
-        for(Map.Entry<String, JsonElement> entry : set) {
-            JsonElement elmt = entry.getValue();
-            int mapKey = Integer.parseInt(entry.getKey());
-            map.put(mapKey,processObject(entry.getKey(), elmt));
-        }
-        return map;
-    }
 
     /**
      * Handle process Object
@@ -123,13 +113,13 @@ public class JsonDeserializer {
             coreMap = new Token();
         }
         Set<Map.Entry<String, JsonElement>> set = element.getAsJsonObject().entrySet();
-        logger.trace("EntrySet:"+set);
+        logger.trace("EntrySet:{}",set);
         for(Map.Entry<String, JsonElement> entry : set) {
             JsonElement elmt = entry.getValue();
             if (elmt.isJsonPrimitive()) {
                 // add in the core map
                 coreMap.set(entry.getKey(), processPrimitives(entry.getKey(), elmt));
-            } else if (entry.getKey().equals("DefinedTermTokensAnnotation")){
+            } else if (entry.getKey().equals("TermTokensAnnotation")){
                 coreMap.set(entry.getKey(), processDefinedTerm(entry.getKey(), elmt));
             } else if (entry.getKey().equals("CategoryAnnotations")) {
                 coreMap.set(entry.getKey(), processCategoryId(entry.getKey(), elmt));
@@ -138,7 +128,7 @@ public class JsonDeserializer {
                 logger.trace("processing key {} as Array", entry.getKey());
                 coreMap.set(entry.getKey(), processArray(entry.getKey(), elmt));
             } else if (elmt.isJsonObject()) {
-                logger.trace("processing key {} as Object:" + entry.getKey());
+                logger.trace("processing key {} as Object:", entry.getKey());
                 coreMap.set(entry.getKey(), processObject(entry.getKey(),elmt));
             }
         }
@@ -196,6 +186,22 @@ public class JsonDeserializer {
         return coreMapList;
     }
 
+
+    private static HashMap processCategoryId(String key, JsonElement element) throws Exception {
+        HashMap map = new HashMap();
+        Set<Map.Entry<String, JsonElement>> absorbSet = element.getAsJsonObject().entrySet();
+        for (Map.Entry<String, JsonElement> mapEntry : absorbSet) {
+            int mapKey = Integer.parseInt(mapEntry.getKey());
+            JsonElement jElement = mapEntry.getValue();
+            Set<Map.Entry<String, JsonElement>> set = jElement.getAsJsonObject().entrySet();
+            for (Map.Entry<String, JsonElement> entry : set) {
+                JsonElement elmt = entry.getValue();
+             //since this is a map
+                map.put(mapKey, processObject(entry.getKey(), elmt));
+            }
+        }
+        return map;
+    }
 
     /**
      * Handler for json primitives. Important things to remember..

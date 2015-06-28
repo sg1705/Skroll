@@ -22,11 +22,10 @@ public interface DocumentFactory {
 
     /**
      * Puts the document in cache
-     * @param documentId
      * @param document
      * @throws Exception
      */
-    void putDocument(String documentId, Document document) throws Exception;
+    void putDocument(Document document) throws Exception;
 
     /**
      * Saves the document in corpus.

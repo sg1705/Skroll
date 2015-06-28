@@ -4,7 +4,6 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.FluentIterable;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Files;
-import com.google.common.io.Resources;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.skroll.classifier.Category;
@@ -32,7 +31,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -100,20 +98,15 @@ public class DocAPI {
                 for (Classifier classifier : request.getClassifiers()) {
                     document = (Document) classifier.classify(fileName, document);
                 }
-                request.getDocumentFactory().putDocument(fileName, document);
+                document.setId(fileName);
+                request.getDocumentFactory().putDocument(document);
+                request.getDocumentFactory().saveDocument(document);
                 logger.debug("Added document into the documentMap with a generated hash key:" + fileName);
                 reader.close();
             } catch (ParserException e) {
                 return logErrorResponse("Failed to parse the uploaded file", e);
             } catch (Exception e) {
                 return logErrorResponse("Failed to classify", e);
-            }
-            // persist the document using document id. Let's use the file name
-            try {
-                Files.createParentDirs(new File(preEvaluatedFolder + fileName));
-                Files.write(JsonDeserializer.getJson(document), new File(preEvaluatedFolder + fileName), Charset.defaultCharset());
-            } catch (Exception e) {
-                return logErrorResponse("Failed to persist the document object", e);
             }
             return Response.status(Response.Status.ACCEPTED).cookie(new NewCookie("documentId", fileName)).entity(document.getTarget().getBytes(Constants.DEFAULT_CHARSET)).build();
         }
@@ -139,7 +132,8 @@ public class DocAPI {
             String fName = fileName;
             Document fDoc = document;
             request.getClassifiers().forEach(c -> c.classify(fName, fDoc));
-            request.getDocumentFactory().putDocument(fileName, document);
+            document.setId(fileName);
+            request.getDocumentFactory().putDocument(document);
             request.getDocumentFactory().saveDocument(document);
             logger.debug("Added document into the documentMap with a generated hash key:{}" ,fileName);
 
@@ -197,7 +191,7 @@ public class DocAPI {
         final Document finalDoc = doc;
         try {
             request.getClassifiers().forEach(c -> c.classify(documentId, finalDoc));
-            request.getDocumentFactory().putDocument(documentId, doc);
+            request.getDocumentFactory().putDocument(doc);
         } catch (Exception e) {
             return logErrorResponse("Failed to classify/store document", e);
         }
@@ -324,7 +318,7 @@ public class DocAPI {
                         doc = (Document) classifier.updateBNI(documentId, doc, parasForUpdateBNI);
                     }
                 }
-                request.getDocumentFactory().putDocument(documentId, doc);
+                request.getDocumentFactory().putDocument(doc);
             }
         } catch (Exception e) {
             logger.error("Failed to update updateBNI, using existing document : {}", e);
@@ -360,7 +354,7 @@ public class DocAPI {
         }
 
         try {
-            request.getDocumentFactory().putDocument(documentId, doc);
+            request.getDocumentFactory().putDocument(doc);
             request.getDocumentFactory().saveDocument(doc);
 //            Files.write(JsonDeserializer.getJson(doc), new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
         } catch (Exception e) {
@@ -395,7 +389,7 @@ public class DocAPI {
             }
         }
         try {
-            request.getDocumentFactory().putDocument(documentId, doc);
+            request.getDocumentFactory().putDocument(doc);
             request.getDocumentFactory().saveDocument(doc);
         } catch (Exception e) {
             logErrorResponse("Failed to persist the document object: {}", e);
