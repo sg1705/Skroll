@@ -9,7 +9,6 @@ import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
-import com.skroll.parser.extractor.PhantomJsExtractor;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,7 +45,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
         doneSetup = true;
 
         tModel.updateWithDocument(doc);
-        model = new ProbabilityDocumentAnnotatingModel(tModel.getTnbmModel(), tModel.getHmm(), doc,
+        model = new ProbabilityDocumentAnnotatingModel(tModel.getNbmnModel(), tModel.getHmm(), doc,
                 new DefModelRVSetting(Category.DEFINITION, Category.DEFINITION_NAME)
                 );
         model.getHmm().updateProbabilities();
@@ -76,7 +75,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
         System.out.println("After passing messages :\n");
         double[][][] dBelieves = model.getDocumentFeatureBelief();
         System.out.println(Arrays.deepToString(dBelieves[0]));
-        assert (Arrays.toString(dBelieves[0][1]).equals("[-24590.28375297469, 0.0]"));
+        assert (Arrays.toString(dBelieves[0][1]).equals("[-24589.66416691501, 0.0]"));
     }
 
     void printDocBeliefs(){
@@ -189,7 +188,6 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
     @Test
     public void testUpdateBeliefWithZeroObservations() throws Exception {
-        PhantomJsExtractor.TEST_FLAGS = true;
         List<CoreMap> paraList = doc.getParagraphs();
         List<Token> definedTerms = new ArrayList<>();
         List<CoreMap> observedParas = new ArrayList<>();

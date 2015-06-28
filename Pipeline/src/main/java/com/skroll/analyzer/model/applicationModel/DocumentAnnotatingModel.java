@@ -3,6 +3,7 @@ package com.skroll.analyzer.model.applicationModel;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skroll.analyzer.model.RandomVariable;
+import com.skroll.analyzer.model.bn.NaiveBayesWithMultiNodes;
 import com.skroll.analyzer.model.bn.config.NBFCConfig;
 import com.skroll.analyzer.model.bn.config.NBMNConfig;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
@@ -21,6 +22,8 @@ public abstract class DocumentAnnotatingModel {
     @JsonProperty("hmm")
     HiddenMarkovModel hmm;
 
+    @JsonProperty("nbmnModel")
+    NaiveBayesWithMultiNodes nbmnModel;
 
     @JsonProperty("modelRVSetting")
     ModelRVSetting modelRVSetting = new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME);

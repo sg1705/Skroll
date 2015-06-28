@@ -29,9 +29,6 @@ import java.util.List;
  */
 public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
-    @JsonProperty("tnbmModel")
-    NaiveBayesWithMultiNodes tnbmModel;
-
 
     public TrainingDocumentAnnotatingModel() {
         this(new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME));
@@ -54,14 +51,14 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
     @JsonCreator
     public TrainingDocumentAnnotatingModel(
-            @JsonProperty("tnbmModel") NaiveBayesWithMultiNodes tnbmModel,
+            @JsonProperty("nbmnModel") NaiveBayesWithMultiNodes nbmnModel,
             @JsonProperty("wordType") RandomVariable wordType,
             @JsonProperty("wordFeatures") List<RandomVariable> wordFeatures,
             @JsonProperty("nbmnConfig") NBMNConfig nbmnConfig,
             @JsonProperty("ModelRVSetting")ModelRVSetting modelRVSetting){
         this.nbmnConfig = nbmnConfig;
 
-        this.tnbmModel = tnbmModel;
+        this.nbmnModel = nbmnModel;
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;
         this.modelRVSetting = modelRVSetting;
@@ -173,8 +170,8 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
             int numCategories = nbmnConfig.getCategoryVar().getFeatureSize();
             for (int c = 0; c < numCategories; c++) {
 //                int[] values = concatIntArrays(new int[]{c}, paraFeatures[i], paraDocFeatures[i], docFeatures);
-//                NBTrainingHelper.addSample(tnbmModel, new NBMNTuple(wordsList[i], values), weights[c]);
-                NBTrainingHelper.addSample(tnbmModel, new NBMNTuple(
+//                NBTrainingHelper.addSample(nbmnModel, new NBMNTuple(wordsList[i], values), weights[c]);
+                NBTrainingHelper.addSample(nbmnModel, new NBMNTuple(
                         wordsList[i], c, paraFeatures[i], paraDocFeatures[i], docFeatures), weights[c]);
             }
 
@@ -210,9 +207,9 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
 //            int[] values = concatIntArrays(new int[]{categoryValue}, paraFeatures, paraDocFeatures, docFeatures);
 
-            NBTrainingHelper.addSample(tnbmModel, new NBMNTuple(
+            NBTrainingHelper.addSample(nbmnModel, new NBMNTuple(
                     wordsList, categoryValue, paraFeatures, paraDocFeatures, docFeatures));
-//            NBTrainingHelper.addSample(tnbmModel, new NBMNTuple(wordsList, values));
+//            NBTrainingHelper.addSample(nbmnModel, new NBMNTuple(wordsList, values));
 
             updateHMMWithParagraph(oPara, pPara);
         }
@@ -220,14 +217,14 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     }
 
     @JsonIgnore
-    public NaiveBayesWithMultiNodes getTnbmModel() {
-        return tnbmModel;
+    public NaiveBayesWithMultiNodes getNbmnModel() {
+        return nbmnModel;
     }
 
     @Override
     public String toString() {
         return "TrainingDocumentAnnotatingModel{" +
-                "tnbmModel=" + tnbmModel +
+                "nbmnModel=" + nbmnModel +
                         "hmmModel=" + hmm +
                 '}';
     }
@@ -235,7 +232,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     public HashMap<String, HashMap<String, HashMap<String, Double>>> toVisualMap() {
         HashMap<String, HashMap<String, HashMap<String, Double>>> map = new HashMap();
         //document level features
-        List<DiscreteNode> discreteNodes = this.tnbmModel.getAllDiscreteNodes();
+        List<DiscreteNode> discreteNodes = this.nbmnModel.getAllDiscreteNodes();
         map.put("ParagraphFeatureNodes", Visualizer.nodesToMap(
                 discreteNodes.toArray(new DiscreteNode[discreteNodes.size()])));
         return map;
@@ -246,7 +243,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
         isEqual = isEqual && this.wordType.equals(model.wordType);
         isEqual = isEqual && RandomVariable.compareRVList(this.wordFeatures, model.wordFeatures);
         isEqual = isEqual && this.nbmnConfig.equals(model.nbmnConfig);
-        isEqual = isEqual && this.tnbmModel.equals(model.getTnbmModel());
+        isEqual = isEqual && this.nbmnModel.equals(model.getNbmnModel());
         return isEqual;
     }
 

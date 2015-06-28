@@ -52,7 +52,7 @@ public class ObjectPersistUtilTest {
         if ( obj instanceof TrainingDocumentAnnotatingModel) {
             TrainingDocumentAnnotatingModel readPersistModelTestClass = (TrainingDocumentAnnotatingModel)obj;
             logger.info(readPersistModelTestClass.toString());
-            assert (readPersistModelTestClass.toString().contains("tnbmModel"));
+            assert (readPersistModelTestClass.toString().contains("nbmnModel"));
         }
     }
 

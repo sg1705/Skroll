@@ -59,7 +59,7 @@ public class TrainingDocumentAnnotatingModelTest{
     @Test
     public void testUpdateWithDocument() throws Exception {
         String trainingFolderName = "src/test/resources/analyzer/evaluate/docclassifier/AMC Networks CA.html";
-        System.out.println("initial model: \n" + model.getTnbmModel());
+        System.out.println("initial model: \n" + model.getNbmnModel());
         File f = new File(trainingFolderName);
 //        document = makeTrainingDoc(f);
          model.updateWithDocument(document);
@@ -68,7 +68,7 @@ public class TrainingDocumentAnnotatingModelTest{
         System.out.println("trained model: \n" + model);
         assert(model.toString().contains("nextTokenCounts [Operations=5.0, Tiger=6.0]"));
 //        assert(model.toString().contains("[WordNode{parameters=Operations=[2.0, 0.0] Tiger=[1.0, 0.0] Notwithstanding=[2.0, 0.0]"));
-        MultiplexNode node = model.getTnbmModel().getMultiNodes().get(0);
+        MultiplexNode node = model.getNbmnModel().getMultiNodes().get(0);
         assert (Arrays.equals(node.getSelectingNode().getParameters(), new double[]{3.1, 1.1}));
         assert (Arrays.equals(node.getNodes()[0].getParameters(), new double[]{0.1, 0.1, 0.1, 3.1}));
         assert (Arrays.equals(node.getNodes()[1].getParameters(), new double[]{0.1, 0.1, 0.1, 1.1}));
