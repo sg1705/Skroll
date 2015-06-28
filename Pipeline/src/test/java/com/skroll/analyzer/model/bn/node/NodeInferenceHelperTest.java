@@ -14,9 +14,11 @@ public class NodeInferenceHelperTest {
     RandomVariable rv = new RandomVariable(2, "bold");
     RandomVariable prv = new RandomVariable(2, "paraIsDef");
     RandomVariable prv2 = new RandomVariable(2, "defsAreBold");
+    RandomVariable prv3 = new RandomVariable(3, "paraToc");
 
     private DiscreteNode node;
     private DiscreteNode parentNode = NodeTrainingHelper.createTrainingDiscreteNode(Arrays.asList(prv));
+    private DiscreteNode selectingNode = NodeTrainingHelper.createTrainingDiscreteNode(Arrays.asList(prv3));
     private DiscreteNode parentNode2 = NodeTrainingHelper.createTrainingDiscreteNode(Arrays.asList(prv2));
     private List<DiscreteNode> parentNodes = Arrays.asList(parentNode, parentNode2);
 
@@ -28,11 +30,13 @@ public class NodeInferenceHelperTest {
     private String observedString = "abc";
 
 
-    private List<List<RandomVariable>> nbmnDocFeature = RVCreater.createNBMNDocFeatureRVs(Arrays.asList(rv), prv, prv2.getName());
+    private List<List<RandomVariable>> nbmnDocFeature = RVCreater.createNBMNDocFeatureRVs(Arrays.asList(rv), prv3, prv3.getName());
     private List<DiscreteNode> nbmnParentNodes = Arrays.asList(
             NodeTrainingHelper.createTrainingDiscreteNode(Arrays.asList(nbmnDocFeature.get(0).get(0))),
-            NodeTrainingHelper.createTrainingDiscreteNode(Arrays.asList(nbmnDocFeature.get(0).get(1))));
-    private List<RandomVariable> nbmnFamilyVariables = new ArrayList(Arrays.asList(rv, prv));
+            NodeTrainingHelper.createTrainingDiscreteNode(Arrays.asList(nbmnDocFeature.get(0).get(1))),
+            NodeTrainingHelper.createTrainingDiscreteNode(Arrays.asList(nbmnDocFeature.get(0).get(2))));
+
+    private List<RandomVariable> nbmnFamilyVariables = new ArrayList(Arrays.asList(rv, prv3));
     MultiplexNode tMultiNode;
 
 
@@ -51,11 +55,12 @@ public class NodeInferenceHelperTest {
         nbmnFamilyVariables.addAll(nbmnDocFeature.get(0));
 
         tMultiNode = NodeTrainingHelper
-                .createTrainingMultiplexNode(this.nbmnFamilyVariables, parentNode, this.nbmnParentNodes);
+                .createTrainingMultiplexNode(this.nbmnFamilyVariables, selectingNode, this.nbmnParentNodes);
 
         DiscreteNode[] nodes = tMultiNode.getNodes();
         nodes[0].setParameters(new double[]{1, 2, 3, 4});
         nodes[1].setParameters(new double[]{5, 6, 7, 8});
+        nodes[2].setParameters(new double[]{9, 10, 11, 12});
     }
 
 
@@ -138,25 +143,27 @@ public class NodeInferenceHelperTest {
     @Test
     public void testUpdateMessageToSelectingNode() throws Exception {
 //        MultiplexNode pMultiNode = NodeInferenceHelper.createLogProbabilityMultiplexNode(tMultiNode,parentNode,  Arrays.asList(parentNode2));
-        MultiplexNode pMultiNode = NodeInferenceHelper.createLogProbabilityMultiplexNode(tMultiNode, parentNode, nbmnParentNodes);
+        MultiplexNode pMultiNode = NodeInferenceHelper.createLogProbabilityMultiplexNode(tMultiNode, selectingNode, nbmnParentNodes);
         pMultiNode.setObservation(1);
         pMultiNode.getNodes()[0].setParameters(new double[]{0, 1, 2, 3});
         pMultiNode.getNodes()[1].setParameters(new double[]{4, 5, 6, 7});
-        double[] message = NodeInferenceHelper.updateMessageToSelectingNode(pMultiNode, new double[][]{{1, -1}, {0, 2}});
+        pMultiNode.getNodes()[2].setParameters(new double[]{9, 10, 11, 12});
+        double[] message = NodeInferenceHelper.updateMessageToSelectingNode(pMultiNode, new double[][]{{1, -1}, {0, 2}, {10, 10}});
         System.out.println(Arrays.toString(message));
-        assert (Arrays.toString(message).equals("[2.6931471805599454, 9.01814992791781]"));
+        assert (Arrays.toString(message).equals("[2.6931471805599454, 9.01814992791781, 22.126928011042974]"));
     }
 
     @Test
     public void testUpdateMessagesFromSelectingNode() throws Exception {
-        MultiplexNode pMultiNode = NodeInferenceHelper.createLogProbabilityMultiplexNode(tMultiNode, parentNode, nbmnParentNodes);
+        MultiplexNode pMultiNode = NodeInferenceHelper.createLogProbabilityMultiplexNode(tMultiNode, selectingNode, nbmnParentNodes);
         pMultiNode.setObservation(1);
         pMultiNode.getNodes()[0].setParameters(new double[]{0, 1, 2, 3});
         pMultiNode.getNodes()[1].setParameters(new double[]{4, 5, 6, 7});
-        double[][] message = NodeInferenceHelper.updateMessagesFromSelectingNode(pMultiNode, new double[]{1, -1});
+        pMultiNode.getNodes()[2].setParameters(new double[]{9, 10, 11, 12});
+        double[][] message = NodeInferenceHelper.updateMessagesFromSelectingNode(pMultiNode, new double[]{1, -1, 0});
         System.out.println(Arrays.deepToString(message));
         assert (Arrays.deepToString(message).
-                equals("[[4.126928011042972, 4.693147180559945], [4.126928011042972, 6.0181499279178094]]"));
+                equals("[[10.002810262315784, 10.004945256391496], [10.002810262315784, 10.018479302594658], [10.002810262315784, 12.000380790047931]]"));
 
     }
 }
