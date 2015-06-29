@@ -86,6 +86,12 @@ public class CoreMap implements TypesafeMap  {
         return this.map.keySet();
     }
 
+
+    public Set<String> keyNameSet() {
+        return this.map.keySet();
+    }
+
+
     @Override
     public <VALUE> boolean containsKey(Class<? extends TypesafeMap.Key<VALUE>> key) {
         return this.map.containsKey(CoreAnnotations.aMap.get(key));
@@ -99,6 +105,29 @@ public class CoreMap implements TypesafeMap  {
 
     public <VALUE> String keyName(Class<? extends TypesafeMap.Key<VALUE>> key) {
         return key.getSimpleName();
+    }
+
+    public boolean equals(CoreMap coremap) {
+        Set<String> keys = this.keyNameSet();
+        Set<String> nKeys = coremap.keyNameSet();
+        if(keys.size() != nKeys.size()) {
+            return false;
+        }
+        //iterate over each keys
+        for(String key : keys) {
+            boolean contains = nKeys.contains(key);
+            if (!contains) {
+                return false;
+            }
+        }
+        //iterate over each keys
+        for(String key : nKeys) {
+            boolean contains = keys.contains(key);
+            if (!contains) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }
