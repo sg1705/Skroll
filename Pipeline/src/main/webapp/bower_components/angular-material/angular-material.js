@@ -11144,7 +11144,10 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $timeout, $
     hasFocus = true;
     //-- if searchText is null, let's force it to be a string
     if (!angular.isString($scope.searchText)) $scope.searchText = '';
-    if ($scope.minLength > 0) return;
+    //start hack
+    // uncomment this line below so that search results are display upon focus
+    //if ($scope.minLength > 0) return;
+    //end hack
     self.hidden = shouldHide();
     if (!self.hidden) handleQuery();
   }
