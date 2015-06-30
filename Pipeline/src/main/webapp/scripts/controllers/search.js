@@ -31,7 +31,9 @@ c) angular-material.js .. added <md-input-container> to md-autocomplete directiv
 
 5. MdAutocompleteCtrl changed the MAX_HEIGHT from 5.5 to 11
 
-6. Uncommented a line in focus() method to show search results when the widget
+6. Changed MAX_HEIGHT from 5 to 8 in autocompleteController.js
+
+7. Uncommented a line in focus() method to show search results when the widget
    gains focus
 */
 
