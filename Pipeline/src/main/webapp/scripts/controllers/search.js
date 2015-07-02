@@ -65,7 +65,7 @@ SearchCtrl.prototype.getMatches = function(searchText) {
 		var header;
 		var displayText;
 		var isItem = false;
-		var surroundingStartIndex = 80;
+		//var surroundingStartIndex = 80;
 		//this is a hack
 		if (id > 1237) {
 			//iterate over each level 2 heading
@@ -105,8 +105,8 @@ SearchCtrl.prototype.getMatches = function(searchText) {
 SearchCtrl.prototype.getSurroundingText = function(paragraphText, searchString) {
 	var indexOfSearch = paragraphText.indexOf(searchString);
 	var lengthOfSearch = searchString.length;
-	var expandLeft = 50;
-	var expandRight = 50;
+	var expandLeft = 65;
+	var expandRight = 65;
 	var startLeft = 0;
 	var endRight = 0;
 	var length = paragraphText.length;
