@@ -31,7 +31,8 @@ public class CorpusFSDocumentFactoryImpl extends
     public CorpusFSDocumentFactoryImpl(Configuration configuration) {
         this.configuration = configuration;
         this.folder = configuration.get("preEvaluatedFolder");
-        int cacheSize = Integer.parseInt(configuration.get("preEvaluatedDocumentCacheSize", "10"));
+        this.cacheSize = Integer.parseInt(configuration.get("preEvaluatedDocumentCacheSize", "10"));
+        logger.info("Document Cache Size : {}", cacheSize);
         documentCache = new CacheService(this,cacheSize);
         logger.info(folder);
     }
