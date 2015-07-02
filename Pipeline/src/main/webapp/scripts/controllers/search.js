@@ -30,6 +30,11 @@ c) angular-material.js .. added <md-input-container> to md-autocomplete directiv
 4. MdAutocomplete added a width of 270px in the template
 
 5. MdAutocompleteCtrl changed the MAX_HEIGHT from 5.5 to 11
+
+6. Changed MAX_HEIGHT from 5 to 8 in autocompleteController.js
+
+7. Uncommented a line in focus() method to show search results when the widget
+   gains focus
 */
 
 var SearchCtrl = function(SelectionModel) {
@@ -41,7 +46,7 @@ var SearchCtrl = function(SelectionModel) {
 
 SearchCtrl.prototype.getMatches = function(searchText) {
 	var items = [];
-	var elements = $(":contains('" + searchText + "')").filter(":not(:has(*))").closest("[id^='p_']");
+	var elements = $(":ContainsCaseInsensitive('" + searchText + "')").filter(":not(:has(*))").closest("[id^='p_']");
 	//var elements = $("[id^='p_']:not('[id^=\\'p_\\']')").filter(":contains('" + searchText + "')");
 	//var elements = $("[id^='p_']:only-child").filter(":contains('" + searchText + "')");
 	//convert level terms to integers
@@ -144,3 +149,9 @@ SearchCtrl.prototype.selectedItemChange = function(item) {
 
 angular.module('SkrollApp')
 	.controller('SearchCtrl', ['SelectionModel', SearchCtrl]);
+
+jQuery.expr[":"].ContainsCaseInsensitive = jQuery.expr.createPseudo(function(arg) {
+   return function( elem ) {
+   	return jQuery(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
+   }; 
+});	
