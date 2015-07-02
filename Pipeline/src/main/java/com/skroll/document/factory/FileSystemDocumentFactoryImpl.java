@@ -27,12 +27,12 @@ public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory, 
     public static final Logger logger = LoggerFactory.getLogger(FileSystemDocumentFactoryImpl.class);
     protected Configuration configuration;
     protected String folder;
-
+    protected int cacheSize;
     public Document load(String documentId) throws Exception {
             Document doc = null;
             String jsonString;
             try {
-                logger.debug("Fetching [{}] from filesystem [{}]", documentId, folder);
+                logger.info("Fetching [{}] from filesystem [{}]", documentId, folder);
                 jsonString = Files.toString(new File(folder + documentId), Charset.defaultCharset());
             } catch (IOException e) {
                 logger.info("[{}] cannot be found", documentId);
@@ -51,13 +51,15 @@ public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory, 
 
     @Override
     public void onRemoval(String key, Document value) {
-        if(getSaveLaterDocumentId().contains(key)) {
-            try {
-                saveDocument(value);
-            } catch (Exception e) {
-                logger.error("Error in saving Document", e);
+        if(getDocumentCache().getLoadingCache().size()>=cacheSize){
+            if(getSaveLaterDocumentId().contains(key)) {
+                try {
+                    saveDocument(value);
+                } catch (Exception e) {
+                    logger.error("Error in saving Document", e);
+                }
+                getSaveLaterDocumentId().remove(key);
             }
-            getSaveLaterDocumentId().remove(key);
         }
     }
 
@@ -101,7 +103,7 @@ public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory, 
             logger.error("doc is not Found in cache: {}", e.getMessage());
             return null;
         }
-        logger.debug("document map size: {}", getDocumentCache().getLoadingCache().size());
+        logger.info("document map size: {}", getDocumentCache().getLoadingCache().size());
         return doc;
     }
 
@@ -110,6 +112,7 @@ public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory, 
         if (document.getId() == null) {
             throw new Exception("Cannot put document with [null] id");
         }
+        logger.info("putDocument: {}", document.getId());
         getSaveLaterDocumentId().add(document.getId());
         getDocumentCache().getLoadingCache().put(document.getId(),document);
     }

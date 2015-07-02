@@ -82,17 +82,20 @@ public class BenchmarkAPI {
         boolean isFileTrained = false;
         try {
             isFileBenchmarked = request.getBenchmarkDocumentFactory().isDocumentExist(request.getDocumentId());
+
         } catch (Exception e) {
             e.printStackTrace();
         }
         try {
             if (request.getCorpusDocumentFactory().isDocumentExist(request.getDocumentId())) {
                 isFileTrained = DocumentHelper.isObserved(request.getCorpusDocumentFactory().get(request.getDocumentId()));
+
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        logger.info("isFileBenchmarked: {}" ,isFileBenchmarked);
+        logger.info("isFileTrained: {}" ,isFileTrained);
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("qc", qc);
         resultMap.put("isFileBenchmarked", isFileBenchmarked);

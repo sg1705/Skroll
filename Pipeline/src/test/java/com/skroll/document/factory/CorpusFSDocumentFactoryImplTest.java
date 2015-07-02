@@ -55,6 +55,7 @@ public class CorpusFSDocumentFactoryImplTest {
         // this doc has three paragraphs
         doc1.setId("testId1");
         factory.putDocument(doc1);
+        factory.putDocument(doc1);
         doc2.setId("testId2");
         factory.putDocument(doc2);
         assert(((CorpusFSDocumentFactoryImpl)factory).getDocumentCache().getLoadingCache().size()==1);

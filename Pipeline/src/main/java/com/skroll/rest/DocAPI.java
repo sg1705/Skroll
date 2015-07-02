@@ -69,12 +69,18 @@ public class DocAPI {
 
     }
 
+    /**
+     *
+     * @param multiPart
+     * @param hh
+     * @param request
+     * @return
+     */
     @POST
     @Path("/upload")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.TEXT_HTML)
     public Response upload(MultiPart multiPart, @Context HttpHeaders hh, @BeanParam RequestBean request) {
-        String preEvaluatedFolder = configuration.get("preEvaluatedFolder", "/tmp/");
         List<BodyPart> bodyParts = multiPart.getBodyParts();
         logger.debug("BodyParts:" + bodyParts);
         // get the second part which is the project logo
