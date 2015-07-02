@@ -41,7 +41,9 @@ var SearchCtrl = function(SelectionModel) {
 
 SearchCtrl.prototype.getMatches = function(searchText) {
 	var items = [];
-	var elements = $("[id^='p_']:contains('" + searchText + "')");
+	var elements = $(":contains('" + searchText + "')").filter(":not(:has(*))").closest("[id^='p_']");
+	//var elements = $("[id^='p_']:not('[id^=\\'p_\\']')").filter(":contains('" + searchText + "')");
+	//var elements = $("[id^='p_']:only-child").filter(":contains('" + searchText + "')");
 	//convert level terms to integers
 	//var headerItems = LHSModel.getTermsForClass(2);
 	var headerItems = LHSModel.getParaFromClassIdRange(2,4);
@@ -91,7 +93,6 @@ SearchCtrl.prototype.getMatches = function(searchText) {
 		if ((searchText.length <=2) && (items.length > 10)) {
 			return false;
 		}
-
 	})
 	return items;
 }
@@ -115,7 +116,6 @@ SearchCtrl.prototype.getSurroundingText = function(paragraphText, searchString) 
 	} else {
 		endRight = (indexOfSearch + lengthOfSearch + expandRight);
 	}
-	console.log(indexOfSearch + ":"+ endRight);
 	var text = paragraphText.substr(startLeft, endRight - startLeft);
 	return text;
 }

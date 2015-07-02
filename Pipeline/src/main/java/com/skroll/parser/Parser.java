@@ -109,9 +109,7 @@ public class Parser {
         Document newDoc = Parser.parseDocumentFromHtml(document.getSource());
         newDoc.setId(document.getId());
         // if parsed documents has different paragraphs then log error
-        if (!document.equals(newDoc)) {
-            logger.info("Reparsed document is not the same as the old doc. " +
-                    "Number of paragraphs are different {}", document.get(CoreAnnotations.IdAnnotation.class));
+        if (newDoc.getParagraphs().size() != document.getParagraphs().size()) {
             return document;
         }
         for(int ii = 0; ii < newDoc.getParagraphs().size(); ii++) {
@@ -132,6 +130,11 @@ public class Parser {
                 List<Float> trainingW = paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class);
                 nPara.set(CoreAnnotations.TrainingWeightAnnotationFloat.class, trainingW);
             }
+        }
+        if (!document.equals(newDoc)) {
+            logger.info("Reparsed document is not the same as the old doc. " +
+                    "Number of paragraphs are different {}", document.get(CoreAnnotations.IdAnnotation.class));
+            return document;
         }
         return newDoc;
     }

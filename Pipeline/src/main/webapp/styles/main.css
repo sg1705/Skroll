@@ -160,3 +160,9 @@ md-toolbar md-autocomplete.md-default-dark-theme {
 md-toolbar md-autocomplete md-input-container.md-default-dark-theme .md-input {
     text-shadow: none;
 }
+
+.md-autocomplete-suggestions.md-default-dark-theme li .highlight {
+  font-weight: bold;
+  color: rgb(33, 33, 33);
+}
+
