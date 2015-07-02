@@ -51,7 +51,7 @@ public class ClassifierFactory {
        return getClassifiers(null);
    }
 
-   public List<Classifier> getClassifiers(Document document) throws Exception {
+    public List<Classifier> getClassifiers(Document document) throws Exception {
        List<Classifier> classifierList = new ArrayList<>();
        classifierList.add(getClassifier(Category.DEFINITION));
        classifierList.add(getClassifier(Category.TOC_1));
@@ -64,6 +64,7 @@ public class ClassifierFactory {
 
     /**
      * Creates classifier for a given modelRVSetting
+     *
      * @param modelRVSetting
      */
     public void createClassifier(ModelRVSetting modelRVSetting) {

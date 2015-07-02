@@ -113,13 +113,13 @@ public class JsonDeserializer {
             coreMap = new Token();
         }
         Set<Map.Entry<String, JsonElement>> set = element.getAsJsonObject().entrySet();
-        logger.trace("EntrySet:{}",set);
+        logger.trace("EntrySet:{}", set);
         for(Map.Entry<String, JsonElement> entry : set) {
             JsonElement elmt = entry.getValue();
             if (elmt.isJsonPrimitive()) {
                 // add in the core map
                 coreMap.set(entry.getKey(), processPrimitives(entry.getKey(), elmt));
-            } else if (entry.getKey().equals("TermTokensAnnotation")){
+            } else if (entry.getKey().equals("TermTokensAnnotation")) {
                 coreMap.set(entry.getKey(), processDefinedTerm(entry.getKey(), elmt));
             } else if (entry.getKey().equals("CategoryAnnotations")) {
                 coreMap.set(entry.getKey(), processCategoryId(entry.getKey(), elmt));
@@ -196,7 +196,7 @@ public class JsonDeserializer {
             Set<Map.Entry<String, JsonElement>> set = jElement.getAsJsonObject().entrySet();
             for (Map.Entry<String, JsonElement> entry : set) {
                 JsonElement elmt = entry.getValue();
-             //since this is a map
+                //since this is a map
                 map.put(mapKey, processObject(entry.getKey(), elmt));
             }
         }
