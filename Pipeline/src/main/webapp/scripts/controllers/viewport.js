@@ -164,14 +164,16 @@ ViewPortCtrl.prototype.handleTrainerTextSelection = function(paraId,
     //create a new matched item
     matchedItem = { paragraphId: paraId, term: selectedText, classificationId: ''};
     console.log(matchedItem);
-    this.showYesNoDialog(prompt, items).then(angular.bind(this, function(clicked) {
-      matchedItem.classificationId = clicked;
-      documentModel.isProcessing = true;
-      this.documentService.addTermToPara(matchedItem).
-      then(angular.bind(this, function(contentHtml){
-        this.updateDocument(contentHtml);  
-      }));
-    }));
+    var self = this;
+    this.showYesNoDialog(prompt, items)
+      .then(function(clicked) {
+              matchedItem.classificationId = clicked;
+              documentModel.isProcessing = true;
+              self.documentService.addTermToPara(matchedItem)
+              .then(function(contentHtml){
+                      self.updateDocument(contentHtml);  
+                });
+      });
 
   } else {
     // yes / no question if matching found
