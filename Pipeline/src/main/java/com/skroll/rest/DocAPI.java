@@ -331,7 +331,7 @@ public class DocAPI {
         }
 
         //logger.debug("updated document is stored in {} {}", preEvaluatedFolder, documentId);
-        return Response.status(Response.Status.OK).entity(doc.getTarget().getBytes(Constants.DEFAULT_CHARSET)).type(MediaType.TEXT_HTML).build();
+        return Response.status(Response.Status.OK).entity("").type(MediaType.TEXT_HTML).build();
     }
 
     @GET
