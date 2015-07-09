@@ -319,10 +319,10 @@ public class DocAPI {
         try {
             if (!parasForUpdateBNI.isEmpty()) {
                 for (Classifier classifier : request.getClassifiers()) {
-                    logger.debug("updateCategoryId: {}, classifier.getCategory().getId(): {}", updateCategoryId, classifier.getModelRVSetting().getCategoryId());
-                    if(classifier.getModelRVSetting().getCategoryId() == updateCategoryId) {
+                    logger.debug("updateCategoryId: {}, classifier.getCategory().getId(): {}", updateCategoryId, classifier.getCategoryIds());
+                    //if(classifier.getModelRVSetting().getCategoryId() == updateCategoryId) {
                         doc = (Document) classifier.updateBNI(documentId, doc, parasForUpdateBNI);
-                    }
+                    //}
                 }
                 request.getDocumentFactory().putDocument(doc);
             }

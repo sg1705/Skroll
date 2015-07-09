@@ -1,14 +1,13 @@
 package com.skroll.classifier;
 
 import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
+import com.skroll.analyzer.model.applicationModel.TOCModelRVSetting;
 import com.skroll.classifier.factory.ModelFactory;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
-import com.skroll.parser.Parser;
-import com.skroll.parser.extractor.ParserException;
 import com.skroll.parser.linker.DefinitionLinker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +23,8 @@ public class ClassifierImpl implements Classifier {
     public static final Logger logger = LoggerFactory.getLogger(ClassifierImpl.class);
 
     protected ModelFactory modelFactory;
+    private int classifierId;
+    private List<Integer> categoryIds = new ArrayList<>();
     //protected TrainingDocumentAnnotatingModel trainingDocumentAnnotatingModel;
     @Override
     public ModelRVSetting getModelRVSetting() {
@@ -32,9 +33,11 @@ public class ClassifierImpl implements Classifier {
 
     protected ModelRVSetting modelRVSetting;
 
-    public ClassifierImpl(ModelFactory modelFactory,  ModelRVSetting modelRVSetting) {
+    public ClassifierImpl(int classifierId, String classifierName, List<Integer> categoryIds, ModelFactory modelFactory) {
         this.modelFactory = modelFactory;
-        this.modelRVSetting = modelRVSetting;
+        this.classifierId = classifierId;
+        this.categoryIds = categoryIds;
+        this.modelRVSetting = new TOCModelRVSetting(classifierId, classifierName,categoryIds.size());
     }
 
     public List<String> extractTokenFromDoc(Document doc) {
@@ -85,27 +88,10 @@ public class ClassifierImpl implements Classifier {
             return updateBNI(documentId, document, new ArrayList<CoreMap>());
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error(String.format("Cannot classify documentId:%s for categoryId:%s",documentId, this.modelRVSetting.getCategoryId(), e));
+            logger.error(String.format("Cannot classify documentId:%s for categoryId:%s",documentId, this.modelRVSetting.getClassifierId(), e));
         }
         return document;
     }
-
-    @Override
-    public Object classify(Document document, int numOfTokens) {
-        return classify("documentId", document);
-    }
-
-    @Override
-    public Object classify(String fileName, int numOfLines) {
-        Document document = null;
-        try {
-            document = Parser.parseDocumentFromHtmlFile(fileName);
-        } catch (ParserException e) {
-            logger.error(String.format("Cannot parse file:%s",fileName), e);
-        }
-        return classify("documentId", document);
-    }
-
 
     @Override
     public HashMap<String, HashMap<String, Double>> getBNIVisualMap( Document document, int paraIndex) {
@@ -126,5 +112,21 @@ public class ClassifierImpl implements Classifier {
     @Override
     public void persistModel() throws Exception {
         modelFactory.saveTrainingModel(modelRVSetting);
+    }
+
+    public int getClassifierId() {
+        return classifierId;
+    }
+
+    public void setClassifierId(int classifierId) {
+        this.classifierId = classifierId;
+    }
+
+    public List<Integer> getCategoryIds() {
+        return categoryIds;
+    }
+
+    public void setCategoryIds(List<Integer> categoryIds) {
+        this.categoryIds = categoryIds;
     }
 }

@@ -23,7 +23,7 @@ public class TrainingDocumentAnnotatingModelTest{
     int maxNumWords = 20;
     String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining/mini-indenture.html";
     //    String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
-    ModelRVSetting setting = new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME);
+    ModelRVSetting setting = new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME,2);
     TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel();
     Document document;
     @Before

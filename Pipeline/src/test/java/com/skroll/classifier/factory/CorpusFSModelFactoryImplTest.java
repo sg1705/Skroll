@@ -43,14 +43,14 @@ public class CorpusFSModelFactoryImplTest {
     }
     @Test
     public void testGetTrainingModel() {
-        TrainingDocumentAnnotatingModel model = factory.getTrainingModel(new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME));
+        TrainingDocumentAnnotatingModel model = factory.getTrainingModel(new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME,2));
         if(model==null){
             fail("failed to create training model");
         }
     }
     @Test
     public void testCreateModel() throws Exception {
-        TrainingDocumentAnnotatingModel model = factory.createModel(new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME));
+        TrainingDocumentAnnotatingModel model = factory.createModel(new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME,2));
         if(model==null){
             fail("failed to create training model");
         }
@@ -59,7 +59,7 @@ public class CorpusFSModelFactoryImplTest {
     @Test
     public void testGetBNIModel() throws Exception {
         Document doc =  Parser.parseDocumentFromHtml(Files.toString(new File("src/test/resources/classifier/smaller-indenture.html"), Constants.DEFAULT_CHARSET));
-        ProbabilityDocumentAnnotatingModel model = factory.createBNIModel(new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME), doc);
+        ProbabilityDocumentAnnotatingModel model = factory.createBNIModel(new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME,2), doc);
         if(model==null){
             fail("failed to get BNI training model");
         }
@@ -68,7 +68,7 @@ public class CorpusFSModelFactoryImplTest {
     @Test
     public void testSaveTrainingModel() throws Exception {
         try {
-            factory.saveTrainingModel(new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME));
+            factory.saveTrainingModel(new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME,2));
         } catch (Exception e) {
             e.printStackTrace();
             fail("failed to persist the model");

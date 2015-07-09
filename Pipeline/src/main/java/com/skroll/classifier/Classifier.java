@@ -25,10 +25,6 @@ public interface Classifier {
 
     public Object classify(String documentId, Document doc);
 
-    public Object classify(Document doc, int numOfTokens);
-
-    public Object classify(String fileName, int numOfLines);
-
     public ModelRVSetting getModelRVSetting();
 
     public Object updateBNI(String documentId, Document document, List<CoreMap> observedParas) throws Exception;
@@ -40,5 +36,13 @@ public interface Classifier {
     public List<Double> getProbabilityDataForDoc(Document doc);
 
     public void persistModel() throws  Exception;
+
+    public int getClassifierId();
+
+    public void setClassifierId(int classifierId) ;
+
+    public List<Integer> getCategoryIds();
+
+    public void setCategoryIds(List<Integer> categoryIds);
 
 }

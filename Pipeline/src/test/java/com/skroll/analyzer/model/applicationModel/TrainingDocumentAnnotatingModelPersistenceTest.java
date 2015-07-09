@@ -38,7 +38,7 @@ public class TrainingDocumentAnnotatingModelPersistenceTest {
     ModelRVSetting setting = new ModelRVSetting(
              DefModelRVSetting.DEFAULT_WORD_FEATURES,
             DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS, DEFAULT_WORD_VARS,
-            Category.DEFINITION, Category.DEFINITION_NAME);
+            Category.DEFINITION, Category.DEFINITION_NAME,2);
 
     @Before
     public void setUp() throws Exception {

@@ -31,7 +31,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
 
     public TrainingDocumentAnnotatingModel() {
-        this(new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME));
+        this(new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME, 2));
 
     }
 
@@ -71,7 +71,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
 
     double[] getTrainingWeights(CoreMap para){
-        double[][] weights = TrainingWeightAnnotationHelper.getParagraphWeight(para, nbmnConfig.getCategoryVar(), modelRVSetting.getCategoryId());
+        double[][] weights = TrainingWeightAnnotationHelper.getParagraphWeight(para, nbmnConfig.getCategoryVar(), modelRVSetting.getClassifierId());
         double[] oldWeights =weights[0];
         double[] newWeights = weights[1];
         double[] normalizedOldWeights = BNInference.normalize(oldWeights, 1);

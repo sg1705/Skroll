@@ -21,7 +21,7 @@ import java.util.List;
 public class ProbabilityDocumentAnnotatingModelTest {
 
 
-    ModelRVSetting setting = new DefModelRVSetting(Category.DEFINITION, Category.DEFINITION_NAME);
+    ModelRVSetting setting = new DefModelRVSetting(Category.DEFINITION, Category.DEFINITION_NAME,2);
     TrainingDocumentAnnotatingModel tModel = new TrainingDocumentAnnotatingModel();
 
     //    String testingFileName = "src/test/resources/classifier/smaller-indenture.html";
@@ -46,7 +46,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
         tModel.updateWithDocument(doc);
         model = new ProbabilityDocumentAnnotatingModel(tModel.getNbmnModel(), tModel.getHmm(), doc,
-                new DefModelRVSetting(Category.DEFINITION, Category.DEFINITION_NAME)
+                new DefModelRVSetting(Category.DEFINITION, Category.DEFINITION_NAME,2)
                 );
         model.getHmm().updateProbabilities();
         System.out.println("HMM\n");

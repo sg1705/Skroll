@@ -31,7 +31,7 @@ public class ObjectPersistUtilTest {
     @Test
     public void testPersistReadObject() throws Exception {
 
-        TrainingDocumentAnnotatingModel model = modelFactory.createModel(new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME));
+        TrainingDocumentAnnotatingModel model = modelFactory.createModel(new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME,2));
 
         ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil("/tmp");
 

@@ -11,13 +11,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by wei on 4/28/15.
  */
 public class NBTrainingHelperTest {
-    ModelRVSetting setting = new DefModelRVSetting(Category.DEFINITION, Category.DEFINITION_NAME);
+    ModelRVSetting setting = new DefModelRVSetting(Category.DEFINITION, Category.DEFINITION_NAME,2);
     NBMNConfig config = setting.getNbmnConfig();
     NaiveBayesWithMultiNodes nbmn = NBTrainingHelper.createTrainingNBMN(config);
     List<String[]> wordsList;

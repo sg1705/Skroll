@@ -1,8 +1,6 @@
 package com.skroll.analyzer.model.applicationModel;
 
 import com.google.common.collect.Lists;
-import com.skroll.analyzer.data.DocData;
-import com.skroll.analyzer.data.NBFCData;
 import com.skroll.analyzer.data.NBMNData;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.NumberTokensComputer;
@@ -43,7 +41,7 @@ public class DocProcessorTest {
     ModelRVSetting setting = new ModelRVSetting(
              DefModelRVSetting.DEFAULT_WORD_FEATURES,
             DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS, DEFAULT_WORD_VARS,
-            Category.DEFINITION, Category.DEFINITION_NAME);
+            Category.DEFINITION, Category.DEFINITION_NAME,2);
 
     static String trainingFileName = "src/test/resources/analyzer/definedTermExtractionTraining/AMC Networks CA.html";
 

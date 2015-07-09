@@ -54,7 +54,7 @@ public class ClassifierLogicTest {
 
     @Test
     public void testNoClassificationOfUserTrainedPara() throws Exception {
-        this.classifierFactory.createClassifier(new TOCModelRVSetting(this.categoryId, this.categoryName));
+        this.classifierFactory.createClassifier();
         assert (classifierFactory.getClassifier(this.categoryId) != null);
         //create a new document
         Document doc = Parser.parseDocumentFromHtml("<div><u>This is a awesome</u></div>" +
