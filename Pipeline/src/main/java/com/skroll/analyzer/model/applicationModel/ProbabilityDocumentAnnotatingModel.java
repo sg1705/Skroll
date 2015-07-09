@@ -108,8 +108,8 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
         // todo: assuming the values are binary sized. need to make this more general.
         messagesToDocumentFeature =
                 new double[numParagraphs][docFeatures.size()][getParaCategory().getFeatureSize()][2];
-        messagesToParagraphCategory = new double[numParagraphs][paraDocFeatures.size()][2];
-        paragraphCategoryBelief = new double[numParagraphs][2];
+        messagesToParagraphCategory = new double[numParagraphs][paraDocFeatures.size()][getParaCategory().getFeatureSize()];
+        paragraphCategoryBelief = new double[numParagraphs][getParaCategory().getFeatureSize()];
         documentFeatureBelief = new double[docFeatures.size()][getParaCategory().getFeatureSize()][2];
 
         // compute initial beliefs
