@@ -42,6 +42,7 @@ var SearchCtrl = function(SelectionModel) {
 	//-- private variables
 	this.searchText;
 	this.SelectionModel = SelectionModel;
+	this.searchResults = [];
 }
 
 SearchCtrl.prototype.getMatches = function(searchText) {
@@ -95,10 +96,18 @@ SearchCtrl.prototype.getMatches = function(searchText) {
 				items.push(item);				
 			}
 		}
-		if ((searchText.length <=2) && (items.length > 10)) {
+		if (items.length > 15) {
 			return false;
 		}
 	})
+	var t1 = new Date().getTime();
+	this.unHighlightPreviousSearchResults(this.searchResults);
+	console.log((new Date().getTime()) - t1);
+	t1 = new Date().getTime();
+	this.highlightSearchResults(items, searchText);
+	console.log((new Date().getTime()) - t1);
+	this.searchResults = items;
+	this.searchText = searchText;
 	return items;
 }
 
@@ -125,6 +134,21 @@ SearchCtrl.prototype.getSurroundingText = function(paragraphText, searchString) 
 	return text;
 }
 
+SearchCtrl.prototype.highlightSearchResults = function(items, searchText) {
+	for(var ii = 0; ii < items.length; ii++) {
+		var paraId = items[ii].paragraphId;
+		$("#"+paraId).highlight(searchText, { wordsOnly: true, element: 'span', className: 'skHighlight' });
+	}
+}
+
+SearchCtrl.prototype.unHighlightPreviousSearchResults = function(items) {
+	for(var ii = 0; ii < items.length; ii++) {
+		var paraId = items[ii].paragraphId;
+		$("#"+paraId).unhighlight({ element: 'span', className: 'skHighlight' });
+	}
+}
+
+
 SearchCtrl.prototype.enterSearchBox = function() {
   LHSModel.smodel.hover = true;
 }
@@ -136,7 +160,10 @@ SearchCtrl.prototype.leaveSearchBox = function() {
 
 
 SearchCtrl.prototype.searchTextChange = function(text) {
-  
+  if (text == '') {
+  	console.log("clearing");
+  	this.unHighlightPreviousSearchResults(this.searchResults);
+  }
 }
 
 SearchCtrl.prototype.selectedItemChange = function(item) {
