@@ -3,6 +3,7 @@ package com.skroll.analyzer.model.applicationModel;
 import com.skroll.analyzer.data.NBMNData;
 import com.skroll.analyzer.model.bn.node.MultiplexNode;
 import com.skroll.classifier.Category;
+import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
@@ -23,7 +24,8 @@ public class TrainingDocumentAnnotatingModelTest{
     int maxNumWords = 20;
     String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining/mini-indenture.html";
     //    String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
-    ModelRVSetting setting = new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME,2);
+    //ModelRVSetting setting = new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME,2);
+    ModelRVSetting setting = new DefModelRVSetting(ClassifierFactory.CLASSIFIER_DEF, ClassifierFactory.CLASSIFIER_DEF_NAME,ClassifierFactory.DEF_CATEGORY_IDS.size());
     TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel();
     Document document;
     @Before
@@ -109,14 +111,18 @@ public class TrainingDocumentAnnotatingModelTest{
         try {
             Document htmlDoc = new Document();
             htmlDoc = Parser.parseDocumentFromHtml(htmlString);
-            //create a pipeline
-
+           /*
+            for (CoreMap paragraph: htmlDoc.getParagraphs()) {
+                CategoryAnnotationHelper.setMatchedText(paragraph, Lists.newArrayList(paragraph.getTokens().get(0)), Category.TOC_1);
+            }
+            */
             Pipeline<Document, Document> pipeline =
                     new Pipeline.Builder()
                             .add(Pipes.EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC)
                             .build();
             Document doc = pipeline.process(htmlDoc);
-            return doc;
+
+            return htmlDoc;
         } catch(Exception e) {
             e.printStackTrace();
             System.err.println("Error reading file");
