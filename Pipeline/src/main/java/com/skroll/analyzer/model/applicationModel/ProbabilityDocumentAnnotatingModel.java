@@ -294,10 +294,10 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
             List<Token> tokens = processedPara.getTokens();
 
             //todo: a hack for TOC annotation. should implement HMM for TOC and annotate base on HMM result
-            if ((this.modelRVSetting instanceof TOCModelRVSetting) && logPrioProbs[1] > logPrioProbs[0]) {
-                RVValues.addTerms(paraCategory, paragraph, tokens);
+            if (this.modelRVSetting instanceof TOCModelRVSetting) {
+                int maxIndex = BNInference.maxIndex(logPrioProbs);
+                RVValues.addTerms(paraCategory, paragraph, tokens, maxIndex);
                 continue;
-//                DocumentAnnotatingHelper.addParagraphTermAnnotation(paragraph, paraCategory, tokens);
             }
 
             List<String> words = DocumentHelper.getTokenString(tokens);
@@ -326,7 +326,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
                 if (states[i]==1) terms.add(tokens.get(i));
                 else {
                     if (terms.size()>0){
-                        RVValues.addTerms(paraCategory, paragraph, terms);
+                        RVValues.addTerms(paraCategory, paragraph, terms, 1);
 //                        DocumentAnnotatingHelper.addParagraphTermAnnotation(paragraph, paraCategory, terms);
                         terms = new ArrayList<>();
                     }
@@ -334,7 +334,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
                 }
             }
             if (terms.size()>0){
-                RVValues.addTerms(paraCategory, paragraph, terms);
+                RVValues.addTerms(paraCategory, paragraph, terms, 1);
 //                DocumentAnnotatingHelper.addParagraphTermAnnotation(paragraph, paraCategory, terms);
             }
 

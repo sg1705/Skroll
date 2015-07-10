@@ -23,8 +23,8 @@ public class RVValueSetter {
         CategoryAnnotationHelper.setTokensForClassifier(m, terms, classifierId, value); // need one more para seqId to set the right category for the terms.
     }
 
-    void addTerms(CoreMap m, List<Token> terms) {
-        CategoryAnnotationHelper.addTokensForClassifier(m,terms, classifierId); //same here
+    void addTerms(CoreMap m, List<Token> terms, int value) {
+        CategoryAnnotationHelper.addTokensForClassifier(m, terms, classifierId, value); //same here
     }
 
     void clearValue(CoreMap m) {
