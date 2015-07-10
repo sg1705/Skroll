@@ -108,14 +108,9 @@ public class CategoryAnnotationHelper {
     }
 
     public static void addTokensForClassifier(CoreMap paragraph, List<Token> newTokens, int classifierId, int classIndex) {
-        HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
         ClassifierFactory classifierFactory = new ClassifierFactory();
         List<Integer> categoryIds = classifierFactory.getClassifier(classifierId).getCategoryIds();
-        for (int categoryId : categoryIds) {
-            if (categoryAnnotation.containsKey(categoryId)) {
-                addDefinedTokensInCategoryAnnotation(paragraph,  newTokens, categoryId);
-            }
-        }
+        addDefinedTokensInCategoryAnnotation(paragraph,newTokens, categoryIds.get(classIndex));
 
     }
     public static void addDefinedTokensInCategoryAnnotation(CoreMap paragraph, List<Token> newTokens, int categoryId) {

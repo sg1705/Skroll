@@ -215,7 +215,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
 //        paraList.get(1).set(CoreAnnotations.IsUserObservationAnnotation.class, true);
 
         for (int p=paraList.size()-1; p>paraList.size()-4;p--) {
-            RVValues.addTerms(paraType, paraList.get(p), Arrays.asList(paraList.get(p).getTokens().get(0)));
+            RVValues.addTerms(paraType, paraList.get(p), Arrays.asList(paraList.get(p).getTokens().get(0)),1);
 
 //            DocumentAnnotatingHelper.addParagraphTermAnnotation(paraList.get(p), paraType, Arrays.asList(paraList.get(p).getTokens().get(0)));
             observedParas.add(paraList.get(p));
