@@ -25,7 +25,7 @@ public class TrainingDocumentAnnotatingModelTest{
     String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining/mini-indenture.html";
     //    String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
     //ModelRVSetting setting = new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME,2);
-    ModelRVSetting setting = new DefModelRVSetting(ClassifierFactory.CLASSIFIER_DEF, ClassifierFactory.CLASSIFIER_DEF_NAME,ClassifierFactory.DEF_CATEGORY_IDS.size());
+    ModelRVSetting setting = new DefModelRVSetting(ClassifierFactory.CLASSIFIER_TOC, ClassifierFactory.CLASSIFIER_TOC_NAME,ClassifierFactory.TOC_CATEGORY_IDS.size());
     TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel();
     Document document;
     @Before
@@ -36,7 +36,7 @@ public class TrainingDocumentAnnotatingModelTest{
     @Test
     public void testGetTrainingWeights() {
         for (CoreMap paragraph : document.getParagraphs()) {
-            TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.DEFINITION, (float) 1.0);
+            TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.TOC_1, (float) 1.0);
             double[] trainingWeights = model.getTrainingWeights(paragraph);
             for (int i=0; i<trainingWeights.length; i++)
             System.out.println("paraId:" + paragraph.getId() + " TrainingWeight:" + trainingWeights[i]);
@@ -49,7 +49,7 @@ public class TrainingDocumentAnnotatingModelTest{
                 for (CoreMap paragraph : document.getParagraphs()) {
                     paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
                     paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
-                    TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.DEFINITION, (float) 1.0);
+                    TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.TOC_1, (float) 1.0);
                 }
                 model.updateWithDocumentAndWeight(document);
 

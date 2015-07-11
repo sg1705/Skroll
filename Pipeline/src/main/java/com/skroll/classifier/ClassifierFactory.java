@@ -19,11 +19,8 @@ public class ClassifierFactory {
     @Inject
     private ModelFactory modelFactory;
     public static final int CLASSIFIER_TOC = 1;
-    public static final int CLASSIFIER_DEF = 2;
     public static final String CLASSIFIER_TOC_NAME = "TOC_CLASSIFIER";
-    public static final String CLASSIFIER_DEF_NAME = "DEF_CLASSIFIER";
     public static final List<Integer> TOC_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE,Category.TOC_1,Category.TOC_2));
-    public static final List<Integer> DEF_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE,Category.DEFINITION));
     public Classifier getClassifier(int classifierId) {
         ModelRVSetting modelRVSetting = null;
         /*
@@ -37,15 +34,8 @@ public class ClassifierFactory {
 
         if (classifiers.containsKey(classifierId))
             return classifiers.get(classifierId);
-        Classifier classifier =null;
-        if(classifierId==1) {
+        Classifier classifier = new ClassifierImpl(classifierId, CLASSIFIER_TOC_NAME, TOC_CATEGORY_IDS, modelFactory);
 
-             classifier = new ClassifierImpl(classifierId, CLASSIFIER_TOC_NAME, TOC_CATEGORY_IDS, modelFactory);
-        } else if (classifierId==2){
-             classifier =
-                    new ClassifierImpl(classifierId, CLASSIFIER_TOC_NAME, DEF_CATEGORY_IDS, modelFactory);
-
-        }
         classifiers.put(classifierId, classifier);
         return classifier;
     }
@@ -58,7 +48,6 @@ public class ClassifierFactory {
     public List<Classifier> getClassifiers(Document document) throws Exception {
        List<Classifier> classifierList = new ArrayList<>();
        classifierList.add(getClassifier(CLASSIFIER_TOC));
-       classifierList.add(getClassifier(CLASSIFIER_DEF));
        //classifierList.add(getClassifier(Category.TOC_2));
        //classifierList.add(getClassifier(Category.TOC_3));
        //classifierList.add(getClassifier(Category.TOC_4));
