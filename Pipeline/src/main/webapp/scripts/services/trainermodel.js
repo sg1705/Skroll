@@ -18,6 +18,7 @@ var ToolbarModel = {
 		lastSelectedParaId: '',
 		typeAError: 0,
 		typeBError: 0,
+		qcScore: 0,
 		benchmarkScore: ''
 	},
 
@@ -43,6 +44,7 @@ var ToolbarModel = {
 	      console.log(benchmarkScore);	      
 	      self.trainerToolbar.typeAError = benchmarkScore.qc.stats[1].type1Error;
 	      self.trainerToolbar.typeBError = benchmarkScore.qc.stats[1].type2Error;
+	      self.trainerToolbar.qcScore = benchmarkScore.qc.stats[1].qcScore;
 	      if (benchmarkScore.isFileBenchmarked && !benchmarkScore.isFileTrained) {
 	      	self.trainerToolbar.isBenchmark = true;
 	      	self.trainerToolbar.isTrainModel = false;
