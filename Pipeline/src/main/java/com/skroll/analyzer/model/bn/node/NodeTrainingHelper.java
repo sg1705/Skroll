@@ -167,7 +167,7 @@ public class NodeTrainingHelper {
 
 
             //hack for testing purpose
-            if (counts.get(w)[0]+ counts.get(w)[1] <1) continue;
+//            if (counts.get(w)[0]+ counts.get(w)[1] <1) continue;
             for (int j=0; j<numValues; j++) p[j] = Math.log((0.01 +
                     counts.get(w)[j])/ parent.getParameter(j));
 

@@ -16,10 +16,7 @@ import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
 import com.skroll.util.Visualizer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by wei2learn on 2/16/2015.
@@ -405,7 +402,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
      */
     public HashMap<String, HashMap<String, Double>> toVisualMap(int paraIndex) {
        //covert paraCategoryBelief
-        HashMap<String, HashMap<String, Double>> map = new HashMap();
+        HashMap<String, HashMap<String, Double>> map = new LinkedHashMap();
         map.put(this.nbmnConfig.getCategoryVar().getName(),
                 Visualizer.toDoubleArrayToMap(this.getParagraphCategoryProbabilities()[paraIndex]));
         for(int ii = 0; ii < documentFeatureBelief.length; ii++) {
