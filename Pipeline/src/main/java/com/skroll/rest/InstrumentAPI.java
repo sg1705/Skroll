@@ -213,9 +213,9 @@ public class InstrumentAPI {
             allPs.add(classifierFactory.getClassifier(Category.DEFINITION).getProbabilityDataForDoc(doc));
             allPs.add(classifierFactory.getClassifier(Category.TOC_1).getProbabilityDataForDoc(doc));
             allPs.add(classifierFactory.getClassifier(Category.TOC_2).getProbabilityDataForDoc(doc));
-            allPs.add(classifierFactory.getClassifier(Category.TOC_3).getProbabilityDataForDoc(doc));
-            allPs.add(classifierFactory.getClassifier(Category.TOC_4).getProbabilityDataForDoc(doc));
-            allPs.add(classifierFactory.getClassifier(Category.TOC_5).getProbabilityDataForDoc(doc));
+            //allPs.add(classifierFactory.getClassifier(Category.TOC_3).getProbabilityDataForDoc(doc));
+            //allPs.add(classifierFactory.getClassifier(Category.TOC_4).getProbabilityDataForDoc(doc));
+            //allPs.add(classifierFactory.getClassifier(Category.TOC_5).getProbabilityDataForDoc(doc));
 
             Gson gson = new GsonBuilder().create();
             String json = gson.toJson(allPs);

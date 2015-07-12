@@ -327,7 +327,7 @@ public class DocAPI {
                 request.getDocumentFactory().putDocument(doc);
             }
         } catch (Exception e) {
-            logger.error("Failed to update updateBNI, using existing document : {}", e);
+            logger.error("Failed to update updateBNI:", e);
         }
 
         //logger.debug("updated document is stored in {} {}", preEvaluatedFolder, documentId);

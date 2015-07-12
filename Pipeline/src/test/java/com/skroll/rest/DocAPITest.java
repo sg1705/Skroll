@@ -51,14 +51,14 @@ public class DocAPITest extends APITest {
         String preEvaluatedFolder = configuration.get("preEvaluatedFolder","/tmp/");
         Document doc = JsonDeserializer.fromJson(Files.toString(new File(preEvaluatedFolder + documentId), Constants.DEFAULT_CHARSET));
         for(CoreMap coreMap: doc.getParagraphs()){
-            CategoryAnnotationHelper.setMatchedText(coreMap, DocumentHelper.createTokens(Lists.newArrayList("Capital", "Stock")), Category.TOC_4);
-            if(CategoryAnnotationHelper.isCategoryId(coreMap, Category.TOC_4)) {
-                System.out.println("TOC_4:" + CategoryAnnotationHelper.getDefinedTermLists(coreMap, Category.TOC_4));
+            CategoryAnnotationHelper.setMatchedText(coreMap, DocumentHelper.createTokens(Lists.newArrayList("Capital", "Stock")), Category.TOC_2);
+            if(CategoryAnnotationHelper.isCategoryId(coreMap, Category.TOC_2)) {
+                System.out.println("TOC_2:" + CategoryAnnotationHelper.getDefinedTermLists(coreMap, Category.TOC_2));
                 //assert(Joiner.on(" ").join(CategoryAnnotationHelper.getDefinedTermLists(coreMap, Category.TOC_4)).equals("CapitalStock"));
             }
         }
         //API.documentMap.put("smaller-indenture.html",doc);
-        logger.debug("TOC Paragraph before calling updateTerm: {}", CategoryAnnotationHelper.getParaWithCategoryAnnotation(doc, Category.TOC_4));
+        logger.debug("TOC Paragraph before calling updateTerm: {}", CategoryAnnotationHelper.getParaWithCategoryAnnotation(doc, Category.TOC_2));
 
         testUpdateTerms();
 
@@ -66,7 +66,7 @@ public class DocAPITest extends APITest {
 
         for (CoreMap paragraph : doc.getParagraphs()) {
                 List<List<String>> definitionList = CategoryAnnotationHelper.getDefinedTermLists(
-                        paragraph, Category.TOC_4);
+                        paragraph, Category.TOC_2);
                 logger.debug(paragraph.getId() + " " + Joiner.on(" ").join(definitionList));
 
             if(paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)) {

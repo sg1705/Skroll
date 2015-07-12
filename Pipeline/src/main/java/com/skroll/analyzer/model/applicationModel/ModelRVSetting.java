@@ -65,8 +65,8 @@ public class ModelRVSetting {
                           int classifierId,
                           String classifierName,
                           int numOfCategory) {
-        RandomVariable wordType = RVCreater.createWordLevelRVWithComputer(new WordIsInCategoryComputer(classifierId), "wordIsInCategory-" + classifierId);
-        RandomVariable paraType = RVCreater.createDiscreteRVWithComputer(new ParaCategoryComputer(classifierId,numOfCategory), "paraTypeIsCategory-" + classifierId);
+        RandomVariable wordType = RVCreater.createWordLevelRVWithComputer(new WordIsInCategoryComputer(classifierId), "wordIsInClassifier-" + classifierId);
+        RandomVariable paraType = RVCreater.createDiscreteRVWithComputer(new ParaCategoryComputer(classifierId,numOfCategory), "paraTypeIsClassifier-" + classifierId);
         nbmnConfig = new NBMNConfig(paraType, paraFeatureVars, paraDocFeatureVars,
                 RVCreater.createNBMNDocFeatureRVs(paraDocFeatureVars, paraType, classifierName), wordVars);
         RVValues.addValueSetter(paraType, new RVValueSetter(classifierId, CoreAnnotations.CategoryAnnotations.class));
