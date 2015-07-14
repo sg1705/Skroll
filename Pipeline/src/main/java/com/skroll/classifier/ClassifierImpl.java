@@ -24,14 +24,15 @@ public class ClassifierImpl implements Classifier {
 
     protected ModelFactory modelFactory;
     private int classifierId;
-    private List<Integer> categoryIds = new ArrayList<>();
+    private List<Integer> categoryIds = null;
+    protected ModelRVSetting modelRVSetting;
     //protected TrainingDocumentAnnotatingModel trainingDocumentAnnotatingModel;
     @Override
     public ModelRVSetting getModelRVSetting() {
         return modelRVSetting;
     }
 
-    protected ModelRVSetting modelRVSetting;
+
 
     public ClassifierImpl(int classifierId, String classifierName, List<Integer> categoryIds, ModelFactory modelFactory) {
         this.modelFactory = modelFactory;
@@ -78,7 +79,6 @@ public class ClassifierImpl implements Classifier {
     @Override
     public void trainWithWeight( Document doc) {
         modelFactory.getTrainingModel(modelRVSetting).updateWithDocumentAndWeight(doc);
-
     }
 
 
