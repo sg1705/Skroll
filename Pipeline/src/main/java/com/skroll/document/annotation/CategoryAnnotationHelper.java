@@ -107,6 +107,13 @@ public class CategoryAnnotationHelper {
         return categoryAnnotation;
     }
 
+    /**
+     * Given a classifier id, classIndex, add given tokens for the category annotation in the given paragraph
+     * @param paragraph
+     * @param newTokens
+     * @param classifierId
+     * @param classIndex
+     */
     public static void addTokensForClassifier(CoreMap paragraph, List<Token> newTokens, int classifierId, int classIndex) {
         ClassifierFactory classifierFactory = new ClassifierFactory();
         List<Integer> categoryIds = classifierFactory.getClassifier(classifierId).getCategoryIds();
@@ -125,6 +132,13 @@ public class CategoryAnnotationHelper {
         paragraph.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
     }
 
+    /**
+     * Given a classifier id, classIndex, set given tokens for the category annotation in the given paragraph
+     * @param paragraph
+     * @param definitions
+     * @param classifierId
+     * @param classIndex
+     */
     public static void setTokensForClassifier(CoreMap paragraph, List<List<Token>> definitions, int classifierId, int classIndex) {
         ClassifierFactory classifierFactory = new ClassifierFactory();
         List<Integer> categoryIds = classifierFactory.getClassifier(classifierId).getCategoryIds();

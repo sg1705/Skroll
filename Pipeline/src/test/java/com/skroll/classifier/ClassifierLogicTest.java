@@ -3,7 +3,6 @@ package com.skroll.classifier;
 import com.google.common.collect.Lists;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.skroll.analyzer.model.applicationModel.TOCModelRVSetting;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.JsonDeserializer;
@@ -27,7 +26,7 @@ public class ClassifierLogicTest {
 
     ClassifierFactory classifierFactory = null;
     Configuration config;
-    int categoryId = 6;
+    int categoryId = 2;
     String categoryName = "TestClassifier.model";
 
     @Before
@@ -58,8 +57,8 @@ public class ClassifierLogicTest {
         assert (classifierFactory.getClassifier(this.categoryId) != null);
         //create a new document
         Document doc = Parser.parseDocumentFromHtml("<div><u>This is a awesome</u></div>" +
-                "<div>second paragraph</div>" +
-                "<div>third paragraph</div");
+                "<div><u>This is a awesome</u></div>" +
+                "<div><u>This is a awesome</u></div");
 
         // this doc has three paragraphs
         assert (doc.getParagraphs().size() == 3);

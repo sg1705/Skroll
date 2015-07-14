@@ -25,7 +25,7 @@ public class TrainingDocumentAnnotatingModelTest{
     String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining/mini-indenture.html";
     //    String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
     //ModelRVSetting setting = new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME,2);
-    ModelRVSetting setting = new DefModelRVSetting(ClassifierFactory.CLASSIFIER_TOC, ClassifierFactory.CLASSIFIER_TOC_NAME,ClassifierFactory.TOC_CATEGORY_IDS.size());
+    ModelRVSetting setting = new DefModelRVSetting(ClassifierFactory.CLASSIFIER_TOC_ID, ClassifierFactory.CLASSIFIER_TOC_NAME,ClassifierFactory.TOC_CATEGORY_IDS.size());
     TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel();
     Document document;
     @Before
@@ -36,22 +36,22 @@ public class TrainingDocumentAnnotatingModelTest{
     @Test
     public void testGetTrainingWeights() {
         for (CoreMap paragraph : document.getParagraphs()) {
-            TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.TOC_1, (float) 1.0);
+            TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.DEFINITION, (float) 1.0);
             double[] trainingWeights = model.getTrainingWeights(paragraph);
             for (int i=0; i<trainingWeights.length; i++)
-            System.out.println("paraId:" + paragraph.getId() + " TrainingWeight:" + trainingWeights[i]);
+                System.out.println("paraId:" + paragraph.getId() + " TrainingWeight:" + trainingWeights[i]);
             assert(trainingWeights[1]==1.0);
         }
     }
 
     @Test
     public void testUpdateWithDocumentAndWeight() throws Exception {
-                for (CoreMap paragraph : document.getParagraphs()) {
-                    paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
-                    paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
-                    TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.TOC_1, (float) 1.0);
-                }
-                model.updateWithDocumentAndWeight(document);
+        for (CoreMap paragraph : document.getParagraphs()) {
+            paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
+            paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
+            TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.DEFINITION, (float) 1.0);
+        }
+        model.updateWithDocumentAndWeight(document);
 
         System.out.println("trained model: \n" + model);
         assert(model.toString().contains("nextTokenCounts [Operations=5.0, Tiger=6.0]"));
@@ -64,7 +64,7 @@ public class TrainingDocumentAnnotatingModelTest{
         System.out.println("initial model: \n" + model.getNbmnModel());
         File f = new File(trainingFolderName);
 //        document = makeTrainingDoc(f);
-         model.updateWithDocument(document);
+        model.updateWithDocument(document);
 
 
         System.out.println("trained model: \n" + model);
