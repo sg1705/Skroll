@@ -13,7 +13,6 @@ public class CacheService<T> extends CacheLoader<String, T> implements RemovalLi
     public static final Logger logger = LoggerFactory.getLogger(FileSystemDocumentFactoryImpl.class);
     private static final int CACHE_SIZE = 10;
     private CacheHandler<T> cacheHandler;
-
     LoadingCache<String, T> loadingCache;
 
     @Inject

@@ -51,14 +51,19 @@ public class ClassifierBenchmark {
     }
 
     public QC qcDocument(Document firstDoc, Document secondDoc, QC qc){
+        if (firstDoc==secondDoc){
+            logger.error("both benchamrk docuemnts can not pointing to the same document");
+            return null;
+        }
         for(CoreMap firstDocParagraph : firstDoc.getParagraphs()) {
             for(CoreMap secondDocParagraph : secondDoc.getParagraphs()) {
                 if (firstDocParagraph.getId().equalsIgnoreCase(secondDocParagraph.getId())) {
                     for (QC.Stats stats : qc.stats) {
-                        if (CategoryAnnotationHelper.isCategoryId(firstDocParagraph, stats.categoyId)){
+                        if (CategoryAnnotationHelper.isCategoryId(firstDocParagraph, stats.categoyId)) {
                             stats.overallOccurance++;
-                        } else {
-                            stats.noOccurance++;
+                        }
+                        if(CategoryAnnotationHelper.isCategoryId(secondDocParagraph,stats.categoyId)) {
+                            stats.postClassificationOccurance++;
                         }
                         if (!CategoryAnnotationHelper.isCategoryId(firstDocParagraph, stats.categoyId) &&
                                 CategoryAnnotationHelper.isCategoryId(secondDocParagraph, stats.categoyId))
@@ -86,6 +91,10 @@ public class ClassifierBenchmark {
         try {
             firstDoc = documentFactory.get(file);
             secondDoc = documentFactory.get(file);
+            if (firstDoc==secondDoc){
+                logger.error("both benchamrk docuemnts can not pointing to the same document");
+                return null;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
