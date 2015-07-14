@@ -26,6 +26,7 @@ public class ClassifierImpl implements Classifier {
     private int classifierId;
     private List<Integer> categoryIds = null;
     protected ModelRVSetting modelRVSetting;
+
     //protected TrainingDocumentAnnotatingModel trainingDocumentAnnotatingModel;
     @Override
     public ModelRVSetting getModelRVSetting() {
@@ -33,12 +34,11 @@ public class ClassifierImpl implements Classifier {
     }
 
 
-
     public ClassifierImpl(int classifierId, String classifierName, List<Integer> categoryIds, ModelFactory modelFactory) {
         this.modelFactory = modelFactory;
         this.classifierId = classifierId;
         this.categoryIds = categoryIds;
-        this.modelRVSetting = new TOCModelRVSetting(classifierId, classifierName,categoryIds.size());
+        this.modelRVSetting = new TOCModelRVSetting(classifierId, classifierName, categoryIds.size());
     }
 
     public List<String> extractTokenFromDoc(Document doc) {
@@ -55,7 +55,7 @@ public class ClassifierImpl implements Classifier {
 
 
     @Override
-    public Object updateBNI(String documentId,Document document, List<CoreMap> observedParas) throws Exception {
+    public Object updateBNI(String documentId, Document document, List<CoreMap> observedParas) throws Exception {
         if (!observedParas.isEmpty())
             logger.debug("observedParas:" + "\t" + observedParas);
 
@@ -76,8 +76,9 @@ public class ClassifierImpl implements Classifier {
         modelFactory.getTrainingModel(modelRVSetting).updateWithDocument(doc);
 
     }
+
     @Override
-    public void trainWithWeight( Document doc) {
+    public void trainWithWeight(Document doc) {
         modelFactory.getTrainingModel(modelRVSetting).updateWithDocumentAndWeight(doc);
     }
 
@@ -88,13 +89,13 @@ public class ClassifierImpl implements Classifier {
             return updateBNI(documentId, document, new ArrayList<CoreMap>());
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error(String.format("Cannot classify documentId:%s for categoryId:%s",documentId, this.modelRVSetting.getClassifierId(), e));
+            logger.error(String.format("Cannot classify documentId:%s for categoryId:%s", documentId, this.modelRVSetting.getClassifierId(), e));
         }
         return document;
     }
 
     @Override
-    public HashMap<String, HashMap<String, Double>> getBNIVisualMap( Document document, int paraIndex) {
+    public HashMap<String, HashMap<String, Double>> getBNIVisualMap(Document document, int paraIndex) {
         return modelFactory.getBNIModel(modelRVSetting).toVisualMap(paraIndex);
     }
 
@@ -118,15 +119,7 @@ public class ClassifierImpl implements Classifier {
         return classifierId;
     }
 
-    public void setClassifierId(int classifierId) {
-        this.classifierId = classifierId;
-    }
-
     public List<Integer> getCategoryIds() {
         return categoryIds;
-    }
-
-    public void setCategoryIds(List<Integer> categoryIds) {
-        this.categoryIds = categoryIds;
     }
 }

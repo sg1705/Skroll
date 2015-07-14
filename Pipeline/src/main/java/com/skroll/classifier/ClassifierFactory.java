@@ -18,7 +18,7 @@ public class ClassifierFactory {
     private static HashMap<Integer, Classifier> classifiers = new HashMap();
     @Inject
     private ModelFactory modelFactory;
-    public static final int CLASSIFIER_TOC = 1;
+    public static final int CLASSIFIER_TOC_ID = 1;
     public static final String CLASSIFIER_TOC_NAME = "TOC_CLASSIFIER";
     public static final List<Integer> TOC_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE,Category.TOC_1,Category.TOC_2));
     public Classifier getClassifier(int classifierId) {
@@ -47,7 +47,7 @@ public class ClassifierFactory {
 
     public List<Classifier> getClassifiers(Document document) throws Exception {
        List<Classifier> classifierList = new ArrayList<>();
-       classifierList.add(getClassifier(CLASSIFIER_TOC));
+       classifierList.add(getClassifier(CLASSIFIER_TOC_ID));
        //classifierList.add(getClassifier(Category.TOC_2));
        //classifierList.add(getClassifier(Category.TOC_3));
        //classifierList.add(getClassifier(Category.TOC_4));
@@ -60,7 +60,7 @@ public class ClassifierFactory {
      *
      */
     public void createClassifier() throws Exception {
-        getClassifier(CLASSIFIER_TOC);
+        getClassifier(CLASSIFIER_TOC_ID);
         //modelRVSettings.put(modelRVSetting.getClassifierId(), modelRVSetting);
     }
 }

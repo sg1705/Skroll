@@ -39,10 +39,7 @@ public interface Classifier {
 
     public int getClassifierId();
 
-    public void setClassifierId(int classifierId) ;
-
     public List<Integer> getCategoryIds();
 
-    public void setCategoryIds(List<Integer> categoryIds);
 
 }
