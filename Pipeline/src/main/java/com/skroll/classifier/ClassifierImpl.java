@@ -94,7 +94,7 @@ public class ClassifierImpl implements Classifier {
     }
 
     @Override
-    public HashMap<String, HashMap<String, Double>> getBNIVisualMap( Document document, int paraIndex) {
+    public HashMap<String, HashMap<String, HashMap<String, Double>>> getBNIVisualMap(Document document, int paraIndex) {
         return modelFactory.getBNIModel(modelRVSetting).toVisualMap(paraIndex);
     }
 

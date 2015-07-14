@@ -84,7 +84,8 @@ public class InstrumentAPI {
 
         // get the json from BNI
         try {
-           HashMap<String, HashMap<String, Double>> map = classifierFactory.getClassifier(ClassifierFactory.CLASSIFIER_TOC).getBNIVisualMap(doc, paraIndex);
+//           HashMap<String, HashMap<String, Double>> map = classifierFactory.getClassifier(ClassifierFactory.CLASSIFIER_TOC).getBNIVisualMap(doc, paraIndex);
+            HashMap<String, HashMap<String, HashMap<String, Double>>> map = classifierFactory.getClassifier(ClassifierFactory.CLASSIFIER_TOC).getBNIVisualMap(doc, paraIndex);
             HashMap<String, HashMap<String, HashMap<String, Double>>> modelMap = classifierFactory.getClassifier(ClassifierFactory.CLASSIFIER_TOC).getModelVisualMap();
             probabilityJson = gson.toJson(map);
             buf.append(probabilityJson);

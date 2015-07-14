@@ -10,6 +10,7 @@ import com.skroll.analyzer.model.bn.*;
 import com.skroll.analyzer.model.bn.config.NBMNConfig;
 import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.analyzer.model.bn.node.DiscreteNode;
+import com.skroll.analyzer.model.bn.node.MultiplexNode;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
@@ -22,6 +23,7 @@ import com.skroll.util.Visualizer;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -216,10 +218,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
     }
 
-    @JsonIgnore
-    public NaiveBayesWithMultiNodes getNbmnModel() {
-        return nbmnModel;
-    }
+
 
     @Override
     public String toString() {
@@ -230,12 +229,8 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     }
 
     public HashMap<String, HashMap<String, HashMap<String, Double>>> toVisualMap() {
-        HashMap<String, HashMap<String, HashMap<String, Double>>> map = new HashMap();
-        //document level features
-        List<DiscreteNode> discreteNodes = this.nbmnModel.getAllDiscreteNodes();
-        map.put("ParagraphFeatureNodes", Visualizer.nodesToMap(
-                discreteNodes.toArray(new DiscreteNode[discreteNodes.size()])));
-        return map;
+        HashMap<String, HashMap<String, HashMap<String, Double>>> map = new LinkedHashMap();
+        return super.toVisualMap(map);
     }
 
     public boolean equals(TrainingDocumentAnnotatingModel model) {

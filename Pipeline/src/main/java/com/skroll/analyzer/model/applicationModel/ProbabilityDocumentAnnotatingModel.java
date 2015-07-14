@@ -400,18 +400,22 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
      * @param paraIndex
      * @return
      */
-    public HashMap<String, HashMap<String, Double>> toVisualMap(int paraIndex) {
+    public HashMap<String, HashMap<String, HashMap<String, Double>>> toVisualMap(int paraIndex) {
        //covert paraCategoryBelief
-        HashMap<String, HashMap<String, Double>> map = new LinkedHashMap();
-        map.put(this.nbmnConfig.getCategoryVar().getName(),
+        HashMap<String, HashMap<String, HashMap<String, Double>>> map = new LinkedHashMap();
+        HashMap<String, HashMap<String, Double>> applicationModelInfo = new LinkedHashMap();
+        applicationModelInfo.put(this.nbmnConfig.getCategoryVar().getName(),
                 Visualizer.toDoubleArrayToMap(this.getParagraphCategoryProbabilities()[paraIndex]));
-        for(int ii = 0; ii < documentFeatureBelief.length; ii++) {
+        for (int ii = 0; ii < documentFeatureBelief.length; ii++) {
             for (int jj = 0; jj < documentFeatureBelief[0].length; jj++) {
-                map.put(this.nbmnConfig.getDocumentFeatureVarList().get(ii).get(jj).getName(),
+                applicationModelInfo.put(this.nbmnConfig.getDocumentFeatureVarList().get(ii).get(jj).getName(),
                         Visualizer.toDoubleArrayToMap(this.getDocumentFeatureProbabilities()[ii][jj]));
             }
         }
-        return map;
+
+        map.put("applicationModelInfo", applicationModelInfo);
+        return super.toVisualMap(map);
+
     }
 
     public List<Double> toParaCategoryDump() {
