@@ -5,9 +5,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.bn.NaiveBayesWithMultiNodes;
 import com.skroll.analyzer.model.bn.config.NBMNConfig;
+import com.skroll.analyzer.model.bn.node.DiscreteNode;
+import com.skroll.analyzer.model.bn.node.MultiplexNode;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
 import com.skroll.classifier.Category;
+import com.skroll.util.Visualizer;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -53,6 +58,32 @@ public abstract class DocumentAnnotatingModel {
         return nbmnConfig;
     }
 
+    @JsonIgnore
+    public NaiveBayesWithMultiNodes getNbmnModel() {
+        return nbmnModel;
+    }
+
+    public HashMap<String, HashMap<String, HashMap<String, Double>>> toVisualMap(
+            HashMap<String, HashMap<String, HashMap<String, Double>>> map) {
+
+        //document level features
+        List<DiscreteNode> discreteNodes = this.nbmnModel.getAllDiscreteNodes();
+        map.put("discreteNodes", Visualizer.nodesToMap(
+                discreteNodes.toArray(new DiscreteNode[discreteNodes.size()])));
+
+        List<MultiplexNode> multiplexNodes = getNbmnModel().getMultiNodes();
+        for (int i = 0; i < multiplexNodes.size(); i++) {
+            DiscreteNode[] nodes = multiplexNodes.get(0).getNodes();
+            for (int j = 0; j < nodes.length; j++) {
+                DiscreteNode node = nodes[j];
+                map.put("F" + i + "C" + j + node.getVariable().getName(), Visualizer.nodesToMap(
+                        new DiscreteNode[]{node.getParents()[0], node}));
+            }
+
+        }
+
+        return map;
+    }
 
 }
 

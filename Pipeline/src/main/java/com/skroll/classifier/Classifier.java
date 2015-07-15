@@ -29,7 +29,7 @@ public interface Classifier {
 
     public Object updateBNI(String documentId, Document document, List<CoreMap> observedParas) throws Exception;
 
-    public HashMap<String, HashMap<String, Double>> getBNIVisualMap(Document doc, int paraIndex);
+    public HashMap<String, HashMap<String, HashMap<String, Double>>> getBNIVisualMap(Document doc, int paraIndex);
 
     public HashMap<String, HashMap<String, HashMap<String, Double>>> getModelVisualMap();
 
