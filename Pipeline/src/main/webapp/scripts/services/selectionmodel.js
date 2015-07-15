@@ -31,7 +31,11 @@ var SelectionModel = {
 	},
 
 	scrollToSelection: function(selectionId) {
-	  var selection = rangy.deserializeSelection(selectionId, $("#content").get(0));
+	  var savedSelection = JSON.parse(selectionId);
+	  var rangySelection  = savedSelection.rangy;
+	  var paraId = savedSelection.paraId;
+	  rangy.getSelection().restoreCharacterRanges($("#"+paraId).get(0), rangySelection);
+	  var selection = rangy.getSelection();
 	  var dom = selection.anchorNode;
 	  var para = $(dom);
 	  //assuming that node is a text node
@@ -54,9 +58,12 @@ var SelectionModel = {
 	saveSelection: function(paraId, selectedText) {
 		this.paragraphId = paraId;
 		this.selectedText = selectedText;
-		this.serializedSelection = rangy.serializeSelection(rangy.getSelection($("#content").get(0)), false, $("#content").get(0));
-		this.serializedSelection = encodeURIComponent(encodeURIComponent(this.serializedSelection));
 		this.serializedParagraphId = paraId;
+		var selection = { };
+		selection.rangy = rangy.getSelection().saveCharacterRanges($("#"+paraId).get(0));
+		selection.paraId = paraId;
+		this.serializedSelection = JSON.stringify(selection);
+		this.serializedSelection = encodeURIComponent(encodeURIComponent(this.serializedSelection));
    	 	this.$ngSilentLocation.silent('/view/docId/'+documentModel.documentId+'/linkId/'+this.serializedSelection, false);
 	},
 

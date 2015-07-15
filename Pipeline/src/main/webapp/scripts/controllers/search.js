@@ -30,6 +30,11 @@ c) angular-material.js .. added <md-input-container> to md-autocomplete directiv
 4. MdAutocomplete added a width of 270px in the template
 
 5. MdAutocompleteCtrl changed the MAX_HEIGHT from 5.5 to 11
+
+6. Changed MAX_HEIGHT from 5 to 8 in autocompleteController.js
+
+7. Uncommented a line in focus() method to show search results when the widget
+   gains focus
 */
 
 var SearchCtrl = function(SelectionModel) {
@@ -37,11 +42,12 @@ var SearchCtrl = function(SelectionModel) {
 	//-- private variables
 	this.searchText;
 	this.SelectionModel = SelectionModel;
+	this.searchResults = [];
 }
 
 SearchCtrl.prototype.getMatches = function(searchText) {
 	var items = [];
-	var elements = $(":contains('" + searchText + "')").filter(":not(:has(*))").closest("[id^='p_']");
+	var elements = $(":ContainsCaseInsensitive('" + searchText + "')").filter(":not(:has(*))").closest("[id^='p_']");
 	//var elements = $("[id^='p_']:not('[id^=\\'p_\\']')").filter(":contains('" + searchText + "')");
 	//var elements = $("[id^='p_']:only-child").filter(":contains('" + searchText + "')");
 	//convert level terms to integers
@@ -60,7 +66,7 @@ SearchCtrl.prototype.getMatches = function(searchText) {
 		var header;
 		var displayText;
 		var isItem = false;
-		var surroundingStartIndex = 80;
+		//var surroundingStartIndex = 80;
 		//this is a hack
 		if (id > 1237) {
 			//iterate over each level 2 heading
@@ -90,18 +96,26 @@ SearchCtrl.prototype.getMatches = function(searchText) {
 				items.push(item);				
 			}
 		}
-		if ((searchText.length <=2) && (items.length > 10)) {
+		if (items.length > 15) {
 			return false;
 		}
 	})
+	var t1 = new Date().getTime();
+	this.unHighlightPreviousSearchResults(this.searchResults);
+	console.log((new Date().getTime()) - t1);
+	t1 = new Date().getTime();
+	this.highlightSearchResults(items, searchText);
+	console.log((new Date().getTime()) - t1);
+	this.searchResults = items;
+	this.searchText = searchText;
 	return items;
 }
 
 SearchCtrl.prototype.getSurroundingText = function(paragraphText, searchString) {
 	var indexOfSearch = paragraphText.indexOf(searchString);
 	var lengthOfSearch = searchString.length;
-	var expandLeft = 50;
-	var expandRight = 50;
+	var expandLeft = 65;
+	var expandRight = 65;
 	var startLeft = 0;
 	var endRight = 0;
 	var length = paragraphText.length;
@@ -120,6 +134,21 @@ SearchCtrl.prototype.getSurroundingText = function(paragraphText, searchString) 
 	return text;
 }
 
+SearchCtrl.prototype.highlightSearchResults = function(items, searchText) {
+	for(var ii = 0; ii < items.length; ii++) {
+		var paraId = items[ii].paragraphId;
+		$("#"+paraId).highlight(searchText, { wordsOnly: true, element: 'span', className: 'skHighlight' });
+	}
+}
+
+SearchCtrl.prototype.unHighlightPreviousSearchResults = function(items) {
+	for(var ii = 0; ii < items.length; ii++) {
+		var paraId = items[ii].paragraphId;
+		$("#"+paraId).unhighlight({ element: 'span', className: 'skHighlight' });
+	}
+}
+
+
 SearchCtrl.prototype.enterSearchBox = function() {
   LHSModel.smodel.hover = true;
 }
@@ -131,7 +160,10 @@ SearchCtrl.prototype.leaveSearchBox = function() {
 
 
 SearchCtrl.prototype.searchTextChange = function(text) {
-  
+  if (text == '') {
+  	console.log("clearing");
+  	this.unHighlightPreviousSearchResults(this.searchResults);
+  }
 }
 
 SearchCtrl.prototype.selectedItemChange = function(item) {
@@ -144,3 +176,9 @@ SearchCtrl.prototype.selectedItemChange = function(item) {
 
 angular.module('SkrollApp')
 	.controller('SearchCtrl', ['SelectionModel', SearchCtrl]);
+
+jQuery.expr[":"].ContainsCaseInsensitive = jQuery.expr.createPseudo(function(arg) {
+   return function( elem ) {
+   	return jQuery(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
+   }; 
+});	
