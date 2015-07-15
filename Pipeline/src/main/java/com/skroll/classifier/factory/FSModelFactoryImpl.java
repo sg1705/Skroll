@@ -28,8 +28,8 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
 
 
     public TrainingDocumentAnnotatingModel getTrainingModel(ModelRVSetting modelRVSetting) {
-        if (TrainingModelMap.containsKey(modelRVSetting.getCategoryId())){
-            return TrainingModelMap.get(modelRVSetting.getCategoryId());
+        if (TrainingModelMap.containsKey(modelRVSetting.getClassifierId())){
+            return TrainingModelMap.get(modelRVSetting.getClassifierId());
         }
         TrainingDocumentAnnotatingModel model = createModel(modelRVSetting);
         logger.debug("training model Map Size:{}",TrainingModelMap.size());
@@ -43,7 +43,7 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
         if (localTrainingModel == null) {
             try {
 
-                    localTrainingModel = (TrainingDocumentAnnotatingModel) objectPersistUtil.readObject(null,modelRVSetting.getCategoryName());
+                    localTrainingModel = (TrainingDocumentAnnotatingModel) objectPersistUtil.readObject(null,modelRVSetting.getClassifierName());
             } catch (Throwable e) {
                 logger.warn("TrainingDocumentAnnotatingModel is not found. creating new one" );
                 localTrainingModel = null;
@@ -54,7 +54,7 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
             localTrainingModel = new TrainingDocumentAnnotatingModel(modelRVSetting);
         }
 
-        TrainingModelMap.put(modelRVSetting.getCategoryId(), localTrainingModel);
+        TrainingModelMap.put(modelRVSetting.getClassifierId(), localTrainingModel);
         return localTrainingModel;
     }
 
@@ -63,24 +63,24 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
         TrainingDocumentAnnotatingModel tmpModel = createModel(modelRVSetting);
         tmpModel.updateWithDocumentAndWeight(document);
 
-        ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(tmpModel.getTnbfModel(),
+        ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(tmpModel.getNbmnModel(),
                 tmpModel.getHmm(), document,modelRVSetting );
         bniModel.annotateDocument();
         //printBelieves(bniModel, document);
-        bniModelMap.put(modelRVSetting.getCategoryId(),bniModel);
+        bniModelMap.put(modelRVSetting.getClassifierId(),bniModel);
         return bniModel;
     }
 
     public ProbabilityDocumentAnnotatingModel getBNIModel(ModelRVSetting modelRVSetting) {
-        if (bniModelMap.containsKey(modelRVSetting.getCategoryId())){
-            return bniModelMap.get(modelRVSetting.getCategoryId());
+        if (bniModelMap.containsKey(modelRVSetting.getClassifierId())){
+            return bniModelMap.get(modelRVSetting.getClassifierId());
         }
         return null;
     }
 
     public void saveTrainingModel(ModelRVSetting modelRVSetting) throws Exception {
         try {
-            objectPersistUtil.persistObject(null, getTrainingModel(modelRVSetting), modelRVSetting.getCategoryName());
+            objectPersistUtil.persistObject(null, getTrainingModel(modelRVSetting), modelRVSetting.getClassifierName());
         } catch (ObjectPersistUtil.ObjectPersistException e) {
             logger.error("failed to persist the model", e);
             throw new Exception(e);
@@ -91,9 +91,9 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
     void printBelieves(ProbabilityDocumentAnnotatingModel model, Document doc ){
         logger.trace("document level feature believes\n");
 
-        double[][] dBelieves = model.getDocumentFeatureBelief();
+        double[][][] dBelieves = model.getDocumentFeatureBelief();
         for (int i=0; i<dBelieves.length; i++){
-            logger.trace(Arrays.toString(dBelieves[i]));
+            logger.trace(Arrays.deepToString(dBelieves[i]));
         }
 
         List<CoreMap> paraList = doc.getParagraphs();

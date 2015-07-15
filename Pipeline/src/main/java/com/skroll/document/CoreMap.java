@@ -110,18 +110,18 @@ public class CoreMap implements TypesafeMap  {
     public boolean equals(CoreMap coremap) {
         Set<String> keys = this.keyNameSet();
         Set<String> nKeys = coremap.keyNameSet();
-        if(keys.size() != nKeys.size()) {
+        if (keys.size() != nKeys.size()) {
             return false;
         }
         //iterate over each keys
-        for(String key : keys) {
+        for (String key : keys) {
             boolean contains = nKeys.contains(key);
             if (!contains) {
                 return false;
             }
         }
         //iterate over each keys
-        for(String key : nKeys) {
+        for (String key : nKeys) {
             boolean contains = keys.contains(key);
             if (!contains) {
                 return false;

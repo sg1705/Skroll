@@ -34,11 +34,11 @@ public class DefModelRVSetting extends ModelRVSetting {
             RVCreater.createWordsRVWithComputer(new UniqueWordsComputer(), "uniqueWords")
     );
 
-    public DefModelRVSetting(int categoryId, String categoryName) {
+    public DefModelRVSetting(int classifierId, String classifierName, int numOfCategory) {
         super(
                 DEFAULT_WORD_FEATURES,
                 DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS,
-                DEFAULT_WORD_VARS, categoryId, categoryName);
+                DEFAULT_WORD_VARS, classifierId, classifierName, numOfCategory);
 
     }
 

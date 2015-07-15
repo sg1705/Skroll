@@ -96,9 +96,9 @@ public class RVValues {
         setter.setValue(val, m, terms);
     }
 
-    public static void addTerms(RandomVariable rv, CoreMap m, List<Token> terms) {
+    public static void addTerms(RandomVariable rv, CoreMap m, List<Token> terms, int value) {
         RVValueSetter setter = valueSetterMap.get(rv);
-        setter.addTerms(m, terms);
+        setter.addTerms(m, terms, value);
     }
 
     public static void clearValue(RandomVariable rv, CoreMap m) {

@@ -3,7 +3,6 @@ package com.skroll.classifier;
 import com.google.common.collect.Lists;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.skroll.analyzer.model.applicationModel.TOCModelRVSetting;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.JsonDeserializer;
@@ -27,7 +26,7 @@ public class ClassifierLogicTest {
 
     ClassifierFactory classifierFactory = null;
     Configuration config;
-    int categoryId = 6;
+    int categoryId = 2;
     String categoryName = "TestClassifier.model";
 
     @Before
@@ -38,7 +37,7 @@ public class ClassifierLogicTest {
             config = injector.getInstance(Configuration.class);
             String modelFolder = config.get("modelFolder");
             //delete an existing model
-            File f = new File(modelFolder+"/"+categoryName);
+            File f = new File(modelFolder + "/" + categoryName);
             try {
                 Files.delete(f.toPath());
             } catch (NoSuchFileException e) {
@@ -54,12 +53,12 @@ public class ClassifierLogicTest {
 
     @Test
     public void testNoClassificationOfUserTrainedPara() throws Exception {
-        this.classifierFactory.createClassifier(new TOCModelRVSetting(this.categoryId, this.categoryName));
-        assert(classifierFactory.getClassifier(this.categoryId)!= null);
+        this.classifierFactory.createClassifier();
+        assert (classifierFactory.getClassifier(this.categoryId) != null);
         //create a new document
         Document doc = Parser.parseDocumentFromHtml("<div><u>This is a awesome</u></div>" +
-                "<div>second paragraph</div>" +
-                "<div>third paragraph</div");
+                "<div><u>This is a awesome</u></div>" +
+                "<div><u>This is a awesome</u></div");
 
         // this doc has three paragraphs
         assert (doc.getParagraphs().size() == 3);
@@ -72,7 +71,7 @@ public class ClassifierLogicTest {
         TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, this.categoryId, 1);
         CategoryAnnotationHelper.setMatchedText(paragraph, Lists.newArrayList(paragraph.getTokens().get(0)), this.categoryId);
         // classify
-        classifierFactory.getClassifier(this.categoryId).classify(doc.getId(),doc );
+        classifierFactory.getClassifier(this.categoryId).classify(doc.getId(), doc);
         //test to see if all paragraphs were assigned categories
         assert (CategoryAnnotationHelper.isCategoryId(paragraph, this.categoryId));
         paragraph = doc.getParagraphs().get(1);

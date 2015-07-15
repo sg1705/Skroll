@@ -84,8 +84,9 @@ public class InstrumentAPI {
 
         // get the json from BNI
         try {
-           HashMap<String, HashMap<String, Double>> map = classifierFactory.getClassifier(Category.TOC_1).getBNIVisualMap(doc, paraIndex);
-            HashMap<String, HashMap<String, HashMap<String, Double>>> modelMap = classifierFactory.getClassifier(Category.TOC_1).getModelVisualMap();
+//           HashMap<String, HashMap<String, Double>> map = classifierFactory.getClassifier(ClassifierFactory.CLASSIFIER_TOC).getBNIVisualMap(doc, paraIndex);
+            HashMap<String, HashMap<String, HashMap<String, Double>>> map = classifierFactory.getClassifier(ClassifierFactory.CLASSIFIER_TOC_ID).getBNIVisualMap(doc, paraIndex);
+            HashMap<String, HashMap<String, HashMap<String, Double>>> modelMap = classifierFactory.getClassifier(ClassifierFactory.CLASSIFIER_TOC_ID).getModelVisualMap();
             probabilityJson = gson.toJson(map);
             buf.append(probabilityJson);
             buf.append(",");
@@ -213,9 +214,9 @@ public class InstrumentAPI {
             allPs.add(classifierFactory.getClassifier(Category.DEFINITION).getProbabilityDataForDoc(doc));
             allPs.add(classifierFactory.getClassifier(Category.TOC_1).getProbabilityDataForDoc(doc));
             allPs.add(classifierFactory.getClassifier(Category.TOC_2).getProbabilityDataForDoc(doc));
-            allPs.add(classifierFactory.getClassifier(Category.TOC_3).getProbabilityDataForDoc(doc));
-            allPs.add(classifierFactory.getClassifier(Category.TOC_4).getProbabilityDataForDoc(doc));
-            allPs.add(classifierFactory.getClassifier(Category.TOC_5).getProbabilityDataForDoc(doc));
+            //allPs.add(classifierFactory.getClassifier(Category.TOC_3).getProbabilityDataForDoc(doc));
+            //allPs.add(classifierFactory.getClassifier(Category.TOC_4).getProbabilityDataForDoc(doc));
+            //allPs.add(classifierFactory.getClassifier(Category.TOC_5).getProbabilityDataForDoc(doc));
 
             Gson gson = new GsonBuilder().create();
             String json = gson.toJson(allPs);

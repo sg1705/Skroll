@@ -19,12 +19,6 @@ public class DiscreteNodeTest {
     }
 
     @Test
-    public void testSizeUpTo() throws Exception {
-        assert(node.sizeUpTo(1) == 2);
-
-    }
-
-    @Test
     public void testSetObservation() throws Exception {
         DiscreteNode node = new DiscreteNode(new DiscreteNode[0]);
         node.setObservation(1);

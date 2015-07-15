@@ -11,6 +11,7 @@ import com.skroll.classifier.Category;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.io.*;
 import java.util.Arrays;
@@ -37,7 +38,7 @@ public class TrainingDocumentAnnotatingModelPersistenceTest {
     ModelRVSetting setting = new ModelRVSetting(
              DefModelRVSetting.DEFAULT_WORD_FEATURES,
             DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS, DEFAULT_WORD_VARS,
-            Category.DEFINITION, Category.DEFINITION_NAME);
+            Category.DEFINITION, Category.DEFINITION_NAME,2);
 
     @Before
     public void setUp() throws Exception {
@@ -45,6 +46,7 @@ public class TrainingDocumentAnnotatingModelPersistenceTest {
     }
 
     //TODO: need to rewrite this test case
+    @Test
     public void testPersistModel() throws Exception {
         TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel();
         doc = TestHelper.setUpTestDoc();

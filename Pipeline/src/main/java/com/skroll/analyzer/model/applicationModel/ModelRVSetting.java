@@ -3,7 +3,7 @@ package com.skroll.analyzer.model.applicationModel;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.*;
-import com.skroll.analyzer.model.bn.config.NBFCConfig;
+import com.skroll.analyzer.model.bn.config.NBMNConfig;
 import com.skroll.document.annotation.CoreAnnotations;
 
 import java.util.List;
@@ -15,35 +15,38 @@ import java.util.List;
  */
 public class ModelRVSetting {
 
-    public static final int NUM_WORDS_TO_USE_PER_PARAGRAPH = 10;
-    @JsonProperty("nbfcConfig")
-    NBFCConfig nbfcConfig;
+    public static final int NUM_WORDS_TO_USE_PER_PARAGRAPH = 20;
+    @JsonProperty("nbmnConfig")
+    NBMNConfig nbmnConfig;
     @JsonProperty("wordType")
     RandomVariable wordType;
     @JsonProperty("wordFeatures")
     List<RandomVariable> wordFeatures;
 
-    public int getCategoryId() {
-        return categoryId;
+    public int getClassifierId() {
+        return classifierId;
     }
 
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
+    public void setClassifierId(int classifierId) {
+        this.classifierId = classifierId;
     }
 
-    @JsonProperty("categoryId")
-    int categoryId=0;
+    @JsonProperty("classifierId")
+    int classifierId=0;
 
-    public String getCategoryName() {
-        return categoryName;
+    public String getClassifierName() {
+        return classifierName;
     }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public void setClassifierName(String classifierName) {
+        this.classifierName = classifierName;
     }
 
-    @JsonProperty("categoryName")
-    String categoryName="";
+    @JsonProperty("classifierName")
+    String classifierName="";
+
+    @JsonProperty("numOfCategory")
+    int numOfCategory =0;
 
     /**
      * Defines the model
@@ -51,7 +54,7 @@ public class ModelRVSetting {
      * @param paraFeatureVars features for the paragraph
      * @param paraDocFeatureVars paragraph that are considered at doc level
      * @param wordVars type of words. For example - first words, unique words etc.
-     * @param categoryId
+     * @param classifierId
      */
 
     public ModelRVSetting(
@@ -59,35 +62,39 @@ public class ModelRVSetting {
                           List<RandomVariable> paraFeatureVars,
                           List<RandomVariable> paraDocFeatureVars,
                           List<RandomVariable> wordVars,
-                          int categoryId,
-                          String categoryName) {
-        RandomVariable wordType = RVCreater.createWordLevelRVWithComputer(new WordIsInCategoryComputer(categoryId), "wordIsInCategory-" + categoryId);
-        RandomVariable paraType = RVCreater.createDiscreteRVWithComputer(new ParaInCategoryComputer(categoryId), "paraTypeIsCategory-" + categoryId);
-        nbfcConfig = new NBFCConfig(paraType, paraFeatureVars, paraDocFeatureVars,
-                RVCreater.createDocFeatureRVs(paraDocFeatureVars,categoryName), wordVars);
-        RVValues.addValueSetter(paraType, new RVValueSetter(categoryId, CoreAnnotations.CategoryAnnotations.class));
+                          int classifierId,
+                          String classifierName,
+                          int numOfCategory) {
+        RandomVariable wordType = RVCreater.createWordLevelRVWithComputer(new WordIsInCategoryComputer(classifierId), "wordIsInClassifier-" + classifierId);
+        RandomVariable paraType = RVCreater.createDiscreteRVWithComputer(new ParaCategoryComputer(classifierId,numOfCategory), "paraTypeIsClassifier-" + classifierId);
+        nbmnConfig = new NBMNConfig(paraType, paraFeatureVars, paraDocFeatureVars,
+                RVCreater.createNBMNDocFeatureRVs(paraDocFeatureVars, paraType, classifierName), wordVars);
+        RVValues.addValueSetter(paraType, new RVValueSetter(classifierId, CoreAnnotations.CategoryAnnotations.class));
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;
-        this.categoryId=categoryId;
-        this.categoryName=categoryName;
+        this.classifierId=classifierId;
+        this.classifierName=classifierName;
+        this.numOfCategory = numOfCategory;
     }
 
 
     public ModelRVSetting(
-            @JsonProperty("nbfcConfig") NBFCConfig nbfcConfig,
+            @JsonProperty("nbmnConfig") NBMNConfig nbmnConfig,
             @JsonProperty("wordType") RandomVariable wordType,
             @JsonProperty("wordFeatures") List<RandomVariable> wordFeatures,
-            @JsonProperty("categoryId") int categoryId,
-            @JsonProperty("categoryName") String categoryName) {
-        this.nbfcConfig = nbfcConfig;
+            @JsonProperty("classifierId") int classifierId,
+            @JsonProperty("classifierName") String classifierName,
+            @JsonProperty("numOfCategory") int numOfCategory) {
+        this.nbmnConfig = nbmnConfig;
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;
-        this.categoryId = categoryId;
-        this.categoryName=categoryName;
+        this.classifierId = classifierId;
+        this.classifierName=classifierName;
+        this.numOfCategory = numOfCategory;
     }
 
-    public NBFCConfig getNbfcConfig() {
-        return nbfcConfig;
+    public NBMNConfig getNbmnConfig() {
+        return nbmnConfig;
     }
 
     public RandomVariable getWordType() {
