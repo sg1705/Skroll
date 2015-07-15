@@ -27,7 +27,6 @@ public class ClassifierImpl implements Classifier {
     private List<Integer> categoryIds = null;
     protected ModelRVSetting modelRVSetting;
 
-    //protected TrainingDocumentAnnotatingModel trainingDocumentAnnotatingModel;
     @Override
     public ModelRVSetting getModelRVSetting() {
         return modelRVSetting;
