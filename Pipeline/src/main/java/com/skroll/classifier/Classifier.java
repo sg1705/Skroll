@@ -19,27 +19,23 @@ public interface Classifier {
     // will be created in the main instances of our production installation.
 
 
-    public void trainWithWeight(Document doc);
-
-    public void train(Document doc);
-
-    public Object classify(String documentId, Document doc);
-
-    public ModelRVSetting getModelRVSetting();
-
-    public Object updateBNI(String documentId, Document document, List<CoreMap> observedParas) throws Exception;
-
-    public HashMap<String, HashMap<String, HashMap<String, Double>>> getBNIVisualMap(Document doc, int paraIndex);
-
-    public HashMap<String, HashMap<String, HashMap<String, Double>>> getModelVisualMap();
-
-    public List<Double> getProbabilityDataForDoc(Document doc);
-
     public void persistModel() throws  Exception;
 
     public int getClassifierId();
-
     public List<Integer> getCategoryIds();
+
+
+    public Object classify(String documentId, Document doc);
+    public void trainWithWeight(Document doc);
+    public void train(Document doc);
+    public Object updateBNI(String documentId, Document document, List<CoreMap> observedParas) throws Exception;
+
+    public ModelRVSetting getModelRVSetting();
+
+    public HashMap<String, HashMap<String, HashMap<String, Double>>> getBNIVisualMap(Document doc, int paraIndex);
+    public HashMap<String, HashMap<String, HashMap<String, Double>>> getModelVisualMap();
+    public List<Double> getProbabilityDataForDoc(Document doc);
+
 
 
 }
