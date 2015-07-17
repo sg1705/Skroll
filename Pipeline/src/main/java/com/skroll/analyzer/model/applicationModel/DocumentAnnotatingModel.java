@@ -73,7 +73,7 @@ public abstract class DocumentAnnotatingModel {
 
         List<MultiplexNode> multiplexNodes = getNbmnModel().getMultiNodes();
         for (int i = 0; i < multiplexNodes.size(); i++) {
-            DiscreteNode[] nodes = multiplexNodes.get(0).getNodes();
+            DiscreteNode[] nodes = multiplexNodes.get(i).getNodes();
             for (int j = 0; j < nodes.length; j++) {
                 DiscreteNode node = nodes[j];
                 map.put("F" + i + "C" + j + node.getVariable().getName(), Visualizer.nodesToMap(
