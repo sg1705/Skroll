@@ -25,6 +25,8 @@ public class TOCModelRVSetting extends ModelRVSetting {
             RVCreater.createParagraphStartsWithRV(CoreAnnotations.IsItalicAnnotation.class),
             RVCreater.createParagraphStartsWithRV(CoreAnnotations.IsUnderlineAnnotation.class),
             RVCreater.createParagraphStartsWithRV(CoreAnnotations.IsBoldAnnotation.class),
+            RVCreater.createParagraphStartsWithRV(CoreAnnotations.IsUpperCaseAnnotation.class),
+            RVCreater.createParagraphStartsWithRV(CoreAnnotations.IsCenterAlignedAnnotation.class),
             RVCreater.createRVFromAnnotation(CoreAnnotations.IsAnchorAnnotation.class),
             RVCreater.createRVFromAnnotation(CoreAnnotations.IsHrefAnnotation.class)
     );
