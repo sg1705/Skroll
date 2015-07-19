@@ -301,6 +301,14 @@ public class CoreAnnotations {
         }
     }
 
+    /**
+     * Annotation to indicate that this paragraph is UserDefined TOC
+     */
+    public static class IsUserDefinedTOCAnnotation implements CoreAnnotation<Boolean> {
+        public Class<Boolean> getType() {
+            return Boolean.class;
+        }
+    }
 
 
 

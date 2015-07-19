@@ -258,12 +258,14 @@ public class DocAPI {
         for (Paragraph modifiedParagraph : paraMap.keySet()) {
             for (CoreMap paragraph : doc.getParagraphs()) {
                 if (paragraph.getId().equals(modifiedParagraph.getParagraphId())) {
-
+                    if (modifiedParagraph.getClassificationId() == 4) {
+                        paragraph.set(CoreAnnotations.IsUserDefinedTOCAnnotation.class, true);
+                        continue;
+                    }
                     paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
                     //TODO: currently assuming that the trainer is always active
                     paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
                     // log the existing definitions
-
                     CategoryAnnotationHelper.displayTerm(paragraph);
 
                     List<List<Token>> addedTerms = new ArrayList<>();
