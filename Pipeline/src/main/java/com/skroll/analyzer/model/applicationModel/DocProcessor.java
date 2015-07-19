@@ -1,5 +1,6 @@
 package com.skroll.analyzer.model.applicationModel;
 
+import com.google.common.base.Joiner;
 import com.skroll.analyzer.data.DocData;
 import com.skroll.analyzer.data.NBMNData;
 import com.skroll.analyzer.model.RandomVariable;
@@ -7,13 +8,18 @@ import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
 import com.skroll.analyzer.model.bn.SimpleDataTuple;
 import com.skroll.analyzer.model.bn.config.NBMNConfig;
 import com.skroll.analyzer.model.bn.config.NBMNConfig;
+import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
+import com.skroll.document.Paragraph;
+import com.skroll.document.Token;
+import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by wei on 5/10/15.
@@ -31,10 +37,49 @@ public class DocProcessor {
         //if (processedParas != null) return processedParas;
         List<CoreMap> processedParas = processParagraphs(doc.getParagraphs(), numWordsToUse);
 
+        //process tocTokens
+        annotateProcessParaWithTOCMatch(doc.getParagraphs(), processedParas);
+
         //processedParasMap.put(doc, processedParas);
         //logger.debug ("processedParasMap.size: {}", processedParasMap.size());
         return processedParas;
 
+    }
+
+    static void annotateProcessParaWithTOCMatch(List<CoreMap> paragraphs, List<CoreMap> processedParas) {
+        //create tocTokens
+        List<Token> tocTokens = new ArrayList<>();
+        List<String> tocParaIds = new ArrayList<>();
+        for(CoreMap p : paragraphs) {
+            //get category
+            if (CategoryAnnotationHelper.isCategoryId(p, Category.USER_TOC)) {
+                tocParaIds.add(p.getId());
+                List<Token> tokens = p.getTokens().stream()
+                        .filter( t -> !t.getText().equals("."))
+                        .collect(Collectors.toList());
+                tocTokens.addAll(tokens);
+            }
+        }
+
+        String tocTokensString = Joiner.on("").join(tocTokens).toLowerCase();
+        logger.info("TOC Token Matching String {}", tocTokensString);
+        //iterate over each paragraph
+        for(int ii = 0; ii < paragraphs.size(); ii++) {
+            CoreMap paragraph = paragraphs.get(ii);
+            CoreMap processedP = processedParas.get(ii);
+            if (tocParaIds.contains(paragraph.getId())) {
+                continue;
+            }
+            List<Token> paragraphTokens = paragraph.getTokens();
+            List<Token> filterPTokens = paragraphTokens.stream()
+                    .filter(t -> !t.getText().equals("."))
+                    .collect(Collectors.toList());
+            String paraTokenString = Joiner.on("").join(filterPTokens).toLowerCase();
+            if (tocTokensString.contains(paraTokenString)) {
+                processedP.set(CoreAnnotations.IsInUserDefinedTOCAnnotation.class, true);
+                logger.info("Match {}", paraTokenString);
+            }
+        }
     }
 
 
@@ -144,7 +189,7 @@ public class DocProcessor {
 
         List<CoreMap> originalParas = doc.getParagraphs();
         data = getParaDataFromDoc(originalParas, processedParas, config);
-        processedDataMap.put(key, data);
+        //processedDataMap.put(key, data);
 
         return data;
     }

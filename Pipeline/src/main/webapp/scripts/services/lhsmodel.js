@@ -49,12 +49,20 @@ var LHSModel = {
   },
 
   {
-    id: 7,
-    name: 'Bookmarks',
+    id: 4,
+    name: 'User TOC',
     isSelected: false,
-    isVisible: false,
+    isVisible: true,
     isActive: false
   },
+
+  {
+    id: 5,
+    name: 'Bookmarks',
+    isSelected: false,
+    isVisible: true,
+    isActive: false
+  }
 
   ],
 
@@ -93,6 +101,11 @@ var LHSModel = {
           return true;
     });
   },
+
+  getClassFromIndex: function(index) {
+    return this.classes[index].id;
+  },
+
 
 
   getParaFromClassIdRange: function(startClassId, endClassId) {
