@@ -53,12 +53,14 @@ public class DocProcessor {
         for(CoreMap p : paragraphs) {
             //get category
             if (p.containsKey(CoreAnnotations.IsUserDefinedTOCAnnotation.class)) {
+            //if (CategoryAnnotationHelper.isCategoryId(p, Category.USER_TOC)) {
                 tocParaIds.add(p.getId());
                 List<Token> tokens = p.getTokens().stream()
                         .filter( t -> !t.getText().equals("."))
                         .collect(Collectors.toList());
                 tocTokens.addAll(tokens);
             }
+            //}
         }
 
         String tocTokensString = Joiner.on("").join(tocTokens).toLowerCase();
