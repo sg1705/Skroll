@@ -26,7 +26,6 @@ public class ClassifierImpl implements Classifier {
     protected ModelFactory modelFactory;
     protected ModelRVSetting modelRVSetting;
 
-    //protected TrainingDocumentAnnotatingModel trainingDocumentAnnotatingModel;
     @Override
     public ModelRVSetting getModelRVSetting() {
         return modelRVSetting;

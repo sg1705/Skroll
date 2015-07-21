@@ -22,6 +22,7 @@ public class TOCModelRVSetting extends ModelRVSetting {
     );
     static final List<RandomVariable> DEFAULT_PARA_DOC_FEATURE_VARS = Arrays.asList(
             RVCreater.createDiscreteRVWithComputer(new NotInTableRVComputer(), "notInTable"),
+            RVCreater.createDiscreteRVWithComputer(new StartsWithNumberComputer(), "startsWithNumber"),
             RVCreater.createParagraphStartsWithRV(CoreAnnotations.IsItalicAnnotation.class),
             RVCreater.createParagraphStartsWithRV(CoreAnnotations.IsUnderlineAnnotation.class),
             RVCreater.createParagraphStartsWithRV(CoreAnnotations.IsBoldAnnotation.class),
