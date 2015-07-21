@@ -52,8 +52,8 @@ public class DocProcessor {
         List<String> tocParaIds = new ArrayList<>();
         for(CoreMap p : paragraphs) {
             //get category
-            if (p.containsKey(CoreAnnotations.IsUserDefinedTOCAnnotation.class)) {
-            //if (CategoryAnnotationHelper.isCategoryId(p, Category.USER_TOC)) {
+            //if (p.containsKey(CoreAnnotations.IsUserDefinedTOCAnnotation.class)) {
+            if (CategoryAnnotationHelper.isCategoryId(p, Category.USER_TOC)) {
                 tocParaIds.add(p.getId());
                 List<Token> tokens = p.getTokens().stream()
                         .filter( t -> !t.getText().equals("."))
