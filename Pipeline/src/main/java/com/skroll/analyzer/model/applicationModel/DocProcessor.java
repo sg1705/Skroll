@@ -56,8 +56,8 @@ public class DocProcessor {
             if (CategoryAnnotationHelper.isCategoryId(p, Category.USER_TOC)) {
                 tocParaIds.add(p.getId());
                 List<Token> tokens = p.getTokens().stream()
-                        .filter( t -> !t.getText().equals("."))
-                        .collect(Collectors.toList());
+                        .filter(t -> !(t.getText().equals(".") || t.getText().matches("^[0-9]+$")))
+                                .collect(Collectors.toList());
                 tocTokens.addAll(tokens);
             }
             //}
@@ -74,9 +74,12 @@ public class DocProcessor {
             }
             List<Token> paragraphTokens = paragraph.getTokens();
             List<Token> filterPTokens = paragraphTokens.stream()
-                    .filter(t -> !t.getText().equals("."))
+                    .filter(t -> !(t.getText().equals(".") || t.getText().matches("^[0-9]+$")))
                     .collect(Collectors.toList());
             String paraTokenString = Joiner.on("").join(filterPTokens).toLowerCase();
+            if (paraTokenString.isEmpty()) {
+                continue;
+            }
             if (tocTokensString.contains(paraTokenString)) {
                 processedP.set(CoreAnnotations.IsInUserDefinedTOCAnnotation.class, true);
                 logger.info("Match {}", paraTokenString);
