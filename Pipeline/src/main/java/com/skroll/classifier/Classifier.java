@@ -37,9 +37,5 @@ public interface Classifier {
 
     public void persistModel() throws  Exception;
 
-    public int getClassifierId();
-
-    public List<Integer> getCategoryIds();
-
 
 }

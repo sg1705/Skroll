@@ -319,7 +319,7 @@ public class DocAPI {
         try {
             if (!parasForUpdateBNI.isEmpty()) {
                 for (Classifier classifier : request.getClassifiers()) {
-                    logger.debug("updateCategoryId: {}, classifier.getCategory().getId(): {}", updateCategoryId, classifier.getCategoryIds());
+                    logger.debug("updateCategoryId: {}", updateCategoryId);
                     //if(classifier.getModelRVSetting().getCategoryId() == updateCategoryId) {
                         doc = (Document) classifier.updateBNI(documentId, doc, parasForUpdateBNI);
                     //}

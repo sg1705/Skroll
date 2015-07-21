@@ -2,7 +2,7 @@ package com.skroll.document.annotation;
 
 import com.google.common.base.Joiner;
 import com.skroll.classifier.Category;
-import com.skroll.classifier.ClassifierFactory;
+import com.skroll.classifier.ClassifierProto;
 import com.skroll.document.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,15 +108,14 @@ public class CategoryAnnotationHelper {
     }
 
     /**
-     * Given a classifier id, classIndex, add given tokens for the category annotation in the given paragraph
+     * Given a classifier Proto, classIndex, add given tokens for the category annotation in the given paragraph
      * @param paragraph
      * @param newTokens
-     * @param classifierId
+     * @param classifierProto
      * @param classIndex
      */
-    public static void addTokensForClassifier(CoreMap paragraph, List<Token> newTokens, int classifierId, int classIndex) {
-        ClassifierFactory classifierFactory = new ClassifierFactory();
-        List<Integer> categoryIds = classifierFactory.getClassifier(classifierId).getCategoryIds();
+    public static void addTokensForClassifier(CoreMap paragraph, List<Token> newTokens, ClassifierProto classifierProto, int classIndex) {
+        List<Integer> categoryIds = classifierProto.getCategoryIds();
         addDefinedTokensInCategoryAnnotation(paragraph,newTokens, categoryIds.get(classIndex));
 
     }
@@ -136,12 +135,11 @@ public class CategoryAnnotationHelper {
      * Given a classifier id, classIndex, set given tokens for the category annotation in the given paragraph
      * @param paragraph
      * @param definitions
-     * @param classifierId
+     * @param classifierProto
      * @param classIndex
      */
-    public static void setTokensForClassifier(CoreMap paragraph, List<List<Token>> definitions, int classifierId, int classIndex) {
-        ClassifierFactory classifierFactory = new ClassifierFactory();
-        List<Integer> categoryIds = classifierFactory.getClassifier(classifierId).getCategoryIds();
+    public static void setTokensForClassifier(CoreMap paragraph, List<List<Token>> definitions, ClassifierProto classifierProto, int classIndex) {
+        List<Integer> categoryIds = classifierProto.getCategoryIds();
         setDInCategoryAnnotation(paragraph,definitions, categoryIds.get(classIndex));
     }
 
@@ -217,11 +215,10 @@ public class CategoryAnnotationHelper {
 
     }
 
-    public static int getObservedClassIndex(CoreMap paragraph, int classifierId) {
+    public static int getObservedClassIndex(CoreMap paragraph, ClassifierProto classifierProto) {
         HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
         if (categoryAnnotation == null) return 0;
-        ClassifierFactory classifierFactory = new ClassifierFactory();
-        List<Integer> categoryIds = classifierFactory.getClassifier(classifierId).getCategoryIds();
+        List<Integer> categoryIds = classifierProto.getCategoryIds();
         for (int index = 0; index < categoryIds.size(); index++) {
             if (categoryAnnotation.containsKey(categoryIds.get(index))) {
                 return index;
@@ -229,11 +226,10 @@ public class CategoryAnnotationHelper {
         }
         return 0;
     }
-    public static int getObservedCategory(CoreMap paragraph, int classifierId) {
+    public static int getObservedCategory(CoreMap paragraph,  ClassifierProto classifierProto) {
         HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
         if (categoryAnnotation == null) return 0;
-        ClassifierFactory classifierFactory = new ClassifierFactory();
-        List<Integer> categoryIds = classifierFactory.getClassifier(classifierId).getCategoryIds();
+        List<Integer> categoryIds = classifierProto.getCategoryIds();
         for (int categoryId : categoryIds) {
             if (categoryAnnotation.containsKey(categoryId)) {
                 return categoryId;
