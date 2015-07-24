@@ -4,9 +4,10 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skroll.analyzer.model.RandomVariable;
+import com.skroll.analyzer.model.applicationModel.randomVariables.LowerCaseWordsComputer;
 import com.skroll.analyzer.model.applicationModel.randomVariables.NumberTokensComputer;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVCreater;
-import com.skroll.analyzer.model.applicationModel.randomVariables.UniqueWordsComputer;
+//import com.skroll.analyzer.model.applicationModel.randomVariables.UniqueWordsComputer;
 import com.skroll.classifier.Category;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
@@ -31,7 +32,7 @@ public class TrainingDocumentAnnotatingModelPersistenceTest {
     );
 
     static final List<RandomVariable> DEFAULT_WORD_VARS = Arrays.asList(
-            RVCreater.createWordsRVWithComputer(new UniqueWordsComputer(), "uniqueWords")
+            RVCreater.createWordsRVWithComputer(new LowerCaseWordsComputer(), "lowerCaseWords")
     );
 
     Document doc = new Document();

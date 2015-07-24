@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 
 public class UniqueWordsComputerTest {
 
-    UniqueWordsComputer nTC;
+    LowerCaseWordsComputer nTC;
     CoreMap m = new CoreMap();
     Token token1;
     Token token2;
@@ -20,7 +20,7 @@ public class UniqueWordsComputerTest {
 
     @Before
     public void setUp() throws Exception {
-        nTC = new UniqueWordsComputer();
+        nTC = new LowerCaseWordsComputer();
         m = new CoreMap();
         token1 = new Token("First");
         token2 = new Token("token");

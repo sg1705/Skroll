@@ -3,9 +3,10 @@ package com.skroll.analyzer.model.bn.config;
 import com.google.common.collect.Lists;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.FirstWordsComputer;
+import com.skroll.analyzer.model.applicationModel.randomVariables.LowerCaseWordsComputer;
 import com.skroll.analyzer.model.applicationModel.randomVariables.ParaInCategoryComputer;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVCreater;
-import com.skroll.analyzer.model.applicationModel.randomVariables.UniqueWordsComputer;
+//import com.skroll.analyzer.model.applicationModel.randomVariables.UniqueWordsComputer;
 import com.skroll.classifier.Category;
 import com.skroll.document.annotation.CoreAnnotations;
 import org.junit.Before;
@@ -33,7 +34,7 @@ public class NBConfigTest {
                 RVCreater.createParagraphStartsWithRV(CoreAnnotations.StartsWithQuote.class)));
 
         wordVarList = Arrays.asList(
-                RVCreater.createWordsRVWithComputer(new UniqueWordsComputer(), "uniqueWords"),
+                RVCreater.createWordsRVWithComputer(new LowerCaseWordsComputer(), "lowerCaseWords"),
                 RVCreater.createWordsRVWithComputer(new FirstWordsComputer(), "firstWord")
         );
 

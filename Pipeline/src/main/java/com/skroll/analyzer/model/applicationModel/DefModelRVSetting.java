@@ -31,7 +31,8 @@ public class DefModelRVSetting extends ModelRVSetting {
     );
 
     static final List<RandomVariable> DEFAULT_WORD_VARS = Arrays.asList(
-            RVCreater.createWordsRVWithComputer(new UniqueWordsComputer(), "uniqueWords")
+            RVCreater.createWordsRVWithComputer(new LowerCaseWordsComputer(), "lowerCaseWords")
+//            , RVCreater.createWordsRVWithComputer(new UniqueWordsComputer(), "uniqueWords")
     );
 
     public DefModelRVSetting(int classifierId, String classifierName, int numOfCategory) {
