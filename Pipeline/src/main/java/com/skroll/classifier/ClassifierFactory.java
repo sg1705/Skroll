@@ -18,24 +18,39 @@ public class ClassifierFactory {
     private static HashMap<Integer, Classifier> classifiers = new HashMap();
     @Inject
     private ModelFactory modelFactory;
-    public static final int CLASSIFIER_TOC_ID = 1;
-    public static final String CLASSIFIER_TOC_NAME = "TOC_CLASSIFIER";
+
+    //TOC Classifier
+    public static final int TOC_CLASSIFIER_ID = 1;
+    public static final String TOC_CLASSIFIER_NAME = "TOC_CLASSIFIER";
     public static final List<Integer> TOC_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE,Category.TOC_1,Category.TOC_2));
-    public Classifier getClassifier(int classifierId) {
+    public static final ClassifierProto tocClassifierProto = new ClassifierProto(TOC_CLASSIFIER_ID, TOC_CLASSIFIER_NAME,TOC_CATEGORY_IDS);
+
+    //Def Classifier
+    public static final int DEF_CLASSIFIER_ID = 2;
+    public static final String DEF_CLASSIFIER_NAME = "DEF_CLASSIFIER";
+    public static final List<Integer> DEF_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE,Category.DEFINITION));
+    public static final ClassifierProto defClassifierProto = new ClassifierProto(DEF_CLASSIFIER_ID, DEF_CLASSIFIER_NAME,DEF_CATEGORY_IDS);
+
+
+
+    public Classifier getClassifier(int classifierId) throws Exception {
         ModelRVSetting modelRVSetting = null;
         /*
-        if(modelRVSettings.containsKey(categoryId)){
+        if(modelRVSettings.containsKey(categoryId
             modelRVSetting = modelRVSettings.get(categoryId);
         } else {
             throw new Exception("No category id found: "+ categoryId);
         }
         */
         //TrainingDocumentAnnotatingModel trainingDocumentAnnotatingModel = modelFactory.getTrainingModel(modelRVSetting);
-
-        if (classifiers.containsKey(classifierId))
-            return classifiers.get(classifierId);
-        Classifier classifier = new ClassifierImpl(classifierId, CLASSIFIER_TOC_NAME, TOC_CATEGORY_IDS, modelFactory);
-
+        Classifier classifier = null;
+        if ( classifierId == 1) {
+             classifier = new ClassifierImpl(tocClassifierProto, modelFactory);
+        } else if (classifierId == 2){
+             classifier = new ClassifierImpl(defClassifierProto, modelFactory);
+        } else {
+            throw new Exception ("Classifier Id: "+ classifierId + " is not supported");
+        }
         classifiers.put(classifierId, classifier);
         return classifier;
     }
@@ -47,7 +62,7 @@ public class ClassifierFactory {
 
     public List<Classifier> getClassifiers(Document document) throws Exception {
        List<Classifier> classifierList = new ArrayList<>();
-       classifierList.add(getClassifier(CLASSIFIER_TOC_ID));
+       classifierList.add(getClassifier(TOC_CLASSIFIER_ID));
        //classifierList.add(getClassifier(Category.TOC_2));
        //classifierList.add(getClassifier(Category.TOC_3));
        //classifierList.add(getClassifier(Category.TOC_4));
@@ -60,7 +75,7 @@ public class ClassifierFactory {
      *
      */
     public void createClassifier() throws Exception {
-        getClassifier(CLASSIFIER_TOC_ID);
-        //modelRVSettings.put(modelRVSetting.getClassifierId(), modelRVSetting);
+        getClassifier(TOC_CLASSIFIER_ID);
+        //modelRVSettings.put(modelRVSetting.getId(), modelRVSetting);
     }
 }

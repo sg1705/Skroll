@@ -7,7 +7,7 @@ import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.NumberTokensComputer;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVCreater;
 import com.skroll.analyzer.model.applicationModel.randomVariables.UniqueWordsComputer;
-import com.skroll.classifier.Category;
+import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
 import org.junit.Before;
@@ -38,7 +38,7 @@ public class TrainingDocumentAnnotatingModelPersistenceTest {
     ModelRVSetting setting = new ModelRVSetting(
              DefModelRVSetting.DEFAULT_WORD_FEATURES,
             DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS, DEFAULT_WORD_VARS,
-            Category.DEFINITION, Category.DEFINITION_NAME,2);
+            ClassifierFactory.defClassifierProto);
 
     @Before
     public void setUp() throws Exception {

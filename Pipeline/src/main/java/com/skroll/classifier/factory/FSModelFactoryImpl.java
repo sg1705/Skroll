@@ -28,8 +28,8 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
 
 
     public TrainingDocumentAnnotatingModel getTrainingModel(ModelRVSetting modelRVSetting) {
-        if (TrainingModelMap.containsKey(modelRVSetting.getClassifierId())){
-            return TrainingModelMap.get(modelRVSetting.getClassifierId());
+        if (TrainingModelMap.containsKey(modelRVSetting.getClassifierProto().getId())){
+            return TrainingModelMap.get(modelRVSetting.getClassifierProto().getId());
         }
         TrainingDocumentAnnotatingModel model = createModel(modelRVSetting);
         logger.debug("training model Map Size:{}",TrainingModelMap.size());
@@ -43,7 +43,7 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
         if (localTrainingModel == null) {
             try {
 
-                    localTrainingModel = (TrainingDocumentAnnotatingModel) objectPersistUtil.readObject(null,modelRVSetting.getClassifierName());
+                    localTrainingModel = (TrainingDocumentAnnotatingModel) objectPersistUtil.readObject(null,modelRVSetting.getClassifierProto().getName());
             } catch (Throwable e) {
                 logger.warn("TrainingDocumentAnnotatingModel is not found. creating new one" );
                 localTrainingModel = null;
@@ -54,7 +54,7 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
             localTrainingModel = new TrainingDocumentAnnotatingModel(modelRVSetting);
         }
 
-        TrainingModelMap.put(modelRVSetting.getClassifierId(), localTrainingModel);
+        TrainingModelMap.put(modelRVSetting.getClassifierProto().getId(), localTrainingModel);
         return localTrainingModel;
     }
 
@@ -67,20 +67,20 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
                 tmpModel.getHmm(), document,modelRVSetting );
         bniModel.annotateDocument();
         //printBelieves(bniModel, document);
-        bniModelMap.put(modelRVSetting.getClassifierId(),bniModel);
+        bniModelMap.put(modelRVSetting.getClassifierProto().getId(),bniModel);
         return bniModel;
     }
 
     public ProbabilityDocumentAnnotatingModel getBNIModel(ModelRVSetting modelRVSetting) {
-        if (bniModelMap.containsKey(modelRVSetting.getClassifierId())){
-            return bniModelMap.get(modelRVSetting.getClassifierId());
+        if (bniModelMap.containsKey(modelRVSetting.getClassifierProto().getId())){
+            return bniModelMap.get(modelRVSetting.getClassifierProto().getId());
         }
         return null;
     }
 
     public void saveTrainingModel(ModelRVSetting modelRVSetting) throws Exception {
         try {
-            objectPersistUtil.persistObject(null, getTrainingModel(modelRVSetting), modelRVSetting.getClassifierName());
+            objectPersistUtil.persistObject(null, getTrainingModel(modelRVSetting), modelRVSetting.getClassifierProto().getName());
         } catch (ObjectPersistUtil.ObjectPersistException e) {
             logger.error("failed to persist the model", e);
             throw new Exception(e);

@@ -19,7 +19,6 @@ public interface Classifier {
     // will be created in the main instances of our production installation.
 
 
-    public void persistModel() throws  Exception;
 
     public int getClassifierId();
     public List<Integer> getCategoryIds();
@@ -36,6 +35,6 @@ public interface Classifier {
     public HashMap<String, HashMap<String, HashMap<String, Double>>> getModelVisualMap();
     public List<Double> getProbabilityDataForDoc(Document doc);
 
-
+    public void persistModel() throws  Exception;
 
 }
