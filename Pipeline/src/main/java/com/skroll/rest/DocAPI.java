@@ -34,6 +34,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Path("/doc")
 public class DocAPI {
@@ -430,13 +431,7 @@ public class DocAPI {
             return logErrorResponse("Failed to parse the json document: {}", ex);
         }
         long startTime = System.currentTimeMillis();
-        //iterate over each observation. If the terms are NULL
-        //then remove category annotation from the model
-
-        //int updateCategoryId =Category.NONE;
         Map<Paragraph, List<String>> paraMap = Paragraph.combineTerms(observations);
-        //logger.debug("combineTerms:{}", paraMap);
-
         List<CoreMap> parasForUpdateBNI = new ArrayList<>();
 
         for (Paragraph observation : paraMap.keySet()) {
@@ -444,6 +439,7 @@ public class DocAPI {
                     .stream()
                     .filter( p -> p.getId().equals(observation.getParagraphId()))
                     .forEach( p -> {
+                        logger.debug("Unobserved - {}", p.getId());
                         //un observe this paragraph
                         CategoryAnnotationHelper.clearAnnotations(p);
                         // Add the userObserved paragraphs
