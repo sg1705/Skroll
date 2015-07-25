@@ -130,9 +130,10 @@ ViewPortCtrl.prototype.inferParagraphId = function($event) {
     return $(parents[0]).attr('id');
   } else {
 
-    if ((this.SelectionModel.mouseDownParaId != null) && (this.SelectionModel.mouseDownParaId != '')) {
-      return this.SelectionModel.mouseDownParaId;
-    }
+  //not sure why we are using mouseDownParaId for infering paragraph
+  // if ((this.SelectionModel.mouseDownParaId != null) && (this.SelectionModel.mouseDownParaId != '')) {
+  //   return this.SelectionModel.mouseDownParaId;
+  // }
 
     if ((children.length == 0) && (parents.length ==1)) {
       return $(parents[0]).attr('id');
