@@ -51,6 +51,25 @@
       };
 
       /**
+       * Unobserve a paragraph
+       */
+      this.unObserve = function(terms) {
+        var deferred = $q.defer();
+        /** make a get request */
+        $http.post(documentServiceBase + 'unObserve' + '?documentId=' + documentModel.documentId, terms)
+          .success(function(data, status) {
+            deferred.resolve(data);
+          })
+          .error(function(msg, code) {
+            deferred.reject(msg);
+            $log.error(msg, code);
+          });;
+        /** done with get request */
+        return deferred.promise;
+      };
+
+
+      /**
        * Retrieves list of similar paragraphs
        */
       this.getSimilarPara = function(paragraphId) {
@@ -150,6 +169,16 @@
         var terms = LHSModel.getParagraphsForClass(classId, paraId);
         return this.updateTerms(terms);
       }
+
+      /**
+       * Approves all instances of terms in the paraId for the given class
+       */
+      this.unObservePara = function(classId, paraId) {
+        //get a filtered list
+        var terms = LHSModel.filterOutClassFromPara(classId, paraId);
+        return this.unObserve(terms);
+      }
+
 
       /**
        * Approves all instances of terms in the paraId for the given class
