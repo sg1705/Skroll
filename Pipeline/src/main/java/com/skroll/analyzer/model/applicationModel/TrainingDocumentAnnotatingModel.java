@@ -1,7 +1,6 @@
 package com.skroll.analyzer.model.applicationModel;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skroll.analyzer.data.NBMNData;
 import com.skroll.analyzer.model.RandomVariable;
@@ -12,7 +11,6 @@ import com.skroll.analyzer.model.bn.NaiveBayesWithMultiNodes;
 import com.skroll.analyzer.model.bn.config.NBMNConfig;
 import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
-import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
@@ -29,15 +27,7 @@ import java.util.List;
  * Created by wei2learn on 2/16/2015.
  */
 public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
-
-
-    public TrainingDocumentAnnotatingModel() {
-
-        this(new DefModelRVSetting(ClassifierFactory.DEF_CLASSIFIER_NAME,ClassifierFactory.defClassifierProto.getCategoryIds()));
-
-
-    }
-
+    
     public TrainingDocumentAnnotatingModel(ModelRVSetting setting) {
         this(setting.getWordType(), setting.getWordFeatures(), setting.getNbmnConfig(), setting);
         modelRVSetting = setting;

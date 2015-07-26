@@ -7,7 +7,7 @@ import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.NumberTokensComputer;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVCreater;
 import com.skroll.analyzer.model.applicationModel.randomVariables.UniqueWordsComputer;
-import com.skroll.classifier.ClassifierFactory;
+import com.skroll.classifier.Classifiers;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
 import org.junit.Before;
@@ -38,7 +38,7 @@ public class TrainingDocumentAnnotatingModelPersistenceTest {
     ModelRVSetting setting = new ModelRVSetting(
              DefModelRVSetting.DEFAULT_WORD_FEATURES,
             DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS, DEFAULT_WORD_VARS,
-            ClassifierFactory.DEF_CLASSIFIER_NAME,ClassifierFactory.defClassifierProto.getCategoryIds());
+            Classifiers.DEF_CLASSIFIER_ID,Classifiers.defClassifierProto.getCategoryIds());
 
     @Before
     public void setUp() throws Exception {
@@ -48,7 +48,8 @@ public class TrainingDocumentAnnotatingModelPersistenceTest {
     //TODO: need to rewrite this test case
     @Test
     public void testPersistModel() throws Exception {
-        TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel();
+        ModelRVSetting setting = new DefModelRVSetting(Classifiers.DEF_CLASSIFIER_ID,Classifiers.defClassifierProto.getCategoryIds());
+        TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel(setting);
         doc = TestHelper.setUpTestDoc();
         //doc.getParagraphs().get(0).set(CoreAnnotations.IsTOCAnnotation.class, true);
         model.updateWithDocument(doc);

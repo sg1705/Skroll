@@ -1,7 +1,5 @@
 package com.skroll.classifier;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.List;
 
 /**
@@ -9,18 +7,12 @@ import java.util.List;
  */
 
 public class ClassifierProto {
-    @JsonProperty("id")
+
     private int id;
-
-    @JsonProperty("name")
-    private String name;
-
-    @JsonProperty("categoryIds")
     private List<Integer> categoryIds = null;
 
-    public ClassifierProto(@JsonProperty("id") int id, @JsonProperty("name") String name, @JsonProperty("categoryIds") List<Integer> categoryIds) {
+    public ClassifierProto( int id, List<Integer> categoryIds) {
         this.id = id;
-        this.name = name;
         this.categoryIds = categoryIds;
     }
 
@@ -30,9 +22,5 @@ public class ClassifierProto {
 
     public List<Integer> getCategoryIds() {
         return categoryIds;
-    }
-
-    public String getName() {
-        return name;
     }
 }

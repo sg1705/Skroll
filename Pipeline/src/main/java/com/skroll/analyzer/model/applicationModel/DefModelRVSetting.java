@@ -5,7 +5,6 @@ import com.skroll.analyzer.model.applicationModel.randomVariables.NotInTableRVCo
 import com.skroll.analyzer.model.applicationModel.randomVariables.NumberTokensComputer;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVCreater;
 import com.skroll.analyzer.model.applicationModel.randomVariables.UniqueWordsComputer;
-import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.annotation.CoreAnnotations;
 
 import java.util.Arrays;
@@ -38,18 +37,11 @@ public class DefModelRVSetting extends ModelRVSetting {
             RVCreater.createWordsRVWithComputer(new UniqueWordsComputer(), "uniqueWords")
     );
 
-    public DefModelRVSetting(String modelName, List<Integer> categoryIds) {
+    public DefModelRVSetting(int modelId, List<Integer> categoryIds) {
         super(
                 DEFAULT_WORD_FEATURES,
                 DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS,
-                DEFAULT_WORD_VARS, modelName, categoryIds);
-
-    }
-    public DefModelRVSetting() {
-        super(
-                DEFAULT_WORD_FEATURES,
-                DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS,
-                DEFAULT_WORD_VARS, ClassifierFactory.DEF_CLASSIFIER_NAME, ClassifierFactory.defClassifierProto.getCategoryIds());
+                DEFAULT_WORD_VARS, modelId, categoryIds);
 
     }
 

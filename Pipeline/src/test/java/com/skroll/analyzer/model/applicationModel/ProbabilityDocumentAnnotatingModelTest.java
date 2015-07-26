@@ -5,6 +5,7 @@ import com.skroll.analyzer.model.applicationModel.randomVariables.ParaInCategory
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVCreater;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
 import com.skroll.classifier.Category;
+import com.skroll.classifier.Classifiers;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.Token;
@@ -20,9 +21,9 @@ import java.util.List;
 //todo: prior count is not set properly, making the probability favoring positive class.
 public class ProbabilityDocumentAnnotatingModelTest {
 
-    ModelRVSetting setting = new DefModelRVSetting();
+    ModelRVSetting setting = new DefModelRVSetting(Classifiers.DEF_CLASSIFIER_ID,Classifiers.defClassifierProto.getCategoryIds());
 
-    TrainingDocumentAnnotatingModel tModel = new TrainingDocumentAnnotatingModel();
+    TrainingDocumentAnnotatingModel tModel = new TrainingDocumentAnnotatingModel(setting);
 
     //    String testingFileName = "src/test/resources/classifier/smaller-indenture.html";
 //    String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/mini-indenture.html";
@@ -46,8 +47,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
         tModel.updateWithDocument(doc);
         model = new ProbabilityDocumentAnnotatingModel(tModel.getNbmnModel(), tModel.getHmm(), doc,
-                new DefModelRVSetting()
-
+                new DefModelRVSetting(Classifiers.DEF_CLASSIFIER_ID,Classifiers.defClassifierProto.getCategoryIds())
                 );
         model.getHmm().updateProbabilities();
         System.out.println("HMM\n");

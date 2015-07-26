@@ -16,18 +16,12 @@ var ToolbarModel = {
 		isTrainModel: false,
 		lastJson: "",
 		lastSelectedParaId: '',
-<<<<<<< HEAD
-		typeAError: 0,
-		typeBError: 0,
-		qcScore: 0,
-=======
 		level1TypeAError: 0,
 		level1TypeBError: 0,
 		level1QcScore: 0,
 		level2TypeAError: 0,
 		level2TypeBError: 0,
-		level2QcScore: 0,		
->>>>>>> upstream/master
+		level2QcScore: 0,
 		benchmarkScore: ''
 	},
 
@@ -50,12 +44,7 @@ var ToolbarModel = {
 	    var self = this;
 	    documentService.getBenchmarkScore().then(function(benchmarkScore){
 	      self.trainerToolbar.benchmarkScore = benchmarkScore;
-	      console.log(benchmarkScore);	      
-<<<<<<< HEAD
-	      self.trainerToolbar.typeAError = benchmarkScore.qc.stats[1].type1Error;
-	      self.trainerToolbar.typeBError = benchmarkScore.qc.stats[1].type2Error;
-	      self.trainerToolbar.qcScore = benchmarkScore.qc.stats[1].qcScore;
-=======
+	      console.log(benchmarkScore);
 	      self.trainerToolbar.typeAError = benchmarkScore.qc.stats[1].level1Type1Error;
 	      self.trainerToolbar.typeBError = benchmarkScore.qc.stats[1].level1Type2Error;
 	      self.trainerToolbar.qcScore = benchmarkScore.qc.stats[1].level1QcScore;
@@ -63,7 +52,6 @@ var ToolbarModel = {
 	      self.trainerToolbar.typeBError = benchmarkScore.qc.stats[2].level2Type2Error;
 	      self.trainerToolbar.qcScore = benchmarkScore.qc.stats[2].level2QcScore;
 
->>>>>>> upstream/master
 	      if (benchmarkScore.isFileBenchmarked && !benchmarkScore.isFileTrained) {
 	      	self.trainerToolbar.isBenchmark = true;
 	      	self.trainerToolbar.isTrainModel = false;

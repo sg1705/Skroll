@@ -3,7 +3,7 @@ package com.skroll.analyzer.model.applicationModel;
 import com.skroll.analyzer.data.NBMNData;
 import com.skroll.analyzer.model.bn.node.MultiplexNode;
 import com.skroll.classifier.Category;
-import com.skroll.classifier.ClassifierFactory;
+import com.skroll.classifier.Classifiers;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
@@ -25,8 +25,8 @@ public class TrainingDocumentAnnotatingModelTest{
     String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining/mini-indenture.html";
     //    String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
     //ModelRVSetting setting = new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME,2);
-    ModelRVSetting setting = new DefModelRVSetting();
-    TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel();
+    ModelRVSetting setting = new DefModelRVSetting(Classifiers.DEF_CLASSIFIER_ID,Classifiers.defClassifierProto.getCategoryIds());
+    TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel(setting);
     Document document;
     @Before
     public void setup() {
@@ -86,8 +86,9 @@ public class TrainingDocumentAnnotatingModelTest{
 //        String trainingFolderName = "src/test/resources/analyzer/evaluate/docclassifier/AMC Networks CA.html";
         File file = new File(trainingFolderName);
 
+        ModelRVSetting setting = new DefModelRVSetting(Classifiers.DEF_CLASSIFIER_ID,Classifiers.defClassifierProto.getCategoryIds());
 
-        TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel();
+        TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel(setting);
         Document doc = makeTrainingDoc(file);
 
         List<CoreMap> processedParas = DocProcessor.processParas(doc, maxNumWords);

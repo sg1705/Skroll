@@ -22,13 +22,13 @@ public class ModelRVSetting {
     RandomVariable wordType;
     @JsonProperty("wordFeatures")
     List<RandomVariable> wordFeatures;
-    @JsonProperty("modelName")
-    String modelName;
+    @JsonProperty("modelId")
+    int modelId;
     @JsonProperty("categoryIds")
     List<Integer> categoryIds=null;
 
-    public String getModelName() {
-        return modelName;
+    public int getModelId() {
+        return modelId;
     }
 
     public List<Integer> getCategoryIds() {
@@ -49,18 +49,18 @@ public class ModelRVSetting {
                           List<RandomVariable> paraFeatureVars,
                           List<RandomVariable> paraDocFeatureVars,
                           List<RandomVariable> wordVars,
-                          String modelName,
+                          int modelId,
                           List<Integer> categoryIds
                           ) {
         this.categoryIds=categoryIds;
-        RandomVariable wordType = RVCreater.createWordLevelRVWithComputer(new WordIsInCategoryComputer(categoryIds), "wordIsInCategoryIDs-" + modelName);
-        RandomVariable paraType = RVCreater.createDiscreteRVWithComputer(new ParaCategoryComputer(categoryIds), "paraTypeIsCategoryIDs-" + modelName);
+        RandomVariable wordType = RVCreater.createWordLevelRVWithComputer(new WordIsInCategoryComputer(categoryIds), "wordIsInModelID-" + modelId);
+        RandomVariable paraType = RVCreater.createDiscreteRVWithComputer(new ParaCategoryComputer(categoryIds), "paraTypeIsModelID-" + modelId);
         nbmnConfig = new NBMNConfig(paraType, paraFeatureVars, paraDocFeatureVars,
-                RVCreater.createNBMNDocFeatureRVs(paraDocFeatureVars, paraType, modelName), wordVars);
+                RVCreater.createNBMNDocFeatureRVs(paraDocFeatureVars, paraType, String.valueOf(modelId)), wordVars);
         RVValues.addValueSetter(paraType, new RVValueSetter(categoryIds, CoreAnnotations.CategoryAnnotations.class));
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;
-        this.modelName = modelName;
+        this.modelId = modelId;
 
     }
 
@@ -69,12 +69,12 @@ public class ModelRVSetting {
             @JsonProperty("nbmnConfig") NBMNConfig nbmnConfig,
             @JsonProperty("wordType") RandomVariable wordType,
             @JsonProperty("wordFeatures") List<RandomVariable> wordFeatures,
-            @JsonProperty("modelName") String modelName,
+            @JsonProperty("modelId") int modelId,
             @JsonProperty("categoryIds") List<Integer> categoryIds) {
         this.nbmnConfig = nbmnConfig;
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;
-        this.modelName = modelName;
+        this.modelId = modelId;
         this.categoryIds = categoryIds;
     }
 
