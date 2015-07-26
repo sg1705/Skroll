@@ -7,13 +7,14 @@ import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.NumberTokensComputer;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVCreater;
 import com.skroll.analyzer.model.applicationModel.randomVariables.UniqueWordsComputer;
-import com.skroll.classifier.Classifiers;
+import com.skroll.classifier.Category;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,6 +24,9 @@ import java.util.List;
 public class TrainingDocumentAnnotatingModelPersistenceTest {
 
     int maxNumWords = 20;
+    static final List<Integer> TEST_DEF_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE,Category.DEFINITION));
+    static final int TEST_DEF_CLASSIFIER_ID = 1;
+
     static final List<RandomVariable> DEFAULT_PARA_FEATURE_VARS = Arrays.asList(
             RVCreater.createDiscreteRVWithComputer(new NumberTokensComputer(), "numTokens")
     );
@@ -38,7 +42,7 @@ public class TrainingDocumentAnnotatingModelPersistenceTest {
     ModelRVSetting setting = new ModelRVSetting(
              DefModelRVSetting.DEFAULT_WORD_FEATURES,
             DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS, DEFAULT_WORD_VARS,
-            Classifiers.defClassifierProto.getCategoryIds());
+            TEST_DEF_CATEGORY_IDS);
 
     @Before
     public void setUp() throws Exception {
@@ -48,8 +52,8 @@ public class TrainingDocumentAnnotatingModelPersistenceTest {
     //TODO: need to rewrite this test case
     @Test
     public void testPersistModel() throws Exception {
-        ModelRVSetting setting = new DefModelRVSetting(Classifiers.defClassifierProto.getCategoryIds());
-        TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel(Classifiers.DEF_CLASSIFIER_ID,setting);
+        ModelRVSetting setting = new DefModelRVSetting(TEST_DEF_CATEGORY_IDS);
+        TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel(TEST_DEF_CLASSIFIER_ID,setting);
         doc = TestHelper.setUpTestDoc();
         //doc.getParagraphs().get(0).set(CoreAnnotations.IsTOCAnnotation.class, true);
         model.updateWithDocument(doc);

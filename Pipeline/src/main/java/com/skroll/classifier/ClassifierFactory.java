@@ -7,6 +7,7 @@ import com.skroll.document.Document;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -19,12 +20,23 @@ public class ClassifierFactory {
     @Inject
     private ModelFactory modelFactory;
 
+    //TOC Classifier
+    private  static final int TOC_CLASSIFIER_ID = 1;
+    private static final List<Integer> TOC_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE, Category.TOC_1, Category.TOC_2));
+    private static final ClassifierProto tocClassifierProto = new ClassifierProto(TOC_CLASSIFIER_ID,TOC_CATEGORY_IDS);
+
+    //Def Classifier
+    private static final int DEF_CLASSIFIER_ID = 2;
+    private static final List<Integer> DEF_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE,Category.DEFINITION));
+    private static final ClassifierProto defClassifierProto = new ClassifierProto(DEF_CLASSIFIER_ID,DEF_CATEGORY_IDS);
+
+
     public Classifier getClassifier(int classifierId) throws Exception {
         Classifier classifier = null;
-        if ( classifierId == Classifiers.TOC_CLASSIFIER_ID) {
-             classifier = new ClassifierImpl(Classifiers.TOC_CLASSIFIER_ID, Classifiers.tocClassifierProto, modelFactory, new TOCModelRVSetting(Classifiers.tocClassifierProto.getCategoryIds()));
-        } else if (classifierId == Classifiers.DEF_CLASSIFIER_ID){
-             classifier = new ClassifierImpl(Classifiers.DEF_CLASSIFIER_ID, Classifiers.defClassifierProto, modelFactory, new DefModelRVSetting(Classifiers.defClassifierProto.getCategoryIds()));
+        if ( classifierId == TOC_CLASSIFIER_ID) {
+             classifier = new ClassifierImpl(TOC_CLASSIFIER_ID, tocClassifierProto, modelFactory, new TOCModelRVSetting(tocClassifierProto.getCategoryIds()));
+        } else if (classifierId == DEF_CLASSIFIER_ID){
+             classifier = new ClassifierImpl(DEF_CLASSIFIER_ID,defClassifierProto, modelFactory, new DefModelRVSetting(defClassifierProto.getCategoryIds()));
         } else {
             throw new Exception ("Classifier Id: "+ classifierId + " is not supported");
         }
@@ -39,7 +51,7 @@ public class ClassifierFactory {
 
     public List<Classifier> getClassifiers(Document document) throws Exception {
        List<Classifier> classifierList = new ArrayList<>();
-       classifierList.add(getClassifier(Classifiers.TOC_CLASSIFIER_ID));
+       classifierList.add(getClassifier(TOC_CLASSIFIER_ID));
        //classifierList.add(getClassifier(Category.TOC_2));
        //classifierList.add(getClassifier(Category.TOC_3));
        //classifierList.add(getClassifier(Category.TOC_4));
@@ -52,7 +64,7 @@ public class ClassifierFactory {
      *
      */
     public void createClassifier() throws Exception {
-        getClassifier(Classifiers.TOC_CLASSIFIER_ID);
+        getClassifier(TOC_CLASSIFIER_ID);
         //modelRVSettings.put(modelRVSetting.getId(), modelRVSetting);
     }
 }

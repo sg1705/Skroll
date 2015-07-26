@@ -7,7 +7,7 @@ import com.skroll.analyzer.model.applicationModel.DefModelRVSetting;
 import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
 import com.skroll.analyzer.model.applicationModel.ProbabilityDocumentAnnotatingModel;
 import com.skroll.analyzer.model.applicationModel.TrainingDocumentAnnotatingModel;
-import com.skroll.classifier.Classifiers;
+import com.skroll.classifier.Category;
 import com.skroll.document.Document;
 import com.skroll.parser.Parser;
 import com.skroll.pipeline.util.Constants;
@@ -18,23 +18,29 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.fail;
 
 
 public class CorpusFSModelFactoryImplTest {
 
+    static final List<Integer> TEST_DEF_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE, Category.DEFINITION));
+    static final int TEST_DEF_CLASSIFIER_ID = 1;
     protected ModelFactory factory;
     protected Configuration configuration;
     ModelRVSetting setting;
-    int modelId = Classifiers.DEF_CLASSIFIER_ID;
+
+    int modelId = TEST_DEF_CLASSIFIER_ID;
     @Before
     public void setUp() throws Exception {
         try {
             Injector injector = Guice.createInjector(new SkrollTestGuiceModule());
             factory = injector.getInstance(ModelFactory.class);
             configuration = injector.getInstance(TestConfiguration.class);
-            setting = new DefModelRVSetting(Classifiers.defClassifierProto.getCategoryIds());
+            setting = new DefModelRVSetting(TEST_DEF_CATEGORY_IDS);
         } catch (Exception e) {
             e.printStackTrace();
         }

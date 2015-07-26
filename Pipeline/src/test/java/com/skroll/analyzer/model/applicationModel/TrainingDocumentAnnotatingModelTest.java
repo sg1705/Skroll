@@ -3,7 +3,6 @@ package com.skroll.analyzer.model.applicationModel;
 import com.skroll.analyzer.data.NBMNData;
 import com.skroll.analyzer.model.bn.node.MultiplexNode;
 import com.skroll.classifier.Category;
-import com.skroll.classifier.Classifiers;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
@@ -17,6 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,8 +25,11 @@ public class TrainingDocumentAnnotatingModelTest{
     String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining/mini-indenture.html";
     //    String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
     //ModelRVSetting setting = new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME,2);
-    ModelRVSetting setting = new DefModelRVSetting(Classifiers.defClassifierProto.getCategoryIds());
-    TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel(Classifiers.DEF_CLASSIFIER_ID,setting);
+
+    private static final List<Integer> TEST_DEF_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE,Category.DEFINITION));
+    private static final int TEST_DEF_CLASSIFIER_ID = 1;
+    ModelRVSetting setting = new DefModelRVSetting(TEST_DEF_CATEGORY_IDS);
+    TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel(TEST_DEF_CLASSIFIER_ID,setting);
     Document document;
     @Before
     public void setup() {
@@ -86,9 +89,9 @@ public class TrainingDocumentAnnotatingModelTest{
 //        String trainingFolderName = "src/test/resources/analyzer/evaluate/docclassifier/AMC Networks CA.html";
         File file = new File(trainingFolderName);
 
-        ModelRVSetting setting = new DefModelRVSetting(Classifiers.defClassifierProto.getCategoryIds());
+        ModelRVSetting setting = new DefModelRVSetting(TEST_DEF_CATEGORY_IDS);
 
-        TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel(Classifiers.DEF_CLASSIFIER_ID,setting);
+        TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel(TEST_DEF_CLASSIFIER_ID,setting);
         Document doc = makeTrainingDoc(file);
 
         List<CoreMap> processedParas = DocProcessor.processParas(doc, maxNumWords);

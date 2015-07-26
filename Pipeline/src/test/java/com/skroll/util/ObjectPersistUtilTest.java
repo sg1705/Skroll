@@ -5,12 +5,16 @@ import com.google.inject.Injector;
 import com.skroll.analyzer.model.applicationModel.DefModelRVSetting;
 import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
 import com.skroll.analyzer.model.applicationModel.TrainingDocumentAnnotatingModel;
-import com.skroll.classifier.Classifiers;
+import com.skroll.classifier.Category;
 import com.skroll.classifier.factory.ModelFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.fail;
 
@@ -18,6 +22,8 @@ public class ObjectPersistUtilTest {
     public static final Logger logger = LoggerFactory
             .getLogger(ObjectPersistUtilTest.class);
     ModelFactory modelFactory;
+    static final List<Integer> TEST_DEF_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE, Category.DEFINITION));
+    private static final int TEST_DEF_CLASSIFIER_ID = 1;
     @Before
     public void setup(){
         try {
@@ -32,13 +38,13 @@ public class ObjectPersistUtilTest {
     @Test
     public void testPersistReadObject() throws Exception {
 
-        ModelRVSetting modelRVSetting = new DefModelRVSetting(Classifiers.defClassifierProto.getCategoryIds());
-        TrainingDocumentAnnotatingModel model = modelFactory.createModel(Classifiers.DEF_CLASSIFIER_ID,modelRVSetting);
+        ModelRVSetting modelRVSetting = new DefModelRVSetting(TEST_DEF_CATEGORY_IDS);
+        TrainingDocumentAnnotatingModel model = modelFactory.createModel(TEST_DEF_CLASSIFIER_ID,modelRVSetting);
 
         ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil("/tmp");
 
         try {
-            objectPersistUtil.persistObject(null, new TrainingDocumentAnnotatingModel(Classifiers.DEF_CLASSIFIER_ID,modelRVSetting), "TrainingDocumentAnnotatingModel");
+            objectPersistUtil.persistObject(null, new TrainingDocumentAnnotatingModel(TEST_DEF_CLASSIFIER_ID,modelRVSetting), "TrainingDocumentAnnotatingModel");
         } catch (ObjectPersistUtil.ObjectPersistException e) {
             e.printStackTrace();
             fail("failed persist Object");

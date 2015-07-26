@@ -2,7 +2,7 @@ package com.skroll.analyzer.model.applicationModel.randomVariables;
 
 import com.google.common.collect.Lists;
 import com.skroll.analyzer.model.RandomVariable;
-import com.skroll.classifier.Classifiers;
+import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
@@ -10,6 +10,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -18,6 +20,8 @@ import java.util.List;
 public class RVCreaterTest {
 
     public static final Logger logger = LoggerFactory.getLogger(RVCreaterTest.class);
+    static final List<Integer> TEST_DEF_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE, Category.DEFINITION));
+
 
     @Test
     public void testCreateParagraphStartsWithRV() throws Exception {
@@ -70,7 +74,7 @@ public class RVCreaterTest {
     @Test
     public void testCreateWordLevelRVWithComputer() throws Exception {
 
-        RandomVariable rv = RVCreater.createWordLevelRVWithComputer(new WordIsInCategoryComputer(Classifiers.tocClassifierProto.getCategoryIds()), "WordIsTOCComputer");
+        RandomVariable rv = RVCreater.createWordLevelRVWithComputer(new WordIsInCategoryComputer(TEST_DEF_CATEGORY_IDS), "WordIsTOCComputer");
         logger.info("{}", rv);
         assert(rv.getName().equals("WordIsTOCComputer"));
         assert(rv.getFeatureSize()==2);
