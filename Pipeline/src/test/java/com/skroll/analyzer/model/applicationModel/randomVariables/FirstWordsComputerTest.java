@@ -25,7 +25,7 @@ public class FirstWordsComputerTest {
         m.set(CoreAnnotations.TokenAnnotation.class, Lists.newArrayList(token1, token2, token3));
         String[] words = fWC.getWords(m);
         logger.info(words[0]);
-        assert (words[0].equals("First"));
+        assert (words[0].equals("first"));
         assert (words.length == 1);
     }
 
@@ -34,7 +34,7 @@ public class FirstWordsComputerTest {
         FirstWordsComputer fWC = new FirstWordsComputer();
         m.set(CoreAnnotations.TokenAnnotation.class, Lists.newArrayList(token1, token2, token3));
         String[] words = fWC.getWords(m, 3);
-        assert (words[0].equals("First"));
+        assert (words[0].equals("first"));
         assert (words.length == 1);
 
     }

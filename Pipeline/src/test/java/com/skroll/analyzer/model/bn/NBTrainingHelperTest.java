@@ -60,9 +60,7 @@ public class NBTrainingHelperTest {
         assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[1].getParameters(), new double[]{0.1, 0.1, 0.1, 1.1}));
         assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[0].getParameters(), new double[]{0.1, 0.1, 0.1, 0.1}));
 
-        assert (Arrays.equals(nbmn.getFeatureNodes().get(0).getParameters(), new double[]{
-                0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 1.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1}));
-
+        assert (nbmn.getFeatureNodes().get(0).getParameters()[26] == 1.1);
 
     }
 
@@ -78,9 +76,7 @@ public class NBTrainingHelperTest {
         assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[1].getParameters(), new double[]{0.1, 0.1, 0.1, 9.1}));
         assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[0].getParameters(), new double[]{0.1, 0.1, 0.1, 0.1}));
 
-        assert (Arrays.equals(nbmn.getFeatureNodes().get(0).getParameters(), new double[]{
-                0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 9.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1}));
-
+        assert (nbmn.getFeatureNodes().get(0).getParameters()[26] == 9.1);
 
     }
 

@@ -64,7 +64,7 @@ public class RVCreaterTest {
         logger.info("{}", rv);
         logger.info("{}", RVValues.getWords(rv, m));
         assert(rv.getName().equals("FirstWordsComputer"));
-        assert(RVValues.getWords(rv, m)[0].equals("First"));
+        assert (RVValues.getWords(rv, m)[0].equals("first"));
     }
 
     @Test
@@ -118,7 +118,7 @@ public class RVCreaterTest {
 
         Class ac = CoreAnnotations.IndexInteger.class;
         RandomVariable rv = RVCreater.createRVFromAnnotation(ac);
-        assert (rv.getFeatureSize() == RVValues.DEFAULT_NUM_INT_VALS);
+        assert (rv.getFeatureSize() == RVCreater.DEFAULT_NUM_INT_VALS);
         System.out.println(rv.getName());
         System.out.println(rv.getFeatureSize());
 
