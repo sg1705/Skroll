@@ -16,8 +16,6 @@ import java.util.Map;
  */
 public class RVValues {
 
-    static final int DEFAULT_NUM_INT_VALS = 10;
-
     // RVAMap is used to get RVs values directly from annotations
     static private Map<RandomVariable, Class> rvaMap = new HashMap<>();
 

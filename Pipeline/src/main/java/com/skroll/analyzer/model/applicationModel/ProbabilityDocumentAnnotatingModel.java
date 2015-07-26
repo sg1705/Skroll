@@ -143,6 +143,8 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 //            nbmnModel.setMultiNodesObservation(allParaDocFeatures[p]);
             paragraphCategoryBelief[p] = categoryNode.getParameters().clone();
             for (int i=0; i<fnl.size(); i++){
+                if (paraFeatures[i] == -1) continue;
+
                 double[] message = NodeInferenceHelper.sumOutOtherNodesWithObservation(fnl.get(i), categoryNode);
                 for (int j=0; j<message.length; j++)
                     paragraphCategoryBelief[p][j] += message[j];
@@ -171,6 +173,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
             nbmnModel.setMultiNodesObservation(paraFeatureValsExistAtDocLevel[p]);
 
             for (int f = 0; f < nbmnConfig.getFeatureExistsAtDocLevelVarList().size(); f++) {
+                if (paraFeatureValsExistAtDocLevel[p][f] == -1) continue;
 
                 double[][] messageFromDocFeature = new double[documentFeatureBelief[f].length][];
                 for (int i = 0; i < messageFromDocFeature.length; i++)
@@ -208,6 +211,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
             nbmnModel.setMultiNodesObservation(allParaDocFeatures[p]);
 
             for (int f = 0; f < nbmnConfig.getFeatureExistsAtDocLevelVarList().size(); f++) {
+                if (allParaDocFeatures[p][f] == -1) continue;
                 double[] messageFromParaCategory = paragraphCategoryBelief[p].clone();
                 for (int i = 0; i < messageFromParaCategory.length; i++)
                     messageFromParaCategory[i] -= messagesToParagraphCategory[p][f][i];

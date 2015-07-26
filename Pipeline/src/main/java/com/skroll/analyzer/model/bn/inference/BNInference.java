@@ -1,6 +1,8 @@
 package com.skroll.analyzer.model.bn.inference;
 
 
+import java.util.stream.DoubleStream;
+
 /**
  * This is a very specialized belif propagation just for our network.
  * In our simple situation, can put each node in one cluster
@@ -64,9 +66,14 @@ public class BNInference {
      * @param vals
      */
     public static void normalizeLog(double[] vals){
-        double max=vals[0];
-        for (int i=1;i<vals.length;i++) if (vals[i]>max) max=vals[i];
-        for (int i=0;i<vals.length;i++) vals[i] = vals[i] - max;
+//        double max=vals[0];
+//        for (int i=1;i<vals.length;i++) if (vals[i]>max) max=vals[i];
+//        for (int i=0;i<vals.length;i++) vals[i] = vals[i] - max;
+
+        double logSum = Math.log(DoubleStream.of(vals).map((val) -> Math.exp(val)).sum());
+        for (int i = 0; i < vals.length; i++) {
+            vals[i] -= logSum;
+        }
     }
 
 
