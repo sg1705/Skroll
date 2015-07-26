@@ -1,5 +1,6 @@
 package com.skroll.analyzer.model.applicationModel.randomVariables;
 
+import com.skroll.classifier.ClassifierProto;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
@@ -11,14 +12,15 @@ import java.util.List;
  */
 public class WordIsInCategoryComputer implements WRVValueComputer {
 
-    protected int classifierId;
+    protected ClassifierProto classifierProto;
 
-    public WordIsInCategoryComputer(int classifierId){
-        this.classifierId=classifierId;
+    public WordIsInCategoryComputer(ClassifierProto classifierProto){
+        this.classifierProto=classifierProto;
     }
     @Override
     public int getValue(Token word, CoreMap para) {
-        List<List<Token>> tokens = CategoryAnnotationHelper.getDefinedTermTokensInParagraph(para, classifierId); //need one more field
+        int observedCategory = CategoryAnnotationHelper.getObservedCategory( para, classifierProto);
+        List<List<Token>> tokens = CategoryAnnotationHelper.getDefinedTermTokensInParagraph(para, observedCategory); //need one more field
         if (tokens == null) return 0;
 
         for (List<Token> list : tokens)

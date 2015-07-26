@@ -2,6 +2,7 @@ package com.skroll.analyzer.model.applicationModel;
 
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.*;
+import com.skroll.classifier.ClassifierProto;
 import com.skroll.document.annotation.CoreAnnotations;
 
 import java.util.Arrays;
@@ -34,11 +35,11 @@ public class DefModelRVSetting extends ModelRVSetting {
             RVCreater.createWordsRVWithComputer(new UniqueWordsComputer(), "uniqueWords")
     );
 
-    public DefModelRVSetting(int classifierId, String classifierName, int numOfCategory) {
+    public DefModelRVSetting(ClassifierProto classifierProto) {
         super(
                 DEFAULT_WORD_FEATURES,
                 DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS,
-                DEFAULT_WORD_VARS, classifierId, classifierName, numOfCategory);
+                DEFAULT_WORD_VARS, classifierProto);
 
     }
 

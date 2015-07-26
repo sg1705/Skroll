@@ -4,7 +4,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.skroll.analyzer.model.applicationModel.DefModelRVSetting;
 import com.skroll.analyzer.model.applicationModel.TrainingDocumentAnnotatingModel;
-import com.skroll.classifier.Category;
+import com.skroll.classifier.ClassifierFactory;
 import com.skroll.classifier.factory.ModelFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +31,7 @@ public class ObjectPersistUtilTest {
     @Test
     public void testPersistReadObject() throws Exception {
 
-        TrainingDocumentAnnotatingModel model = modelFactory.createModel(new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME,2));
+        TrainingDocumentAnnotatingModel model = modelFactory.createModel(new DefModelRVSetting(ClassifierFactory.defClassifierProto));
 
         ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil("/tmp");
 

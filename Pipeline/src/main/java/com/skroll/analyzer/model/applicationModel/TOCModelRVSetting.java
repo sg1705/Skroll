@@ -2,6 +2,7 @@ package com.skroll.analyzer.model.applicationModel;
 
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.*;
+import com.skroll.classifier.ClassifierProto;
 import com.skroll.document.annotation.CoreAnnotations;
 
 import java.util.Arrays;
@@ -26,18 +27,19 @@ public class TOCModelRVSetting extends ModelRVSetting {
             RVCreater.createParagraphStartsWithRV(CoreAnnotations.IsUnderlineAnnotation.class),
             RVCreater.createParagraphStartsWithRV(CoreAnnotations.IsBoldAnnotation.class),
             RVCreater.createRVFromAnnotation(CoreAnnotations.IsAnchorAnnotation.class),
-            RVCreater.createRVFromAnnotation(CoreAnnotations.IsHrefAnnotation.class)
+            RVCreater.createRVFromAnnotation(CoreAnnotations.IsHrefAnnotation.class),
+            RVCreater.createRVFromAnnotation(CoreAnnotations.IsUpperCaseAnnotation.class),
+            RVCreater.createRVFromAnnotation(CoreAnnotations.IsCenterAlignedAnnotation.class)
     );
     static final List<RandomVariable> DEFAULT_WORD_VARS = Arrays.asList(
-            RVCreater.createWordsRVWithComputer(new UniqueWordsComputer(), "uniqueWords"),
+            RVCreater.createWordsRVWithComputer(new LowerCaseWordsComputer(), "lowerCaseWords"),
             RVCreater.createWordsRVWithComputer(new FirstWordsComputer(), "firstWord")
     );
 
-    public TOCModelRVSetting(int classifierId, String classifierName, int numOfCategory) {
+    public TOCModelRVSetting(ClassifierProto classifierProto) {
         super(  DEFAULT_WORD_FEATURES,
                 DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS,
                 DEFAULT_WORD_VARS,
-                classifierId,
-                classifierName, numOfCategory);
+                classifierProto);
     }
 }

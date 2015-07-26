@@ -8,11 +8,10 @@ import com.skroll.analyzer.model.bn.config.NBMNConfig;
 import com.skroll.analyzer.model.bn.node.DiscreteNode;
 import com.skroll.analyzer.model.bn.node.MultiplexNode;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
-import com.skroll.classifier.Category;
+import com.skroll.classifier.ClassifierFactory;
 import com.skroll.util.Visualizer;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -30,7 +29,7 @@ public abstract class DocumentAnnotatingModel {
     NaiveBayesWithMultiNodes nbmnModel;
 
     @JsonProperty("modelRVSetting")
-    ModelRVSetting modelRVSetting = new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME,2);
+    ModelRVSetting modelRVSetting = new DefModelRVSetting(ClassifierFactory.defClassifierProto);
     @JsonProperty("wordFeatures")
     List<RandomVariable> wordFeatures = modelRVSetting.getWordFeatures();
 
