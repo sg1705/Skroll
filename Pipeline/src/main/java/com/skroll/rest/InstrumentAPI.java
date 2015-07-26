@@ -2,7 +2,7 @@ package com.skroll.rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.skroll.classifier.Classifier;
+import com.skroll.classifier.Category;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -84,27 +84,26 @@ public class InstrumentAPI {
 
         // get the json from BNI
         try {
-            /*
-            HashMap<String, HashMap<String, HashMap<String, Double>>> map = classifierFactory.getClassifier(ClassifierFactory.TOC_CLASSIFIER_ID).getBNIVisualMap(doc, paraIndex);
-            HashMap<String, HashMap<String, HashMap<String, Double>>> modelMap = classifierFactory.getClassifier(ClassifierFactory.TOC_CLASSIFIER_ID).getModelVisualMap();
+//           HashMap<String, HashMap<String, Double>> map = classifierFactory.getClassifier(ClassifierFactory.CLASSIFIER_TOC).getBNIVisualMap(doc, paraIndex);
+            HashMap<String, HashMap<String, HashMap<String, Double>>> map = classifierFactory.getClassifier(ClassifierFactory.CLASSIFIER_TOC_ID).getBNIVisualMap(doc, paraIndex);
+            HashMap<String, HashMap<String, HashMap<String, Double>>> modelMap = classifierFactory.getClassifier(ClassifierFactory.CLASSIFIER_TOC_ID).getModelVisualMap();
             probabilityJson = gson.toJson(map);
             buf.append(probabilityJson);
             buf.append(",");
             probabilityJson = gson.toJson(modelMap);
             buf.append(probabilityJson);
             buf.append(",");
-            */
-            for (Classifier classifier : request.getClassifiers()) {
-                HashMap<String, HashMap<String, HashMap<String, Double>>> map = classifier.getBNIVisualMap(doc, paraIndex);
-                probabilityJson = gson.toJson(map);
-                buf.append(probabilityJson);
-            }
-            buf.append(",");
-            for (Classifier classifier : request.getClassifiers()) {
-                HashMap<String, HashMap<String, HashMap<String, Double>>> modelMap = classifier.getModelVisualMap();
-                buf.append(gson.toJson(modelMap));
-            }
-            buf.append(",");
+//            for (Classifier classifier : request.getClassifiers()) {
+//                map = classifier.getBNIVisualMap(doc, paraIndex);
+//                probabilityJson = gson.toJson(map);
+//                buf.append(probabilityJson);
+//            }
+//            buf.append(",");
+//            for (Classifier classifier : request.getClassifiers()) {
+//                modelMap = classifier.getModelVisualMap();
+//                buf.append(gson.toJson(modelMap));
+//            }
+//            buf.append(",");
             buf.append(annotationJson);
             buf.append("]");
 
@@ -212,9 +211,13 @@ public class InstrumentAPI {
         // get probabilities
         try {
             List<List<Double>> allPs = new ArrayList();
-            for (Classifier classifier : request.getClassifiers()) {
-                allPs.add(classifier.getProbabilityDataForDoc(doc));
-            }
+            allPs.add(classifierFactory.getClassifier(Category.DEFINITION).getProbabilityDataForDoc(doc));
+            allPs.add(classifierFactory.getClassifier(Category.TOC_1).getProbabilityDataForDoc(doc));
+            allPs.add(classifierFactory.getClassifier(Category.TOC_2).getProbabilityDataForDoc(doc));
+            //allPs.add(classifierFactory.getClassifier(Category.TOC_3).getProbabilityDataForDoc(doc));
+            //allPs.add(classifierFactory.getClassifier(Category.TOC_4).getProbabilityDataForDoc(doc));
+            //allPs.add(classifierFactory.getClassifier(Category.TOC_5).getProbabilityDataForDoc(doc));
+
             Gson gson = new GsonBuilder().create();
             String json = gson.toJson(allPs);
 

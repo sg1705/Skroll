@@ -3,7 +3,7 @@ package com.skroll.analyzer.model.bn;
 import com.skroll.analyzer.model.applicationModel.DefModelRVSetting;
 import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
 import com.skroll.analyzer.model.bn.config.NBMNConfig;
-import com.skroll.classifier.ClassifierFactory;
+import com.skroll.classifier.Category;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,7 +15,7 @@ import java.util.List;
  * Created by wei on 4/28/15.
  */
 public class NBTrainingHelperTest {
-    ModelRVSetting setting = new DefModelRVSetting(ClassifierFactory.defClassifierProto);
+    ModelRVSetting setting = new DefModelRVSetting(Category.DEFINITION, Category.DEFINITION_NAME,2);
     NBMNConfig config = setting.getNbmnConfig();
     NaiveBayesWithMultiNodes nbmn = NBTrainingHelper.createTrainingNBMN(config);
     List<String[]> wordsList;

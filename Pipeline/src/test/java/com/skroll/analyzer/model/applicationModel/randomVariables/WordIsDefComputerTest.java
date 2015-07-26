@@ -2,7 +2,6 @@ package com.skroll.analyzer.model.applicationModel.randomVariables;
 
 import com.google.common.collect.Lists;
 import com.skroll.classifier.Category;
-import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
@@ -25,7 +24,7 @@ public class WordIsDefComputerTest {
 
     @Before
     public void setUp() throws Exception {
-        wordIsDefComputer = new WordIsInCategoryComputer(ClassifierFactory.defClassifierProto);
+        wordIsDefComputer = new WordIsInCategoryComputer(Category.DEFINITION);
         m = new CoreMap();
         token1 = new Token("First");
         token2 = new Token("token");

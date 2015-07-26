@@ -5,7 +5,6 @@ import com.skroll.analyzer.model.applicationModel.randomVariables.ParaInCategory
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVCreater;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
 import com.skroll.classifier.Category;
-import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.Token;
@@ -22,7 +21,7 @@ import java.util.List;
 public class ProbabilityDocumentAnnotatingModelTest {
 
 
-    ModelRVSetting setting = new DefModelRVSetting(ClassifierFactory.tocClassifierProto);
+    ModelRVSetting setting = new DefModelRVSetting(Category.DEFINITION, Category.DEFINITION_NAME,2);
     TrainingDocumentAnnotatingModel tModel = new TrainingDocumentAnnotatingModel();
 
     //    String testingFileName = "src/test/resources/classifier/smaller-indenture.html";
@@ -47,7 +46,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
         tModel.updateWithDocument(doc);
         model = new ProbabilityDocumentAnnotatingModel(tModel.getNbmnModel(), tModel.getHmm(), doc,
-                new DefModelRVSetting(ClassifierFactory.defClassifierProto)
+                new DefModelRVSetting(Category.DEFINITION, Category.DEFINITION_NAME,2)
                 );
         model.getHmm().updateProbabilities();
         System.out.println("HMM\n");

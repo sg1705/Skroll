@@ -1,7 +1,6 @@
 package com.skroll.analyzer.model.bn.node;
 
 import com.skroll.analyzer.model.RandomVariable;
-import com.skroll.analyzer.model.bn.inference.BNInference;
 
 import java.util.*;
 
@@ -154,12 +153,12 @@ public class NodeTrainingHelper {
     }
 
     public static Map<String, double[]> getLogProbabilities(WordNode trainingNode){
+        //double [] priorCounts = ((TrainingDiscreteNode) parent).getPriorCount(PRIOR_COUNT);
         Map<String, double[]> probs = new HashMap<>();
         Map<String, double[]> counts = trainingNode.getParameters();
         DiscreteNode parent = trainingNode.getParent();
         int numValues = parent.getVariable().getFeatureSize();
-        //Experiment next line uncommented
-        double [] priorCounts = BNInference.normalize(parent.getParameters(), PRIOR_COUNT);
+
 
         for (String w: counts.keySet()){
             double[] p = new double[ parent.getVariable().getFeatureSize()  ];
@@ -169,12 +168,11 @@ public class NodeTrainingHelper {
 
             //hack for testing purpose
 //            if (counts.get(w)[0]+ counts.get(w)[1] <1) continue;
-//          Next 2 lines commented for experiment
-//           for (int j=0; j<numValues; j++) p[j] = Math.log((0.01 +
-//                    counts.get(w)[j])/ parent.getParameter(j));
-//          Next 2 lines experiment code
-           for (int j=0; j<numValues; j++) p[j] = Math.log((priorCounts[j] +
+            for (int j=0; j<numValues; j++) p[j] = Math.log((0.01 +
                     counts.get(w)[j])/ parent.getParameter(j));
+
+//            for (int j=0; j<numValues; j++) p[j] = Math.log((priorCounts[j] +
+//                    parameters.get(w)[j])/ parent.getParameter(j));
             probs.put(w,p);
         }
         return probs;

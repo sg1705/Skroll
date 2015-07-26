@@ -25,7 +25,7 @@ public class TrainingDocumentAnnotatingModelTest{
     String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining/mini-indenture.html";
     //    String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
     //ModelRVSetting setting = new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME,2);
-    ModelRVSetting setting = new DefModelRVSetting(ClassifierFactory.tocClassifierProto);
+    ModelRVSetting setting = new DefModelRVSetting(ClassifierFactory.CLASSIFIER_TOC_ID, ClassifierFactory.CLASSIFIER_TOC_NAME,ClassifierFactory.TOC_CATEGORY_IDS.size());
     TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel();
     Document document;
     @Before

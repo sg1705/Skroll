@@ -1,6 +1,5 @@
 package com.skroll.analyzer.model.applicationModel.randomVariables;
 
-import com.skroll.classifier.ClassifierProto;
 import com.skroll.document.CoreMap;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
 
@@ -9,19 +8,21 @@ import com.skroll.document.annotation.CategoryAnnotationHelper;
  */
 public class ParaCategoryComputer implements RVValueComputer {
 
-    ClassifierProto classifierProto;
+    int classifierId;
+    int numOfCategory;
 
-    public ParaCategoryComputer(ClassifierProto classifierProto) {
-        this.classifierProto = classifierProto;
+    public ParaCategoryComputer(int classifierId, int numOfCategory) {
+        this.classifierId = classifierId;
+        this.numOfCategory = numOfCategory;
     }
 
     public int getValue(CoreMap m) {
-        return CategoryAnnotationHelper.getObservedClassIndex(m, classifierProto);
+        return CategoryAnnotationHelper.getObservedClassIndex(m, classifierId);
 
     }
 
     @Override
     public int getNumVals() {
-        return classifierProto.getCategoryIds().size();
+        return numOfCategory;
     }
 }
