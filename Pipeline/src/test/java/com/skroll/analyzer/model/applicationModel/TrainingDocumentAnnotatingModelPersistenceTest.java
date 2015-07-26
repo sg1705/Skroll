@@ -25,7 +25,7 @@ public class TrainingDocumentAnnotatingModelPersistenceTest {
 
     int maxNumWords = 20;
     static final List<Integer> TEST_DEF_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE,Category.DEFINITION));
-    static final int TEST_DEF_CLASSIFIER_ID = 1;
+    static final int TEST_DEF_CLASSIFIER_ID = 2;
 
     static final List<RandomVariable> DEFAULT_PARA_FEATURE_VARS = Arrays.asList(
             RVCreater.createDiscreteRVWithComputer(new NumberTokensComputer(), "numTokens")

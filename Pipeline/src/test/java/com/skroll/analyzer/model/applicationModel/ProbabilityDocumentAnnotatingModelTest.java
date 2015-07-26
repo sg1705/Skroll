@@ -20,7 +20,7 @@ import java.util.List;
 //todo: prior count is not set properly, making the probability favoring positive class.
 public class ProbabilityDocumentAnnotatingModelTest {
     private static final List<Integer> TEST_DEF_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE,Category.DEFINITION));
-    private static final int TEST_DEF_CLASSIFIER_ID = 1;
+    private static final int TEST_DEF_CLASSIFIER_ID = 2;
     ModelRVSetting setting = new DefModelRVSetting(TEST_DEF_CATEGORY_IDS);
 
     TrainingDocumentAnnotatingModel tModel = new TrainingDocumentAnnotatingModel(TEST_DEF_CLASSIFIER_ID,setting);

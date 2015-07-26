@@ -28,7 +28,7 @@ import static org.junit.Assert.fail;
 public class CorpusFSModelFactoryImplTest {
 
     static final List<Integer> TEST_DEF_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE, Category.DEFINITION));
-    static final int TEST_DEF_CLASSIFIER_ID = 1;
+    static final int TEST_DEF_CLASSIFIER_ID = 2;
     protected ModelFactory factory;
     protected Configuration configuration;
     ModelRVSetting setting;
@@ -68,7 +68,6 @@ public class CorpusFSModelFactoryImplTest {
     @Test
     public void testGetBNIModel() throws Exception {
         Document doc =  Parser.parseDocumentFromHtml(Files.toString(new File("src/test/resources/classifier/smaller-indenture.html"), Constants.DEFAULT_CHARSET));
-
         ProbabilityDocumentAnnotatingModel model = factory.createBNIModel(modelId, setting, doc);
         if(model==null){
             fail("failed to get BNI training model");

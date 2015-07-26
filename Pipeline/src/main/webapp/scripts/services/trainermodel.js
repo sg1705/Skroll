@@ -45,12 +45,12 @@ var ToolbarModel = {
 	    documentService.getBenchmarkScore().then(function(benchmarkScore){
 	      self.trainerToolbar.benchmarkScore = benchmarkScore;
 	      console.log(benchmarkScore);
-	      self.trainerToolbar.typeAError = benchmarkScore.qc.stats[1].level1Type1Error;
-	      self.trainerToolbar.typeBError = benchmarkScore.qc.stats[1].level1Type2Error;
-	      self.trainerToolbar.qcScore = benchmarkScore.qc.stats[1].level1QcScore;
-	      self.trainerToolbar.typeAError = benchmarkScore.qc.stats[2].level2Type1Error;
-	      self.trainerToolbar.typeBError = benchmarkScore.qc.stats[2].level2Type2Error;
-	      self.trainerToolbar.qcScore = benchmarkScore.qc.stats[2].level2QcScore;
+	      self.trainerToolbar.level1TypeAError = benchmarkScore.qc.stats[1].type1Error;
+	      self.trainerToolbar.level1TypeBError = benchmarkScore.qc.stats[1].type2Error;
+	      self.trainerToolbar.level1QcScore = benchmarkScore.qc.stats[1].qcScore;
+	      self.trainerToolbar.level2TypeAError = benchmarkScore.qc.stats[2].type1Error;
+	      self.trainerToolbar.level2TypeBError = benchmarkScore.qc.stats[2].type2Error;
+	      self.trainerToolbar.level2QcScore = benchmarkScore.qc.stats[2].qcScore;
 
 	      if (benchmarkScore.isFileBenchmarked && !benchmarkScore.isFileTrained) {
 	      	self.trainerToolbar.isBenchmark = true;
