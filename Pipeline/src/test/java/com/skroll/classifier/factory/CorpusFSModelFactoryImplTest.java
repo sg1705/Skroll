@@ -27,13 +27,14 @@ public class CorpusFSModelFactoryImplTest {
     protected ModelFactory factory;
     protected Configuration configuration;
     ModelRVSetting setting;
+    int modelId = Classifiers.DEF_CLASSIFIER_ID;
     @Before
     public void setUp() throws Exception {
         try {
             Injector injector = Guice.createInjector(new SkrollTestGuiceModule());
             factory = injector.getInstance(ModelFactory.class);
             configuration = injector.getInstance(TestConfiguration.class);
-            setting = new DefModelRVSetting(Classifiers.DEF_CLASSIFIER_ID,Classifiers.defClassifierProto.getCategoryIds());
+            setting = new DefModelRVSetting(Classifiers.defClassifierProto.getCategoryIds());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -45,14 +46,14 @@ public class CorpusFSModelFactoryImplTest {
     }
     @Test
     public void testGetTrainingModel() {
-        TrainingDocumentAnnotatingModel model = factory.getTrainingModel(setting);
+        TrainingDocumentAnnotatingModel model = factory.getTrainingModel(modelId, setting);
         if(model==null){
             fail("failed to create training model");
         }
     }
     @Test
     public void testCreateModel() throws Exception {
-          TrainingDocumentAnnotatingModel model = factory.createModel(setting);
+          TrainingDocumentAnnotatingModel model = factory.createModel(modelId, setting);
         if(model==null){
             fail("failed to create training model");
         }
@@ -62,7 +63,7 @@ public class CorpusFSModelFactoryImplTest {
     public void testGetBNIModel() throws Exception {
         Document doc =  Parser.parseDocumentFromHtml(Files.toString(new File("src/test/resources/classifier/smaller-indenture.html"), Constants.DEFAULT_CHARSET));
 
-        ProbabilityDocumentAnnotatingModel model = factory.createBNIModel(setting, doc);
+        ProbabilityDocumentAnnotatingModel model = factory.createBNIModel(modelId, setting, doc);
         if(model==null){
             fail("failed to get BNI training model");
         }
@@ -71,7 +72,7 @@ public class CorpusFSModelFactoryImplTest {
     @Test
     public void testSaveTrainingModel() throws Exception {
         try {
-            factory.saveTrainingModel(setting);
+            factory.saveTrainingModel(modelId, setting);
 
         } catch (Exception e) {
             e.printStackTrace();

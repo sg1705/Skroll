@@ -28,29 +28,31 @@ import java.util.List;
  */
 public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     
-    public TrainingDocumentAnnotatingModel(ModelRVSetting setting) {
-        this(setting.getWordType(), setting.getWordFeatures(), setting.getNbmnConfig(), setting);
+    public TrainingDocumentAnnotatingModel( int id, ModelRVSetting setting) {
+        this(id, setting.getWordType(), setting.getWordFeatures(), setting.getNbmnConfig(), setting);
+        this.id =id;
         modelRVSetting = setting;
     }
 
-    private TrainingDocumentAnnotatingModel(RandomVariable wordType,
+    private TrainingDocumentAnnotatingModel(int id, RandomVariable wordType,
                                            List<RandomVariable> wordFeatures,
                                             NBMNConfig nbmnConfig, ModelRVSetting modelRVSetting) {
 
-        this(NBTrainingHelper.createTrainingNBMN(nbmnConfig),
+        this(id, NBTrainingHelper.createTrainingNBMN(nbmnConfig),
                 wordType, wordFeatures, nbmnConfig, modelRVSetting);
 
     }
 
     @JsonCreator
     public TrainingDocumentAnnotatingModel(
+            @JsonProperty("id") int id,
             @JsonProperty("nbmnModel") NaiveBayesWithMultiNodes nbmnModel,
             @JsonProperty("wordType") RandomVariable wordType,
             @JsonProperty("wordFeatures") List<RandomVariable> wordFeatures,
             @JsonProperty("nbmnConfig") NBMNConfig nbmnConfig,
             @JsonProperty("ModelRVSetting")ModelRVSetting modelRVSetting){
+        this.id = id;
         this.nbmnConfig = nbmnConfig;
-
         this.nbmnModel = nbmnModel;
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;

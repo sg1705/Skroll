@@ -1,7 +1,6 @@
 package com.skroll.classifier;
 
 import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
-import com.skroll.analyzer.model.applicationModel.TOCModelRVSetting;
 import com.skroll.classifier.factory.ModelFactory;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -25,6 +24,7 @@ public class ClassifierImpl implements Classifier {
     protected ClassifierProto classifierProto;
     protected ModelFactory modelFactory;
     protected ModelRVSetting modelRVSetting;
+    protected int modelId;
 
     @Override
     public ModelRVSetting getModelRVSetting() {
@@ -33,10 +33,11 @@ public class ClassifierImpl implements Classifier {
 
 
 
-    public ClassifierImpl(ClassifierProto classifierProto, ModelFactory modelFactory, ModelRVSetting modelRVSetting) {
+    public ClassifierImpl(int modelId, ClassifierProto classifierProto, ModelFactory modelFactory, ModelRVSetting modelRVSetting) {
         this.modelFactory = modelFactory;
         this.classifierProto = classifierProto;
         this.modelRVSetting = modelRVSetting;
+        this.modelId = modelId;
     }
 
     public List<String> extractTokenFromDoc(Document doc) {
@@ -59,7 +60,7 @@ public class ClassifierImpl implements Classifier {
 
         logger.debug("Before annotate");
         CategoryAnnotationHelper.displayCategoryOfDoc(document);
-        modelFactory.createBNIModel(modelRVSetting, document);
+        modelFactory.createBNIModel(modelId, modelRVSetting, document);
 
         logger.debug("After annotate");
         CategoryAnnotationHelper.displayCategoryOfDoc(document);
@@ -71,13 +72,13 @@ public class ClassifierImpl implements Classifier {
 
     @Override
     public void train(Document doc) {
-        modelFactory.getTrainingModel(modelRVSetting).updateWithDocument(doc);
+        modelFactory.getTrainingModel(modelId, modelRVSetting).updateWithDocument(doc);
 
     }
 
     @Override
     public void trainWithWeight(Document doc) {
-        modelFactory.getTrainingModel(modelRVSetting).updateWithDocumentAndWeight(doc);
+        modelFactory.getTrainingModel(modelId,modelRVSetting).updateWithDocumentAndWeight(doc);
     }
 
 
@@ -96,23 +97,23 @@ public class ClassifierImpl implements Classifier {
 
     @Override
     public HashMap<String, HashMap<String, HashMap<String, Double>>> getBNIVisualMap(Document document, int paraIndex) {
-        return modelFactory.getBNIModel(modelRVSetting).toVisualMap(paraIndex);
+        return modelFactory.getBNIModel(modelId).toVisualMap(paraIndex);
     }
 
 
     @Override
     public HashMap<String, HashMap<String, HashMap<String, Double>>> getModelVisualMap() {
-        return modelFactory.getTrainingModel(modelRVSetting).toVisualMap();
+        return modelFactory.getTrainingModel(modelId,modelRVSetting).toVisualMap();
     }
 
     @Override
     public List<Double> getProbabilityDataForDoc(Document document) {
-        return modelFactory.getBNIModel(modelRVSetting).toParaCategoryDump();
+        return modelFactory.getBNIModel(modelId).toParaCategoryDump();
     }
 
     @Override
     public void persistModel() throws Exception {
-        modelFactory.saveTrainingModel(modelRVSetting);
+        modelFactory.saveTrainingModel(modelId,modelRVSetting);
     }
 
 }

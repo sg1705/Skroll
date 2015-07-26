@@ -32,13 +32,13 @@ public class ObjectPersistUtilTest {
     @Test
     public void testPersistReadObject() throws Exception {
 
-        ModelRVSetting modelRVSetting = new DefModelRVSetting(Classifiers.DEF_CLASSIFIER_ID,Classifiers.defClassifierProto.getCategoryIds());
-        TrainingDocumentAnnotatingModel model = modelFactory.createModel(modelRVSetting);
+        ModelRVSetting modelRVSetting = new DefModelRVSetting(Classifiers.defClassifierProto.getCategoryIds());
+        TrainingDocumentAnnotatingModel model = modelFactory.createModel(Classifiers.DEF_CLASSIFIER_ID,modelRVSetting);
 
         ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil("/tmp");
 
         try {
-            objectPersistUtil.persistObject(null, new TrainingDocumentAnnotatingModel(modelRVSetting), "TrainingDocumentAnnotatingModel");
+            objectPersistUtil.persistObject(null, new TrainingDocumentAnnotatingModel(Classifiers.DEF_CLASSIFIER_ID,modelRVSetting), "TrainingDocumentAnnotatingModel");
         } catch (ObjectPersistUtil.ObjectPersistException e) {
             e.printStackTrace();
             fail("failed persist Object");

@@ -23,22 +23,22 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
     protected  static Map<Integer, ProbabilityDocumentAnnotatingModel> bniModelMap = new HashMap<>();
 
 
-    public TrainingDocumentAnnotatingModel getTrainingModel(ModelRVSetting modelRVSetting) {
-        if (TrainingModelMap.containsKey(modelRVSetting.getModelId())){
-            return TrainingModelMap.get(modelRVSetting.getModelId());
+    public TrainingDocumentAnnotatingModel getTrainingModel(int modelId, ModelRVSetting modelRVSetting) {
+        if (TrainingModelMap.containsKey(modelId)){
+            return TrainingModelMap.get(modelId);
         }
-        TrainingDocumentAnnotatingModel model = createModel(modelRVSetting);
+        TrainingDocumentAnnotatingModel model = createModel(modelId, modelRVSetting);
         logger.debug("training model Map Size:{}",TrainingModelMap.size());
         logger.debug("bni model Map Size:{}",bniModelMap.size());
         return model;
     }
 
-    public TrainingDocumentAnnotatingModel createModel(ModelRVSetting modelRVSetting) {
+    public TrainingDocumentAnnotatingModel createModel(int modelId, ModelRVSetting modelRVSetting) {
         TrainingDocumentAnnotatingModel localTrainingModel = null;
 
         if (localTrainingModel == null) {
             try {
-                    localTrainingModel = (TrainingDocumentAnnotatingModel) objectPersistUtil.readObject(null,String.valueOf(modelRVSetting.getModelId()));
+                    localTrainingModel = (TrainingDocumentAnnotatingModel) objectPersistUtil.readObject(null,String.valueOf(modelId));
 
             } catch (Throwable e) {
                 logger.warn("TrainingDocumentAnnotatingModel is not found. creating new one" );
@@ -47,39 +47,39 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
         }
         if (localTrainingModel == null) {
 
-            localTrainingModel = new TrainingDocumentAnnotatingModel(modelRVSetting);
+            localTrainingModel = new TrainingDocumentAnnotatingModel(modelId, modelRVSetting);
         }
 
-        TrainingModelMap.put(modelRVSetting.getModelId(), localTrainingModel);
+        TrainingModelMap.put(modelId, localTrainingModel);
         return localTrainingModel;
     }
 
-    public ProbabilityDocumentAnnotatingModel createBNIModel(ModelRVSetting modelRVSetting, Document document) {
+    public ProbabilityDocumentAnnotatingModel createBNIModel(int modelId, ModelRVSetting modelRVSetting, Document document) {
 
-        TrainingDocumentAnnotatingModel tmpModel = createModel(modelRVSetting);
+        TrainingDocumentAnnotatingModel tmpModel = createModel(modelId, modelRVSetting);
         tmpModel.updateWithDocumentAndWeight(document);
 
-        ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(tmpModel.getNbmnModel(),
+        ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(modelId, tmpModel.getNbmnModel(),
                 tmpModel.getHmm(), document,modelRVSetting );
         bniModel.annotateDocument();
         //printBelieves(bniModel, document);
 
-        bniModelMap.put(modelRVSetting.getModelId(),bniModel);
+        bniModelMap.put(modelId,bniModel);
 
         return bniModel;
     }
 
-    public ProbabilityDocumentAnnotatingModel getBNIModel(ModelRVSetting modelRVSetting) {
-        if (bniModelMap.containsKey(modelRVSetting.getModelId())){
-            return bniModelMap.get(modelRVSetting.getModelId());
+    public ProbabilityDocumentAnnotatingModel getBNIModel(int modelId) {
+        if (bniModelMap.containsKey(modelId)){
+            return bniModelMap.get(modelId);
         }
         return null;
     }
 
-    public void saveTrainingModel(ModelRVSetting modelRVSetting) throws Exception {
+    public void saveTrainingModel(int modelId, ModelRVSetting modelRVSetting) throws Exception {
         try {
 
-            objectPersistUtil.persistObject(null, getTrainingModel(modelRVSetting), String.valueOf(modelRVSetting.getModelId()));
+            objectPersistUtil.persistObject(null, getTrainingModel(modelId, modelRVSetting), String.valueOf(modelId));
         } catch (ObjectPersistUtil.ObjectPersistException e) {
             logger.error("failed to persist the model", e);
             throw new Exception(e);

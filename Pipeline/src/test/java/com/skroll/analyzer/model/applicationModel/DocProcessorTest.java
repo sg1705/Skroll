@@ -41,7 +41,7 @@ public class DocProcessorTest {
     ModelRVSetting setting = new ModelRVSetting(
              DefModelRVSetting.DEFAULT_WORD_FEATURES,
             DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS, DEFAULT_WORD_VARS,
-            Classifiers.DEF_CLASSIFIER_ID, Classifiers.tocClassifierProto.getCategoryIds());
+             Classifiers.tocClassifierProto.getCategoryIds());
 
 
     static String trainingFileName = "src/test/resources/analyzer/definedTermExtractionTraining/AMC Networks CA.html";

@@ -6,6 +6,8 @@ import java.util.List;
 
 /**
  * Created by saurabh on 4/16/15.
+ * Contain the predefined classifiers initialization information.
+ * Would be refactor in future to get these information from database or some other means
  */
 public class Classifiers {
 

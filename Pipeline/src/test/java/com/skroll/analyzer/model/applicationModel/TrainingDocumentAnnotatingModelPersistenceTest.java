@@ -38,7 +38,7 @@ public class TrainingDocumentAnnotatingModelPersistenceTest {
     ModelRVSetting setting = new ModelRVSetting(
              DefModelRVSetting.DEFAULT_WORD_FEATURES,
             DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS, DEFAULT_WORD_VARS,
-            Classifiers.DEF_CLASSIFIER_ID,Classifiers.defClassifierProto.getCategoryIds());
+            Classifiers.defClassifierProto.getCategoryIds());
 
     @Before
     public void setUp() throws Exception {
@@ -48,8 +48,8 @@ public class TrainingDocumentAnnotatingModelPersistenceTest {
     //TODO: need to rewrite this test case
     @Test
     public void testPersistModel() throws Exception {
-        ModelRVSetting setting = new DefModelRVSetting(Classifiers.DEF_CLASSIFIER_ID,Classifiers.defClassifierProto.getCategoryIds());
-        TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel(setting);
+        ModelRVSetting setting = new DefModelRVSetting(Classifiers.defClassifierProto.getCategoryIds());
+        TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel(Classifiers.DEF_CLASSIFIER_ID,setting);
         doc = TestHelper.setUpTestDoc();
         //doc.getParagraphs().get(0).set(CoreAnnotations.IsTOCAnnotation.class, true);
         model.updateWithDocument(doc);

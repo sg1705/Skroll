@@ -16,7 +16,7 @@ import java.util.List;
  * Created by wei on 4/28/15.
  */
 public class NBTrainingHelperTest {
-    ModelRVSetting setting = new DefModelRVSetting(Classifiers.DEF_CLASSIFIER_ID,Classifiers.defClassifierProto.getCategoryIds());
+    ModelRVSetting setting = new DefModelRVSetting(Classifiers.defClassifierProto.getCategoryIds());
     NBMNConfig config = setting.getNbmnConfig();
     NaiveBayesWithMultiNodes nbmn = NBTrainingHelper.createTrainingNBMN(config);
     List<String[]> wordsList;

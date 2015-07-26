@@ -31,14 +31,17 @@ public abstract class DocumentAnnotatingModel {
     ModelRVSetting modelRVSetting;
 
     @JsonProperty("wordFeatures")
-    List<RandomVariable> wordFeatures = null;
+    List<RandomVariable> wordFeatures;
 
     @JsonProperty("nbmnConfig")
-    NBMNConfig nbmnConfig = null;
+    NBMNConfig nbmnConfig;
 
     @JsonProperty("wordType")
-    RandomVariable wordType = null;
+    RandomVariable wordType;
 
+
+    @JsonProperty("id")
+    int id;
 
     @JsonIgnore
     public RandomVariable getParaCategory() {

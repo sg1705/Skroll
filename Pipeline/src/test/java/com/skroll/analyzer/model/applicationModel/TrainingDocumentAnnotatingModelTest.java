@@ -25,8 +25,8 @@ public class TrainingDocumentAnnotatingModelTest{
     String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining/mini-indenture.html";
     //    String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
     //ModelRVSetting setting = new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME,2);
-    ModelRVSetting setting = new DefModelRVSetting(Classifiers.DEF_CLASSIFIER_ID,Classifiers.defClassifierProto.getCategoryIds());
-    TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel(setting);
+    ModelRVSetting setting = new DefModelRVSetting(Classifiers.defClassifierProto.getCategoryIds());
+    TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel(Classifiers.DEF_CLASSIFIER_ID,setting);
     Document document;
     @Before
     public void setup() {
@@ -86,9 +86,9 @@ public class TrainingDocumentAnnotatingModelTest{
 //        String trainingFolderName = "src/test/resources/analyzer/evaluate/docclassifier/AMC Networks CA.html";
         File file = new File(trainingFolderName);
 
-        ModelRVSetting setting = new DefModelRVSetting(Classifiers.DEF_CLASSIFIER_ID,Classifiers.defClassifierProto.getCategoryIds());
+        ModelRVSetting setting = new DefModelRVSetting(Classifiers.defClassifierProto.getCategoryIds());
 
-        TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel(setting);
+        TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel(Classifiers.DEF_CLASSIFIER_ID,setting);
         Document doc = makeTrainingDoc(file);
 
         List<CoreMap> processedParas = DocProcessor.processParas(doc, maxNumWords);
