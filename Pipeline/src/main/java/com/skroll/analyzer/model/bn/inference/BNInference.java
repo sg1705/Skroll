@@ -95,4 +95,16 @@ public class BNInference {
             convertLogBeliefToProb(belief);
         }
     }
+
+    public static int maxIndex(double[] vals) {
+        if (vals == null || vals.length == 0) return -1;
+        int maxI = 0;
+        for (int i = 1; i < vals.length; i++) {
+            if (vals[i] > vals[maxI]) {
+                maxI = i;
+            }
+        }
+
+        return maxI;
+    }
 }

@@ -92,14 +92,14 @@ public class SkrollTrainer extends Trainer {
                     Document document = documentFactory.get(f.getName());
                     for (CoreMap paragraph : document.getParagraphs()) {
                         for (int categoryId : Category.getCategories()) {
-                             if (CategoryAnnotationHelper.isCategoryId(paragraph, categoryId)){
+                            if (CategoryAnnotationHelper.isCategoryId(paragraph, categoryId)) {
                                 List<List<String>> definitionList = CategoryAnnotationHelper.getDefinedTermLists(
                                         paragraph, categoryId);
                                 //logger.debug("definitionList:" + Joiner.on(" ").join(definitionList));
-                                 if(definitionList==null){
-                                     logger.error("********** corrupted file ********* {}", f.getName());
-                                     break;
-                                 }
+                                if (definitionList == null) {
+                                    logger.error("********** corrupted file ********* {}", f.getName());
+                                    break;
+                                }
                             }
                         }
                     }

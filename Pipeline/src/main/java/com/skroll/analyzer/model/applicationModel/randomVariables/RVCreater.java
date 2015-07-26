@@ -16,7 +16,7 @@ import java.util.Set;
 public class RVCreater {
 
     public static final Logger logger = LoggerFactory.getLogger(RVCreater.class);
-    static final int DEFAULT_NUM_INT_VALS = 10;
+    static final int DEFAULT_NUM_INT_VALS = 25;
 
     public static RandomVariable createParagraphStartsWithRV(Class wordAnnotation) {
         ParaStartsWithFeatureComputer computer = new ParaStartsWithFeatureComputer(wordAnnotation);
@@ -45,6 +45,19 @@ public class RVCreater {
         List<RandomVariable> docFeatures = new ArrayList<>();
         for (RandomVariable rv : paraDocFeatures) {
             docFeatures.add(new RandomVariable(2, name + "_" + rv.getName()));
+        }
+        return docFeatures;
+    }
+
+    public static List<List<RandomVariable>> createNBMNDocFeatureRVs(
+            List<RandomVariable> paraDocFeatures, RandomVariable category, String name) {
+        List<List<RandomVariable>> docFeatures = new ArrayList<>();
+        for (RandomVariable feature : paraDocFeatures) {
+            List<RandomVariable> docFeaturesForOneFeature = new ArrayList<>();
+            for (int c = 0; c < category.getFeatureSize(); c++) {
+                docFeaturesForOneFeature.add(new RandomVariable(2, name + "_" + c + "_" + feature.getName()));
+            }
+            docFeatures.add(docFeaturesForOneFeature);
         }
         return docFeatures;
     }

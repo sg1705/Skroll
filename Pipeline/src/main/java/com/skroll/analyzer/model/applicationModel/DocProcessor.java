@@ -1,9 +1,12 @@
 package com.skroll.analyzer.model.applicationModel;
 
-import com.skroll.analyzer.data.NBFCData;
+import com.skroll.analyzer.data.DocData;
+import com.skroll.analyzer.data.NBMNData;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
-import com.skroll.analyzer.model.bn.config.NBFCConfig;
+import com.skroll.analyzer.model.bn.SimpleDataTuple;
+import com.skroll.analyzer.model.bn.config.NBMNConfig;
+import com.skroll.analyzer.model.bn.config.NBMNConfig;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
@@ -20,7 +23,7 @@ public class DocProcessor {
 
     //ToDO: commented out the cache
     // static Map<Document, List<CoreMap>> processedParasMap = new HashMap<>();
-    static Map<String, NBFCData> processedDataMap = new HashMap<>();
+    static Map<String, NBMNData> processedDataMap = new HashMap<>();
 
     static List<CoreMap> processParas(Document doc, int numWordsToUse) {
 
@@ -100,7 +103,7 @@ public class DocProcessor {
 //     * @param config
 //     * @return
 //     */
-//    static DocData getDataFromDoc(List<CoreMap> originalParas, List<CoreMap> processedParas, NBFCConfig config) {
+//    static DocData getDataFromDoc(List<CoreMap> originalParas, List<CoreMap> processedParas, NBMNConfig config) {
 ////        DocData data = new DocData(doc, config);
 //        DocData data = new DocData();
 //        List<RandomVariable> features = config.getAllParagraphFeatures();
@@ -134,9 +137,9 @@ public class DocProcessor {
 //        return data;
 //    }
 //
-    static NBFCData getParaDataFromDoc(Document doc, List<CoreMap> processedParas, NBFCConfig config) {
+    static NBMNData getParaDataFromDoc(Document doc, List<CoreMap> processedParas, NBMNConfig config) {
         String key = doc.getId() + config.getAllParagraphFeatures();
-        NBFCData data = processedDataMap.get(key);
+        NBMNData data = processedDataMap.get(key);
         if (data != null) return data;
 
         List<CoreMap> originalParas = doc.getParagraphs();
@@ -147,8 +150,8 @@ public class DocProcessor {
     }
 
 
-    private static NBFCData getParaDataFromDoc(List<CoreMap> originalParas, List<CoreMap> processedParas, NBFCConfig config) {
-        NBFCData data = new NBFCData();
+    private static NBMNData getParaDataFromDoc(List<CoreMap> originalParas, List<CoreMap> processedParas, NBMNConfig config) {
+        NBMNData data = new NBMNData();
         data.setParaFeatures(getFeaturesVals(config.getFeatureVarList(), originalParas, processedParas));
         data.setParaDocFeatures(getFeaturesVals(config.getFeatureExistsAtDocLevelVarList(), originalParas, processedParas));
         data.setWordsLists(getWordsLists(config.getWordVarList(), processedParas));
@@ -161,25 +164,31 @@ public class DocProcessor {
     // this method is assuming all the doc features are binary
     // also assumes that originalParas contains index annotation,
     // since observed paragraphs to be processed may not be all the paragraphs in the document.
-    public static int[] generateDocumentFeatures(List<CoreMap> observedParas, int[][] allParaDocFeatures,
-                                                 NBFCConfig nbfcConfig) {
+    public static int[][] generateDocumentFeatures(List<CoreMap> observedParas, int[][] allParaDocFeatures,
+                                                   NBMNConfig nbmnConfig) {
 
-        int[] docFeatureValues = new int[nbfcConfig.getDocumentFeatureVarList().size()];
+        RandomVariable categoryVar = nbmnConfig.getCategoryVar();
+        int numCategories = categoryVar.getFeatureSize();
+        int[][] docFeatureValues = new int[nbmnConfig.getDocumentFeatureVarList().size()][numCategories];
 
-        Arrays.fill(docFeatureValues, 1);
+        for (int[] vals : docFeatureValues)
+            Arrays.fill(vals, 1);
         for (int p = 0; p < observedParas.size(); p++) {
             CoreMap paragraph = observedParas.get(p);
+            int categoryValue = RVValues.getValue(categoryVar, observedParas.get(p));
             int paraIndex = paragraph.get(CoreAnnotations.IndexInteger.class);
             for (int f = 0; f < docFeatureValues.length; f++) {
-                if (RVValues.getValue(nbfcConfig.getCategoryVar(), observedParas.get(p)) == 1)
-                    docFeatureValues[f] &= allParaDocFeatures[paraIndex][f];
+                docFeatureValues[f][categoryValue] &= allParaDocFeatures[paraIndex][f];
+//                for (int c=0; c<numCategories; c++)
+//                    if (RVValues.getValue(categoryVar, observedParas.get(p)) == 1)
+//                        docFeatureValues[f][c] &= allParaDocFeatures[paraIndex][f];
             }
         }
         return docFeatureValues;
     }
 
 //    public static int[] generateDocumentFeatures(List<CoreMap> originalParas, List<CoreMap> processedParagraphs,
-//                                                 NBFCConfig nbfcConfig) {
+//                                                 NBMNConfig nbfcConfig) {
 //
 //        int[] docFeatureValues = new int[nbfcConfig.getDocumentFeatureVarList().size()];
 //

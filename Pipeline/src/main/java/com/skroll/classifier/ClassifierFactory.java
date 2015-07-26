@@ -8,6 +8,7 @@ import com.skroll.document.Document;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -17,32 +18,42 @@ import java.util.List;
 public class ClassifierFactory {
 
     private static HashMap<Integer, Classifier> classifiers = new HashMap();
-    private static HashMap<Integer, ModelRVSetting> modelRVSettings = new HashMap();
     @Inject
     private ModelFactory modelFactory;
 
-    static {
-        modelRVSettings.put(Category.DEFINITION, new DefModelRVSetting(Category.DEFINITION, Category.DEFINITION_NAME));
-        modelRVSettings.put(Category.TOC_1, new TOCModelRVSetting(Category.TOC_1, Category.TOC_1_NAME));
-        modelRVSettings.put(Category.TOC_2, new TOCModelRVSetting(Category.TOC_2, Category.TOC_2_NAME));
-        modelRVSettings.put(Category.TOC_3, new TOCModelRVSetting(Category.TOC_3, Category.TOC_3_NAME));
-        modelRVSettings.put(Category.TOC_4, new TOCModelRVSetting(Category.TOC_4, Category.TOC_4_NAME));
-        modelRVSettings.put(Category.TOC_5, new TOCModelRVSetting(Category.TOC_5, Category.TOC_5_NAME));
-    }
+    //TOC Classifier
+    public static final int TOC_CLASSIFIER_ID = 1;
+    public static final String TOC_CLASSIFIER_NAME = "TOC_CLASSIFIER";
+    public static final List<Integer> TOC_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE,Category.TOC_1,Category.TOC_2));
+    public static final ClassifierProto tocClassifierProto = new ClassifierProto(TOC_CLASSIFIER_ID, TOC_CLASSIFIER_NAME,TOC_CATEGORY_IDS);
 
-    public Classifier getClassifier(int categoryId) throws Exception {
+    //Def Classifier
+    public static final int DEF_CLASSIFIER_ID = 2;
+    public static final String DEF_CLASSIFIER_NAME = "DEF_CLASSIFIER";
+    public static final List<Integer> DEF_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE,Category.DEFINITION));
+    public static final ClassifierProto defClassifierProto = new ClassifierProto(DEF_CLASSIFIER_ID, DEF_CLASSIFIER_NAME,DEF_CATEGORY_IDS);
+
+
+
+    public Classifier getClassifier(int classifierId) throws Exception {
         ModelRVSetting modelRVSetting = null;
-        if(modelRVSettings.containsKey(categoryId)){
+        /*
+        if(modelRVSettings.containsKey(categoryId
             modelRVSetting = modelRVSettings.get(categoryId);
         } else {
             throw new Exception("No category id found: "+ categoryId);
         }
+        */
         //TrainingDocumentAnnotatingModel trainingDocumentAnnotatingModel = modelFactory.getTrainingModel(modelRVSetting);
-        if (classifiers.containsKey(categoryId))
-            return classifiers.get(categoryId);
-        Classifier classifier =
-                new ClassifierImpl(modelFactory, modelRVSetting);
-        classifiers.put(categoryId, classifier);
+        Classifier classifier = null;
+        if ( classifierId == TOC_CLASSIFIER_ID) {
+             classifier = new ClassifierImpl(tocClassifierProto, modelFactory, new TOCModelRVSetting(TOC_CLASSIFIER_NAME,tocClassifierProto.getCategoryIds()));
+        } else if (classifierId == DEF_CLASSIFIER_ID){
+             classifier = new ClassifierImpl(defClassifierProto, modelFactory, new DefModelRVSetting(DEF_CLASSIFIER_NAME, defClassifierProto.getCategoryIds()));
+        } else {
+            throw new Exception ("Classifier Id: "+ classifierId + " is not supported");
+        }
+        classifiers.put(classifierId, classifier);
         return classifier;
     }
 
@@ -51,11 +62,10 @@ public class ClassifierFactory {
        return getClassifiers(null);
    }
 
-   public List<Classifier> getClassifiers(Document document) throws Exception {
+    public List<Classifier> getClassifiers(Document document) throws Exception {
        List<Classifier> classifierList = new ArrayList<>();
-       classifierList.add(getClassifier(Category.DEFINITION));
-       classifierList.add(getClassifier(Category.TOC_1));
-       classifierList.add(getClassifier(Category.TOC_2));
+       classifierList.add(getClassifier(TOC_CLASSIFIER_ID));
+       //classifierList.add(getClassifier(Category.TOC_2));
        //classifierList.add(getClassifier(Category.TOC_3));
        //classifierList.add(getClassifier(Category.TOC_4));
        //classifierList.add(getClassifier(Category.TOC_5));
@@ -64,11 +74,10 @@ public class ClassifierFactory {
 
     /**
      * Creates classifier for a given modelRVSetting
-     * @param modelRVSetting
+     *
      */
-    public void createClassifier(ModelRVSetting modelRVSetting) {
-        modelRVSettings.put(modelRVSetting.getCategoryId(), modelRVSetting);
+    public void createClassifier() throws Exception {
+        getClassifier(TOC_CLASSIFIER_ID);
+        //modelRVSettings.put(modelRVSetting.getId(), modelRVSetting);
     }
-
-
 }

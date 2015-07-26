@@ -2,6 +2,7 @@ package com.skroll.document.annotation;
 
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.classifier.Category;
+import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.CoreMap;
 
 import java.util.ArrayList;
@@ -69,13 +70,14 @@ public class TrainingWeightAnnotationHelper {
     }
     // method converts multi-class weight to binary class weight.
     // todo: this method is temporarily used to get the weights. Should probably be improved later to handle multi-class and others.
-    public static double[][] getParagraphWeight(CoreMap para, RandomVariable paraType, int categoryId) {
-        List<Float>  weightList = para.get(CoreAnnotations.TrainingWeightAnnotationFloat.class);
-        double[][] weights = new double[2][paraType.getFeatureSize()];
-        weights[0][0] = weightList.get(Category.NONE);
-        weights[1][0] = weightList.get(Category.NONE + LATEST_WEIGHT_INDEX);
-        weights[0][1] = weightList.get(categoryId);
-        weights[1][1] = weightList.get(categoryId + LATEST_WEIGHT_INDEX);
+    public static double[][] getParagraphWeight(CoreMap paragraph, RandomVariable paraType, List<Integer> categoryIds) {
+        List<Float>  weightList = paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class);
+        ClassifierFactory classifierFactory = new ClassifierFactory();
+        double[][] weights = new double[2][categoryIds.size()];
+        int ObservedCategory = CategoryAnnotationHelper.getObservedCategory(paragraph,categoryIds);
+        int ObservedClassIndex = CategoryAnnotationHelper.getObservedClassIndex(paragraph, categoryIds);
+        weights[0][ObservedClassIndex] = weightList.get(ObservedCategory);
+        weights[1][ObservedClassIndex] = weightList.get(ObservedCategory+ LATEST_WEIGHT_INDEX);
         return weights;
     }
 }

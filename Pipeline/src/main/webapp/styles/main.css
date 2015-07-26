@@ -166,3 +166,8 @@ md-toolbar md-autocomplete md-input-container.md-default-dark-theme .md-input {
   color: rgb(33, 33, 33);
 }
 
+.skHighlight {
+    font-weight: bold;
+    background: green;
+}
+

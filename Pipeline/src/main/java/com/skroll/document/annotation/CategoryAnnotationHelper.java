@@ -106,6 +106,17 @@ public class CategoryAnnotationHelper {
         return categoryAnnotation;
     }
 
+    /**
+     * Given a classifier Proto, classIndex, add given tokens for the category annotation in the given paragraph
+     * @param paragraph
+     * @param newTokens
+     * @param categoryIds
+     * @param classIndex
+     */
+    public static void addTokensForClassifier(CoreMap paragraph, List<Token> newTokens, List<Integer> categoryIds, int classIndex) {
+        addDefinedTokensInCategoryAnnotation(paragraph,newTokens, categoryIds.get(classIndex));
+
+    }
     public static void addDefinedTokensInCategoryAnnotation(CoreMap paragraph, List<Token> newTokens, int categoryId) {
         HashMap<Integer, CoreMap> categoryAnnotation = checkNull(paragraph, categoryId);
         CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
@@ -117,6 +128,18 @@ public class CategoryAnnotationHelper {
         definitionList.add(newTokens);
         paragraph.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
     }
+
+    /**
+     * Given a classifier id, classIndex, set given tokens for the category annotation in the given paragraph
+     * @param paragraph
+     * @param definitions
+     * @param categoryIds
+     * @param classIndex
+     */
+    public static void setTokensForClassifier(CoreMap paragraph, List<List<Token>> definitions, List<Integer> categoryIds, int classIndex) {
+        setDInCategoryAnnotation(paragraph,definitions, categoryIds.get(classIndex));
+    }
+
 
     public static void setDInCategoryAnnotation(CoreMap paragraph, List<List<Token>> definitions, int categoryId) {
         HashMap<Integer, CoreMap> categoryAnnotation = checkNull(paragraph, categoryId);
@@ -187,5 +210,26 @@ public class CategoryAnnotationHelper {
         addDefinedTokensInCategoryAnnotation(paragraph, returnList, categoryId);
         return true;
 
+    }
+
+    public static int getObservedClassIndex(CoreMap paragraph, List<Integer> categoryIds) {
+        HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
+        if (categoryAnnotation == null) return 0;
+        for (int index = 0; index < categoryIds.size(); index++) {
+            if (categoryAnnotation.containsKey(categoryIds.get(index))) {
+                return index;
+            }
+        }
+        return 0;
+    }
+    public static int getObservedCategory(CoreMap paragraph,  List<Integer> categoryIds) {
+        HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
+        if (categoryAnnotation == null) return 0;
+        for (int categoryId : categoryIds) {
+            if (categoryAnnotation.containsKey(categoryId)) {
+                return categoryId;
+            }
+        }
+        return 0;
     }
 }

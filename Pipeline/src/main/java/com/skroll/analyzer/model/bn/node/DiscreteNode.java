@@ -51,18 +51,6 @@ public class DiscreteNode{
         this.familyVariables = familyVariables;
     }
 
-
-
-
-    // calculation of the size up to (not include) the variable at the specified index.
-    @JsonIgnore
-    int sizeUpTo(int index){
-        int size=1;
-        for (int i=0; i<index; i++)
-            size *= familyVariables[i].getFeatureSize();
-        return size;
-    }
-
     @JsonIgnore
     public Integer getObservation() {
         return observedValue;

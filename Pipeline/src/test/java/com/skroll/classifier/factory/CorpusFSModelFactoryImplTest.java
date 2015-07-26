@@ -6,7 +6,6 @@ import com.google.inject.Injector;
 import com.skroll.analyzer.model.applicationModel.DefModelRVSetting;
 import com.skroll.analyzer.model.applicationModel.ProbabilityDocumentAnnotatingModel;
 import com.skroll.analyzer.model.applicationModel.TrainingDocumentAnnotatingModel;
-import com.skroll.classifier.Category;
 import com.skroll.document.Document;
 import com.skroll.parser.Parser;
 import com.skroll.pipeline.util.Constants;
@@ -43,14 +42,14 @@ public class CorpusFSModelFactoryImplTest {
     }
     @Test
     public void testGetTrainingModel() {
-        TrainingDocumentAnnotatingModel model = factory.getTrainingModel(new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME));
+        TrainingDocumentAnnotatingModel model = factory.getTrainingModel(new DefModelRVSetting());
         if(model==null){
             fail("failed to create training model");
         }
     }
     @Test
     public void testCreateModel() throws Exception {
-        TrainingDocumentAnnotatingModel model = factory.createModel(new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME));
+        TrainingDocumentAnnotatingModel model = factory.createModel(new DefModelRVSetting());
         if(model==null){
             fail("failed to create training model");
         }
@@ -59,7 +58,7 @@ public class CorpusFSModelFactoryImplTest {
     @Test
     public void testGetBNIModel() throws Exception {
         Document doc =  Parser.parseDocumentFromHtml(Files.toString(new File("src/test/resources/classifier/smaller-indenture.html"), Constants.DEFAULT_CHARSET));
-        ProbabilityDocumentAnnotatingModel model = factory.createBNIModel(new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME), doc);
+        ProbabilityDocumentAnnotatingModel model = factory.createBNIModel(new DefModelRVSetting(), doc);
         if(model==null){
             fail("failed to get BNI training model");
         }
@@ -68,7 +67,7 @@ public class CorpusFSModelFactoryImplTest {
     @Test
     public void testSaveTrainingModel() throws Exception {
         try {
-            factory.saveTrainingModel(new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME));
+            factory.saveTrainingModel(new DefModelRVSetting());
         } catch (Exception e) {
             e.printStackTrace();
             fail("failed to persist the model");

@@ -94,7 +94,7 @@ public class DocumentHelper {
     public static void clearObservedParagraphs(Document doc) {
         for (CoreMap paragraph : doc.getParagraphs()) {
             if (isObserved(paragraph)) {
-                paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class,false);
+                paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, false);
             }
         }
     }

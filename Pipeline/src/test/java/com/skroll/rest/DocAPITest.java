@@ -3,9 +3,6 @@ package com.skroll.rest;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -13,15 +10,11 @@ import com.skroll.document.DocumentHelper;
 import com.skroll.document.JsonDeserializer;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
-import com.skroll.document.factory.CorpusFSDocumentFactoryImpl;
-import com.skroll.document.factory.DocumentFactory;
 import com.skroll.pipeline.util.Constants;
-import com.skroll.util.Configuration;
 import com.skroll.util.ObjectPersistUtil;
-import com.skroll.util.TestConfiguration;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -58,14 +51,14 @@ public class DocAPITest extends APITest {
         String preEvaluatedFolder = configuration.get("preEvaluatedFolder","/tmp/");
         Document doc = JsonDeserializer.fromJson(Files.toString(new File(preEvaluatedFolder + documentId), Constants.DEFAULT_CHARSET));
         for(CoreMap coreMap: doc.getParagraphs()){
-            CategoryAnnotationHelper.setMatchedText(coreMap, DocumentHelper.createTokens(Lists.newArrayList("Capital", "Stock")), Category.TOC_4);
-            if(CategoryAnnotationHelper.isCategoryId(coreMap, Category.TOC_4)) {
-                System.out.println("TOC_4:" + CategoryAnnotationHelper.getDefinedTermLists(coreMap, Category.TOC_4));
+            CategoryAnnotationHelper.setMatchedText(coreMap, DocumentHelper.createTokens(Lists.newArrayList("Capital", "Stock")), Category.TOC_2);
+            if(CategoryAnnotationHelper.isCategoryId(coreMap, Category.TOC_2)) {
+                System.out.println("TOC_2:" + CategoryAnnotationHelper.getDefinedTermLists(coreMap, Category.TOC_2));
                 //assert(Joiner.on(" ").join(CategoryAnnotationHelper.getDefinedTermLists(coreMap, Category.TOC_4)).equals("CapitalStock"));
             }
         }
         //API.documentMap.put("smaller-indenture.html",doc);
-        logger.debug("TOC Paragraph before calling updateTerm: {}", CategoryAnnotationHelper.getParaWithCategoryAnnotation(doc, Category.TOC_4));
+        logger.debug("TOC Paragraph before calling updateTerm: {}", CategoryAnnotationHelper.getParaWithCategoryAnnotation(doc, Category.TOC_2));
 
         testUpdateTerms();
 
@@ -73,7 +66,7 @@ public class DocAPITest extends APITest {
 
         for (CoreMap paragraph : doc.getParagraphs()) {
                 List<List<String>> definitionList = CategoryAnnotationHelper.getDefinedTermLists(
-                        paragraph, Category.TOC_4);
+                        paragraph, Category.TOC_2);
                 logger.debug(paragraph.getId() + " " + Joiner.on(" ").join(definitionList));
 
             if(paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)) {
@@ -105,7 +98,7 @@ public class DocAPITest extends APITest {
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
 
-        String jsonString ="[{\"paragraphId\":\"p_1238\",\"term\":\"Cash Equivalents\", \"classificationId\":1}]";
+        String jsonString ="[{\"paragraphId\":\"p_1238\",\"term\":\"Cash Equivalents\", \"classificationId\":0}]";
         //String jsonString ="[{\"paragraphId\":\"p_1371\",\"term\":\"Disclosure Regarding Forward-Looking Statements\", \"classificationId\":2}]";
 
         Response response = webTarget.request(MediaType.TEXT_HTML).cookie(new  NewCookie("documentId", documentId))

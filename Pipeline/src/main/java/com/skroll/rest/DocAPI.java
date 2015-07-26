@@ -319,15 +319,15 @@ public class DocAPI {
         try {
             if (!parasForUpdateBNI.isEmpty()) {
                 for (Classifier classifier : request.getClassifiers()) {
-                    logger.debug("updateCategoryId: {}, classifier.getCategory().getId(): {}", updateCategoryId, classifier.getModelRVSetting().getCategoryId());
-                    if(classifier.getModelRVSetting().getCategoryId() == updateCategoryId) {
+                    logger.debug("updateCategoryId: {}", updateCategoryId);
+                    //if(classifier.getModelRVSetting().getCategoryId() == updateCategoryId) {
                         doc = (Document) classifier.updateBNI(documentId, doc, parasForUpdateBNI);
-                    }
+                    //}
                 }
                 request.getDocumentFactory().putDocument(doc);
             }
         } catch (Exception e) {
-            logger.error("Failed to update updateBNI, using existing document : {}", e);
+            logger.error("Failed to update updateBNI:", e);
         }
 
         //logger.debug("updated document is stored in {} {}", preEvaluatedFolder, documentId);

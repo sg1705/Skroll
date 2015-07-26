@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model.bn.node;
 
 import com.skroll.analyzer.model.RandomVariable;
+import com.skroll.analyzer.model.bn.inference.BNInference;
 
 import java.util.*;
 
@@ -26,7 +27,7 @@ public class NodeTrainingHelper {
         RandomVariable[] variables =
                 randomVariables.toArray(new RandomVariable[randomVariables.size()]);
         node.setFamilyVariables( variables);
-        int totalSize = node.sizeUpTo(randomVariables.size());
+        int totalSize = NodeHelper.sizeUpTo(node, randomVariables.size());
         double[] parameters = new double[totalSize];
         Arrays.fill(parameters, PRIOR_COUNT);
         node.setParameters(parameters);
@@ -81,6 +82,49 @@ public class NodeTrainingHelper {
     }
 
 
+    /**
+     * MutiplexNode should have at least 2 parents, so the randomVariables size should be at least 3,
+     * and parents size should be at least 2.
+     *
+     * @param randomVariables
+     * @param selectingNode
+     * @return
+     */
+    public static MultiplexNode createTrainingMultiplexNode(List<RandomVariable> randomVariables,
+                                                            DiscreteNode selectingNode,
+                                                            List<DiscreteNode> parents) {
+        MultiplexNode multiNode = new MultiplexNode(selectingNode);
+        DiscreteNode[] nodes = new DiscreteNode[selectingNode.numValues()];
+
+        // first node represent none. It has no parents.
+//        nodes[0] = createTrainingDiscreteNode(Arrays.asList(randomVariables.get(0)));
+        for (int n = 0; n < nodes.length; n++) {
+            nodes[n] = createTrainingDiscreteNode(
+                    // the second family variable starts at index 2 to skip the node var and the category var.
+                    Arrays.asList(randomVariables.get(0), randomVariables.get(n + 2)), Arrays.asList(parents.get(n)));
+        }
+        multiNode.setNodes(nodes);
+
+        return multiNode;
+
+    }
+
+    public static void updateCount(MultiplexNode multiNode) {
+        updateCount(multiNode.getActiveNode(), 1);
+    }
+
+    public static void updateCount(MultiplexNode multiNode, double weight) {
+        updateCount(multiNode.getActiveNode(), weight);
+    }
+//
+//    public static double[][] getLogProbabilities(MultiplexNode multiNode) {
+//        DiscreteNode[] nodes = multiNode.getNodes();
+//        double[][] probs = new double[nodes.length][];
+//        for (int n = 0; n < nodes.length; n++)
+//            probs[n] = getLogProbabilities(nodes[n]);
+//        return probs;
+//
+//    }
 
 
     public static WordNode createTrainingWordNode(DiscreteNode parent){
@@ -110,12 +154,12 @@ public class NodeTrainingHelper {
     }
 
     public static Map<String, double[]> getLogProbabilities(WordNode trainingNode){
-        //double [] priorCounts = ((TrainingDiscreteNode) parent).getPriorCount(PRIOR_COUNT);
         Map<String, double[]> probs = new HashMap<>();
         Map<String, double[]> counts = trainingNode.getParameters();
         DiscreteNode parent = trainingNode.getParent();
         int numValues = parent.getVariable().getFeatureSize();
-
+        //Experiment next line uncommented
+        double [] priorCounts = BNInference.normalize(parent.getParameters(), PRIOR_COUNT);
 
         for (String w: counts.keySet()){
             double[] p = new double[ parent.getVariable().getFeatureSize()  ];
@@ -124,12 +168,13 @@ public class NodeTrainingHelper {
 
 
             //hack for testing purpose
-            if (counts.get(w)[0]+ counts.get(w)[1] <1) continue;
-            for (int j=0; j<numValues; j++) p[j] = Math.log((0.01 +
+//            if (counts.get(w)[0]+ counts.get(w)[1] <1) continue;
+//          Next 2 lines commented for experiment
+//           for (int j=0; j<numValues; j++) p[j] = Math.log((0.01 +
+//                    counts.get(w)[j])/ parent.getParameter(j));
+//          Next 2 lines experiment code
+           for (int j=0; j<numValues; j++) p[j] = Math.log((priorCounts[j] +
                     counts.get(w)[j])/ parent.getParameter(j));
-
-//            for (int j=0; j<numValues; j++) p[j] = Math.log((priorCounts[j] +
-//                    parameters.get(w)[j])/ parent.getParameter(j));
             probs.put(w,p);
         }
         return probs;

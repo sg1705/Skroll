@@ -1,13 +1,36 @@
 package com.skroll.analyzer.model.bn;
 
+import com.skroll.analyzer.model.applicationModel.DefModelRVSetting;
+import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
+import com.skroll.analyzer.model.bn.config.NBMNConfig;
+import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by wei on 4/28/15.
  */
 public class NBTrainingHelperTest {
+    ModelRVSetting setting = new DefModelRVSetting();
+    NBMNConfig config = setting.getNbmnConfig();
+    NaiveBayesWithMultiNodes nbmn = NBTrainingHelper.createTrainingNBMN(config);
+    List<String[]> wordsList;
+    NBMNTuple tuple;
+
+    @Before
+    public void setup() {
+        List<String[]> wordsList = new ArrayList<>();
+        wordsList.add(new String[]{"test", "para"});
+        tuple = new NBMNTuple(wordsList,
+                1,
+                new int[]{1},
+                new int[]{1, 0, 0, 0, 0},
+                new int[][]{{0, 1}, {1, 1}, {1, 0}, {0, 0}, {0, 1}});
+
+    }
 
     @Test
     public void testCreateTrainingNB() throws Exception {
@@ -26,11 +49,37 @@ public class NBTrainingHelperTest {
 
     @Test
     public void testAddSample() throws Exception {
+        NBTrainingHelper.addSample(nbmn, tuple);
+        System.out.println(nbmn);
+        System.out.println(Arrays.toString(nbmn.documentFeatureNodes.get(2).get(1).getParameters()));
+        assert (Arrays.equals(nbmn.documentFeatureNodes.get(0).get(0).getParameters(), new double[]{0.1, 0.1}));
+        assert (Arrays.equals(nbmn.documentFeatureNodes.get(0).get(1).getParameters(), new double[]{0.1, 1.1}));
+        assert (Arrays.equals(nbmn.documentFeatureNodes.get(2).get(1).getParameters(), new double[]{1.1, 0.1}));
+        System.out.println(Arrays.toString(nbmn.getMultiNodes().get(0).getNodes()[1].getParameters()));
+        assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[1].getParameters(), new double[]{0.1, 0.1, 0.1, 1.1}));
+        assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[0].getParameters(), new double[]{0.1, 0.1, 0.1, 0.1}));
+
+        assert (Arrays.equals(nbmn.getFeatureNodes().get(0).getParameters(), new double[]{
+                0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 1.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1}));
+
 
     }
 
     @Test
-    public void testAddSample1() throws Exception {
+    public void testAddSampleWithWeight() throws Exception {
+        NBTrainingHelper.addSample(nbmn, tuple, 9);
+        System.out.println(nbmn);
+        System.out.println(Arrays.toString(nbmn.documentFeatureNodes.get(2).get(1).getParameters()));
+        assert (Arrays.equals(nbmn.documentFeatureNodes.get(0).get(0).getParameters(), new double[]{0.1, 0.1}));
+        assert (Arrays.equals(nbmn.documentFeatureNodes.get(0).get(1).getParameters(), new double[]{0.1, 9.1}));
+        assert (Arrays.equals(nbmn.documentFeatureNodes.get(2).get(1).getParameters(), new double[]{9.1, 0.1}));
+        System.out.println(Arrays.toString(nbmn.getMultiNodes().get(0).getNodes()[1].getParameters()));
+        assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[1].getParameters(), new double[]{0.1, 0.1, 0.1, 9.1}));
+        assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[0].getParameters(), new double[]{0.1, 0.1, 0.1, 0.1}));
+
+        assert (Arrays.equals(nbmn.getFeatureNodes().get(0).getParameters(), new double[]{
+                0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 9.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1}));
+
 
     }
 

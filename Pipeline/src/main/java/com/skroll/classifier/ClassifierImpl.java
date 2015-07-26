@@ -7,8 +7,6 @@ import com.skroll.document.Document;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
-import com.skroll.parser.Parser;
-import com.skroll.parser.extractor.ParserException;
 import com.skroll.parser.linker.DefinitionLinker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,17 +21,19 @@ public class ClassifierImpl implements Classifier {
 
     public static final Logger logger = LoggerFactory.getLogger(ClassifierImpl.class);
 
+    protected ClassifierProto classifierProto;
     protected ModelFactory modelFactory;
-    //protected TrainingDocumentAnnotatingModel trainingDocumentAnnotatingModel;
+    protected ModelRVSetting modelRVSetting;
+
     @Override
     public ModelRVSetting getModelRVSetting() {
         return modelRVSetting;
     }
 
-    protected ModelRVSetting modelRVSetting;
 
-    public ClassifierImpl(ModelFactory modelFactory,  ModelRVSetting modelRVSetting) {
+    public ClassifierImpl(ClassifierProto classifierProto, ModelFactory modelFactory, ModelRVSetting modelRVSetting) {
         this.modelFactory = modelFactory;
+        this.classifierProto = classifierProto;
         this.modelRVSetting = modelRVSetting;
     }
 
@@ -51,7 +51,7 @@ public class ClassifierImpl implements Classifier {
 
 
     @Override
-    public Object updateBNI(String documentId,Document document, List<CoreMap> observedParas) throws Exception {
+    public Object updateBNI(String documentId, Document document, List<CoreMap> observedParas) throws Exception {
         if (!observedParas.isEmpty())
             logger.debug("observedParas:" + "\t" + observedParas);
 
@@ -72,10 +72,10 @@ public class ClassifierImpl implements Classifier {
         modelFactory.getTrainingModel(modelRVSetting).updateWithDocument(doc);
 
     }
-    @Override
-    public void trainWithWeight( Document doc) {
-        modelFactory.getTrainingModel(modelRVSetting).updateWithDocumentAndWeight(doc);
 
+    @Override
+    public void trainWithWeight(Document doc) {
+        modelFactory.getTrainingModel(modelRVSetting).updateWithDocumentAndWeight(doc);
     }
 
 
@@ -85,30 +85,13 @@ public class ClassifierImpl implements Classifier {
             return updateBNI(documentId, document, new ArrayList<CoreMap>());
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error(String.format("Cannot classify documentId:%s for categoryId:%s",documentId, this.modelRVSetting.getCategoryId(), e));
+            logger.error(String.format("Cannot classify documentId:%s for categoryId:%s", documentId, this.classifierProto.getId(), e));
         }
         return document;
     }
 
     @Override
-    public Object classify(Document document, int numOfTokens) {
-        return classify("documentId", document);
-    }
-
-    @Override
-    public Object classify(String fileName, int numOfLines) {
-        Document document = null;
-        try {
-            document = Parser.parseDocumentFromHtmlFile(fileName);
-        } catch (ParserException e) {
-            logger.error(String.format("Cannot parse file:%s",fileName), e);
-        }
-        return classify("documentId", document);
-    }
-
-
-    @Override
-    public HashMap<String, HashMap<String, Double>> getBNIVisualMap( Document document, int paraIndex) {
+    public HashMap<String, HashMap<String, HashMap<String, Double>>> getBNIVisualMap(Document document, int paraIndex) {
         return modelFactory.getBNIModel(modelRVSetting).toVisualMap(paraIndex);
     }
 
@@ -127,4 +110,6 @@ public class ClassifierImpl implements Classifier {
     public void persistModel() throws Exception {
         modelFactory.saveTrainingModel(modelRVSetting);
     }
+
+
 }

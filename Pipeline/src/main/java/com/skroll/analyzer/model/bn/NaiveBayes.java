@@ -111,4 +111,26 @@ public class NaiveBayes {
         return categoryNode;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        NaiveBayes that = (NaiveBayes) o;
+
+        if (!getCategoryNode().equals(that.getCategoryNode())) return false;
+        //todo: word node is harder to test for equality because of the parameter map contains array as values
+        // should probably implement manual test.
+//        if (!getWordNodes().equals(that.getWordNodes())) return false;
+        return DiscreteNode.compareDNList(getFeatureNodes(), that.getFeatureNodes());
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getCategoryNode().hashCode();
+        result = 31 * result + getWordNodes().hashCode();
+        result = 31 * result + getFeatureNodes().hashCode();
+        return result;
+    }
 }

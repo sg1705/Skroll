@@ -17,26 +17,17 @@ public interface Classifier {
     // He just need what classifier class it need to talk to.
     // The classifier objects based on our different classification need ( such as definition, document classification etc)
     // will be created in the main instances of our production installation.
-
-
-    public void trainWithWeight(Document doc);
-
-    public void train(Document doc);
+    
 
     public Object classify(String documentId, Document doc);
-
-    public Object classify(Document doc, int numOfTokens);
-
-    public Object classify(String fileName, int numOfLines);
+    public void trainWithWeight(Document doc);
+    public void train(Document doc);
+    public Object updateBNI(String documentId, Document document, List<CoreMap> observedParas) throws Exception;
 
     public ModelRVSetting getModelRVSetting();
 
-    public Object updateBNI(String documentId, Document document, List<CoreMap> observedParas) throws Exception;
-
-    public HashMap<String, HashMap<String, Double>> getBNIVisualMap(Document doc, int paraIndex);
-
+    public HashMap<String, HashMap<String, HashMap<String, Double>>> getBNIVisualMap(Document doc, int paraIndex);
     public HashMap<String, HashMap<String, HashMap<String, Double>>> getModelVisualMap();
-
     public List<Double> getProbabilityDataForDoc(Document doc);
 
     public void persistModel() throws  Exception;
