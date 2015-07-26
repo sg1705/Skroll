@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class UniqueWordsComputerTest {
+public class LowerCaseWordsComputerTest {
 
     LowerCaseWordsComputer nTC;
     CoreMap m = new CoreMap();
@@ -34,7 +34,7 @@ public class UniqueWordsComputerTest {
     @Test
     public void testGetWords() throws Exception {
         String[] words = nTC.getWords(m);
-        assert (words.length == 3);
+        assert (words.length == 4); // getWords does not remove duplicate. It's done in ParaProcessor.
     }
 
     @Test

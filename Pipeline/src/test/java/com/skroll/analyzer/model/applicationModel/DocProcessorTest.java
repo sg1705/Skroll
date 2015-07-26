@@ -71,8 +71,8 @@ public class DocProcessorTest {
         System.out.print(data);
         assert (Arrays.deepToString(data.getParaFeatures()).equals("[[3], [3]]"));
         assert (Arrays.deepToString(data.getParaDocFeatures()).equals("[[1], [1]]"));
-        assert (Arrays.toString(data.getWordsLists()[0].get(0)).equals("[in, out]"));
-        assert (Arrays.toString(data.getWordsLists()[1].get(0)).equals("[in, out]"));
+        assert (Arrays.toString(data.getWordsLists()[0].get(0)).equals("[in, out, out]"));
+        assert (Arrays.toString(data.getWordsLists()[1].get(0)).equals("[in, out, out]"));
     }
 
     @Test
