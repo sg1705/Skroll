@@ -21,6 +21,7 @@ public class ClassifierFactory {
     @Inject
     private ModelFactory modelFactory;
 
+
     //TOC Classifier
     public static final int TOC_CLASSIFIER_ID = 1;
     public static final String TOC_CLASSIFIER_NAME = "TOC_CLASSIFIER";
@@ -45,6 +46,7 @@ public class ClassifierFactory {
         }
         */
         //TrainingDocumentAnnotatingModel trainingDocumentAnnotatingModel = modelFactory.getTrainingModel(modelRVSetting);
+
         Classifier classifier = null;
         if ( classifierId == TOC_CLASSIFIER_ID) {
              classifier = new ClassifierImpl(tocClassifierProto, modelFactory, new TOCModelRVSetting(TOC_CLASSIFIER_NAME,tocClassifierProto.getCategoryIds()));

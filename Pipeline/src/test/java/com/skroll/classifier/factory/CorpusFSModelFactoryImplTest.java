@@ -58,6 +58,7 @@ public class CorpusFSModelFactoryImplTest {
     @Test
     public void testGetBNIModel() throws Exception {
         Document doc =  Parser.parseDocumentFromHtml(Files.toString(new File("src/test/resources/classifier/smaller-indenture.html"), Constants.DEFAULT_CHARSET));
+
         ProbabilityDocumentAnnotatingModel model = factory.createBNIModel(new DefModelRVSetting(), doc);
         if(model==null){
             fail("failed to get BNI training model");
@@ -68,6 +69,7 @@ public class CorpusFSModelFactoryImplTest {
     public void testSaveTrainingModel() throws Exception {
         try {
             factory.saveTrainingModel(new DefModelRVSetting());
+
         } catch (Exception e) {
             e.printStackTrace();
             fail("failed to persist the model");

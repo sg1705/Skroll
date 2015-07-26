@@ -12,6 +12,7 @@ import com.skroll.classifier.ClassifierFactory;
 import com.skroll.util.Visualizer;
 
 import java.util.HashMap;
+
 import java.util.List;
 
 /**
@@ -29,7 +30,9 @@ public abstract class DocumentAnnotatingModel {
     NaiveBayesWithMultiNodes nbmnModel;
 
     @JsonProperty("modelRVSetting")
+
     ModelRVSetting modelRVSetting = new DefModelRVSetting(ClassifierFactory.DEF_CLASSIFIER_NAME,ClassifierFactory.defClassifierProto.getCategoryIds());
+
     @JsonProperty("wordFeatures")
     List<RandomVariable> wordFeatures = modelRVSetting.getWordFeatures();
 

@@ -1,6 +1,7 @@
 package com.skroll.classifier;
 
 import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
+import com.skroll.analyzer.model.applicationModel.TOCModelRVSetting;
 import com.skroll.classifier.factory.ModelFactory;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -29,6 +30,7 @@ public class ClassifierImpl implements Classifier {
     public ModelRVSetting getModelRVSetting() {
         return modelRVSetting;
     }
+
 
 
     public ClassifierImpl(ClassifierProto classifierProto, ModelFactory modelFactory, ModelRVSetting modelRVSetting) {
@@ -85,7 +87,9 @@ public class ClassifierImpl implements Classifier {
             return updateBNI(documentId, document, new ArrayList<CoreMap>());
         } catch (Exception e) {
             e.printStackTrace();
+
             logger.error(String.format("Cannot classify documentId:%s for categoryId:%s", documentId, this.classifierProto.getId(), e));
+
         }
         return document;
     }
@@ -110,6 +114,5 @@ public class ClassifierImpl implements Classifier {
     public void persistModel() throws Exception {
         modelFactory.saveTrainingModel(modelRVSetting);
     }
-
 
 }

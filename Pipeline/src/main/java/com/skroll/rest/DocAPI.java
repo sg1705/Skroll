@@ -34,6 +34,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Path("/doc")
 public class DocAPI {
@@ -403,5 +404,64 @@ public class DocAPI {
 //        Files.write(JsonDeserializer.getJson(doc), new File(preEvaluatedFolder + documentId), Charset.defaultCharset());
         return Response.ok().status(Response.Status.OK).entity("").build();
     }
+
+
+    @POST
+    @Path("/unObserve")
+    @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    @Produces(MediaType.TEXT_HTML)
+    public Response unObserve(String observationsJson, @Context HttpHeaders hh, @BeanParam RequestBean request) {
+
+        logger.debug("unObserve- DefinedTermParagraphList:{}", observationsJson);
+        if (observationsJson.isEmpty()) return logErrorResponse("NO input data in post request");
+        String documentId = request.getDocumentId();
+        Document doc = request.getDocument();
+        if (doc == null)
+            return logErrorResponse("document cannot be found for document id: " + documentId);
+
+        List<Paragraph> observations;
+        try {
+            observations = new GsonBuilder()
+                    .create()
+                    .fromJson(observationsJson, new TypeToken<List<Paragraph>>() {
+                    }.getType());
+            logger.info("updateTerms:{} for doc id: {}", observations, documentId);
+
+        } catch (Exception ex) {
+            return logErrorResponse("Failed to parse the json document: {}", ex);
+        }
+        long startTime = System.currentTimeMillis();
+        Map<Paragraph, List<String>> paraMap = Paragraph.combineTerms(observations);
+        List<CoreMap> parasForUpdateBNI = new ArrayList<>();
+
+        for (Paragraph observation : paraMap.keySet()) {
+            doc.getParagraphs()
+                    .stream()
+                    .filter( p -> p.getId().equals(observation.getParagraphId()))
+                    .forEach( p -> {
+                        logger.debug("Unobserved - {}", p.getId());
+                        //un observe this paragraph
+                        CategoryAnnotationHelper.clearAnnotations(p);
+                        // Add the userObserved paragraphs
+                        parasForUpdateBNI.add(p);
+                    });
+        }
+        logger.info("Total time taken to process the updateTerm without updateBNI: {} msec",
+                System.currentTimeMillis() - startTime);
+        try {
+            if (!parasForUpdateBNI.isEmpty()) {
+                for (Classifier classifier : request.getClassifiers()) {
+                    doc = (Document) classifier.updateBNI(documentId, doc, parasForUpdateBNI);
+                }
+                request.getDocumentFactory().putDocument(doc);
+            }
+        } catch (Exception e) {
+            logger.error("Failed to update updateBNI:", e);
+        }
+
+        return Response.status(Response.Status.OK).entity("").type(MediaType.TEXT_HTML).build();
+    }
+
+
 
 }

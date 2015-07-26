@@ -1,32 +1,41 @@
-'use strict';
+(function() {
 
-/**
- * @ngdoc service
- * @name myappApp.SearchService
- * @description
- * # searchService
- * Service in the SkrollApp.
- */
-angular.module('SkrollApp')
-  .service('searchService', SearchService);
+	'use strict';
 
-function SearchService($http, $q, $log, LHSModel) {
-
-	//-- private variables
-	var service = this;
-
-	//-- public variables
+	/**
+	 * @ngdoc service
+	 * @name myappApp.SearchService
+	 * @description
+	 * # searchService
+	 * Service in the SkrollApp.
+	 */
 
 
-	//-- public methods
-	service.focusOnSearchBox = focusOnSearchBox;
 
-	function focusOnSearchBox() {
-	  var inputElement = $("#searchBox").find("input");
-	  if (inputElement.length > 0) {
-	    $(inputElement[0]).focus();
-	    LHSModel.smodel.hover = true;
-	  }
+	angular.module('SkrollApp')
+		.service('searchService', SearchService);
+
+	function SearchService($http, $q, $log, LHSModel) {
+
+		//-- private variables
+		var service = this;
+
+		//-- public variables
+
+
+		//-- public methods
+		service.focusOnSearchBox = focusOnSearchBox;
+
+		////////////
+
+		function focusOnSearchBox() {
+			var inputElement = $("#searchBox").find("input");
+			if (inputElement.length > 0) {
+				$(inputElement[0]).focus();
+				LHSModel.smodel.hover = true;
+			}
+		}
+
 	}
 
-}
+})();

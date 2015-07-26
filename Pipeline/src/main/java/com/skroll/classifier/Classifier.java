@@ -17,7 +17,9 @@ public interface Classifier {
     // He just need what classifier class it need to talk to.
     // The classifier objects based on our different classification need ( such as definition, document classification etc)
     // will be created in the main instances of our production installation.
-    
+
+
+    public void persistModel() throws  Exception;
 
     public Object classify(String documentId, Document doc);
     public void trainWithWeight(Document doc);
@@ -30,6 +32,6 @@ public interface Classifier {
     public HashMap<String, HashMap<String, HashMap<String, Double>>> getModelVisualMap();
     public List<Double> getProbabilityDataForDoc(Document doc);
 
-    public void persistModel() throws  Exception;
+
 
 }

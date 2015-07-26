@@ -38,8 +38,8 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
 
         if (localTrainingModel == null) {
             try {
-
                     localTrainingModel = (TrainingDocumentAnnotatingModel) objectPersistUtil.readObject(null,modelRVSetting.getModelName());
+
             } catch (Throwable e) {
                 logger.warn("TrainingDocumentAnnotatingModel is not found. creating new one" );
                 localTrainingModel = null;
@@ -63,7 +63,9 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
                 tmpModel.getHmm(), document,modelRVSetting );
         bniModel.annotateDocument();
         //printBelieves(bniModel, document);
+
         bniModelMap.put(modelRVSetting.getModelName(),bniModel);
+
         return bniModel;
     }
 
@@ -76,6 +78,7 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
 
     public void saveTrainingModel(ModelRVSetting modelRVSetting) throws Exception {
         try {
+
             objectPersistUtil.persistObject(null, getTrainingModel(modelRVSetting), modelRVSetting.getModelName());
         } catch (ObjectPersistUtil.ObjectPersistException e) {
             logger.error("failed to persist the model", e);
@@ -83,4 +86,5 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
 
         }
     }
+
 }

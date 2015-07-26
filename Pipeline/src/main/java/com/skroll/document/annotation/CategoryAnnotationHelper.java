@@ -2,6 +2,7 @@ package com.skroll.document.annotation;
 
 import com.google.common.base.Joiner;
 import com.skroll.classifier.Category;
+import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -137,6 +138,7 @@ public class CategoryAnnotationHelper {
      * @param classIndex
      */
     public static void setTokensForClassifier(CoreMap paragraph, List<List<Token>> definitions, List<Integer> categoryIds, int classIndex) {
+
         setDInCategoryAnnotation(paragraph,definitions, categoryIds.get(classIndex));
     }
 
@@ -215,6 +217,7 @@ public class CategoryAnnotationHelper {
     public static int getObservedClassIndex(CoreMap paragraph, List<Integer> categoryIds) {
         HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
         if (categoryAnnotation == null) return 0;
+
         for (int index = 0; index < categoryIds.size(); index++) {
             if (categoryAnnotation.containsKey(categoryIds.get(index))) {
                 return index;
@@ -222,6 +225,7 @@ public class CategoryAnnotationHelper {
         }
         return 0;
     }
+
     public static int getObservedCategory(CoreMap paragraph,  List<Integer> categoryIds) {
         HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
         if (categoryAnnotation == null) return 0;

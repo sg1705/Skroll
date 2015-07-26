@@ -3,6 +3,7 @@ package com.skroll.analyzer.model.applicationModel;
 import com.skroll.analyzer.data.NBMNData;
 import com.skroll.analyzer.model.bn.node.MultiplexNode;
 import com.skroll.classifier.Category;
+import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;

@@ -43,6 +43,7 @@ public class DocProcessorTest {
             DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS, DEFAULT_WORD_VARS,
             ClassifierFactory.DEF_CLASSIFIER_NAME,ClassifierFactory.tocClassifierProto.getCategoryIds());
 
+
     static String trainingFileName = "src/test/resources/analyzer/definedTermExtractionTraining/AMC Networks CA.html";
 
     @Before

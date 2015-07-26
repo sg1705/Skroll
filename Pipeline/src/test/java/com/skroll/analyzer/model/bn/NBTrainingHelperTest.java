@@ -3,6 +3,7 @@ package com.skroll.analyzer.model.bn;
 import com.skroll.analyzer.model.applicationModel.DefModelRVSetting;
 import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
 import com.skroll.analyzer.model.bn.config.NBMNConfig;
+
 import org.junit.Before;
 import org.junit.Test;
 

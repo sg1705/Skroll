@@ -11,11 +11,13 @@ import java.util.List;
  */
 // may consider using interface if more types of needed
 public class RVValueSetter {
+
     protected List<Integer> categoryIds;
 
 
     public RVValueSetter(List<Integer> categoryIds, Class Annotation) {
         this.categoryIds = categoryIds;
+
     }
 
     // assuming value represent boolean. 0== false, 1 ==true
@@ -25,6 +27,7 @@ public class RVValueSetter {
 
     void addTerms(CoreMap m, List<Token> terms, int value) {
         CategoryAnnotationHelper.addTokensForClassifier(m, terms, categoryIds, value); //same here
+
     }
 
     void clearValue(CoreMap m) {

@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model.applicationModel;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skroll.analyzer.data.NBMNData;
 import com.skroll.analyzer.model.RandomVariable;
@@ -31,7 +32,9 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
 
     public TrainingDocumentAnnotatingModel() {
+
         this(new DefModelRVSetting(ClassifierFactory.DEF_CLASSIFIER_NAME,ClassifierFactory.defClassifierProto.getCategoryIds()));
+
 
     }
 
@@ -72,6 +75,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
     double[] getTrainingWeights(CoreMap para){
         double[][] weights = TrainingWeightAnnotationHelper.getParagraphWeight(para, nbmnConfig.getCategoryVar(), modelRVSetting.getCategoryIds());
+
         double[] oldWeights =weights[0];
         double[] newWeights = weights[1];
         double[] normalizedOldWeights = BNInference.normalize(oldWeights, 1);
