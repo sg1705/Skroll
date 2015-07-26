@@ -22,9 +22,9 @@ public class ClassifierFactory {
     public Classifier getClassifier(int classifierId) throws Exception {
         Classifier classifier = null;
         if ( classifierId == Classifiers.TOC_CLASSIFIER_ID) {
-             classifier = new ClassifierImpl(Classifiers.tocClassifierProto, modelFactory, new TOCModelRVSetting(Classifiers.DEF_CLASSIFIER_ID,Classifiers.tocClassifierProto.getCategoryIds()));
+             classifier = new ClassifierImpl(Classifiers.tocClassifierProto, modelFactory, new TOCModelRVSetting(Classifiers.TOC_CLASSIFIER_ID,Classifiers.tocClassifierProto.getCategoryIds()));
         } else if (classifierId == Classifiers.DEF_CLASSIFIER_ID){
-             classifier = new ClassifierImpl(Classifiers.defClassifierProto, modelFactory, new DefModelRVSetting(Classifiers.TOC_CLASSIFIER_ID, Classifiers.defClassifierProto.getCategoryIds()));
+             classifier = new ClassifierImpl(Classifiers.defClassifierProto, modelFactory, new DefModelRVSetting(Classifiers.DEF_CLASSIFIER_ID, Classifiers.defClassifierProto.getCategoryIds()));
         } else {
             throw new Exception ("Classifier Id: "+ classifierId + " is not supported");
         }
