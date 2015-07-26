@@ -16,7 +16,7 @@ import java.util.Set;
 public class RVCreater {
 
     public static final Logger logger = LoggerFactory.getLogger(RVCreater.class);
-    static final int DEFAULT_NUM_INT_VALS = 10;
+    static final int DEFAULT_NUM_INT_VALS = 25;
 
     public static RandomVariable createParagraphStartsWithRV(Class wordAnnotation) {
         ParaStartsWithFeatureComputer computer = new ParaStartsWithFeatureComputer(wordAnnotation);

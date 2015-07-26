@@ -8,8 +8,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
-
 public class FirstWordsComputerTest {
 
     public static final Logger logger = LoggerFactory.getLogger(FirstWordsComputerTest.class);
@@ -25,7 +23,7 @@ public class FirstWordsComputerTest {
         m.set(CoreAnnotations.TokenAnnotation.class, Lists.newArrayList(token1, token2, token3));
         String[] words = fWC.getWords(m);
         logger.info(words[0]);
-        assert (words[0].equals("First"));
+        assert (words[0].equals("First".toLowerCase()));
         assert (words.length == 1);
     }
 
@@ -34,7 +32,7 @@ public class FirstWordsComputerTest {
         FirstWordsComputer fWC = new FirstWordsComputer();
         m.set(CoreAnnotations.TokenAnnotation.class, Lists.newArrayList(token1, token2, token3));
         String[] words = fWC.getWords(m, 3);
-        assert (words[0].equals("First"));
+        assert (words[0].toLowerCase().equals("First".toLowerCase()));
         assert (words.length == 1);
 
     }

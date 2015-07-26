@@ -10,6 +10,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -18,6 +20,8 @@ import java.util.List;
 public class RVCreaterTest {
 
     public static final Logger logger = LoggerFactory.getLogger(RVCreaterTest.class);
+    static final List<Integer> TEST_DEF_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE, Category.DEFINITION));
+
 
     @Test
     public void testCreateParagraphStartsWithRV() throws Exception {
@@ -64,13 +68,13 @@ public class RVCreaterTest {
         logger.info("{}", rv);
         logger.info("{}", RVValues.getWords(rv, m));
         assert(rv.getName().equals("FirstWordsComputer"));
-        assert(RVValues.getWords(rv, m)[0].equals("First"));
+        assert(RVValues.getWords(rv, m)[0].equals("First".toLowerCase()));
     }
 
     @Test
     public void testCreateWordLevelRVWithComputer() throws Exception {
 
-        RandomVariable rv = RVCreater.createWordLevelRVWithComputer(new WordIsInCategoryComputer(Category.DEFINITION), "WordIsTOCComputer");
+        RandomVariable rv = RVCreater.createWordLevelRVWithComputer(new WordIsInCategoryComputer(TEST_DEF_CATEGORY_IDS), "WordIsTOCComputer");
         logger.info("{}", rv);
         assert(rv.getName().equals("WordIsTOCComputer"));
         assert(rv.getFeatureSize()==2);
@@ -118,7 +122,7 @@ public class RVCreaterTest {
 
         Class ac = CoreAnnotations.IndexInteger.class;
         RandomVariable rv = RVCreater.createRVFromAnnotation(ac);
-        assert (rv.getFeatureSize() == RVValues.DEFAULT_NUM_INT_VALS);
+        assert (rv.getFeatureSize() == RVCreater.DEFAULT_NUM_INT_VALS);
         System.out.println(rv.getName());
         System.out.println(rv.getFeatureSize());
 
