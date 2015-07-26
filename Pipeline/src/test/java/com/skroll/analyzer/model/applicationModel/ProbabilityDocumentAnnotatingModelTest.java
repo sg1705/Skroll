@@ -19,10 +19,11 @@ import java.util.List;
 
 //todo: prior count is not set properly, making the probability favoring positive class.
 public class ProbabilityDocumentAnnotatingModelTest {
+    private static final List<Integer> TEST_DEF_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE,Category.DEFINITION));
+    private static final int TEST_DEF_CLASSIFIER_ID = 2;
+    ModelRVSetting setting = new DefModelRVSetting(TEST_DEF_CATEGORY_IDS);
 
-
-    ModelRVSetting setting = new DefModelRVSetting(Category.DEFINITION, Category.DEFINITION_NAME,2);
-    TrainingDocumentAnnotatingModel tModel = new TrainingDocumentAnnotatingModel();
+    TrainingDocumentAnnotatingModel tModel = new TrainingDocumentAnnotatingModel(TEST_DEF_CLASSIFIER_ID,setting);
 
     //    String testingFileName = "src/test/resources/classifier/smaller-indenture.html";
 //    String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/mini-indenture.html";
@@ -45,8 +46,8 @@ public class ProbabilityDocumentAnnotatingModelTest {
         doneSetup = true;
 
         tModel.updateWithDocument(doc);
-        model = new ProbabilityDocumentAnnotatingModel(tModel.getNbmnModel(), tModel.getHmm(), doc,
-                new DefModelRVSetting(Category.DEFINITION, Category.DEFINITION_NAME,2)
+        model = new ProbabilityDocumentAnnotatingModel(TEST_DEF_CLASSIFIER_ID,tModel.getNbmnModel(), tModel.getHmm(), doc,
+                new DefModelRVSetting(TEST_DEF_CATEGORY_IDS)
                 );
         model.getHmm().updateProbabilities();
         System.out.println("HMM\n");

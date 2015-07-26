@@ -35,11 +35,10 @@ public class TOCModelRVSetting extends ModelRVSetting {
             RVCreater.createWordsRVWithComputer(new FirstWordsComputer(), "firstWord")
     );
 
-    public TOCModelRVSetting(int classifierId, String classifierName, int numOfCategory) {
+    public TOCModelRVSetting(List<Integer> categoryIds) {
         super(  DEFAULT_WORD_FEATURES,
                 DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS,
                 DEFAULT_WORD_VARS,
-                classifierId,
-                classifierName, numOfCategory);
+                categoryIds);
     }
 }

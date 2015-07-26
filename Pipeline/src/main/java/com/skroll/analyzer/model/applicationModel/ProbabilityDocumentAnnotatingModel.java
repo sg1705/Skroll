@@ -44,13 +44,13 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
     double[][][] documentFeatureBelief; // feature number, category number, false/true
 
 
-    public ProbabilityDocumentAnnotatingModel(NaiveBayesWithMultiNodes tnbm, HiddenMarkovModel hmm,
+    public ProbabilityDocumentAnnotatingModel(int id, NaiveBayesWithMultiNodes tnbm, HiddenMarkovModel hmm,
                                               Document doc, ModelRVSetting setting) {
-        this(tnbm, hmm, doc, setting.getWordType(), setting.getWordFeatures(), setting.getNbmnConfig());
+        this(id, tnbm, hmm, doc, setting.getWordType(), setting.getWordFeatures(), setting.getNbmnConfig());
         modelRVSetting=setting;
     }
 
-    public ProbabilityDocumentAnnotatingModel(NaiveBayesWithMultiNodes tnbm, HiddenMarkovModel hmm,
+    public ProbabilityDocumentAnnotatingModel(int id, NaiveBayesWithMultiNodes tnbm, HiddenMarkovModel hmm,
                                               Document doc,
                                               RandomVariable wordType,
                                               List<RandomVariable> wordFeatures,
@@ -59,7 +59,7 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
         super.nbmnConfig = nbmnConfig;
         super.wordType = wordType;
         super.wordFeatures = wordFeatures;
-
+        super.id = id;
         this.doc = doc;
         this.nbmnModel = NBInferenceHelper.createLogProbNBMN(tnbm);
         this.hmm = hmm;

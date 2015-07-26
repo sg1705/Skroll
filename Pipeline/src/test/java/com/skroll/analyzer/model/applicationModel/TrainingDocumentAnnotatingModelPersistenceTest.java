@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,6 +25,9 @@ import java.util.List;
 public class TrainingDocumentAnnotatingModelPersistenceTest {
 
     int maxNumWords = 20;
+    static final List<Integer> TEST_DEF_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE,Category.DEFINITION));
+    static final int TEST_DEF_CLASSIFIER_ID = 2;
+
     static final List<RandomVariable> DEFAULT_PARA_FEATURE_VARS = Arrays.asList(
             RVCreater.createDiscreteRVWithComputer(new NumberTokensComputer(), "numTokens")
     );
@@ -39,7 +43,7 @@ public class TrainingDocumentAnnotatingModelPersistenceTest {
     ModelRVSetting setting = new ModelRVSetting(
              DefModelRVSetting.DEFAULT_WORD_FEATURES,
             DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS, DEFAULT_WORD_VARS,
-            Category.DEFINITION, Category.DEFINITION_NAME,2);
+            TEST_DEF_CATEGORY_IDS);
 
     @Before
     public void setUp() throws Exception {
@@ -49,7 +53,8 @@ public class TrainingDocumentAnnotatingModelPersistenceTest {
     //TODO: need to rewrite this test case
     @Test
     public void testPersistModel() throws Exception {
-        TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel();
+        ModelRVSetting setting = new DefModelRVSetting(TEST_DEF_CATEGORY_IDS);
+        TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel(TEST_DEF_CLASSIFIER_ID,setting);
         doc = TestHelper.setUpTestDoc();
         //doc.getParagraphs().get(0).set(CoreAnnotations.IsTOCAnnotation.class, true);
         model.updateWithDocument(doc);

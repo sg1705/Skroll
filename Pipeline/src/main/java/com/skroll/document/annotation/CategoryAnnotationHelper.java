@@ -108,15 +108,13 @@ public class CategoryAnnotationHelper {
     }
 
     /**
-     * Given a classifier id, classIndex, add given tokens for the category annotation in the given paragraph
+     * Given a classifier Proto, classIndex, add given tokens for the category annotation in the given paragraph
      * @param paragraph
      * @param newTokens
-     * @param classifierId
+     * @param categoryIds
      * @param classIndex
      */
-    public static void addTokensForClassifier(CoreMap paragraph, List<Token> newTokens, int classifierId, int classIndex) {
-        ClassifierFactory classifierFactory = new ClassifierFactory();
-        List<Integer> categoryIds = classifierFactory.getClassifier(classifierId).getCategoryIds();
+    public static void addTokensForClassifier(CoreMap paragraph, List<Token> newTokens, List<Integer> categoryIds, int classIndex) {
         addDefinedTokensInCategoryAnnotation(paragraph,newTokens, categoryIds.get(classIndex));
 
     }
@@ -136,12 +134,11 @@ public class CategoryAnnotationHelper {
      * Given a classifier id, classIndex, set given tokens for the category annotation in the given paragraph
      * @param paragraph
      * @param definitions
-     * @param classifierId
+     * @param categoryIds
      * @param classIndex
      */
-    public static void setTokensForClassifier(CoreMap paragraph, List<List<Token>> definitions, int classifierId, int classIndex) {
-        ClassifierFactory classifierFactory = new ClassifierFactory();
-        List<Integer> categoryIds = classifierFactory.getClassifier(classifierId).getCategoryIds();
+    public static void setTokensForClassifier(CoreMap paragraph, List<List<Token>> definitions, List<Integer> categoryIds, int classIndex) {
+
         setDInCategoryAnnotation(paragraph,definitions, categoryIds.get(classIndex));
     }
 
@@ -217,11 +214,10 @@ public class CategoryAnnotationHelper {
 
     }
 
-    public static int getObservedClassIndex(CoreMap paragraph, int classifierId) {
+    public static int getObservedClassIndex(CoreMap paragraph, List<Integer> categoryIds) {
         HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
         if (categoryAnnotation == null) return 0;
-        ClassifierFactory classifierFactory = new ClassifierFactory();
-        List<Integer> categoryIds = classifierFactory.getClassifier(classifierId).getCategoryIds();
+
         for (int index = 0; index < categoryIds.size(); index++) {
             if (categoryAnnotation.containsKey(categoryIds.get(index))) {
                 return index;
@@ -229,11 +225,10 @@ public class CategoryAnnotationHelper {
         }
         return 0;
     }
-    public static int getObservedCategory(CoreMap paragraph, int classifierId) {
+
+    public static int getObservedCategory(CoreMap paragraph,  List<Integer> categoryIds) {
         HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
         if (categoryAnnotation == null) return 0;
-        ClassifierFactory classifierFactory = new ClassifierFactory();
-        List<Integer> categoryIds = classifierFactory.getClassifier(classifierId).getCategoryIds();
         for (int categoryId : categoryIds) {
             if (categoryAnnotation.containsKey(categoryId)) {
                 return categoryId;
