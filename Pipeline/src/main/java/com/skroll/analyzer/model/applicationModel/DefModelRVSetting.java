@@ -4,7 +4,7 @@ import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.NotInTableRVComputer;
 import com.skroll.analyzer.model.applicationModel.randomVariables.NumberTokensComputer;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVCreater;
-import com.skroll.analyzer.model.applicationModel.randomVariables.UniqueWordsComputer;
+import com.skroll.analyzer.model.applicationModel.randomVariables.LowerCaseWordsComputer;
 import com.skroll.document.annotation.CoreAnnotations;
 
 import java.util.Arrays;
