@@ -7,7 +7,6 @@ import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.LowerCaseWordsComputer;
 import com.skroll.analyzer.model.applicationModel.randomVariables.NumberTokensComputer;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVCreater;
-//import com.skroll.analyzer.model.applicationModel.randomVariables.UniqueWordsComputer;
 import com.skroll.classifier.Category;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
