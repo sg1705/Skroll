@@ -115,15 +115,7 @@ public class NodeTrainingHelper {
     public static void updateCount(MultiplexNode multiNode, double weight) {
         updateCount(multiNode.getActiveNode(), weight);
     }
-//
-//    public static double[][] getLogProbabilities(MultiplexNode multiNode) {
-//        DiscreteNode[] nodes = multiNode.getNodes();
-//        double[][] probs = new double[nodes.length][];
-//        for (int n = 0; n < nodes.length; n++)
-//            probs[n] = getLogProbabilities(nodes[n]);
-//        return probs;
-//
-//    }
+
 
 
     public static WordNode createTrainingWordNode(DiscreteNode parent){
