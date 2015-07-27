@@ -68,6 +68,9 @@ public class RVValues {
     static int getValueFromMap(RandomVariable rv, CoreMap m) {
         Class ann = rvaMap.get(rv);
         Object val = m.get(ann);
+
+        if (val == null) return 0; // todo: missing annotation is used as false. May not be the best thing to do.
+
 //        Class valType = val.getClass();
 //        if (valType == null) return 0; //todo: should we make null represent 0 or false? should we hanle this differently for different type of annotations?
 //        if (valType.equals(Boolean.class)) {
