@@ -1,27 +1,31 @@
 package com.skroll.analyzer.model.applicationModel.randomVariables;
 
-import com.skroll.classifier.ClassifierProto;
 import com.skroll.document.CoreMap;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
+
+
+import java.util.List;
 
 /**
  * Created by wei on 5/9/15.
  */
 public class ParaCategoryComputer implements RVValueComputer {
 
-    ClassifierProto classifierProto;
+    protected List<Integer> categoryIds;
 
-    public ParaCategoryComputer(ClassifierProto classifierProto) {
-        this.classifierProto = classifierProto;
+    public ParaCategoryComputer(List<Integer> categoryIds) {
+        this.categoryIds = categoryIds;
     }
 
     public int getValue(CoreMap m) {
-        return CategoryAnnotationHelper.getObservedClassIndex(m, classifierProto);
+        return CategoryAnnotationHelper.getObservedClassIndex(m, categoryIds);
+
 
     }
 
     @Override
     public int getNumVals() {
-        return classifierProto.getCategoryIds().size();
+
+        return categoryIds.size();
     }
 }

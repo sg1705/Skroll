@@ -230,7 +230,7 @@ ViewPortCtrl.prototype.updateDocument = function(contentHtml) {
 ViewPortCtrl.prototype.showYesNoAllDialog = function(prompt, matchedItem) {
   var className = LHSModel.getClassFromId(matchedItem.classificationId).name;
   //create a set of questions. In this case, yes or no
-  var items = ['Yes', 'No', 'Yes to all ' + className];
+  var items = ['Yes', 'No', 'Unobserve ' + className];
   this.showYesNoDialog(prompt, items).then(angular.bind(this, function(clicked) {
     documentModel.isProcessing = true;
     if (clicked == 1) {
@@ -246,6 +246,14 @@ ViewPortCtrl.prototype.showYesNoAllDialog = function(prompt, matchedItem) {
         this.updateDocument(contentHtml);  
       }));
     }
+    //if answer is unobserve
+    if (clicked == 2) {
+      this.documentService.unObservePara(matchedItem.classificationId, matchedItem.paragraphId).
+      then(angular.bind(this, function(contentHtml){
+        this.updateDocument(contentHtml);  
+      }));
+    }
+
   }));
 }
 

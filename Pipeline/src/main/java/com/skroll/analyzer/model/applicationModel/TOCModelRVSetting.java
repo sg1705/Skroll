@@ -2,7 +2,6 @@ package com.skroll.analyzer.model.applicationModel;
 
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.*;
-import com.skroll.classifier.ClassifierProto;
 import com.skroll.document.annotation.CoreAnnotations;
 
 import java.util.Arrays;
@@ -36,10 +35,10 @@ public class TOCModelRVSetting extends ModelRVSetting {
             RVCreater.createWordsRVWithComputer(new FirstWordsComputer(), "firstWord")
     );
 
-    public TOCModelRVSetting(ClassifierProto classifierProto) {
+    public TOCModelRVSetting(List<Integer> categoryIds) {
         super(  DEFAULT_WORD_FEATURES,
                 DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS,
                 DEFAULT_WORD_VARS,
-                classifierProto);
+                categoryIds);
     }
 }
