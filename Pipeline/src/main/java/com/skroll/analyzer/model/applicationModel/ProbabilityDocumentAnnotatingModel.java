@@ -143,6 +143,8 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 //            nbmnModel.setMultiNodesObservation(allParaDocFeatures[p]);
             paragraphCategoryBelief[p] = categoryNode.getParameters().clone();
             for (int i=0; i<fnl.size(); i++){
+                if (paraFeatures[i] == -1) continue;
+
                 double[] message = NodeInferenceHelper.sumOutOtherNodesWithObservation(fnl.get(i), categoryNode);
                 for (int j=0; j<message.length; j++)
                     paragraphCategoryBelief[p][j] += message[j];
@@ -171,29 +173,53 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
             nbmnModel.setMultiNodesObservation(paraFeatureValsExistAtDocLevel[p]);
 
             for (int f = 0; f < nbmnConfig.getFeatureExistsAtDocLevelVarList().size(); f++) {
+                if (paraFeatureValsExistAtDocLevel[p][f] == -1) continue;
 
                 double[][] messageFromDocFeature = new double[documentFeatureBelief[f].length][];
                 for (int i = 0; i < messageFromDocFeature.length; i++)
                     messageFromDocFeature[i] = documentFeatureBelief[f][i].clone();
 
+
 //                for (int i = 0; i < messageFromDocFeature.length; i++) {
                 for (int c = 0; c < getParaCategory().getFeatureSize(); c++) { //skip none at index 0
+
+                    // should normalize messageFromDocFeature here if we normalize documentFeatureBelief.
+//                    BNInference.normalizeLog(messagesToDocumentFeature[p][f][c]);
+
                     for (int b = 0; b <= 1; b++)
                         messageFromDocFeature[c][b] -= messagesToDocumentFeature[p][f][c][b];
 //                    }
                 }
 
+
+//                BNInference.normalizeLog(messageFromDocFeature); //normalize to prevent overflow
+//                // This normalization is independent of the normalization for other paras,
+//                // which should be fine as long as the message contributions are normalized fairly for the para.
+
+                for (double[] message : messageFromDocFeature) {
+                    BNInference.normalizeLogProb(message);
+                }
+
                 messagesToParagraphCategory[p][f] = NodeInferenceHelper.updateMessageToSelectingNode(
                         fedna.get(f), messageFromDocFeature);
+
+//                BNInference.normalizeLog(messagesToParagraphCategory[p][f]); //normalize to prevent overflow
+                // This normalization is independent of the normalization for other paras,
+                // which should be fine as long as the message contributions are normalized fairly for the para.
 
                 for (int i=0; i<paragraphCategoryBelief[p].length; i++){
                     paragraphCategoryBelief[p][i] += messagesToParagraphCategory[p][f][i];
                 }
+
+//                BNInference.normalizeLog(messagesToParagraphCategory[p][f]);
             }
         }
+
+//        BNInference.normalizeLog(paragraphCategoryBelief);
         for (double[] belief: paragraphCategoryBelief){
             BNInference.normalizeLog(belief);
         }
+
     }
 
     void passMessageToDocumentFeatures(){
@@ -203,16 +229,32 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 //        LogProbabilityDiscreteNode[] dfna = (LogProbabilityDiscreteNode[]) nbmnModel.getDocumentFeatureNodeArray();
 //        LogProbabilityDiscreteNode[] fedna = (LogProbabilityDiscreteNode[]) nbmnModel.getFeatureExistAtDocLevelArray();
 
+        // normalize to prevent overflow
+        // normalize here instead of at the end of the method, since messageToDocumentFeature is linked with documentFeatureBelief
+        //  and is used in the method passMessageToParagraphCategories next. If documentFeatureBelief is normalized
+        //  at the end of the method, the probabilities would become inconsistent and cause incorrect calculations.
+        for (double[][] beliefs : documentFeatureBelief) {
+            for (double[] belief : beliefs) {
+                BNInference.normalizeLog(belief);
+            }
+        }
+
+
         for (int p=0; p<paragraphCategoryBelief.length; p++){
 
             nbmnModel.setMultiNodesObservation(allParaDocFeatures[p]);
 
             for (int f = 0; f < nbmnConfig.getFeatureExistsAtDocLevelVarList().size(); f++) {
+                if (allParaDocFeatures[p][f] == -1) continue;
                 double[] messageFromParaCategory = paragraphCategoryBelief[p].clone();
                 for (int i = 0; i < messageFromParaCategory.length; i++)
                     messageFromParaCategory[i] -= messagesToParagraphCategory[p][f][i];
+
+//                BNInference.normalizeLog(messageFromParaCategory); //normalize to prevent overflow
                 messagesToDocumentFeature[p][f] = NodeInferenceHelper.updateMessagesFromSelectingNode(
                         multiplexNodes.get(f), messageFromParaCategory);
+//                BNInference.normalizeLog(messagesToDocumentFeature[p][f]); //normalize to prevent overflow
+
 //                messagesToDocumentFeature[p][f] =  NodeInferenceHelper.sumOutOtherNodesWithObservationAndMessage(
 //                        multiplexNodes.get(f), nbmnModel.getCategoryNode(), messageFromParaCategory, dfna.get(f));
 //                        fedna[f].sumOutOtherNodesWithObservationAndMessage(
@@ -226,11 +268,13 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
             }
         }
 
-        for (double[][] beliefs : documentFeatureBelief) {
-            for (double[] belief : beliefs) {
-                BNInference.normalizeLog(belief);
-            }
-        }
+//        BNInference.normalizeLog(documentFeatureBelief);
+
+//        for (double[][] beliefs : documentFeatureBelief) {
+//            for (double[] belief : beliefs) {
+//                BNInference.normalizeLog(belief);
+//            }
+//        }
     }
 
     public void updateBeliefs(){
