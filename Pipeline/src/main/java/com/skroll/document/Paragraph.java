@@ -10,6 +10,7 @@ public class Paragraph {
     private String paragraphId;
     private String term;
     private int classificationId;
+    private boolean isUserObserved;
 
     public static final Logger logger = LoggerFactory
             .getLogger(Paragraph.class);
@@ -22,10 +23,11 @@ public class Paragraph {
         return term;
     }
 
-    public Paragraph(String paragraphId, String term, int classificationId) {
+    public Paragraph(String paragraphId, String term, int classificationId, boolean isUserObserved) {
         this.paragraphId = paragraphId;
         this.term = term;
         this.classificationId = classificationId;
+        this.isUserObserved = isUserObserved;
     }
 
     @Override
