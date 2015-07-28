@@ -1,25 +1,22 @@
 package com.skroll.analyzer.model.applicationModel;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skroll.analyzer.data.NBMNData;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
-import com.skroll.analyzer.model.bn.*;
+import com.skroll.analyzer.model.bn.NBMNTuple;
+import com.skroll.analyzer.model.bn.NBTrainingHelper;
+import com.skroll.analyzer.model.bn.NaiveBayesWithMultiNodes;
 import com.skroll.analyzer.model.bn.config.NBMNConfig;
 import com.skroll.analyzer.model.bn.inference.BNInference;
-import com.skroll.analyzer.model.bn.node.DiscreteNode;
-import com.skroll.analyzer.model.bn.node.MultiplexNode;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
-import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
-import com.skroll.util.Visualizer;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,36 +27,32 @@ import java.util.List;
  * Created by wei2learn on 2/16/2015.
  */
 public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
-
-
-    public TrainingDocumentAnnotatingModel() {
-        this(new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME, 2));
-
-    }
-
-    public TrainingDocumentAnnotatingModel(ModelRVSetting setting) {
-        this(setting.getWordType(), setting.getWordFeatures(), setting.getNbmnConfig(), setting);
+    
+    public TrainingDocumentAnnotatingModel( int id, ModelRVSetting setting) {
+        this(id, setting.getWordType(), setting.getWordFeatures(), setting.getNbmnConfig(), setting);
+        this.id =id;
         modelRVSetting = setting;
     }
 
-    private TrainingDocumentAnnotatingModel(RandomVariable wordType,
+    private TrainingDocumentAnnotatingModel(int id, RandomVariable wordType,
                                            List<RandomVariable> wordFeatures,
                                             NBMNConfig nbmnConfig, ModelRVSetting modelRVSetting) {
 
-        this(NBTrainingHelper.createTrainingNBMN(nbmnConfig),
+        this(id, NBTrainingHelper.createTrainingNBMN(nbmnConfig),
                 wordType, wordFeatures, nbmnConfig, modelRVSetting);
 
     }
 
     @JsonCreator
     public TrainingDocumentAnnotatingModel(
+            @JsonProperty("id") int id,
             @JsonProperty("nbmnModel") NaiveBayesWithMultiNodes nbmnModel,
             @JsonProperty("wordType") RandomVariable wordType,
             @JsonProperty("wordFeatures") List<RandomVariable> wordFeatures,
             @JsonProperty("nbmnConfig") NBMNConfig nbmnConfig,
             @JsonProperty("ModelRVSetting")ModelRVSetting modelRVSetting){
+        this.id = id;
         this.nbmnConfig = nbmnConfig;
-
         this.nbmnModel = nbmnModel;
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;
@@ -73,7 +66,8 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
 
     double[] getTrainingWeights(CoreMap para){
-        double[][] weights = TrainingWeightAnnotationHelper.getParagraphWeight(para, nbmnConfig.getCategoryVar(), modelRVSetting.getClassifierId());
+        double[][] weights = TrainingWeightAnnotationHelper.getParagraphWeight(para, nbmnConfig.getCategoryVar(), modelRVSetting.getCategoryIds());
+
         double[] oldWeights =weights[0];
         double[] newWeights = weights[1];
         double[] normalizedOldWeights = BNInference.normalize(oldWeights, 1);

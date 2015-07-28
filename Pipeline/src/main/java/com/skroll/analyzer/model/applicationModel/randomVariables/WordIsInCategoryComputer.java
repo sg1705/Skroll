@@ -11,14 +11,15 @@ import java.util.List;
  */
 public class WordIsInCategoryComputer implements WRVValueComputer {
 
-    protected int classifierId;
+    protected List<Integer> categoryIds;
 
-    public WordIsInCategoryComputer(int classifierId){
-        this.classifierId=classifierId;
+    public WordIsInCategoryComputer(List<Integer> categoryIds){
+        this.categoryIds=categoryIds;
     }
     @Override
     public int getValue(Token word, CoreMap para) {
-        List<List<Token>> tokens = CategoryAnnotationHelper.getDefinedTermTokensInParagraph(para, classifierId); //need one more field
+        int observedCategory = CategoryAnnotationHelper.getObservedCategory( para, categoryIds);
+        List<List<Token>> tokens = CategoryAnnotationHelper.getDefinedTermTokensInParagraph(para, observedCategory); //need one more field
         if (tokens == null) return 0;
 
         for (List<Token> list : tokens)

@@ -42,6 +42,7 @@ public class BenchmarkAPITest extends APITest {
 
     @Test
     public void testGetBenchmarkScore() throws Exception {
+        testSaveBenchmarkFile();
         String TARGET_URL = "http://localhost:8888/restServices/doc/getBenchmarkScore";
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);

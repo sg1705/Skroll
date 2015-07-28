@@ -22,31 +22,12 @@ public class ModelRVSetting {
     RandomVariable wordType;
     @JsonProperty("wordFeatures")
     List<RandomVariable> wordFeatures;
+    @JsonProperty("categoryIds")
+    List<Integer> categoryIds=null;
 
-    public int getClassifierId() {
-        return classifierId;
+    public List<Integer> getCategoryIds() {
+        return categoryIds;
     }
-
-    public void setClassifierId(int classifierId) {
-        this.classifierId = classifierId;
-    }
-
-    @JsonProperty("classifierId")
-    int classifierId=0;
-
-    public String getClassifierName() {
-        return classifierName;
-    }
-
-    public void setClassifierName(String classifierName) {
-        this.classifierName = classifierName;
-    }
-
-    @JsonProperty("classifierName")
-    String classifierName="";
-
-    @JsonProperty("numOfCategory")
-    int numOfCategory =0;
 
     /**
      * Defines the model
@@ -54,7 +35,7 @@ public class ModelRVSetting {
      * @param paraFeatureVars features for the paragraph
      * @param paraDocFeatureVars paragraph that are considered at doc level
      * @param wordVars type of words. For example - first words, unique words etc.
-     * @param classifierId
+     * @param categoryIds
      */
 
     public ModelRVSetting(
@@ -62,19 +43,17 @@ public class ModelRVSetting {
                           List<RandomVariable> paraFeatureVars,
                           List<RandomVariable> paraDocFeatureVars,
                           List<RandomVariable> wordVars,
-                          int classifierId,
-                          String classifierName,
-                          int numOfCategory) {
-        RandomVariable wordType = RVCreater.createWordLevelRVWithComputer(new WordIsInCategoryComputer(classifierId), "wordIsInClassifier-" + classifierId);
-        RandomVariable paraType = RVCreater.createDiscreteRVWithComputer(new ParaCategoryComputer(classifierId,numOfCategory), "paraTypeIsClassifier-" + classifierId);
+                          List<Integer> categoryIds
+                          ) {
+        this.categoryIds=categoryIds;
+        RandomVariable wordType = RVCreater.createWordLevelRVWithComputer(new WordIsInCategoryComputer(categoryIds), "wordIsInModelID-" + categoryIds);
+        RandomVariable paraType = RVCreater.createDiscreteRVWithComputer(new ParaCategoryComputer(categoryIds), "paraTypeIsModelID-" + categoryIds);
         nbmnConfig = new NBMNConfig(paraType, paraFeatureVars, paraDocFeatureVars,
-                RVCreater.createNBMNDocFeatureRVs(paraDocFeatureVars, paraType, classifierName), wordVars);
-        RVValues.addValueSetter(paraType, new RVValueSetter(classifierId, CoreAnnotations.CategoryAnnotations.class));
+                RVCreater.createNBMNDocFeatureRVs(paraDocFeatureVars, paraType, String.valueOf(categoryIds.toString())), wordVars);
+        RVValues.addValueSetter(paraType, new RVValueSetter(categoryIds, CoreAnnotations.CategoryAnnotations.class));
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;
-        this.classifierId=classifierId;
-        this.classifierName=classifierName;
-        this.numOfCategory = numOfCategory;
+
     }
 
 
@@ -82,15 +61,11 @@ public class ModelRVSetting {
             @JsonProperty("nbmnConfig") NBMNConfig nbmnConfig,
             @JsonProperty("wordType") RandomVariable wordType,
             @JsonProperty("wordFeatures") List<RandomVariable> wordFeatures,
-            @JsonProperty("classifierId") int classifierId,
-            @JsonProperty("classifierName") String classifierName,
-            @JsonProperty("numOfCategory") int numOfCategory) {
+            @JsonProperty("categoryIds") List<Integer> categoryIds) {
         this.nbmnConfig = nbmnConfig;
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;
-        this.classifierId = classifierId;
-        this.classifierName=classifierName;
-        this.numOfCategory = numOfCategory;
+        this.categoryIds = categoryIds;
     }
 
     public NBMNConfig getNbmnConfig() {

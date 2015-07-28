@@ -21,10 +21,6 @@ public interface Classifier {
 
     public void persistModel() throws  Exception;
 
-    public int getClassifierId();
-    public List<Integer> getCategoryIds();
-
-
     public Object classify(String documentId, Document doc);
     public void trainWithWeight(Document doc);
     public void train(Document doc);
