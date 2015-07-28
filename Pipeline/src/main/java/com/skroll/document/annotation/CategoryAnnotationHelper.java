@@ -45,15 +45,16 @@ public class CategoryAnnotationHelper {
 
         for (CoreMap paragraph : document.getParagraphs()) {
             for (int categoryId : Category.getCategories()) {
-                        List<List<String>> definitionList = getDefinedTermLists(paragraph,categoryId );
-                        for (List<String> definition : definitionList) {
-                            if(logger.isTraceEnabled())
-                                logger.trace( "{} \t {} \t {}",paragraph.getId(),categoryId , definition);
-                            if (!definition.isEmpty()) {
-                                if (!(Joiner.on(" ").join(definition).equals(""))) {
-                                    termList.add(new Paragraph(paragraph.getId(), Joiner.on(" ").join(definition), categoryId));
-                                }
-                            }
+                List<List<String>> definitionList = getDefinedTermLists(paragraph,categoryId );
+                for (List<String> definition : definitionList) {
+                    if(logger.isTraceEnabled())
+                        logger.trace( "{} \t {} \t {}",paragraph.getId(),categoryId , definition);
+                    if (!definition.isEmpty()) {
+                        if (!(Joiner.on(" ").join(definition).equals(""))) {
+                            boolean isObserved = DocumentHelper.isObserved(paragraph);
+                            termList.add(new Paragraph(paragraph.getId(), Joiner.on(" ").join(definition), categoryId, isObserved));
+                        }
+                    }
 
                 }
             }

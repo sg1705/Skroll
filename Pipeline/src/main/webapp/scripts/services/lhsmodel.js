@@ -16,6 +16,12 @@ var LHSModel = {
     hover: false
 	},
 
+  /*
+    isSelected: Whether this is default selected or not
+    isVisible: Whether to show it in the viewer
+    isActive: 
+
+  */
 	classes: [{
 		id: 0,
 		name: 'None',
