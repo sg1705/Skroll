@@ -50,10 +50,12 @@ public class DocProcessor {
         //create tocTokens
         List<Token> tocTokens = new ArrayList<>();
         List<String> tocParaIds = new ArrayList<>();
+        boolean isUserTocPresent = false;
         for(CoreMap p : paragraphs) {
             //get category
             //if (p.containsKey(CoreAnnotations.IsUserDefinedTOCAnnotation.class)) {
             if (CategoryAnnotationHelper.isCategoryId(p, Category.USER_TOC)) {
+                isUserTocPresent = true;
                 tocParaIds.add(p.getId());
                 List<Token> tokens = p.getTokens().stream()
                         .filter(t -> !(t.getText().equals(".") || t.getText().matches("^[0-9]+$")))
@@ -62,6 +64,9 @@ public class DocProcessor {
             }
             //}
         }
+
+        if (!isUserTocPresent)
+            return;
 
         String tocTokensString = Joiner.on("").join(tocTokens).toLowerCase();
         logger.info("TOC Token Matching String {}", tocTokensString);
@@ -83,6 +88,8 @@ public class DocProcessor {
             if (tocTokensString.contains(paraTokenString)) {
                 processedP.set(CoreAnnotations.IsInUserDefinedTOCAnnotation.class, true);
                 logger.info("Match {}", paraTokenString);
+            } else {
+                processedP.set(CoreAnnotations.IsInUserDefinedTOCAnnotation.class, false);
             }
         }
     }
