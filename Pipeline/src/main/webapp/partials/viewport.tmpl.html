@@ -3,7 +3,45 @@
   <!-- more comment -->
   <!-- LHS -->
   <md-sidenav layout="column" class="md-sidenav-left"
-              md-component-id="left" md-is-locked-open="$media('gt-sm')" >
+              md-component-id="left" md-is-locked-open="false" >
+
+  </md-sidenav>
+  <!-- end sidebar -->
+
+  <!-- content -->
+  <div layout="column" flex >
+
+    <md-toolbar class="skroll-toolbar">
+      <sk-toolbar />
+    </md-toolbar>
+
+    <md-content md-scroll-y id="skrollport">
+      <div layout="row" flex>
+        <!-- hide RHS when small media -->
+        <div hide-sm hide-md flex="5">
+        </div>
+
+        <div ng-controller="ViewPortCtrl as ctrl" >
+            <md-whiteframe class="md-whiteframe-z3">
+              <md-content flex id="content" class="md-padding" ng-click="ctrl.paraClicked($event)" ng-mouseup="ctrl.mouseUp($event)" ng-mousedown="ctrl.mouseDown($event)" layout-padding style="padding-left:40px">
+                <sk-content/>
+              </md-content>
+            </md-whiteframe>  
+        </div>
+        <div hide-sm hide-md flex="5">
+        </div>
+
+      </div>
+    </md-content>
+
+  </div>
+  <!-- end content -->
+
+  <!-- right sidenav -->
+  <md-sidenav layout="column" class="md-sidenav-right "
+              md-component-id="right" md-is-locked-open="$media('gt-sm')" 
+              ng-swipe-left="toggleSidenav('left')">
+
 
     <div layout="column" flex>
       <md-toolbar class="skroll-toolbar">
@@ -43,51 +81,16 @@
     </div>
     </md-toolbar>
 
-    <md-content ng-class="{'sk-lhs-search-hover': smodel.hover, 'sk-lhs-hover': !smodel.hover}"   md-scroll-y flex class="md-padding" ng-controller="LHSLevelsCtrl as ctrl">
-      <sk-lhs />
+
+    <md-content md-scroll-y flex class="md-padding" ng-controller="LHSCtrl as ctrl">
+      <sk-lhs/>
     </md-content>
 
-<!--
-      <md-content md-scroll-y flex class="md-padding" ng-controller="LHSCtrl as ctrl">
-        <sk-lhs/>
-      </md-content>
-
-    -->
-    </div>
-  </md-sidenav>
-  <!-- end sidebar -->
-
-  <!-- content -->
-  <div layout="column" flex >
-
-    <md-toolbar class="skroll-toolbar">
-      <sk-toolbar />
-    </md-toolbar>
-
-    <md-content md-scroll-y id="skrollport">
-      <div layout="row" flex>
-        <div ng-controller="ViewPortCtrl as ctrl" >
-            <md-whiteframe class="md-whiteframe-z3">
-              <md-content flex id="content" class="md-padding" ng-click="ctrl.paraClicked($event)" ng-mouseup="ctrl.mouseUp($event)" ng-mousedown="ctrl.mouseDown($event)" layout-padding style="padding-left:40px">
-                <sk-content/>
-              </md-content>
-            </md-whiteframe>  
-        </div>
-        <!-- hide RHS when small media -->
-        <div hide-sm hide-md flex="25">
-        </div>
-      </div>
-    </md-content>
-
-  </div>
-  <!-- end content -->
-
-  <!-- right sidenav -->
-  <md-sidenav layout="column" class="md-sidenav-right "
-              md-component-id="right" md-is-locked-open="false" ng-swipe-left="toggleSidenav('left')">
+    <!--
     <md-content>
       <pre id="rightPane"></pre>
     </md-content>
+  -->
   </md-sidenav>
 </div>
 <!-- end layout -->
