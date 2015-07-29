@@ -9,10 +9,10 @@ public class FirstWordsComputer implements RVWordsComputer {
 
     public String[] getWords(CoreMap m) {
         if (m == null || m.getTokens().size() == 0) return new String[0];
-        return new String[]{m.getTokens().get(0).getText()};
+        return new String[]{m.getTokens().get(0).getText().toLowerCase()};
     }
 
     public String[] getWords(CoreMap m, int n) {
-        return new String[]{m.getTokens().get(0).getText()};
+        return new String[]{m.getTokens().get(0).getText().toLowerCase()};
     }
 }

@@ -15,7 +15,9 @@ import java.util.List;
  * Created by wei on 4/28/15.
  */
 public class NBTrainingHelperTest {
-    ModelRVSetting setting = new DefModelRVSetting(Category.DEFINITION, Category.DEFINITION_NAME,2);
+    static final List<Integer> TEST_DEF_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE, Category.DEFINITION));
+
+    ModelRVSetting setting = new DefModelRVSetting(TEST_DEF_CATEGORY_IDS);
     NBMNConfig config = setting.getNbmnConfig();
     NaiveBayesWithMultiNodes nbmn = NBTrainingHelper.createTrainingNBMN(config);
     List<String[]> wordsList;
@@ -60,9 +62,7 @@ public class NBTrainingHelperTest {
         assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[1].getParameters(), new double[]{0.1, 0.1, 0.1, 1.1}));
         assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[0].getParameters(), new double[]{0.1, 0.1, 0.1, 0.1}));
 
-        assert (Arrays.equals(nbmn.getFeatureNodes().get(0).getParameters(), new double[]{
-                0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 1.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1}));
-
+        assert (nbmn.getFeatureNodes().get(0).getParameters()[26] == 1.1);
 
     }
 
@@ -78,9 +78,7 @@ public class NBTrainingHelperTest {
         assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[1].getParameters(), new double[]{0.1, 0.1, 0.1, 9.1}));
         assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[0].getParameters(), new double[]{0.1, 0.1, 0.1, 0.1}));
 
-        assert (Arrays.equals(nbmn.getFeatureNodes().get(0).getParameters(), new double[]{
-                0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 9.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1}));
-
+        assert (nbmn.getFeatureNodes().get(0).getParameters()[26] == 9.1);
 
     }
 

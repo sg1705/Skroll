@@ -1,7 +1,10 @@
 package com.skroll.analyzer.model.applicationModel;
 
 import com.skroll.analyzer.model.RandomVariable;
-import com.skroll.analyzer.model.applicationModel.randomVariables.*;
+import com.skroll.analyzer.model.applicationModel.randomVariables.NotInTableRVComputer;
+import com.skroll.analyzer.model.applicationModel.randomVariables.NumberTokensComputer;
+import com.skroll.analyzer.model.applicationModel.randomVariables.RVCreater;
+import com.skroll.analyzer.model.applicationModel.randomVariables.LowerCaseWordsComputer;
 import com.skroll.document.annotation.CoreAnnotations;
 
 import java.util.Arrays;
@@ -31,16 +34,16 @@ public class DefModelRVSetting extends ModelRVSetting {
     );
 
     static final List<RandomVariable> DEFAULT_WORD_VARS = Arrays.asList(
-            RVCreater.createWordsRVWithComputer(new UniqueWordsComputer(), "uniqueWords")
+            RVCreater.createWordsRVWithComputer(new LowerCaseWordsComputer(), "lowerCaseWords")
+//            , RVCreater.createWordsRVWithComputer(new UniqueWordsComputer(), "uniqueWords")
     );
 
-    public DefModelRVSetting(int classifierId, String classifierName, int numOfCategory) {
+    public DefModelRVSetting(List<Integer> categoryIds) {
         super(
                 DEFAULT_WORD_FEATURES,
                 DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS,
-                DEFAULT_WORD_VARS, classifierId, classifierName, numOfCategory);
+                DEFAULT_WORD_VARS, categoryIds);
 
     }
-
 
 }

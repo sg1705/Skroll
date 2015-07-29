@@ -3,16 +3,12 @@ package com.skroll.classifier.factory;
 import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
 import com.skroll.analyzer.model.applicationModel.ProbabilityDocumentAnnotatingModel;
 import com.skroll.analyzer.model.applicationModel.TrainingDocumentAnnotatingModel;
-import com.skroll.analyzer.model.bn.inference.BNInference;
-import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.util.ObjectPersistUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,23 +23,23 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
     protected  static Map<Integer, ProbabilityDocumentAnnotatingModel> bniModelMap = new HashMap<>();
 
 
-    public TrainingDocumentAnnotatingModel getTrainingModel(ModelRVSetting modelRVSetting) {
-        if (TrainingModelMap.containsKey(modelRVSetting.getClassifierId())){
-            return TrainingModelMap.get(modelRVSetting.getClassifierId());
+    public TrainingDocumentAnnotatingModel getTrainingModel(int modelId, ModelRVSetting modelRVSetting) {
+        if (TrainingModelMap.containsKey(modelId)){
+            return TrainingModelMap.get(modelId);
         }
-        TrainingDocumentAnnotatingModel model = createModel(modelRVSetting);
+        TrainingDocumentAnnotatingModel model = createModel(modelId, modelRVSetting);
         logger.debug("training model Map Size:{}",TrainingModelMap.size());
         logger.debug("bni model Map Size:{}",bniModelMap.size());
         return model;
     }
 
-    public TrainingDocumentAnnotatingModel createModel(ModelRVSetting modelRVSetting) {
+    public TrainingDocumentAnnotatingModel createModel(int modelId, ModelRVSetting modelRVSetting) {
         TrainingDocumentAnnotatingModel localTrainingModel = null;
 
         if (localTrainingModel == null) {
             try {
+                    localTrainingModel = (TrainingDocumentAnnotatingModel) objectPersistUtil.readObject(null,String.valueOf(modelId));
 
-                    localTrainingModel = (TrainingDocumentAnnotatingModel) objectPersistUtil.readObject(null,modelRVSetting.getClassifierName());
             } catch (Throwable e) {
                 logger.warn("TrainingDocumentAnnotatingModel is not found. creating new one" );
                 localTrainingModel = null;
@@ -51,36 +47,39 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
         }
         if (localTrainingModel == null) {
 
-            localTrainingModel = new TrainingDocumentAnnotatingModel(modelRVSetting);
+            localTrainingModel = new TrainingDocumentAnnotatingModel(modelId, modelRVSetting);
         }
 
-        TrainingModelMap.put(modelRVSetting.getClassifierId(), localTrainingModel);
+        TrainingModelMap.put(modelId, localTrainingModel);
         return localTrainingModel;
     }
 
-    public ProbabilityDocumentAnnotatingModel createBNIModel(ModelRVSetting modelRVSetting, Document document) {
+    public ProbabilityDocumentAnnotatingModel createBNIModel(int modelId, ModelRVSetting modelRVSetting, Document document) {
 
-        TrainingDocumentAnnotatingModel tmpModel = createModel(modelRVSetting);
+        TrainingDocumentAnnotatingModel tmpModel = createModel(modelId, modelRVSetting);
         tmpModel.updateWithDocumentAndWeight(document);
 
-        ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(tmpModel.getNbmnModel(),
+        ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(modelId, tmpModel.getNbmnModel(),
                 tmpModel.getHmm(), document,modelRVSetting );
         bniModel.annotateDocument();
         //printBelieves(bniModel, document);
-        bniModelMap.put(modelRVSetting.getClassifierId(),bniModel);
+
+        bniModelMap.put(modelId,bniModel);
+
         return bniModel;
     }
 
-    public ProbabilityDocumentAnnotatingModel getBNIModel(ModelRVSetting modelRVSetting) {
-        if (bniModelMap.containsKey(modelRVSetting.getClassifierId())){
-            return bniModelMap.get(modelRVSetting.getClassifierId());
+    public ProbabilityDocumentAnnotatingModel getBNIModel(int modelId) {
+        if (bniModelMap.containsKey(modelId)){
+            return bniModelMap.get(modelId);
         }
         return null;
     }
 
-    public void saveTrainingModel(ModelRVSetting modelRVSetting) throws Exception {
+    public void saveTrainingModel(int modelId, ModelRVSetting modelRVSetting) throws Exception {
         try {
-            objectPersistUtil.persistObject(null, getTrainingModel(modelRVSetting), modelRVSetting.getClassifierName());
+
+            objectPersistUtil.persistObject(null, getTrainingModel(modelId, modelRVSetting), String.valueOf(modelId));
         } catch (ObjectPersistUtil.ObjectPersistException e) {
             logger.error("failed to persist the model", e);
             throw new Exception(e);
@@ -88,24 +87,4 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
         }
     }
 
-    void printBelieves(ProbabilityDocumentAnnotatingModel model, Document doc ){
-        logger.trace("document level feature believes\n");
-
-        double[][][] dBelieves = model.getDocumentFeatureBelief();
-        for (int i=0; i<dBelieves.length; i++){
-            logger.trace(Arrays.deepToString(dBelieves[i]));
-        }
-
-        List<CoreMap> paraList = doc.getParagraphs();
-
-        logger.trace("paragraph category believes\n");
-        double[][] pBelieves = model.getParagraphCategoryBelief();
-
-        for (int i=0; i<paraList.size(); i++){
-            BNInference.normalizeLog(pBelieves[i]);
-            logger.trace(paraList.get(i).getText());
-            logger.trace(String.format("%d [%.0f %.0f]", i, pBelieves[i][0], pBelieves[i][1]));
-
-        }
-    }
 }

@@ -71,7 +71,9 @@ public class ClassifierLogicTest {
         TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, this.categoryId, 1);
         CategoryAnnotationHelper.setMatchedText(paragraph, Lists.newArrayList(paragraph.getTokens().get(0)), this.categoryId);
         // classify
-        classifierFactory.getClassifier(this.categoryId).classify(doc.getId(), doc);
+        for (Classifier classifier : classifierFactory.getClassifiers()) {
+            classifier.classify(doc.getId(), doc);
+        }
         //test to see if all paragraphs were assigned categories
         assert (CategoryAnnotationHelper.isCategoryId(paragraph, this.categoryId));
         paragraph = doc.getParagraphs().get(1);

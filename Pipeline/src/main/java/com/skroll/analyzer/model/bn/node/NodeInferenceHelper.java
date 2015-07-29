@@ -134,6 +134,8 @@ public class NodeInferenceHelper {
         DiscreteNode[] nodes = multiNode.getNodes();
         int observedValue = multiNode.getObservation();
         double[] newMessage = new double[nodes.length];
+        if (observedValue == -1) return newMessage;
+
         // todo: for the none node in the multinode, should we pass message here for consistency, or just do it in the initial belief update?
         for (int n = 0; n < nodes.length; n++) {
             double[] parameters = nodes[n].getParameters();
@@ -173,6 +175,7 @@ public class NodeInferenceHelper {
         DiscreteNode[] nodes = multiNode.getNodes();
         double[][] newMessages = new double[nodes.length][2]; // the none node does not pass message
         int observedValue = multiNode.getObservation();
+        if (observedValue == -1) return newMessages;
 
         int featureSize = nodes[0].getVariable().getFeatureSize();
         double sum = 0; // the probability of the observed feature value. This involves summing the probabilities, so not in log space

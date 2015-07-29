@@ -11,10 +11,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class WordIsDefComputerTest {
     public static final Logger logger = LoggerFactory.getLogger(WordIsDefComputerTest.class);
+    static final List<Integer> TEST_DEF_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE, Category.DEFINITION));
 
     WordIsInCategoryComputer wordIsDefComputer;
     CoreMap m = null;
@@ -24,7 +26,7 @@ public class WordIsDefComputerTest {
 
     @Before
     public void setUp() throws Exception {
-        wordIsDefComputer = new WordIsInCategoryComputer(Category.DEFINITION);
+        wordIsDefComputer = new WordIsInCategoryComputer(TEST_DEF_CATEGORY_IDS);
         m = new CoreMap();
         token1 = new Token("First");
         token2 = new Token("token");
