@@ -2,7 +2,6 @@ package com.skroll.document.annotation;
 
 import com.google.common.base.Joiner;
 import com.skroll.classifier.Category;
-import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,13 +111,13 @@ public class CategoryAnnotationHelper {
      * @param paragraph
      * @param newTokens
      * @param categoryIds
-     * @param classIndex
      */
     public static void addTokensForClassifier(CoreMap paragraph, List<Token> newTokens, List<Integer> categoryIds, int classIndex) {
+        // No weight will be set as this function will be used to infer the categories
         addDefinedTokensInCategoryAnnotation(paragraph,newTokens, categoryIds.get(classIndex));
 
     }
-    public static void addDefinedTokensInCategoryAnnotation(CoreMap paragraph, List<Token> newTokens, int categoryId) {
+    public static void addDefinedTokensInCategoryAnnotation(CoreMap paragraph, List<Token> newTokens, int categoryId ) {
         HashMap<Integer, CoreMap> categoryAnnotation = checkNull(paragraph, categoryId);
         CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
         List<List<Token>>  definitionList = annotationCoreMap.get(CoreAnnotations.TermTokensAnnotation.class);
@@ -138,11 +137,17 @@ public class CategoryAnnotationHelper {
      * @param classIndex
      */
     public static void setTokensForClassifier(CoreMap paragraph, List<List<Token>> definitions, List<Integer> categoryIds, int classIndex) {
-
+        // No weight will be set as this function will be used to infer the categories
         setDInCategoryAnnotation(paragraph,definitions, categoryIds.get(classIndex));
     }
 
 
+    /**
+     * Set the category annotation to the paragraph.
+     * @param paragraph
+     * @param definitions
+     * @param categoryId
+     */
     public static void setDInCategoryAnnotation(CoreMap paragraph, List<List<Token>> definitions, int categoryId) {
         HashMap<Integer, CoreMap> categoryAnnotation = checkNull(paragraph, categoryId);
         CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
@@ -236,4 +241,81 @@ public class CategoryAnnotationHelper {
         }
         return 0;
     }
+
+    /**
+     * copy  the current training weight into the previous training weight
+     * @param paragraph
+     */
+    public static void updatePreviousTrainingWeight(CoreMap paragraph){
+        HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
+        if (categoryAnnotation==null) return;
+        for (int categoryId : Category.getCategories()) {
+            CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
+            if(annotationCoreMap!=null){
+                float currentWeight = annotationCoreMap.get(CoreAnnotations.CurrentTrainingWeightFloat.class);
+                annotationCoreMap.set(CoreAnnotations.PriorTrainingWeightFloat.class, currentWeight);
+                logger.debug("{} \t {} \t {}", paragraph.getId(), categoryId, currentWeight);
+            }
+        }
+    }
+
+    /**
+     * set TrainingWeight for a paragraph
+     * @param paragraph
+     * @param categoryId
+     * @param userWeight
+     */
+    public static void setTrainingWeight(CoreMap paragraph, int categoryId, float userWeight){
+        HashMap<Integer, CoreMap> categoryAnnotation = checkNull(paragraph, categoryId);
+        CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
+        annotationCoreMap.set(CoreAnnotations.CurrentTrainingWeightFloat.class, userWeight);
+        annotationCoreMap.set(CoreAnnotations.PriorTrainingWeightFloat.class, (float) 0);
+        paragraph.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
+    }
+
+    /**
+     * convert the training weights of categories of a paragraph into array of double that will feed to model.
+     * @param paragraph
+     * @param categoryIds
+     * @return
+     */
+    public static double[][] getParagraphWeight(CoreMap paragraph, List<Integer> categoryIds) {
+        HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
+        if (categoryAnnotation==null) return null;
+        int ObservedCategory = CategoryAnnotationHelper.getObservedCategory(paragraph, categoryIds);
+        int ObservedClassIndex = CategoryAnnotationHelper.getObservedClassIndex(paragraph, categoryIds);
+
+        CoreMap annotationCoreMap = categoryAnnotation.get(ObservedCategory);
+        if(annotationCoreMap==null) return null;
+
+        double[][] weights = new double[2][categoryIds.size()];
+
+        weights[0][ObservedClassIndex] = annotationCoreMap.get(CoreAnnotations.PriorTrainingWeightFloat.class);
+        weights[1][ObservedClassIndex] = annotationCoreMap.get(CoreAnnotations.CurrentTrainingWeightFloat.class);
+        if (logger.isWarnEnabled()) {
+            for (double[] w1 : weights) {
+                for (double w2 : w1)
+                    logger.trace("weights: {}", w2);
+            }
+        }
+        return weights;
+    }
+
+    /**
+     * clear old training weight of all categories for a paragraph
+     * @param paragraph
+     */
+    public static void clearOldTrainingWeight(CoreMap paragraph){
+        HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
+        if (categoryAnnotation==null) return;
+        for (int categoryId : Category.getCategories()) {
+            CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
+            if(annotationCoreMap!=null){
+                annotationCoreMap.set(CoreAnnotations.PriorTrainingWeightFloat.class, (float)0);
+                logger.debug("Cleared \t {} \t {}", paragraph.getId(), categoryId);
+            }
+        }
+
+    }
+
 }

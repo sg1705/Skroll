@@ -34,7 +34,7 @@ public class WordIsTOCComputerTest {
         List<Token> tokenList = Lists.newArrayList(token1, token2, token3);
         List<List<Token>> tokens = new ArrayList<>();
         tokens.add(tokenList);
-        CategoryAnnotationHelper.setDInCategoryAnnotation(m, tokens, Category.TOC_1);
+        CategoryAnnotationHelper.setDInCategoryAnnotation(m, tokens, Category.DEFINITION);
     }
     @Test
     public void testGetValue() throws Exception {

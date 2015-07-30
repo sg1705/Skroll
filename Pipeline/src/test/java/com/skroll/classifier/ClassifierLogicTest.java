@@ -8,7 +8,6 @@ import com.skroll.document.Document;
 import com.skroll.document.JsonDeserializer;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
-import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
 import com.skroll.parser.Parser;
 import com.skroll.util.Configuration;
 import com.skroll.util.SkrollTestGuiceModule;
@@ -68,7 +67,7 @@ public class ClassifierLogicTest {
         doc.setId("test");
         paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
         // set training weight on that paragrpah
-        TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, this.categoryId, 1);
+        CategoryAnnotationHelper.setTrainingWeight(paragraph, this.categoryId, 1);
         CategoryAnnotationHelper.setMatchedText(paragraph, Lists.newArrayList(paragraph.getTokens().get(0)), this.categoryId);
         // classify
         for (Classifier classifier : classifierFactory.getClassifiers()) {
@@ -108,17 +107,17 @@ public class ClassifierLogicTest {
         // one paragraphs are User train
         CoreMap paragraph = doc.getParagraphs().get(0);
         paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
-        TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.TOC_1, 1);
+        CategoryAnnotationHelper.setTrainingWeight(paragraph, Category.TOC_1, 1);
         CategoryAnnotationHelper.setMatchedText(paragraph, Lists.newArrayList(paragraph.getTokens().get(0)), Category.TOC_1);
 
         paragraph = doc.getParagraphs().get(1);
         paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
-        TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.TOC_1, 1);
+        CategoryAnnotationHelper.setTrainingWeight(paragraph, Category.TOC_1, 1);
         CategoryAnnotationHelper.setMatchedText(paragraph, Lists.newArrayList(paragraph.getTokens().get(0)), Category.TOC_1);
 
         paragraph = doc.getParagraphs().get(2);
         paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
-        TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.TOC_1, 1);
+        CategoryAnnotationHelper.setTrainingWeight(paragraph, Category.TOC_1, 1);
         CategoryAnnotationHelper.setMatchedText(paragraph, Lists.newArrayList(paragraph.getTokens().get(0)), Category.TOC_1);
 
 

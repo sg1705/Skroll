@@ -156,6 +156,18 @@ public class CoreAnnotations {
         }
     }
 
+    public static class CurrentTrainingWeightFloat implements CoreAnnotation<Float> {
+        public Class<Float> getType() {
+            return Float.class;
+        }
+    }
+
+    public static class PriorTrainingWeightFloat implements CoreAnnotation<Float> {
+        public Class<Float> getType() {
+            return Float.class;
+        }
+    }
+
     /**
      * CoreMap key identifying the definitions in paragraph. Each CoreMap in the list is
      * a definition. A definition can be accessed using TextAnnotation.

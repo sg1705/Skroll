@@ -15,8 +15,8 @@ import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
+import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
-import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -66,7 +66,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
 
     double[] getTrainingWeights(CoreMap para){
-        double[][] weights = TrainingWeightAnnotationHelper.getParagraphWeight(para, nbmnConfig.getCategoryVar(), modelRVSetting.getCategoryIds());
+        double[][] weights = CategoryAnnotationHelper.getParagraphWeight(para, modelRVSetting.getCategoryIds());
 
         double[] oldWeights =weights[0];
         double[] newWeights = weights[1];

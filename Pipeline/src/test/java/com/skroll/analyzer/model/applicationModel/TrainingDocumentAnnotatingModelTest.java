@@ -5,8 +5,8 @@ import com.skroll.analyzer.model.bn.node.MultiplexNode;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
+import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
-import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
 import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.PhantomJsExtractor;
 import com.skroll.pipeline.Pipeline;
@@ -39,7 +39,7 @@ public class TrainingDocumentAnnotatingModelTest{
     @Test
     public void testGetTrainingWeights() {
         for (CoreMap paragraph : document.getParagraphs()) {
-            TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.DEFINITION, (float) 1.0);
+            CategoryAnnotationHelper.setTrainingWeight(paragraph, Category.DEFINITION, (float) 1.0);
             double[] trainingWeights = model.getTrainingWeights(paragraph);
             for (int i=0; i<trainingWeights.length; i++)
                 System.out.println("paraId:" + paragraph.getId() + " TrainingWeight:" + trainingWeights[i]);
@@ -52,7 +52,7 @@ public class TrainingDocumentAnnotatingModelTest{
         for (CoreMap paragraph : document.getParagraphs()) {
             paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
             paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
-            TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.DEFINITION, (float) 1.0);
+            CategoryAnnotationHelper.setTrainingWeight(paragraph, Category.DEFINITION, (float) 1.0);
         }
         model.updateWithDocumentAndWeight(document);
 

@@ -12,7 +12,6 @@ import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.*;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
-import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
 import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.ParserException;
 import com.skroll.pipeline.util.Constants;
@@ -34,7 +33,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Path("/doc")
 public class DocAPI {
@@ -287,20 +285,20 @@ public class DocAPI {
                     CategoryAnnotationHelper.clearAnnotations(paragraph);
                     // add annotations that received from client - definedTermList
                     if (addedTerms.isEmpty()) {
-                        TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.NONE, userWeight);
+                        CategoryAnnotationHelper.setTrainingWeight(paragraph, Category.NONE, userWeight);
                     } else {
                         for (List<Token> addedTerm : addedTerms) {
                             if (addedTerm == null || addedTerm.isEmpty()) {
-                                TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.NONE, userWeight);
+                                CategoryAnnotationHelper.setTrainingWeight(paragraph, Category.NONE, userWeight);
                             } else {
                                 if (Joiner.on("").join(addedTerm).equals("")) {
-                                    TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.NONE, userWeight);
+                                    CategoryAnnotationHelper.setTrainingWeight(paragraph, Category.NONE, userWeight);
                                 } else {
                                     if (CategoryAnnotationHelper.setMatchedText(paragraph, addedTerm, modifiedParagraph.getClassificationId())) {
-                                        TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, modifiedParagraph.getClassificationId(), userWeight);
+                                        CategoryAnnotationHelper.setTrainingWeight(paragraph, modifiedParagraph.getClassificationId(), userWeight);
 
                                     } else {
-                                        TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.NONE, userWeight);
+                                        CategoryAnnotationHelper.setTrainingWeight(paragraph, Category.NONE, userWeight);
                                     }
                                 }
                             }
@@ -356,7 +354,7 @@ public class DocAPI {
         }
         for (CoreMap paragraph : doc.getParagraphs()) {
             if (paragraph.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)) {
-                TrainingWeightAnnotationHelper.updatePreviousTrainingWeight(paragraph);
+                CategoryAnnotationHelper.updatePreviousTrainingWeight(paragraph);
             }
         }
 
@@ -386,13 +384,13 @@ public class DocAPI {
             paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
             for (int categoryId : Category.getCategories()) {
                 if (CategoryAnnotationHelper.isCategoryId(paragraph,categoryId)) {
-                    TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, categoryId, userWeight);
+                    CategoryAnnotationHelper.setTrainingWeight(paragraph, categoryId, userWeight);
                     IsNoCategoryExist = false;
                 }
             }
             if (IsNoCategoryExist) {
                 CategoryAnnotationHelper.clearAnnotations(paragraph);
-                TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.NONE, userWeight);
+                CategoryAnnotationHelper.setTrainingWeight(paragraph, Category.NONE, userWeight);
             }
         }
         try {

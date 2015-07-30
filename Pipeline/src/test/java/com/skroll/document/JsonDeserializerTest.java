@@ -5,7 +5,6 @@ import com.google.common.collect.Lists;
 import com.skroll.classifier.Category;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
-import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -82,8 +81,8 @@ public class JsonDeserializerTest {
         paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
         paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
         CategoryAnnotationHelper.addDefinedTokensInCategoryAnnotation(paragraph, tokens, Category.TOC_1);
-        TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.DEFINITION, (float) 1.0);
-        TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.TOC_1, (float)0.5);
+        CategoryAnnotationHelper.setTrainingWeight(paragraph, Category.DEFINITION, (float) 1.0);
+        CategoryAnnotationHelper.setTrainingWeight(paragraph, Category.TOC_1, (float)0.5);
         paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
         paralist.add(paragraph);
 
