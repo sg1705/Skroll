@@ -428,10 +428,8 @@ public class DocAPI {
         } catch (Exception ex) {
             return logErrorResponse("Failed to parse the json document: {}", ex);
         }
-        long startTime = System.currentTimeMillis();
         Map<Paragraph, List<String>> paraMap = Paragraph.combineTerms(observations);
         List<CoreMap> parasForUpdateBNI = new ArrayList<>();
-
         for (Paragraph observation : paraMap.keySet()) {
             doc.getParagraphs()
                     .stream()
@@ -444,8 +442,6 @@ public class DocAPI {
                         parasForUpdateBNI.add(p);
                     });
         }
-        logger.info("Total time taken to process the updateTerm without updateBNI: {} msec",
-                System.currentTimeMillis() - startTime);
         try {
             if (!parasForUpdateBNI.isEmpty()) {
                 for (Classifier classifier : request.getClassifiers()) {

@@ -3,10 +3,11 @@ package com.skroll.analyzer.model.applicationModel;
 import com.google.common.collect.Lists;
 import com.skroll.analyzer.data.NBMNData;
 import com.skroll.analyzer.model.RandomVariable;
+import com.skroll.analyzer.model.applicationModel.randomVariables.LowerCaseWordsComputer;
 import com.skroll.analyzer.model.applicationModel.randomVariables.NumberTokensComputer;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVCreater;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
-import com.skroll.analyzer.model.applicationModel.randomVariables.UniqueWordsComputer;
+//import com.skroll.analyzer.model.applicationModel.randomVariables.UniqueWordsComputer;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -36,7 +37,7 @@ public class DocProcessorTest {
     );
 
     static final List<RandomVariable> DEFAULT_WORD_VARS = Arrays.asList(
-            RVCreater.createWordsRVWithComputer(new UniqueWordsComputer(), "uniqueWords")
+            RVCreater.createWordsRVWithComputer(new LowerCaseWordsComputer(), "lowerCaseWords")
     );
 
     Document doc = new Document();
@@ -73,8 +74,8 @@ public class DocProcessorTest {
         System.out.print(data);
         assert (Arrays.deepToString(data.getParaFeatures()).equals("[[3], [3]]"));
         assert (Arrays.deepToString(data.getParaDocFeatures()).equals("[[1], [1]]"));
-        assert (Arrays.toString(data.getWordsLists()[0].get(0)).equals("[in, out]"));
-        assert (Arrays.toString(data.getWordsLists()[1].get(0)).equals("[in, out]"));
+        assert (Arrays.toString(data.getWordsLists()[0].get(0)).equals("[in, out, out]"));
+        assert (Arrays.toString(data.getWordsLists()[1].get(0)).equals("[in, out, out]"));
     }
 
     @Test

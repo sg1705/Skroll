@@ -47,7 +47,7 @@ public class NumberTokensComputerTest {
         m = ParaProcessor.processParagraph(m);
         value = nTC.getValue(m);
         System.out.println(value);
-        assert(value == 9);
+        assert (value == 15);
     }
 
 }

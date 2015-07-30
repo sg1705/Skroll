@@ -1,6 +1,9 @@
 package com.skroll.analyzer.model.bn.inference;
 
 
+import java.util.Arrays;
+import java.util.stream.DoubleStream;
+
 /**
  * This is a very specialized belif propagation just for our network.
  * In our simple situation, can put each node in one cluster
@@ -60,13 +63,72 @@ public class BNInference {
     }
 
     /**
-     * make the maximum to be 0.
+     * normalize to make the probability sum up to one.
      * @param vals
      */
-    public static void normalizeLog(double[] vals){
-        double max=vals[0];
-        for (int i=1;i<vals.length;i++) if (vals[i]>max) max=vals[i];
-        for (int i=0;i<vals.length;i++) vals[i] = vals[i] - max;
+    public static void normalizeLogProb(double[] vals) {
+        double max = vals[0];
+//        for (int i=1;i<vals.length;i++) if (vals[i]>max) max=vals[i];
+//        for (int i=0;i<vals.length;i++) vals[i] = vals[i] - max;
+        normalizeLog(vals);
+        double logSum = Math.log(DoubleStream.of(vals).map((val) -> Math.exp(val)).sum());
+        for (int i = 0; i < vals.length; i++) {
+            vals[i] -= logSum;
+        }
+    }
+
+    /**
+     * make the maximum to be 0.
+     *
+     * @param vals
+     */
+    public static void normalizeLog(double[] vals) {
+        double max = vals[0];
+        for (int i = 1; i < vals.length; i++) if (vals[i] > max) max = vals[i];
+        for (int i = 0; i < vals.length; i++) vals[i] = vals[i] - max;
+//        double logSum = Math.log(DoubleStream.of(vals).map((val) -> Math.exp(val)).sum());
+//        for (int i=0; i<vals.length; i++){
+//            vals[i] -= logSum;
+//        }
+    }
+
+    /**
+     * Find the max from all entries and subtract
+     *
+     * @param vals
+     */
+    public static void normalizeLog(double[][] vals) {
+//        double max=Double.NEGATIVE_INFINITY;
+        DoubleStream stream = Arrays.stream(vals).flatMapToDouble(x -> Arrays.stream(x));
+        double max = stream.max().getAsDouble();
+        for (int i = 0; i < vals.length; i++) {
+            for (int j = 0; j < vals[0].length; j++) {
+                vals[i][j] -= max;
+            }
+        }
+    }
+
+    /**
+     * Find the max from all entries and subtract
+     *
+     * @param vals
+     */
+    public static void normalizeLog(double[][][] vals) {
+//        double max=Double.NEGATIVE_INFINITY;
+        DoubleStream stream = Arrays.stream(vals).flatMapToDouble(
+                x -> Arrays.stream(x).flatMapToDouble(
+                        y -> Arrays.stream(y)
+                )
+        );
+
+        double max = stream.max().getAsDouble();
+        for (int i = 0; i < vals.length; i++) {
+            for (int j = 0; j < vals[0].length; j++) {
+                for (int k = 0; k < vals[0][0].length; k++) {
+                    vals[i][j][k] -= max;
+                }
+            }
+        }
     }
 
 
