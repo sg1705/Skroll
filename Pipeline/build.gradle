@@ -87,6 +87,15 @@ task cleanModels(type: Delete) {
     delete "src/test/resources/analyzer/train/models"
 }
 
+task createTestDirectories {
+    File modelFolder = new File("Pipeline/build/resources/test/train/models/")
+    File preEvaluatedFolder = new File("Pipeline/build/resources/test/document/documentFactory/")
+    File benchmarkFolder = new File("Pipeline/build/resources/test/document/benchmark/")
+    modelFolder.mkdir()
+    preEvaluatedFolder.mkdir()
+    benchmarkFolder.mkdir()
+}
+
 task start(type: JavaExec) {
     File workingDir = new File('Pipeline/')
     main = 'com.skroll.rest.WebServer'
@@ -94,3 +103,4 @@ task start(type: JavaExec) {
 }
 
 trainWithWeight.dependsOn cleanModels
+test.dependsOn createTestDirectories
