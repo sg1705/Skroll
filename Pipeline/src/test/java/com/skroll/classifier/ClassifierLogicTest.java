@@ -122,8 +122,9 @@ public class ClassifierLogicTest {
 
 
         // classify
-        classifierFactory.getClassifier(Category.TOC_1).classify(doc.getId(),doc );
-
+        for (Classifier classifier :classifierFactory.getClassifiers() ){
+            classifier.classify(doc.getId(), doc);
+        }
         assert (CategoryAnnotationHelper.isCategoryId(paragraph, Category.TOC_1));
         assert (CategoryAnnotationHelper.isCategoryId(doc.getParagraphs().get(1), Category.TOC_1));
         assert (CategoryAnnotationHelper.isCategoryId(doc.getParagraphs().get(2), Category.TOC_1));
