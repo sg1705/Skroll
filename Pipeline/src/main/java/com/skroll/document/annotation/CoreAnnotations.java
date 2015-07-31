@@ -151,7 +151,7 @@ public class CoreAnnotations {
     /**
      * annotation to store the current training weight for a category
      */
-       public static class CategoryCurrentWeightFloat implements CoreAnnotation<Float> {
+       public static class CurrentCategoryWeightFloat implements CoreAnnotation<Float> {
         public Class<Float> getType() {
             return Float.class;
         }
@@ -160,7 +160,7 @@ public class CoreAnnotations {
     /**
      * annotation to store the prior training weight for a category
      */
-    public static class CategoryPriorWeightFloat implements CoreAnnotation<Float> {
+    public static class PriorCategoryWeightFloat implements CoreAnnotation<Float> {
         public Class<Float> getType() {
             return Float.class;
         }

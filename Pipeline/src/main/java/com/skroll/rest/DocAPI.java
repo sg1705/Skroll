@@ -353,7 +353,7 @@ public class DocAPI {
         }
         for (CoreMap paragraph : doc.getParagraphs()) {
             if (paragraph.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)) {
-                CategoryAnnotationHelper.copyCategoryCurrentWeightsToPreviousOnes(paragraph);
+                CategoryAnnotationHelper.copyCurrentCategoryWeightsToPrior(paragraph);
             }
         }
 

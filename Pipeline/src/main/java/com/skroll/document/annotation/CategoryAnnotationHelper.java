@@ -326,14 +326,14 @@ public class CategoryAnnotationHelper {
      * For a given paragraph, for each categories, copy the current category weight into the prior category weight.
      * @param paragraph
      */
-    public static void copyCategoryCurrentWeightsToPreviousOnes(CoreMap paragraph){
+    public static void copyCurrentCategoryWeightsToPrior(CoreMap paragraph){
         HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
         if (categoryAnnotation==null) return;
         for (int categoryId : Category.getCategories()) {
             CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
             if(annotationCoreMap!=null){
-                float currentWeight = annotationCoreMap.get(CoreAnnotations.CategoryCurrentWeightFloat.class);
-                annotationCoreMap.set(CoreAnnotations.CategoryPriorWeightFloat.class, currentWeight);
+                float currentWeight = annotationCoreMap.get(CoreAnnotations.CurrentCategoryWeightFloat.class);
+                annotationCoreMap.set(CoreAnnotations.PriorCategoryWeightFloat.class, currentWeight);
                 logger.debug("{} \t {} \t {}", paragraph.getId(), categoryId, currentWeight);
             }
         }
@@ -348,8 +348,8 @@ public class CategoryAnnotationHelper {
     public static void annotateCategoryWeight(CoreMap paragraph, int categoryId, float userWeight){
         HashMap<Integer, CoreMap> categoryAnnotation = createOrGetCategoryAnnotation(paragraph, categoryId);
         CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
-        annotationCoreMap.set(CoreAnnotations.CategoryCurrentWeightFloat.class, userWeight);
-        annotationCoreMap.set(CoreAnnotations.CategoryPriorWeightFloat.class, (float) 0);
+        annotationCoreMap.set(CoreAnnotations.CurrentCategoryWeightFloat.class, userWeight);
+        annotationCoreMap.set(CoreAnnotations.PriorCategoryWeightFloat.class, (float) 0);
         paragraph.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
     }
 
@@ -359,7 +359,7 @@ public class CategoryAnnotationHelper {
      * @param categoryIds
      * @return trainingWeights
      */
-    public static double[][] populateModelTrainingWeights(CoreMap paragraph, List<Integer> categoryIds) {
+    public static double[][] populateTrainingWeights(CoreMap paragraph, List<Integer> categoryIds) {
         HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
         if (categoryAnnotation==null) return null;
         int ObservedCategory = CategoryAnnotationHelper.getObservedCategoryId(paragraph, categoryIds);
@@ -370,8 +370,8 @@ public class CategoryAnnotationHelper {
 
         double[][] trainingWeights = new double[2][categoryIds.size()];
 
-        trainingWeights[0][ObservedClassIndex] = annotationCoreMap.get(CoreAnnotations.CategoryPriorWeightFloat.class);
-        trainingWeights[1][ObservedClassIndex] = annotationCoreMap.get(CoreAnnotations.CategoryCurrentWeightFloat.class);
+        trainingWeights[0][ObservedClassIndex] = annotationCoreMap.get(CoreAnnotations.PriorCategoryWeightFloat.class);
+        trainingWeights[1][ObservedClassIndex] = annotationCoreMap.get(CoreAnnotations.CurrentCategoryWeightFloat.class);
         if (logger.isWarnEnabled()) {
             for (double[] w1 : trainingWeights) {
                 for (double w2 : w1)
@@ -385,13 +385,13 @@ public class CategoryAnnotationHelper {
      * Clear Prior training weight of all categories for a paragraph
      * @param paragraph
      */
-    public static void clearCategoryPriorWeight(CoreMap paragraph){
+    public static void clearPriorCategoryWeight(CoreMap paragraph){
         HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
         if (categoryAnnotation==null) return;
         for (int categoryId : Category.getCategories()) {
             CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
             if(annotationCoreMap!=null){
-                annotationCoreMap.set(CoreAnnotations.CategoryPriorWeightFloat.class, (float)0);
+                annotationCoreMap.set(CoreAnnotations.PriorCategoryWeightFloat.class, (float)0);
                 logger.debug("Cleared \t {} \t {}", paragraph.getId(), categoryId);
             }
         }

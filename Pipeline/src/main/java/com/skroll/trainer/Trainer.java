@@ -90,7 +90,7 @@ public class Trainer {
         }
         for(CoreMap paragraph : doc.getParagraphs()) {
             if (paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)) {
-                CategoryAnnotationHelper.clearCategoryPriorWeight(paragraph);
+                CategoryAnnotationHelper.clearPriorCategoryWeight(paragraph);
             }
         }
         try {
