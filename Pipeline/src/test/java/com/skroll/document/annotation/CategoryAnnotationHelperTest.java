@@ -53,7 +53,7 @@ public class CategoryAnnotationHelperTest {
     public void testAddTokensListInCategoryAnnotation() throws Exception {
         for(CoreMap paragraph: document.getParagraphs()){
             int categoryId = Category.DEFINITION;
-            CategoryAnnotationHelper.annotatedParagraphsWithTokensAndCategory(paragraph, DocumentHelper.getTokens(Lists.newArrayList("becontinuing", ",")), Category.DEFINITION);
+            CategoryAnnotationHelper.annotateParagraphWithTokensAndCategory(paragraph, DocumentHelper.getTokens(Lists.newArrayList("becontinuing", ",")), Category.DEFINITION);
             if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph, categoryId)) {
                 List<List<String>> definitionList = CategoryAnnotationHelper.getTokenStringsForACategory(paragraph, categoryId);
                 logger.info(paragraph.getId() + "\t" + "existing definition:" + "\t" + Joiner.on(" , ").join(definitionList));

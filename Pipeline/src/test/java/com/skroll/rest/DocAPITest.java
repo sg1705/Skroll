@@ -9,7 +9,6 @@ import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.document.JsonDeserializer;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
-import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.util.Constants;
 import com.skroll.util.ObjectPersistUtil;
 import org.junit.After;
@@ -67,10 +66,6 @@ public class DocAPITest extends APITest {
                 List<List<String>> definitionList = CategoryAnnotationHelper.getTokenStringsForACategory(
                         paragraph, Category.TOC_2);
                 logger.debug(paragraph.getId() + " " + Joiner.on(" ").join(definitionList));
-
-            if(paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)) {
-                logger.debug("TrainingWeight:" +paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class));
-            }
         }
     }
 
@@ -84,10 +79,6 @@ public class DocAPITest extends APITest {
                 List<List<String>> definitionList = CategoryAnnotationHelper.getTokenStringsForACategory(
                         paragraph, Category.DEFINITION);
                 logger.debug(paragraph.getId() + " " + Joiner.on(" ").join(definitionList));
-
-            if(paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)) {
-                logger.debug("TrainingWeight:" +paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class));
-            }
         }
     }
 

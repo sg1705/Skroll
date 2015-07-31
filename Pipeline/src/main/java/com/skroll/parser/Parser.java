@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by saurabh on 12/28/14.
@@ -124,11 +123,6 @@ public class Parser {
             if (paragraph.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)) {
                 boolean userObservation = paragraph.get(CoreAnnotations.IsUserObservationAnnotation.class);
                 nPara.set(CoreAnnotations.IsUserObservationAnnotation.class, userObservation);
-            }
-
-            if (paragraph.containsKey(CoreAnnotations.TrainingWeightAnnotationFloat.class)) {
-                List<Float> trainingW = paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class);
-                nPara.set(CoreAnnotations.TrainingWeightAnnotationFloat.class, trainingW);
             }
         }
         if (!document.equals(newDoc)) {

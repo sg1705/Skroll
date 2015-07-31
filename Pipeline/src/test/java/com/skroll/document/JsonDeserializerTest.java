@@ -53,9 +53,6 @@ public class JsonDeserializerTest {
                 logger.debug("definitionList:" +Joiner.on(" ").join(definitionList));
                 assert ((Joiner.on(" ").join(definitionList).contains("susan")));
             }
-
-            List<Float> trainingWeight = paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class);
-            logger.debug("trainingWeight:" +trainingWeight);
            // assert((trainingWeight.get(0).floatValue()==1.0));
             logger.debug("JSON:" + JsonDeserializer.getJson(document));
         }
@@ -75,12 +72,12 @@ public class JsonDeserializerTest {
 
         List<String> addedDefinition = Lists.newArrayList("jack", "susan");
         List<Token> tokens = DocumentHelper.getTokens(addedDefinition);
-        CategoryAnnotationHelper.annotatedParagraphsWithTokensAndCategory(paragraph, tokens, Category.DEFINITION);
+        CategoryAnnotationHelper.annotateParagraphWithTokensAndCategory(paragraph, tokens, Category.DEFINITION);
         //paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
         paragraph.set(CoreAnnotations.ParagraphIdAnnotation.class, "1");
         paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
         paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
-        CategoryAnnotationHelper.annotatedParagraphsWithTokensAndCategory(paragraph, tokens, Category.TOC_1);
+        CategoryAnnotationHelper.annotateParagraphWithTokensAndCategory(paragraph, tokens, Category.TOC_1);
         CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.DEFINITION, (float) 1.0);
         CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.TOC_1, (float) 0.5);
         paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
