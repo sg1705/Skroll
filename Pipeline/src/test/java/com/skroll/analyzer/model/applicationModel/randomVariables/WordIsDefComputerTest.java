@@ -34,11 +34,11 @@ public class WordIsDefComputerTest {
         List<Token> tokenList = Lists.newArrayList(token1,token2,token3);
         List<List<Token>> tokens = new ArrayList<>();
         tokens.add(tokenList);
-        CategoryAnnotationHelper.setDInCategoryAnnotation(m, tokens, Category.DEFINITION);
+        CategoryAnnotationHelper.annotateParagraphWithTokensListAndCategory(m, tokens, Category.DEFINITION);
     }
     @Test
     public void testGetValue() throws Exception {
-        logger.info("{}",CategoryAnnotationHelper.getDefinedTermLists(m, Category.DEFINITION));;
+        logger.info("{}",CategoryAnnotationHelper.getTokenStringsForACategory(m, Category.DEFINITION));;
         wordIsDefComputer.getValue(token1,m);
         assert(wordIsDefComputer.getValue(token1,m)==1);
     }

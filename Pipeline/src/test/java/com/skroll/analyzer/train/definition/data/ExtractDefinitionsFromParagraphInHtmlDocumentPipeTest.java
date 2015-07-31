@@ -36,12 +36,10 @@ public class ExtractDefinitionsFromParagraphInHtmlDocumentPipeTest extends TestC
                 ;
 //                DocumentHelper.getTokenString(
 //                        paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class));
-                String words = Joiner.on(",").join(CategoryAnnotationHelper.getDefinedTermLists(paragraph, Category.DEFINITION));
+                String words = Joiner.on(",").join(CategoryAnnotationHelper.getTokenStringsForACategory(paragraph, Category.DEFINITION));
                 System.out.println(words);
         }
         System.out.println(count);
         assert (count == 307);
-       // assert (CategoryAnnotationHelper.getDefinedTermLists(htmlDoc.getParagraphs().get(306)).get(0).equals("property"));
-
     }
 }

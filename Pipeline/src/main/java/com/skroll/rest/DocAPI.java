@@ -218,7 +218,7 @@ public class DocAPI {
         Document doc = request.getDocument();
         if (doc == null) return logErrorResponse("Failed to find the document in Map");
 
-        List<Paragraph> termList = CategoryAnnotationHelper.getTerm(doc);
+        List<Paragraph> termList = CategoryAnnotationHelper.getParagraphsAnnotatedWithAnyCategory(doc);
 
         String definitionJson = new GsonBuilder().create().toJson(termList);
         if (logger.isTraceEnabled()) logger.trace("definitionJson" + "\t" + definitionJson);
@@ -263,7 +263,7 @@ public class DocAPI {
                     paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
                     // log the existing definitions
 
-                    CategoryAnnotationHelper.displayTerm(paragraph);
+                    CategoryAnnotationHelper.displayParagraphsAnnotatedWithAnyCategory(paragraph);
 
                     List<List<Token>> addedTerms = new ArrayList<>();
                     if (!(modifiedParagraph.getClassificationId() == Category.NONE)) {
@@ -282,23 +282,23 @@ public class DocAPI {
                     updateCategoryId = modifiedParagraph.getClassificationId();
                     // check whether the term is "" ro empty or not that received from client
                     //remove any existing annotations
-                    CategoryAnnotationHelper.clearAnnotations(paragraph);
+                    CategoryAnnotationHelper.clearCategoryAnnotations(paragraph);
                     // add annotations that received from client - definedTermList
                     if (addedTerms.isEmpty()) {
-                        CategoryAnnotationHelper.setTrainingWeight(paragraph, Category.NONE, userWeight);
+                        CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.NONE, userWeight);
                     } else {
                         for (List<Token> addedTerm : addedTerms) {
                             if (addedTerm == null || addedTerm.isEmpty()) {
-                                CategoryAnnotationHelper.setTrainingWeight(paragraph, Category.NONE, userWeight);
+                                CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.NONE, userWeight);
                             } else {
                                 if (Joiner.on("").join(addedTerm).equals("")) {
-                                    CategoryAnnotationHelper.setTrainingWeight(paragraph, Category.NONE, userWeight);
+                                    CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.NONE, userWeight);
                                 } else {
                                     if (CategoryAnnotationHelper.setMatchedText(paragraph, addedTerm, modifiedParagraph.getClassificationId())) {
-                                        CategoryAnnotationHelper.setTrainingWeight(paragraph, modifiedParagraph.getClassificationId(), userWeight);
+                                        CategoryAnnotationHelper.annotateCategoryWeight(paragraph, modifiedParagraph.getClassificationId(), userWeight);
 
                                     } else {
-                                        CategoryAnnotationHelper.setTrainingWeight(paragraph, Category.NONE, userWeight);
+                                        CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.NONE, userWeight);
                                     }
                                 }
                             }
@@ -307,7 +307,7 @@ public class DocAPI {
                     // Add the userObserved paragraphs
                     parasForUpdateBNI.add(paragraph);
                     logger.debug("userObserved paragraphs:\t {}", paragraph.getId());
-                    CategoryAnnotationHelper.displayTerm(paragraph);
+                    CategoryAnnotationHelper.displayParagraphsAnnotatedWithAnyCategory(paragraph);
                     logger.debug("TrainingWeightAnnotation: {}", paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class));
                     break;
                 }
@@ -354,7 +354,7 @@ public class DocAPI {
         }
         for (CoreMap paragraph : doc.getParagraphs()) {
             if (paragraph.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)) {
-                CategoryAnnotationHelper.updatePreviousTrainingWeight(paragraph);
+                CategoryAnnotationHelper.copyCategoryCurrentWeightsToPreviousOnes(paragraph);
             }
         }
 
@@ -383,14 +383,14 @@ public class DocAPI {
             paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
             paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
             for (int categoryId : Category.getCategories()) {
-                if (CategoryAnnotationHelper.isCategoryId(paragraph,categoryId)) {
-                    CategoryAnnotationHelper.setTrainingWeight(paragraph, categoryId, userWeight);
+                if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph, categoryId)) {
+                    CategoryAnnotationHelper.annotateCategoryWeight(paragraph, categoryId, userWeight);
                     IsNoCategoryExist = false;
                 }
             }
             if (IsNoCategoryExist) {
-                CategoryAnnotationHelper.clearAnnotations(paragraph);
-                CategoryAnnotationHelper.setTrainingWeight(paragraph, Category.NONE, userWeight);
+                CategoryAnnotationHelper.clearCategoryAnnotations(paragraph);
+                CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.NONE, userWeight);
             }
         }
         try {
@@ -437,7 +437,7 @@ public class DocAPI {
                     .forEach( p -> {
                         logger.debug("Unobserved - {}", p.getId());
                         //un observe this paragraph
-                        CategoryAnnotationHelper.clearAnnotations(p);
+                        CategoryAnnotationHelper.clearCategoryAnnotations(p);
                         // Add the userObserved paragraphs
                         parasForUpdateBNI.add(p);
                     });

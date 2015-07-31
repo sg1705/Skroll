@@ -66,7 +66,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
 
     double[] getTrainingWeights(CoreMap para){
-        double[][] weights = CategoryAnnotationHelper.getParagraphWeight(para, modelRVSetting.getCategoryIds());
+        double[][] weights = CategoryAnnotationHelper.populateModelTrainingWeights(para, modelRVSetting.getCategoryIds());
 
         double[] oldWeights =weights[0];
         double[] newWeights = weights[1];

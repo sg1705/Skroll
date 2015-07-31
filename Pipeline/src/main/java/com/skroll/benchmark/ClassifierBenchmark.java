@@ -59,20 +59,20 @@ public class ClassifierBenchmark {
             for(CoreMap secondDocParagraph : secondDoc.getParagraphs()) {
                 if (firstDocParagraph.getId().equalsIgnoreCase(secondDocParagraph.getId())) {
                     for (QC.Stats stats : qc.stats) {
-                        if (CategoryAnnotationHelper.isCategoryId(firstDocParagraph, stats.categoyId)) {
+                        if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(firstDocParagraph, stats.categoyId)) {
                             stats.overallOccurance++;
                         }
-                        if(CategoryAnnotationHelper.isCategoryId(secondDocParagraph,stats.categoyId)) {
+                        if(CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(secondDocParagraph, stats.categoyId)) {
                             stats.postClassificationOccurance++;
                         }
-                        if (!CategoryAnnotationHelper.isCategoryId(firstDocParagraph, stats.categoyId) &&
-                                CategoryAnnotationHelper.isCategoryId(secondDocParagraph, stats.categoyId))
+                        if (!CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(firstDocParagraph, stats.categoyId) &&
+                                CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(secondDocParagraph, stats.categoyId))
                          {
                              // false positive
                              logger.debug("category [{}] type1Error [{}]",stats.categoyId, firstDocParagraph.getText());
                             stats.type1Error++;
-                        } else if (CategoryAnnotationHelper.isCategoryId(firstDocParagraph, stats.categoyId) &&
-                                !CategoryAnnotationHelper.isCategoryId(secondDocParagraph, stats.categoyId)) {
+                        } else if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(firstDocParagraph, stats.categoyId) &&
+                                !CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(secondDocParagraph, stats.categoyId)) {
                             // false negative
                             logger.debug("category [{}] type2Error [{}]",stats.categoyId, firstDocParagraph.getText());
                             stats.type2Error++;

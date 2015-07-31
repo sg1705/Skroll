@@ -39,7 +39,7 @@ public class HtmlDocumentHMMTester extends SyncPipe<Document, Document> {
         //assume that words are extracted
         for(CoreMap paragraph : input.getParagraphs()) {
             List<String> definitions = new ArrayList<String>();
-            if (!(CategoryAnnotationHelper.isCategoryId(paragraph, Category.DEFINITION))){
+            if (!(CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph, Category.DEFINITION))){
                 boolean isPreviousWordDefinition = false;
                 List<String> tempDefinitions = new ArrayList<String>();
                 // test for terms
@@ -74,7 +74,7 @@ public class HtmlDocumentHMMTester extends SyncPipe<Document, Document> {
             List<List<Token>> definedTokensList = new ArrayList();
             definedTokensList.add(DocumentHelper.createTokens(definitions));
             //paragraph.set(CoreAnnotations.DefinedTermTokensAnnotation.class, definedTokensList);
-            CategoryAnnotationHelper.setDInCategoryAnnotation(paragraph,definedTokensList, Category.DEFINITION);
+            CategoryAnnotationHelper.annotateParagraphWithTokensListAndCategory(paragraph, definedTokensList, Category.DEFINITION);
             newParagraphs.add(paragraph);
         }
         input.setParagraphs(newParagraphs);

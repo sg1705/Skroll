@@ -147,22 +147,20 @@ public class CoreAnnotations {
             return Boolean.class;
         }
     }
-    /**
-     * annotation for keeping the user training weight for a paragraph
-     */
-    public static class TrainingWeightAnnotationFloat implements CoreAnnotation<List<Float>> {
-        public Class<List<Float>> getType() {
-            return EraserUtils.<Class<List<Float>>> uncheckedCast(List.class);
-        }
-    }
 
-    public static class CurrentTrainingWeightFloat implements CoreAnnotation<Float> {
+    /**
+     * annotation to store the current training weight for a category
+     */
+       public static class CategoryCurrentWeightFloat implements CoreAnnotation<Float> {
         public Class<Float> getType() {
             return Float.class;
         }
     }
 
-    public static class PriorTrainingWeightFloat implements CoreAnnotation<Float> {
+    /**
+     * annotation to store the prior training weight for a category
+     */
+    public static class CategoryPriorWeightFloat implements CoreAnnotation<Float> {
         public Class<Float> getType() {
             return Float.class;
         }

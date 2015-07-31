@@ -82,7 +82,7 @@ public class TestHelper {
         List<List<Token>> tokenList = new ArrayList<>();
         tokenList.add(tokens);
         para.set(CoreAnnotations.TokenAnnotation.class, tokens);
-        CategoryAnnotationHelper.setDInCategoryAnnotation(para,tokenList, Category.DEFINITION);
+        CategoryAnnotationHelper.annotateParagraphWithTokensListAndCategory(para, tokenList, Category.DEFINITION);
         paraList.add(para);
 
 
@@ -90,7 +90,7 @@ public class TestHelper {
         strings = Arrays.asList("\"", "in", "\"", "out", "out");
         tokens = DocumentHelper.createTokens(strings);
         para.set(CoreAnnotations.TokenAnnotation.class, tokens);
-        CategoryAnnotationHelper.setDInCategoryAnnotation(para, tokenList, Category.DEFINITION);
+        CategoryAnnotationHelper.annotateParagraphWithTokensListAndCategory(para, tokenList, Category.DEFINITION);
         paraList.add(para);
 
         Document doc = new Document();

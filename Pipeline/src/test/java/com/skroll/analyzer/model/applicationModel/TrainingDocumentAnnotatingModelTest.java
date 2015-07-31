@@ -39,7 +39,7 @@ public class TrainingDocumentAnnotatingModelTest{
     @Test
     public void testGetTrainingWeights() {
         for (CoreMap paragraph : document.getParagraphs()) {
-            CategoryAnnotationHelper.setTrainingWeight(paragraph, Category.DEFINITION, (float) 1.0);
+            CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.DEFINITION, (float) 1.0);
             double[] trainingWeights = model.getTrainingWeights(paragraph);
             for (int i=0; i<trainingWeights.length; i++)
                 System.out.println("paraId:" + paragraph.getId() + " TrainingWeight:" + trainingWeights[i]);
@@ -52,7 +52,7 @@ public class TrainingDocumentAnnotatingModelTest{
         for (CoreMap paragraph : document.getParagraphs()) {
             paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
             paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
-            CategoryAnnotationHelper.setTrainingWeight(paragraph, Category.DEFINITION, (float) 1.0);
+            CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.DEFINITION, (float) 1.0);
         }
         model.updateWithDocumentAndWeight(document);
 

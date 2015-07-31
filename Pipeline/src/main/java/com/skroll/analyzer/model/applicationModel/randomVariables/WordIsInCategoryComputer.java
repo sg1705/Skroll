@@ -18,8 +18,8 @@ public class WordIsInCategoryComputer implements WRVValueComputer {
     }
     @Override
     public int getValue(Token word, CoreMap para) {
-        int observedCategory = CategoryAnnotationHelper.getObservedCategory( para, categoryIds);
-        List<List<Token>> tokens = CategoryAnnotationHelper.getDefinedTermTokensInParagraph(para, observedCategory); //need one more field
+        int observedCategory = CategoryAnnotationHelper.getObservedCategoryId(para, categoryIds);
+        List<List<Token>> tokens = CategoryAnnotationHelper.getTokensForACategory(para, observedCategory); //need one more field
         if (tokens == null) return 0;
 
         for (List<Token> list : tokens)
