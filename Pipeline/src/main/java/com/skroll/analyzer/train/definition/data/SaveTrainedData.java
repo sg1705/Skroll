@@ -43,7 +43,7 @@ public class SaveTrainedData extends SyncPipe<Document, String> {
                         .append(Constants.TRAINING_MODEL_TOKEN_SEPARATOR)
                         .append(Joiner.
                                 on(Constants.TRAINING_MODEL_TOKEN_SEPARATOR)
-                                .join(CategoryAnnotationHelper.getTokenStringsForACategory(paragraph, Category.DEFINITION)))
+                                .join(CategoryAnnotationHelper.getTokenStringsForCategory(paragraph, Category.DEFINITION)))
                         .append(Constants.TRAINING_MODEL_LINE_SEPARATOR);
             }
             // third line is a line ender

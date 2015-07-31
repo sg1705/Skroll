@@ -24,7 +24,7 @@ public class CategoryAnnotationHelper {
      * @param categoryId
      * @return List of List of Token String
      */
-    public static List<List<String>> getTokenStringsForACategory(CoreMap paragraph, int categoryId) {
+    public static List<List<String>> getTokenStringsForCategory(CoreMap paragraph, int categoryId) {
         HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
         if (categoryAnnotation==null) return new ArrayList<>();
         if(categoryAnnotation.get(categoryId)==null) return new ArrayList<>();
@@ -43,7 +43,7 @@ public class CategoryAnnotationHelper {
      * @param categoryId
      * @return List of List of Token
      */
-    public static List<List<Token>> getTokensForACategory(CoreMap paragraph, int categoryId) {
+    public static List<List<Token>> getTokensForCategory(CoreMap paragraph, int categoryId) {
         HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
         if (categoryAnnotation==null) return new ArrayList<>();
         if(categoryAnnotation.get(categoryId)==null) return new ArrayList<>();
@@ -59,7 +59,7 @@ public class CategoryAnnotationHelper {
         List<Paragraph> termList = new ArrayList<>();
         for (CoreMap paragraph : document.getParagraphs()) {
             for (int categoryId : Category.getCategories()) {
-                List<List<String>> definitionList = getTokenStringsForACategory(paragraph, categoryId);
+                List<List<String>> definitionList = getTokenStringsForCategory(paragraph, categoryId);
                 for (List<String> definition : definitionList) {
                     if(logger.isTraceEnabled())
                         logger.trace( "{} \t {} \t {}",paragraph.getId(),categoryId , definition);
@@ -81,7 +81,7 @@ public class CategoryAnnotationHelper {
      * @param categoryId
      * @return list of paragraphs
      */
-    public static List<CoreMap> getParagraphAnnotatedWithACategory(Document doc, int categoryId){
+    public static List<CoreMap> getParagraphsAnnotatedWithCategory(Document doc, int categoryId){
         List<CoreMap> paragraphs= new ArrayList<>();
         for (CoreMap paragraph: doc.getParagraphs()){
             if (isParagraphAnnotatedWithCategoryId(paragraph, categoryId)) paragraphs.add(paragraph);
@@ -94,7 +94,7 @@ public class CategoryAnnotationHelper {
      */
     public static void displayParagraphsAnnotatedWithAnyCategory(CoreMap paragraph) {
         for (int categoryId : Category.getCategories()) {
-                        List<List<String>> definitionList = getTokenStringsForACategory(paragraph, categoryId);
+                        List<List<String>> definitionList = getTokenStringsForCategory(paragraph, categoryId);
                         for (List<String> definition : definitionList) {
                             if (logger.isDebugEnabled())
                                 logger.debug("{} \t {} \t {}", paragraph.getId(), categoryId, definition);

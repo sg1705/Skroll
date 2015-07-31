@@ -38,7 +38,7 @@ public class WordIsTOCComputerTest {
     }
     @Test
     public void testGetValue() throws Exception {
-        logger.info("{}",CategoryAnnotationHelper.getTokenStringsForACategory(m, Category.DEFINITION));;
+        logger.info("{}",CategoryAnnotationHelper.getTokenStringsForCategory(m, Category.DEFINITION));;
         assert(wordIsTOCComputer.getValue(token1,m)==1);
     }
 

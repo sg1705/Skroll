@@ -52,18 +52,18 @@ public class DocAPITest extends APITest {
         for(CoreMap coreMap: doc.getParagraphs()){
             CategoryAnnotationHelper.setMatchedText(coreMap, DocumentHelper.createTokens(Lists.newArrayList("Capital", "Stock")), Category.TOC_2);
             if(CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(coreMap, Category.TOC_2)) {
-                System.out.println("TOC_2:" + CategoryAnnotationHelper.getTokenStringsForACategory(coreMap, Category.TOC_2));
+                System.out.println("TOC_2:" + CategoryAnnotationHelper.getTokenStringsForCategory(coreMap, Category.TOC_2));
             }
         }
         //API.documentMap.put("smaller-indenture.html",doc);
-        logger.debug("TOC Paragraph before calling updateTerm: {}", CategoryAnnotationHelper.getParagraphAnnotatedWithACategory(doc, Category.TOC_2));
+        logger.debug("TOC Paragraph before calling updateTerm: {}", CategoryAnnotationHelper.getParagraphsAnnotatedWithCategory(doc, Category.TOC_2));
 
         testUpdateTerms();
 
         assert(doc.getTarget().contains("Capital Stock"));
 
         for (CoreMap paragraph : doc.getParagraphs()) {
-                List<List<String>> definitionList = CategoryAnnotationHelper.getTokenStringsForACategory(
+                List<List<String>> definitionList = CategoryAnnotationHelper.getTokenStringsForCategory(
                         paragraph, Category.TOC_2);
                 logger.debug(paragraph.getId() + " " + Joiner.on(" ").join(definitionList));
         }
@@ -76,7 +76,7 @@ public class DocAPITest extends APITest {
         Document doc = JsonDeserializer.fromJson(Files.toString(new File(preEvaluatedFolder + documentId), Constants.DEFAULT_CHARSET));
         assert(doc.getTarget().contains("Capital Stock"));
         for (CoreMap paragraph : doc.getParagraphs()) {
-                List<List<String>> definitionList = CategoryAnnotationHelper.getTokenStringsForACategory(
+                List<List<String>> definitionList = CategoryAnnotationHelper.getTokenStringsForCategory(
                         paragraph, Category.DEFINITION);
                 logger.debug(paragraph.getId() + " " + Joiner.on(" ").join(definitionList));
         }

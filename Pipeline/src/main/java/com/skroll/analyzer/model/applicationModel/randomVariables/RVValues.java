@@ -130,12 +130,12 @@ public class RVValues {
 
     public static void printAnnotatedDoc(Document doc) {
 
-        List<CoreMap> defParas = CategoryAnnotationHelper.getParagraphAnnotatedWithACategory(doc, Category.DEFINITION);
+        List<CoreMap> defParas = CategoryAnnotationHelper.getParagraphsAnnotatedWithCategory(doc, Category.DEFINITION);
         for (int i = 0; i < defParas.size(); i++) {
             System.out.println(defParas.get(i).getText());
             System.out.print(i);
-            System.out.println(CategoryAnnotationHelper.getTokensForACategory(defParas.get(i), Category.DEFINITION));
+            System.out.println(CategoryAnnotationHelper.getTokensForCategory(defParas.get(i), Category.DEFINITION));
         }
-     System.out.println(CategoryAnnotationHelper.getParagraphAnnotatedWithACategory(doc, Category.DEFINITION).size());
+     System.out.println(CategoryAnnotationHelper.getParagraphsAnnotatedWithCategory(doc, Category.DEFINITION).size());
     }
 }

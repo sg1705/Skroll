@@ -38,7 +38,7 @@ public class WordIsDefComputerTest {
     }
     @Test
     public void testGetValue() throws Exception {
-        logger.info("{}",CategoryAnnotationHelper.getTokenStringsForACategory(m, Category.DEFINITION));;
+        logger.info("{}",CategoryAnnotationHelper.getTokenStringsForCategory(m, Category.DEFINITION));;
         wordIsDefComputer.getValue(token1,m);
         assert(wordIsDefComputer.getValue(token1,m)==1);
     }

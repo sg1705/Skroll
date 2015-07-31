@@ -58,7 +58,7 @@ public class ClassifierImplTest {
             e.printStackTrace();
             fail(" failed to find a Model");
         }
-        logger.debug ("Number fo Paragraphs returned: " + CategoryAnnotationHelper.getParagraphAnnotatedWithACategory(document, Category.DEFINITION).size());
+        logger.debug ("Number fo Paragraphs returned: " + CategoryAnnotationHelper.getParagraphsAnnotatedWithCategory(document, Category.DEFINITION).size());
     }
 
     //@Test

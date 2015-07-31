@@ -93,7 +93,7 @@ public class SkrollTrainer extends Trainer {
                     for (CoreMap paragraph : document.getParagraphs()) {
                         for (int categoryId : Category.getCategories()) {
                             if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph, categoryId)) {
-                                List<List<String>> definitionList = CategoryAnnotationHelper.getTokenStringsForACategory(
+                                List<List<String>> definitionList = CategoryAnnotationHelper.getTokenStringsForCategory(
                                         paragraph, categoryId);
                                 //logger.debug("definitionList:" + Joiner.on(" ").join(definitionList));
                                 if (definitionList == null) {

@@ -36,7 +36,7 @@ public class ExtractDefinitionsFromParagraphInHtmlDocumentPipeTest extends TestC
                 ;
 //                DocumentHelper.getTokenString(
 //                        paragraph.get(CoreAnnotations.DefinedTermsAnnotation.class));
-                String words = Joiner.on(",").join(CategoryAnnotationHelper.getTokenStringsForACategory(paragraph, Category.DEFINITION));
+                String words = Joiner.on(",").join(CategoryAnnotationHelper.getTokenStringsForCategory(paragraph, Category.DEFINITION));
                 System.out.println(words);
         }
         System.out.println(count);

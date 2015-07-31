@@ -48,7 +48,7 @@ public class JsonDeserializerTest {
         for (CoreMap paragraph : document.getParagraphs()) {
             logger.debug("paragraph:" +paragraph.getText());
             if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph, Category.DEFINITION) ){
-                List<List<String>> definitionList = CategoryAnnotationHelper.getTokenStringsForACategory(
+                List<List<String>> definitionList = CategoryAnnotationHelper.getTokenStringsForCategory(
                         paragraph, Category.DEFINITION);
                 logger.debug("definitionList:" +Joiner.on(" ").join(definitionList));
                 assert ((Joiner.on(" ").join(definitionList).contains("susan")));
@@ -83,7 +83,7 @@ public class JsonDeserializerTest {
         paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
         paralist.add(paragraph);
 
-        List<List<String>> definitionList = CategoryAnnotationHelper.getTokenStringsForACategory(
+        List<List<String>> definitionList = CategoryAnnotationHelper.getTokenStringsForCategory(
                 paragraph, Category.DEFINITION);
         for (List<String> definition : definitionList) {
             logger.debug(paragraph.getId() + "\t" + " annotation:" + "\t" + definition);

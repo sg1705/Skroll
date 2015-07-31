@@ -100,7 +100,7 @@ public class TOCTrainer {
             for (CoreMap paragraph : doc.getParagraphs()) {
                 if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph, Category.DEFINITION)) {
 
-                    List<List<String>> definitionList = CategoryAnnotationHelper.getTokenStringsForACategory(
+                    List<List<String>> definitionList = CategoryAnnotationHelper.getTokenStringsForCategory(
                             paragraph, Category.DEFINITION);
                     for (List<String> definition: definitionList) {
                         String words = Joiner.on(",").join(definition);
