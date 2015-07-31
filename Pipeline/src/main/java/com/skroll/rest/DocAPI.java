@@ -308,7 +308,6 @@ public class DocAPI {
                     parasForUpdateBNI.add(paragraph);
                     logger.debug("userObserved paragraphs:\t {}", paragraph.getId());
                     CategoryAnnotationHelper.displayParagraphsAnnotatedWithAnyCategory(paragraph);
-                    logger.debug("TrainingWeightAnnotation: {}", paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class));
                     break;
                 }
             }

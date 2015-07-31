@@ -1,12 +1,9 @@
 package com.skroll.analyzer.model.applicationModel;
 
 import com.google.common.base.Joiner;
-import com.skroll.analyzer.data.DocData;
 import com.skroll.analyzer.data.NBMNData;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
-import com.skroll.analyzer.model.bn.SimpleDataTuple;
-import com.skroll.analyzer.model.bn.config.NBMNConfig;
 import com.skroll.analyzer.model.bn.config.NBMNConfig;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
@@ -73,7 +70,7 @@ public class DocProcessor {
         for(CoreMap p : paragraphs) {
             //get category
             //if (p.containsKey(CoreAnnotations.IsUserDefinedTOCAnnotation.class)) {
-            if (CategoryAnnotationHelper.isCategoryId(p, Category.USER_TOC)) {
+            if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(p, Category.USER_TOC)) {
                 isUserTocPresent = true;
                 tocParaIds.add(p.getId());
                 List<Token> tokens = p.getTokens().stream()
