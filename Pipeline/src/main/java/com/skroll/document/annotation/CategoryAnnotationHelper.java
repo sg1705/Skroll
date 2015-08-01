@@ -340,18 +340,34 @@ public class CategoryAnnotationHelper {
     }
 
     /**
-     * Annotate the CategoryWeight for given category for a given paragraph
+     * Annotate the CategoryWeight for given current and prior category for a given paragraph
      * @param paragraph
      * @param categoryId
-     * @param userWeight
+     * @param currentCategoryWeight
+     * @param priorCategoryWeight
      */
-    public static void annotateCategoryWeight(CoreMap paragraph, int categoryId, float userWeight){
+    public static void annotateCategoryWeight(CoreMap paragraph, int categoryId, float currentCategoryWeight, float priorCategoryWeight){
         HashMap<Integer, CoreMap> categoryAnnotation = createOrGetCategoryAnnotation(paragraph, categoryId);
         CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
-        annotationCoreMap.set(CoreAnnotations.CurrentCategoryWeightFloat.class, userWeight);
-        annotationCoreMap.set(CoreAnnotations.PriorCategoryWeightFloat.class, (float) 0);
+        annotationCoreMap.set(CoreAnnotations.CurrentCategoryWeightFloat.class, currentCategoryWeight);
+        annotationCoreMap.set(CoreAnnotations.PriorCategoryWeightFloat.class, priorCategoryWeight);
         paragraph.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
     }
+
+    /**
+     * Annotate the CategoryWeight for given current category for a given paragraph
+     * @param paragraph
+     * @param categoryId
+     * @param currentCategoryWeight
+     */
+    public static void annotateCategoryWeight(CoreMap paragraph, int categoryId, float currentCategoryWeight){
+        HashMap<Integer, CoreMap> categoryAnnotation = createOrGetCategoryAnnotation(paragraph, categoryId);
+        CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
+        annotationCoreMap.set(CoreAnnotations.CurrentCategoryWeightFloat.class, currentCategoryWeight);
+        annotationCoreMap.set(CoreAnnotations.PriorCategoryWeightFloat.class, 0f);
+        paragraph.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
+    }
+
 
     /**
      * Populate training weight of model using the training weights of categories of a paragraph into array of double that will feed to model.
@@ -397,5 +413,21 @@ public class CategoryAnnotationHelper {
         }
 
     }
+
+    /**
+     * Get the categoryAnnotation core map.
+     * @param paragraph
+     * @param categoryId
+     * @return
+     */
+    public static CoreMap getCategoryAnnotation(CoreMap paragraph, int categoryId) {
+        HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
+        if (categoryAnnotation==null) return null;
+        CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
+        if(annotationCoreMap==null) return null;
+        return annotationCoreMap;
+    }
+
+
 
 }

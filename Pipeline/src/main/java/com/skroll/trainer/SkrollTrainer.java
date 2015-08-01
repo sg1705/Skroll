@@ -81,7 +81,6 @@ public class SkrollTrainer extends Trainer {
     }
 
     public void checkPreEvaluatedFile() {
-
         String fileName = "build/resources/main/preEvaluated/";
         FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(fileName));
         List<String> docLists = new ArrayList<String>();
@@ -109,4 +108,5 @@ public class SkrollTrainer extends Trainer {
             }
         }
     }
+
 }

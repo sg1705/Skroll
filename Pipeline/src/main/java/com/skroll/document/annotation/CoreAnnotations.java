@@ -149,6 +149,15 @@ public class CoreAnnotations {
     }
 
     /**
+     * annotation for keeping the user training weight for a paragraph
+     */
+    public static class TrainingWeightAnnotationFloat implements CoreAnnotation<List<Float>> {
+        public Class<List<Float>> getType() {
+            return EraserUtils.<Class<List<Float>>> uncheckedCast(List.class);
+        }
+    }
+
+    /**
      * annotation to store the current training weight for a category
      */
        public static class CurrentCategoryWeightFloat implements CoreAnnotation<Float> {

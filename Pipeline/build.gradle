@@ -69,6 +69,13 @@ task trainWithWeight(type: JavaExec) {
 }
 
 
+task convertTrainingWeight(type: JavaExec) {
+    args = ['--dir', 'build/resources/main/preEvaluated/']
+    File workingDir = new File('Pipeline/')
+    main = 'com.skroll.util.MigrationUtil'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
 
 //create a single Jar with all dependencies
 task fatJar(type: Jar) {
