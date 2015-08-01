@@ -58,8 +58,9 @@ public class NodeTrainingHelper {
         RandomVariable[] variables = node.getFamilyVariables();
         int[] multiIndex= new int[variables.length];
         DiscreteNode[] parents = node.getParents();
+
+        // the node and parents must be observed.
         multiIndex[0] = node.getObservation();
-        if (multiIndex[0] == -1) return; // skip unobserved feature.
 
         for (int i=0; i< parents.length;i++)
             multiIndex[i+1] = parents[i].getObservation();
