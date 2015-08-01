@@ -217,14 +217,14 @@ public class CategoryAnnotationHelper {
 
     public static int getObservedClassIndex(CoreMap paragraph, List<Integer> categoryIds) {
         HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
-        if (categoryAnnotation == null) return 0;
+        if (categoryAnnotation == null) return 0; //todo:  change this to -1 once none is made an annotation in doc
 
         for (int index = 0; index < categoryIds.size(); index++) {
             if (categoryAnnotation.containsKey(categoryIds.get(index))) {
                 return index;
             }
         }
-        return 0;
+        return 0; //todo:  change this to -1 once none is made an annotation in doc
     }
 
     public static int getObservedCategory(CoreMap paragraph,  List<Integer> categoryIds) {
