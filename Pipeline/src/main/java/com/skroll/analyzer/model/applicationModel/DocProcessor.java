@@ -232,7 +232,7 @@ public class DocProcessor {
         int[][] docFeatureValues = new int[nbmnConfig.getDocumentFeatureVarList().size()][numCategories];
 
         for (int[] vals : docFeatureValues)
-            Arrays.fill(vals, 1);
+            Arrays.fill(vals, -1);
         for (int p = 0; p < observedParas.size(); p++) {
             CoreMap paragraph = observedParas.get(p);
             int categoryValue = RVValues.getValue(categoryVar, observedParas.get(p));

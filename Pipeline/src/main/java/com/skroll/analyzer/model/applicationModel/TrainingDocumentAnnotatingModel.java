@@ -167,6 +167,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
             for (int c = 0; c < numCategories; c++) {
 //                int[] values = concatIntArrays(new int[]{c}, paraFeatures[i], paraDocFeatures[i], docFeatures);
 //                NBTrainingHelper.addSample(nbmnModel, new NBMNTuple(wordsList[i], values), weights[c]);
+                if (weights[c] == 0) continue;
                 NBTrainingHelper.addSample(nbmnModel, new NBMNTuple(
                         wordsList[i], c, paraFeatures[i], paraDocFeatures[i], docFeatures), weights[c]);
             }
