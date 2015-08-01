@@ -288,21 +288,22 @@ public class CategoryAnnotationHelper {
     }
 
     /**
-     * For a given paragraph, get the index in the list of categoryIds. THis index will be used by Model as classIndex.
+     * For a given paragraph, get the index in the list of categoryIds. This index will be used by Model as classIndex.
+     * It will return -1 if there in no category annotation
      * @param paragraph
      * @param categoryIds
      * @return Index in list
      */
     public static int getObservedClassIndex(CoreMap paragraph, List<Integer> categoryIds) {
         HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
-        if (categoryAnnotation == null) return 0;
+        if (categoryAnnotation == null) return -1;
 
         for (int index = 0; index < categoryIds.size(); index++) {
             if (categoryAnnotation.containsKey(categoryIds.get(index))) {
                 return index;
             }
         }
-        return 0;
+        return -1;
     }
 
     /**
