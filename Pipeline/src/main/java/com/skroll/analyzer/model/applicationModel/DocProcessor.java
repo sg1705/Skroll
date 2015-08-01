@@ -204,7 +204,9 @@ public class DocProcessor {
 
         List<CoreMap> originalParas = doc.getParagraphs();
         data = getParaDataFromDoc(originalParas, processedParas, config);
-        processedDataMap.put(key, data);
+        // Wei and Saurabh decided to not cache processedPara because
+        // they can change once a user observes UTOC
+        //processedDataMap.put(key, data);
 
         return data;
     }

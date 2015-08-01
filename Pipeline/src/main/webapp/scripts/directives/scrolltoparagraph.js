@@ -7,8 +7,9 @@
  * # fileUpload
  */
 angular.module('SkrollApp')
-  .directive('scrollToParagraph', ['documentModel', '$mdSidenav', 'SelectionModel', 'ToolbarModel',
-    function(documentModel, $mdSidenav, SelectionModel, ToolbarModel) {
+  .directive('scrollToParagraph', [ 'documentModel', '$mdSidenav', 
+                                    'SelectionModel', 'ToolbarModel', 'ScrollObserverService',
+    function(documentModel, $mdSidenav, SelectionModel, ToolbarModel, ScrollObserverService) {
       return {
         restricted: 'A',
         link: function(scope, element, attrs) {
@@ -16,6 +17,7 @@ angular.module('SkrollApp')
           var para =
             $(element).click(function() {
               SelectionModel.scrollToParagraph(paragraphId);
+              ScrollObserverService.notify(paragraphId);
             });
         }
       }

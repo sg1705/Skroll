@@ -436,7 +436,7 @@ public class DocAPI {
                     .forEach( p -> {
                         logger.debug("Unobserved - {}", p.getId());
                         //un observe this paragraph
-                        CategoryAnnotationHelper.clearCategoryAnnotations(p);
+                        CategoryAnnotationHelper.clearObservations(p);
                         // Add the userObserved paragraphs
                         parasForUpdateBNI.add(p);
                     });

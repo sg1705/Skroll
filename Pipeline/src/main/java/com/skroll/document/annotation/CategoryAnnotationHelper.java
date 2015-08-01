@@ -215,11 +215,18 @@ public class CategoryAnnotationHelper {
     }
 
     /**
-     * clear category annotation of a given paragraph and a given category
+     * Removes observations in the paragraph
      * @param paragraph
-     * @param categoryId
      */
-    public static void clearCategoryAnnotations(CoreMap paragraph, int categoryId){
+    public static void clearObservations(CoreMap paragraph) {
+        CategoryAnnotationHelper.clearCategoryAnnotations(paragraph);
+        paragraph.remove(CoreAnnotations.IsUserObservationAnnotation.class);
+        paragraph.remove(CoreAnnotations.TrainingWeightAnnotationFloat.class);
+    }
+
+
+
+    public static void clearCategoryAnnotation(CoreMap paragraph, int categoryId){
         HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
         if (categoryAnnotation==null) return;
         CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
