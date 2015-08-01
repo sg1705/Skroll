@@ -29,10 +29,10 @@ import java.util.List;
 /**
  * Created by saurabhagarwal on 7/31/15.
  */
-public class MigrationUtil {
+public class ConvertTrainingWeight {
     //The following line needs to be added to enable log4j
     public static final Logger logger = LoggerFactory
-            .getLogger(MigrationUtil.class);
+            .getLogger(ConvertTrainingWeight.class);
 
     public ClassifierFactory classifierFactory;
     public Configuration configuration;
@@ -40,7 +40,7 @@ public class MigrationUtil {
     public String PRE_EVALUATED_FOLDER;
 
     @Inject
-    public MigrationUtil() {
+    public ConvertTrainingWeight() {
         try {
             Injector injector = Guice.createInjector(new AbstractModule() {
                 @Override
@@ -64,15 +64,17 @@ public class MigrationUtil {
 
     public static void main(String[] args) throws IOException, ObjectPersistUtil.ObjectPersistException, Exception {
 
-        MigrationUtil migrationUtil = new MigrationUtil();
-
+        ConvertTrainingWeight convertTrainingWeight = new ConvertTrainingWeight();
+        if (args == null)
+            logger.debug("NO ARGUMENT PROVIDED");
+        logger.debug("args:{}",args);
         if (args != null && args.length > 1) {
-            if (args[0].equals("--ConvertTrainingWeight")) {
+            if (args[0].equals("dir")) {
                 logger.debug("folder Name :" + args[1]);
-                migrationUtil.convertTrainingWeightAnnotationIntoCategoryWeight(args[1]);
+                convertTrainingWeight.convertTrainingWeightAnnotationIntoCategoryWeight(args[1]);
             }
         } else {
-            migrationUtil.convertTrainingWeightAnnotationIntoCategoryWeight(migrationUtil.PRE_EVALUATED_FOLDER);
+            convertTrainingWeight.convertTrainingWeightAnnotationIntoCategoryWeight(convertTrainingWeight.PRE_EVALUATED_FOLDER);
         }
     }
 
@@ -106,7 +108,7 @@ public class MigrationUtil {
             if (weightList == null)
                 continue;
             if(categoryAnnotation == null && weightList != null ) {
-                CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.NONE, weightList.get(Category.NONE+ LATEST_WEIGHT_INDEX),weightList.get(Category.NONE));
+                CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.NONE, weightList.get(Category.NONE + LATEST_WEIGHT_INDEX), weightList.get(Category.NONE));
                 logger.debug("convert paragraph Id {} for categoryId {} for weight {}", paragraph.getId(), Category.NONE, weightList.get(Category.NONE+ LATEST_WEIGHT_INDEX));
             }
             if (categoryAnnotation != null) {

@@ -70,9 +70,8 @@ task trainWithWeight(type: JavaExec) {
 
 
 task convertTrainingWeight(type: JavaExec) {
-    args = ['--dir', 'build/resources/main/preEvaluated/']
     File workingDir = new File('Pipeline/')
-    main = 'com.skroll.util.MigrationUtil'
+    main = 'com.skroll.util.ConvertTrainingWeight'
     classpath = sourceSets.main.runtimeClasspath
 }
 

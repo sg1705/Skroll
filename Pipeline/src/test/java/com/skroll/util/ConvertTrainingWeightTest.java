@@ -16,10 +16,10 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class MigrationUtilTest {
+public class ConvertTrainingWeightTest {
     private Document document;
     public static final Logger logger = LoggerFactory
-            .getLogger(MigrationUtilTest.class);
+            .getLogger(ConvertTrainingWeightTest.class);
     @Before
     public void setUp() throws Exception {
         document = Parser.parseDocumentFromHtmlFile("src/test/resources/classifier/smaller-indenture.html");
@@ -28,7 +28,7 @@ public class MigrationUtilTest {
 
     @Test
     public void testConvertTrainingWeightAnnotationIntoCategoryWeight() throws Exception {
-        MigrationUtil migrationUtil = new MigrationUtil();
+        ConvertTrainingWeight convertTrainingWeight = new ConvertTrainingWeight();
         CoreMap paragraph = document.getParagraphs().get(0);
         int categoryId = Category.DEFINITION;
         CategoryAnnotationHelper.annotateParagraphWithTokensAndCategory(paragraph, DocumentHelper.getTokens(Lists.newArrayList("becontinuing", ",")), Category.DEFINITION);
@@ -39,7 +39,7 @@ public class MigrationUtilTest {
         }
         List<Float>  weightList = Lists.newArrayList(0f,0f,0f,0f,0f,0f,0f,0f,1f,0f,0f,0f,0f,0f);
         paragraph.set(CoreAnnotations.TrainingWeightAnnotationFloat.class, weightList);
-        migrationUtil.convertTrainingWeightAnnotationIntoCategoryWeight(document);
+        convertTrainingWeight.convertTrainingWeightAnnotationIntoCategoryWeight(document);
         CategoryAnnotationHelper.displayParagraphsAnnotatedWithAnyCategory(paragraph);
         CoreMap categoryAnnotation = CategoryAnnotationHelper.getCategoryAnnotation(paragraph, categoryId);
         logger.debug("PriorCategoryWeight: {} ",  categoryAnnotation.get(CoreAnnotations.PriorCategoryWeightFloat.class));
