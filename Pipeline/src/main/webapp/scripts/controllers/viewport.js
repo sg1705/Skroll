@@ -8,8 +8,10 @@
  * Controller of the ViewPortCtrl
  */
 
+
+
 var ViewPortCtrl = function(SelectionModel, documentService, $mdBottomSheet,
-  ToolbarModel, LHSModel, $log, $routeParams) {
+  ToolbarModel, LHSModel, $log, $routeParams, ScrollObserverService) {
   this.SelectionModel = SelectionModel;
   this.documentService = documentService;
   this.$mdBottomSheet = $mdBottomSheet;
@@ -18,7 +20,7 @@ var ViewPortCtrl = function(SelectionModel, documentService, $mdBottomSheet,
   this.documentModel = documentModel;
   this.documentModel.documentId = $routeParams.docId;
   this.SelectionModel.serializedSelection = decodeURIComponent(decodeURIComponent($routeParams.linkId));
-
+  this.ScrollObserverService = ScrollObserverService;
   
 }
 
@@ -64,6 +66,7 @@ ViewPortCtrl.prototype.paraClicked = function($event) {
   //clear highlight
   this.SelectionModel.clearSelection();
   var paraId = this.inferParagraphId($event);
+  this.ScrollObserverService.notify(paraId);
   if (paraId == null)
     return;
 
@@ -304,7 +307,11 @@ angular.module('SkrollApp').controller('TrainerPromptCtrl',function($scope,
 //   this.SelectionModel.selectedText = '';
 // }
 
-angular.module('SkrollApp')
-  .controller('ViewPortCtrl', ['SelectionModel', 'documentService',
-    '$mdBottomSheet', 'ToolbarModel', 'LHSModel', '$log', '$routeParams', ViewPortCtrl
-  ]);
+
+
+angular
+  .module('SkrollApp')
+  .controller('ViewPortCtrl', [ 'SelectionModel', 'documentService',
+                                '$mdBottomSheet', 'ToolbarModel', 
+                                'LHSModel', '$log', '$routeParams', 
+                                'ScrollObserverService', ViewPortCtrl ]);

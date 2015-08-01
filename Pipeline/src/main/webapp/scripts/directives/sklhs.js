@@ -6,16 +6,24 @@
  * @description
  * # skLhs
  */
-angular.module('SkrollApp')
-  .directive('skLhs', function () {
-    return {
-      templateUrl: 'partials/sklhs.tmpl.html',
-      restrict: 'E',
-      controller: LHSCtrl,
-      controllerAs: 'ctrl'
-    };
-  });
+angular
+  .module('SkrollApp')
+  .directive('skLhs', SkLhs);
 
+
+function SkLhs() {
+
+  return {
+    templateUrl: 'partials/sklhs.tmpl.html',
+    restrict: 'E',
+    controller: 'TocCtrl',
+    controllerAs: 'ctrl'
+  };
+
+
+};
+
+/*
 var LHSCtrl = function (LHSModel) {
 	this.sections = LHSModel.sections;
   this.smodel = LHSModel.smodel;
@@ -29,7 +37,7 @@ LHSCtrl.prototype.toggleSection = function(index) {
 
 angular.module('SkrollApp')
 	.controller('LHSCtrl', LHSCtrl);
-
+*/
 
   /**
  * @ngdoc directive
