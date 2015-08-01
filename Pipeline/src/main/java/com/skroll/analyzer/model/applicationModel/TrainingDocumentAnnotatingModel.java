@@ -117,6 +117,9 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
         // updating training model with the whole doc each time user makes an observation.
 //        List<CoreMap> processedParas = DocProcessor.processParas(doc, hmm.size());
         List<CoreMap> processedParas = DocProcessor.processParas(doc, modelRVSetting.NUM_WORDS_TO_USE_PER_PARAGRAPH);
+        modelRVSetting.postProcessFunctions
+                .stream()
+                .forEach( f -> f.apply(doc.getParagraphs(), processedParas));
 
         // in NBMNData, para features can be preprocessed for the whole doc,
         // but doc features depends on the set of the observed paras and cannot be preprocessed just once.
@@ -186,6 +189,10 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
         List<CoreMap> originalParas = doc.getParagraphs();
 //        List<CoreMap> processedParas = DocProcessor.processParas(doc, hmm.size());
         List<CoreMap> processedParas = DocProcessor.processParas(doc, modelRVSetting.NUM_WORDS_TO_USE_PER_PARAGRAPH);
+        modelRVSetting.postProcessFunctions
+                .stream()
+                .forEach( f -> f.apply(doc.getParagraphs(), processedParas));
+
         NBMNData data = DocProcessor.getParaDataFromDoc(doc, processedParas, nbmnConfig);
         updateWithDocument(originalParas, processedParas, data);
     }
