@@ -103,4 +103,5 @@ task start(type: JavaExec) {
 }
 
 trainWithWeight.dependsOn cleanModels
+clean.dependsOn cleanModels
 test.dependsOn createTestDirectories
