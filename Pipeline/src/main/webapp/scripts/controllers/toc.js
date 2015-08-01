@@ -37,7 +37,7 @@
     * Toggles the section when user clicks on close/open in TOC
     **/
     function toggleSection(index) {
-      classes[index].isSelected = !this.classes[index].isSelected;
+      ctrl.classes[index].isSelected = !this.classes[index].isSelected;
     }
 
     /**
