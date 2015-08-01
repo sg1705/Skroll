@@ -171,7 +171,7 @@ ViewPortCtrl.prototype.handleTrainerTextSelection = function(paraId,
     var self = this;
     this.showYesNoDialog(prompt, items)
       .then(function(clicked) {
-              matchedItem.classificationId = clicked;
+              matchedItem.classificationId = LHSModel.getClassFromIndex(clicked);
               documentModel.isProcessing = true;
               self.documentService.addTermToPara(matchedItem)
               .then(function(contentHtml){
