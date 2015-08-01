@@ -13,7 +13,8 @@ var LHSModel = {
 	smodel: {
 		terms: [],
 		levelTerms: [],
-    hover: false
+    hover: false,
+    visibleHeaders: []
 	},
 
   /*
@@ -83,6 +84,7 @@ var LHSModel = {
 			if (obj.paragraphId == paraId)
 				return true;
 		});
+    return paras;
 	},
 
   getClassNames: function() {
