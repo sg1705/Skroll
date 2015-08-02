@@ -121,6 +121,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
                 .stream()
                 .forEach( f -> f.apply(doc.getParagraphs(), processedParas));
 
+
         // in NBMNData, para features can be preprocessed for the whole doc,
         // but doc features depends on the set of the observed paras and cannot be preprocessed just once.
         NBMNData data = DocProcessor.getParaDataFromDoc(doc, processedParas, nbmnConfig);
@@ -156,7 +157,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     private void updateWithProcessedParasAndWeight(List<CoreMap> originalParas,
                                                    List<CoreMap> processedParas, NBMNData data) {
 //        List<CoreMap> originalParas = doc.getParagraphs();
-        List<CoreMap> observedParas = DocumentHelper.getObservedParagraphs(originalParas);
+        List<CoreMap> observedParas = CategoryAnnotationHelper.getObservedParagraphs(originalParas, modelRVSetting.getCategoryIds());
 
         int[][] docFeatures = DocProcessor.generateDocumentFeatures(observedParas, data.getParaDocFeatures(), nbmnConfig);
         int[][] paraFeatures = data.getParaFeatures();

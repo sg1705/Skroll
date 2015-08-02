@@ -303,14 +303,13 @@ public class CategoryAnnotationHelper {
      */
     public static int getObservedClassIndex(CoreMap paragraph, List<Integer> categoryIds) {
         HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
-        if (categoryAnnotation == null) return 0;
-
+        if (categoryAnnotation == null) return -1;
         for (int index = 0; index < categoryIds.size(); index++) {
             if (categoryAnnotation.containsKey(categoryIds.get(index))) {
                 return index;
             }
         }
-        return 0;
+        return -1;
     }
 
     /**
@@ -321,13 +320,34 @@ public class CategoryAnnotationHelper {
      */
     public static int getObservedCategoryId(CoreMap paragraph, List<Integer> categoryIds) {
         HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
-        if (categoryAnnotation == null) return 0;
+        if (categoryAnnotation == null) return -1;
         for (int categoryId : categoryIds) {
             if (categoryAnnotation.containsKey(categoryId)) {
                 return categoryId;
             }
         }
-        return 0;
+        return -1;
+    }
+
+    /**
+     * Return only observed paragraph that annotated with one of the category defined in categoryIds list.
+     * @param paras
+     * @param categoryIds
+     * @return
+     */
+    public static List<CoreMap> getObservedParagraphs(List<CoreMap> paras, List<Integer> categoryIds) {
+        List<CoreMap> observedParagraphs = new ArrayList<>();
+        for (CoreMap paragraph : paras) {
+            HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
+            if (DocumentHelper.isObserved(paragraph)) {
+                for (int categoryId : categoryIds) {
+                    if (categoryAnnotation.containsKey(categoryId)) {
+                        observedParagraphs.add(paragraph);
+                    }
+                }
+            }
+        }
+        return observedParagraphs;
     }
 
     /**

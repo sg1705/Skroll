@@ -61,5 +61,6 @@ public class TOCModelRVSetting extends ModelRVSetting {
     @Override
     protected void initializeStrategies() {
         this.postProcessFunctions.add(DocProcessor::annotateProcessParaWithTOCMatch);
+
     }
 }
