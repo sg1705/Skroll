@@ -353,4 +353,14 @@ public class CoreAnnotations {
     }
 
 
+    /**
+     * Annotation to indicate that this paragraph has matched with UserDefined TOC
+     */
+    public static class IsInUserDefinedTOCAnnotation implements CoreAnnotation<Boolean> {
+        public Class<Boolean> getType() {
+            return Boolean.class;
+        }
+    }
+
+
 }

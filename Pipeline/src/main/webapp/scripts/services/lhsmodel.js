@@ -13,7 +13,8 @@ var LHSModel = {
 	smodel: {
 		terms: [],
 		levelTerms: [],
-    hover: false
+    hover: false,
+    visibleHeaders: []
 	},
 
   /*
@@ -55,12 +56,21 @@ var LHSModel = {
   },
 
   {
-    id: 7,
-    name: 'Bookmarks',
+    id: 4,
+    name: 'User TOC',
     isSelected: false,
-    isVisible: false,
+    isVisible: true,
     isActive: false
   },
+
+
+  {
+    id: 5,
+    name: 'Bookmarks',
+    isSelected: false,
+    isVisible: true,
+    isActive: false
+  }
 
   ],
 
@@ -83,6 +93,7 @@ var LHSModel = {
 			if (obj.paragraphId == paraId)
 				return true;
 		});
+    return paras;
 	},
 
   getClassNames: function() {
@@ -98,6 +109,10 @@ var LHSModel = {
         if (obj.id == classId)
           return true;
     });
+  },
+
+  getClassFromIndex: function(index) {
+    return this.classes[index].id;
   },
 
 

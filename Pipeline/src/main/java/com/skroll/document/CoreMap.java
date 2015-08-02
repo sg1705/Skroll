@@ -77,7 +77,7 @@ public class CoreMap implements TypesafeMap  {
     @Override
     public <VALUE> VALUE remove(Class<? extends TypesafeMap.Key<VALUE>> key) {
         VALUE value = (VALUE)this.map.get(key.getSimpleName());
-        this.map.remove(key);
+        this.map.remove(key.getSimpleName());
         return value;
     }
 

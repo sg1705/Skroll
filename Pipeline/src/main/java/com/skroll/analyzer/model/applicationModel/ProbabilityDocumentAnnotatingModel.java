@@ -44,26 +44,35 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
     double[][][] documentFeatureBelief; // feature number, category number, false/true
 
 
-    public ProbabilityDocumentAnnotatingModel(int id, NaiveBayesWithMultiNodes tnbm, HiddenMarkovModel hmm,
+    public ProbabilityDocumentAnnotatingModel(int id,
+                                              NaiveBayesWithMultiNodes tnbm,
+                                              HiddenMarkovModel hmm,
                                               Document doc, ModelRVSetting setting) {
-        this(id, tnbm, hmm, doc, setting.getWordType(), setting.getWordFeatures(), setting.getNbmnConfig());
-        modelRVSetting=setting;
+        this(id,
+                tnbm,
+                hmm,
+                doc,
+                setting,
+                setting.getWordType(),
+                setting.getWordFeatures(),
+                setting.getNbmnConfig());
     }
 
-    public ProbabilityDocumentAnnotatingModel(int id, NaiveBayesWithMultiNodes tnbm, HiddenMarkovModel hmm,
+    public ProbabilityDocumentAnnotatingModel(int id, NaiveBayesWithMultiNodes tnbm,
+                                              HiddenMarkovModel hmm,
                                               Document doc,
+                                              ModelRVSetting setting,
                                               RandomVariable wordType,
                                               List<RandomVariable> wordFeatures,
                                               NBMNConfig nbmnConfig) {
-
         super.nbmnConfig = nbmnConfig;
         super.wordType = wordType;
         super.wordFeatures = wordFeatures;
+        super.modelRVSetting = setting;
         super.id = id;
         this.doc = doc;
         this.nbmnModel = NBInferenceHelper.createLogProbNBMN(tnbm);
         this.hmm = hmm;
-
         hmm.updateProbabilities();
         this.initialize();
     }
@@ -72,6 +81,9 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 //        List<CoreMap> originalParagraphs = doc.getParagraphs();
 //        processedParagraphs = DocProcessor.processParas(doc, hmm.size());
         processedParagraphs = DocProcessor.processParas(doc, modelRVSetting.NUM_WORDS_TO_USE_PER_PARAGRAPH);
+        modelRVSetting.postProcessFunctions
+                .stream()
+                .forEach( f -> f.apply(doc.getParagraphs(), processedParagraphs));
         data = DocProcessor.getParaDataFromDoc(doc, processedParagraphs, nbmnConfig);
 //
 //        processedParagraphs = DocProcessor.processParagraphs(originalParagraphs, hmm.size());
