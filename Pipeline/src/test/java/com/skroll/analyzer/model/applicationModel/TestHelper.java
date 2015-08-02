@@ -95,6 +95,8 @@ public class TestHelper {
         strings = Arrays.asList("\"", "in", "\"", "out", "out");
         tokens = DocumentHelper.createTokens(strings);
         para.set(CoreAnnotations.TokenAnnotation.class, tokens);
+        para.set(CoreAnnotations.IsUserObservationAnnotation.class,true);
+        para.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class,true);
         CategoryAnnotationHelper.annotateParagraphWithTokensListAndCategory(para, tokenList, Category.DEFINITION);
         paraList.add(para);
 

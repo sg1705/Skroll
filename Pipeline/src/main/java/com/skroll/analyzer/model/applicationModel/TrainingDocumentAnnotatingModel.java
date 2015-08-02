@@ -18,10 +18,7 @@ import com.skroll.document.Token;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by wei2learn on 2/16/2015.
@@ -187,7 +184,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
      */
     public void updateWithDocument(Document doc){
 
-        List<CoreMap> originalParas = doc.getParagraphs();
+
 //        List<CoreMap> processedParas = DocProcessor.processParas(doc, hmm.size());
         List<CoreMap> processedParas = DocProcessor.processParas(doc, modelRVSetting.NUM_WORDS_TO_USE_PER_PARAGRAPH);
         modelRVSetting.postProcessFunctions
@@ -195,7 +192,10 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
                 .forEach( f -> f.apply(doc.getParagraphs(), processedParas));
 
         NBMNData data = DocProcessor.getParaDataFromDoc(doc, processedParas, nbmnConfig);
-        updateWithDocument(originalParas, processedParas, data);
+        List<CoreMap> parasWithCategoryAnnotation = new ArrayList<>();
+        for (int categoryId : modelRVSetting.getCategoryIds())
+            parasWithCategoryAnnotation.addAll(CategoryAnnotationHelper.getParagraphsAnnotatedWithCategory(doc,categoryId));
+        updateWithDocument(parasWithCategoryAnnotation, processedParas, data);
     }
 
     public void updateWithDocument(List<CoreMap> originalParas, List<CoreMap> processedParas, NBMNData data) {
