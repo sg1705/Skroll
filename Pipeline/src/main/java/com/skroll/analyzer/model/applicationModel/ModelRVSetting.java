@@ -6,6 +6,7 @@ import com.skroll.analyzer.model.applicationModel.randomVariables.*;
 import com.skroll.analyzer.model.bn.config.NBMNConfig;
 import com.skroll.document.CoreMap;
 import com.skroll.document.annotation.CoreAnnotations;
+import com.skroll.document.annotation.ModelClassAndWeightStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,8 @@ public class ModelRVSetting {
     protected List<BiFunction<List<CoreMap>, List<CoreMap>, Void>> postProcessFunctions
             = new ArrayList<>();
 
+    @JsonIgnore
+    protected ModelClassAndWeightStrategy modelClassAndWeightStrategy;
 
     public List<Integer> getCategoryIds() {
         return categoryIds;
@@ -62,9 +65,10 @@ public class ModelRVSetting {
                           List<RandomVariable> wordVars,
                           List<Integer> categoryIds
                           ) {
+        initializeStrategies();
         this.categoryIds=categoryIds;
-        RandomVariable wordType = RVCreater.createWordLevelRVWithComputer(new WordIsInCategoryComputer(categoryIds), "wordIsInModelID-" + categoryIds);
-        RandomVariable paraType = RVCreater.createDiscreteRVWithComputer(new ParaCategoryComputer(categoryIds), "paraTypeIsModelID-" + categoryIds);
+        RandomVariable wordType = RVCreater.createWordLevelRVWithComputer(new WordIsInCategoryComputer(modelClassAndWeightStrategy, categoryIds), "wordIsInModelID-" + categoryIds);
+        RandomVariable paraType = RVCreater.createDiscreteRVWithComputer(new ParaCategoryComputer(modelClassAndWeightStrategy,categoryIds), "paraTypeIsModelID-" + categoryIds);
         nbmnConfig = new NBMNConfig(paraType, paraFeatureVars, paraDocFeatureVars,
                 RVCreater.createNBMNDocFeatureRVs(paraDocFeatureVars, paraType, String.valueOf(categoryIds.toString())), wordVars);
         RVValues.addValueSetter(paraType, new RVValueSetter(categoryIds, CoreAnnotations.CategoryAnnotations.class));
@@ -80,6 +84,7 @@ public class ModelRVSetting {
             @JsonProperty("wordType") RandomVariable wordType,
             @JsonProperty("wordFeatures") List<RandomVariable> wordFeatures,
             @JsonProperty("categoryIds") List<Integer> categoryIds) {
+        initializeStrategies();
         this.nbmnConfig = nbmnConfig;
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;

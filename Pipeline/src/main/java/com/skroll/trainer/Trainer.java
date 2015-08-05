@@ -89,7 +89,7 @@ public class Trainer {
             return;
         }
         for(CoreMap paragraph : doc.getParagraphs()) {
-            if (paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)) {
+            if (paragraph.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)) {
                 CategoryAnnotationHelper.clearPriorCategoryWeight(paragraph);
             }
         }

@@ -5,7 +5,7 @@ import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Token;
-import com.skroll.document.annotation.CoreAnnotations;
+import com.skroll.document.annotation.*;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,8 +73,11 @@ public class RVCreaterTest {
 
     @Test
     public void testCreateWordLevelRVWithComputer() throws Exception {
+        ManagedCategoryStrategy managedCategoryStrategy = new DefaultManagedCategoryStrategy();
+        UnManagedCategoryStrategy unManagedCategoryStrategy = new DefaultUnManagedCategoryStrategy();
+        ModelClassAndWeightStrategy modelClassAndWeightStrategy = new DefaultModelClassAndWeightStrategy(managedCategoryStrategy, unManagedCategoryStrategy);
 
-        RandomVariable rv = RVCreater.createWordLevelRVWithComputer(new WordIsInCategoryComputer(TEST_DEF_CATEGORY_IDS), "WordIsTOCComputer");
+        RandomVariable rv = RVCreater.createWordLevelRVWithComputer(new WordIsInCategoryComputer(modelClassAndWeightStrategy,TEST_DEF_CATEGORY_IDS), "WordIsTOCComputer");
         logger.info("{}", rv);
         assert(rv.getName().equals("WordIsTOCComputer"));
         assert(rv.getFeatureSize()==2);

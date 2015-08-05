@@ -14,6 +14,8 @@ public class QC {
 
     public QC() {
         for (int category : Category.getCategories()){
+            if (category == Category.NONE)
+                continue;
             stats.add(new Stats(category));
         }
     }

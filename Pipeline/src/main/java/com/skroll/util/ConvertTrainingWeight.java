@@ -115,8 +115,7 @@ public class ConvertTrainingWeight {
                 for (int categoryId : Category.getCategories()) {
                     CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
                     if (annotationCoreMap != null) {
-                        annotationCoreMap.set(CoreAnnotations.CurrentCategoryWeightFloat.class, weightList.get(categoryId + LATEST_WEIGHT_INDEX));
-                        annotationCoreMap.set(CoreAnnotations.PriorCategoryWeightFloat.class, weightList.get(categoryId));
+                        CategoryAnnotationHelper.annotateCategoryWeight(paragraph, categoryId, weightList.get(categoryId + LATEST_WEIGHT_INDEX), weightList.get(categoryId));
                         logger.debug("convert paragraph Id {} for categoryId {} for weight {}", paragraph.getId(), categoryId, weightList.get(categoryId + LATEST_WEIGHT_INDEX));
                     }
                 }

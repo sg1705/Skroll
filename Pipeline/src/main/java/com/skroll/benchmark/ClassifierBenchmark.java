@@ -69,12 +69,12 @@ public class ClassifierBenchmark {
                                 CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(secondDocParagraph, stats.categoyId))
                          {
                              // false positive
-                             logger.debug("category [{}] type1Error [{}]",stats.categoyId, firstDocParagraph.getText());
+                             logger.trace("category [{}] type1Error [{}]",stats.categoyId, firstDocParagraph.getText());
                             stats.type1Error++;
                         } else if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(firstDocParagraph, stats.categoyId) &&
                                 !CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(secondDocParagraph, stats.categoyId)) {
                             // false negative
-                            logger.debug("category [{}] type2Error [{}]",stats.categoyId, firstDocParagraph.getText());
+                            logger.trace("category [{}] type2Error [{}]",stats.categoyId, firstDocParagraph.getText());
                             stats.type2Error++;
                         }
                     }

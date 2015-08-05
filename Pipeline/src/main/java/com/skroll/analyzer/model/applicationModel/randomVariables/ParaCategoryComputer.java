@@ -1,8 +1,7 @@
 package com.skroll.analyzer.model.applicationModel.randomVariables;
 
 import com.skroll.document.CoreMap;
-import com.skroll.document.annotation.CategoryAnnotationHelper;
-
+import com.skroll.document.annotation.ModelClassAndWeightStrategy;
 
 import java.util.List;
 
@@ -12,13 +11,15 @@ import java.util.List;
 public class ParaCategoryComputer implements RVValueComputer {
 
     protected List<Integer> categoryIds;
+    ModelClassAndWeightStrategy modelClassAndWeightStrategy;
 
-    public ParaCategoryComputer(List<Integer> categoryIds) {
+    public ParaCategoryComputer(ModelClassAndWeightStrategy modelClassAndWeightStrategy, List<Integer> categoryIds) {
         this.categoryIds = categoryIds;
+        this.modelClassAndWeightStrategy = modelClassAndWeightStrategy;
     }
 
     public int getValue(CoreMap m) {
-        return CategoryAnnotationHelper.getObservedClassIndex(m, categoryIds);
+        return modelClassAndWeightStrategy.getClassIndexForModel(m, categoryIds);
 
 
     }

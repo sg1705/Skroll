@@ -3,6 +3,7 @@ package com.skroll.analyzer.model.applicationModel.randomVariables;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
+import com.skroll.document.annotation.ModelClassAndWeightStrategy;
 
 import java.util.List;
 
@@ -12,14 +13,16 @@ import java.util.List;
 public class WordIsInCategoryComputer implements WRVValueComputer {
 
     protected List<Integer> categoryIds;
+    ModelClassAndWeightStrategy modelClassAndWeightStrategy;
 
-    public WordIsInCategoryComputer(List<Integer> categoryIds){
+    public WordIsInCategoryComputer(ModelClassAndWeightStrategy modelClassAndWeightStrategy, List<Integer> categoryIds){
         this.categoryIds=categoryIds;
+        this.modelClassAndWeightStrategy = modelClassAndWeightStrategy;
     }
     @Override
     public int getValue(Token word, CoreMap para) {
-        int observedCategory = CategoryAnnotationHelper.getObservedCategoryId(para, categoryIds);
-        List<List<Token>> tokens = CategoryAnnotationHelper.getTokensForCategory(para, observedCategory); //need one more field
+        int observedCategoryId = modelClassAndWeightStrategy.getCategoryIdForModel(para, categoryIds);
+        List<List<Token>> tokens = CategoryAnnotationHelper.getTokensForCategory(para, observedCategoryId); //need one more field
         if (tokens == null) return 0;
 
         for (List<Token> list : tokens)

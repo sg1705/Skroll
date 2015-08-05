@@ -63,7 +63,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
 
     double[] getTrainingWeights(CoreMap para){
-        double[][] weights = CategoryAnnotationHelper.populateTrainingWeights(para, modelRVSetting.getCategoryIds());
+        double[][] weights = modelRVSetting.modelClassAndWeightStrategy.populateTrainingWeights(para, modelRVSetting.getCategoryIds());
 
         double[] oldWeights =weights[0];
         double[] newWeights = weights[1];
@@ -154,7 +154,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     private void updateWithProcessedParasAndWeight(List<CoreMap> originalParas,
                                                    List<CoreMap> processedParas, NBMNData data) {
 //        List<CoreMap> originalParas = doc.getParagraphs();
-        List<CoreMap> observedParas = CategoryAnnotationHelper.getObservedParagraphs(originalParas, modelRVSetting.getCategoryIds());
+        List<CoreMap> observedParas = modelRVSetting.modelClassAndWeightStrategy.getObservedParagraphs(originalParas);
 
         int[][] docFeatures = DocProcessor.generateDocumentFeatures(observedParas, data.getParaDocFeatures(), nbmnConfig);
         int[][] paraFeatures = data.getParaFeatures();
@@ -194,7 +194,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
         NBMNData data = DocProcessor.getParaDataFromDoc(doc, processedParas, nbmnConfig);
         List<CoreMap> parasWithCategoryAnnotation = new ArrayList<>();
         for (int categoryId : modelRVSetting.getCategoryIds())
-            parasWithCategoryAnnotation.addAll(CategoryAnnotationHelper.getParagraphsAnnotatedWithCategory(doc,categoryId));
+            parasWithCategoryAnnotation.addAll(CategoryAnnotationHelper.getParagraphsAnnotatedWithCategory(doc, categoryId));
         updateWithDocument(parasWithCategoryAnnotation, processedParas, data);
     }
 

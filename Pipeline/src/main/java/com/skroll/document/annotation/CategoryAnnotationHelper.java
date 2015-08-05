@@ -96,8 +96,8 @@ public class CategoryAnnotationHelper {
         for (int categoryId : Category.getCategories()) {
                         List<List<String>> definitionList = getTokenStringsForCategory(paragraph, categoryId);
                         for (List<String> definition : definitionList) {
-                            if (logger.isDebugEnabled())
-                                logger.debug("{} \t {} \t {}", paragraph.getId(), categoryId, definition);
+                            if (logger.isTraceEnabled())
+                                logger.trace("{} \t {} \t {}", paragraph.getId(), categoryId, definition);
                         }
             }
     }
@@ -295,62 +295,6 @@ public class CategoryAnnotationHelper {
     }
 
     /**
-     * For a given paragraph, get the index in the list of categoryIds. This index will be used by Model as classIndex.
-     * It will return -1 if there in no category annotation
-     * @param paragraph
-     * @param categoryIds
-     * @return Index in list
-     */
-    public static int getObservedClassIndex(CoreMap paragraph, List<Integer> categoryIds) {
-        HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
-        if (categoryAnnotation == null) return -1;
-        for (int index = 0; index < categoryIds.size(); index++) {
-            if (categoryAnnotation.containsKey(categoryIds.get(index))) {
-                return index;
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * For a given paragraph, get the categoryId. It must be in the given list of categoryIds.
-     * @param paragraph
-     * @param categoryIds
-     * @return
-     */
-    public static int getObservedCategoryId(CoreMap paragraph, List<Integer> categoryIds) {
-        HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
-        if (categoryAnnotation == null) return -1;
-        for (int categoryId : categoryIds) {
-            if (categoryAnnotation.containsKey(categoryId)) {
-                return categoryId;
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * Return only observed paragraph that annotated with one of the category defined in categoryIds list.
-     * @param paras
-     * @param categoryIds
-     * @return
-     */
-    public static List<CoreMap> getObservedParagraphs(List<CoreMap> paras, List<Integer> categoryIds) {
-        List<CoreMap> observedParagraphs = new ArrayList<>();
-        for (CoreMap paragraph : paras) {
-            HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
-            if (DocumentHelper.isObserved(paragraph)) {
-                for (int categoryId : categoryIds) {
-                    if (categoryAnnotation.containsKey(categoryId)) {
-                        observedParagraphs.add(paragraph);
-                    }
-                }
-            }
-        }
-        return observedParagraphs;
-    }
-
-    /**
      * For a given paragraph, for each categories, copy the current category weight into the prior category weight.
      * @param paragraph
      */
@@ -397,33 +341,7 @@ public class CategoryAnnotationHelper {
     }
 
 
-    /**
-     * Populate training weight of model using the training weights of categories of a paragraph into array of double that will feed to model.
-     * @param paragraph
-     * @param categoryIds
-     * @return trainingWeights
-     */
-    public static double[][] populateTrainingWeights(CoreMap paragraph, List<Integer> categoryIds) {
-        HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
-        if (categoryAnnotation==null) return null;
-        int ObservedCategory = CategoryAnnotationHelper.getObservedCategoryId(paragraph, categoryIds);
-        int ObservedClassIndex = CategoryAnnotationHelper.getObservedClassIndex(paragraph, categoryIds);
 
-        CoreMap annotationCoreMap = categoryAnnotation.get(ObservedCategory);
-        if(annotationCoreMap==null) return null;
-
-        double[][] trainingWeights = new double[2][categoryIds.size()];
-
-        trainingWeights[0][ObservedClassIndex] = annotationCoreMap.get(CoreAnnotations.PriorCategoryWeightFloat.class);
-        trainingWeights[1][ObservedClassIndex] = annotationCoreMap.get(CoreAnnotations.CurrentCategoryWeightFloat.class);
-        if (logger.isWarnEnabled()) {
-            for (double[] w1 : trainingWeights) {
-                for (double w2 : w1)
-                    logger.trace("trainingWeights: {}", w2);
-            }
-        }
-        return trainingWeights;
-    }
 
     /**
      * Clear Prior training weight of all categories for a paragraph

@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Token;
-import com.skroll.document.annotation.CategoryAnnotationHelper;
+import com.skroll.document.annotation.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -26,7 +26,10 @@ public class WordIsDefComputerTest {
 
     @Before
     public void setUp() throws Exception {
-        wordIsDefComputer = new WordIsInCategoryComputer(TEST_DEF_CATEGORY_IDS);
+        ManagedCategoryStrategy managedCategoryStrategy = new DefaultManagedCategoryStrategy();
+        UnManagedCategoryStrategy unManagedCategoryStrategy = new DefaultUnManagedCategoryStrategy();
+        ModelClassAndWeightStrategy modelClassAndWeightStrategy = new DefaultModelClassAndWeightStrategy(managedCategoryStrategy, unManagedCategoryStrategy);
+        wordIsDefComputer = new WordIsInCategoryComputer(modelClassAndWeightStrategy, TEST_DEF_CATEGORY_IDS);
         m = new CoreMap();
         token1 = new Token("First");
         token2 = new Token("token");

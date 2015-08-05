@@ -18,7 +18,7 @@ public class Category {
     String name;
 
     public static List<Integer> getCategories()  {
-        return Arrays.asList(Category.DEFINITION,Category.TOC_1,Category.TOC_2, Category.USER_TOC); //Category.TOC_3,Category.TOC_4,Category.TOC_5 );
+        return Arrays.asList(Category.NONE, Category.DEFINITION,Category.TOC_1,Category.TOC_2, Category.USER_TOC); //Category.TOC_3,Category.TOC_4,Category.TOC_5 );
     }
 
 
