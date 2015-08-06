@@ -16,8 +16,10 @@ angular.module('SkrollApp')
           var paragraphId = attrs.scrollToParagraph;
           var para =
             $(element).click(function() {
-              SelectionModel.scrollToParagraph(paragraphId);
               ScrollObserverService.notify(paragraphId);
+              SelectionModel.scrollToParagraph(paragraphId);
+              scope.$apply();
+
             });
         }
       }
