@@ -43,7 +43,8 @@
     </div>
     </md-toolbar>
 
-    <md-content ng-class="{'sk-lhs-search-hover': smodel.hover, 'sk-lhs-hover': !smodel.hover}"   md-scroll-y flex class="md-padding" ng-controller="LHSLevelsCtrl as ctrl">
+    <md-content ng-class="{'sk-lhs-search-hover': smodel.hover, 'sk-lhs-hover': !smodel.hover}" 
+     flex class="md-padding" ng-controller="LHSLevelsCtrl as ctrl">
       <sk-lhs />
     </md-content>
 
@@ -58,15 +59,15 @@
   <!-- end sidebar -->
 
   <!-- content -->
-  <div layout="column" flex >
+  <div layout="column" flex>
 
     <md-toolbar class="skroll-toolbar">
       <sk-toolbar />
     </md-toolbar>
 
-    <md-content md-scroll-y id="skrollport">
-      <div layout="row" flex>
-        <div ng-controller="ViewPortCtrl as ctrl" >
+    <md-content id="skrollport" sk-observe-scroll>
+      <div layout="row" flex >
+        <div ng-controller="ViewPortCtrl as ctrl">
             <md-whiteframe class="md-whiteframe-z3">
               <md-content flex id="content" class="md-padding" ng-click="ctrl.paraClicked($event)" ng-mouseup="ctrl.mouseUp($event)" ng-mousedown="ctrl.mouseDown($event)" layout-padding style="padding-left:40px">
                 <sk-content/>
