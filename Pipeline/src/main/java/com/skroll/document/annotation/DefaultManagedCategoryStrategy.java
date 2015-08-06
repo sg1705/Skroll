@@ -9,6 +9,10 @@ import java.util.List;
 
 /**
  * Created by saurabhagarwal on 8/4/15.
+ *
+ * Default Managed Category Strategy implements the functionality to calculate the category, class index and weight for a model using
+ * Managed category.
+ * Each model should implement it's own strategy to calculate these values if there is any specific implementation.
  */
 public class DefaultManagedCategoryStrategy implements ManagedCategoryStrategy {
     public static final Logger logger = LoggerFactory

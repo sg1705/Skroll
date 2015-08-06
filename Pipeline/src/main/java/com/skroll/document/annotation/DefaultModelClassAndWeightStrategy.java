@@ -11,6 +11,11 @@ import java.util.List;
 
 /**
  * Created by saurabhagarwal on 8/3/15.
+ *
+ * Default ModelClassAndWeight Strategy initialize itself using managed category strategy and un-managed category strategy.
+ * Based on managed and un-managed category, it decides which strategy to call in order to calculate the category,
+ * class index and weight.
+ *
  */
 public class DefaultModelClassAndWeightStrategy implements ModelClassAndWeightStrategy {
     public static final Logger logger = LoggerFactory
@@ -53,7 +58,7 @@ public class DefaultModelClassAndWeightStrategy implements ModelClassAndWeightSt
         } else {
             // handle by unmanaged Category
             int  classIndexForModel = unManagedCategoryStrategy.getClassIndexForModel(paragraph, categoryIds);
-            logger.debug("UnManaged ClassIndexForModel: {}", classIndexForModel);
+            logger.trace("UnManaged ClassIndexForModel: {}", classIndexForModel);
             return classIndexForModel;
         }
     }
@@ -74,7 +79,7 @@ public class DefaultModelClassAndWeightStrategy implements ModelClassAndWeightSt
         } else {
             // handle by unmanaged Category
             int categoryIdForModel =   unManagedCategoryStrategy.getCategoryIdForModel(paragraph, categoryIds);
-            logger.debug("UnManaged CategoryIdForModel:{}", categoryIdForModel);
+            logger.trace("UnManaged CategoryIdForModel:{}", categoryIdForModel);
             return categoryIdForModel;
         }
     }

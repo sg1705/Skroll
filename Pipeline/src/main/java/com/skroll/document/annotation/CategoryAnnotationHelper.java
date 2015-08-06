@@ -58,7 +58,7 @@ public class CategoryAnnotationHelper {
     public static List<Paragraph> getParagraphsAnnotatedWithAnyCategory(Document document) {
         List<Paragraph> termList = new ArrayList<>();
         for (CoreMap paragraph : document.getParagraphs()) {
-            for (int categoryId : Category.getCategories()) {
+            for (int categoryId : Category.getCategoriesExcludingNONE()) {
                 List<List<String>> definitionList = getTokenStringsForCategory(paragraph, categoryId);
                 for (List<String> definition : definitionList) {
                     if(logger.isTraceEnabled())
@@ -93,11 +93,11 @@ public class CategoryAnnotationHelper {
      * @param paragraph
      */
     public static void displayParagraphsAnnotatedWithAnyCategory(CoreMap paragraph) {
-        for (int categoryId : Category.getCategories()) {
-                        List<List<String>> definitionList = getTokenStringsForCategory(paragraph, categoryId);
-                        for (List<String> definition : definitionList) {
+        for (int categoryId : Category.getCategoriesExcludingNONE()) {
+                        List<List<String>> tokenList = getTokenStringsForCategory(paragraph, categoryId);
+                        for (List<String> token : tokenList) {
                             if (logger.isTraceEnabled())
-                                logger.trace("{} \t {} \t {}", paragraph.getId(), categoryId, definition);
+                                logger.trace("{} \t {} \t {}", paragraph.getId(), categoryId, token);
                         }
             }
     }

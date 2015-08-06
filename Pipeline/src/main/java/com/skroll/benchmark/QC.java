@@ -13,9 +13,7 @@ public class QC {
     List<Stats> stats = new ArrayList<>();
 
     public QC() {
-        for (int category : Category.getCategories()){
-            if (category == Category.NONE)
-                continue;
+        for (int category : Category.getCategoriesExcludingNONE()){
             stats.add(new Stats(category));
         }
     }

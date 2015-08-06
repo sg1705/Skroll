@@ -90,7 +90,7 @@ public class SkrollTrainer extends Trainer {
                 try {
                     Document document = documentFactory.get(f.getName());
                     for (CoreMap paragraph : document.getParagraphs()) {
-                        for (int categoryId : Category.getCategories()) {
+                        for (int categoryId : Category.getCategoriesExcludingNONE()) {
                             if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph, categoryId)) {
                                 List<List<String>> definitionList = CategoryAnnotationHelper.getTokenStringsForCategory(
                                         paragraph, categoryId);

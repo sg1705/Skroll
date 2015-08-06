@@ -10,6 +10,12 @@ import java.util.List;
 
 /**
  * Created by saurabhagarwal on 8/4/15.
+ *
+ * Default un-managed Category Strategy implements functionality to calculate the category, class index and weight
+ * using un-managed category for a model.
+ * Each model should implement it's own strategy to calculate these values. This default implementation provides a simple
+ * case where all un-managed categories will return the class index of zero and category of NONE and put the weight from
+ * un-managed category to the category NONE.
  */
 public class DefaultUnManagedCategoryStrategy implements UnManagedCategoryStrategy {
 
@@ -35,7 +41,7 @@ public class DefaultUnManagedCategoryStrategy implements UnManagedCategoryStrate
      */
     @Override
     public int getCategoryIdForModel(CoreMap paragraph, List<Integer> categoryIds) {
-        return 0;
+        return Category.NONE;
     }
 
     /**
