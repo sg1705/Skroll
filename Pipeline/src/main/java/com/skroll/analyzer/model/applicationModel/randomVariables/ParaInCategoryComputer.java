@@ -15,7 +15,7 @@ public class ParaInCategoryComputer implements RVValueComputer {
     }
 
     public int getValue(CoreMap m) {
-        return RVValues.booleanToInt(CategoryAnnotationHelper.isCategoryId(m, categoryId));
+        return RVValues.booleanToInt(CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(m, categoryId));
 
     }
 

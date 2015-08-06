@@ -12,7 +12,6 @@ import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
 import com.skroll.util.Configuration;
-import com.skroll.util.SkrollGuiceModule;
 import com.skroll.util.SkrollTestGuiceModule;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,7 +60,7 @@ public class ClassifierImplTest {
             e.printStackTrace();
             fail(" failed to find a Model");
         }
-        logger.debug ("Number fo Paragraphs returned: " + CategoryAnnotationHelper.getParaWithCategoryAnnotation(document,Category.DEFINITION).size());
+        logger.debug ("Number fo Paragraphs returned: " + CategoryAnnotationHelper.getParagraphsAnnotatedWithCategory(document, Category.DEFINITION).size());
     }
 
     //@Test
@@ -124,7 +123,7 @@ public class ClassifierImplTest {
                         .add(Pipes.EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC)
                         .build();
         doc = pipeline.process(doc);
-        documentClassifier.train(doc);
+            documentClassifier.train(doc);
             documentClassifier.persistModel();
         } catch (Throwable e) {
             e.printStackTrace();

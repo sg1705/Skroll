@@ -5,7 +5,6 @@ import com.google.common.collect.Lists;
 import com.skroll.classifier.Category;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
-import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,18 +44,15 @@ public class JsonDeserializerTest {
         logger.debug("JSON:" +jsonDoc);
         Document document = JsonDeserializer.fromJson(jsonDoc);
         logger.debug("Doc:" + document);
-        CategoryAnnotationHelper.displayCategoryOfDoc(document);
+        CategoryAnnotationHelper.displayParagraphsAnnotatedWithAnyCategoryInDoc(document);
         for (CoreMap paragraph : document.getParagraphs()) {
             logger.debug("paragraph:" +paragraph.getText());
-            if (CategoryAnnotationHelper.isCategoryId(paragraph, Category.DEFINITION) ){
-                List<List<String>> definitionList = CategoryAnnotationHelper.getDefinedTermLists(
+            if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph, Category.DEFINITION) ){
+                List<List<String>> definitionList = CategoryAnnotationHelper.getTokenStringsForCategory(
                         paragraph, Category.DEFINITION);
                 logger.debug("definitionList:" +Joiner.on(" ").join(definitionList));
                 assert ((Joiner.on(" ").join(definitionList).contains("susan")));
             }
-
-            List<Float> trainingWeight = paragraph.get(CoreAnnotations.TrainingWeightAnnotationFloat.class);
-            logger.debug("trainingWeight:" +trainingWeight);
            // assert((trainingWeight.get(0).floatValue()==1.0));
             logger.debug("JSON:" + JsonDeserializer.getJson(document));
         }
@@ -76,19 +72,19 @@ public class JsonDeserializerTest {
 
         List<String> addedDefinition = Lists.newArrayList("jack", "susan");
         List<Token> tokens = DocumentHelper.getTokens(addedDefinition);
-        CategoryAnnotationHelper.addDefinedTokensInCategoryAnnotation( paragraph, tokens, Category.DEFINITION);
+        CategoryAnnotationHelper.annotateParagraphWithTokensAndCategory(paragraph, tokens, Category.DEFINITION);
         //paragraph.set(CoreAnnotations.IsDefinitionAnnotation.class, true);
         paragraph.set(CoreAnnotations.ParagraphIdAnnotation.class, "1");
         paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
         paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
-        CategoryAnnotationHelper.addDefinedTokensInCategoryAnnotation(paragraph, tokens, Category.TOC_1);
-        TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.DEFINITION, (float) 1.0);
-        TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.TOC_1, (float)0.5);
+        CategoryAnnotationHelper.annotateParagraphWithTokensAndCategory(paragraph, tokens, Category.TOC_1);
+        CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.DEFINITION, (float) 1.0);
+        CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.TOC_1, (float) 0.5);
         paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
         paralist.add(paragraph);
 
-        List<List<String>> definitionList = CategoryAnnotationHelper.getDefinedTermLists(
-                paragraph,Category.DEFINITION );
+        List<List<String>> definitionList = CategoryAnnotationHelper.getTokenStringsForCategory(
+                paragraph, Category.DEFINITION);
         for (List<String> definition : definitionList) {
             logger.debug(paragraph.getId() + "\t" + " annotation:" + "\t" + definition);
 

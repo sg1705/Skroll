@@ -3,10 +3,7 @@ package com.skroll.document.annotation;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.skroll.classifier.Category;
-import com.skroll.document.CoreMap;
-import com.skroll.document.Document;
-import com.skroll.document.DocumentHelper;
-import com.skroll.document.Token;
+import com.skroll.document.*;
 import com.skroll.parser.Parser;
 import org.junit.After;
 import org.junit.Before;
@@ -37,15 +34,15 @@ public class CategoryAnnotationHelperTest {
     @Test
     public void testGetTerm() throws Exception {
         testSetMatchedText();
-        logger.info("GetTerm:{}", CategoryAnnotationHelper.getTerm(document));
-        assert(!CategoryAnnotationHelper.getTerm(document).isEmpty());
+        logger.info("GetTerm:{}", CategoryAnnotationHelper.getParagraphsAnnotatedWithAnyCategory(document));
+        assert(!CategoryAnnotationHelper.getParagraphsAnnotatedWithAnyCategory(document).isEmpty());
     }
 
     @Test
     public void testGetParaWithCategoryAnnotation() throws Exception {
         testSetMatchedText();
-        logger.info("GetTerm:{}", CategoryAnnotationHelper.getTerm(document));
-        assert(!CategoryAnnotationHelper.getParaWithCategoryAnnotation(document, Category.DEFINITION).isEmpty());
+        logger.info("GetTerm:{}", CategoryAnnotationHelper.getParagraphsAnnotatedWithAnyCategory(document));
+        assert(!CategoryAnnotationHelper.getParagraphsAnnotatedWithCategory(document, Category.DEFINITION).isEmpty());
     }
 
 
@@ -53,9 +50,9 @@ public class CategoryAnnotationHelperTest {
     public void testAddTokensListInCategoryAnnotation() throws Exception {
         for(CoreMap paragraph: document.getParagraphs()){
             int categoryId = Category.DEFINITION;
-            CategoryAnnotationHelper.addDefinedTokensInCategoryAnnotation(paragraph, DocumentHelper.getTokens(Lists.newArrayList("becontinuing", ",")), Category.DEFINITION);
-            if (CategoryAnnotationHelper.isCategoryId(paragraph,categoryId)) {
-                List<List<String>> definitionList = CategoryAnnotationHelper.getDefinedTermLists(paragraph, categoryId);
+            CategoryAnnotationHelper.annotateParagraphWithTokensAndCategory(paragraph, DocumentHelper.getTokens(Lists.newArrayList("becontinuing", ",")), Category.DEFINITION);
+            if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph, categoryId)) {
+                List<List<String>> definitionList = CategoryAnnotationHelper.getTokenStringsForCategory(paragraph, categoryId);
                 logger.info(paragraph.getId() + "\t" + "existing definition:" + "\t" + Joiner.on(" , ").join(definitionList));
                 assert(Joiner.on("").join(definitionList.get(0)).equals("becontinuing,"));
             }
@@ -69,19 +66,19 @@ public class CategoryAnnotationHelperTest {
       List<List<Token>> tokensList =  Lists.newArrayList();
         tokensList.add(tokens);
         for(CoreMap paragraph: document.getParagraphs()) {
-            CategoryAnnotationHelper.setDInCategoryAnnotation(paragraph, tokensList, Category.DEFINITION);
+            CategoryAnnotationHelper.annotateParagraphWithTokensListAndCategory(paragraph, tokensList, Category.DEFINITION);
 
         }
-        assert(!CategoryAnnotationHelper.getParaWithCategoryAnnotation(document,Category.DEFINITION).isEmpty());
+        assert(!CategoryAnnotationHelper.getParagraphsAnnotatedWithCategory(document, Category.DEFINITION).isEmpty());
     }
 
     @Test
     public void testClearAnnotations() throws Exception {
         testSetMatchedText();
         for(CoreMap coreMap: document.getParagraphs()) {
-            if (CategoryAnnotationHelper.isCategoryId(coreMap, Category.DEFINITION)) {
-                CategoryAnnotationHelper.clearAnnotations(coreMap);
-                if (CategoryAnnotationHelper.isCategoryId(coreMap, Category.DEFINITION)) {
+            if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(coreMap, Category.DEFINITION)) {
+                CategoryAnnotationHelper.clearCategoryAnnotations(coreMap);
+                if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(coreMap, Category.DEFINITION)) {
                     fail(" failed to clear the annotations");
                 }
             }
@@ -93,28 +90,28 @@ public class CategoryAnnotationHelperTest {
         for(CoreMap paragraph: document.getParagraphs()){
             int categoryId = Category.DEFINITION;
             CategoryAnnotationHelper.setMatchedText(paragraph, DocumentHelper.getTokens(Lists.newArrayList("becontinuing", ",")), categoryId);
-            if (CategoryAnnotationHelper.isCategoryId(paragraph,categoryId)) {
-                List<List<String>> definitionList = CategoryAnnotationHelper.getDefinedTermLists(paragraph, categoryId);
+            if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph, categoryId)) {
+                List<List<String>> definitionList = CategoryAnnotationHelper.getTokenStringsForCategory(paragraph, categoryId);
                 logger.info("{} \t definition: \t {}", paragraph.getId(), Joiner.on(" , ").join(definitionList));
                 assert(Joiner.on("").join(definitionList.get(0)).equals("becontinuing,"));
             }
             CategoryAnnotationHelper.setMatchedText(paragraph, DocumentHelper.getTokens(Lists.newArrayList("Event", "of" ,"Default")), categoryId);
-            if (CategoryAnnotationHelper.isCategoryId(paragraph,categoryId)) {
-                List<List<String>> definitionList = CategoryAnnotationHelper.getDefinedTermLists(paragraph, categoryId);
+            if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph, categoryId)) {
+                List<List<String>> definitionList = CategoryAnnotationHelper.getTokenStringsForCategory(paragraph, categoryId);
                 logger.info("{} \t definition: \t {}", paragraph.getId(), Joiner.on(" , ").join(definitionList));
                 assert(Joiner.on("").join(definitionList.get(1)).equals("EventofDefault"));
             }
 
             categoryId = Category.TOC_1;
             CategoryAnnotationHelper.setMatchedText(paragraph, DocumentHelper.getTokens(Lists.newArrayList("becontinuing", ",")), categoryId);
-            if (CategoryAnnotationHelper.isCategoryId(paragraph,categoryId)) {
-                List<List<String>> definitionList = CategoryAnnotationHelper.getDefinedTermLists(paragraph, categoryId);
+            if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph, categoryId)) {
+                List<List<String>> definitionList = CategoryAnnotationHelper.getTokenStringsForCategory(paragraph, categoryId);
                 logger.info("{} \t toc: \t {}", paragraph.getId(), Joiner.on(" , ").join(definitionList));
                 assert(Joiner.on("").join(definitionList.get(0)).equals("becontinuing,"));
             }
             CategoryAnnotationHelper.setMatchedText(paragraph, DocumentHelper.getTokens(Lists.newArrayList("Event", "of" ,"Default")), categoryId);
-            if (CategoryAnnotationHelper.isCategoryId(paragraph,categoryId)) {
-                List<List<String>> definitionList = CategoryAnnotationHelper.getDefinedTermLists(paragraph, categoryId);
+            if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph, categoryId)) {
+                List<List<String>> definitionList = CategoryAnnotationHelper.getTokenStringsForCategory(paragraph, categoryId);
                 logger.info("{} \t toc: \t {}", paragraph.getId(), Joiner.on(" , ").join(definitionList));
                 assert(Joiner.on("").join(definitionList.get(1)).equals("EventofDefault"));
             }

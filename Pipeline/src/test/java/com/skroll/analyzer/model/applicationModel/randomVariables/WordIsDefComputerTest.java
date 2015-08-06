@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Token;
-import com.skroll.document.annotation.CategoryAnnotationHelper;
+import com.skroll.document.annotation.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -26,7 +26,10 @@ public class WordIsDefComputerTest {
 
     @Before
     public void setUp() throws Exception {
-        wordIsDefComputer = new WordIsInCategoryComputer(TEST_DEF_CATEGORY_IDS);
+        ManagedCategoryStrategy managedCategoryStrategy = new DefaultManagedCategoryStrategy();
+        UnManagedCategoryStrategy unManagedCategoryStrategy = new DefaultUnManagedCategoryStrategy();
+        ModelClassAndWeightStrategy modelClassAndWeightStrategy = new DefaultModelClassAndWeightStrategy(managedCategoryStrategy, unManagedCategoryStrategy);
+        wordIsDefComputer = new WordIsInCategoryComputer(modelClassAndWeightStrategy, TEST_DEF_CATEGORY_IDS);
         m = new CoreMap();
         token1 = new Token("First");
         token2 = new Token("token");
@@ -34,11 +37,11 @@ public class WordIsDefComputerTest {
         List<Token> tokenList = Lists.newArrayList(token1,token2,token3);
         List<List<Token>> tokens = new ArrayList<>();
         tokens.add(tokenList);
-        CategoryAnnotationHelper.setDInCategoryAnnotation(m, tokens, Category.DEFINITION);
+        CategoryAnnotationHelper.annotateParagraphWithTokensListAndCategory(m, tokens, Category.DEFINITION);
     }
     @Test
     public void testGetValue() throws Exception {
-        logger.info("{}",CategoryAnnotationHelper.getDefinedTermLists(m, Category.DEFINITION));;
+        logger.info("{}",CategoryAnnotationHelper.getTokenStringsForCategory(m, Category.DEFINITION));;
         wordIsDefComputer.getValue(token1,m);
         assert(wordIsDefComputer.getValue(token1,m)==1);
     }

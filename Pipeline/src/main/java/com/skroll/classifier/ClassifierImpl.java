@@ -58,12 +58,12 @@ public class ClassifierImpl implements Classifier {
         if (!observedParas.isEmpty())
             logger.debug("observedParas:" + "\t" + observedParas);
 
-        logger.debug("Before annotate");
-        CategoryAnnotationHelper.displayCategoryOfDoc(document);
+        logger.trace("Before annotate");
+        CategoryAnnotationHelper.displayParagraphsAnnotatedWithAnyCategoryInDoc(document);
         modelFactory.createBNIModel(modelId, modelRVSetting, document);
 
-        logger.debug("After annotate");
-        CategoryAnnotationHelper.displayCategoryOfDoc(document);
+        logger.trace("After annotate");
+        CategoryAnnotationHelper.displayParagraphsAnnotatedWithAnyCategoryInDoc(document);
         DefinitionLinker linker = new DefinitionLinker();
         document = linker.linkDefinition(document);
         return document;

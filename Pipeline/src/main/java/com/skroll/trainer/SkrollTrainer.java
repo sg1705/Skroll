@@ -81,7 +81,6 @@ public class SkrollTrainer extends Trainer {
     }
 
     public void checkPreEvaluatedFile() {
-
         String fileName = "build/resources/main/preEvaluated/";
         FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(fileName));
         List<String> docLists = new ArrayList<String>();
@@ -91,9 +90,9 @@ public class SkrollTrainer extends Trainer {
                 try {
                     Document document = documentFactory.get(f.getName());
                     for (CoreMap paragraph : document.getParagraphs()) {
-                        for (int categoryId : Category.getCategories()) {
-                            if (CategoryAnnotationHelper.isCategoryId(paragraph, categoryId)) {
-                                List<List<String>> definitionList = CategoryAnnotationHelper.getDefinedTermLists(
+                        for (int categoryId : Category.getCategoriesExcludingNONE()) {
+                            if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph, categoryId)) {
+                                List<List<String>> definitionList = CategoryAnnotationHelper.getTokenStringsForCategory(
                                         paragraph, categoryId);
                                 //logger.debug("definitionList:" + Joiner.on(" ").join(definitionList));
                                 if (definitionList == null) {
@@ -109,4 +108,5 @@ public class SkrollTrainer extends Trainer {
             }
         }
     }
+
 }

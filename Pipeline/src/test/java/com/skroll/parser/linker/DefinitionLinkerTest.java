@@ -36,7 +36,7 @@ public class DefinitionLinkerTest {
                 definedTokens.add(paragraph.getTokens().get(4));
                 List<List<Token>> definedTokenList = new ArrayList();
                 definedTokenList.add(definedTokens);
-                CategoryAnnotationHelper.setDInCategoryAnnotation(paragraph, definedTokenList, Category.DEFINITION);
+                CategoryAnnotationHelper.annotateParagraphWithTokensListAndCategory(paragraph, definedTokenList, Category.DEFINITION);
                 // perform all the linking
                 DefinitionLinker linker = new DefinitionLinker();
                 document = linker.linkDefinition(document);

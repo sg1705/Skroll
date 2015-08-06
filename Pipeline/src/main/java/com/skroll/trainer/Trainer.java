@@ -6,8 +6,8 @@ import com.skroll.classifier.Classifier;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
+import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
-import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
 import com.skroll.document.factory.DocumentFactory;
 import com.skroll.util.Configuration;
 import org.slf4j.Logger;
@@ -89,8 +89,8 @@ public class Trainer {
             return;
         }
         for(CoreMap paragraph : doc.getParagraphs()) {
-            if (paragraph.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)) {
-                TrainingWeightAnnotationHelper.clearOldTrainingWeight(paragraph);
+            if (paragraph.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)) {
+                CategoryAnnotationHelper.clearPriorCategoryWeight(paragraph);
             }
         }
         try {

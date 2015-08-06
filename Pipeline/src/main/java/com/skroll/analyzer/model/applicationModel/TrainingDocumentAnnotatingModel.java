@@ -15,13 +15,10 @@ import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
+import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
-import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by wei2learn on 2/16/2015.
@@ -66,7 +63,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
 
     double[] getTrainingWeights(CoreMap para){
-        double[][] weights = TrainingWeightAnnotationHelper.getParagraphWeight(para, nbmnConfig.getCategoryVar(), modelRVSetting.getCategoryIds());
+        double[][] weights = modelRVSetting.modelClassAndWeightStrategy.populateTrainingWeights(para, modelRVSetting.getCategoryIds());
 
         double[] oldWeights =weights[0];
         double[] newWeights = weights[1];
@@ -121,6 +118,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
                 .stream()
                 .forEach( f -> f.apply(doc.getParagraphs(), processedParas));
 
+
         // in NBMNData, para features can be preprocessed for the whole doc,
         // but doc features depends on the set of the observed paras and cannot be preprocessed just once.
         NBMNData data = DocProcessor.getParaDataFromDoc(doc, processedParas, nbmnConfig);
@@ -156,7 +154,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
     private void updateWithProcessedParasAndWeight(List<CoreMap> originalParas,
                                                    List<CoreMap> processedParas, NBMNData data) {
 //        List<CoreMap> originalParas = doc.getParagraphs();
-        List<CoreMap> observedParas = DocumentHelper.getObservedParagraphs(originalParas);
+        List<CoreMap> observedParas = modelRVSetting.modelClassAndWeightStrategy.getObservedParagraphs(originalParas);
 
         int[][] docFeatures = DocProcessor.generateDocumentFeatures(observedParas, data.getParaDocFeatures(), nbmnConfig);
         int[][] paraFeatures = data.getParaFeatures();
@@ -186,7 +184,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
      */
     public void updateWithDocument(Document doc){
 
-        List<CoreMap> originalParas = doc.getParagraphs();
+
 //        List<CoreMap> processedParas = DocProcessor.processParas(doc, hmm.size());
         List<CoreMap> processedParas = DocProcessor.processParas(doc, modelRVSetting.NUM_WORDS_TO_USE_PER_PARAGRAPH);
         modelRVSetting.postProcessFunctions
@@ -194,7 +192,10 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
                 .forEach( f -> f.apply(doc.getParagraphs(), processedParas));
 
         NBMNData data = DocProcessor.getParaDataFromDoc(doc, processedParas, nbmnConfig);
-        updateWithDocument(originalParas, processedParas, data);
+        List<CoreMap> parasWithCategoryAnnotation = new ArrayList<>();
+        for (int categoryId : modelRVSetting.getCategoryIds())
+            parasWithCategoryAnnotation.addAll(CategoryAnnotationHelper.getParagraphsAnnotatedWithCategory(doc, categoryId));
+        updateWithDocument(parasWithCategoryAnnotation, processedParas, data);
     }
 
     public void updateWithDocument(List<CoreMap> originalParas, List<CoreMap> processedParas, NBMNData data) {

@@ -177,7 +177,7 @@ public class GenerateTrainingData {
                 List<String> defList = new ArrayList<String>();
                 int count = 0;
                 for(CoreMap paragraph : htmlDoc.getParagraphs()) {
-                    List<List<String>> definitionList = CategoryAnnotationHelper.getDefinedTermLists(
+                    List<List<String>> definitionList = CategoryAnnotationHelper.getTokenStringsForCategory(
                             paragraph, Category.DEFINITION);
                     for (List<String> definition: definitionList) {
                         String words = Joiner.on(",").join(definition);
