@@ -109,14 +109,14 @@ public class ConvertTrainingWeight {
                 continue;
             if(categoryAnnotation == null && weightList != null ) {
                 CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.NONE, weightList.get(Category.NONE + LATEST_WEIGHT_INDEX), weightList.get(Category.NONE));
-                logger.debug("convert paragraph Id {} for categoryId {} for weight {}", paragraph.getId(), Category.NONE, weightList.get(Category.NONE+ LATEST_WEIGHT_INDEX));
+                logger.trace("convert paragraph Id {} for categoryId {} for weight {}", paragraph.getId(), Category.NONE, weightList.get(Category.NONE+ LATEST_WEIGHT_INDEX));
             }
             if (categoryAnnotation != null) {
                 for (int categoryId : Category.getCategories()) {
                     CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
                     if (annotationCoreMap != null) {
                         CategoryAnnotationHelper.annotateCategoryWeight(paragraph, categoryId, weightList.get(categoryId + LATEST_WEIGHT_INDEX), weightList.get(categoryId));
-                        logger.debug("convert paragraph Id {} for categoryId {} for weight {}", paragraph.getId(), categoryId, weightList.get(categoryId + LATEST_WEIGHT_INDEX));
+                        logger.trace("convert paragraph Id {} for categoryId {} for weight {}", paragraph.getId(), categoryId, weightList.get(categoryId + LATEST_WEIGHT_INDEX));
                     }
                 }
             }
