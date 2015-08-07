@@ -207,13 +207,7 @@ var LHSModel = {
   },
 
   setTerms: function (terms) {
-    var filteredTerms = this.filterInvalidClass(terms);
-    //iterate over each term to find Y offset
-    this.smodel.terms = _.map(filteredTerms, function(term) {
-      term.offsetY =  $("#"+term.paragraphId).scrollTop();
-      return term;
-    });
-    //this.smodel.terms = this.filterInvalidClass(terms);
+    this.smodel.terms = this.filterInvalidClass(terms);
     this.setActiveClasses(terms);
   }
 
