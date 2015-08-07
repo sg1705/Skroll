@@ -77,7 +77,6 @@
           nearestHeader = headerItems[ii].paragraphId;
         }
       	ctrl.smodel.visibleHeaders.push(nearestHeader);	
-      	console.log("observing scroll from TocCtrl:" + nearestHeader);
       }
     }
 
