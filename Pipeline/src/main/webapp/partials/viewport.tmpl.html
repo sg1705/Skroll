@@ -48,12 +48,6 @@
       <sk-lhs />
     </md-content>
 
-<!--
-      <md-content md-scroll-y flex class="md-padding" ng-controller="LHSCtrl as ctrl">
-        <sk-lhs/>
-      </md-content>
-
-    -->
     </div>
   </md-sidenav>
   <!-- end sidebar -->
@@ -69,8 +63,8 @@
       <div layout="row" flex >
         <div ng-controller="ViewPortCtrl as ctrl">
             <md-whiteframe class="md-whiteframe-z3">
-              <md-content flex id="content" class="md-padding" ng-click="ctrl.paraClicked($event)" ng-mouseup="ctrl.mouseUp($event)" ng-mousedown="ctrl.mouseDown($event)" layout-padding style="padding-left:40px">
-                <sk-content/>
+              <md-content flex id="content" class="md-padding" ng-click="ctrl.paraClicked($event)" ng-mouseup="ctrl.mouseUp($event)" ng-mousedown="ctrl.mouseDown($event)" layout-padding style="padding-left:40px" >
+                <sk-content />
               </md-content>
             </md-whiteframe>  
         </div>
