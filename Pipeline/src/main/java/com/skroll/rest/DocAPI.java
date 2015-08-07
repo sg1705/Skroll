@@ -218,11 +218,11 @@ public class DocAPI {
         Document doc = request.getDocument();
         if (doc == null) return logErrorResponse("Failed to find the document in Map");
 
-        List<Paragraph> termList = CategoryAnnotationHelper.getParagraphsAnnotatedWithAnyCategory(doc);
+        List<TermProto> termList = CategoryAnnotationHelper.getParagraphsAnnotatedWithAnyCategory(doc);
 
-        String definitionJson = new GsonBuilder().create().toJson(termList);
-        if (logger.isTraceEnabled()) logger.trace("definitionJson" + "\t" + definitionJson);
-        Response r = Response.ok().status(Response.Status.OK).entity(definitionJson).build();
+        String term = new GsonBuilder().create().toJson(termList);
+        if (logger.isTraceEnabled()) logger.trace("term" + "\t" + term);
+        Response r = Response.ok().status(Response.Status.OK).entity(term).build();
         return r;
     }
 
@@ -230,45 +230,44 @@ public class DocAPI {
     @Path("/updateTerms")
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @Produces(MediaType.TEXT_HTML)
-    public Response updateTerms(String definedTermParagraphList, @Context HttpHeaders hh, @BeanParam RequestBean request) {
+    public Response updateTerms(String termsList, @Context HttpHeaders hh, @BeanParam RequestBean request) {
 
-        logger.debug("updateTerms- DefinedTermParagraphList:{}", definedTermParagraphList);
-        if (definedTermParagraphList.isEmpty()) return logErrorResponse("NO input data in post request");
+        logger.debug("updateTerms- TermList:{}", termsList);
+        if (termsList.isEmpty()) return logErrorResponse("NO input data in post request");
         String documentId = request.getDocumentId();
         Document doc = request.getDocument();
         if (doc == null) return logErrorResponse("document cannot be found for document id: " + documentId);
 
-        List<Paragraph> definitionJson = null;
+        List<TermProto> termsproto = null;
         try {
-            definitionJson = new GsonBuilder().create().fromJson(definedTermParagraphList, new TypeToken<List<Paragraph>>() {
+            termsproto = new GsonBuilder().create().fromJson(termsList, new TypeToken<List<TermProto>>() {
             }.getType());
-            logger.info("updateTerms:{} for doc id: {}", definitionJson, documentId);
+            logger.info("updateTerms:{} for doc id: {}", termsproto, documentId);
 
         } catch (Exception ex) {
             return logErrorResponse("Failed to parse the json document: {}", ex);
         }
         long startTime = System.currentTimeMillis();
         int updateCategoryId =Category.NONE;
-        Map<Paragraph, List<String>> paraMap = Paragraph.combineTerms(definitionJson);
-        logger.debug("combineTerms:{}", paraMap);
+        Map<TermProto, List<String>> termProtoMap = TermProto.combineTerms(termsproto);
+        logger.debug("combineTerms:{}", termProtoMap);
 
         List<CoreMap> parasForUpdateBNI = new ArrayList<>();
 
-        for (Paragraph modifiedParagraph : paraMap.keySet()) {
+        for (TermProto termProto : termProtoMap.keySet()) {
             for (CoreMap paragraph : doc.getParagraphs()) {
-                if (paragraph.getId().equals(modifiedParagraph.getParagraphId())) {
+                if (paragraph.getId().equals(termProto.getParagraphId())) {
 
                     paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
-                    //TODO: currently assuming that the trainer is always active
                     paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
-                    // log the existing definitions
 
+                    // log the existing definitions
                     CategoryAnnotationHelper.displayParagraphsAnnotatedWithAnyCategory(paragraph);
 
                     List<List<Token>> addedTerms = new ArrayList<>();
-                    if (!(modifiedParagraph.getClassificationId() == Category.NONE)) {
+                    if (!(termProto.getClassificationId() == Category.NONE)) {
 
-                        for (String modifiedTerm : paraMap.get(modifiedParagraph)) {
+                        for (String modifiedTerm : termProtoMap.get(termProto)) {
                             List<Token> tokens = null;
                             try {
                                 Document tempDoc = Parser.parseDocumentFromHtml(modifiedTerm);
@@ -279,7 +278,7 @@ public class DocAPI {
                             addedTerms.add(tokens);
                         }
                     }
-                    updateCategoryId = modifiedParagraph.getClassificationId();
+                    updateCategoryId = termProto.getClassificationId();
                     // check whether the term is "" ro empty or not that received from client
                     //remove any existing annotations
                     CategoryAnnotationHelper.clearCategoryAnnotations(paragraph);
@@ -294,8 +293,8 @@ public class DocAPI {
                                 if (Joiner.on("").join(addedTerm).equals("")) {
                                     CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.NONE, userWeight);
                                 } else {
-                                    if (CategoryAnnotationHelper.setMatchedText(paragraph, addedTerm, modifiedParagraph.getClassificationId())) {
-                                        CategoryAnnotationHelper.annotateCategoryWeight(paragraph, modifiedParagraph.getClassificationId(), userWeight);
+                                    if (CategoryAnnotationHelper.setMatchedText(paragraph, addedTerm, termProto.getClassificationId())) {
+                                        CategoryAnnotationHelper.annotateCategoryWeight(paragraph, termProto.getClassificationId(), userWeight);
 
                                     } else {
                                         CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.NONE, userWeight);
@@ -416,20 +415,20 @@ public class DocAPI {
         if (doc == null)
             return logErrorResponse("document cannot be found for document id: " + documentId);
 
-        List<Paragraph> observations;
+        List<TermProto> observations;
         try {
             observations = new GsonBuilder()
                     .create()
-                    .fromJson(observationsJson, new TypeToken<List<Paragraph>>() {
+                    .fromJson(observationsJson, new TypeToken<List<TermProto>>() {
                     }.getType());
             logger.info("updateTerms:{} for doc id: {}", observations, documentId);
 
         } catch (Exception ex) {
             return logErrorResponse("Failed to parse the json document: {}", ex);
         }
-        Map<Paragraph, List<String>> paraMap = Paragraph.combineTerms(observations);
+        Map<TermProto, List<String>> paraMap = TermProto.combineTerms(observations);
         List<CoreMap> parasForUpdateBNI = new ArrayList<>();
-        for (Paragraph observation : paraMap.keySet()) {
+        for (TermProto observation : paraMap.keySet()) {
             doc.getParagraphs()
                     .stream()
                     .filter( p -> p.getId().equals(observation.getParagraphId()))

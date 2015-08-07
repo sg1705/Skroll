@@ -12,7 +12,7 @@ import com.skroll.pipeline.util.Utils;
 import junit.framework.TestCase;
 import org.junit.Test;
 
-public class ExtractDefinitionsFromParagraphInHtmlDocumentPipeTest extends TestCase {
+public class ExtractDefinitionsFromTermProtoInHtmlDocumentPipeTest extends TestCase {
 
     @Test
     public void testProcess() throws Exception {
