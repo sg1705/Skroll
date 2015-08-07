@@ -16,7 +16,7 @@ import java.util.List;
 
 public class JsonDeserializerTest {
     public static final Logger logger = LoggerFactory
-            .getLogger(Paragraph.class);
+            .getLogger(TermProto.class);
 
     @Before
     public void setUp() throws Exception {

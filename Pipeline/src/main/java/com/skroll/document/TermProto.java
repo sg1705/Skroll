@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-public class Paragraph {
+public class TermProto {
 
     private String paragraphId;
     private String term;
@@ -13,7 +13,7 @@ public class Paragraph {
     private boolean isUserObserved;
 
     public static final Logger logger = LoggerFactory
-            .getLogger(Paragraph.class);
+            .getLogger(TermProto.class);
 
     public String getParagraphId() {
         return paragraphId;
@@ -23,7 +23,7 @@ public class Paragraph {
         return term;
     }
 
-    public Paragraph(String paragraphId, String term, int classificationId, boolean isUserObserved) {
+    public TermProto(String paragraphId, String term, int classificationId, boolean isUserObserved) {
         this.paragraphId = paragraphId;
         this.term = term;
         this.classificationId = classificationId;
@@ -46,15 +46,15 @@ public class Paragraph {
     }
 
 
-    public static Map<Paragraph, List<String>> combineTerms(List<Paragraph> paragraphs) {
+    public static Map<TermProto, List<String>> combineTerms(List<TermProto> termProtos) {
 
-        Map<Paragraph, List<String>> paraMap = new HashMap<>();
+        Map<TermProto, List<String>> paraMap = new HashMap<>();
 
-        for (Paragraph paragraph : paragraphs) {
-                if (paraMap.get(paragraph) == null) {
-                    paraMap.put(paragraph, new ArrayList<String>());
+        for (TermProto termProto : termProtos) {
+                if (paraMap.get(termProto) == null) {
+                    paraMap.put(termProto, new ArrayList<String>());
                 }
-            paraMap.get(paragraph).add(paragraph.getTerm());
+            paraMap.get(termProto).add(termProto.getTerm());
         }
 
         return paraMap;
@@ -63,12 +63,12 @@ public class Paragraph {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Paragraph)) return false;
+        if (!(o instanceof TermProto)) return false;
 
-        Paragraph paragraph = (Paragraph) o;
+        TermProto termProto = (TermProto) o;
 
-        if (classificationId != paragraph.classificationId) return false;
-        if (!paragraphId.equals(paragraph.paragraphId)) return false;
+        if (classificationId != termProto.classificationId) return false;
+        if (!paragraphId.equals(termProto.paragraphId)) return false;
 
         return true;
     }
@@ -80,10 +80,10 @@ public class Paragraph {
         return result;
     }
 
-    public static class ParagraphComparator implements Comparator<Paragraph> {
+    public static class ParagraphComparator implements Comparator<TermProto> {
 
         @Override
-        public int compare(Paragraph o1, Paragraph o2) {
+        public int compare(TermProto o1, TermProto o2) {
             if (Integer.parseInt(o1.getParagraphId()) > Integer.parseInt(o2.getParagraphId())) {
                 return 1;
             } else  if (Integer.parseInt(o1.getParagraphId()) < Integer.parseInt(o2.getParagraphId())) {

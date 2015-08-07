@@ -55,8 +55,8 @@ public class CategoryAnnotationHelper {
      * @param document
      * @return List of Paragragh
      */
-    public static List<Paragraph> getParagraphsAnnotatedWithAnyCategory(Document document) {
-        List<Paragraph> termList = new ArrayList<>();
+    public static List<TermProto> getParagraphsAnnotatedWithAnyCategory(Document document) {
+        List<TermProto> termList = new ArrayList<>();
         for (CoreMap paragraph : document.getParagraphs()) {
             for (int categoryId : Category.getCategoriesExcludingNONE()) {
                 List<List<String>> definitionList = getTokenStringsForCategory(paragraph, categoryId);
@@ -66,7 +66,7 @@ public class CategoryAnnotationHelper {
                     if (!definition.isEmpty()) {
                         if (!(Joiner.on(" ").join(definition).equals(""))) {
                             boolean isObserved = DocumentHelper.isObserved(paragraph);
-                            termList.add(new Paragraph(paragraph.getId(), Joiner.on(" ").join(definition), categoryId, isObserved));
+                            termList.add(new TermProto(paragraph.getId(), Joiner.on(" ").join(definition), categoryId, isObserved));
                         }
                     }
                 }
@@ -96,8 +96,8 @@ public class CategoryAnnotationHelper {
         for (int categoryId : Category.getCategoriesExcludingNONE()) {
                         List<List<String>> tokenList = getTokenStringsForCategory(paragraph, categoryId);
                         for (List<String> token : tokenList) {
-                            if (logger.isTraceEnabled())
-                                logger.trace("{} \t {} \t {}", paragraph.getId(), categoryId, token);
+                            if (logger.isDebugEnabled())
+                                logger.debug("{} \t {} \t {}", paragraph.getId(), categoryId, token);
                         }
             }
     }
