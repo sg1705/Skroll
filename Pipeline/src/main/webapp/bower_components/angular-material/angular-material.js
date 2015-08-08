@@ -10993,8 +10993,8 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $timeout, $
         bot    = root.bottom - vrect.top,
         //start hack
         //set left to 0
-        left = 0,
-        //left   = hrect.left - root.left,
+        //left = 0,
+        left   = hrect.left - root.left,
         //end hack
         width  = hrect.width,
         styles = {
