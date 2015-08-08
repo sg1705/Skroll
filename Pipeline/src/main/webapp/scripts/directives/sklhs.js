@@ -6,37 +6,23 @@
  * @description
  * # skLhs
  */
-angular.module('SkrollApp')
-  .directive('skLhs', function () {
-    return {
-      templateUrl: 'partials/sklhs.tmpl.html',
-      restrict: 'E',
-      controller: LHSCtrl,
-      controllerAs: 'ctrl'
-    };
-  });
-
-var LHSCtrl = function (LHSModel) {
-	this.sections = LHSModel.sections;
-  this.smodel = LHSModel.smodel;
-  this.classes = LHSModel.classes;
-}
-
-LHSCtrl.prototype.toggleSection = function(index) {
-  this.classes[index].isSelected = !this.classes[index].isSelected;
-}
+angular
+  .module('SkrollApp')
+  .directive('skLhs', SkLhs);
 
 
-angular.module('SkrollApp')
-	.controller('LHSCtrl', LHSCtrl);
+function SkLhs() {
+
+  return {
+    templateUrl: 'partials/sklhs.tmpl.html',
+    restrict: 'E',
+    controller: 'TocCtrl',
+    controllerAs: 'ctrl'
+  };
 
 
-  /**
- * @ngdoc directive
- * @name myappApp.directive:skLhsLevels
- * @description
- * # skLhsLevels
- */
+};
+
 angular.module('SkrollApp')
   .directive('skLhsLevels', function () {
     return {

@@ -13,7 +13,7 @@ import java.util.*;
  */
 public class JsonDeserializer {
     public static final Logger logger = LoggerFactory
-            .getLogger(Paragraph.class);
+            .getLogger(TermProto.class);
 
     public static String getJson(Document doc) {
         Gson gson = getGson();

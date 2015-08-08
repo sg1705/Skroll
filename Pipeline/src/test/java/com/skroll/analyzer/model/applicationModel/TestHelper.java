@@ -44,6 +44,11 @@ public class TestHelper {
                             .add(Pipes.EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC)
                             .build();
             Document doc = pipeline.process(htmlDoc);
+            for (CoreMap paragraph : doc.getParagraphs()) {
+                if (!CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph,Category.DEFINITION)) {
+                    CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.NONE, (float) 1.0);
+                }
+            }
             return doc;
         } catch (Exception e) {
             e.printStackTrace();
@@ -82,7 +87,7 @@ public class TestHelper {
         List<List<Token>> tokenList = new ArrayList<>();
         tokenList.add(tokens);
         para.set(CoreAnnotations.TokenAnnotation.class, tokens);
-        CategoryAnnotationHelper.setDInCategoryAnnotation(para,tokenList, Category.DEFINITION);
+        CategoryAnnotationHelper.annotateParagraphWithTokensListAndCategory(para, tokenList, Category.DEFINITION);
         paraList.add(para);
 
 
@@ -90,7 +95,9 @@ public class TestHelper {
         strings = Arrays.asList("\"", "in", "\"", "out", "out");
         tokens = DocumentHelper.createTokens(strings);
         para.set(CoreAnnotations.TokenAnnotation.class, tokens);
-        CategoryAnnotationHelper.setDInCategoryAnnotation(para, tokenList, Category.DEFINITION);
+        para.set(CoreAnnotations.IsUserObservationAnnotation.class,true);
+        para.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class,true);
+        CategoryAnnotationHelper.annotateParagraphWithTokensListAndCategory(para, tokenList, Category.DEFINITION);
         paraList.add(para);
 
         Document doc = new Document();

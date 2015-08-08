@@ -91,17 +91,13 @@ public class DocumentHelper {
 
     }
 
+
     public static void clearObservedParagraphs(Document doc) {
         for (CoreMap paragraph : doc.getParagraphs()) {
             if (isObserved(paragraph)) {
                 paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, false);
             }
         }
-    }
-
-    public static List<CoreMap> getObservedParagraphs(Document doc) {
-        return getObservedParagraphs(doc.getParagraphs());
-
     }
 
     public static List<Token> getTokensOfADoc(Document doc){

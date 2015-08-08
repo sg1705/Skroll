@@ -73,6 +73,12 @@ public class NBTrainingHelper {
         for (MultiplexNode node : bn.getMultiNodes()) {
             DiscreteNode activeNode = node.getActiveNode();
             DiscreteNode activeParent = node.getActiveNode().getParents()[0];
+
+            // skip update if either the node or the corresponding doc feature is unobserved
+            // cannot have the case where node is observed but corresponding doc feature is not observed,
+            // since any observed node would also set the correspondign doc feature.
+            if (activeNode.getObservation() == -1 || activeParent.getObservation() == -1) continue;
+
             NodeTrainingHelper.updateCount(activeNode, weight);
             NodeTrainingHelper.updateCount(activeParent, weight);
         }

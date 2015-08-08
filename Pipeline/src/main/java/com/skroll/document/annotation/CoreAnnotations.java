@@ -147,12 +147,31 @@ public class CoreAnnotations {
             return Boolean.class;
         }
     }
+
     /**
      * annotation for keeping the user training weight for a paragraph
      */
     public static class TrainingWeightAnnotationFloat implements CoreAnnotation<List<Float>> {
         public Class<List<Float>> getType() {
             return EraserUtils.<Class<List<Float>>> uncheckedCast(List.class);
+        }
+    }
+
+    /**
+     * annotation to store the current training weight for a category
+     */
+       public static class CurrentCategoryWeightFloat implements CoreAnnotation<Float> {
+        public Class<Float> getType() {
+            return Float.class;
+        }
+    }
+
+    /**
+     * annotation to store the prior training weight for a category
+     */
+    public static class PriorCategoryWeightFloat implements CoreAnnotation<Float> {
+        public Class<Float> getType() {
+            return Float.class;
         }
     }
 
@@ -349,6 +368,16 @@ public class CoreAnnotations {
     public static class ParserVersionAnnotationInteger implements CoreAnnotation<Integer> {
         public Class<Integer> getType() {
             return Integer.class;
+        }
+    }
+
+
+    /**
+     * Annotation to indicate that this paragraph has matched with UserDefined TOC
+     */
+    public static class IsInUserDefinedTOCAnnotation implements CoreAnnotation<Boolean> {
+        public Class<Boolean> getType() {
+            return Boolean.class;
         }
     }
 

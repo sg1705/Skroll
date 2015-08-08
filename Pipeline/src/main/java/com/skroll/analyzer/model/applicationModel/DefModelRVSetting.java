@@ -1,11 +1,14 @@
 package com.skroll.analyzer.model.applicationModel;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.NotInTableRVComputer;
 import com.skroll.analyzer.model.applicationModel.randomVariables.NumberTokensComputer;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVCreater;
 import com.skroll.analyzer.model.applicationModel.randomVariables.LowerCaseWordsComputer;
-import com.skroll.document.annotation.CoreAnnotations;
+import com.skroll.analyzer.model.bn.config.NBMNConfig;
+import com.skroll.document.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -43,7 +46,20 @@ public class DefModelRVSetting extends ModelRVSetting {
                 DEFAULT_WORD_FEATURES,
                 DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS,
                 DEFAULT_WORD_VARS, categoryIds);
-
     }
 
+    @JsonCreator
+    public DefModelRVSetting(
+            @JsonProperty("nbmnConfig") NBMNConfig nbmnConfig,
+            @JsonProperty("wordType") RandomVariable wordType,
+            @JsonProperty("wordFeatures") List<RandomVariable> wordFeatures,
+            @JsonProperty("categoryIds") List<Integer> categoryIds) {
+        super(nbmnConfig, wordType, wordFeatures, categoryIds);
+    }
+    @Override
+    protected void initializeStrategies() {
+        ManagedCategoryStrategy managedCategoryStrategy = new DefaultManagedCategoryStrategy();
+        UnManagedCategoryStrategy unManagedCategoryStrategy = new DefaultUnManagedCategoryStrategy();
+        this.modelClassAndWeightStrategy = new DefaultModelClassAndWeightStrategy(managedCategoryStrategy, unManagedCategoryStrategy);
+    }
 }

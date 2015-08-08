@@ -12,7 +12,7 @@ import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
 import com.skroll.util.Configuration;
-import com.skroll.util.SkrollGuiceModule;
+import com.skroll.util.SkrollTestGuiceModule;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -30,11 +30,13 @@ public class ClassifierImplTest {
     private static ClassifierFactory classifierFactory = new ClassifierFactory();
     private static Classifier documentClassifier = null;
     private static Classifier tocClassifier = null;
+    private Configuration config;
 
     @Before
     public void setup(){
       try {
-          Injector injector = Guice.createInjector(new SkrollGuiceModule());
+          Injector injector = Guice.createInjector(new SkrollTestGuiceModule());
+          config = injector.getInstance(Configuration.class);
           ClassifierFactory classifierFactory = injector.getInstance(ClassifierFactory.class);
           documentClassifier = classifierFactory.getClassifier(Category.DEFINITION);
           tocClassifier = classifierFactory.getClassifier(Category.TOC_1);
@@ -58,13 +60,11 @@ public class ClassifierImplTest {
             e.printStackTrace();
             fail(" failed to find a Model");
         }
-        logger.debug ("Number fo Paragraphs returned: " + CategoryAnnotationHelper.getParaWithCategoryAnnotation(document,Category.DEFINITION).size());
+        logger.debug ("Number fo Paragraphs returned: " + CategoryAnnotationHelper.getParagraphsAnnotatedWithCategory(document, Category.DEFINITION).size());
     }
 
     //@Test
      public void testTrainFolders(String folderName) {
-            Configuration configuration = new Configuration();
-
         FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(folderName));
         for (File f : iterable) {
             if (f.isFile()) {
@@ -95,18 +95,10 @@ public class ClassifierImplTest {
 
             }
         }
-//        try {
-//            documentClassifier.persistModel();
-//        } catch (ObjectPersistUtil.ObjectPersistException e) {
-//            e.printStackTrace();
-//            fail("failed to persist the model");
-//        }
     }
 
     @Test
     public void testTrainFile()  {
-            Configuration configuration = new Configuration();
-
         String fileName = "src/main/resources/trainingDocuments/indentures/AMC Networks Indenture.html";
 
         String htmlText = null;
@@ -131,8 +123,7 @@ public class ClassifierImplTest {
                         .add(Pipes.EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC)
                         .build();
         doc = pipeline.process(doc);
-        documentClassifier.train(doc);
-
+            documentClassifier.train(doc);
             documentClassifier.persistModel();
         } catch (Throwable e) {
             e.printStackTrace();

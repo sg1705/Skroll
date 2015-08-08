@@ -29,7 +29,7 @@ public class ExtractDefinitionsFromParagraphInHtmlDocumentPipe extends SyncPipe<
                      definedTerms.add(tokens.get(i));
                 }
 //                CategoryAnnotationHelper.setDefinedTermTokensInParagraph(definedTerms, paragraph);
-                CategoryAnnotationHelper.setDInCategoryAnnotation(paragraph, Arrays.asList(definedTerms), Category.DEFINITION);
+                CategoryAnnotationHelper.annotateParagraphWithTokensListAndCategory(paragraph, Arrays.asList(definedTerms), Category.DEFINITION);
             }
 
         }

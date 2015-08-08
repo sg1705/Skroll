@@ -7,7 +7,8 @@
  * # fileUpload
  */
 angular.module('SkrollApp')
-  .directive('skContent', ['documentModel', 'documentService', 'LHSModel', 'SelectionModel', '$timeout', 'ToolbarModel',
+  .directive('skContent', [ 'documentModel', 'documentService', 'LHSModel', 
+                            'SelectionModel', '$timeout', 'ToolbarModel',
     function(documentModel, documentService, LHSModel, SelectionModel, $timeout, ToolbarModel) {
       return {
         restricted: 'E',
@@ -32,6 +33,14 @@ angular.module('SkrollApp')
                     SelectionModel.scrollToSelection(SelectionModel.serializedSelection);
                   }
                   documentModel.isProcessing = false;
+                  //calculate offsets for headers
+                  //iterate over each term to find Y offset
+                  LHSModel.smodel.terms = _.map(LHSModel.smodel.terms, function(term) {
+                    term.offsetY =  $("#"+term.paragraphId).scrollTop();
+                    return term;
+                  });
+
+                  
                 }, 0);
                 //documentModel.isProcessing = false;
                 ToolbarModel.updateBenchmark(documentService);
