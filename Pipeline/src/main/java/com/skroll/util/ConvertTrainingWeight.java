@@ -7,6 +7,8 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.skroll.classifier.Category;
 import com.skroll.classifier.ClassifierFactory;
+import com.skroll.classifier.ClassifierFactoryStrategy;
+import com.skroll.classifier.DefaultClassifierFactoryStrategy;
 import com.skroll.classifier.factory.CorpusFSModelFactoryImpl;
 import com.skroll.classifier.factory.ModelFactory;
 import com.skroll.document.CoreMap;
@@ -51,6 +53,7 @@ public class ConvertTrainingWeight {
                             .to(CorpusFSModelFactoryImpl.class);
                     bind(Configuration.class).to(TrainerConfiguration.class);
                     bind(ClassifierFactory.class);
+                    bind(ClassifierFactoryStrategy.class).to(DefaultClassifierFactoryStrategy.class);
                 }
             });
             classifierFactory = injector.getInstance(ClassifierFactory.class);
@@ -109,7 +112,7 @@ public class ConvertTrainingWeight {
                 continue;
             if(categoryAnnotation == null && weightList != null ) {
                 CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.NONE, weightList.get(Category.NONE + LATEST_WEIGHT_INDEX), weightList.get(Category.NONE));
-                logger.trace("convert paragraph Id {} for categoryId {} for weight {}", paragraph.getId(), Category.NONE, weightList.get(Category.NONE+ LATEST_WEIGHT_INDEX));
+                logger.trace("convert paragraph Id {} for categoryId {} for weight {}", paragraph.getId(), Category.NONE, weightList.get(Category.NONE + LATEST_WEIGHT_INDEX));
             }
             if (categoryAnnotation != null) {
                 for (int categoryId : Category.getCategories()) {

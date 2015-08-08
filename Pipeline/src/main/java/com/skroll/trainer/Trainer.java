@@ -94,7 +94,7 @@ public class Trainer {
             }
         }
         try {
-            for ( Classifier classifier : classifierFactory.getClassifiers(doc)) {
+            for ( Classifier classifier : classifierFactory.getClassifiers()) {
                 classifier.trainWithWeight(doc);
             }
         } catch (Exception e) {
