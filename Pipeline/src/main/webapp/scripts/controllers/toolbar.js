@@ -120,7 +120,7 @@ ToolbarCtrl.prototype.showAnnotations = function() {
 				ds = newJson;
 			}
 			$("#rightPane").html(ds);
-			this.$mdSidenav('right').toggle();
+			this.$mdSidenav('left').toggle();
 		}), function(data, status) {
 			console.log(status);
 		});

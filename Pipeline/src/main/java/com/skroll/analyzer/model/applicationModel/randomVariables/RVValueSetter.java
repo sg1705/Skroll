@@ -22,15 +22,15 @@ public class RVValueSetter {
 
     // assuming value represent boolean. 0== false, 1 ==true
     void setValue(int value, CoreMap m, List<List<Token>> terms) {
-        CategoryAnnotationHelper.setTokensForClassifier(m, terms, categoryIds, value); // need one more para seqId to set the right category for the terms.
+        CategoryAnnotationHelper.annotateParagraphWithTokensListAndCategoryOfClassIndex(m, terms, categoryIds, value); // need one more para seqId to set the right category for the terms.
     }
 
     void addTerms(CoreMap m, List<Token> terms, int value) {
-        CategoryAnnotationHelper.addTokensForClassifier(m, terms, categoryIds, value); //same here
+        CategoryAnnotationHelper.annotateParagraphWithTokensAndCategoryOfClassIndex(m, terms, categoryIds, value); //same here
 
     }
 
     void clearValue(CoreMap m) {
-        CategoryAnnotationHelper.clearAnnotations(m); //same here
+        CategoryAnnotationHelper.clearCategoryAnnotations(m); //same here
     }
 }

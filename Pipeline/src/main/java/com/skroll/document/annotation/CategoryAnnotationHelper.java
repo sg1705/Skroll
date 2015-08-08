@@ -2,7 +2,6 @@ package com.skroll.document.annotation;
 
 import com.google.common.base.Joiner;
 import com.skroll.classifier.Category;
-import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +18,14 @@ public class CategoryAnnotationHelper {
     public static final Logger logger = LoggerFactory
             .getLogger(CategoryAnnotationHelper.class);
 
-
-    public static List<List<String>> getDefinedTermLists(CoreMap coreMap, int categoryId) {
-        HashMap<Integer, CoreMap> categoryAnnotation = coreMap.get(CoreAnnotations.CategoryAnnotations.class);
+    /**
+     * For a paragraph, get all Token Strings that are annotated with the given categoryId
+     * @param paragraph
+     * @param categoryId
+     * @return List of List of Token String
+     */
+    public static List<List<String>> getTokenStringsForCategory(CoreMap paragraph, int categoryId) {
+        HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
         if (categoryAnnotation==null) return new ArrayList<>();
         if(categoryAnnotation.get(categoryId)==null) return new ArrayList<>();
         List<List<Token>> definitionList = categoryAnnotation.get(categoryId).get(CoreAnnotations.TermTokensAnnotation.class);
@@ -33,51 +37,88 @@ public class CategoryAnnotationHelper {
         return strings;
     }
 
-    public static List<List<Token>> getDefinedTermTokensInParagraph(CoreMap paragraph, int categoryId) {
+    /**
+     * For a given paragraph, get all tokens that are annotated with the given categoryId
+     * @param paragraph
+     * @param categoryId
+     * @return List of List of Token
+     */
+    public static List<List<Token>> getTokensForCategory(CoreMap paragraph, int categoryId) {
         HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
         if (categoryAnnotation==null) return new ArrayList<>();
         if(categoryAnnotation.get(categoryId)==null) return new ArrayList<>();
         return categoryAnnotation.get(categoryId).get(CoreAnnotations.TermTokensAnnotation.class);
     }
 
-    public static List<Paragraph> getTerm(Document document) {
-        List<Paragraph> termList = new ArrayList<>();
-
+    /**
+     * Get paragraph Objects that are annotated with one or more categories
+     * @param document
+     * @return List of Paragragh
+     */
+    public static List<TermProto> getParagraphsAnnotatedWithAnyCategory(Document document) {
+        List<TermProto> termList = new ArrayList<>();
         for (CoreMap paragraph : document.getParagraphs()) {
-            for (int categoryId : Category.getCategories()) {
-                List<List<String>> definitionList = getDefinedTermLists(paragraph,categoryId );
+            for (int categoryId : Category.getCategoriesExcludingNONE()) {
+                List<List<String>> definitionList = getTokenStringsForCategory(paragraph, categoryId);
                 for (List<String> definition : definitionList) {
                     if(logger.isTraceEnabled())
                         logger.trace( "{} \t {} \t {}",paragraph.getId(),categoryId , definition);
                     if (!definition.isEmpty()) {
                         if (!(Joiner.on(" ").join(definition).equals(""))) {
                             boolean isObserved = DocumentHelper.isObserved(paragraph);
-                            termList.add(new Paragraph(paragraph.getId(), Joiner.on(" ").join(definition), categoryId, isObserved));
+                            termList.add(new TermProto(paragraph.getId(), Joiner.on(" ").join(definition), categoryId, isObserved));
                         }
                     }
-
                 }
             }
         }
         return termList;
     }
 
-    public static void displayTerm(CoreMap paragraph) {
-        for (int categoryId : Category.getCategories()) {
-                        List<List<String>> definitionList = getDefinedTermLists(paragraph, categoryId);
-                        for (List<String> definition : definitionList) {
+    /**
+     * Get all paragraphs (coreMap) those are annotated with the given category id.
+     * @param doc
+     * @param categoryId
+     * @return list of paragraphs
+     */
+    public static List<CoreMap> getParagraphsAnnotatedWithCategory(Document doc, int categoryId){
+        List<CoreMap> paragraphs= new ArrayList<>();
+        for (CoreMap paragraph: doc.getParagraphs()){
+            if (isParagraphAnnotatedWithCategoryId(paragraph, categoryId)) paragraphs.add(paragraph);
+        }
+        return paragraphs;
+    }
+    /**
+     * Display the paragraphs those are annotated with any category
+     * @param paragraph
+     */
+    public static void displayParagraphsAnnotatedWithAnyCategory(CoreMap paragraph) {
+        for (int categoryId : Category.getCategoriesExcludingNONE()) {
+                        List<List<String>> tokenList = getTokenStringsForCategory(paragraph, categoryId);
+                        for (List<String> token : tokenList) {
                             if (logger.isDebugEnabled())
-                                logger.debug("{} \t {} \t {}", paragraph.getId(), categoryId, definition);
+                                logger.debug("{} \t {} \t {}", paragraph.getId(), categoryId, token);
                         }
             }
     }
 
-    public static void displayCategoryOfDoc(Document document) {
+    /**
+     * Display all paragraphs those are annotated with category in a document
+     * @param document
+     */
+    public static void displayParagraphsAnnotatedWithAnyCategoryInDoc(Document document) {
         for (CoreMap paragraph : document.getParagraphs()) {
-            displayTerm(paragraph);
+            displayParagraphsAnnotatedWithAnyCategory(paragraph);
         }
     }
-    public static boolean isCategoryId(CoreMap paragraph, int categoryId) {
+
+    /**
+     * To find whether a given paragraph annotated with given category or not.
+     * @param paragraph
+     * @param categoryId
+     * @return
+     */
+    public static boolean isParagraphAnnotatedWithCategoryId(CoreMap paragraph, int categoryId) {
         HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
         if (categoryAnnotation==null) return false;
         if (categoryAnnotation.containsKey(categoryId)) {
@@ -87,15 +128,14 @@ public class CategoryAnnotationHelper {
     }
 
 
-    public static List<CoreMap> getParaWithCategoryAnnotation(Document doc, int categoryId){
-        List<CoreMap> paragraphs= new ArrayList<>();
-        for (CoreMap paragraph: doc.getParagraphs()){
-            if (isCategoryId(paragraph, categoryId)) paragraphs.add(paragraph);
-        }
-        return paragraphs;
-    }
-
-    public static HashMap<Integer, CoreMap> checkNull(CoreMap paragraph,  int category) {
+    /**
+     * create Category Annotation object and coremap object for a given category
+     * if it does not exist for a given paragraph and given category
+     * @param paragraph
+     * @param category
+     * @return categoryAnnotation
+     */
+    private static HashMap<Integer, CoreMap> createOrGetCategoryAnnotation(CoreMap paragraph, int category) {
         HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
         if (categoryAnnotation==null) {
             categoryAnnotation = new HashMap<>();
@@ -109,49 +149,68 @@ public class CategoryAnnotationHelper {
     }
 
     /**
-     * Given a classifier Proto, classIndex, add given tokens for the category annotation in the given paragraph
+     * Annotated a given Paragraph with given List of token and a given categoryId
+     * @param paragraph
+     * @param newTokens
+     * @param categoryId
+     */
+    public static void annotateParagraphWithTokensAndCategory(CoreMap paragraph, List<Token> newTokens, int categoryId) {
+        HashMap<Integer, CoreMap> categoryAnnotation = createOrGetCategoryAnnotation(paragraph, categoryId);
+        CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
+        List<List<Token>>  tokens = annotationCoreMap.get(CoreAnnotations.TermTokensAnnotation.class);
+        if (tokens == null) {
+            tokens = new ArrayList<>();
+            annotationCoreMap.set(CoreAnnotations.TermTokensAnnotation.class, tokens);
+        }
+        tokens.add(newTokens);
+        paragraph.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
+    }
+
+    /**
+     * Annotated a given Paragraph with given List of List of token and a given categoryId
+     * @param paragraph
+     * @param tokens
+     * @param categoryId
+     */
+    public static void annotateParagraphWithTokensListAndCategory(CoreMap paragraph, List<List<Token>> tokens, int categoryId) {
+        HashMap<Integer, CoreMap> categoryAnnotation = createOrGetCategoryAnnotation(paragraph, categoryId);
+        CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
+        annotationCoreMap.set(CoreAnnotations.TermTokensAnnotation.class, tokens);
+        paragraph.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
+    }
+
+    /**
+     * Annotated a given Paragraph with given List of token and category. The category will be determined by the index  of the categoryIds list
+     * This function is used by the model.
      * @param paragraph
      * @param newTokens
      * @param categoryIds
      * @param classIndex
      */
-    public static void addTokensForClassifier(CoreMap paragraph, List<Token> newTokens, List<Integer> categoryIds, int classIndex) {
-        addDefinedTokensInCategoryAnnotation(paragraph,newTokens, categoryIds.get(classIndex));
+    public static void annotateParagraphWithTokensAndCategoryOfClassIndex(CoreMap paragraph, List<Token> newTokens, List<Integer> categoryIds, int classIndex) {
+        // No weight will be set as this function will be used to infer the categories
+        annotateParagraphWithTokensAndCategory(paragraph, newTokens, categoryIds.get(classIndex));
 
-    }
-    public static void addDefinedTokensInCategoryAnnotation(CoreMap paragraph, List<Token> newTokens, int categoryId) {
-        HashMap<Integer, CoreMap> categoryAnnotation = checkNull(paragraph, categoryId);
-        CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
-        List<List<Token>>  definitionList = annotationCoreMap.get(CoreAnnotations.TermTokensAnnotation.class);
-        if (definitionList == null) {
-            definitionList = new ArrayList<>();
-            annotationCoreMap.set(CoreAnnotations.TermTokensAnnotation.class, definitionList);
-        }
-        definitionList.add(newTokens);
-        paragraph.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
     }
 
     /**
-     * Given a classifier id, classIndex, set given tokens for the category annotation in the given paragraph
-     * @param paragraph
+     * Annotated a given Paragraph with given List of List of token and category. The category will be determined by the index  of the categoryIds list
+     * This function is used by the model.
+     *  @param paragraph
      * @param definitions
      * @param categoryIds
      * @param classIndex
      */
-    public static void setTokensForClassifier(CoreMap paragraph, List<List<Token>> definitions, List<Integer> categoryIds, int classIndex) {
-
-        setDInCategoryAnnotation(paragraph,definitions, categoryIds.get(classIndex));
+    public static void annotateParagraphWithTokensListAndCategoryOfClassIndex(CoreMap paragraph, List<List<Token>> definitions, List<Integer> categoryIds, int classIndex) {
+        // No weight will be set as this function will be used to infer the categories
+        annotateParagraphWithTokensListAndCategory(paragraph, definitions, categoryIds.get(classIndex));
     }
 
-
-    public static void setDInCategoryAnnotation(CoreMap paragraph, List<List<Token>> definitions, int categoryId) {
-        HashMap<Integer, CoreMap> categoryAnnotation = checkNull(paragraph, categoryId);
-        CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
-        annotationCoreMap.set(CoreAnnotations.TermTokensAnnotation.class, definitions);
-        paragraph.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
-    }
-
-    public static void clearAnnotations(CoreMap paragraph){
+    /**
+     * clear category annotation of a given paragraph
+     * @param paragraph
+     */
+    public static void clearCategoryAnnotations(CoreMap paragraph){
         paragraph.set(CoreAnnotations.CategoryAnnotations.class, null);
     }
 
@@ -160,7 +219,7 @@ public class CategoryAnnotationHelper {
      * @param paragraph
      */
     public static void clearObservations(CoreMap paragraph) {
-        CategoryAnnotationHelper.clearAnnotations(paragraph);
+        CategoryAnnotationHelper.clearCategoryAnnotations(paragraph);
         paragraph.remove(CoreAnnotations.IsUserObservationAnnotation.class);
         paragraph.remove(CoreAnnotations.TrainingWeightAnnotationFloat.class);
     }
@@ -176,6 +235,14 @@ public class CategoryAnnotationHelper {
         paragraph.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
     }
 
+    /**
+     * Match the text of the given list of selected tokens with the text in the paragraphs. If the text is matched,
+     * annotate Paragraph With Tokens And Category
+     * @param paragraph
+     * @param selectedTerm
+     * @param categoryId
+     * @return
+     */
     public static boolean setMatchedText(CoreMap paragraph, List<Token> selectedTerm, int categoryId) {
 
         List<Token> paragraphTokens = paragraph.getTokens();
@@ -222,31 +289,91 @@ public class CategoryAnnotationHelper {
                     runner++;
                 }
             }
-        addDefinedTokensInCategoryAnnotation(paragraph, returnList, categoryId);
+        annotateParagraphWithTokensAndCategory(paragraph, returnList, categoryId);
         return true;
 
     }
 
-    public static int getObservedClassIndex(CoreMap paragraph, List<Integer> categoryIds) {
+    /**
+     * For a given paragraph, for each categories, copy the current category weight into the prior category weight.
+     * @param paragraph
+     */
+    public static void copyCurrentCategoryWeightsToPrior(CoreMap paragraph){
         HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
-        if (categoryAnnotation == null) return 0; //todo:  change this to -1 once none is made an annotation in doc
-
-        for (int index = 0; index < categoryIds.size(); index++) {
-            if (categoryAnnotation.containsKey(categoryIds.get(index))) {
-                return index;
+        if (categoryAnnotation==null) return;
+        for (int categoryId : Category.getCategories()) {
+            CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
+            if(annotationCoreMap!=null){
+                float currentWeight = annotationCoreMap.get(CoreAnnotations.CurrentCategoryWeightFloat.class);
+                annotationCoreMap.set(CoreAnnotations.PriorCategoryWeightFloat.class, currentWeight);
+                logger.debug("{} \t {} \t {}", paragraph.getId(), categoryId, currentWeight);
             }
         }
-        return 0; //todo:  change this to -1 once none is made an annotation in doc
     }
 
-    public static int getObservedCategory(CoreMap paragraph,  List<Integer> categoryIds) {
+    /**
+     * Annotate the CategoryWeight for given current and prior category for a given paragraph
+     * @param paragraph
+     * @param categoryId
+     * @param currentCategoryWeight
+     * @param priorCategoryWeight
+     */
+    public static void annotateCategoryWeight(CoreMap paragraph, int categoryId, float currentCategoryWeight, float priorCategoryWeight){
+        HashMap<Integer, CoreMap> categoryAnnotation = createOrGetCategoryAnnotation(paragraph, categoryId);
+        CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
+        annotationCoreMap.set(CoreAnnotations.CurrentCategoryWeightFloat.class, currentCategoryWeight);
+        annotationCoreMap.set(CoreAnnotations.PriorCategoryWeightFloat.class, priorCategoryWeight);
+        paragraph.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
+    }
+
+    /**
+     * Annotate the CategoryWeight for given current category for a given paragraph
+     * @param paragraph
+     * @param categoryId
+     * @param currentCategoryWeight
+     */
+    public static void annotateCategoryWeight(CoreMap paragraph, int categoryId, float currentCategoryWeight){
+        HashMap<Integer, CoreMap> categoryAnnotation = createOrGetCategoryAnnotation(paragraph, categoryId);
+        CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
+        annotationCoreMap.set(CoreAnnotations.CurrentCategoryWeightFloat.class, currentCategoryWeight);
+        annotationCoreMap.set(CoreAnnotations.PriorCategoryWeightFloat.class, 0f);
+        paragraph.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
+    }
+
+
+
+
+    /**
+     * Clear Prior training weight of all categories for a paragraph
+     * @param paragraph
+     */
+    public static void clearPriorCategoryWeight(CoreMap paragraph){
         HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
-        if (categoryAnnotation == null) return 0;
-        for (int categoryId : categoryIds) {
-            if (categoryAnnotation.containsKey(categoryId)) {
-                return categoryId;
+        if (categoryAnnotation==null) return;
+        for (int categoryId : Category.getCategories()) {
+            CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
+            if(annotationCoreMap!=null){
+                annotationCoreMap.set(CoreAnnotations.PriorCategoryWeightFloat.class, (float)0);
+                logger.debug("Cleared \t {} \t {}", paragraph.getId(), categoryId);
             }
         }
-        return 0;
+
     }
+
+    /**
+     * Get the categoryAnnotation core map.
+     * @param paragraph
+     * @param categoryId
+     * @return
+     */
+    public static CoreMap getCategoryAnnotation(CoreMap paragraph, int categoryId) {
+        HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
+        if (categoryAnnotation==null) return null;
+        CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
+        if(annotationCoreMap==null) return null;
+        return annotationCoreMap;
+    }
+
+
+
 }

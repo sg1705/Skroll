@@ -8,7 +8,6 @@ import com.skroll.document.Document;
 import com.skroll.document.JsonDeserializer;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
-import com.skroll.document.annotation.TrainingWeightAnnotationHelper;
 import com.skroll.parser.Parser;
 import com.skroll.util.Configuration;
 import com.skroll.util.SkrollTestGuiceModule;
@@ -62,24 +61,24 @@ public class ClassifierLogicTest {
 
         // this doc has three paragraphs
         assert (doc.getParagraphs().size() == 3);
-        CategoryAnnotationHelper.clearAnnotations(doc.getParagraphs().get(1));
+        CategoryAnnotationHelper.clearCategoryAnnotations(doc.getParagraphs().get(1));
         // one paragraphs as user trained
         CoreMap paragraph = doc.getParagraphs().get(0);
         doc.setId("test");
         paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
         // set training weight on that paragrpah
-        TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, this.categoryId, 1);
+        CategoryAnnotationHelper.annotateCategoryWeight(paragraph, this.categoryId, 1);
         CategoryAnnotationHelper.setMatchedText(paragraph, Lists.newArrayList(paragraph.getTokens().get(0)), this.categoryId);
         // classify
         for (Classifier classifier : classifierFactory.getClassifiers()) {
             classifier.classify(doc.getId(), doc);
         }
         //test to see if all paragraphs were assigned categories
-        assert (CategoryAnnotationHelper.isCategoryId(paragraph, this.categoryId));
+        assert (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph, this.categoryId));
         paragraph = doc.getParagraphs().get(1);
-        assert (CategoryAnnotationHelper.isCategoryId(paragraph, this.categoryId));
+        assert (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph, this.categoryId));
         paragraph = doc.getParagraphs().get(2);
-        assert (CategoryAnnotationHelper.isCategoryId(paragraph, this.categoryId));
+        assert (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph, this.categoryId));
         //now persist the file
         String json = JsonDeserializer.getJson(doc);
         Document newDoc = JsonDeserializer.fromJson(json);
@@ -108,26 +107,27 @@ public class ClassifierLogicTest {
         // one paragraphs are User train
         CoreMap paragraph = doc.getParagraphs().get(0);
         paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
-        TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.TOC_1, 1);
+        CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.TOC_1, 1);
         CategoryAnnotationHelper.setMatchedText(paragraph, Lists.newArrayList(paragraph.getTokens().get(0)), Category.TOC_1);
 
         paragraph = doc.getParagraphs().get(1);
         paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
-        TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.TOC_1, 1);
+        CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.TOC_1, 1);
         CategoryAnnotationHelper.setMatchedText(paragraph, Lists.newArrayList(paragraph.getTokens().get(0)), Category.TOC_1);
 
         paragraph = doc.getParagraphs().get(2);
         paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
-        TrainingWeightAnnotationHelper.setTrainingWeight(paragraph, Category.TOC_1, 1);
+        CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.TOC_1, 1);
         CategoryAnnotationHelper.setMatchedText(paragraph, Lists.newArrayList(paragraph.getTokens().get(0)), Category.TOC_1);
 
 
         // classify
-        classifierFactory.getClassifier(Category.TOC_1).classify(doc.getId(),doc );
-
-        assert (CategoryAnnotationHelper.isCategoryId(paragraph, Category.TOC_1));
-        assert (CategoryAnnotationHelper.isCategoryId(doc.getParagraphs().get(1), Category.TOC_1));
-        assert (CategoryAnnotationHelper.isCategoryId(doc.getParagraphs().get(2), Category.TOC_1));
+        for (Classifier classifier :classifierFactory.getClassifiers() ){
+            classifier.classify(doc.getId(), doc);
+        }
+        assert (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph, Category.TOC_1));
+        assert (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(doc.getParagraphs().get(1), Category.TOC_1));
+        assert (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(doc.getParagraphs().get(2), Category.TOC_1));
 
     }
 

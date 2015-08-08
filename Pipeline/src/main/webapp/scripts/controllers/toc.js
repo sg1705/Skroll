@@ -41,17 +41,42 @@
     }
 
     /**
-    * Register for clicks
+    * Callback to handle a scroll event
     **/
     function observeScroll(paraId) {
       
       if (paraId == null)
       	return null;
       ctrl.smodel.visibleHeaders = new Array();
-      var headers = LHSModel.getParagraphs(paraId);
-      if (headers.length > 0) {
-      	ctrl.smodel.visibleHeaders.push(paraId);	
-      	console.log("observing scroll from TocCtrl:" + paraId);
+      var headerItems = LHSModel.getParaFromClassIdRange(2,4);
+      if (headerItems.length > 0) {
+        //convert clicked paragraphId to integer
+        var levelsPara = [];
+        var paraStr = paraId.split("_")[1];
+        var paraIdInt = parseInt(paraStr);
+        var nearestHeader;
+        
+        //convert header paragraphIds to itegrations
+        for (var ii = 0; ii < headerItems.length; ii++) {
+          var str = headerItems[ii].paragraphId.split("_")[1];
+          var paraIdd = parseInt(str, 10);
+          levelsPara.push(paraIdd);
+        }
+
+        //iterate over each header
+        for (var ii = 0; ii < headerItems.length; ii++) {
+          //if the current header is the same as clicked paragraph
+          if (headerItems[ii].paragraphId == paraId) {
+            nearestHeader = paraId;
+            break;
+          }
+          //if the current header has passed the paragraph
+          if (levelsPara[ii] >= paraIdInt) {
+            break;
+          }
+          nearestHeader = headerItems[ii].paragraphId;
+        }
+      	ctrl.smodel.visibleHeaders.push(nearestHeader);	
       }
     }
 

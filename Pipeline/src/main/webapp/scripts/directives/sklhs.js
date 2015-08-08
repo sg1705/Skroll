@@ -23,28 +23,6 @@ function SkLhs() {
 
 };
 
-/*
-var LHSCtrl = function (LHSModel) {
-	this.sections = LHSModel.sections;
-  this.smodel = LHSModel.smodel;
-  this.classes = LHSModel.classes;
-}
-
-LHSCtrl.prototype.toggleSection = function(index) {
-  this.classes[index].isSelected = !this.classes[index].isSelected;
-}
-
-
-angular.module('SkrollApp')
-	.controller('LHSCtrl', LHSCtrl);
-*/
-
-  /**
- * @ngdoc directive
- * @name myappApp.directive:skLhsLevels
- * @description
- * # skLhsLevels
- */
 angular.module('SkrollApp')
   .directive('skLhsLevels', function () {
     return {

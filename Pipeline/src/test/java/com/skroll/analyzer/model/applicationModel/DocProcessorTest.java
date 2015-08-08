@@ -28,7 +28,7 @@ public class DocProcessorTest {
     //static final RandomVariable DEFAULT_PARA_IS_DEF =
     //        RVCreater.createRVFromAnnotation(CoreAnnotations.IsDefinitionAnnotation.class);
 
-    static final List<Integer> TEST_TOC_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE, Category.TOC_1, Category.TOC_2));
+    static final List<Integer> TEST_DEFINITION_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE, Category.DEFINITION));
     static final List<RandomVariable> DEFAULT_PARA_FEATURE_VARS = Arrays.asList(
             RVCreater.createDiscreteRVWithComputer(new NumberTokensComputer(), "numTokens")
     );
@@ -44,7 +44,7 @@ public class DocProcessorTest {
     ModelRVSetting setting = new ModelRVSetting(
              DefModelRVSetting.DEFAULT_WORD_FEATURES,
             DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS, DEFAULT_WORD_VARS,
-            TEST_TOC_CATEGORY_IDS);
+            TEST_DEFINITION_CATEGORY_IDS);
 
 
     static String trainingFileName = "src/test/resources/analyzer/definedTermExtractionTraining/AMC Networks CA.html";
