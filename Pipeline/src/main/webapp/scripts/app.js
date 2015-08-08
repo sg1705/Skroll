@@ -9,7 +9,15 @@
  * Main module of the application.
  */
 
-angular.module('SkrollApp', ['ngMaterial', 'ngSanitize', 'ngTouch', 'ngRoute', 'ngSilent', 'feature-flags']);
+angular.module('SkrollApp', [
+	'ngMaterial',
+	'ngSanitize',
+	'ngTouch',
+	'ngRoute',
+	'ngSilent',
+	'feature-flags',
+	'skroll.app.core.services'
+]);
 
 //** when newer version of material comes out
 //this is lifted from http://goo.gl/mrWZ0F
