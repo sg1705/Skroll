@@ -4,6 +4,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.skroll.classifier.Classifier;
 import com.skroll.classifier.ClassifierFactory;
+import com.skroll.classifier.ClassifierFactoryStrategy;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
@@ -33,8 +34,10 @@ public class ClassifierBenchmark {
 
        Injector injector = Guice.createInjector(new SkrollGuiceModule());
         ClassifierFactory classifierFactory = injector.getInstance(ClassifierFactory.class);
+        ClassifierFactoryStrategy classifierFactoryStrategy = injector.getInstance(ClassifierFactoryStrategy.class);
         DocumentFactory documentFactory = injector.getInstance(BenchmarkFSDocumentFactoryImpl.class);
-        ClassifierBenchmark benchmark = new ClassifierBenchmark(documentFactory,classifierFactory.getClassifiers());
+
+        ClassifierBenchmark benchmark = new ClassifierBenchmark(documentFactory,classifierFactory.getClassifiers(classifierFactoryStrategy));
         QC qc = null;
         try {
             qc = benchmark.runQCOnBenchmarkFolder();

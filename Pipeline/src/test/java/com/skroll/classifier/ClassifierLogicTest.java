@@ -24,6 +24,7 @@ import java.nio.file.NoSuchFileException;
 public class ClassifierLogicTest {
 
     ClassifierFactory classifierFactory = null;
+    ClassifierFactoryStrategy classifierFactoryStrategy = null;
     Configuration config;
     int categoryId = 2;
     String categoryName = "TestClassifier.model";
@@ -33,6 +34,7 @@ public class ClassifierLogicTest {
         try {
             Injector injector = Guice.createInjector(new SkrollTestGuiceModule());
             classifierFactory = injector.getInstance(ClassifierFactory.class);
+            ClassifierFactoryStrategy classifierFactoryStrategy = injector.getInstance(ClassifierFactoryStrategy.class);
             config = injector.getInstance(Configuration.class);
             String modelFolder = config.get("modelFolder");
             //delete an existing model
@@ -67,7 +69,7 @@ public class ClassifierLogicTest {
         CategoryAnnotationHelper.annotateCategoryWeight(paragraph, this.categoryId, 1);
         CategoryAnnotationHelper.setMatchedText(paragraph, Lists.newArrayList(paragraph.getTokens().get(0)), this.categoryId);
         // classify
-        for (Classifier classifier : classifierFactory.getClassifiers()) {
+        for (Classifier classifier : classifierFactory.getClassifiers(classifierFactoryStrategy)) {
             classifier.classify(doc.getId(), doc);
         }
         //test to see if all paragraphs were assigned categories
@@ -119,7 +121,7 @@ public class ClassifierLogicTest {
 
 
         // classify
-        for (Classifier classifier :classifierFactory.getClassifiers() ){
+        for (Classifier classifier :classifierFactory.getClassifiers(classifierFactoryStrategy) ){
             classifier.classify(doc.getId(), doc);
         }
         assert (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph, Category.TOC_1));

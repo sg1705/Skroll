@@ -30,7 +30,6 @@ public class ClassifierFactory {
     private static final List<Integer> DEF_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE,Category.DEFINITION));
     private static final ClassifierProto defClassifierProto = new ClassifierProto(DEF_CLASSIFIER_ID,DEF_CATEGORY_IDS);
 
-
     public Classifier getClassifier(int classifierId) {
         Classifier classifier;
         if (classifiers.containsKey(classifierId))
@@ -52,10 +51,5 @@ public class ClassifierFactory {
                 .stream()
                 .map(classifierId -> this.getClassifier(classifierId))
                 .collect(Collectors.toList());
-    }
-
-    public List<Classifier> getClassifiers() throws Exception {
-        ClassifierFactoryStrategy classifierFactoryStrategy = new DefaultClassifierFactoryStrategy();
-        return getClassifiers(classifierFactoryStrategy);
     }
 }

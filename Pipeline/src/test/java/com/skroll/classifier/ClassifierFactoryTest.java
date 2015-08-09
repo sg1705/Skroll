@@ -31,7 +31,7 @@ public class ClassifierFactoryTest {
 
     @Test
     public void testGetClassifier() throws Exception {
-        assert(classifierFactory.getClassifier(ClassifierFactory.DEF_CLASSIFIER_ID).getClassifierId() == ClassifierFactory.DEF_CLASSIFIER_ID);
+        assert(classifierFactory.getClassifier(ClassifierFactory.DEF_CLASSIFIER_ID).getId() == ClassifierFactory.DEF_CLASSIFIER_ID);
     }
 
     @Test (expected = RuntimeException.class)

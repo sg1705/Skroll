@@ -8,7 +8,6 @@ import com.google.inject.Injector;
 import com.skroll.classifier.Category;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.classifier.ClassifierFactoryStrategy;
-import com.skroll.classifier.DefaultClassifierFactoryStrategy;
 import com.skroll.classifier.factory.CorpusFSModelFactoryImpl;
 import com.skroll.classifier.factory.ModelFactory;
 import com.skroll.document.CoreMap;
@@ -56,10 +55,11 @@ public class SkrollTrainer extends Trainer {
                             .to(CorpusFSModelFactoryImpl.class);
                     bind(Configuration.class).to(TrainerConfiguration.class);
                     bind(ClassifierFactory.class);
-                    bind(ClassifierFactoryStrategy.class).to(DefaultClassifierFactoryStrategy.class);
+                    bind(ClassifierFactoryStrategy.class);
                 }
             });
             classifierFactory = injector.getInstance(ClassifierFactory.class);
+            classifierFactoryStrategy = injector.getInstance(ClassifierFactoryStrategy.class);
             documentFactory = injector.getInstance(DocumentFactory.class);
             configuration = injector.getInstance(Configuration.class);
             PRE_EVALUATED_FOLDER = configuration.get("preEvaluatedFolder", "/tmp/");

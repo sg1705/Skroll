@@ -2,6 +2,7 @@ package com.skroll.rest.benchmark;
 
 import com.skroll.classifier.Classifier;
 import com.skroll.classifier.ClassifierFactory;
+import com.skroll.classifier.ClassifierFactoryStrategy;
 import com.skroll.document.factory.BenchmarkFSDocumentFactory;
 import com.skroll.document.factory.CorpusFSDocumentFactory;
 import com.skroll.document.factory.DocumentFactory;
@@ -35,6 +36,7 @@ public class BenchmarkRequestBean {
                                 @Context HttpHeaders hh,
                                 @BenchmarkFSDocumentFactory DocumentFactory benchmarkDocumentFactory,
                                 @CorpusFSDocumentFactory DocumentFactory corpusDocumentFactory,
+                                ClassifierFactoryStrategy classifierFactoryStrategy,
                                 ClassifierFactory classifierFactory) throws Exception {
 
         if(documentId == null) {
@@ -49,7 +51,7 @@ public class BenchmarkRequestBean {
             this.documentId = documentId;
         }
 
-        this.classifiers = classifierFactory.getClassifiers();
+        this.classifiers = classifierFactory.getClassifiers(classifierFactoryStrategy);
         this.benchmarkDocumentFactory = benchmarkDocumentFactory;
         this.corpusDocumentFactory = corpusDocumentFactory;
     }

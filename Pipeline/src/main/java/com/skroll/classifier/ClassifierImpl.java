@@ -25,7 +25,7 @@ public class ClassifierImpl implements Classifier {
     protected ClassifierProto classifierProto;
     protected ModelFactory modelFactory;
     protected ModelRVSetting modelRVSetting;
-    protected int classifierId;
+    protected int id;
 
     @Override
     public ModelRVSetting getModelRVSetting() {
@@ -33,15 +33,15 @@ public class ClassifierImpl implements Classifier {
     }
 
     @Override
-    public int getClassifierId() {
-        return classifierId;
+    public int getId() {
+        return id;
     }
 
-    public ClassifierImpl(int classifierId, ClassifierProto classifierProto, ModelFactory modelFactory, ModelRVSetting modelRVSetting) {
+    public ClassifierImpl(int id, ClassifierProto classifierProto, ModelFactory modelFactory, ModelRVSetting modelRVSetting) {
         this.modelFactory = modelFactory;
         this.classifierProto = classifierProto;
         this.modelRVSetting = modelRVSetting;
-        this.classifierId = classifierId;
+        this.id = id;
     }
 
     public List<String> extractTokenFromDoc(Document doc) {
@@ -64,7 +64,7 @@ public class ClassifierImpl implements Classifier {
 
         logger.trace("Before annotate");
         CategoryAnnotationHelper.displayParagraphsAnnotatedWithAnyCategoryInDoc(document);
-        modelFactory.createBNIModel(classifierId, modelRVSetting, document);
+        modelFactory.createBNIModel(id, modelRVSetting, document);
 
         logger.trace("After annotate");
         CategoryAnnotationHelper.displayParagraphsAnnotatedWithAnyCategoryInDoc(document);
@@ -76,13 +76,13 @@ public class ClassifierImpl implements Classifier {
 
     @Override
     public void train(Document doc) {
-        modelFactory.getTrainingModel(classifierId, modelRVSetting).updateWithDocument(doc);
+        modelFactory.getTrainingModel(id, modelRVSetting).updateWithDocument(doc);
 
     }
 
     @Override
     public void trainWithWeight(Document doc) {
-        modelFactory.getTrainingModel(classifierId,modelRVSetting).updateWithDocumentAndWeight(doc);
+        modelFactory.getTrainingModel(id,modelRVSetting).updateWithDocumentAndWeight(doc);
     }
 
 
@@ -101,29 +101,29 @@ public class ClassifierImpl implements Classifier {
 
     @Override
     public HashMap<String, HashMap<String, HashMap<String, Double>>> getBNIVisualMap(Document document, int paraIndex) {
-        return modelFactory.getBNIModel(classifierId).toVisualMap(paraIndex);
+        return modelFactory.getBNIModel(id).toVisualMap(paraIndex);
     }
 
 
     @Override
     public HashMap<String, HashMap<String, HashMap<String, Double>>> getModelVisualMap() {
-        return modelFactory.getTrainingModel(classifierId,modelRVSetting).toVisualMap();
+        return modelFactory.getTrainingModel(id,modelRVSetting).toVisualMap();
     }
 
     @Override
     public List<Double> getProbabilityDataForDoc(Document document) {
-        return modelFactory.getBNIModel(classifierId).toParaCategoryDump();
+        return modelFactory.getBNIModel(id).toParaCategoryDump();
     }
 
     @Override
     public void persistModel() throws Exception {
-        modelFactory.saveTrainingModel(classifierId,modelRVSetting);
+        modelFactory.saveTrainingModel(id,modelRVSetting);
     }
 
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
-                .add("classifierId", classifierId)
+                .add("Id", id)
                 .add("classifierProto", classifierProto)
                 .add("modelFactory", modelFactory)
                 .add("modelRVSetting", modelRVSetting)

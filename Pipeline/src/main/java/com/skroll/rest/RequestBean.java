@@ -3,7 +3,6 @@ package com.skroll.rest;
 import com.skroll.classifier.Classifier;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.classifier.ClassifierFactoryStrategy;
-import com.skroll.classifier.ClassifierFactoryStrategyType;
 import com.skroll.document.Document;
 import com.skroll.document.factory.CorpusFSDocumentFactory;
 import com.skroll.document.factory.DocumentFactory;
@@ -44,7 +43,7 @@ public class RequestBean {
     public RequestBean(@QueryParam("documentId") String documentId,
                        @Context HttpHeaders hh,
                        @CorpusFSDocumentFactory DocumentFactory documentFactory,
-                       @ClassifierFactoryStrategyType ClassifierFactoryStrategy classifierFactoryStrategy,
+                       ClassifierFactoryStrategy classifierFactoryStrategy,
                        ClassifierFactory classifierFactory) throws Exception {
         if(documentId == null) {
             MultivaluedMap<String, String> headerParams = hh.getRequestHeaders();
