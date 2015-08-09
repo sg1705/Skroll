@@ -34,7 +34,7 @@ public class ClassifierLogicTest {
         try {
             Injector injector = Guice.createInjector(new SkrollTestGuiceModule());
             classifierFactory = injector.getInstance(ClassifierFactory.class);
-            ClassifierFactoryStrategy classifierFactoryStrategy = injector.getInstance(ClassifierFactoryStrategy.class);
+            classifierFactoryStrategy = injector.getInstance(ClassifierFactoryStrategy.class);
             config = injector.getInstance(Configuration.class);
             String modelFolder = config.get("modelFolder");
             //delete an existing model

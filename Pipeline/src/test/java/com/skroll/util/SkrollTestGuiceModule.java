@@ -4,6 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.classifier.ClassifierFactoryStrategy;
+import com.skroll.classifier.DefaultClassifierFactoryStrategy;
 import com.skroll.classifier.factory.*;
 import com.skroll.document.factory.*;
 
@@ -15,7 +16,7 @@ public class SkrollTestGuiceModule extends AbstractModule {
     protected void configure() {
         bind(Configuration.class).to(TestConfiguration.class);
 
-        bind(ClassifierFactoryStrategy.class);
+        bind(ClassifierFactoryStrategy.class).to(DefaultClassifierFactoryStrategy.class);
         //default binding
         bind(DocumentFactory.class)
                         .to(CorpusFSDocumentFactoryImpl.class);
