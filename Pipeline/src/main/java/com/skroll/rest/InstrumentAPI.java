@@ -96,7 +96,7 @@ public class InstrumentAPI {
             buf.append(",");
             */
             for (Classifier classifier : request.getClassifiers()) {
-                HashMap<String, HashMap<String, HashMap<String, Double>>> map = classifier.getBNIVisualMap(doc, paraIndex);
+                HashMap<String, HashMap<String, HashMap<String, Double>>> map = classifier.getBNIVisualMap(documentId, paraIndex);
                 probabilityJson = gson.toJson(map);
                 buf.append(probabilityJson);
                 buf.append(",");
@@ -216,7 +216,7 @@ public class InstrumentAPI {
         try {
             List<List<Double>> allPs = new ArrayList();
             for (Classifier classifier : request.getClassifiers()) {
-                allPs.add(classifier.getProbabilityDataForDoc(doc));
+                allPs.add(classifier.getProbabilityDataForDoc(documentId));
             }
             Gson gson = new GsonBuilder().create();
             String json = gson.toJson(allPs);

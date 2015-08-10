@@ -31,10 +31,8 @@ public interface Classifier {
 
     public ModelRVSetting getModelRVSetting();
 
-    public HashMap<String, HashMap<String, HashMap<String, Double>>> getBNIVisualMap(Document doc, int paraIndex);
+    public HashMap<String, HashMap<String, HashMap<String, Double>>> getBNIVisualMap(String documentId, int paraIndex);
     public HashMap<String, HashMap<String, HashMap<String, Double>>> getModelVisualMap();
-    public List<Double> getProbabilityDataForDoc(Document doc);
-
-
+    public List<Double> getProbabilityDataForDoc(String documentId);
 
 }
