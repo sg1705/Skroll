@@ -97,18 +97,6 @@ angular.module('SkrollApp')
       //             paraId = $(ids[ii]).attr("name");
       //         }
       //     }
-
-      //     if (foundId) {
-      //         documentService
-      //         .getParagraphJson(paraId)
-      //         .then(function(data) {
-      //             $("#rightPane").html(JSON.stringify(data, null, 2));
-      //             $scope.selectedParagraphId = paraId;
-      //             documentModel.selectedParagraphId = paraId;
-      //         },function(data, status) {
-      //             console.log(status);
-      //         });
-      //     }
       // };
 
       //### hack for iPhone

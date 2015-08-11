@@ -20,7 +20,7 @@ angular.module('SkrollApp')
               documentModel.targetHtml = contentHtml;
 
               //$(element).html(documentModel.targetHtml)
-              documentService.getTerms().then(function(terms) {
+              documentService.getTerms(documentModel.documentId).then(function(terms) {
                 LHSModel.setTerms(terms);
                 console.log(terms);
                 element.replaceWith(documentModel.targetHtml);

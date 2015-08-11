@@ -16,7 +16,8 @@ angular.module('SkrollApp', [
 	'ngRoute',
 	'ngSilent',
 	'feature-flags',
-	'skroll.app.core.services'
+	'app.core.services',
+	'app.trainer'
 ]);
 
 //** when newer version of material comes out

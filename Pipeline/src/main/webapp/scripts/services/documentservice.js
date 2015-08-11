@@ -9,7 +9,7 @@
    * Service in the myappApp.
    */
   angular.module('SkrollApp')
-    .service('documentService', function($http, $q, $log, LHSModel, documentModel) {
+    .service('documentServiceOld', function($http, $q, $log, LHSModel, documentModel) {
       //context root of API
       var documentServiceBase = 'restServices/doc/';
       var instrumentServiceBase = 'restServices/instrument/';

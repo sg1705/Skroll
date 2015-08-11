@@ -8,10 +8,12 @@
  * Controller of the ToolbarCtrl
  */
 
-var ToolbarCtrl = function(ToolbarModel, documentService, documentModel, SelectionModel, $mdSidenav) {
+var ToolbarCtrl = function(ToolbarModel, documentService, documentModel, 
+	SelectionModel, $mdSidenav, trainerService) {
 	this.trainerToolbar = ToolbarModel.trainerToolbar;
 	this.toolbarInfo = ToolbarModel.toolbarInfo;
 	this.documentService = documentService;
+	this.trainerService = trainerService;
 	this.SelectionModel = SelectionModel;
 	this.documentModel = documentModel;
 	this.$mdSidenav = $mdSidenav;
@@ -24,7 +26,7 @@ ToolbarCtrl.prototype.convertToBenchmark = function() {
 	console.log("need to call save benchmark");
 	this.documentModel.isProcessing = true;
 	var self = this;
-	this.documentService.saveAsBenchmark().then(function() {
+	this.documentService.saveAsBenchmark(documentModel.documentId).then(function() {
 		documentModel.isProcessing = false;
 		self.trainerToolbar.isBenchmark = true;
 	}, function(data, status) {
@@ -47,7 +49,7 @@ ToolbarCtrl.prototype.toggleUpdateBNI = function() {
 
 ToolbarCtrl.prototype.observeNone = function() {
 	console.log("observing none");
-	this.documentService.observeNone();
+	this.trainerService.observeNone(documentModel.documentId);
 }
 
 ToolbarCtrl.prototype.showProbabilityDump = function() {
@@ -92,13 +94,13 @@ ToolbarCtrl.prototype.showProbabilityDump = function() {
 }
 
 ToolbarCtrl.prototype.updateModelByTrainer = function() {
-	this.documentService.updateModel();
+	this.trainerService.updateModel(documentModel.documentId);
 }
 
 ToolbarCtrl.prototype.showAnnotations = function() {
 	var paraId = this.SelectionModel.paragraphId;
 	this.documentService
-		.getParagraphJson(paraId)
+		.getParagraphJson(this.documentModel.documentId, paraId)
 		.then(angular.bind(this, function(result) {
 			var oldJson = this.trainerToolbar.lastJson;
 			var newJson = JSON.stringify(result, null, 2);

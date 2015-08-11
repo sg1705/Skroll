@@ -1,15 +1,13 @@
 (function() {
   'use strict';
 
-
   angular
-    .module('skroll.app.core.services', []);
+    .module('app.core.services')
+    .service('documentService', DocumentService);
 
-  angular
-    .module('skroll.app.core.services')
-    .service('documentServiceNew', DocumentServiceNew);
+  /** @ngInject **/
 
-  function DocumentServiceNew($http, $q, $log) {
+  function DocumentService($http, $q, $log) {
 
     //-- private variables
     //context root of API
@@ -20,16 +18,20 @@
     //-- service definition
     var service = {
       
+      getDocumentIds    : getDocumentIds,
+      loadDocument      : loadDocument,
+
       getParagraphJson  : getParagraphJson,
       getTerms          : getTerms,
-      unObserveTerms    : unObserveTerms,
+      unObserve         : unObserve,
       updateTerms       : updateTerms,
 
       getBenchmarkScore : getBenchmarkScore,
       saveAsBenchmark   : saveAsBenchmark
     };
 
-
+    return service;
+    
     //////////////
 
 
@@ -40,7 +42,7 @@
       $log.debug("Fetching json for paragraphId:" + paragraphId);
       var deferred = $q.defer();
       $http.get(instrumentServiceBase + 'getParagraphJson?paragraphId=' +
-          paragraphId + '&documentId=' + documentModel.documentId)
+          paragraphId + '&documentId=' + documentId)
         .success(function(data) {
           deferred.resolve(data);
         })
@@ -93,7 +95,7 @@
     /**
     * Returns a promise to unobserve a paragraph
     **/
-    function unObserveTerms(documentId, terms) {
+    function unObserve(documentId, terms) {
       var deferred = $q.defer();
       /** make a get request */
       $http.post(documentServiceBase + 'unObserve' + '?documentId=' + documentId, terms)
@@ -144,5 +146,46 @@
       /** done with get request */
       return deferred.promise;
     };
+
+    /**
+    * Returns a promise to retrieves document ids
+    **/
+    function getDocumentIds() {
+      var deferred = $q.defer();
+      /** make a get request */
+      $http.get(documentServiceBase + 'listDocs')
+        .success(function(data, status) {
+          deferred.resolve(data);
+        })
+        .error(function(msg, code) {
+          deferred.reject(msg);
+          $log.error(msg, code);
+        });;
+      /** done with get request */
+      return deferred.promise;
+    };
+
+
+    /**
+    * Returns a promise to load the document for a given id
+    *
+    * @return - Data contains html content of the document
+    */
+    function loadDocument(documentId) {
+      var deferred = $q.defer();
+      /** make a get request */
+      $http.get(documentServiceBase + 'getDoc?documentId=' + documentId)
+        .success(function(data, status) {
+          deferred.resolve(data);
+        })
+        .error(function(msg, code) {
+          deferred.reject(msg);
+          $log.error(msg, code);
+        });;
+      /** done with get request */
+      return deferred.promise;
+    };
+
+
   };
 })();

@@ -10,10 +10,11 @@
 
 
 
-var ViewPortCtrl = function(SelectionModel, documentService, $mdBottomSheet,
-  ToolbarModel, LHSModel, $log, $routeParams, ScrollObserverService) {
+var ViewPortCtrl = function(SelectionModel, $mdBottomSheet,
+  ToolbarModel, LHSModel, $log, $routeParams, ScrollObserverService, documentService, trainerService) {
   this.SelectionModel = SelectionModel;
   this.documentService = documentService;
+  this.trainerService = trainerService;
   this.$mdBottomSheet = $mdBottomSheet;
   this.ToolbarModel = ToolbarModel;
   this.LHSModel = LHSModel;
@@ -85,7 +86,7 @@ ViewPortCtrl.prototype.paraClicked = function($event) {
 ViewPortCtrl.prototype.loadParagraphJson = function(paraId) {
   this.SelectionModel.paragraphId = paraId;
   this.documentService
-    .getParagraphJson(paraId)
+    .getParagraphJson(this.documentModel.documentId, paraId)
     .then(angular.bind(this, function(result) {
       var oldJson = this.ToolbarModel.trainerToolbar.lastJson;
       var newJson = JSON.stringify(result, null, 2);
@@ -173,7 +174,7 @@ ViewPortCtrl.prototype.handleTrainerTextSelection = function(paraId,
       .then(function(clicked) {
               matchedItem.classificationId = LHSModel.getClassFromIndex(clicked);
               documentModel.isProcessing = true;
-              self.documentService.addTermToPara(matchedItem)
+              self.trainerService.addTermToPara(documentModel.documentId, matchedItem)
               .then(function(contentHtml){
                       self.updateDocument(contentHtml);  
                 });
@@ -214,7 +215,7 @@ ViewPortCtrl.prototype.handleTrainerParaSelection = function(paraId) {
 ViewPortCtrl.prototype.updateDocument = function(contentHtml) {
   //$("#content").html(contentHtml);
   var self = this;
-  this.documentService.getTerms().then(function(terms){
+  this.documentService.getTerms(documentModel.documentId).then(function(terms){
     LHSModel.setTerms(terms);
     console.log("Terms return by API");
     console.log(terms);
@@ -237,21 +238,21 @@ ViewPortCtrl.prototype.showYesNoAllDialog = function(prompt, matchedItem) {
   this.showYesNoDialog(prompt, items).then(angular.bind(this, function(clicked) {
     documentModel.isProcessing = true;
     if (clicked == 1) {
-      this.documentService.rejectClassFromPara(matchedItem.classificationId, matchedItem.paragraphId).
+      this.trainerService.rejectClassFromPara(documentModel.documentId, matchedItem.classificationId, matchedItem.paragraphId).
       then(angular.bind(this, function(contentHtml){
         this.updateDocument(contentHtml);  
       }));
     }
     //answer is yes
     if (clicked == 0) {
-      this.documentService.approveClassForPara(matchedItem.classificationId, matchedItem.paragraphId).
+      this.trainerService.approveClassForPara(documentModel.documentId, matchedItem.classificationId, matchedItem.paragraphId).
       then(angular.bind(this, function(contentHtml){
         this.updateDocument(contentHtml);  
       }));
     }
     //if answer is unobserve
     if (clicked == 2) {
-      this.documentService.unObservePara(matchedItem.classificationId, matchedItem.paragraphId).
+      this.trainerService.unObservePara(documentModel.documentId, matchedItem.classificationId, matchedItem.paragraphId).
       then(angular.bind(this, function(contentHtml){
         this.updateDocument(contentHtml);  
       }));
@@ -311,7 +312,7 @@ angular.module('SkrollApp').controller('TrainerPromptCtrl',function($scope,
 
 angular
   .module('SkrollApp')
-  .controller('ViewPortCtrl', [ 'SelectionModel', 'documentService',
-                                '$mdBottomSheet', 'ToolbarModel', 
+  .controller('ViewPortCtrl', [ 'SelectionModel', '$mdBottomSheet', 'ToolbarModel', 
                                 'LHSModel', '$log', '$routeParams', 
-                                'ScrollObserverService', ViewPortCtrl ]);
+                                'ScrollObserverService', 'documentService', 'trainerService',
+                                ViewPortCtrl ]);
