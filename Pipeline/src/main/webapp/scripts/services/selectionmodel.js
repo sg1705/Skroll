@@ -86,9 +86,9 @@ var SelectionModel = {
 };
 
 
-angular.module('SkrollApp')
-	.factory('SelectionModel', function($location, $ngSilentLocation) {
-		SelectionModel.$location = $location;
-		SelectionModel.$ngSilentLocation = $ngSilentLocation;
-		return SelectionModel;
-	});
+// angular.module('SkrollApp')
+// 	.factory('SelectionModel', function($location, $ngSilentLocation) {
+// 		SelectionModel.$location = $location;
+// 		SelectionModel.$ngSilentLocation = $ngSilentLocation;
+// 		return SelectionModel;
+// 	});
