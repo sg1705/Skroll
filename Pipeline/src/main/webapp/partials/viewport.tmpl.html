@@ -49,41 +49,8 @@
 
     <div layout="column" flex>
       <md-toolbar class="skroll-toolbar">
-
-    <div 
-      id = "searchBox"
-      layout="row" 
-      layout-align="center center" 
-      ng-controller="SearchCtrl as ctrl"
-      ng-mouseenter="ctrl.enterSearchBox()"
-      ng-mouseleave="ctrl.leaveSearchBox()"
-      style="height:48px; vertical-align: middle">
-      <md-autocomplete 
-        md-theme="default-dark"
-        md-selected-item="ctrl.selectedItem"
-        md-search-text="ctrl.searchText"
-        md-items="item in ctrl.getMatches(ctrl.searchText)"
-        md-item-text="item.display" 
-        placeholder="Search in document" 
-        md-search-text-change="ctrl.searchTextChange(ctrl.searchText)"
-        md-selected-item-change="ctrl.selectedItemChange(item)"
-        md-min-length=1 md-delay=50
-        md-no-cache>
-        <md-item-template md-theme="default">
-          <br/>
-          <div style="word-wrap: break-word;margin-top:5px; margin-bottom: 5px">
-            <span md-theme="default" style="font-size:16px; color:rgb(63, 81, 181)" class="md-primary">{{item.header}}</span><br/>
-            <div style="white-space: normal; font-size: 14px; word-wrap: break-word;" class="md-primary md-hue-1" md-highlight-text="ctrl.searchText">
-              {{item.displayText}}
-            </div>
-          </div>
-        </md-item-template>
-        <md-not-found>
-          No matches found.
-        </md-not-found>
-      </md-autocomplete>
-    </div>
-    </md-toolbar>
+        <sk-search/>
+      </md-toolbar>
 
     <md-content ng-class="{'sk-lhs-search-hover': smodel.hover, 'sk-lhs-hover': !smodel.hover}" 
      flex class="md-padding" ng-controller="LHSLevelsCtrl as ctrl">
