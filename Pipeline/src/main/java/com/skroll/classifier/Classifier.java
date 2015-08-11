@@ -20,7 +20,6 @@ public interface Classifier {
 
 
     public void persistModel() throws  Exception;
-
     public Object classify(String documentId, Document doc);
     public void trainWithWeight(Document doc);
     public void train(Document doc);

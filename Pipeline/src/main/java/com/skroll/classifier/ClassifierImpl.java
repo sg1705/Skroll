@@ -27,6 +27,13 @@ public class ClassifierImpl implements Classifier {
     protected ModelRVSetting modelRVSetting;
     protected int id;
 
+    public ClassifierImpl(int id, ClassifierProto classifierProto, ModelFactory modelFactory, ModelRVSetting modelRVSetting) {
+        this.modelFactory = modelFactory;
+        this.classifierProto = classifierProto;
+        this.modelRVSetting = modelRVSetting;
+        this.id = id;
+    }
+
     @Override
     public ModelRVSetting getModelRVSetting() {
         return modelRVSetting;
@@ -35,13 +42,6 @@ public class ClassifierImpl implements Classifier {
     @Override
     public int getId() {
         return id;
-    }
-
-    public ClassifierImpl(int id, ClassifierProto classifierProto, ModelFactory modelFactory, ModelRVSetting modelRVSetting) {
-        this.modelFactory = modelFactory;
-        this.classifierProto = classifierProto;
-        this.modelRVSetting = modelRVSetting;
-        this.id = id;
     }
 
     public List<String> extractTokenFromDoc(Document doc) {
