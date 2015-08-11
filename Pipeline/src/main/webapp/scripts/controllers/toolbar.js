@@ -9,12 +9,12 @@
  */
 
 var ToolbarCtrl = function(ToolbarModel, documentService, documentModel, 
-	SelectionModel, $mdSidenav, trainerService) {
+	selectionService, $mdSidenav, trainerService) {
 	this.trainerToolbar = ToolbarModel.trainerToolbar;
 	this.toolbarInfo = ToolbarModel.toolbarInfo;
 	this.documentService = documentService;
 	this.trainerService = trainerService;
-	this.SelectionModel = SelectionModel;
+	this.selectionService = selectionService;
 	this.documentModel = documentModel;
 	this.$mdSidenav = $mdSidenav;
 
@@ -43,8 +43,8 @@ ToolbarCtrl.prototype.toggleTrainerMode = function() {
 ToolbarCtrl.prototype.toggleUpdateBNI = function() {
 	// ToolbarModel.trainerToolbar.isUpdateBNI = !ToolbarModel.trainerToolbar.isUpdateBNI;
 	// this.documentService.setFlags("ENABLE_UPDATE_BNI", ToolbarModel.trainerToolbar.isUpdateBNI);
-	rangy.deserializeSelection(this.SelectionModel.serializedSelection);
-	this.SelectionModel.scrollToParagraph(this.SelectionModel.serializedParagraphId);
+	rangy.deserializeSelection(this.selectionService.serializedSelection);
+	this.selectionService.scrollToParagraph(this.selectionService.serializedParagraphId);
 }
 
 ToolbarCtrl.prototype.observeNone = function() {
@@ -98,7 +98,7 @@ ToolbarCtrl.prototype.updateModelByTrainer = function() {
 }
 
 ToolbarCtrl.prototype.showAnnotations = function() {
-	var paraId = this.SelectionModel.paragraphId;
+	var paraId = this.selectionService.paragraphId;
 	this.documentService
 		.getParagraphJson(this.documentModel.documentId, paraId)
 		.then(angular.bind(this, function(result) {

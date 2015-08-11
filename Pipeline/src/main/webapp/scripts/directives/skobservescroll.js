@@ -7,8 +7,8 @@
  * # skObserveScroll
  */
 angular.module('SkrollApp')
-  .directive('skObserveScroll', [ '$document', '$interval', '$window', 'LHSModel', 'ScrollObserverService',
-    function($document, $interval, $window, LHSModel, ScrollObserverService) {
+  .directive('skObserveScroll', [ '$document', '$interval', '$window', 'LHSModel', 'scrollObserverService',
+    function($document, $interval, $window, LHSModel, scrollObserverService) {
 
       function Scroll(event) {
         this.x = $window.pageXOffset !== undefined ? $window.pageXOffset : ($document[0].documentElement || $document[0].body.parentNode || $document[0].body).scrollLeft,
@@ -67,7 +67,7 @@ angular.module('SkrollApp')
             }
             LHSModel.smodel.visibleHeaders = [headerPara];
             console.log(LHSModel.smodel.visibleHeaders);
-            ScrollObserverService.notify(headerPara);
+            scrollObserverService.notify(headerPara);
             didScroll = true;
           });
         }

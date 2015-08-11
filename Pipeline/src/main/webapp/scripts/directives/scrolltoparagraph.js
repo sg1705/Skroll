@@ -8,16 +8,16 @@
  */
 angular.module('SkrollApp')
   .directive('scrollToParagraph', [ 'documentModel', '$mdSidenav', 
-                                    'SelectionModel', 'ToolbarModel', 'ScrollObserverService',
-    function(documentModel, $mdSidenav, SelectionModel, ToolbarModel, ScrollObserverService) {
+                                    'selectionService', 'ToolbarModel', 'scrollObserverService',
+    function(documentModel, $mdSidenav, selectionService, ToolbarModel, scrollObserverService) {
       return {
         restricted: 'A',
         link: function(scope, element, attrs) {
           var paragraphId = attrs.scrollToParagraph;
           var para =
             $(element).click(function() {
-              ScrollObserverService.notify(paragraphId);
-              SelectionModel.scrollToParagraph(paragraphId);
+              scrollObserverService.notify(paragraphId);
+              selectionService.scrollToParagraph(paragraphId);
               scope.$apply();
 
             });

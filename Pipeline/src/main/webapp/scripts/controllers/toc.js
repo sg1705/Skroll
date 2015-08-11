@@ -11,12 +11,12 @@
 
 	angular
 		.module('SkrollApp')
-		.controller('TocCtrl', ['LHSModel', 'ScrollObserverService', TocCtrl]);
+		.controller('TocCtrl', ['LHSModel', 'scrollObserverService', TocCtrl]);
 
   /**
   * Controller for the directive
   **/
-  function TocCtrl(LHSModel, ScrollObserverService) {
+  function TocCtrl(LHSModel, scrollObserverService) {
 
     //-- private variables
     var ctrl      = this,
@@ -31,7 +31,7 @@
     ctrl.toggleSection      = toggleSection;
 
     //-- register for notification
-    ScrollObserverService.register(observeScroll);
+    scrollObserverService.register(observeScroll);
 
     /**
     * Toggles the section when user clicks on close/open in TOC

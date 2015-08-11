@@ -37,11 +37,11 @@ c) angular-material.js .. added <md-input-container> to md-autocomplete directiv
    gains focus
 */
 
-var SearchCtrl = function(SelectionModel) {
+var SearchCtrl = function(selectionService) {
 
 	//-- private variables
 	this.searchText;
-	this.SelectionModel = SelectionModel;
+	this.selectionService = selectionService;
 	this.searchResults = [];
 }
 
@@ -171,11 +171,11 @@ SearchCtrl.prototype.selectedItemChange = function(item) {
 		return;
 	}
   var paragraphId = item.paragraphId;
-  this.SelectionModel.scrollToParagraph(paragraphId);
+  this.selectionService.scrollToParagraph(paragraphId);
 }
 
 angular.module('SkrollApp')
-	.controller('SearchCtrl', ['SelectionModel', SearchCtrl]);
+	.controller('SearchCtrl', ['selectionService', SearchCtrl]);
 
 jQuery.expr[":"].ContainsCaseInsensitive = jQuery.expr.createPseudo(function(arg) {
    return function( elem ) {

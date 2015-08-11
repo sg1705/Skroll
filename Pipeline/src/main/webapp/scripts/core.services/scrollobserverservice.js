@@ -3,16 +3,17 @@
 
 	/**
 	 * @ngdoc service
-	 * @name SkrollApp.ScrollObserverService
+	 * @name SkrollApp.scrollObserverService
 	 * @description
-	 * # ScrollObserverService
+	 * # scrollObserverService
 	 * Manages all scroll, click, touch events on a paragraph
 	 */
 
 	angular
-		.module('SkrollApp')
-		.factory('ScrollObserverService', ScrollObserverService);
+		.module('app.core.services')
+		.factory('scrollObserverService', ScrollObserverService);
 
+	/** @ngInject **/
 	function ScrollObserverService() {
 
 		//-- private variables

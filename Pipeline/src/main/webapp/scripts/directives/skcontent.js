@@ -8,8 +8,8 @@
  */
 angular.module('SkrollApp')
   .directive('skContent', [ 'documentModel', 'documentService', 'LHSModel', 
-                            'SelectionModel', '$timeout', 'ToolbarModel',
-    function(documentModel, documentService, LHSModel, SelectionModel, $timeout, ToolbarModel) {
+                            'selectionService', '$timeout', 'ToolbarModel',
+    function(documentModel, documentService, LHSModel, selectionService, $timeout, ToolbarModel) {
       return {
         restricted: 'E',
         transclude: true,
@@ -26,11 +26,11 @@ angular.module('SkrollApp')
                 element.replaceWith(documentModel.targetHtml);
                 ToolbarModel.toolbarInfo.title = documentModel.documentId;
                 $timeout(function() {
-                  console.log(SelectionModel.serializedSelection);
-                  if ((SelectionModel.serializedSelection === undefined) || (SelectionModel.serializedSelection == "undefined")) {
+                  console.log(selectionService.serializedSelection);
+                  if ((selectionService.serializedSelection === undefined) || (selectionService.serializedSelection == "undefined")) {
 
                   } else {
-                    SelectionModel.scrollToSelection(SelectionModel.serializedSelection);
+                    selectionService.scrollToSelection(selectionService.serializedSelection);
                   }
                   documentModel.isProcessing = false;
                   //calculate offsets for headers

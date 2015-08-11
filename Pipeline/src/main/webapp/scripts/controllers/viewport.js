@@ -10,9 +10,9 @@
 
 
 
-var ViewPortCtrl = function(SelectionModel, $mdBottomSheet,
-  ToolbarModel, LHSModel, $log, $routeParams, ScrollObserverService, documentService, trainerService) {
-  this.SelectionModel = SelectionModel;
+var ViewPortCtrl = function(selectionService, $mdBottomSheet,
+  ToolbarModel, LHSModel, $log, $routeParams, scrollObserverService, documentService, trainerService) {
+  this.selectionService = selectionService;
   this.documentService = documentService;
   this.trainerService = trainerService;
   this.$mdBottomSheet = $mdBottomSheet;
@@ -20,15 +20,15 @@ var ViewPortCtrl = function(SelectionModel, $mdBottomSheet,
   this.LHSModel = LHSModel;
   this.documentModel = documentModel;
   this.documentModel.documentId = $routeParams.docId;
-  this.SelectionModel.serializedSelection = decodeURIComponent(decodeURIComponent($routeParams.linkId));
-  this.ScrollObserverService = ScrollObserverService;
+  this.selectionService.serializedSelection = decodeURIComponent(decodeURIComponent($routeParams.linkId));
+  this.scrollObserverService = scrollObserverService;
   
 }
 
 ViewPortCtrl.prototype.mouseDown = function($event) {
   var selection = window.getSelection().toString();
   var paraId = this.inferParagraphId($event);
-  this.SelectionModel.mouseDownParaId = paraId;
+  this.selectionService.mouseDownParaId = paraId;
 }
 
 ViewPortCtrl.prototype.mouseUp = function($event) {
@@ -44,12 +44,12 @@ ViewPortCtrl.prototype.mouseUp = function($event) {
     return;
 
   //clear selection
-  this.SelectionModel.clearSelection();
+  this.selectionService.clearSelection();
   var paraId = this.inferParagraphId($event);
   if (paraId == null)
     return;
   //save selection
-  this.SelectionModel.saveSelection(paraId, selection);
+  this.selectionService.saveSelection(paraId, selection);
 
   if (ToolbarModel.trainerToolbar.isTrainerMode) {
     this.handleTrainerTextSelection(paraId, selection);
@@ -65,14 +65,14 @@ ViewPortCtrl.prototype.paraClicked = function($event) {
   if (selection != '')
     return;
   //clear highlight
-  this.SelectionModel.clearSelection();
+  this.selectionService.clearSelection();
   var paraId = this.inferParagraphId($event);
-  this.ScrollObserverService.notify(paraId);
+  this.scrollObserverService.notify(paraId);
   if (paraId == null)
     return;
 
-  //store in SelectionModel
-  this.SelectionModel.paragraphId = paraId;
+  //store in selectionService
+  this.selectionService.paragraphId = paraId;
   //highlight paragraph
   this.highlightParagraph(paraId);
   this.loadParagraphJson(paraId);
@@ -84,7 +84,7 @@ ViewPortCtrl.prototype.paraClicked = function($event) {
 }
 
 ViewPortCtrl.prototype.loadParagraphJson = function(paraId) {
-  this.SelectionModel.paragraphId = paraId;
+  this.selectionService.paragraphId = paraId;
   this.documentService
     .getParagraphJson(this.documentModel.documentId, paraId)
     .then(angular.bind(this, function(result) {
@@ -134,10 +134,6 @@ ViewPortCtrl.prototype.inferParagraphId = function($event) {
     return $(parents[0]).attr('id');
   } else {
 
-  //not sure why we are using mouseDownParaId for infering paragraph
-  // if ((this.SelectionModel.mouseDownParaId != null) && (this.SelectionModel.mouseDownParaId != '')) {
-  //   return this.SelectionModel.mouseDownParaId;
-  // }
 
     if ((children.length == 0) && (parents.length ==1)) {
       return $(parents[0]).attr('id');
@@ -289,30 +285,10 @@ angular.module('SkrollApp').controller('TrainerPromptCtrl',function($scope,
   }
 });
 
-// ViewPortCtrl.prototype.saveSelection = function(paraId, selectedText) {
-//   this.SelectionModel.paragraphId = paraId;
-//   this.SelectionModel.selectedText = selectedText;
-//   this.SelectionModel.serializedSelection = rangy.serializeSelection(rangy.getSelection($("#content").get(0)), false, $("#content").get(0));
-//   console.log(this.SelectionModel.serializedSelection);
-//   console.log(encodeURIComponent(encodeURIComponent(this.SelectionModel.serializedSelection)));
-//   this.SelectionModel.serializedParagraphId = paraId;
-//   this.LHSModel.addBookmark(7, paraId, selectedText.substring(0,10), rangy.serializeSelection(window, $("#content")));
-// }
-
-// ViewPortCtrl.prototype.clearSelection = function() {
-//   //clear highlight
-//   if (this.SelectionModel.paragraphId != '') {
-//     this.removeHighlightParagraph(this.SelectionModel.paragraphId);
-//   }
-//   this.SelectionModel.paragraphId = '';
-//   this.SelectionModel.selectedText = '';
-// }
-
-
 
 angular
   .module('SkrollApp')
-  .controller('ViewPortCtrl', [ 'SelectionModel', '$mdBottomSheet', 'ToolbarModel', 
+  .controller('ViewPortCtrl', [ 'selectionService', '$mdBottomSheet', 'ToolbarModel', 
                                 'LHSModel', '$log', '$routeParams', 
-                                'ScrollObserverService', 'documentService', 'trainerService',
+                                'scrollObserverService', 'documentService', 'trainerService',
                                 ViewPortCtrl ]);
