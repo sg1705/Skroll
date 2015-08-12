@@ -4,6 +4,7 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.io.Files;
 import com.skroll.classifier.Classifier;
 import com.skroll.classifier.ClassifierFactory;
+import com.skroll.classifier.ClassifierFactoryStrategy;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
@@ -34,6 +35,7 @@ public class Trainer {
             .getLogger(Trainer.class);
 
     public ClassifierFactory classifierFactory;
+    public ClassifierFactoryStrategy classifierFactoryStrategy;
     public Configuration configuration;
     public DocumentFactory documentFactory;
     public String PRE_EVALUATED_FOLDER;
@@ -70,13 +72,13 @@ public class Trainer {
             }
             counter++;
             if (counter ==10) {
-                for ( Classifier classifier : classifierFactory.getClassifiers()) {
+                for ( Classifier classifier : classifierFactory.getClassifiers(classifierFactoryStrategy)) {
                     classifier.persistModel();
                 }
                 counter=0;
             }
         }
-        for ( Classifier classifier : classifierFactory.getClassifiers()) {
+        for ( Classifier classifier : classifierFactory.getClassifiers(classifierFactoryStrategy)) {
             classifier.persistModel();
         }
     }
@@ -94,7 +96,7 @@ public class Trainer {
             }
         }
         try {
-            for ( Classifier classifier : classifierFactory.getClassifiers(doc)) {
+            for ( Classifier classifier : classifierFactory.getClassifiers(classifierFactoryStrategy)) {
                 classifier.trainWithWeight(doc);
             }
         } catch (Exception e) {
