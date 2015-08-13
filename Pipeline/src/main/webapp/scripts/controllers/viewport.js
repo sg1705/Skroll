@@ -12,7 +12,7 @@
 
 var ViewPortCtrl = function(selectionService, $mdBottomSheet,
   ToolbarModel, LHSModel, $log, $routeParams, scrollObserverService, documentService, trainerService,
-  clickObserverService) {
+  clickObserverService, textSelectionObserverService) {
   this.selectionService = selectionService;
   this.documentService = documentService;
   this.trainerService = trainerService;
@@ -24,7 +24,7 @@ var ViewPortCtrl = function(selectionService, $mdBottomSheet,
   this.selectionService.serializedSelection = decodeURIComponent(decodeURIComponent($routeParams.linkId));
   this.scrollObserverService = scrollObserverService;
   this.clickObserverService = clickObserverService;
-  
+  this.textSelectionObserverService = textSelectionObserverService;
 }
 
 ViewPortCtrl.prototype.mouseDown = function($event) {
@@ -42,7 +42,7 @@ ViewPortCtrl.prototype.mouseUp = function($event) {
   }
   
   var selection = window.getSelection().toString();
-  if (selection == '')
+  if ((selection == '') || (selection == undefined))
     return;
 
   //clear selection
@@ -53,9 +53,11 @@ ViewPortCtrl.prototype.mouseUp = function($event) {
   //save selection
   this.selectionService.saveSelection(paraId, selection);
 
-  if (ToolbarModel.trainerToolbar.isTrainerMode) {
-    this.handleTrainerTextSelection(paraId, selection);
-  }
+  this.textSelectionObserverService.notify({'paraId' : paraId, 'selectedText' : selection});
+
+  // if (ToolbarModel.trainerToolbar.isTrainerMode) {
+  //   //this.handleTrainerTextSelection(paraId, selection);
+  // }
 }
 
 
@@ -69,8 +71,6 @@ ViewPortCtrl.prototype.paraClicked = function($event) {
   //clear highlight
   this.selectionService.clearSelection();
   var paraId = this.inferParagraphId($event);
-  this.scrollObserverService.notify(paraId);
-  this.clickObserverService.notify(paraId);
   if (paraId == null)
     return;
 
@@ -80,9 +80,12 @@ ViewPortCtrl.prototype.paraClicked = function($event) {
   this.highlightParagraph(paraId);
   this.loadParagraphJson(paraId);
 
-  if (ToolbarModel.trainerToolbar.isTrainerMode) {
-    this.handleTrainerParaSelection(paraId);
-  }
+  this.scrollObserverService.notify(paraId);
+  this.clickObserverService.notify(paraId);
+
+  // if (ToolbarModel.trainerToolbar.isTrainerMode) {
+  //   //this.handleTrainerParaSelection(paraId);
+  // }
 
 }
 
@@ -147,146 +150,6 @@ ViewPortCtrl.prototype.inferParagraphId = function($event) {
 
 }
 
-/**
-* Handles text selection when user is in training mode
-*
-**/
-ViewPortCtrl.prototype.handleTrainerTextSelection = function(paraId,
-  selectedText) {
-  console.log(selectedText);
-  var text = "Is %s a %s";
-  var prompt = '';
-  //find a matching term
-  var matchedItem = _.find(this.LHSModel.smodel.terms, function(obj){
-    return ((obj.paragraphId == paraId) && (obj.term == selectedText));
-  });
-  // class question if no matching term found
-  if (matchedItem == null) {
-    prompt = 'Please choose the class for this [' + selectedText + ']';
-    //show set of questions for classes
-    var items = LHSModel.getClassNames();
-    //create a new matched item
-    matchedItem = { paragraphId: paraId, term: selectedText, classificationId: ''};
-    console.log(matchedItem);
-    var self = this;
-    this.showYesNoDialog(prompt, items)
-      .then(function(clicked) {
-              matchedItem.classificationId = LHSModel.getClassFromIndex(clicked);
-              documentModel.isProcessing = true;
-              self.trainerService.addTermToPara(documentModel.documentId, matchedItem)
-              .then(function(contentHtml){
-                      self.updateDocument(contentHtml);  
-                });
-      });
-
-  } else {
-    // yes / no question if matching found
-    var className = LHSModel.getClassFromId(matchedItem.classificationId).name;
-    prompt = s.sprintf(text, selectedText, className);
-    this.showYesNoAllDialog(prompt, matchedItem);
-  }
-}
-
-/**
-* Handles a paragraph selection when user is in training mode
-*
-**/
-ViewPortCtrl.prototype.handleTrainerParaSelection = function(paraId) {
-  var text = "Is this paragraph a %s";
-  var prompt = '';
-  //find if any term matches
-  var matchedItem = _.find(this.LHSModel.smodel.terms, function(obj){
-    return ((obj.paragraphId == paraId) && (obj.term));
-  });
-
-  if (matchedItem != null) {
-    //yes-no question because there is a term match
-    var className = LHSModel.getClassFromId(matchedItem.classificationId).name;
-    prompt = s.sprintf(text, className);
-    this.showYesNoAllDialog(prompt, matchedItem);
-  }
-
-}
-
-/**
-* Updates the viewport with fresh content html
-*/
-ViewPortCtrl.prototype.updateDocument = function(contentHtml) {
-  //$("#content").html(contentHtml);
-  var self = this;
-  this.documentService.getTerms(documentModel.documentId).then(function(terms){
-    LHSModel.setTerms(terms);
-    console.log("Terms return by API");
-    console.log(terms);
-    documentModel.isProcessing = false;
-    //fetch score
-    self.ToolbarModel.updateBenchmark(self.documentService);
-  }, function(data, status){
-    console.log(status);
-  });
-
-}
-
-/**
-* Shows a "Yes, No, Yes to all" dialog
-*/
-ViewPortCtrl.prototype.showYesNoAllDialog = function(prompt, matchedItem) {
-  var className = LHSModel.getClassFromId(matchedItem.classificationId).name;
-  //create a set of questions. In this case, yes or no
-  var items = ['Yes', 'No', 'Unobserve ' + className];
-  this.showYesNoDialog(prompt, items).then(angular.bind(this, function(clicked) {
-    documentModel.isProcessing = true;
-    if (clicked == 1) {
-      this.trainerService.rejectClassFromPara(documentModel.documentId, matchedItem.classificationId, matchedItem.paragraphId).
-      then(angular.bind(this, function(contentHtml){
-        this.updateDocument(contentHtml);  
-      }));
-    }
-    //answer is yes
-    if (clicked == 0) {
-      this.trainerService.approveClassForPara(documentModel.documentId, matchedItem.classificationId, matchedItem.paragraphId).
-      then(angular.bind(this, function(contentHtml){
-        this.updateDocument(contentHtml);  
-      }));
-    }
-    //if answer is unobserve
-    if (clicked == 2) {
-      this.trainerService.unObservePara(documentModel.documentId, matchedItem.classificationId, matchedItem.paragraphId).
-      then(angular.bind(this, function(contentHtml){
-        this.updateDocument(contentHtml);  
-      }));
-    }
-
-  }));
-}
-
-/**
-* Shows a question bottom sheet
-*
-**/
-ViewPortCtrl.prototype.showYesNoDialog = function(text, items) {
-  this.ToolbarModel.trainerPrompt.text = text;
-  this.ToolbarModel.trainerPrompt.items = items;
-  //there are two types of bottom sheet
-  //true or false ; or item selection
-  return this.$mdBottomSheet.show({
-    templateUrl: 'partials/viewport-bottom-sheet.tmpl.html',
-    controller: 'TrainerPromptCtrl',
-    parent: angular.element(":root")
-
-  });
-}
-
-angular.module('SkrollApp').controller('TrainerPromptCtrl',function($scope,
-  ToolbarModel, $mdBottomSheet, documentService) {
-  $scope.prompt = ToolbarModel.trainerPrompt.text;
-  $scope.items = ToolbarModel.trainerPrompt.items;
-  $scope.documentService = documentService;
-
-  $scope.itemClicked = function($index) {
-    $mdBottomSheet.hide($index);
-  }
-});
 
 
 angular
@@ -294,5 +157,5 @@ angular
   .controller('ViewPortCtrl', [ 'selectionService', '$mdBottomSheet', 'ToolbarModel', 
                                 'LHSModel', '$log', '$routeParams', 
                                 'scrollObserverService', 'documentService', 'trainerService',
-                                'clickObserverService',
+                                'clickObserverService', 'textSelectionObserverService',
                                 ViewPortCtrl ]);

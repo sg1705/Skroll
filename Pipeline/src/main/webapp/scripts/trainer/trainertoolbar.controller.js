@@ -19,7 +19,10 @@
 								documentModel, 
 								selectionService,
 								$mdSidenav,
-								trainerService) {
+								trainerService,
+								trainerPromptService,
+								clickObserverService,
+								textSelectionObserverService) {
 
 		//-- private variables
 		var vm = this;
@@ -27,11 +30,6 @@
 		//-- public variables
 		vm.trainerToolbar = ToolbarModel.trainerToolbar;
 		vm.toolbarInfo = ToolbarModel.toolbarInfo;
-		// this.documentService = documentService;
-		// this.trainerService = trainerService;
-		// this.selectionService = selectionService;
-		// this.documentModel = documentModel;
-		// this.$mdSidenav = $mdSidenav;
 
 		//-- public methods
 		vm.convertToBenchmark 	= convertToBenchmark;
@@ -41,6 +39,10 @@
 		vm.showProbabilityDump	= showProbabilityDump;
 		vm.updateModelByTrainer = updateModelByTrainer;
 		vm.showAnnotations 			= showAnnotations;
+
+		//-- register for click events
+		clickObserverService.register(trainerPromptService.handleTrainerParaSelection);
+		textSelectionObserverService.register(trainerPromptService.handleTrainerTextSelection);
 
 		////////////////
 
