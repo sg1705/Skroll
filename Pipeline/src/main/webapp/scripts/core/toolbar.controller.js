@@ -14,12 +14,15 @@
 		.module('app.core')
 		.controller('ToolbarCtrl', ToolbarCtrl);
 
-
-	function ToolbarCtrl($mdSidenav) {
+	/* @ngInject */
+	function ToolbarCtrl($mdSidenav, ToolbarModel) {
 
 		//-- private variables
 		var vm = this;
 
+		//-- public variables
+		vm.toolbarInfo = ToolbarModel.toolbarInfo;
+		
 		//-- public methods
 		vm.toggleSidenav = toggleSidenav;
 
@@ -30,5 +33,6 @@
       $mdSidenav(menuId).toggle();
     };
 
+  }
 
 })();

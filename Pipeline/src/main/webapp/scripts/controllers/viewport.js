@@ -10,15 +10,14 @@
 
 
 
-var ViewPortCtrl = function(selectionService, $mdBottomSheet,
-  ToolbarModel, LHSModel, $log, $routeParams, scrollObserverService, documentService, trainerService,
-  clickObserverService, textSelectionObserverService) {
+var ViewPortCtrl = function(selectionService, $log, $routeParams, 
+        scrollObserverService, clickObserverService, textSelectionObserverService) {
   this.selectionService = selectionService;
-  this.documentService = documentService;
-  this.trainerService = trainerService;
-  this.$mdBottomSheet = $mdBottomSheet;
-  this.ToolbarModel = ToolbarModel;
-  this.LHSModel = LHSModel;
+  // this.documentService = documentService;
+  // this.trainerService = trainerService;
+  // this.$mdBottomSheet = $mdBottomSheet;
+  // this.LHSModel = LHSModel;
+  // this.ToolbarModel = ToolbarModel;
   this.documentModel = documentModel;
   this.documentModel.documentId = $routeParams.docId;
   this.selectionService.serializedSelection = decodeURIComponent(decodeURIComponent($routeParams.linkId));
@@ -52,12 +51,8 @@ ViewPortCtrl.prototype.mouseUp = function($event) {
     return;
   //save selection
   this.selectionService.saveSelection(paraId, selection);
-
   this.textSelectionObserverService.notify({'paraId' : paraId, 'selectedText' : selection});
 
-  // if (ToolbarModel.trainerToolbar.isTrainerMode) {
-  //   //this.handleTrainerTextSelection(paraId, selection);
-  // }
 }
 
 
@@ -78,46 +73,12 @@ ViewPortCtrl.prototype.paraClicked = function($event) {
   this.selectionService.paragraphId = paraId;
   //highlight paragraph
   this.highlightParagraph(paraId);
-  this.loadParagraphJson(paraId);
 
   this.scrollObserverService.notify(paraId);
   this.clickObserverService.notify(paraId);
 
-  // if (ToolbarModel.trainerToolbar.isTrainerMode) {
-  //   //this.handleTrainerParaSelection(paraId);
-  // }
-
 }
 
-ViewPortCtrl.prototype.loadParagraphJson = function(paraId) {
-  this.selectionService.paragraphId = paraId;
-  this.documentService
-    .getParagraphJson(this.documentModel.documentId, paraId)
-    .then(angular.bind(this, function(result) {
-      var oldJson = this.ToolbarModel.trainerToolbar.lastJson;
-      var newJson = JSON.stringify(result, null, 2);
-      var ds;
-      if ((oldJson != '') && (paraId == this.ToolbarModel.trainerToolbar.lastSelectedParaId)) {
-        var dmp = new diff_match_patch();
-        var a = dmp.diff_linesToChars_(oldJson, newJson);
-        var lineText1 = a['chars1'];
-        var lineText2 = a['chars2'];
-        var lineArray = a['lineArray'];
-        var d = dmp.diff_main(lineText1, lineText2, false);
-        dmp.diff_charsToLines_(d, lineArray);
-        var ms_end = (new Date()).getTime();
-        dmp.diff_cleanupSemantic(d);
-        ds = dmp.diff_prettyHtml(d);
-      } else {
-        ds = newJson;
-      }
-      this.ToolbarModel.trainerToolbar.lastJson = newJson;
-      this.ToolbarModel.trainerToolbar.lastSelectedParaId = paraId;
-      $("#rightPane").html(ds);
-    }), function(data, status) {
-      console.log(status);
-    });
-}
 
 ViewPortCtrl.prototype.highlightParagraph = function(paraId) {
   $("#" + paraId).css("background-color", "yellow");
@@ -154,8 +115,6 @@ ViewPortCtrl.prototype.inferParagraphId = function($event) {
 
 angular
   .module('SkrollApp')
-  .controller('ViewPortCtrl', [ 'selectionService', '$mdBottomSheet', 'ToolbarModel', 
-                                'LHSModel', '$log', '$routeParams', 
-                                'scrollObserverService', 'documentService', 'trainerService',
-                                'clickObserverService', 'textSelectionObserverService',
+  .controller('ViewPortCtrl', [ 'selectionService', '$log', '$routeParams', 
+                                'scrollObserverService', 'clickObserverService', 'textSelectionObserverService',
                                 ViewPortCtrl ]);
