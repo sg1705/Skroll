@@ -11,7 +11,8 @@
 
 
 var ViewPortCtrl = function(selectionService, $mdBottomSheet,
-  ToolbarModel, LHSModel, $log, $routeParams, scrollObserverService, documentService, trainerService) {
+  ToolbarModel, LHSModel, $log, $routeParams, scrollObserverService, documentService, trainerService,
+  clickObserverService) {
   this.selectionService = selectionService;
   this.documentService = documentService;
   this.trainerService = trainerService;
@@ -22,6 +23,7 @@ var ViewPortCtrl = function(selectionService, $mdBottomSheet,
   this.documentModel.documentId = $routeParams.docId;
   this.selectionService.serializedSelection = decodeURIComponent(decodeURIComponent($routeParams.linkId));
   this.scrollObserverService = scrollObserverService;
+  this.clickObserverService = clickObserverService;
   
 }
 
@@ -68,6 +70,7 @@ ViewPortCtrl.prototype.paraClicked = function($event) {
   this.selectionService.clearSelection();
   var paraId = this.inferParagraphId($event);
   this.scrollObserverService.notify(paraId);
+  this.clickObserverService.notify(paraId);
   if (paraId == null)
     return;
 
@@ -291,4 +294,5 @@ angular
   .controller('ViewPortCtrl', [ 'selectionService', '$mdBottomSheet', 'ToolbarModel', 
                                 'LHSModel', '$log', '$routeParams', 
                                 'scrollObserverService', 'documentService', 'trainerService',
+                                'clickObserverService',
                                 ViewPortCtrl ]);

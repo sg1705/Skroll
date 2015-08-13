@@ -54,7 +54,7 @@
 
 
 		//-- public methods
-		vm.getMatches 							= getMatches;
+		this.getMatches 							= getMatches;
 		vm.getSurroundingText				= getSurroundingText;
 		vm.highlightSearchResults 	= highlightSearchResults;
 		vm.unHighlightPreviousSearchResults = unHighlightPreviousSearchResults;

@@ -12,7 +12,8 @@
 
 
 
-	angular.module('SkrollApp')
+	angular
+		.module('app.search')
 		.service('searchService', SearchService);
 
 	function SearchService($http, $q, $log, LHSModel) {

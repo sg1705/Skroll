@@ -1,65 +1,14 @@
 
 	<div layout="row" flex style="height: 48px">
 
-		<md-button feature-flag="trainer" ng-click="ctrl.updateModelByTrainer()" aria-label="annotation" ng-disabled="!ctrl.trainerToolbar.isTrainModel">
-		  <md-icon md-svg-icon="images/icons/ic_visibility_24px.svg"></md-icon>
-		</md-button>
-
-		<md-button feature-flag="trainer" ng-click="ctrl.convertToBenchmark()" aria-label="annotation" ng-disabled="!ctrl.trainerToolbar.isBenchmark">
-		  <md-icon md-svg-icon="images/icons/ic_format_bold_24px.svg"></md-icon>
-		</md-button>
-
-		<md-button feature-flag="trainer" ng-click="ctrl.showAnnotations()" aria-label="annotation">
-		  <md-icon md-svg-icon="images/icons/ic_text_format_24px.svg"></md-icon>
-		</md-button>
-
-		<md-button feature-flag="trainer" ng-click="ctrl.toggleTrainerMode()" aria-label="trainer" ng-show="ctrl.trainerToolbar.isTrainerMode">
-		  <md-icon md-svg-icon="images/icons/ic_check_24px.svg" ></md-icon>
-		</md-button>
-
-		<md-button feature-flag="trainer" ng-click="ctrl.toggleTrainerMode()" aria-label="trainer" ng-show="!ctrl.trainerToolbar.isTrainerMode">
-		  <md-icon md-svg-icon="images/icons/ic_directions_bike_24px.svg" ></md-icon>
-		</md-button>
-
-		<md-button feature-flag="trainer" ng-click="ctrl.toggleUpdateBNI()" aria-label="trainer" ng-show="ctrl.trainerToolbar.isUpdateBNI">
-		  <md-icon md-svg-icon="images/icons/ic_done_all_24px.svg" ></md-icon>
-		</md-button>
-
-		<md-button feature-flag="trainer" ng-click="ctrl.toggleUpdateBNI()" aria-label="trainer" ng-show="!ctrl.trainerToolbar.isUpdateBNI">
-		  <md-icon md-svg-icon="images/icons/ic_format_clear_24px.svg" ></md-icon>
-		</md-button>
-
-		<md-button feature-flag="trainer" ng-click="ctrl.observeNone()" aria-label="trainer">
-		  <md-icon md-svg-icon="images/icons/ic_format_align_justify_24px.svg" ></md-icon>
-		</md-button>
-
-		<md-button feature-flag="trainer" ng-click="ctrl.showProbabilityDump()" aria-label="trainer">
-		  <md-icon md-svg-icon="images/icons/ic_insert_chart_24px.svg" ></md-icon>
-		</md-button>
-
-
-		<md-button feature-flag="trainer">{{ctrl.trainerToolbar.level1QcScore}}</md-button>
-		<md-button feature-flag="trainer">|</md-button>
-		<md-button feature-flag="trainer">{{ctrl.trainerToolbar.level1TypeAError}}</md-button>
-		<md-button feature-flag="trainer">|</md-button>
-		<md-button feature-flag="trainer">{{ctrl.trainerToolbar.level1TypeBError}}</md-button>
-		<md-button feature-flag="trainer">|||</md-button>
-		<md-button feature-flag="trainer">{{ctrl.trainerToolbar.level2QcScore}}</md-button>
-		<md-button feature-flag="trainer">|</md-button>
-		<md-button feature-flag="trainer">{{ctrl.trainerToolbar.level2TypeAError}}</md-button>
-		<md-button feature-flag="trainer">|</md-button>
-		<md-button feature-flag="trainer">{{ctrl.trainerToolbar.level2TypeBError}}</md-button>
-
-
-
-
+		<sk-trainer-toolbar>
+		</sk-trainer-toolbar>
 
 		<h1>{{ctrl.toolbarInfo.title}}</h1>
+
 
 		<md-button ng-click="toggleSidenav('left')" aria-label="menu" hide-gt-sm>
 			<md-icon md-svg-icon="images/icons/ic_menu_24px.svg"></md-icon>
 		</md-button>
-
-
 
 	</div>
