@@ -16,6 +16,7 @@ angular.module('SkrollApp', [
 	'ngRoute',
 	'ngSilent',
 	'feature-flags',
+	'app.core',
 	'app.core.services',
 	'app.search',
 	'app.trainer'
