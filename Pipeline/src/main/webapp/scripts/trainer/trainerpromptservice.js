@@ -150,7 +150,7 @@
       //there are two types of bottom sheet
       //true or false ; or item selection
       return $mdBottomSheet.show({
-        templateUrl: 'partials/viewport-bottom-sheet.tmpl.html',
+        templateUrl: 'scripts/trainer/viewport-bottom-sheet.tmpl.html',
         controller: 'TrainerPromptCtrl',
         parent: angular.element(":root")
 
