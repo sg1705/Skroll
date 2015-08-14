@@ -33,7 +33,8 @@ angular.module('SkrollApp')
 		$routeProvider.
 		when('/list', {
 			templateUrl: 'partials/doclist.tmpl.html',
-			controller: 'ContentCtrl'
+			controller: 'ContentCtrl',
+			controllerAs: 'ctrl'
 		}).
 		when('/open', {
 			templateUrl: 'partials/viewport.tmpl.html',
@@ -42,11 +43,13 @@ angular.module('SkrollApp')
 		when('/view/docId/:docId', {
 			templateUrl: 'partials/viewport.tmpl.html',
 			controller: 'ContentCtrl',
+			controllerAs: 'ctrl',			
 			reloadOnSearch: false
 		}).
 		when('/view/docId/:docId/linkId/:linkId', {
 			templateUrl: 'partials/viewport.tmpl.html',
 			controller: 'ContentCtrl',
+			controllerAs: 'ctrl',
 			reloadOnSearch: false
 		}).		
 		otherwise({

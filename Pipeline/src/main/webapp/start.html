@@ -25,12 +25,12 @@
 
 </head>
 
-  <md-backdrop ng-show="documentModel.isProcessing"  class="md-opaque md-bottom-sheet-backdrop md-default-theme">
+  <md-backdrop ng-show="ctrl.documentModel.isProcessing"  class="md-opaque md-bottom-sheet-backdrop md-default-theme">
     <md-progress-circular style="z-index: 80; position:absolute;top: 50%;left: 50%;" md-mode="indeterminate"></md-progress-circular>
   </md-backdrop>
 
 
-<body style="height:100%" ng-controller="ContentCtrl" ng-keydown="overrideControlF($event)">
+<body style="height:100%" ng-controller="ContentCtrl as ctrl" ng-keydown="ctrl.overrideControlF($event)">
   <div 
     ng-view layout="column"
     style="-webkit-overflow-scrolling: touch; height:100%" >
@@ -60,8 +60,10 @@
 
 <!-- build:js({.tmp,app}) scripts/scripts.js -->
 <script src="scripts/core/app.core.module.js"></script>
+<script src="scripts/core/content.controller.js"></script>
 <script src="scripts/core/toolbar.controller.js"></script>
 <script src="scripts/core/skToolbar.js"></script>
+<script src="scripts/core/viewport.controller.js"></script>
 
 <script src="scripts/core.services/core.services.module.js"></script>
 <script src="scripts/core.services/clickobserverservice.js"></script>
@@ -86,14 +88,12 @@
 <script src="scripts/app.js"></script>
 <script src="scripts/jquery.fileupload.js"></script>
 <script src="scripts/diff_match_patch_uncompressed.js"></script>
-<script src="scripts/controllers/content.js"></script>
+
 <script src="scripts/controllers/import.js"></script>
 <script src="scripts/controllers/toc.js"></script>
 
-<script src="scripts/controllers/viewport.js"></script>
 <script src="scripts/directives/fileupload.js"></script>
 <script src="scripts/directives/scrolltoparagraph.js"></script>
-
 <script src="scripts/directives/sklhs.js"></script>
 <script src="scripts/directives/skcontent.js"></script>
 <script src="scripts/directives/skobservescroll.js"></script>

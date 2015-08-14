@@ -23,7 +23,7 @@
 
 			<md-button 
 				ng-if="term.classificationId == 2" 
-				ng-class = "{'md-primary md-warn' : smodel.visibleHeaders.indexOf(term.paragraphId) != -1, 'md-primary' : smodel.visibleHeaders.indexOf(term.paragraphId) == -1}"
+				ng-class = "{'md-primary md-warn' : ctrl.smodel.visibleHeaders.indexOf(term.paragraphId) != -1, 'md-primary' : ctrl.smodel.visibleHeaders.indexOf(term.paragraphId) == -1}"
 
 				scroll-to-paragraph="{{term.paragraphId}}">
 				<md-icon 
@@ -39,9 +39,9 @@
 				ng-if="term.classificationId == 3"
 				style="padding-left: 15px; font-size:12px"
 				ng-class = "{'md-primary md-warn menu-item-level-2' 
-								: smodel.visibleHeaders.indexOf(term.paragraphId) != -1, 
+								: ctrl.smodel.visibleHeaders.indexOf(term.paragraphId) != -1, 
 							'md-primary menu-item-level-2' 
-								: smodel.visibleHeaders.indexOf(term.paragraphId) == -1}"
+								: ctrl.smodel.visibleHeaders.indexOf(term.paragraphId) == -1}"
 
 				scroll-to-paragraph="{{term.paragraphId}}">
 				<md-icon 

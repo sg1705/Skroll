@@ -27,7 +27,7 @@
 
         <div ng-controller="ViewPortCtrl as ctrl" >
             <md-whiteframe class="md-whiteframe-z3">
-              <md-content flex id="content" class="md-padding" ng-click="ctrl.paraClicked($event)" ng-mouseup="ctrl.mouseUp($event)" ng-mousedown="ctrl.mouseDown($event)" layout-padding style="padding-left:40px">
+              <md-content flex id="content" class="md-padding"  ng-mouseup="ctrl.mouseUp($event)" ng-mousedown="ctrl.mouseDown($event)" ng-click="ctrl.paraClicked($event)" layout-padding style="padding-left:40px">
                 <sk-content/>
               </md-content>
             </md-whiteframe>  
@@ -44,7 +44,7 @@
   <!-- right sidenav -->
   <md-sidenav layout="column" class="md-sidenav-right "
               md-component-id="right" md-is-locked-open="$media('gt-sm')" 
-              ng-swipe-left="toggleSidenav('left')">
+              ng-swipe-left="ctrl.toggleSidenav('left')">
 
 
     <div layout="column" flex>
@@ -52,7 +52,7 @@
         <sk-search ng-controller="SearchCtrl as ctrl"/>
       </md-toolbar>
 
-    <md-content ng-class="{'sk-lhs-search-hover': smodel.hover, 'sk-lhs-hover': !smodel.hover}" 
+    <md-content ng-class="{'sk-lhs-search-hover': ctrl.smodel.hover, 'sk-lhs-hover': !ctrl.smodel.hover}" 
      flex class="md-padding" ng-controller="LHSLevelsCtrl as ctrl">
       <sk-lhs />
     </md-content>
