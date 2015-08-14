@@ -19,7 +19,8 @@ angular.module('SkrollApp', [
 	'app.core',
 	'app.core.services',
 	'app.search',
-	'app.trainer'
+	'app.trainer',
+	'app.upload'
 ]);
 
 //** when newer version of material comes out

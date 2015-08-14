@@ -9,7 +9,12 @@
    * Controller of the ImportCtrl
    */
 
-  var ImportCtrl = function($location, $routeParams, $http) {
+  angular
+    .module('app.upload')
+    .controller('ImportCtrl', ImportCtrl);
+
+  /* @ngInject */
+  function ImportCtrl($location, $routeParams, $http) {
 
     //-- private variables
     var url = $routeParams.q;
@@ -19,6 +24,11 @@
       return;
     }
     documentModel.isProcessing = true;
+
+    //////////////
+
+    //-- execute
+
     console.log(url);
     $http.get('restServices/doc/importDoc?documentId=' + $routeParams.q)
       .success(function(data) {
@@ -29,14 +39,11 @@
       });
   }
 
-  angular.module('SkrollApp')
-    .controller('ImportCtrl', ['$location', '$routeParams', '$http', ImportCtrl]);
+  // var BackdropCtrl = function(documentModel) {
+  //   this.isProcessing = documentModel.isProcessing;
+  // }
 
-  var BackdropCtrl = function(documentModel) {
-    this.isProcessing = documentModel.isProcessing;
-  }
-
-  angular.module('SkrollApp')
-    .controller('BackdropCtrl', ['documentModel', BackdropCtrl]);
+  // angular.module('SkrollApp')
+  //   .controller('BackdropCtrl', ['documentModel', BackdropCtrl]);
 
 })();
