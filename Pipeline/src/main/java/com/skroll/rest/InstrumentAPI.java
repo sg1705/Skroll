@@ -59,7 +59,8 @@ public class InstrumentAPI {
         if (doc == null) {
             return logErrorResponse("document cannot be found for document id: " + documentId);
         }
-
+        //For debug purpose, display top 20 paragraph to know the company name of the document.
+        doc.getParagraphs().stream().limit(20).forEach(para -> logger.debug("{}: {}", para.getId(), para.getText()));
         Gson gson = new GsonBuilder().create();
         StringBuffer buf = new StringBuffer();
         String annotationJson = "";
@@ -95,18 +96,18 @@ public class InstrumentAPI {
             buf.append(",");
             */
             for (Classifier classifier : request.getClassifiers()) {
-                HashMap<String, HashMap<String, HashMap<String, Double>>> map = classifier.getBNIVisualMap(doc, paraIndex);
+                HashMap<String, HashMap<String, HashMap<String, Double>>> map = classifier.getBNIVisualMap(documentId, paraIndex);
                 probabilityJson = gson.toJson(map);
                 buf.append(probabilityJson);
                 buf.append(",");
-
             }
+
             for (Classifier classifier : request.getClassifiers()) {
                 HashMap<String, HashMap<String, HashMap<String, Double>>> modelMap = classifier.getModelVisualMap();
                 buf.append(gson.toJson(modelMap));
                 buf.append(",");
-
             }
+
             buf.append(annotationJson);
             buf.append("]");
 
@@ -215,7 +216,7 @@ public class InstrumentAPI {
         try {
             List<List<Double>> allPs = new ArrayList();
             for (Classifier classifier : request.getClassifiers()) {
-                allPs.add(classifier.getProbabilityDataForDoc(doc));
+                allPs.add(classifier.getProbabilityDataForDoc(documentId));
             }
             Gson gson = new GsonBuilder().create();
             String json = gson.toJson(allPs);
