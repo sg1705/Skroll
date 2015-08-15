@@ -15,7 +15,7 @@
   function SkLhs() {
 
     var directive = {
-      templateUrl: 'partials/sklhs.tmpl.html',
+      templateUrl: 'scripts/toc/sklhs.tmpl.html',
       restrict: 'E',
       controller: 'TocCtrl',
       controllerAs: 'ctrl'
