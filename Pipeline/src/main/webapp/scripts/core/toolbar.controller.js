@@ -15,13 +15,13 @@
 		.controller('ToolbarCtrl', ToolbarCtrl);
 
 	/* @ngInject */
-	function ToolbarCtrl($mdSidenav, ToolbarModel) {
+	function ToolbarCtrl($mdSidenav, documentModel) {
 
 		//-- private variables
 		var vm = this;
 
 		//-- public variables
-		vm.toolbarInfo = ToolbarModel.toolbarInfo;
+		vm.documentId = documentModel.documentId;
 		
 		//-- public methods
 		vm.toggleSidenav = toggleSidenav;
