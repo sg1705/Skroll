@@ -18,6 +18,7 @@ angular.module('SkrollApp', [
 	'feature-flags',
 	'app.core',
 	'app.core.services',
+	'app.core.util',
 	'app.search',
 	'app.trainer',
 	'app.upload'
