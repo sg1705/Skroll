@@ -35,6 +35,11 @@ angular.module('SkrollApp')
 			.iconSet('viewer', 'img/icons/sets/viewer-24.svg', 24);
 
 		$routeProvider.
+		when('/url', {
+			templateUrl: 'scripts/landing/urlform.tmpl.html',
+			controller: 'UrlFormCtrl',
+			controllerAs: 'ctrl'
+		}).		
 		when('/list', {
 			templateUrl: 'scripts/landing/doclist.tmpl.html',
 			controller: 'ContentCtrl',
