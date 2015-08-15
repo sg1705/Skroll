@@ -52,7 +52,7 @@ public class ClassifierFactory {
     public List<Classifier> getClassifiers(Document document) throws Exception {
        List<Classifier> classifierList = new ArrayList<>();
        classifierList.add(getClassifier(TOC_CLASSIFIER_ID));
-        classifierList.add(getClassifier(DEF_CLASSIFIER_ID));
+//        classifierList.add(getClassifier(DEF_CLASSIFIER_ID));
 
         //classifierList.add(getClassifier(Category.TOC_2));
        //classifierList.add(getClassifier(Category.TOC_3));

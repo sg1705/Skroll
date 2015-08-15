@@ -23,7 +23,8 @@ import java.util.*;
  */
 public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
-    static final int NUM_ITERATIONS = 5;
+    static final int NUM_ITERATIONS = 2;
+    static final double ANNOTATING_THRESHOLD = .99999;
 
     Document doc;
     // todo: should probably store paragraphs, otherwise, need to recreate it everytime when model has new observations
@@ -349,8 +350,11 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
             //todo: a hack for TOC annotation. should implement HMM for TOC and annotate base on HMM result
             if (this.modelRVSetting instanceof TOCModelRVSetting) {
                 int maxIndex = BNInference.maxIndex(logPrioProbs);
-                RVValues.addTerms(paraCategory, paragraph, tokens, maxIndex);
-                continue;
+                double[] paraProbs = logPrioProbs.clone();
+                BNInference.convertLogBeliefToProb(paraProbs);
+                if (paraProbs[maxIndex] > ANNOTATING_THRESHOLD)
+                    RVValues.addTerms(paraCategory, paragraph, tokens, maxIndex);
+                if (true) continue;
             }
 
             List<String> words = DocumentHelper.getTokenString(tokens);

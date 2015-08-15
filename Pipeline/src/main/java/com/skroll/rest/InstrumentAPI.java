@@ -98,13 +98,15 @@ public class InstrumentAPI {
                 HashMap<String, HashMap<String, HashMap<String, Double>>> map = classifier.getBNIVisualMap(doc, paraIndex);
                 probabilityJson = gson.toJson(map);
                 buf.append(probabilityJson);
+                buf.append(",");
+
             }
-            buf.append(",");
             for (Classifier classifier : request.getClassifiers()) {
                 HashMap<String, HashMap<String, HashMap<String, Double>>> modelMap = classifier.getModelVisualMap();
                 buf.append(gson.toJson(modelMap));
+                buf.append(",");
+
             }
-            buf.append(",");
             buf.append(annotationJson);
             buf.append("]");
 
