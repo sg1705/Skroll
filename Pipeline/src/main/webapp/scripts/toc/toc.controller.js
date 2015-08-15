@@ -10,7 +10,7 @@
 	 */
 
 	angular
-		.module('SkrollApp')
+		.module('app.toc')
 		.controller('TocCtrl', ['LHSModel', 'scrollObserverService', TocCtrl]);
 
   /**

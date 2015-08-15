@@ -21,6 +21,7 @@ angular.module('SkrollApp', [
 	'app.core.util',
 	'app.search',
 	'app.trainer',
+	'app.toc',
 	'app.upload'
 ]);
 
