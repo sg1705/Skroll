@@ -38,17 +38,17 @@ angular.module('SkrollApp')
 			controllerAs: 'ctrl'
 		}).
 		when('/open', {
-			templateUrl: 'partials/viewport.tmpl.html',
+			templateUrl: 'scripts/core/app.core.tmpl.html',
 			controller: 'ImportCtrl'
 		}).
 		when('/view/docId/:docId', {
-			templateUrl: 'partials/viewport.tmpl.html',
+			templateUrl: 'scripts/core/app.core.tmpl.html',
 			controller: 'ContentCtrl',
 			controllerAs: 'ctrl',			
 			reloadOnSearch: false
 		}).
 		when('/view/docId/:docId/linkId/:linkId', {
-			templateUrl: 'partials/viewport.tmpl.html',
+			templateUrl: 'scripts/core/app.core.tmpl.html',
 			controller: 'ContentCtrl',
 			controllerAs: 'ctrl',
 			reloadOnSearch: false
