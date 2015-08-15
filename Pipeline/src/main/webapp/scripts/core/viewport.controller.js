@@ -70,7 +70,7 @@
       //find out if this is a selection
       var selection = window.getSelection().toString();
       //check to see if mouseup should handle it
-      if (selection != '')
+      if (selection != '' || (selection == undefined))
         return;
       //clear highlight
       selectionService.clearSelection();
