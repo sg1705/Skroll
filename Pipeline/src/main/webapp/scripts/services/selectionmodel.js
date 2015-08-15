@@ -26,7 +26,6 @@ var SelectionModel = {
 	    }, "slow");
 	    $(para).css("background-color", "yellow");
 	    SelectionModel.paragraphId = paragraphId;
-	    ToolbarModel.trainerToolbar.lastJson = '';
 	  }
 	},
 
@@ -51,7 +50,6 @@ var SelectionModel = {
 	    $("#skrollport").animate({
 	      scrollTop: ($("#skrollport").scrollTop() - 200 + paraOffset)
 	    }, "slow");
-	    ToolbarModel.trainerToolbar.lastJson = '';
 	  }
 	},
 

@@ -13,14 +13,19 @@
 	  .directive('skTrainerToolbar', SkTrainerToolbar);
 
   /** ngInject **/
-  function SkTrainerToolbar() {
+  function SkTrainerToolbar(documentService, trainerService) {
 
 	  return {
-	    templateUrl: 'scripts/trainer/trainertoolbar.tmpl.html',
-	    restrict: 'E',
-	    controller: 'TrainerToolbarCtrl',
-	    controllerAs: 'ctrl'
-	  };  	
+	    templateUrl 	: 'scripts/trainer/trainertoolbar.tmpl.html',
+	    restrict 			: 'E',
+	    controller 		: 'TrainerToolbarCtrl',
+	    controllerAs 	: 'ctrl',
+	    link 					: link
+	  };
+
+	  function link(scope, element, attrs) {
+	  	trainerService.updateBenchmark();
+	  }
 
   }
 

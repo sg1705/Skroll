@@ -14,12 +14,13 @@
 		.controller('TrainerToolbarCtrl', TrainerToolbarCtrl);
 
 	/* @ngInject */
-	function TrainerToolbarCtrl(ToolbarModel, 
+	function TrainerToolbarCtrl(
 								documentService, 
 								documentModel, 
 								selectionService,
 								$mdSidenav,
 								trainerService,
+								trainerModel,
 								trainerPromptService,
 								clickObserverService,
 								textSelectionObserverService) {
@@ -28,8 +29,7 @@
 		var vm = this;
 		
 		//-- public variables
-		vm.trainerToolbar = ToolbarModel.trainerToolbar;
-		vm.toolbarInfo = ToolbarModel.toolbarInfo;
+		vm.trainerToolbar = trainerModel.trainerToolbar;
 
 		//-- public methods
 		vm.convertToBenchmark 	= convertToBenchmark;
@@ -55,7 +55,7 @@
 			}, function(data, status) {
 				console.log(status);
 			});
-			ToolbarModel.updateBenchmark(documentService);
+			trainerService.updateBenchmark();
 			documentModel.isProcessing = false;
 		}
 
@@ -121,6 +121,7 @@
 
 		function updateModelByTrainer() {
 			trainerService.updateModel(documentModel.documentId);
+			trainerService.updateBenchmark();
 		}
 
 

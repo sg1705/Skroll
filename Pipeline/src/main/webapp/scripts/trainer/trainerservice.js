@@ -7,12 +7,12 @@
 
   /** @ngInject **/
 
-  function TrainerService($http, $q, $log, documentService) {
+  function TrainerService($http, $q, $log, documentService, trainerModel) {
 
     //context root of API
     var documentServiceBase = 'restServices/doc/';
     var instrumentServiceBase = 'restServices/instrument/';
-
+    var trainerToolbar = trainerModel.trainerToolbar;
 
 
     //-- service definition
@@ -25,7 +25,8 @@
       updateModel            : updateModel,
       setFlags               : setFlags,
       observeNone            : observeNone,
-      getProbabilityDump     : getProbabilityDump
+      getProbabilityDump     : getProbabilityDump,
+      updateBenchmark        : updateBenchmark
 
     };
 
@@ -139,6 +140,39 @@
       /** done with get request */
       return deferred.promise;
     };
+
+    /**
+    * Fetches benchmark score
+    **/
+    function updateBenchmark() {
+        console.log("fetching score");
+        var self = this;
+        documentService.getBenchmarkScore().then(function(benchmarkScore){
+          trainerToolbar.benchmarkScore = benchmarkScore;
+          console.log(benchmarkScore);
+          trainerToolbar.level1TypeAError = benchmarkScore.qc.stats[1].type1Error;
+          trainerToolbar.level1TypeBError = benchmarkScore.qc.stats[1].type2Error;
+          trainerToolbar.level1QcScore = benchmarkScore.qc.stats[1].qcScore;
+          trainerToolbar.level2TypeAError = benchmarkScore.qc.stats[2].type1Error;
+          trainerToolbar.level2TypeBError = benchmarkScore.qc.stats[2].type2Error;
+          trainerToolbar.level2QcScore = benchmarkScore.qc.stats[2].qcScore;
+
+          if (benchmarkScore.isFileBenchmarked && !benchmarkScore.isFileTrained) {
+            trainerToolbar.isBenchmark = true;
+            trainerToolbar.isTrainModel = false;
+          } else if (benchmarkScore.isFileTrained) {
+            trainerToolbar.isBenchmark = false;
+            trainerToolbar.isTrainModel = true;
+          } else if (!benchmarkScore.isFileBenchmarked && !benchmarkScore.isFileTrained) {
+            trainerToolbar.isBenchmark = true;
+            trainerToolbar.isTrainModel = true;
+          }
+        });                
+    }
+
+
+
+
   }
 
 })();

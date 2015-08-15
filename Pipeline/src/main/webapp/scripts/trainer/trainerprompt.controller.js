@@ -4,9 +4,10 @@
   	.module('app.trainer')
   	.controller('TrainerPromptCtrl', TrainerPromptCtrl);
 
-	function TrainerPromptCtrl($scope,ToolbarModel, $mdBottomSheet, documentService) {
-    $scope.prompt = ToolbarModel.trainerPrompt.text;
-    $scope.items = ToolbarModel.trainerPrompt.items;
+	function TrainerPromptCtrl($scope, $mdBottomSheet, documentService, trainerModel) {
+    $scope.prompt = trainerModel.trainerPrompt.text;
+    $scope.items = trainerModel.trainerPrompt.items;
+
     $scope.documentService = documentService;
 
     $scope.itemClicked = function($index) {

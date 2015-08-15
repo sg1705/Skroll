@@ -14,7 +14,7 @@
     .directive('skContent', skContent);
 
   /* @ngInject */
-  function skContent(documentModel, documentService, LHSModel, selectionService, $timeout, ToolbarModel) {
+  function skContent(documentModel, documentService, LHSModel, selectionService, $timeout) {
 
     var directive = {
       restricted: 'E',
@@ -39,11 +39,8 @@
           LHSModel.setTerms(terms);
           console.log(terms);
           element.replaceWith(documentModel.targetHtml);
-          ToolbarModel.toolbarInfo.title = documentModel.documentId;
           $timeout(timeout, 0); //@see function timeout()
           //documentModel.isProcessing = false;
-          ToolbarModel.updateBenchmark(documentService);
-
 
           function timeout() {
             console.log(selectionService.serializedSelection);

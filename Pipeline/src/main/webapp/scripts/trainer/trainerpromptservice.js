@@ -6,7 +6,7 @@
     .factory('trainerPromptService', TrainerPromptService);
 
   /* @ngInject */
-  function TrainerPromptService(LHSModel, trainerService, documentModel, documentService, ToolbarModel, $mdBottomSheet) {
+  function TrainerPromptService(LHSModel, trainerService, documentModel, documentService, $mdBottomSheet, trainerModel) {
 
     //-- private variables
     var vm = this;
@@ -15,7 +15,7 @@
     vm.updateDocument     = updateDocument;
     vm.showYesNoAllDialog = showYesNoAllDialog;
     vm.showYesNoDialog    = showYesNoDialog;
-
+    vm.trainerPrompt      = trainerModel.trainerPrompt;
     //-- service definition
     var service = {
       handleTrainerTextSelection  : handleTrainerTextSelection,
@@ -34,6 +34,7 @@
       var paraId = data.paraId;
       var selectedText = data.selectedText;
       console.log(selectedText);
+      trainerModel.trainerToolbar.lastJson = '';
       var text = "Is %s a %s";
       var prompt = '';
       //find a matching term
@@ -72,6 +73,7 @@
     *
     **/
     function handleTrainerParaSelection(paraId) {
+      trainerModel.trainerToolbar.lastJson = '';
       var text = "Is this paragraph a %s";
       var prompt = '';
       //find if any term matches
@@ -100,7 +102,7 @@
         console.log(terms);
         documentModel.isProcessing = false;
         //fetch score
-        ToolbarModel.updateBenchmark(documentService);
+        trainerService.updateBenchmark();
       }, function(data, status){
         console.log(status);
       });
@@ -145,8 +147,9 @@
     *
     **/
     function showYesNoDialog(text, items) {
-      ToolbarModel.trainerPrompt.text = text;
-      ToolbarModel.trainerPrompt.items = items;
+      vm.trainerPrompt.text = text;
+      vm.trainerPrompt.items = items;
+
       //there are two types of bottom sheet
       //true or false ; or item selection
       return $mdBottomSheet.show({

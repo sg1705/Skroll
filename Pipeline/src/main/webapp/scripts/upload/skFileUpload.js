@@ -39,7 +39,6 @@
             documentModel.fileName = data.files[0].name;
             scope.fileName = data.files[0].name;
         })
-        //ToolbarModel.toolbarInfo.title = data.files[0].name;
         data.submit();
       }
 
