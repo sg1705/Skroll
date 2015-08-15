@@ -19,6 +19,7 @@ angular.module('SkrollApp', [
 	'app.core',
 	'app.core.services',
 	'app.core.util',
+	'app.landing',
 	'app.search',
 	'app.trainer',
 	'app.toc',
@@ -35,7 +36,7 @@ angular.module('SkrollApp')
 
 		$routeProvider.
 		when('/list', {
-			templateUrl: 'partials/doclist.tmpl.html',
+			templateUrl: 'scripts/landing/doclist.tmpl.html',
 			controller: 'ContentCtrl',
 			controllerAs: 'ctrl'
 		}).
