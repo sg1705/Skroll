@@ -23,7 +23,8 @@
 								trainerModel,
 								trainerPromptService,
 								clickObserverService,
-								textSelectionObserverService) {
+								textSelectionObserverService,
+								featureFlags) {
 
 		//-- private variables
 		var vm = this;
@@ -34,11 +35,12 @@
 		//-- public methods
 		vm.convertToBenchmark 	= convertToBenchmark;
 		vm.toggleTrainerMode 		= toggleTrainerMode;
-		vm.toggleUpdateBNI 			= toggleUpdateBNI;
+		// vm.toggleUpdateBNI 			= toggleUpdateBNI;
 		vm.observeNone					= observeNone;
 		vm.showProbabilityDump	= showProbabilityDump;
 		vm.updateModelByTrainer = updateModelByTrainer;
 		vm.showAnnotations 			= showAnnotations;
+		vm.toggleTermProbabilities = toggleTermProbabilities;
 
 		//-- register for click events
 		clickObserverService.register(trainerPromptService.handleTrainerParaSelection);
@@ -65,10 +67,26 @@
 		}
 
 
-		function toggleUpdateBNI() {
-			rangy.deserializeSelection(selectionService.serializedSelection);
-			selectionService.scrollToParagraph(selectionService.serializedParagraphId);
+		function toggleTermProbabilities() {
+			//get featureFlag
+			var flagName = 'trainer.probability';
+			var flags = featureFlags.get();
+			var flag = _.find(flags, function(item){ 
+																	if (item.key == flagName) {return true;}
+																});
+			if (flag != null) {
+				if (featureFlags.isOn(flag.key)) {
+					featureFlags.disable(flag);
+				} else {
+					featureFlags.enable(flag);	
+				}
+			}
 		}
+		// function toggleUpdateBNI() {
+
+		// 	rangy.deserializeSelection(selectionService.serializedSelection);
+		// 	selectionService.scrollToParagraph(selectionService.serializedParagraphId);
+		// }
 
 
 		function observeNone() {

@@ -21,7 +21,7 @@
 		var vm = this;
 		var trainerToolbar = {
 			isTrainerMode 	: true,
-			isUpdateBNI			: false,
+			// isUpdateBNI			: false,
 			isBenchmark 		: false,
 			isTrainModel 		: false,
 			lastJson 				: "",
