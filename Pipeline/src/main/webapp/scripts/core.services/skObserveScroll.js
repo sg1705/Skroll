@@ -41,7 +41,7 @@
 
     function link(scope, element, attrs) {
       var _this = this;
-      var scrollThrottle = 3;
+      var scrollThrottle = 100;
       var didScroll = false;
       var timer = false;
       element.bind('scroll', function(event) {
