@@ -17,7 +17,9 @@ public interface ClassifierFactoryStrategy {
      * @return
      */
     public default List<Integer> getClassifierIds() {
-        return Lists.newArrayList(ClassifierFactory.DEF_CLASSIFIER_ID, ClassifierFactory.TOC_CLASSIFIER_ID);
+        return Lists.newArrayList(
+//                ClassifierFactory.DEF_CLASSIFIER_ID,
+                ClassifierFactory.TOC_CLASSIFIER_ID);
     }
 
 }
