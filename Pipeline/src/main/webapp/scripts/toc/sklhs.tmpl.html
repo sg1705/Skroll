@@ -1,0 +1,80 @@
+<div ng-repeat="class in ctrl.classes">
+	<div ng-show="class.isActive">
+		<md-button class="menu-toggle-button" ng-click="ctrl.toggleSection($index)">
+		  <div layout="row" layout-align="space-between center">
+				<span>{{class.name}}</span>
+				<span>
+					<md-icon 
+						ng-class="{'toggled' : class.isSelected}" 
+						class="menu-toggle-icon" 
+						md-svg-icon="images/icons/ic_expand_more_24px.svg" >
+					</md-icon>
+				</span>
+			</div>		
+		</md-button>
+	
+	<ul ng-show="class.isSelected" class="menu-list">
+		<li ng-if="class.id != 2" ng-repeat="term in ctrl.smodel.terms | filter: {classificationId:class.id}">
+			<md-button class="md-button" scroll-to-paragraph="{{term.paragraphId}}">{{term.term}}</md-button>
+			<md-divider inset></md-divider>
+		</li>
+		<li ng-if="class.id == 2" ng-repeat="term in ctrl.smodel.terms | tocTerms">
+			<md-divider ng-if="term.classificationId == 2" inset></md-divider>
+
+			<md-button 
+				ng-if="term.classificationId == 2" 
+				ng-class = "{'md-primary md-warn' : ctrl.smodel.visibleHeaders.indexOf(term.paragraphId) != -1, 'md-primary' : ctrl.smodel.visibleHeaders.indexOf(term.paragraphId) == -1}"
+
+				scroll-to-paragraph="{{term.paragraphId}}">
+				<md-icon 
+				  feature-flag="trainer"
+				  ng-if="term.isUserObserved"
+				  md-svg-icon="images/icons/ic_error_18px.svg" >
+				</md-icon>
+			  {{term.term}}
+			  <md-progress-linear md-mode="determinate" value="50" feature-flag='trainer.probability'>
+				</md-progress-linear>
+			</md-button>			
+
+			<md-button 
+				md-no-ink
+				ng-if="term.classificationId == 3"
+				style="padding-left: 15px; font-size:12px"
+				ng-class = "{'md-primary md-warn menu-item-level-2' 
+								: ctrl.smodel.visibleHeaders.indexOf(term.paragraphId) != -1, 
+							'md-primary menu-item-level-2' 
+								: ctrl.smodel.visibleHeaders.indexOf(term.paragraphId) == -1}"
+
+				scroll-to-paragraph="{{term.paragraphId}}">
+				<md-icon 
+				  feature-flag="trainer"
+				  ng-if="term.isUserObserved"
+				  md-svg-icon="images/icons/ic_error_18px.svg" >
+				</md-icon>
+				{{term.term}}
+			  <md-progress-linear md-mode="determinate" value="50" feature-flag='trainer.probability'>
+				</md-progress-linear>
+				
+			</md-button>
+
+			<md-button
+				md-no-ink
+				ng-if="term.classificationId  == 4"
+				style="padding-left: 20px; font-size:12px"
+				class="md-primary md-hue-1 menu-item-level-2"
+				scroll-to-paragraph="{{term.paragraphId}}">
+				{{term.term}}
+			</md-button>
+
+			<md-button md-no-ink ng-if="term.classificationId  == 5" style="padding-left: 25px; font-size:12px" class="md-primary md-hue-1 menu-item-level-2" scroll-to-paragraph="{{term.paragraphId}}">
+				{{term.term}}
+			</md-button>
+
+			<md-button md-no-ink ng-if="term.classificationId  == 6" style="padding-left: 30px; font-size:12px" class="md-primary md-hue-1 menu-item-level-2" scroll-to-paragraph="{{term.paragraphId}}">
+				{{term.term}}
+			</md-button>
+		</li>
+	</ul>
+	<md-divider></md-divider>
+	</div>
+</div>

@@ -19,7 +19,7 @@ public class SkrollTestGuiceModule extends AbstractModule {
         bind(ClassifierFactoryStrategy.class).to(DefaultClassifierFactoryStrategy.class);
         //default binding
         bind(DocumentFactory.class)
-                        .to(CorpusFSDocumentFactoryImpl.class);
+                .to(CorpusFSDocumentFactoryImpl.class);
         bind(ClassifierFactory.class);
 
         bind(DocumentFactory.class)

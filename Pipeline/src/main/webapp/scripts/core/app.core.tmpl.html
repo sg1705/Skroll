@@ -1,0 +1,65 @@
+<!-- Start the layout of the doc -->
+<div layout="row" style="height:100%">
+  <!-- more comment -->
+  <!-- LHS -->
+  <md-sidenav layout="column" class="md-sidenav-left"
+              md-component-id="left" md-is-locked-open="false" >
+
+    <md-content>
+      <pre id="rightPane"></pre>
+    </md-content>
+
+  </md-sidenav>
+  <!-- end sidebar -->
+
+  <!-- content -->
+  <div layout="column" flex >
+
+    <md-toolbar class="skroll-toolbar">
+      <sk-toolbar />
+    </md-toolbar>
+
+    <md-content md-scroll-y id="skrollport" sk-observe-scroll>
+      <div layout="row" flex>
+        <!-- hide RHS when small media -->
+        <div hide-sm hide-md flex="5">
+        </div>
+
+        <div ng-controller="ViewPortCtrl as ctrl" >
+            <md-whiteframe class="md-whiteframe-z3">
+              <md-content flex id="content" class="md-padding"  ng-mouseup="ctrl.mouseUp($event)" ng-mousedown="ctrl.mouseDown($event)" ng-click="ctrl.paraClicked($event)" layout-padding style="padding-left:40px">
+                <sk-content/>
+              </md-content>
+            </md-whiteframe>  
+        </div>
+        <div hide-sm hide-md flex="5">
+        </div>
+
+      </div>
+    </md-content>
+
+  </div>
+  <!-- end content -->
+
+  <!-- right sidenav -->
+  <md-sidenav layout="column" class="md-sidenav-right "
+              md-component-id="right" md-is-locked-open="$media('gt-sm')" 
+              ng-swipe-left="ctrl.toggleSidenav('left')">
+
+
+    <div layout="column" flex>
+      <md-toolbar class="skroll-toolbar">
+        <sk-search ng-controller="SearchCtrl as ctrl"/>
+      </md-toolbar>
+
+    <md-content ng-class="{'sk-lhs-search-hover': ctrl.smodel.hover, 'sk-lhs-hover': !ctrl.smodel.hover}" 
+     flex class="md-padding" ng-controller="LHSLevelsCtrl as ctrl">
+      <sk-lhs />
+    </md-content>
+
+    </div>
+  </md-sidenav>
+  <!-- end sidebar -->
+
+</div>
+<!-- end layout -->

@@ -9,7 +9,22 @@
  * Main module of the application.
  */
 
-angular.module('SkrollApp', ['ngMaterial', 'ngSanitize', 'ngTouch', 'ngRoute', 'ngSilent', 'feature-flags']);
+angular.module('SkrollApp', [
+	'ngMaterial',
+	'ngSanitize',
+	'ngTouch',
+	'ngRoute',
+	'ngSilent',
+	'feature-flags',
+	'app.core',
+	'app.core.services',
+	'app.core.util',
+	'app.landing',
+	'app.search',
+	'app.trainer',
+	'app.toc',
+	'app.upload'
+]);
 
 //** when newer version of material comes out
 //this is lifted from http://goo.gl/mrWZ0F
@@ -20,22 +35,30 @@ angular.module('SkrollApp')
 			.iconSet('viewer', 'img/icons/sets/viewer-24.svg', 24);
 
 		$routeProvider.
+		when('/url', {
+			templateUrl: 'scripts/landing/urlform.tmpl.html',
+			controller: 'UrlFormCtrl',
+			controllerAs: 'ctrl'
+		}).		
 		when('/list', {
-			templateUrl: 'partials/doclist.tmpl.html',
-			controller: 'ContentCtrl'
+			templateUrl: 'scripts/landing/doclist.tmpl.html',
+			controller: 'ContentCtrl',
+			controllerAs: 'ctrl'
 		}).
 		when('/open', {
-			templateUrl: 'partials/viewport.tmpl.html',
+			templateUrl: 'scripts/core/app.core.tmpl.html',
 			controller: 'ImportCtrl'
 		}).
 		when('/view/docId/:docId', {
-			templateUrl: 'partials/viewport.tmpl.html',
+			templateUrl: 'scripts/core/app.core.tmpl.html',
 			controller: 'ContentCtrl',
+			controllerAs: 'ctrl',			
 			reloadOnSearch: false
 		}).
 		when('/view/docId/:docId/linkId/:linkId', {
-			templateUrl: 'partials/viewport.tmpl.html',
+			templateUrl: 'scripts/core/app.core.tmpl.html',
 			controller: 'ContentCtrl',
+			controllerAs: 'ctrl',
 			reloadOnSearch: false
 		}).		
 		otherwise({
@@ -54,7 +77,14 @@ angular.module('SkrollApp')
 				"active" : true,
 				"name" : "flag for trainer",
 				"description" : "no description"
+			},
+			{
+				"key" : "trainer.probability",
+				"active" : false,
+				"name" : "flag for probabilities in TOC",
+				"description" : "no description"
 			}
+
 		];
   		featureFlags.set(flags);
 		}

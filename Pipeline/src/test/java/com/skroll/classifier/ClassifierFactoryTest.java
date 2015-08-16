@@ -26,15 +26,15 @@ public class ClassifierFactoryTest {
     public void testGetClassifiers() throws Exception {
         List<Classifier> classifiers = classifierFactory.getClassifiers(classifierFactoryStrategy);
         System.out.println("ClassifierFactory.getClassifiers(): " + classifiers);
-        assert(classifiers.contains(classifierFactory.getClassifier(ClassifierFactory.DEF_CLASSIFIER_ID)));
+        assert (classifiers.contains(classifierFactory.getClassifier(ClassifierFactory.DEF_CLASSIFIER_ID)));
     }
 
     @Test
     public void testGetClassifier() throws Exception {
-        assert(classifierFactory.getClassifier(ClassifierFactory.DEF_CLASSIFIER_ID).getId() == ClassifierFactory.DEF_CLASSIFIER_ID);
+        assert (classifierFactory.getClassifier(ClassifierFactory.DEF_CLASSIFIER_ID).getId() == ClassifierFactory.DEF_CLASSIFIER_ID);
     }
 
-    @Test (expected = RuntimeException.class)
+    @Test(expected = RuntimeException.class)
     public void testGetClassifierException() throws Exception {
         System.out.println("ClassifierFactory.getClassifier(): " + classifierFactory.getClassifier(-1));
     }

@@ -20,7 +20,7 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
     protected String modelFolderName = null;
     protected ObjectPersistUtil objectPersistUtil = null;
     protected  static Map<Integer, TrainingDocumentAnnotatingModel> TrainingModelMap = new HashMap<>();
-    protected  static Map<String, ProbabilityDocumentAnnotatingModel> bniModelMap = new HashMap<>();
+    protected static Map<String, ProbabilityDocumentAnnotatingModel> bniModelMap = new HashMap<>();
 
     public TrainingDocumentAnnotatingModel getTrainingModel(int modelId, ModelRVSetting modelRVSetting) {
         if (TrainingModelMap.containsKey(modelId)){
@@ -53,7 +53,7 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
         return localTrainingModel;
     }
 
-    public String getBniId(int modelId, String documentId){
+    public String getBniId(int modelId, String documentId) {
         return modelId + "." + documentId;
     }
 
@@ -68,15 +68,15 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
         bniModel.annotateDocument();
         //printBelieves(bniModel, document);
 
-        bniModelMap.put(getBniId(modelId,documentId),bniModel);
+        bniModelMap.put(getBniId(modelId, documentId), bniModel);
 
         return bniModel;
     }
 
     @Override
     public ProbabilityDocumentAnnotatingModel getBNIModel(int modelId, String documentId) {
-        if (bniModelMap.containsKey(getBniId(modelId,documentId))){
-            return bniModelMap.get(getBniId(modelId,documentId));
+        if (bniModelMap.containsKey(getBniId(modelId, documentId))) {
+            return bniModelMap.get(getBniId(modelId, documentId));
         }
         return null;
     }
