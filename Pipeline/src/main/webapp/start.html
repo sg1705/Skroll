@@ -25,12 +25,12 @@
 
 </head>
 
-  <md-backdrop ng-show="documentModel.isProcessing"  class="md-opaque md-bottom-sheet-backdrop md-default-theme">
+  <md-backdrop ng-show="ctrl.documentModel.isProcessing"  class="md-opaque md-bottom-sheet-backdrop md-default-theme">
     <md-progress-circular style="z-index: 80; position:absolute;top: 50%;left: 50%;" md-mode="indeterminate"></md-progress-circular>
   </md-backdrop>
 
 
-<body style="height:100%" ng-controller="ContentCtrl" ng-keydown="overrideControlF($event)">
+<body style="height:100%" ng-controller="ContentCtrl as ctrl" ng-keydown="ctrl.overrideControlF($event)">
   <div 
     ng-view layout="column"
     style="-webkit-overflow-scrolling: touch; height:100%" >
@@ -59,31 +59,63 @@
 <!-- endbuild -->
 
 <!-- build:js({.tmp,app}) scripts/scripts.js -->
+<script src="scripts/core/app.core.module.js"></script>
+<script src="scripts/core/content.controller.js"></script>
+<script src="scripts/core/toolbar.controller.js"></script>
+<script src="scripts/core/skContent.js"></script>
+<script src="scripts/core/skToolbar.js"></script>
+<script src="scripts/core/viewport.controller.js"></script>
+
+<script src="scripts/core.services/core.services.module.js"></script>
+<script src="scripts/core.services/clickobserverservice.js"></script>
+<script src="scripts/core.services/documentservice.js"></script>
+<script src="scripts/core.services/selectionservice.js"></script>
+<script src="scripts/core.services/scrollobserverservice.js"></script>
+<script src="scripts/core.services/skObserveScroll.js"></script>
+<script src="scripts/core.services/textselectionobserverservice.js"></script>
+
+<script src="scripts/core.util/core.util.module.js"></script>
+<script src="scripts/core.util/scrollToParagraph.js"></script>
+
+<script src="scripts/landing/landing.module.js"></script>
+<script src="scripts/landing/urlform.controller.js"></script>
+
+<script src="scripts/search/search.module.js"></script>
+<script src="scripts/search/search.js"></script>
+<script src="scripts/search/skSearch.js"></script>
+<script src="scripts/search/searchservice.js"></script>
+<script src="scripts/search/jqueryhighlight.js"></script>
+
+<script src="scripts/trainer/trainer.module.js"></script>
+<script src="scripts/trainer/trainermodel.js"></script>
+<script src="scripts/trainer/trainerservice.js"></script>
+<script src="scripts/trainer/trainerpromptservice.js"></script>
+<script src="scripts/trainer/skTrainerToolbar.js"></script>
+<script src="scripts/trainer/trainertoolbar.controller.js"></script>
+<script src="scripts/trainer/trainerprompt.controller.js"></script>
+
+<script src="scripts/toc/toc.module.js"></script>
+<script src="scripts/toc/toc.controller.js"></script>
+<script src="scripts/toc/lhslevels.controller.js"></script>
+<script src="scripts/toc/skLhs.js"></script>
+<script src="scripts/toc/tocterms.filter.js"></script>
+
+<script src="scripts/upload/upload.module.js"></script>
+<script src="scripts/upload/import.controller.js"></script>
+<script src="scripts/upload/skFileUpload.js"></script>
+<script src="scripts/upload/jquery.fileupload.js"></script>
+
+<script src="scripts/thirdparty/ngsilent.js"></script>
+<script src="scripts/thirdparty/diff_match_patch_uncompressed.js"></script>
+
 <script src="scripts/app.js"></script>
-<script src="scripts/jquery.fileupload.js"></script>
-<script src="scripts/diff_match_patch_uncompressed.js"></script>
-<script src="scripts/controllers/content.js"></script>
-<script src="scripts/controllers/import.js"></script>
-<script src="scripts/controllers/search.js"></script>
-<script src="scripts/controllers/toc.js"></script>
-<script src="scripts/controllers/toolbar.js"></script>
-<script src="scripts/controllers/viewport.js"></script>
-<script src="scripts/directives/fileupload.js"></script>
-<script src="scripts/directives/scrolltoparagraph.js"></script>
-<script src="scripts/directives/sktoolbar.js"></script>
-<script src="scripts/directives/sklhs.js"></script>
-<script src="scripts/directives/skcontent.js"></script>
-<script src="scripts/directives/skobservescroll.js"></script>
+
 <script src="scripts/services/documentmodel.js"></script>
-<script src="scripts/services/trainermodel.js"></script>
 <script src="scripts/services/selectionmodel.js"></script>
-<script src="scripts/services/documentservice.js"></script>
 <script src="scripts/services/lhsmodel.js"></script>
-<script src="scripts/services/searchservice.js"></script>
-<script src="scripts/services/scrollobserverservice.js"></script>
-<script src="scripts/services/filter.js"></script>
-<script src="scripts/services/ngsilent.js"></script>
-<script src="scripts/services/jqueryhighlight.js"></script>
+
+
+
 <!-- endbuild -->
 
 
