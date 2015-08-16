@@ -22,7 +22,7 @@ public class ClassifierBenchmarkTest {
         ClassifierFactory classifierFactory = injector.getInstance(ClassifierFactory.class);
         ClassifierFactoryStrategy classifierFactoryStrategy = injector.getInstance(ClassifierFactoryStrategy.class);
         DocumentFactory documentFactory = injector.getInstance(BenchmarkFSDocumentFactoryImpl.class);
-        benchmark = new ClassifierBenchmark(documentFactory,classifierFactory.getClassifiers(classifierFactoryStrategy));
+        benchmark = new ClassifierBenchmark(documentFactory, classifierFactory.getClassifiers(classifierFactoryStrategy));
     }
     @Test
     public void testBenchmark(){

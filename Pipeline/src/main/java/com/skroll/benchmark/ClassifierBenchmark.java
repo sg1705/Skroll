@@ -37,7 +37,7 @@ public class ClassifierBenchmark {
         ClassifierFactoryStrategy classifierFactoryStrategy = injector.getInstance(ClassifierFactoryStrategy.class);
         DocumentFactory documentFactory = injector.getInstance(BenchmarkFSDocumentFactoryImpl.class);
 
-        ClassifierBenchmark benchmark = new ClassifierBenchmark(documentFactory,classifierFactory.getClassifiers(classifierFactoryStrategy));
+        ClassifierBenchmark benchmark = new ClassifierBenchmark(documentFactory, classifierFactory.getClassifiers(classifierFactoryStrategy));
         QC qc = null;
         try {
             qc = benchmark.runQCOnBenchmarkFolder();

@@ -36,11 +36,11 @@ public class ClassifierFactory {
             return classifiers.get(classifierId);
 
         if (classifierId == TOC_CLASSIFIER_ID) {
-                classifier = new ClassifierImpl(TOC_CLASSIFIER_ID, tocClassifierProto, modelFactory, new TOCModelRVSetting(tocClassifierProto.getCategoryIds()));
+            classifier = new ClassifierImpl(TOC_CLASSIFIER_ID, tocClassifierProto, modelFactory, new TOCModelRVSetting(tocClassifierProto.getCategoryIds()));
         } else if (classifierId == DEF_CLASSIFIER_ID){
-             classifier = new ClassifierImpl (DEF_CLASSIFIER_ID,defClassifierProto, modelFactory, new DefModelRVSetting(defClassifierProto.getCategoryIds()));
+            classifier = new ClassifierImpl(DEF_CLASSIFIER_ID, defClassifierProto, modelFactory, new DefModelRVSetting(defClassifierProto.getCategoryIds()));
         } else {
-            throw new RuntimeException("Classifier Id: "+ classifierId + " is not supported");
+            throw new RuntimeException("Classifier Id: " + classifierId + " is not supported");
         }
         classifiers.put(classifierId, classifier);
         return classifier;

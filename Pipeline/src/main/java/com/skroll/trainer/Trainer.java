@@ -72,13 +72,13 @@ public class Trainer {
             }
             counter++;
             if (counter ==10) {
-                for ( Classifier classifier : classifierFactory.getClassifiers(classifierFactoryStrategy)) {
+                for (Classifier classifier : classifierFactory.getClassifiers(classifierFactoryStrategy)) {
                     classifier.persistModel();
                 }
                 counter=0;
             }
         }
-        for ( Classifier classifier : classifierFactory.getClassifiers(classifierFactoryStrategy)) {
+        for (Classifier classifier : classifierFactory.getClassifiers(classifierFactoryStrategy)) {
             classifier.persistModel();
         }
     }
@@ -96,7 +96,7 @@ public class Trainer {
             }
         }
         try {
-            for ( Classifier classifier : classifierFactory.getClassifiers(classifierFactoryStrategy)) {
+            for (Classifier classifier : classifierFactory.getClassifiers(classifierFactoryStrategy)) {
                 classifier.trainWithWeight(doc);
             }
         } catch (Exception e) {

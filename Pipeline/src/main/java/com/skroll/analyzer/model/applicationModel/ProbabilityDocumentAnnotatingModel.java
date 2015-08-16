@@ -475,6 +475,8 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
     }
 
     public List<Double> toParaCategoryDump() {
+        List<AbstractMap.SimpleImmutableEntry<Integer, Double>> probs = new LinkedList<>();
+
         //covert paraCategoryBelief
         List<Double> listOfP = new ArrayList();
         for (int ii = 0; ii < this.getParagraphCategoryProbabilities().length; ii++) {
@@ -482,6 +484,20 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
         }
         return listOfP;
     }
+
+    public Map<String, Double> getParaProbMap() {
+        Map<String, Double> paraProbMap = new HashMap<>();
+        double[][] probs = this.getParagraphCategoryProbabilities();
+        List<CoreMap> originalParagraphs = doc.getParagraphs();
+
+        for (int ii = 0; ii < probs.length; ii++) {
+            int maxIndex = BNInference.maxIndex(probs[ii]);
+            paraProbMap.put(originalParagraphs.get(ii).getId(), probs[ii][maxIndex]);
+        }
+
+        return paraProbMap;
+    }
+
 }
 
 
