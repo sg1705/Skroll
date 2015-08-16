@@ -1,5 +1,7 @@
 package com.skroll.classifier;
 
+import com.google.common.base.Objects;
+
 import java.util.List;
 
 /**
@@ -22,5 +24,13 @@ public class ClassifierProto {
 
     public List<Integer> getCategoryIds() {
         return categoryIds;
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("categoryIds", categoryIds)
+                .add("id", id)
+                .toString();
     }
 }

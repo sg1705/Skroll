@@ -37,11 +37,11 @@ public interface ModelFactory {
      * @param document
      * @return
      */
-    public ProbabilityDocumentAnnotatingModel createBNIModel(int modelId, ModelRVSetting modelRVSetting, Document document);
+    public ProbabilityDocumentAnnotatingModel createBNIModel(int modelId, String documentId, ModelRVSetting modelRVSetting, Document document);
 
     /**
      * retrieve the BNI model from cache
      * @return
      */
-    public ProbabilityDocumentAnnotatingModel getBNIModel(int modelId);
+    public ProbabilityDocumentAnnotatingModel getBNIModel(int modelId, String documentId);
 }

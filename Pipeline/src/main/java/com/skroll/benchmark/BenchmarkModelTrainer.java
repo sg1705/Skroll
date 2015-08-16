@@ -4,6 +4,8 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.skroll.classifier.ClassifierFactory;
+import com.skroll.classifier.ClassifierFactoryStrategy;
+import com.skroll.classifier.DefaultClassifierFactoryStrategy;
 import com.skroll.classifier.factory.BenchmarkFSModelFactoryImpl;
 import com.skroll.classifier.factory.ModelFactory;
 import com.skroll.document.factory.CorpusFSDocumentFactoryImpl;
@@ -44,6 +46,7 @@ public class BenchmarkModelTrainer extends Trainer {
                         .to(BenchmarkFSModelFactoryImpl.class);
                 bind(Configuration.class);
                 bind(ClassifierFactory.class);
+                bind(ClassifierFactoryStrategy.class).to(DefaultClassifierFactoryStrategy.class);
             }
         });
         classifierFactory = injector.getInstance(ClassifierFactory.class);

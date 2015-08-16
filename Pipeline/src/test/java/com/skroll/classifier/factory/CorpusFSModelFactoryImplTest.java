@@ -34,6 +34,7 @@ public class CorpusFSModelFactoryImplTest {
     ModelRVSetting setting;
 
     int modelId = TEST_DEF_CLASSIFIER_ID;
+    String bniId = modelId + "." + "bni";
     @Before
     public void setUp() throws Exception {
         try {
@@ -68,7 +69,7 @@ public class CorpusFSModelFactoryImplTest {
     @Test
     public void testGetBNIModel() throws Exception {
         Document doc =  Parser.parseDocumentFromHtml(Files.toString(new File("src/test/resources/classifier/smaller-indenture.html"), Constants.DEFAULT_CHARSET));
-        ProbabilityDocumentAnnotatingModel model = factory.createBNIModel(modelId, setting, doc);
+        ProbabilityDocumentAnnotatingModel model = factory.createBNIModel(modelId, bniId, setting, doc);
         if(model==null){
             fail("failed to get BNI training model");
         }
