@@ -111,8 +111,8 @@ public class ClassifierImpl implements Classifier {
     }
 
     @Override
-    public List<Double> getProbabilityDataForDoc(String documentId) {
-        return modelFactory.getBNIModel(id, documentId).toParaCategoryDump();
+    public Map<String, Double> getProbabilityDataForDoc(String documentId) {
+        return modelFactory.getBNIModel(id, documentId).getParaProbMap();
     }
 
     @Override

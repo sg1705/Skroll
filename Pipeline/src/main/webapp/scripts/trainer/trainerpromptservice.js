@@ -103,6 +103,7 @@
         documentModel.isProcessing = false;
         //fetch score
         trainerService.updateBenchmark();
+        trainerService.fetchProbabilities(documentModel.documentId, terms);
       }, function(data, status){
         console.log(status);
       });

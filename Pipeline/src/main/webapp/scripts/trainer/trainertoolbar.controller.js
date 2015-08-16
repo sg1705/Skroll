@@ -24,6 +24,7 @@
 								trainerPromptService,
 								clickObserverService,
 								textSelectionObserverService,
+								LHSModel,
 								featureFlags) {
 
 		//-- private variables
@@ -78,7 +79,8 @@
 				if (featureFlags.isOn(flag.key)) {
 					featureFlags.disable(flag);
 				} else {
-					featureFlags.enable(flag);	
+					featureFlags.enable(flag);
+					trainerService.fetchProbabilities(documentModel.documentId, LHSModel.smodel.terms);
 				}
 			}
 		}
