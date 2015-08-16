@@ -82,7 +82,7 @@ public class ClassifierImpl implements Classifier {
 
     @Override
     public void trainWithWeight(Document doc) {
-        modelFactory.getTrainingModel(id,modelRVSetting).updateWithDocumentAndWeight(doc);
+        modelFactory.getTrainingModel(id, modelRVSetting).updateWithDocumentAndWeight(doc);
     }
 
 
@@ -107,7 +107,7 @@ public class ClassifierImpl implements Classifier {
 
     @Override
     public HashMap<String, HashMap<String, HashMap<String, Double>>> getModelVisualMap() {
-        return modelFactory.getTrainingModel(id,modelRVSetting).toVisualMap();
+        return modelFactory.getTrainingModel(id, modelRVSetting).toVisualMap();
     }
 
     @Override
@@ -117,7 +117,7 @@ public class ClassifierImpl implements Classifier {
 
     @Override
     public void persistModel() throws Exception {
-        modelFactory.saveTrainingModel(id,modelRVSetting);
+        modelFactory.saveTrainingModel(id, modelRVSetting);
     }
 
     @Override

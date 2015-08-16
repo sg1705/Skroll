@@ -20,13 +20,14 @@ public class LowerCaseWordsComputer implements RVWordsComputer {
     }
 
     public String[] getWords(CoreMap m, int n) {
+        Set<String> wordSet = new HashSet<>();
         List<Token> tokens = m.getTokens();
         if (tokens == null) return null;
-        String[] words = new String[tokens.size()];
+//        String[] words = new String[tokens.size()];
         int len = Math.min(n, tokens.size());
         for (int i = 0; i < len; i++) {
-            words[i] = tokens.get(i).getText().toLowerCase();
+            wordSet.add(tokens.get(i).getText().toLowerCase());
         }
-        return words;
+        return wordSet.toArray(new String[wordSet.size()]);
     }
 }
