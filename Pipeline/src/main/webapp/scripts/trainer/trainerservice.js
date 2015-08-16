@@ -26,6 +26,7 @@
       setFlags               : setFlags,
       observeNone            : observeNone,
       getProbabilityDump     : getProbabilityDump,
+      fetchProbabilities     : fetchProbabilities,
       updateBenchmark        : updateBenchmark
 
     };
@@ -140,6 +141,20 @@
       /** done with get request */
       return deferred.promise;
     };
+
+
+
+    function fetchProbabilities(documentId, terms) {
+        getProbabilityDump(documentId)
+        .then(function(data) {
+          //update probabilities of terms
+          for(var ii = 0; ii < terms.length; ii++) {
+            var p = data[terms[ii].paragraphId];
+            terms[ii].probability = p * 100;
+          }
+        })
+    }
+
 
     /**
     * Fetches benchmark score
