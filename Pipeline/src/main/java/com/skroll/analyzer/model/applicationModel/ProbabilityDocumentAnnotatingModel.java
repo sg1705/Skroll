@@ -24,7 +24,6 @@ import java.util.*;
 public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
     static final int NUM_ITERATIONS = 2;
-    //    static final double ANNOTATING_THRESHOLD = .99999;
     double[] ANNOTATING_THRESHOLD = new double[]{0, .99999, 0.9999};
     Document doc;
     // todo: should probably store paragraphs, otherwise, need to recreate it everytime when model has new observations
