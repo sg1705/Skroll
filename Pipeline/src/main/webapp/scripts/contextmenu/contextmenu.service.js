@@ -42,7 +42,7 @@
 
 
 	/* @ngInject */
-	function SearchService(textSelectionObserverService, $mdToast, $mdUtil, $animate) {
+	function SearchService(textSelectionObserverService, $mdToast, $mdUtil, $animate, featureFlags) {
 
 		//-- private variables
 		var service = this;
@@ -54,6 +54,10 @@
 		////////////
 
 		function onSelection(paragraphId) {
+
+			if (featureFlags.isOn('trainer')) {
+				return;
+			}
 			console.log('context menu invokved');
 			var s = window.getSelection();
 			var oRange = s.getRangeAt(0); //get the text range
