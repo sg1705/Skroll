@@ -10,6 +10,7 @@
  */
 
 angular.module('SkrollApp', [
+	'ngAnimate',
 	'ngMaterial',
 	'ngSanitize',
 	'ngTouch',
@@ -19,6 +20,7 @@ angular.module('SkrollApp', [
 	'app.core',
 	'app.core.services',
 	'app.core.util',
+	'app.contextmenu',
 	'app.landing',
 	'app.search',
 	'app.trainer',
