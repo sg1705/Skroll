@@ -85,7 +85,8 @@ public class BNInference {
     public static void normalizeLog(double[] vals) {
         double max = vals[0];
         for (int i = 1; i < vals.length; i++) if (vals[i] > max) max = vals[i];
-        for (int i = 0; i < vals.length; i++) vals[i] = vals[i] - max;
+        if (max == Double.NEGATIVE_INFINITY) Arrays.fill(vals, 0); // if every entry is -infinity, make everything 0
+        else for (int i = 0; i < vals.length; i++) vals[i] = vals[i] - max;
 //        double logSum = Math.log(DoubleStream.of(vals).map((val) -> Math.exp(val)).sum());
 //        for (int i=0; i<vals.length; i++){
 //            vals[i] -= logSum;
