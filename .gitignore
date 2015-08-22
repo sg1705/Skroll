@@ -4,4 +4,4 @@ build/
 .idea/tasks.xml
 .idea/uiDesigner.xml
 .idea/libraries
-
+Pipeline/src/main/webapp/styles/.sass-cache

@@ -31,7 +31,8 @@ angular.module('SkrollApp', [
 //** when newer version of material comes out
 //this is lifted from http://goo.gl/mrWZ0F
 //reloadOnSearch was because of this plunker http://plnkr.co/edit/tgin0gpQl1qwu9hVXBno?p=preview
-angular.module('SkrollApp')
+angular
+	.module('SkrollApp')
 	.config(function($mdIconProvider, $routeProvider, $locationProvider) {
 		$mdIconProvider
 			.iconSet('viewer', 'img/icons/sets/viewer-24.svg', 24);
@@ -70,27 +71,6 @@ angular.module('SkrollApp')
 	    $locationProvider.hashPrefix("!");
 
 	});
-
-angular.module('SkrollApp')
-	.run(function(featureFlags, $http) {
-		var flags = [ 
-			{
-				"key" : "trainer",
-				"active" : true,
-				"name" : "flag for trainer",
-				"description" : "no description"
-			},
-			{
-				"key" : "trainer.probability",
-				"active" : false,
-				"name" : "flag for probabilities in TOC",
-				"description" : "no description"
-			}
-
-		];
-  		featureFlags.set(flags);
-		}
-	);
 
 angular.module('SkrollApp')
 .config(function($mdThemingProvider) {

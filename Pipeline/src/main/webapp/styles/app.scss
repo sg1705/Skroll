@@ -1,0 +1,33 @@
+/* variables */
+$icon-width: 24px;
+
+
+/**
+* icons
+**/
+md-icon {
+    height: $icon-width;
+    width : $icon-width;
+}
+
+
+
+
+
+/**
+* context menu
+* 
+*  Width is the same as the width for the md-icon
+**/
+md-toast.skContextMenu {
+	
+   min-height: 40px;
+
+	.md-button {
+		min-width:$icon-width;
+	}
+
+}
+
+
+
