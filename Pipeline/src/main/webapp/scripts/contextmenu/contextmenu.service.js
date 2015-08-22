@@ -15,7 +15,7 @@
 	angular
 		.module('app.contextmenu')
 		.service('contextMenuService', SearchService)
-		.controller('ContentMenuCtrl' , ContentMenuCtrl);;
+		.controller('ContentMenuCtrl' , ContentMenuCtrl);
 
 	/* @ngInject */
   function ContentMenuCtrl($mdToast) {

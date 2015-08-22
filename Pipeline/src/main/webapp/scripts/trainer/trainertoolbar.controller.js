@@ -43,9 +43,6 @@
 		vm.showAnnotations 			= showAnnotations;
 		vm.toggleTermProbabilities = toggleTermProbabilities;
 
-		//-- register for click events
-		clickObserverService.register(trainerPromptService.handleTrainerParaSelection);
-		textSelectionObserverService.register(trainerPromptService.handleTrainerTextSelection);
 
 		////////////////
 
@@ -180,6 +177,17 @@
 
 	google.load("visualization", "1", {
 		packages: ["corechart"]
-	});	
+	});
+
+	angular
+		.module('app.trainer')
+		.run(function(textSelectionObserverService, clickObserverService, trainerPromptService){
+			clickObserverService.register(trainerPromptService.handleTrainerParaSelection);
+			textSelectionObserverService.register(trainerPromptService.handleTrainerTextSelection);
+		})
+
+
+
+
 })();
 
