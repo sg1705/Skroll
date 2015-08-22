@@ -14,11 +14,11 @@
 
 	angular
 		.module('app.contextmenu')
-		.service('contextMenuService', SearchService)
-		.controller('ContentMenuCtrl' , ContentMenuCtrl);
+		.service('contextMenuService', ContextMenuService)
+		.controller('ContextMenuCtrl' , ContextMenuCtrl);
 
 	/* @ngInject */
-  function ContentMenuCtrl($mdToast) {
+  function ContextMenuCtrl($mdToast) {
 
   	//-- private variables
   	var vm = this;
@@ -42,7 +42,7 @@
 
 
 	/* @ngInject */
-	function SearchService(textSelectionObserverService, $mdToast, $mdUtil, $animate, featureFlags) {
+	function ContextMenuService(textSelectionObserverService, $mdToast, $mdUtil, $mdMedia, $animate, featureFlags) {
 
 		//-- private variables
 		var service = this;
@@ -70,7 +70,7 @@
 	      hideDelay 	: 0,
 	      onShow 			: onShow,
 	      theme 			: 'default-dark',
-	      controller 	: 'ContentMenuCtrl',
+	      controller 	: 'ContextMenuCtrl',
 	      controllerAs: 'ctrl'
 	    });
 
@@ -97,8 +97,10 @@
 	      element.addClass(options.position.split(' ').map(function(pos) {
 	        return 'md-' + pos;
 	      }).join(' '));
-
-				$(element).css({position: 'fixed', top: oRect.top - 100, left: (oRect.left + (oRect.right - oRect.left)/2), opacity: 0});
+	      var positionStyle = calculatePosition(oRect);
+	      console.log(positionStyle);
+				//$(element).css({position: 'fixed', top: oRect.top - 100, left: (oRect.left + (oRect.right - oRect.left)/2), opacity: 0});
+				$(element).css(positionStyle);
 				$(options.parent).append($(element));
 				$(element).animate({opacity: 1});
 	      // return $animate.enter(element, options.parent)
@@ -113,6 +115,39 @@
 			function toastOpenClass(position) {
       	return 'md-toast-open-' +
         	(position.indexOf('top') > -1 ? 'top' : 'bottom');
+    	}
+
+    	function calculatePosition(oRect) {
+    		//how many pixels above or below
+    		var CONTEXT_MENU_WIDTH = 200;
+    		var CONTEXT_MENU_HEIGHT = 40;
+    		//we can use $mdMedia
+    		var SCREEN_WIDTH = 800;
+    		var VERTICAL_OFFSET = 50;
+    		var HORIZONTAL_OFFSET = CONTEXT_MENU_WIDTH/2; //200 is the min width context bar
+
+    		var position = {
+    			position: 'fixed',
+    			opacity : 0
+    		}
+
+    		if (oRect.top < 90) {
+    			position.top = oRect.bottom + VERTICAL_OFFSET - CONTEXT_MENU_HEIGHT;
+    		} else {
+    			position.top = oRect.top - VERTICAL_OFFSET;
+    		}
+
+    		//clear off the edges
+    		var midpoint = oRect.left + (oRect.right - oRect.left)/2;
+    		if (midpoint < HORIZONTAL_OFFSET) {
+    			position.left = 0;
+    		} else if (midpoint > SCREEN_WIDTH) {
+    			position.left = SCREEN_WIDTH - CONTEXT_MENU_WIDTH;
+    		} else {
+    			position.left = midpoint - HORIZONTAL_OFFSET;
+    		}
+    		return position;
+
     	}
 
 

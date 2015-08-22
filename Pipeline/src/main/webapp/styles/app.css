@@ -12,7 +12,8 @@ md-icon {
 *  Width is the same as the width for the md-icon
 **/
 md-toast.skContextMenu {
-  min-height: 40px; }
+  min-height: 40px;
+  min-width: 200px; }
   md-toast.skContextMenu .md-button {
     min-width: 24px; }
 
