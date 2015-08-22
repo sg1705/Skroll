@@ -174,7 +174,7 @@ public class NodeTrainingHelperTest {
 
     @Test
     public void testGetLogProbabilities1() throws Exception {
-        String result = "[-2.302585092994046, 4.788324729085938]";
+        String result = "[-Infinity, -0.008298802814695083]";
         NodeTrainingHelper.updateCount(wNode, 12);
         System.out.println("word node after updating with observed word abc");
         System.out.println(Arrays.toString(
