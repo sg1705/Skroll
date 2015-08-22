@@ -182,7 +182,9 @@
 	angular
 		.module('app.trainer')
 		.run(function(textSelectionObserverService, clickObserverService, trainerPromptService, featureFlags){
+			console.log('checking if trainer is on');
 			if (featureFlags.isOn('trainer')) {
+				console.log('train is indeed on');
 				textSelectionObserverService.register(trainerPromptService.handleTrainerTextSelection);
 			}
 			clickObserverService.register(trainerPromptService.handleTrainerParaSelection);
