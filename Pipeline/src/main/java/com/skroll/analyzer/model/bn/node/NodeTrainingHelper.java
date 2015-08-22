@@ -167,7 +167,7 @@ public class NodeTrainingHelper {
             double[] p = counts.get(w).clone();
             double[] logP = new double[numValues];
             for (int i = 0; i < numValues; i++) {
-                logP[i] = Math.log(p[i] + PRIOR_COUNT) - logSums[i];
+                logP[i] = Math.log(p[i]) - logSums[i];
             }
             probs.put(w, logP);
         }
