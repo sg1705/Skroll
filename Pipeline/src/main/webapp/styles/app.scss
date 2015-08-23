@@ -1,7 +1,6 @@
 /* variables */
 $icon-width: 24px;
 
-
 /**
 * icons
 **/
@@ -11,9 +10,6 @@ md-icon {
 }
 
 
-
-
-
 /**
 * context menu
 * 
@@ -21,11 +17,12 @@ md-icon {
 **/
 md-toast.skContextMenu {
 	
-   min-height: 40px;
-   min-width : 200px;
+  min-height: 40px;
+  min-width : 200px;
+	z-index   : 99;
 
 	.md-button {
-		min-width:$icon-width;
+		min-width: $icon-width;
 	}
 
 }
