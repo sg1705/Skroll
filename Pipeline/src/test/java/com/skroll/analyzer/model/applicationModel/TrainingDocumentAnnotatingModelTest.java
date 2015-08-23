@@ -34,22 +34,26 @@ public class TrainingDocumentAnnotatingModelTest{
     @Before
     public void setup() throws Exception {
         File f = new File(trainingFolderName);
-        document = makeTrainingDoc(f);
-        for (CoreMap paragraph : document.getParagraphs()) {
-            paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
-            paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
-            CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.DEFINITION, (float) 1.0);
-        }
+        document = TestHelper.setUpTestDoc();
+//        document = makeTrainingDoc(f);
+//        for (CoreMap paragraph : document.getParagraphs()) {
+//            paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
+//            paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
+//            CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.DEFINITION, (float) 1.0);
+//        }
     }
     @Test
     public void testGetTrainingWeights() {
+        // training weight already set in test doc
+
+        // output weight for inspection
         for (CoreMap paragraph : document.getParagraphs()) {
-            CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.DEFINITION, (float) 1.0);
             double[] trainingWeights = model.getTrainingWeights(paragraph);
             for (int i=0; i<trainingWeights.length; i++)
                 System.out.println("paraId:" + paragraph.getId() + " TrainingWeight:" + trainingWeights[i]);
-            assert(trainingWeights[1]==1.0);
         }
+        CoreMap para0 = document.getParagraphs().get(0);
+        assert (model.getTrainingWeights(para0)[1] == 1.0); // weight of definition class for para0 is 1.
     }
 
     @Test
@@ -58,8 +62,7 @@ public class TrainingDocumentAnnotatingModelTest{
         model.updateWithDocumentAndWeight(document);
 
         System.out.println("trained model: \n" + model);
-        assert(model.toString().contains("nextTokenCounts [Operations=5.0, Tiger=6.0]"));
-//        assert(model.toString().contains("[WordNode{parameters=Operations=[0.0, 2.0] Tiger=[0.0, 1.0] Notwithstanding=[0.0, 2.0]"));
+        assert (model.toString().contains("in=[0.0, 0.02857142857142857]"));
     }
 
     @Test
@@ -67,19 +70,22 @@ public class TrainingDocumentAnnotatingModelTest{
         String trainingFolderName = "src/test/resources/analyzer/evaluate/docclassifier/AMC Networks CA.html";
         System.out.println("initial model: \n" + model.getNbmnModel());
         File f = new File(trainingFolderName);
-//        document = makeTrainingDoc(f);
+        document = TestHelper.makeTrainingDoc(f);
         model.updateWithDocument(document);
-
+        model.getHmm().updateProbabilities();
 
         System.out.println("trained model: \n" + model);
-        assert(model.toString().contains("nextTokenCounts [Operations=5.0, Tiger=6.0]"));
+//        assert(model.toString().contains("nextTokenCounts [Operations=5.0, Tiger=6.0]"));
 //        assert(model.toString().contains("[WordNode{parameters=Operations=[2.0, 0.0] Tiger=[1.0, 0.0] Notwithstanding=[2.0, 0.0]"));
-        MultiplexNode node = model.getNbmnModel().getMultiNodes().get(0);
-        assert (Arrays.equals(node.getSelectingNode().getParameters(), new double[]{3.1, 1.1}));
-        assert (Arrays.equals(node.getNodes()[0].getParameters(), new double[]{0.1, 0.1, 0.1, 3.1}));
-        assert (Arrays.equals(node.getNodes()[1].getParameters(), new double[]{0.1, 0.1, 0.1, 1.1}));
-        assert (Arrays.equals(node.getNodes()[0].getParents()[0].getParameters(), new double[]{0.1, 3.1}));
-        assert (Arrays.equals(node.getNodes()[1].getParents()[0].getParameters(), new double[]{0.1, 1.1}));
+//        MultiplexNode node = model.getNbmnModel().getMultiNodes().get(0);
+//        assert (Arrays.equals(node.getSelectingNode().getParameters(), new double[]{3.1, 1.1}));
+//        assert (Arrays.equals(node.getNodes()[0].getParameters(), new double[]{0.1, 0.1, 0.1, 3.1}));
+//        assert (Arrays.equals(node.getNodes()[1].getParameters(), new double[]{0.1, 0.1, 0.1, 1.1}));
+//        assert (Arrays.equals(node.getNodes()[0].getParents()[0].getParameters(), new double[]{0.1, 3.1}));
+//        assert (Arrays.equals(node.getNodes()[1].getParents()[0].getParameters(), new double[]{0.1, 1.1}));
+        assert (model.toString().contains("NaiveBayesWithMultiNodes{\n" +
+                " documentFeatureNodes=[[DiscreteNode{familyVariables=[RandomVariable{name='[0, 1]_0_notInTable', featureSize=2, valueNames=null}], parameters=[1152.1, 0.1]}, DiscreteNode{familyVariables=[RandomVariable{name='[0, 1]_1_notInTable', featureSize=2, valueNames=null}], parameters=[0.1, 307.1]}], [DiscreteNode{familyVariables=[RandomVariable{name='[0, 1]_0_paraStartsInQuotesAnnotation', featureSize=2, valueNames=null}], parameters=[1152.1, 0.1]}, DiscreteNode{familyVariables=[RandomVariable{name='[0, 1]_1_paraStartsInQuotesAnnotation', featureSize=2, valueNames=null}], parameters=[0.1, 307.1]}], [DiscreteNode{familyVariables=[RandomVariable{name='[0, 1]_0_paraStartsIsItalicAnnotation', featureSize=2, valueNames=null}], parameters=[1152.1, 0.1]}, DiscreteNode{familyVariables=[RandomVariable{name='[0, 1]_1_paraStartsIsItalicAnnotation', featureSize=2, valueNames=null}], parameters=[307.1, 0.1]}], [DiscreteNode{familyVariables=[RandomVariable{name='[0, 1]_0_paraStartsIsUnderlineAnnotation', featureSize=2, valueNames=null}], parameters=[1152.1, 0.1]}, DiscreteNode{familyVariables=[RandomVariable{name='[0, 1]_1_paraStartsIsUnderlineAnnotation', featureSize=2, valueNames=null}], parameters=[0.1, 307.1]}], [DiscreteNode{familyVariables=[RandomVariable{name='[0, 1]_0_paraStartsIsBoldAnnotation', featureSize=2, valueNames=null}], parameters=[1152.1, 0.1]}, DiscreteNode{familyVariables=[RandomVariable{name='[0, 1]_1_paraStartsIsBoldAnnotation', featureSize=2, valueNames=null}], parameters=[307.1, 0.1]}]],\n" +
+                " featureExistAtDocLevelNodes=[MultiplexNode{selectingNode=DiscreteNode{familyVariables=[RandomVariable{name='paraTypeIsModelID-[0, 1]', featureSize=2, valueNames=null}], parameters=[1152.1, 307.1]}, nodes=[DiscreteNode{familyVariables=[RandomVariable{name='notInTable', featureSize=2, valueNames=null}, RandomVariable{name='[0, 1]_0_notInTable', featureSize=2, valueNames=null}], parameters=[49.1, 1103.1, 0.1, 0.1]}, DiscreteNode{familyVariables=[RandomVariable{name='notInTable', featureSize=2, valueNames=null}, RandomVariable{name='[0, 1]_1_notInTable', featureSize=2, valueNames=null}], parameters=[0.1, 0.1, 0.1, 307.1]}]}, MultiplexNode{selectingNode=DiscreteNode{familyVariables=[RandomVariable{name='paraTypeIsModelID-[0, 1]', featureSize=2, valueNames=null}], parameters=[1152.1, 307.1]}, nodes=[DiscreteNode{familyVariables=[RandomVariable{name='paraStartsInQuotesAnnotation', featureSize=2, valueNames=null}, RandomVariable{name='[0, 1]_0_paraStartsInQuotesAnnotation', featureSize=2, valueNames=null}], parameters=[1152.1, 0.1, 0.1, 0.1]}, DiscreteNode{familyVariables=[RandomVariable{name='paraStartsInQuotesAnnotation', featureSize=2, valueNames=null}, RandomVariable{name='[0, 1]_1_paraStartsInQuotesAnnotation', featureSize=2, valueNames=null}], parameters=[0.1, 0.1, 0.1, 307.1]}]}, MultiplexNode{selectingNode=DiscreteNode{familyVariables=[RandomVariable{name='paraTypeIsModelID-[0, 1]', featureSize=2, valueNames=null}], parameters=[1152.1, 307.1]}, nodes=[DiscreteNode{familyVariables=[RandomVariable{name='paraStartsIsItalicAnnotation', featureSize=2, valueNames=null}, RandomVariable{name='[0, 1]_0_paraStartsIsItalicAnnotation', featureSize=2, valueNames=null}], parameters=[1152.1, 0.1, 0.1, 0.1]}, DiscreteNode{familyVariables=[RandomVariable{name='paraStartsIsItalicAnnotation', featureSize=2, valueNames=null}, RandomVariable{name='[0, 1]_1_paraStartsIsItalicAnnotation', featureSize=2, valueNames=null}], parameters=[307.1, 0.1, 0.1, 0.1]}]}, MultiplexNode{selectingNode=DiscreteNode{familyVariables=[RandomVariable{name='paraTypeIsModelID-[0, 1]', featureSize=2, valueNames=null}], parameters=[1152.1, 307.1]}, nodes=[DiscreteNode{familyVariables=[RandomVariable{name='paraStartsIsUnderlineAnnotation', featureSize=2, valueNames=null}, RandomVariable{name='[0, 1]_0_paraStartsIsUnderlineAnnotation', featureSize=2, valueNames=null}], parameters=[1125.1, 27.1, 0.1, 0.1]}, DiscreteNode{familyVariables=[RandomVariable{name='paraStartsIsUnderlineAnnotation', featureSize=2, valueNames=null}, RandomVariable{name='[0, 1]_1_paraStartsIsUnderlineAnnotation', featureSize=2, valueNames=null}], parameters=[0.1, 0.1, 0.1, 307.1]}]}, MultiplexNode{selectingNode=DiscreteNode{familyVariables=[RandomVariable{name='paraTypeIsModelID-[0, 1]', featureSize=2, valueNames=null}], parameters=[1152.1, 307.1]}, nodes=[DiscreteNode{familyVariables=[RandomVariable{name='paraStartsIsBoldAnnotation', featureSize=2, valueNames=null}, RandomVariable{name='[0, 1]_0_paraStartsIsBoldAnnotation', featureSize=2, valueNames=null}], parameters=[1010.1, 142.1, 0.1, 0.1]}, DiscreteNode{familyVariables=[RandomVariable{name='paraStartsIsBoldAnnotation', featureSize=2, valueNames=null}, RandomVariable{name='[0, 1]_1_paraStartsIsBoldAnnotation', featureSize=2, valueNames=null}], parameters=[307.1, 0.1, 0.1, 0.1]}]}]}"));
 
     }
 
@@ -88,7 +94,7 @@ public class TrainingDocumentAnnotatingModelTest{
     public void testGenerateDocumentFeatures() throws Exception {
         PhantomJsExtractor.TEST_FLAGS = true;
 //        String trainingFolderName = "src/test/resources/analyzer/evaluate/docclassifier/AMC Networks CA.html";
-        File file = new File(trainingFolderName);
+//        File file = new File(trainingFolderName);
 
         ModelRVSetting setting = new DefModelRVSetting(TEST_DEF_CATEGORY_IDS);
 
@@ -102,58 +108,58 @@ public class TrainingDocumentAnnotatingModelTest{
 
         System.out.println(Arrays.deepToString(docFeatureValues));
         //TODO: need to verify whether these values are correct
-        assert (Arrays.deepEquals(docFeatureValues, new int[][]{{-1, 1}, {-1, 0}, {-1, 0}, {-1, 0}, {-1, 0}}));
+        assert (Arrays.deepEquals(docFeatureValues, new int[][]{{0, 0}, {0, 1}, {0, 0}, {0, 0}, {0, 0}}));
     }
-    Document makeTrainingDoc(File file){
-        String htmlString = null;
-        try {
-            htmlString = Utils.readStringFromFile(file);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Error reading file");
-        }
-
-        try {
-            Document htmlDoc = new Document();
-            htmlDoc = Parser.parseDocumentFromHtml(htmlString);
-           /*
-            for (CoreMap paragraph: htmlDoc.getParagraphs()) {
-                CategoryAnnotationHelper.setMatchedText(paragraph, Lists.newArrayList(paragraph.getTokens().get(0)), Category.TOC_1);
-            }
-            */
-            Pipeline<Document, Document> pipeline =
-                    new Pipeline.Builder()
-                            .add(Pipes.EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC)
-                            .build();
-            Document doc = pipeline.process(htmlDoc);
-
-            return htmlDoc;
-        } catch(Exception e) {
-            e.printStackTrace();
-            System.err.println("Error reading file");
-        }
-        return null;
-    }
-    Document makeDoc(File file){
-        String htmlString = null;
-        try {
-            htmlString = Utils.readStringFromFile(file);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Error reading file");
-        }
-
-        try {
-            Document htmlDoc = new Document();
-            htmlDoc = Parser.parseDocumentFromHtml(htmlString);
-
-            return htmlDoc;
-        } catch(Exception e) {
-            e.printStackTrace();
-            System.err.println("Error reading file");
-        }
-        return null;
-    }
+//    Document makeTrainingDoc(File file){
+//        String htmlString = null;
+//        try {
+//            htmlString = Utils.readStringFromFile(file);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            System.err.println("Error reading file");
+//        }
+//
+//        try {
+//            Document htmlDoc = new Document();
+//            htmlDoc = Parser.parseDocumentFromHtml(htmlString);
+//           /*
+//            for (CoreMap paragraph: htmlDoc.getParagraphs()) {
+//                CategoryAnnotationHelper.setMatchedText(paragraph, Lists.newArrayList(paragraph.getTokens().get(0)), Category.TOC_1);
+//            }
+//            */
+//            Pipeline<Document, Document> pipeline =
+//                    new Pipeline.Builder()
+//                            .add(Pipes.EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC)
+//                            .build();
+//            Document doc = pipeline.process(htmlDoc);
+//
+//            return htmlDoc;
+//        } catch(Exception e) {
+//            e.printStackTrace();
+//            System.err.println("Error reading file");
+//        }
+//        return null;
+//    }
+//    Document makeDoc(File file){
+//        String htmlString = null;
+//        try {
+//            htmlString = Utils.readStringFromFile(file);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            System.err.println("Error reading file");
+//        }
+//
+//        try {
+//            Document htmlDoc = new Document();
+//            htmlDoc = Parser.parseDocumentFromHtml(htmlString);
+//
+//            return htmlDoc;
+//        } catch(Exception e) {
+//            e.printStackTrace();
+//            System.err.println("Error reading file");
+//        }
+//        return null;
+//    }
 
     public TrainingDocumentAnnotatingModel getModel() {
         return model;
