@@ -15,7 +15,8 @@
   /* @ngInject */
   function ViewPortCtrl(selectionService, $log, $routeParams, 
                         scrollObserverService, clickObserverService, 
-                        textSelectionObserverService) {
+                        textSelectionObserverService,
+                        mouseEnterObserverService, mouseLeaveObserverService) {
 
     //-- private variables
     var vm = this;
@@ -24,6 +25,7 @@
     //-- public methods
     vm.mouseDown    = mouseDown;
     vm.mouseUp      = mouseUp;
+    vm.mouseMove    = mouseMove;
     vm.paraClicked  = paraClicked;
     vm.inferParagraphId   = inferParagraphId;
     vm.highlightParagraph = highlightParagraph;
@@ -34,6 +36,13 @@
 
 
     /////////////
+
+    function mouseMove($event) {
+      //console.log('mouse moved');
+      var paraId = vm.inferParagraphId($event);
+      console.log(paraId);
+
+    }
 
 
     function mouseDown($event) {
