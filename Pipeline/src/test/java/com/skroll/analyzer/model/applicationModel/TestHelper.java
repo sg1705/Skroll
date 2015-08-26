@@ -59,26 +59,6 @@ public class TestHelper {
         return null;
     }
 
-//    public static Document makeDoc(File file) {
-//        String htmlString = null;
-//        try {
-//            htmlString = Utils.readStringFromFile(file);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            System.err.println("Error reading file");
-//        }
-//
-//        try {
-//            Document htmlDoc = new Document();
-//            htmlDoc = Parser.parseDocumentFromHtml(htmlString);
-//
-//            return htmlDoc;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            System.err.println("Error reading file");
-//        }
-//        return null;
-//    }
 
     public static Document setUpTestDoc() {
         List<CoreMap> paraList = new ArrayList<>();

@@ -24,7 +24,6 @@ public class TrainingDocumentAnnotatingModelTest{
     int maxNumWords = 20;
     String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining/mini-indenture.html";
     //    String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
-    //ModelRVSetting setting = new DefModelRVSetting(Category.DEFINITION,Category.DEFINITION_NAME,2);
 
     private static final List<Integer> TEST_DEF_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE,Category.DEFINITION));
     private static final int TEST_DEF_CLASSIFIER_ID = 2;
@@ -35,12 +34,6 @@ public class TrainingDocumentAnnotatingModelTest{
     public void setup() throws Exception {
         File f = new File(trainingFolderName);
         document = TestHelper.setUpTestDoc();
-//        document = makeTrainingDoc(f);
-//        for (CoreMap paragraph : document.getParagraphs()) {
-//            paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
-//            paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
-//            CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.DEFINITION, (float) 1.0);
-//        }
     }
     @Test
     public void testGetTrainingWeights() {
@@ -76,14 +69,6 @@ public class TrainingDocumentAnnotatingModelTest{
 
         System.out.println("trained model: \n" + model);
         System.out.println("multiNodes: \n" + model.getNbmnModel().getMultiNodes());
-//        assert(model.toString().contains("nextTokenCounts [Operations=5.0, Tiger=6.0]"));
-//        assert(model.toString().contains("[WordNode{parameters=Operations=[2.0, 0.0] Tiger=[1.0, 0.0] Notwithstanding=[2.0, 0.0]"));
-//        MultiplexNode node = model.getNbmnModel().getMultiNodes().get(0);
-//        assert (Arrays.equals(node.getSelectingNode().getParameters(), new double[]{3.1, 1.1}));
-//        assert (Arrays.equals(node.getNodes()[0].getParameters(), new double[]{0.1, 0.1, 0.1, 3.1}));
-//        assert (Arrays.equals(node.getNodes()[1].getParameters(), new double[]{0.1, 0.1, 0.1, 1.1}));
-//        assert (Arrays.equals(node.getNodes()[0].getParents()[0].getParameters(), new double[]{0.1, 3.1}));
-//        assert (Arrays.equals(node.getNodes()[1].getParents()[0].getParameters(), new double[]{0.1, 1.1}));
         assert (model.getNbmnModel().getMultiNodes().toString().contains("RandomVariable{name='[0, 1]_1_notInTable', featureSize=2, valueNames=null}], parameters=[0.1, 0.1, 0.1, 307.1]}]}"));
 
     }
@@ -109,56 +94,6 @@ public class TrainingDocumentAnnotatingModelTest{
         //TODO: need to verify whether these values are correct
         assert (Arrays.deepEquals(docFeatureValues, new int[][]{{0, 0}, {0, 1}, {0, 0}, {0, 0}, {0, 0}}));
     }
-//    Document makeTrainingDoc(File file){
-//        String htmlString = null;
-//        try {
-//            htmlString = Utils.readStringFromFile(file);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            System.err.println("Error reading file");
-//        }
-//
-//        try {
-//            Document htmlDoc = new Document();
-//            htmlDoc = Parser.parseDocumentFromHtml(htmlString);
-//           /*
-//            for (CoreMap paragraph: htmlDoc.getParagraphs()) {
-//                CategoryAnnotationHelper.setMatchedText(paragraph, Lists.newArrayList(paragraph.getTokens().get(0)), Category.TOC_1);
-//            }
-//            */
-//            Pipeline<Document, Document> pipeline =
-//                    new Pipeline.Builder()
-//                            .add(Pipes.EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC)
-//                            .build();
-//            Document doc = pipeline.process(htmlDoc);
-//
-//            return htmlDoc;
-//        } catch(Exception e) {
-//            e.printStackTrace();
-//            System.err.println("Error reading file");
-//        }
-//        return null;
-//    }
-//    Document makeDoc(File file){
-//        String htmlString = null;
-//        try {
-//            htmlString = Utils.readStringFromFile(file);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            System.err.println("Error reading file");
-//        }
-//
-//        try {
-//            Document htmlDoc = new Document();
-//            htmlDoc = Parser.parseDocumentFromHtml(htmlString);
-//
-//            return htmlDoc;
-//        } catch(Exception e) {
-//            e.printStackTrace();
-//            System.err.println("Error reading file");
-//        }
-//        return null;
-//    }
 
     public TrainingDocumentAnnotatingModel getModel() {
         return model;
