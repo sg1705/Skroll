@@ -1,0 +1,21 @@
+/* variables */
+/**
+* icons
+**/
+md-icon {
+  height: 24px;
+  width: 24px; }
+
+/**
+* context menu
+* 
+*  Width is the same as the width for the md-icon
+**/
+md-toast.skContextMenu {
+  min-height: 40px;
+  min-width: 200px;
+  z-index: 99; }
+  md-toast.skContextMenu .md-button {
+    min-width: 24px; }
+
+/*# sourceMappingURL=app.css.map */
