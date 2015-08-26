@@ -45,7 +45,9 @@ public class TestHelper {
                             .build();
             Document doc = pipeline.process(htmlDoc);
             for (CoreMap paragraph : doc.getParagraphs()) {
-                if (!CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph,Category.DEFINITION)) {
+                if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph, Category.DEFINITION)) {
+                    CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.DEFINITION, (float) 1.0);
+                } else {
                     CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.NONE, (float) 1.0);
                 }
             }
@@ -57,26 +59,6 @@ public class TestHelper {
         return null;
     }
 
-    public static Document makeDoc(File file) {
-        String htmlString = null;
-        try {
-            htmlString = Utils.readStringFromFile(file);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Error reading file");
-        }
-
-        try {
-            Document htmlDoc = new Document();
-            htmlDoc = Parser.parseDocumentFromHtml(htmlString);
-
-            return htmlDoc;
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Error reading file");
-        }
-        return null;
-    }
 
     public static Document setUpTestDoc() {
         List<CoreMap> paraList = new ArrayList<>();
@@ -87,17 +69,35 @@ public class TestHelper {
         List<List<Token>> tokenList = new ArrayList<>();
         tokenList.add(tokens);
         para.set(CoreAnnotations.TokenAnnotation.class, tokens);
+        para.set(CoreAnnotations.IsInTableAnnotation.class, true);
+        para.set(CoreAnnotations.IdAnnotation.class, "para0");
         CategoryAnnotationHelper.annotateParagraphWithTokensListAndCategory(para, tokenList, Category.DEFINITION);
+        CategoryAnnotationHelper.annotateCategoryWeight(para, Category.DEFINITION, (float) 1.0);
         paraList.add(para);
 
 
         para = new CoreMap();
-        strings = Arrays.asList("\"", "in", "\"", "out", "out");
+        strings = Arrays.asList("\"", "in", "\"", "out", "out", "out", "out", "out", "out", "out", "out", "out", "out", "out", "out", "out", "out", "out", "out", "out", "out", "out", "out", "out", "out", "out", "out", "out", "out", "out", "out", "out", "out", "out", "out", "out", "out");
         tokens = DocumentHelper.createTokens(strings);
         para.set(CoreAnnotations.TokenAnnotation.class, tokens);
         para.set(CoreAnnotations.IsUserObservationAnnotation.class,true);
         para.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class,true);
+        para.set(CoreAnnotations.IsInTableAnnotation.class, false);
+        para.set(CoreAnnotations.IdAnnotation.class, "para1");
         CategoryAnnotationHelper.annotateParagraphWithTokensListAndCategory(para, tokenList, Category.DEFINITION);
+        CategoryAnnotationHelper.annotateCategoryWeight(para, Category.DEFINITION, (float) 1.0);
+        paraList.add(para);
+
+        para = new CoreMap();
+        strings = Arrays.asList("a", "b", "c");
+        tokens = DocumentHelper.createTokens(strings);
+        para.set(CoreAnnotations.TokenAnnotation.class, tokens);
+        para.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
+        para.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
+        para.set(CoreAnnotations.IsInTableAnnotation.class, true);
+        para.set(CoreAnnotations.IdAnnotation.class, "para2");
+        CategoryAnnotationHelper.annotateParagraphWithTokensListAndCategory(para, tokenList, Category.NONE);
+        CategoryAnnotationHelper.annotateCategoryWeight(para, Category.NONE, (float) 1.0);
         paraList.add(para);
 
         Document doc = new Document();
