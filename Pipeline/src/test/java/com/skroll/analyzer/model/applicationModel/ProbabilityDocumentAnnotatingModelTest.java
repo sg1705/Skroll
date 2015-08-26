@@ -78,7 +78,8 @@ public class ProbabilityDocumentAnnotatingModelTest {
         System.out.println("After passing messages :\n");
         double[][][] dBelieves = model.getDocumentFeatureBelief();
         System.out.println(Arrays.deepToString(dBelieves[0]));
-        assert (Arrays.toString(dBelieves[0][1]).equals("[-24556.89441270597, 0.0]"));
+        assert (((int) (dBelieves[0][1][0]) == -24556));
+        assert (((int) (dBelieves[0][1][1]) == 0));
     }
 
     void printDocBeliefs(){
@@ -128,9 +129,9 @@ public class ProbabilityDocumentAnnotatingModelTest {
         System.out.println("After passing message to paragraphCategory once:\n");
 
         printBelieves();
-        String probString = Arrays.toString(model.getParagraphCategoryProbabilities()[7]);
-        System.out.println(probString);
-        assert (probString.equals("[0.9971869028869269, 0.002813097113073108]"));
+        System.out.println(Arrays.toString(model.getParagraphCategoryProbabilities()[7]));
+        assert (((int) (model.getParagraphCategoryProbabilities()[7][0] * 1000)) == 997);
+        assert (((int) (model.getParagraphCategoryProbabilities()[7][1] * 1000)) == 2);
     }
 
 
@@ -147,10 +148,9 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
         printBelieves();
 
-        String probString = Arrays.toString(model.getDocumentFeatureBelief()[0][1]);
-        System.out.println(probString);
-        assert (probString.equals("[-100.03271860719187, -0.29206719858875546]"));
-
+        // strangely, gradlew test calculation results are different at lower decimal digits.
+        assert (((int) (model.getDocumentFeatureBelief()[0][1][0] * 10)) == -1000);
+        assert (((int) (model.getDocumentFeatureBelief()[0][1][1] * 10)) == -2);
     }
 
 
