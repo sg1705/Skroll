@@ -123,15 +123,12 @@ public class DocAPI {
     @Produces(MediaType.APPLICATION_JSON)
     public Response importDoc(@QueryParam("documentId") String documentId, @Context HttpHeaders hh, @BeanParam RequestBean request) throws Exception {
         Document document = null;
-        String content = DocumentHelper.fetchHtml(documentId);
         String fileName = new URL(documentId).getPath();
         String[] strs = fileName.split("/");
-        int lastIndexOfSlash = documentId.lastIndexOf('/');
-        String url = documentId.substring(0, lastIndexOfSlash);
 
         fileName = strs[strs.length - 1];
         try {
-            document = Parser.parseDocumentFromHtml(content, url);
+            document = Parser.parseDocumentFromUrl(documentId);
             document.setId(fileName);
             //Streams require final objects
             String fName = fileName;

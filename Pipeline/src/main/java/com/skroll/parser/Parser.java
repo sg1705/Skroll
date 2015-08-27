@@ -35,6 +35,11 @@ public class Parser {
     }
 
 
+
+
+
+
+
     /**
      * Returns the parsed document from Html file.
      *
@@ -56,6 +61,19 @@ public class Parser {
     public static Document parseDocumentFromHtml(String htmlText, String url) throws ParserException {
         Document document = new Document();
         document.setSource(htmlText);
+        document.set(CoreAnnotations.SourceUrlAnnotation.class, url);
+        return parseInDoc(document);
+    }
+
+
+    /**
+     * Returns the parsed document from Html file.
+     *
+     * @param url
+     * @return document
+     */
+    public static Document parseDocumentFromUrl(String url) throws ParserException {
+        Document document = new Document();
         document.set(CoreAnnotations.SourceUrlAnnotation.class, url);
         return parseInDoc(document);
     }

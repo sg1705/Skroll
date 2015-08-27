@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -28,7 +29,6 @@ public class PhantomJsExtractor {
     public static final Logger logger = LoggerFactory.getLogger(PhantomJsExtractor.class);
 
     public static Boolean TEST_FLAGS = false;
-    public static Boolean FETCH_HTML = false;
 
     /**
      *
@@ -38,15 +38,18 @@ public class PhantomJsExtractor {
      */
     public Document process(Document input) throws Exception {
         long startTime = System.currentTimeMillis();
-        //extract html from document
-        String htmlText = input.get(CoreAnnotations.TextAnnotation.class);
 
-        //create tmp file
-        String fileName = createTempFile(htmlText).toString();
+        String fileName = "none";
+        boolean fetchHtml = input.containsKey(CoreAnnotations.SourceUrlAnnotation.class);
+        //check if need to fetchHtml
+        if (!fetchHtml) {
+            //create tmp file
+            String htmlText = input.get(CoreAnnotations.TextAnnotation.class);
+            fileName = createTempFile(htmlText).toString();
+        }
 
         ByteArrayOutputStream stdout = new ByteArrayOutputStream();
         PumpStreamHandler psh = new PumpStreamHandler( stdout );
-
         //default command line is linux
         CommandLine cmdLine = CommandLine.parse(Constants.PHANTOM_JS_BIN);
         if (System.getProperty("os.name").contains("windows")) {
@@ -54,11 +57,14 @@ public class PhantomJsExtractor {
         } else if (System.getProperty("os.name").toLowerCase().contains("mac")) {
             cmdLine = CommandLine.parse(Constants.PHANTOM_JS_BIN_MAC);
         }
+        //setup command line arguments
         cmdLine.addArgument(Constants.JQUERY_PARSER_JS);
         cmdLine.addArgument(TEST_FLAGS.toString());
-        cmdLine.addArgument(FETCH_HTML.toString());
+        cmdLine.addArgument(Boolean.toString(fetchHtml));
         cmdLine.addArgument(fileName);
         if (input.containsKey(CoreAnnotations.SourceUrlAnnotation.class)) {
+            String basePath = this.getBasePath(input.get(CoreAnnotations.SourceUrlAnnotation.class));
+            cmdLine.addArgument(basePath);
             cmdLine.addArgument(input.get(CoreAnnotations.SourceUrlAnnotation.class));
         }
 
@@ -94,7 +100,7 @@ public class PhantomJsExtractor {
             //replace target
 
             newDoc.setTarget(result[1].replaceAll("(<!--sk)|(sk-->)", ""));
-            newDoc.setSource(htmlText);
+            //newDoc.setSource(htmlText);
         } catch (Exception e) {
             // error TODO needs to be logged
             e.printStackTrace();
@@ -149,5 +155,15 @@ public class PhantomJsExtractor {
 
         return doc;
     }
+
+    private String getBasePath(String url) throws Exception {
+        String fileName = new URL(url).getPath();
+        String[] strs = fileName.split("/");
+        int lastIndexOfSlash = url.lastIndexOf('/');
+        String basePath = url.substring(0, lastIndexOfSlash);
+        return basePath;
+    }
+
+
 }
 

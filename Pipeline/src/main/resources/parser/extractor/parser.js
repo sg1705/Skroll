@@ -8,7 +8,7 @@ var testFlags = args[1];
 var fetchHtml = args[2];
 var fileName = args[3];
 var globalSourceUrl = [4];
-
+var fetchUrl = args[5];
 /* process url argument */
 var globalSourceUrlFile = (new Date()).getTime();
 if (globalSourceUrl == null) {
@@ -23,33 +23,64 @@ if ((testFlags == null) || (testFlags == 'false')) {
 fs.write('/tmp/' + globalSourceUrlFile + '.js', "var sourceUrl = '" + globalSourceUrl + "'; var testFlags = " + testFlags + ";", "w");
 /* -- end process url argument */
 
-var htmlText = fs.read(fileName);
-page.settings.resourceTimeout = 200;
-page.settings.loadImages = false;
 
-page.onConsoleMessage = function (msg) {
-    console.log(msg);
-};
+var parsedJson = '';
 
-//page.settings.userAgent = 'SpecialAgent';
-page.content = htmlText;
-page.injectJs('/tmp/' + globalSourceUrlFile + '.js', function() {
-    console.log('included...');
-});
+if (fetchHtml == 'true') {
 
-page.injectJs('./jquery.min.js', function() {
-    console.log('included...');
-});
-page.injectJs('./jQueryParser.js', function() {
-    console.log('parser included...');
-});
-page.injectJs('./jQueryTableParser.js', function() {
-    console.log('parser included...');
-});
+    page.open(fetchUrl, function(status) {
+        preparePage(page);
+        injectJs(page);
+        parsedJson = page.evaluate(evaluateHtml);
+        end();
+    });
+
+} else  {
+    var htmlText = fs.read(fileName);
+    preparePage(page);
+    page.content = htmlText;
+    injectJs(page);
+    parsedJson = page.evaluate(evaluateHtml);
+    end();
+}
 
 
-var parsedJson = page.evaluate(function(globalSourceUrl) {
+function end() {
+    console.log(parsedJson);
+    //write the file
+    fs.write('/tmp/parsedJson.json', parsedJson);
+    phantom.exit(1);
 
+}
+
+
+function preparePage(page) {
+    //page.settings.userAgent = 'SpecialAgent';
+    page.settings.resourceTimeout = 200;
+    page.settings.loadImages = false;
+
+    page.onConsoleMessage = function (msg) {
+        console.log(msg);
+    };
+}
+
+function injectJs(page) {
+    page.injectJs('/tmp/' + globalSourceUrlFile + '.js', function() {
+        console.log('included...');
+    });
+
+    page.injectJs('./jquery.min.js', function() {
+        console.log('included...');
+    });
+    page.injectJs('./jQueryParser.js', function() {
+        console.log('parser included...');
+    });
+    page.injectJs('./jQueryTableParser.js', function() {
+        console.log('parser included...');
+    });
+}
+
+function evaluateHtml(globalSourceUrl) {
     //measure
     var startTime = Date.now();
 
@@ -77,8 +108,5 @@ var parsedJson = page.evaluate(function(globalSourceUrl) {
              + $(":root").html()
              + ";---------------SKROLLTIME---------------------;"
              + totalTime);
-});
-console.log(parsedJson);
-//write the file
-fs.write('/tmp/parsedJson.json', parsedJson);
-phantom.exit(1);
+
+}
