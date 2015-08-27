@@ -28,7 +28,14 @@ public class PhantomJsExtractor {
     public static final Logger logger = LoggerFactory.getLogger(PhantomJsExtractor.class);
 
     public static Boolean TEST_FLAGS = false;
+    public static Boolean FETCH_HTML = false;
 
+    /**
+     *
+     * @param input
+     * @return
+     * @throws Exception
+     */
     public Document process(Document input) throws Exception {
         long startTime = System.currentTimeMillis();
         //extract html from document
@@ -49,6 +56,7 @@ public class PhantomJsExtractor {
         }
         cmdLine.addArgument(Constants.JQUERY_PARSER_JS);
         cmdLine.addArgument(TEST_FLAGS.toString());
+        cmdLine.addArgument(FETCH_HTML.toString());
         cmdLine.addArgument(fileName);
         if (input.containsKey(CoreAnnotations.SourceUrlAnnotation.class)) {
             cmdLine.addArgument(input.get(CoreAnnotations.SourceUrlAnnotation.class));
@@ -105,6 +113,12 @@ public class PhantomJsExtractor {
     }
 
 
+    /**
+     * Creates a temp file for a given string
+     * @param htmlText
+     * @return
+     * @throws Exception
+     */
     private Path createTempFile(String htmlText) throws Exception {
         Path path = Files.createTempFile("phantom", ".html");
         Utils.writeToFile(path.toString(), htmlText);

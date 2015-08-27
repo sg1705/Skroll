@@ -4,15 +4,17 @@ var fs = require('fs');
 
 var args = system.args;
 
-var fileName = args[2];
+var testFlags = args[1];
+var fetchHtml = args[2];
+var fileName = args[3];
+var globalSourceUrl = [4];
 
 /* process url argument */
-var globalSourceUrl = args[3];
 var globalSourceUrlFile = (new Date()).getTime();
 if (globalSourceUrl == null) {
     globalSourceUrl = '';
 }
-var testFlags = args[1];
+
 if ((testFlags == null) || (testFlags == 'false')) {
     testFlags = false;
 } else if (testFlags == 'true') {
