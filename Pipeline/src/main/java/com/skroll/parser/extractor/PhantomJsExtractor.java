@@ -38,13 +38,13 @@ public class PhantomJsExtractor {
      */
     public Document process(Document input) throws Exception {
         long startTime = System.currentTimeMillis();
-
+        String htmlText = "";
         String fileName = "none";
         boolean fetchHtml = input.containsKey(CoreAnnotations.SourceUrlAnnotation.class);
         //check if need to fetchHtml
         if (!fetchHtml) {
             //create tmp file
-            String htmlText = input.get(CoreAnnotations.TextAnnotation.class);
+            htmlText = input.get(CoreAnnotations.TextAnnotation.class);
             fileName = createTempFile(htmlText).toString();
         }
 
@@ -89,18 +89,22 @@ public class PhantomJsExtractor {
 
 
         byte[] output = stdout.toByteArray();
-        String[] parserOutput = new String(output, Constants.DEFAULT_CHARSET).split(";---------------SKROLLJSON---------------------;");
-        String[] result = parserOutput[1].split(";---------------SKROLL---------------------;");
-        String[] execTime = parserOutput[1].split(";---------------SKROLLTIME---------------------;");
-
+        String[] parserOutput = new String(output, Constants.DEFAULT_CHARSET)
+                .split(";---------------SKROLL---------------------;");
         ModelHelper helper = new ModelHelper();
         Document newDoc = new Document();
         try {
-            newDoc = helper.fromJson(result[0]);
+            newDoc = helper.fromJson(parserOutput[1]);
             //replace target
 
-            newDoc.setTarget(result[1].replaceAll("(<!--sk)|(sk-->)", ""));
-            //newDoc.setSource(htmlText);
+            newDoc.setTarget(parserOutput[2].replaceAll("(<!--sk)|(sk-->)", ""));
+
+            if (fetchHtml) {
+                newDoc.setSource(parserOutput[4]);
+            } else {
+                newDoc.setSource(htmlText);
+            }
+
         } catch (Exception e) {
             // error TODO needs to be logged
             e.printStackTrace();
@@ -113,7 +117,7 @@ public class PhantomJsExtractor {
             throw new Exception("No paragraphs were identified:");
         }
         newDoc = postExtraction(newDoc);
-        logger.info("[{}]ms taken by jQuery during parsing", execTime[1]);
+        logger.info("[{}]ms taken by jQuery during parsing", parserOutput[3]);
         logger.info("[{}]ms total extraction time", (System.currentTimeMillis() - startTime));
         return newDoc;
     }

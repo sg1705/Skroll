@@ -28,7 +28,7 @@ public class DocumentHelperTest {
     public void isObserved() throws Exception {
         String fileName = "src/test/resources/document/simple-html-text.html";
         String htmlString = Utils.readStringFromFile(fileName);
-        Document document = Parser.parseDocumentFromHtml(htmlString,"simple-html-text.html" );
+        Document document = Parser.parseDocumentFromHtml(htmlString);//,"simple-html-text.html" );
         document.getParagraphs().get(0).set(CoreAnnotations.IsUserObservationAnnotation.class, true);
         assert(DocumentHelper.isObserved(document));
     }

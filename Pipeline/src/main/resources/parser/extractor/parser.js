@@ -7,7 +7,7 @@ var args = system.args;
 var testFlags = args[1];
 var fetchHtml = args[2];
 var fileName = args[3];
-var globalSourceUrl = [4];
+var globalSourceUrl = args[4];
 var fetchUrl = args[5];
 /* process url argument */
 var globalSourceUrlFile = (new Date()).getTime();
@@ -48,7 +48,7 @@ if (fetchHtml == 'true') {
 function end() {
     console.log(parsedJson);
     //write the file
-    fs.write('/tmp/parsedJson.json', parsedJson);
+    //fs.write('/tmp/parsedJson.json', parsedJson);
     phantom.exit(1);
 
 }
@@ -83,7 +83,7 @@ function injectJs(page) {
 function evaluateHtml(globalSourceUrl) {
     //measure
     var startTime = Date.now();
-
+    var sourceHtml = $(":root").html();
     if (testFlags) {
         processingFlags.table = true;
         processingFlags.fonts = true;
@@ -102,11 +102,14 @@ function evaluateHtml(globalSourceUrl) {
     docObject.set(PARAGRAPH_ANNOTATION, paragraphs);
     docObject.set(TABLES_ANNOTATION, tables);
     var totalTime = Date.now() - startTime;
-    return ( ";---------------SKROLLJSON---------------------;"
+    return ( ";---------------SKROLL---------------------;"
              + JSON.stringify(docObject, null, 2)
              + ";---------------SKROLL---------------------;"
              + $(":root").html()
-             + ";---------------SKROLLTIME---------------------;"
-             + totalTime);
+             + ";---------------SKROLL---------------------;"
+             + totalTime
+             + ";---------------SKROLL---------------------;"
+             + sourceHtml);
+
 
 }
