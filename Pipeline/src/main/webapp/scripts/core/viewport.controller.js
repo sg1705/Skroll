@@ -40,7 +40,6 @@
     function mouseMove($event) {
       //console.log('mouse moved');
       var paraId = vm.inferParagraphId($event);
-      console.log(paraId);
 
     }
 

@@ -32,15 +32,14 @@
         documentService.loadDocument(documentModel.documentId)
         .then(function(contentHtml) {
           documentModel.targetHtml = contentHtml;
+          element.replaceWith(documentModel.targetHtml);
           //$(element).html(documentModel.targetHtml)
           return documentService.getTerms(documentModel.documentId);
         })
         .then(function(terms) {
           LHSModel.setTerms(terms);
           console.log(terms);
-          element.replaceWith(documentModel.targetHtml);
           $timeout(timeout, 0); //@see function timeout()
-          //documentModel.isProcessing = false;
 
           function timeout() {
             console.log(selectionService.serializedSelection);
