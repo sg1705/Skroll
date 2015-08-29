@@ -4,8 +4,7 @@ import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.document.annotation.CoreAnnotations;
-import com.skroll.parser.extractor.ParserException;
-import com.skroll.parser.extractor.PhantomJsExtractor;
+import com.skroll.parser.extractor.*;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
@@ -22,20 +21,20 @@ public class Parser {
     public static final int VERSION = 1;
     public static final Logger logger = LoggerFactory.getLogger(Parser.class);
 
-    private static Document parseInDoc(Document document, boolean fetchHtml, boolean parsePartial)
+    private static Document parseInDoc(Document document, int fetchMode, int parseMode)
             throws ParserException {
 
         //create phantomjs extractor
         PhantomJsExtractor phExtractor = new PhantomJsExtractor();
-        phExtractor.setFetchHtml(fetchHtml);
-        phExtractor.setParsePartial(parsePartial);
+        phExtractor.setFetchMode(fetchMode);
+        phExtractor.setParseMode(parseMode);
         try {
             document = phExtractor.process(document);
         } catch (Exception e) {
             throw new ParserException(e);
         }
 
-        if (parsePartial) {
+        if (parseMode == ParseMode.PARTIAL) {
             return document;
         }
 
@@ -60,7 +59,7 @@ public class Parser {
     public static Document parsePartialDocumentFromUrl(String url) throws ParserException {
         Document document = new Document();
         document.set(CoreAnnotations.SourceUrlAnnotation.class, url);
-        return parseInDoc(document, true, true);
+        return parseInDoc(document, FetchMode.URL, ParseMode.PARTIAL);
     }
 
 
@@ -76,7 +75,7 @@ public class Parser {
     public static Document parseDocumentFromHtml(String htmlText) throws ParserException {
         Document document = new Document();
         document.setSource(htmlText);
-        return parseInDoc(document, false, false);
+        return parseInDoc(document, FetchMode.FILE, ParseMode.FULL);
     }
 
     /**
@@ -88,7 +87,7 @@ public class Parser {
     public static Document parseDocumentFromUrl(String url) throws ParserException {
         Document document = new Document();
         document.set(CoreAnnotations.SourceUrlAnnotation.class, url);
-        return parseInDoc(document, true, false);
+        return parseInDoc(document, FetchMode.URL, ParseMode.FULL);
     }
 
 
@@ -141,6 +140,10 @@ public class Parser {
         // if parsed documents has different paragraphs then log error
         if (newDoc.getParagraphs().size() != document.getParagraphs().size()) {
             return document;
+        }
+        if (document.containsKey(CoreAnnotations.SourceUrlAnnotation.class)) {
+            newDoc.set(CoreAnnotations.SourceUrlAnnotation.class,
+                    document.get(CoreAnnotations.SourceUrlAnnotation.class));
         }
         for(int ii = 0; ii < newDoc.getParagraphs().size(); ii++) {
             //copy annotations over
