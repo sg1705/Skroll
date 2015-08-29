@@ -17,7 +17,7 @@
 		.controller('ContextMenuCtrl' , ContextMenuCtrl);
 
 	/* @ngInject */
-  function ContextMenuCtrl($mdToast) {
+  function ContextMenuCtrl($mdToast, linkService, selectionService, documentModel) {
 
   	//-- private variables
   	var vm = this;
@@ -29,6 +29,14 @@
   	////////
 
   	function copyLink(link) {
+      var activeLink = linkService.getActiveLink(documentModel.documentId, selectionService.serializedSelection);
+      var shortenedUrl = '';
+      linkService.shortenLink(activeLink)
+        .then(function(response) {
+          console.log(response.result.id);
+        }, function(reason) {
+          $log.error(reason);
+        });
   		$mdToast.hide();
   	}
 
