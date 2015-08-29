@@ -134,7 +134,6 @@ public class DocAPI {
                 document = Parser.parsePartialDocumentFromUrl(documentId);
             } else {
                 document = Parser.parseDocumentFromUrl(documentId);
-                document.setId(fileName);
                 //Streams require final objects
                 String fName = fileName;
                 Document fDoc = document;
