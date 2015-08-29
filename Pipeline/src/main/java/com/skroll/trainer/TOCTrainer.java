@@ -9,6 +9,7 @@ import com.google.common.io.Files;
 import com.skroll.classifier.Category;
 import com.skroll.classifier.Classifier;
 import com.skroll.classifier.ClassifierFactory;
+import com.skroll.classifier.ClassifierId;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.Token;
@@ -50,8 +51,8 @@ public class TOCTrainer {
     private static Classifier tocClassifier = null;
     static {
         try {
-            documentClassifier = classifierFactory.getClassifier(Category.DEFINITION);
-            tocClassifier = classifierFactory.getClassifier(Category.TOC_1);
+            documentClassifier = classifierFactory.getClassifier(ClassifierId.TEN_K_DEF_CLASSIFIER);
+            tocClassifier = classifierFactory.getClassifier(ClassifierId.TEN_K_TOC_CLASSIFIER);
         } catch (Exception e) {
             e.printStackTrace();
         }

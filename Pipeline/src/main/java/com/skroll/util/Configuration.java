@@ -3,7 +3,6 @@ package com.skroll.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,7 +15,7 @@ import java.util.Properties;
  */
 public class Configuration {
 
-    Map<String, String> confMap = new HashMap<String, String>();
+    protected Map<String, String> confMap = new HashMap<String, String>();
 
     //The following line needs to be added to enable log4j
     public static final Logger logger = LoggerFactory

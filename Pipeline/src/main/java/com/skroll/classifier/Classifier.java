@@ -24,7 +24,7 @@ public interface Classifier {
     public void trainWithWeight(Document doc);
     public void train(Document doc);
 
-    public int getId();
+    public ClassifierId getId();
 
     public Object updateBNI(String documentId, Document document, List<CoreMap> observedParas) throws Exception;
 

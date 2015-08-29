@@ -1,4 +1,4 @@
-package com.skroll.analyzer.model.applicationModel;
+package com.skroll.util;
 
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.classifier.Category;
@@ -102,6 +102,7 @@ public class TestHelper {
 
         Document doc = new Document();
         doc.setParagraphs(paraList);
+        doc.setId("test");
         return doc;
 
     }

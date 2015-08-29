@@ -113,20 +113,20 @@ public class DefaultModelClassAndWeightStrategy implements ModelClassAndWeightSt
         if(isCategoryManagedCategory(paragraph,categoryIds)) {
             // handle by managedCategoryStrategy;
             double[][] trainingWeights = managedCategoryStrategy.populateTrainingWeight(paragraph, categoryIds);
-            if (logger.isDebugEnabled()) {
+            if (logger.isTraceEnabled()) {
                 for (double[] w1 : trainingWeights) {
                     for (double w2 : w1)
-                        logger.debug("Managed Category trainingWeights: {}", w2);
+                        logger.trace("Managed Category trainingWeights: {}", w2);
                 }
             }
             return trainingWeights;
         } else {
             // handle by unmanaged Category
             double[][] trainingWeights = unManagedCategoryStrategy.populateTrainingWeight(paragraph, categoryIds);
-            if (logger.isDebugEnabled()) {
+            if (logger.isTraceEnabled()) {
                 for (double[] w1 : trainingWeights) {
                     for (double w2 : w1)
-                        logger.debug("Unmanaged Category trainingWeights: {}", w2);
+                        logger.trace("Unmanaged Category trainingWeights: {}", w2);
                 }
             }
             return trainingWeights;

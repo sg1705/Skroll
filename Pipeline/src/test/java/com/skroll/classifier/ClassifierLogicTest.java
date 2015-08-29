@@ -69,7 +69,7 @@ public class ClassifierLogicTest {
         CategoryAnnotationHelper.annotateCategoryWeight(paragraph, this.categoryId, 1);
         CategoryAnnotationHelper.setMatchedText(paragraph, Lists.newArrayList(paragraph.getTokens().get(0)), this.categoryId);
         // classify
-        for (Classifier classifier : classifierFactory.getClassifiers(classifierFactoryStrategy)) {
+        for (Classifier classifier : classifierFactory.getClassifiers(classifierFactoryStrategy, doc)) {
             classifier.classify(doc.getId(), doc);
         }
         //test to see if all paragraphs were assigned categories
@@ -94,7 +94,6 @@ public class ClassifierLogicTest {
 
     @Test
     public void testAllUserObserved() throws Exception {
-        assert(classifierFactory.getClassifier(Category.TOC_1)!= null);
         //create a new document
         Document doc = Parser.parseDocumentFromHtml("<div><u>this is a awesome</u></div>" +
                 "<div>This is second paragraph</div>" +
@@ -121,7 +120,7 @@ public class ClassifierLogicTest {
 
 
         // classify
-        for (Classifier classifier :classifierFactory.getClassifiers(classifierFactoryStrategy) ){
+        for (Classifier classifier :classifierFactory.getClassifiers(classifierFactoryStrategy,doc) ){
             classifier.classify(doc.getId(), doc);
         }
         assert (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph, Category.TOC_1));

@@ -91,7 +91,7 @@ public class APITest {
             logger.error("SEVERE: An I/O error has occurred while writing a response message entity to the container output stream.");
         }
         logger.debug("Cookies:" + response.getCookies().get("documentId").getValue());
-        Document doc = this.factory.get("smaller-indenture.html");
+        Document doc = this.factory.get(response.getCookies().get("documentId").getValue());
         assert (doc != null);
         //check existence of file in the folder
 

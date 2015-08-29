@@ -69,7 +69,7 @@ public class BenchmarkAPI {
     @Path("/getBenchmarkScore")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getBenchmarkScore(@BeanParam BenchmarkRequestBean request) {
-        ClassifierBenchmark classifierBenchmark = new ClassifierBenchmark(request.getBenchmarkDocumentFactory(), request.getClassifiers());
+        ClassifierBenchmark classifierBenchmark = new ClassifierBenchmark(request.getBenchmarkDocumentFactory());
         logger.info("Document Id: {}" ,request.getDocumentId());
         QC qc;
         try {

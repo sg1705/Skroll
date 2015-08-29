@@ -12,10 +12,13 @@ import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.*;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
+import com.skroll.document.annotation.DocTypeAnnotationHelper;
+import com.skroll.document.factory.DocumentFactory;
 import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.ParserException;
 import com.skroll.pipeline.util.Constants;
 import com.skroll.util.Configuration;
+import com.skroll.util.UniqueIdGenerator;
 import org.glassfish.jersey.media.multipart.BodyPart;
 import org.glassfish.jersey.media.multipart.BodyPartEntity;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
@@ -96,24 +99,19 @@ public class DocAPI {
             InputStreamReader reader = new InputStreamReader(bpe.getInputStream());
             String content = null;
             Document document = null;
+            String documentId = null;
             //parse, classify and store the document
             try {
                 content = CharStreams.toString(reader);
-                document = Parser.parseDocumentFromHtml(content);
-                for (Classifier classifier : request.getClassifiers()) {
-                    document = (Document) classifier.classify(fileName, document);
-                }
-                document.setId(fileName);
-                request.getDocumentFactory().putDocument(document);
-                request.getDocumentFactory().saveDocument(document);
-                logger.debug("Added document into the documentMap with a generated hash key:" + fileName);
+                //TODO: Add back the UniqueIdGenerator code after viewer integration
+                documentId = UniqueIdGenerator.generateId(content);
+                List<Classifier> classifiers = request.getClassifiers();
+                document = fetchOrSaveDocument(documentId, content, request.getDocumentFactory(), classifiers);
                 reader.close();
-            } catch (ParserException e) {
-                return logErrorResponse("Failed to parse the uploaded file", e);
             } catch (Exception e) {
                 return logErrorResponse("Failed to classify", e);
             }
-            return Response.status(Response.Status.ACCEPTED).cookie(new NewCookie("documentId", fileName)).entity(document.getTarget().getBytes(Constants.DEFAULT_CHARSET)).build();
+            return Response.status(Response.Status.ACCEPTED).cookie(new NewCookie("documentId", documentId)).entity(document.getTarget().getBytes(Constants.DEFAULT_CHARSET)).build();
         }
         return logErrorResponse("Failed to process attachments. Reason ");
     }
@@ -127,35 +125,40 @@ public class DocAPI {
         String fileName = new URL(documentId).getPath();
         String[] strs = fileName.split("/");
         int lastIndexOfSlash = documentId.lastIndexOf('/');
-        String url = documentId.substring(0, lastIndexOfSlash);
 
         fileName = strs[strs.length - 1];
+        String uniqueDocumentId = null;
         try {
-            document = Parser.parseDocumentFromHtml(content, url);
-            document.setId(fileName);
-            //Streams require final objects
-            String fName = fileName;
-            Document fDoc = document;
-            request.getClassifiers().forEach(c -> c.classify(fName, fDoc));
-            document.setId(fileName);
-            request.getDocumentFactory().putDocument(document);
-            request.getDocumentFactory().saveDocument(document);
-            logger.debug("Added document into the documentMap with a generated hash key:{}" ,fileName);
-
+            List<Classifier> classifiers = request.getClassifiers();
+            //TODO: Add back the UniqueIdGenerator code after viewer integration
+            uniqueDocumentId = UniqueIdGenerator.generateId(content);
+            fetchOrSaveDocument(uniqueDocumentId, content, request.getDocumentFactory(), classifiers);
         } catch (ParserException e) {
             return logErrorResponse("Failed to parse the uploaded file", e);
         } catch (Exception e) {
             return logErrorResponse("Failed to classify", e);
         }
-        // persist the document using document id. Let's use the file name
-//        try {
-//            Files.createParentDirs(new File(preEvaluatedFolder + fileName));
-//            Files.write(JsonDeserializer.getJson(document), new File(preEvaluatedFolder + fileName), Charset.defaultCharset());
-//        } catch (Exception e) {
-//            return logErrorResponse("Failed to persist the document object", e);
-//        }
         logger.info(fileName);
-        return Response.status(Response.Status.OK).cookie(new NewCookie("documentId", fileName)).entity("").type(MediaType.APPLICATION_JSON).build();
+        return Response.status(Response.Status.OK).cookie(new NewCookie("documentId", uniqueDocumentId)).entity("").type(MediaType.APPLICATION_JSON).build();
+    }
+
+    public Document fetchOrSaveDocument(String documentId, String content, DocumentFactory documentFactory, List<Classifier> classifiers) throws Exception {
+        Document document;
+
+        if (documentFactory.isDocumentExist(documentId)) {
+            document = documentFactory.get(documentId);
+            logger.debug("Fetched the existing document: {}", documentId);
+        } else {
+            document = Parser.parseDocumentFromHtml(content);
+            document.setId(documentId);
+            for (Classifier classifier : classifiers) {
+                document = (Document) classifier.classify(documentId, document);
+            }
+            documentFactory.putDocument(document);
+            documentFactory.saveDocument(document);
+            logger.debug("Added document into the documentMap with a generated hash key: {}", documentId);
+        }
+        return document;
     }
 
     /**
@@ -213,7 +216,7 @@ public class DocAPI {
     @GET
     @Path("/getTerms")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTerm(@QueryParam("documentId") String documentId, @Context HttpHeaders hh, @BeanParam RequestBean request) {
+    public Response getTerm(@Context HttpHeaders hh, @BeanParam RequestBean request) {
 
         Document doc = request.getDocument();
         if (doc == null) return logErrorResponse("Failed to find the document in Map");
@@ -454,6 +457,23 @@ public class DocAPI {
         return Response.status(Response.Status.OK).entity("").type(MediaType.TEXT_HTML).build();
     }
 
+    @GET
+    @Path("/updateDocType")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateDocType(@Context HttpHeaders hh, @BeanParam DocTypeRequestBean request) {
 
+        String documentId = request.getDocumentId();
+        Document doc = request.getDocument();
+        int docType = request.getDocType();
+
+        if (doc == null) {
+            return logErrorResponse("document cannot be found for document id: " + documentId);
+        }
+
+        DocTypeAnnotationHelper.annotateDocTypeWithWeightAndUserObservation(doc,docType,userWeight);
+
+        logger.debug("updateDocType using document id {}", documentId);
+        return Response.ok().status(Response.Status.OK).entity("DocType has been updated").build();
+    }
 
 }

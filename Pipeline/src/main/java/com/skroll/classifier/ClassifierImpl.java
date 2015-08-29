@@ -25,9 +25,9 @@ public class ClassifierImpl implements Classifier {
     protected ClassifierProto classifierProto;
     protected ModelFactory modelFactory;
     protected ModelRVSetting modelRVSetting;
-    protected int id;
+    protected ClassifierId id;
 
-    public ClassifierImpl(int id, ClassifierProto classifierProto, ModelFactory modelFactory, ModelRVSetting modelRVSetting) {
+    public ClassifierImpl(ClassifierId id, ClassifierProto classifierProto, ModelFactory modelFactory, ModelRVSetting modelRVSetting) {
         this.modelFactory = modelFactory;
         this.classifierProto = classifierProto;
         this.modelRVSetting = modelRVSetting;
@@ -40,7 +40,7 @@ public class ClassifierImpl implements Classifier {
     }
 
     @Override
-    public int getId() {
+    public ClassifierId getId() {
         return id;
     }
 

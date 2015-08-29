@@ -10,15 +10,15 @@ import java.util.List;
 
 public class ClassifierProto {
 
-    private int id;
+    private ClassifierId id;
     private List<Integer> categoryIds = null;
 
-    public ClassifierProto( int id, List<Integer> categoryIds) {
+    public ClassifierProto( ClassifierId id, List<Integer> categoryIds) {
         this.id = id;
         this.categoryIds = categoryIds;
     }
 
-    public int getId() {
+    public ClassifierId getId() {
         return id;
     }
 

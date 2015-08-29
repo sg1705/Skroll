@@ -3,8 +3,6 @@ package com.skroll.benchmark;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.skroll.classifier.Classifier;
-import com.skroll.classifier.ClassifierFactory;
-import com.skroll.classifier.ClassifierFactoryStrategy;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
@@ -32,12 +30,10 @@ public class ClassifierBenchmark {
 
     public static void main(String[] args) throws Exception, ObjectPersistUtil.ObjectPersistException {
 
-       Injector injector = Guice.createInjector(new SkrollGuiceModule());
-        ClassifierFactory classifierFactory = injector.getInstance(ClassifierFactory.class);
-        ClassifierFactoryStrategy classifierFactoryStrategy = injector.getInstance(ClassifierFactoryStrategy.class);
+        Injector injector = Guice.createInjector(new SkrollGuiceModule());
         DocumentFactory documentFactory = injector.getInstance(BenchmarkFSDocumentFactoryImpl.class);
 
-        ClassifierBenchmark benchmark = new ClassifierBenchmark(documentFactory,classifierFactory.getClassifiers(classifierFactoryStrategy));
+        ClassifierBenchmark benchmark = new ClassifierBenchmark(documentFactory);
         QC qc = null;
         try {
             qc = benchmark.runQCOnBenchmarkFolder();
@@ -48,9 +44,8 @@ public class ClassifierBenchmark {
 
     }
 
-    public ClassifierBenchmark(DocumentFactory documentFactory, List<Classifier> classifiers){
+    public ClassifierBenchmark(DocumentFactory documentFactory){
         this.documentFactory = documentFactory;
-        this.classifiers = classifiers;
     }
 
     public QC qcDocument(Document firstDoc, Document secondDoc, QC qc){

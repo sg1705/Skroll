@@ -3,6 +3,7 @@ package com.skroll.classifier.factory;
 import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
 import com.skroll.analyzer.model.applicationModel.ProbabilityDocumentAnnotatingModel;
 import com.skroll.analyzer.model.applicationModel.TrainingDocumentAnnotatingModel;
+import com.skroll.classifier.ClassifierId;
 import com.skroll.document.Document;
 import com.skroll.util.ObjectPersistUtil;
 import org.slf4j.Logger;
@@ -22,22 +23,22 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
     protected  static Map<Integer, TrainingDocumentAnnotatingModel> TrainingModelMap = new HashMap<>();
     protected  static Map<String, ProbabilityDocumentAnnotatingModel> bniModelMap = new HashMap<>();
 
-    public TrainingDocumentAnnotatingModel getTrainingModel(int modelId, ModelRVSetting modelRVSetting) {
-        if (TrainingModelMap.containsKey(modelId)){
-            return TrainingModelMap.get(modelId);
+    public TrainingDocumentAnnotatingModel getTrainingModel(ClassifierId classifierId, ModelRVSetting modelRVSetting) {
+        if (TrainingModelMap.containsKey(classifierId.getId())){
+            return TrainingModelMap.get(classifierId.getId());
         }
-        TrainingDocumentAnnotatingModel model = createModel(modelId, modelRVSetting);
+        TrainingDocumentAnnotatingModel model = createModel(classifierId, modelRVSetting);
         logger.debug("training model Map Size:{}",TrainingModelMap.size());
         logger.debug("bni model Map Size:{}",bniModelMap.size());
         return model;
     }
 
-    public TrainingDocumentAnnotatingModel createModel(int modelId, ModelRVSetting modelRVSetting) {
+    public TrainingDocumentAnnotatingModel createModel(ClassifierId classifierId, ModelRVSetting modelRVSetting) {
         TrainingDocumentAnnotatingModel localTrainingModel = null;
 
         if (localTrainingModel == null) {
             try {
-                    localTrainingModel = (TrainingDocumentAnnotatingModel) objectPersistUtil.readObject(null,String.valueOf(modelId));
+                    localTrainingModel = (TrainingDocumentAnnotatingModel) objectPersistUtil.readObject(null,classifierId.getName());
 
             } catch (Throwable e) {
                 logger.warn("TrainingDocumentAnnotatingModel is not found. creating new one" );
@@ -46,45 +47,45 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
         }
         if (localTrainingModel == null) {
 
-            localTrainingModel = new TrainingDocumentAnnotatingModel(modelId, modelRVSetting);
+            localTrainingModel = new TrainingDocumentAnnotatingModel(classifierId.getId(), modelRVSetting);
         }
 
-        TrainingModelMap.put(modelId, localTrainingModel);
+        TrainingModelMap.put(classifierId.getId(), localTrainingModel);
         return localTrainingModel;
     }
 
-    public String getBniId(int modelId, String documentId){
-        return modelId + "." + documentId;
+    public String getBniId(ClassifierId classifierId, String documentId){
+        return classifierId.getId() + "." + documentId;
     }
 
     @Override
-    public ProbabilityDocumentAnnotatingModel createBNIModel(int modelId, String documentId, ModelRVSetting modelRVSetting, Document document) {
+    public ProbabilityDocumentAnnotatingModel createBNIModel(ClassifierId classifierId, String documentId, ModelRVSetting modelRVSetting, Document document) {
 
-        TrainingDocumentAnnotatingModel tmpModel = createModel(modelId, modelRVSetting);
+        TrainingDocumentAnnotatingModel tmpModel = createModel(classifierId, modelRVSetting);
         tmpModel.updateWithDocumentAndWeight(document);
 
-        ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(modelId, tmpModel.getNbmnModel(),
+        ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(classifierId.getId(), tmpModel.getNbmnModel(),
                 tmpModel.getHmm(), document,modelRVSetting );
         bniModel.annotateDocument();
         //printBelieves(bniModel, document);
 
-        bniModelMap.put(getBniId(modelId,documentId),bniModel);
+        bniModelMap.put(getBniId(classifierId,documentId),bniModel);
 
         return bniModel;
     }
 
     @Override
-    public ProbabilityDocumentAnnotatingModel getBNIModel(int modelId, String documentId) {
-        if (bniModelMap.containsKey(getBniId(modelId,documentId))){
-            return bniModelMap.get(getBniId(modelId,documentId));
+    public ProbabilityDocumentAnnotatingModel getBNIModel(ClassifierId classifierId, String documentId) {
+        if (bniModelMap.containsKey(getBniId(classifierId,documentId))){
+            return bniModelMap.get(getBniId(classifierId,documentId));
         }
         return null;
     }
 
-    public void saveTrainingModel(int modelId, ModelRVSetting modelRVSetting) throws Exception {
+    public void saveTrainingModel(ClassifierId classifierId, ModelRVSetting modelRVSetting) throws Exception {
         try {
 
-            objectPersistUtil.persistObject(null, getTrainingModel(modelId, modelRVSetting), String.valueOf(modelId));
+            objectPersistUtil.persistObject(null, getTrainingModel(classifierId, modelRVSetting), classifierId.getName());
         } catch (ObjectPersistUtil.ObjectPersistException e) {
             logger.error("failed to persist the model", e);
             throw new Exception(e);

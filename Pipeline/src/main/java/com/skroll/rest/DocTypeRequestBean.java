@@ -1,12 +1,13 @@
-package com.skroll.rest.benchmark;
+package com.skroll.rest;
 
 import com.skroll.classifier.Classifier;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.classifier.ClassifierFactoryStrategy;
 import com.skroll.document.Document;
-import com.skroll.document.factory.BenchmarkFSDocumentFactory;
-import com.skroll.document.factory.CorpusFSDocumentFactory;
 import com.skroll.document.factory.DocumentFactory;
+import com.skroll.document.factory.SingleParaFSDocumentFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.ws.rs.QueryParam;
@@ -20,27 +21,36 @@ import java.util.Map;
 /**
  * Created by saurabh on 4/17/15.
  */
-public class BenchmarkRequestBean {
+public class DocTypeRequestBean {
+    public static final Logger logger = LoggerFactory
+            .getLogger(DocAPI.class);
 
     private String documentId;
+    private int docType;
     private Document document;
     private List<Classifier> classifiers;
-    private DocumentFactory benchmarkDocumentFactory;
-    private DocumentFactory corpusDocumentFactory;
+
+    private DocumentFactory singleParaDocumentFactory;
 
     public String getDocumentId() {
         return documentId;
     }
 
+    public Document getDocument() {
+        return document;
+    }
+
+    public int getDocType() {
+        return docType;
+    }
 
     @Inject
-    public BenchmarkRequestBean(@QueryParam("documentId") String documentId,
-                                @Context HttpHeaders hh,
-                                @BenchmarkFSDocumentFactory DocumentFactory benchmarkDocumentFactory,
-                                @CorpusFSDocumentFactory DocumentFactory corpusDocumentFactory,
-                                ClassifierFactoryStrategy classifierFactoryStrategy,
-                                ClassifierFactory classifierFactory) throws Exception {
-
+    public DocTypeRequestBean(@QueryParam("documentId") String documentId,
+                              @QueryParam("docType") int docType,
+                              @Context HttpHeaders hh,
+                              @SingleParaFSDocumentFactory DocumentFactory singleParaDocumentFactory,
+                              ClassifierFactoryStrategy classifierFactoryStrategy,
+                              ClassifierFactory classifierFactory) throws Exception {
         if(documentId == null) {
             MultivaluedMap<String, String> headerParams = hh.getRequestHeaders();
             Map<String, Cookie> pathParams = hh.getCookies();
@@ -48,19 +58,20 @@ public class BenchmarkRequestBean {
                  documentId = pathParams.get("documentId").getValue();
         }
 
+        logger.info("Document Id: {}",documentId);
+
         if (documentId != null) {
             //fetch it from factory
             this.documentId = documentId;
-            this.document = corpusDocumentFactory.get(documentId);
+            this.document = singleParaDocumentFactory.get(documentId);
         }
+        this.docType = docType;
         this.classifiers = classifierFactory.getClassifiers(classifierFactoryStrategy,document);
-        this.benchmarkDocumentFactory = benchmarkDocumentFactory;
-        this.corpusDocumentFactory = corpusDocumentFactory;
+        this.singleParaDocumentFactory = singleParaDocumentFactory;
     }
 
     public List<Classifier> getClassifiers() {
         return classifiers;
     }
-    public DocumentFactory getBenchmarkDocumentFactory() { return benchmarkDocumentFactory;}
-    public DocumentFactory getCorpusDocumentFactory() { return corpusDocumentFactory;}
+    public DocumentFactory getDocumentFactory() { return singleParaDocumentFactory;}
 }

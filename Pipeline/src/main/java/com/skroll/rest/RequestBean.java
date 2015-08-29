@@ -60,7 +60,7 @@ public class RequestBean {
             this.document = documentFactory.get(documentId);
         }
 
-        this.classifiers = classifierFactory.getClassifiers(classifierFactoryStrategy);
+        this.classifiers = classifierFactory.getClassifiers(classifierFactoryStrategy,document);
         this.documentFactory = documentFactory;
     }
 
