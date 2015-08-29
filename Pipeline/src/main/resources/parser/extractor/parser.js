@@ -102,13 +102,14 @@ function evaluateHtml(globalSourceUrl) {
     docObject.set(PARAGRAPH_ANNOTATION, paragraphs);
     docObject.set(TABLES_ANNOTATION, tables);
     var totalTime = Date.now() - startTime;
-    return ( ";---------------SKROLL---------------------;"
+    var delimiter = ';-skroll.io-;';
+    return ( delimiter
              + JSON.stringify(docObject, null, 2)
-             + ";---------------SKROLL---------------------;"
+             + delimiter
              + $(":root").html()
-             + ";---------------SKROLL---------------------;"
+             + delimiter
              + totalTime
-             + ";---------------SKROLL---------------------;"
+             + delimiter
              + sourceHtml);
 
 

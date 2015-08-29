@@ -3,7 +3,6 @@ package com.skroll.parser.extractor;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.ModelHelper;
-import com.skroll.document.annotation.CoreAnnotation;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.util.Constants;
 import com.skroll.pipeline.util.Utils;
@@ -13,10 +12,7 @@ import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.ByteArrayOutputStream;
-
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -30,21 +26,26 @@ public class PhantomJsExtractor {
 
     public static Boolean TEST_FLAGS = false;
 
+
+    private boolean isFetchHtml = false;
+
+    private boolean isParsePartial = false;
+
     /**
      *
-     * @param input
-     * @return
+     * @param input input document
+     * @return document parsed document
      * @throws Exception
      */
     public Document process(Document input) throws Exception {
         long startTime = System.currentTimeMillis();
         String htmlText = "";
         String fileName = "none";
-        boolean fetchHtml = input.containsKey(CoreAnnotations.SourceUrlAnnotation.class);
+
         //check if need to fetchHtml
-        if (!fetchHtml) {
+        if (!isFetchHtml) {
             //create tmp file
-            htmlText = input.get(CoreAnnotations.TextAnnotation.class);
+            htmlText = input.getSource();
             fileName = createTempFile(htmlText).toString();
         }
 
@@ -60,7 +61,7 @@ public class PhantomJsExtractor {
         //setup command line arguments
         cmdLine.addArgument(Constants.JQUERY_PARSER_JS);
         cmdLine.addArgument(TEST_FLAGS.toString());
-        cmdLine.addArgument(Boolean.toString(fetchHtml));
+        cmdLine.addArgument(Boolean.toString(isFetchHtml));
         cmdLine.addArgument(fileName);
         if (input.containsKey(CoreAnnotations.SourceUrlAnnotation.class)) {
             String basePath = this.getBasePath(input.get(CoreAnnotations.SourceUrlAnnotation.class));
@@ -73,60 +74,56 @@ public class PhantomJsExtractor {
         executor.setStreamHandler(psh);
         ExecuteWatchdog watchdog = new ExecuteWatchdog(240000);
         executor.setWatchdog(watchdog);
-        int exitValue = 0;
-        try {
-            exitValue = executor.execute(cmdLine);
-        } catch (Exception e) {
-            //TODO throw exception
-            throw e;
-        }
-
+        long executionTime = System.currentTimeMillis();
+        int exitValue = executor.execute(cmdLine);
         if (exitValue != 1) {
             ParserException ps =  new ParserException("Cannot parse the file. Phantom exited with the return code:" + exitValue);
             ps.setReturnValue(exitValue);
             throw ps;
         }
-
-
+        logger.info("Execution time:" + (System.currentTimeMillis() - executionTime));
+        long splitTime = System.currentTimeMillis();
         byte[] output = stdout.toByteArray();
         String[] parserOutput = new String(output, Constants.DEFAULT_CHARSET)
-                .split(";---------------SKROLL---------------------;");
+                .split(";-skroll.io-;");
+        logger.info("Splitting time:" + (System.currentTimeMillis() - splitTime));
         ModelHelper helper = new ModelHelper();
         Document newDoc = new Document();
-        try {
+        if (!isParsePartial) {
             newDoc = helper.fromJson(parserOutput[1]);
-            //replace target
-
-            newDoc.setTarget(parserOutput[2].replaceAll("(<!--sk)|(sk-->)", ""));
-
-            if (fetchHtml) {
-                newDoc.setSource(parserOutput[4]);
-            } else {
-                newDoc.setSource(htmlText);
+            //no paragraphs in the doc
+            if (newDoc.get(CoreAnnotations.ParagraphsAnnotation.class) == null) {
+                throw new Exception("No paragraphs were identified:");
             }
-
-        } catch (Exception e) {
-            // error TODO needs to be logged
-            e.printStackTrace();
-            throw e;
+            newDoc = postExtraction(newDoc);
         }
-        //newDoc.set(CoreAnnotations.TextAnnotation.class, htmlText);
-
-        //no paragraphs in the doc
-        if (newDoc.get(CoreAnnotations.ParagraphsAnnotation.class) == null) {
-            throw new Exception("No paragraphs were identified:");
+        newDoc.setTarget(parserOutput[2].replaceAll("(<!--sk)|(sk-->)", ""));
+        if (isFetchHtml) {
+            //replace target
+            newDoc.setSource(parserOutput[4]);
+        } else {
+            newDoc.setSource(htmlText);
         }
-        newDoc = postExtraction(newDoc);
         logger.info("[{}]ms taken by jQuery during parsing", parserOutput[3]);
         logger.info("[{}]ms total extraction time", (System.currentTimeMillis() - startTime));
         return newDoc;
     }
 
 
+    public void setParsePartial(boolean isParsePartial) {
+        this.isParsePartial = isParsePartial;
+    }
+
+    public void setFetchHtml(boolean isFetchHtml) {
+        this.isFetchHtml = isFetchHtml;
+    }
+
+
+
     /**
      * Creates a temp file for a given string
-     * @param htmlText
-     * @return
+     * @param htmlText html to be saved in the file
+     * @return path of the created file
      * @throws Exception
      */
     private Path createTempFile(String htmlText) throws Exception {
@@ -138,17 +135,17 @@ public class PhantomJsExtractor {
     /**
      * Process a given document for the following.
      *
-     * Tokenize PragraphFragments
+     * Tokenize ParagraphFragments
      * Create TextAnnotation for Paragraph
      *
-     * @param doc
-     * @return
+     * @param doc document to process
+     * @return document object
      */
     private Document postExtraction(Document doc) {
         //create TextAnnotation for paragraph
         List<CoreMap> paragraphs = doc.getParagraphs();
         for(CoreMap paragraph: paragraphs) {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             List<CoreMap> fragments = paragraph.get(CoreAnnotations.ParagraphFragmentAnnotation.class);
             for(CoreMap fragment : fragments) {
                 String text = fragment.get(CoreAnnotations.TextAnnotation.class);
@@ -156,16 +153,12 @@ public class PhantomJsExtractor {
             }
             paragraph.set(CoreAnnotations.TextAnnotation.class, buf.toString());
         }
-
         return doc;
     }
 
     private String getBasePath(String url) throws Exception {
-        String fileName = new URL(url).getPath();
-        String[] strs = fileName.split("/");
         int lastIndexOfSlash = url.lastIndexOf('/');
-        String basePath = url.substring(0, lastIndexOfSlash);
-        return basePath;
+        return url.substring(0, lastIndexOfSlash);
     }
 
 

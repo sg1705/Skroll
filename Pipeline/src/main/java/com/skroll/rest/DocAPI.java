@@ -120,39 +120,41 @@ public class DocAPI {
 
     @GET
     @Path("/importDoc")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response importDoc(@QueryParam("documentId") String documentId, @Context HttpHeaders hh, @BeanParam RequestBean request) throws Exception {
+    @Produces(MediaType.TEXT_HTML)
+    public Response importDoc(@QueryParam("documentId") String documentId, @QueryParam("partialParse") String partialParse, @Context HttpHeaders hh, @BeanParam RequestBean request) throws Exception {
         Document document = null;
         String fileName = new URL(documentId).getPath();
         String[] strs = fileName.split("/");
-
+        if (partialParse == null)
+            partialParse = "false";
         fileName = strs[strs.length - 1];
         try {
-            document = Parser.parseDocumentFromUrl(documentId);
-            document.setId(fileName);
-            //Streams require final objects
-            String fName = fileName;
-            Document fDoc = document;
-            request.getClassifiers().forEach(c -> c.classify(fName, fDoc));
-            document.setId(fileName);
-            request.getDocumentFactory().putDocument(document);
-            request.getDocumentFactory().saveDocument(document);
-            logger.debug("Added document into the documentMap with a generated hash key:{}" ,fileName);
+
+            if (partialParse.equals("true")) {
+                document = Parser.parsePartialDocumentFromUrl(documentId);
+            } else {
+                document = Parser.parseDocumentFromUrl(documentId);
+                document.setId(fileName);
+                //Streams require final objects
+                String fName = fileName;
+                Document fDoc = document;
+                request.getClassifiers().forEach(c -> c.classify(fName, fDoc));
+                document.setId(fileName);
+                request.getDocumentFactory().putDocument(document);
+                request.getDocumentFactory().saveDocument(document);
+                logger.debug("Added document into the documentMap with a generated hash key:{}" ,fileName);
+            }
 
         } catch (ParserException e) {
             return logErrorResponse("Failed to parse the uploaded file", e);
         } catch (Exception e) {
             return logErrorResponse("Failed to classify", e);
         }
-        // persist the document using document id. Let's use the file name
-//        try {
-//            Files.createParentDirs(new File(preEvaluatedFolder + fileName));
-//            Files.write(JsonDeserializer.getJson(document), new File(preEvaluatedFolder + fileName), Charset.defaultCharset());
-//        } catch (Exception e) {
-//            return logErrorResponse("Failed to persist the document object", e);
-//        }
         logger.info(fileName);
-        return Response.status(Response.Status.OK).cookie(new NewCookie("documentId", fileName)).entity("").type(MediaType.APPLICATION_JSON).build();
+        return Response.status(Response.Status.OK)
+                .cookie(new NewCookie("documentId", fileName))
+                .entity(document.getTarget().getBytes(Constants.DEFAULT_CHARSET))
+                .type(MediaType.TEXT_HTML).build();
     }
 
     /**

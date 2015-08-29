@@ -14,7 +14,7 @@
     .controller('ImportCtrl', ImportCtrl);
 
   /* @ngInject */
-  function ImportCtrl($location, $routeParams, $http) {
+  function ImportCtrl($location, $routeParams, $http, documentService) {
 
     //-- private variables
     var url = $routeParams.q;
@@ -24,26 +24,21 @@
       return;
     }
     documentModel.isProcessing = true;
+    documentModel.url = url;
 
     //////////////
 
     //-- execute
 
     console.log(url);
-    $http.get('restServices/doc/importDoc?documentId=' + $routeParams.q)
-      .success(function(data) {
-        console.log(data);
-        var docId = data.documentId;
+    documentService.importDoc(url, true)
+      .then(function(data) {
+        documentModel.documentId = fileName;
+        documentModel.targetHtml = data;
+        documentModel.isPartiallyParsed = true;
         $location.search({});
         $location.path('/view/docId/' + fileName);
       });
   }
-
-  // var BackdropCtrl = function(documentModel) {
-  //   this.isProcessing = documentModel.isProcessing;
-  // }
-
-  // angular.module('SkrollApp')
-  //   .controller('BackdropCtrl', ['documentModel', BackdropCtrl]);
 
 })();

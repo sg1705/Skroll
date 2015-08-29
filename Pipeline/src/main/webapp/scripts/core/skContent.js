@@ -14,7 +14,7 @@
     .directive('skContent', skContent);
 
   /* @ngInject */
-  function skContent(documentModel, documentService, LHSModel, selectionService, $timeout) {
+  function skContent(documentModel, documentService, LHSModel, selectionService, $timeout, $http) {
 
     var directive = {
       restricted: 'E',
@@ -26,39 +26,62 @@
 
     //////
 
+
+    /**
+    * Two paths when a document is loaded.
+    * Complete the partially loaded doc
+    * Or load the entire document
+    **/
     function link(scope, element, attrs) {
       if (documentModel.documentId != null) {
         documentModel.isProcessing = true;
-        documentService.loadDocument(documentModel.documentId)
-        .then(function(contentHtml) {
-          documentModel.targetHtml = contentHtml;
+        if (documentModel.isPartiallyParsed) {
+          console.log('partially parsed');
           element.replaceWith(documentModel.targetHtml);
-          //$(element).html(documentModel.targetHtml)
-          return documentService.getTerms(documentModel.documentId);
-        })
-        .then(function(terms) {
-          LHSModel.setTerms(terms);
-          console.log(terms);
-          $timeout(timeout, 0); //@see function timeout()
+          documentModel.isProcessing = false;            
+          documentService.importDoc(documentModel.url, false)
+            .then(function(data) {
+              documentModel.isPartiallyParsed = false;
+              return documentService.getTerms(documentModel.documentId);              
+            })
+            .then(function(terms) {
+              LHSModel.setTerms(terms);
+              console.log(terms);
+              LHSModel.setYOffsetForTerms(LHSModel.smodel.terms);
+            });
 
-          function timeout() {
-            console.log(selectionService.serializedSelection);
-            if ((selectionService.serializedSelection === undefined) || (selectionService.serializedSelection == "undefined")) {
+        } else {
 
-            } else {
-              selectionService.scrollToSelection(selectionService.serializedSelection);
+          documentService.loadDocument(documentModel.documentId)
+          .then(function(contentHtml) {
+            documentModel.targetHtml = contentHtml;
+            element.replaceWith(documentModel.targetHtml);
+            //$(element).html(documentModel.targetHtml)
+            return documentService.getTerms(documentModel.documentId);
+          })
+          .then(function(terms) {
+            LHSModel.setTerms(terms);
+            console.log(terms);
+            $timeout(timeout, 0); //@see function timeout()
+
+            function timeout() {
+              console.log(selectionService.serializedSelection);
+              if ((selectionService.serializedSelection === undefined) || (selectionService.serializedSelection == "undefined")) {
+
+              } else {
+                selectionService.scrollToSelection(selectionService.serializedSelection);
+              }
+              documentModel.isProcessing = false;
+              //calculate offsets for headers
+              //iterate over each term to find Y offset
+              LHSModel.setYOffsetForTerms(LHSModel.smodel.terms);
+
+              documentModel.isProcessing = false;
             }
-            documentModel.isProcessing = false;
-            //calculate offsets for headers
-            //iterate over each term to find Y offset
-            LHSModel.smodel.terms = _.map(LHSModel.smodel.terms, function(term) {
-              term.offsetY =  $("#"+term.paragraphId).scrollTop();
-              return term;
-            });                            
-          }
-        }, function(data, status) {
-            console.log(status);
-        });
+          }, function(data, status) {
+              console.log(status);
+          });
+        }
       }
     }
   }

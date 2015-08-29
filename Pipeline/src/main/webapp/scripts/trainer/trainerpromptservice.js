@@ -52,6 +52,9 @@
         var self = this;
         vm.showYesNoDialog(prompt, items)
           .then(function(clicked) {
+                  if (clicked.toString() == 'true') {
+                    clicked = 0;
+                  }            
                   matchedItem.classificationId = LHSModel.getClassFromIndex(clicked);
                   documentModel.isProcessing = true;
                   trainerService.addTermToPara(documentModel.documentId, matchedItem)
@@ -117,30 +120,33 @@
       var className = LHSModel.getClassFromId(matchedItem.classificationId).name;
       //create a set of questions. In this case, yes or no
       var items = ['Yes', 'No', 'Unobserve ' + className];
-      vm.showYesNoDialog(prompt, items).then(angular.bind(this, function(clicked) {
+      vm.showYesNoDialog(prompt, items).then(function(clicked) {
         documentModel.isProcessing = true;
+        if (clicked.toString() == 'true') {
+          clicked = 0;
+        }
         if (clicked == 1) {
           trainerService.rejectClassFromPara(documentModel.documentId, matchedItem.classificationId, matchedItem.paragraphId).
-          then(angular.bind(this, function(contentHtml){
+          then(function(contentHtml){
             vm.updateDocument(contentHtml);  
-          }));
+          });
         }
         //answer is yes
         if (clicked == 0) {
           trainerService.approveClassForPara(documentModel.documentId, matchedItem.classificationId, matchedItem.paragraphId).
-          then(angular.bind(this, function(contentHtml){
+          then(function(contentHtml){
             vm.updateDocument(contentHtml);  
-          }));
+          });
         }
         //if answer is unobserve
         if (clicked == 2) {
           trainerService.unObservePara(documentModel.documentId, matchedItem.classificationId, matchedItem.paragraphId).
-          then(angular.bind(this, function(contentHtml){
+          then(function(contentHtml){
             vm.updateDocument(contentHtml);  
-          }));
+          });
         }
 
-      }));
+      });
     }
 
     /**

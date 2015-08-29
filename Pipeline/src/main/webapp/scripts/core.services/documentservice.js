@@ -20,6 +20,7 @@
       
       getDocumentIds    : getDocumentIds,
       loadDocument      : loadDocument,
+      importDoc         : importDoc,
 
       getParagraphJson  : getParagraphJson,
       getTerms          : getTerms,
@@ -91,6 +92,27 @@
       /** done with get request */
       return deferred.promise;
     };
+
+
+    /**
+    * Returns a promise to update terms for a given document
+    **/
+    function importDoc(url, partiallyParse) {
+      var deferred = $q.defer();
+      /** make a get request */
+      $http.get(documentServiceBase + 'importDoc' + '?&partialParse=' + partiallyParse + '&documentId=' + url)
+        .success(function(data, status) {
+          deferred.resolve(data);
+        })
+        .error(function(msg, code) {
+          deferred.reject(msg);
+          $log.error(msg, code);
+        });;
+      /** done with get request */
+      return deferred.promise;
+    };
+
+
 
     /**
     * Returns a promise to unobserve a paragraph

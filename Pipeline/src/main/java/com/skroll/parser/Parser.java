@@ -5,6 +5,7 @@ import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.extractor.ParserException;
+import com.skroll.parser.extractor.PhantomJsExtractor;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
@@ -21,11 +22,26 @@ public class Parser {
     public static final int VERSION = 1;
     public static final Logger logger = LoggerFactory.getLogger(Parser.class);
 
-    private static Document parseInDoc(Document document) throws ParserException {
+    private static Document parseInDoc(Document document, boolean fetchHtml, boolean parsePartial)
+            throws ParserException {
+
+        //create phantomjs extractor
+        PhantomJsExtractor phExtractor = new PhantomJsExtractor();
+        phExtractor.setFetchHtml(fetchHtml);
+        phExtractor.setParsePartial(parsePartial);
+        try {
+            document = phExtractor.process(document);
+        } catch (Exception e) {
+            throw new ParserException(e);
+        }
+
+        if (parsePartial) {
+            return document;
+        }
+
         //create a pipeline
         Pipeline<Document, Document> pipeline =
                 new Pipeline.Builder()
-                        .add(Pipes.PARSE_HTML_TO_DOC)
                         .add(Pipes.POST_EXTRACTION_PIPE)
                         .add(Pipes.TOKENIZE_PARAGRAPH_IN_HTML_DOC)
                         .build();
@@ -35,6 +51,17 @@ public class Parser {
     }
 
 
+    /**
+     * Returns the parsed document from Html file.
+     *
+     * @param url
+     * @return document
+     */
+    public static Document parsePartialDocumentFromUrl(String url) throws ParserException {
+        Document document = new Document();
+        document.set(CoreAnnotations.SourceUrlAnnotation.class, url);
+        return parseInDoc(document, true, true);
+    }
 
 
 
@@ -49,22 +76,8 @@ public class Parser {
     public static Document parseDocumentFromHtml(String htmlText) throws ParserException {
         Document document = new Document();
         document.setSource(htmlText);
-        return parseInDoc(document);
+        return parseInDoc(document, false, false);
     }
-
-    /**
-     * Returns the parsed document from Html file.
-     *
-     * @param htmlText
-     * @return document
-     */
-    public static Document parseDocumentFromHtml(String htmlText, String url) throws ParserException {
-        Document document = new Document();
-        document.setSource(htmlText);
-        document.set(CoreAnnotations.SourceUrlAnnotation.class, url);
-        return parseInDoc(document);
-    }
-
 
     /**
      * Returns the parsed document from Html file.
@@ -75,7 +88,7 @@ public class Parser {
     public static Document parseDocumentFromUrl(String url) throws ParserException {
         Document document = new Document();
         document.set(CoreAnnotations.SourceUrlAnnotation.class, url);
-        return parseInDoc(document);
+        return parseInDoc(document, true, false);
     }
 
 

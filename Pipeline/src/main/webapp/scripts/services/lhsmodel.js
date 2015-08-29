@@ -209,6 +209,13 @@ var LHSModel = {
   setTerms: function (terms) {
     this.smodel.terms = this.filterInvalidClass(terms);
     this.setActiveClasses(terms);
+  },
+
+  setYOffsetForTerms: function (terms) {
+    this.smodel.terms = _.map(terms, function(term) {
+      term.offsetY =  $("#"+term.paragraphId).scrollTop();
+      return term;
+    });    
   }
 
 };
