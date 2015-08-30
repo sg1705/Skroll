@@ -18,6 +18,8 @@ angular.module('SkrollApp', [
 	'ngRoute',
 	'ngSilent',
 	'feature-flags',
+	'angulartics',
+	'angulartics.google.analytics',
 	'app.core',
 	'app.core.services',
 	'app.core.util',
