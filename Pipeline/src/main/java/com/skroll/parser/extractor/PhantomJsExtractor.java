@@ -1,24 +1,14 @@
 package com.skroll.parser.extractor;
 
-import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
-import com.skroll.document.ModelHelper;
-import com.skroll.document.annotation.CoreAnnotation;
-import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.util.Constants;
-import com.skroll.pipeline.util.Utils;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.ByteArrayOutputStream;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
 
 /**
  * cd by saurabh on 1/16/15.
@@ -27,19 +17,37 @@ public class PhantomJsExtractor {
 
     public static final Logger logger = LoggerFactory.getLogger(PhantomJsExtractor.class);
 
-    public static Boolean TEST_FLAGS = false;
+    private static String PARA_DELIMITTER = "(<!--sk)|(sk-->)";
+    private static String OUTPUT_DELIMITTER = ";-skroll.io-;";
+    // modes
+    public static int TEST_MODE = TestMode.OFF;
+    private static int FETCH_MODE;
+    private static int PARSE_MODE;
 
+    /**
+     *
+     * @param input input document
+     * @return document parsed document
+     * @throws Exception
+     */
     public Document process(Document input) throws Exception {
         long startTime = System.currentTimeMillis();
-        //extract html from document
-        String htmlText = input.get(CoreAnnotations.TextAnnotation.class);
 
-        //create tmp file
-        String fileName = createTempFile(htmlText).toString();
+        CommandLine cmdLine = getPhantomJsCommandLine();
+        TestMode.preProcessTestMode(input, cmdLine, TEST_MODE);
+        FetchMode.preProcessTestMode(input, cmdLine, FETCH_MODE);
+        String[] parserOutput = executePhantomJsExtractor(cmdLine);
+        Document output = new Document();
+        output = ParseMode.postProcessParseMode(parserOutput, input, output, PARSE_MODE);
+        output = FetchMode.postProcessParseMode(parserOutput, input, output, FETCH_MODE);
+        output.setTarget(parserOutput[2].replaceAll(PARA_DELIMITTER, ""));
+        logger.info("[{}]ms taken by jQuery during parsing", parserOutput[3]);
+        logger.info("[{}]ms total extraction time", (System.currentTimeMillis() - startTime));
+        return output;
+    }
 
-        ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-        PumpStreamHandler psh = new PumpStreamHandler( stdout );
 
+    private CommandLine getPhantomJsCommandLine() {
         //default command line is linux
         CommandLine cmdLine = CommandLine.parse(Constants.PHANTOM_JS_BIN);
         if (System.getProperty("os.name").contains("windows")) {
@@ -47,93 +55,46 @@ public class PhantomJsExtractor {
         } else if (System.getProperty("os.name").toLowerCase().contains("mac")) {
             cmdLine = CommandLine.parse(Constants.PHANTOM_JS_BIN_MAC);
         }
+        //setup command line arguments
         cmdLine.addArgument(Constants.JQUERY_PARSER_JS);
-        cmdLine.addArgument(TEST_FLAGS.toString());
-        cmdLine.addArgument(fileName);
-        if (input.containsKey(CoreAnnotations.SourceUrlAnnotation.class)) {
-            cmdLine.addArgument(input.get(CoreAnnotations.SourceUrlAnnotation.class));
-        }
+        return cmdLine;
+    }
+
+    private String[] executePhantomJsExtractor(CommandLine cmdLine) throws Exception {
+        ByteArrayOutputStream stdout = new ByteArrayOutputStream();
+        PumpStreamHandler psh = new PumpStreamHandler( stdout );
 
         DefaultExecutor executor = new DefaultExecutor();
         executor.setExitValue(1);
         executor.setStreamHandler(psh);
         ExecuteWatchdog watchdog = new ExecuteWatchdog(240000);
         executor.setWatchdog(watchdog);
-        int exitValue = 0;
-        try {
-            exitValue = executor.execute(cmdLine);
-        } catch (Exception e) {
-            //TODO throw exception
-            throw e;
-        }
-
+        long executionTime = System.currentTimeMillis();
+        int exitValue = executor.execute(cmdLine);
         if (exitValue != 1) {
             ParserException ps =  new ParserException("Cannot parse the file. Phantom exited with the return code:" + exitValue);
             ps.setReturnValue(exitValue);
             throw ps;
         }
-
-
+        logger.info("Execution time:" + (System.currentTimeMillis() - executionTime));
+        long splitTime = System.currentTimeMillis();
         byte[] output = stdout.toByteArray();
-        String[] parserOutput = new String(output, Constants.DEFAULT_CHARSET).split(";---------------SKROLLJSON---------------------;");
-        String[] result = parserOutput[1].split(";---------------SKROLL---------------------;");
-        String[] execTime = parserOutput[1].split(";---------------SKROLLTIME---------------------;");
-
-        ModelHelper helper = new ModelHelper();
-        Document newDoc = new Document();
-        try {
-            newDoc = helper.fromJson(result[0]);
-            //replace target
-
-            newDoc.setTarget(result[1].replaceAll("(<!--sk)|(sk-->)", ""));
-            newDoc.setSource(htmlText);
-        } catch (Exception e) {
-            // error TODO needs to be logged
-            e.printStackTrace();
-            throw e;
-        }
-        //newDoc.set(CoreAnnotations.TextAnnotation.class, htmlText);
-
-        //no paragraphs in the doc
-        if (newDoc.get(CoreAnnotations.ParagraphsAnnotation.class) == null) {
-            throw new Exception("No paragraphs were identified:");
-        }
-        newDoc = postExtraction(newDoc);
-        logger.info("[{}]ms taken by jQuery during parsing", execTime[1]);
-        logger.info("[{}]ms total extraction time", (System.currentTimeMillis() - startTime));
-        return newDoc;
+        String[] parserOutput = new String(output, Constants.DEFAULT_CHARSET)
+                .split(OUTPUT_DELIMITTER);
+        logger.info("Splitting time:" + (System.currentTimeMillis() - splitTime));
+        return parserOutput;
     }
 
 
-    private Path createTempFile(String htmlText) throws Exception {
-        Path path = Files.createTempFile("phantom", ".html");
-        Utils.writeToFile(path.toString(), htmlText);
-        return path;
+    public static void setFetchMode(int fetchMode) {
+        FETCH_MODE = fetchMode;
     }
 
-    /**
-     * Process a given document for the following.
-     *
-     * Tokenize PragraphFragments
-     * Create TextAnnotation for Paragraph
-     *
-     * @param doc
-     * @return
-     */
-    private Document postExtraction(Document doc) {
-        //create TextAnnotation for paragraph
-        List<CoreMap> paragraphs = doc.getParagraphs();
-        for(CoreMap paragraph: paragraphs) {
-            StringBuffer buf = new StringBuffer();
-            List<CoreMap> fragments = paragraph.get(CoreAnnotations.ParagraphFragmentAnnotation.class);
-            for(CoreMap fragment : fragments) {
-                String text = fragment.get(CoreAnnotations.TextAnnotation.class);
-                buf.append(text);
-            }
-            paragraph.set(CoreAnnotations.TextAnnotation.class, buf.toString());
-        }
-
-        return doc;
+    public static void setParseMode(int parseMode) {
+        PARSE_MODE = parseMode;
     }
+
+
 }
+
 

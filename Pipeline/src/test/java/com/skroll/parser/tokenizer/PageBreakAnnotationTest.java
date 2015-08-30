@@ -5,6 +5,7 @@ import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.PhantomJsExtractor;
+import com.skroll.parser.extractor.TestMode;
 import com.skroll.pipeline.util.Utils;
 import junit.framework.TestCase;
 
@@ -15,7 +16,7 @@ import java.util.List;
  */
 public class PageBreakAnnotationTest extends TestCase {
     public void testPageBreak() throws Exception {
-        PhantomJsExtractor.TEST_FLAGS = true;
+        PhantomJsExtractor.TEST_MODE = TestMode.ON;
         // read a sample file
         String fileName = "src/test/resources/html-docs/random-indenture.html";
         String htmlString = Utils.readStringFromFile(fileName);
@@ -40,7 +41,7 @@ public class PageBreakAnnotationTest extends TestCase {
     public void testPageBreak10k() throws Exception {
         // read a sample file
         //String fileName = "src/main/resources/parser/extractor/jQuery/dish-10k.html";
-        PhantomJsExtractor.TEST_FLAGS = true;
+        PhantomJsExtractor.TEST_MODE = TestMode.ON;
         String fileName = "src/main/resources/parser/extractor/jQuery/brightcove-10k.html";
         String htmlString = Utils.readStringFromFile(fileName);
 

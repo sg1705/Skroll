@@ -13,6 +13,7 @@ angular.module('SkrollApp', [
 	'ngAnimate',
 	'ngMaterial',
 	'ngSanitize',
+	'ngCookies',
 	'ngTouch',
 	'ngRoute',
 	'ngSilent',
