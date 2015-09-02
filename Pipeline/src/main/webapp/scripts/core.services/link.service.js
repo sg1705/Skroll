@@ -6,7 +6,7 @@
     .service('linkService', LinkService);
 
   /** @ngInject **/
-  function LinkService($log) {
+  function LinkService($log, $q, featureFlags) {
 
     //-- private variables
     //context root of API
@@ -38,12 +38,21 @@
     * Shortens url
     **/
     function shortenLink(url) {
-      gapi.client.setApiKey('AIzaSyAFAxvkl4fQRr7WfWKHQuFKIFvg0oiuZN8');
-      return gapi.client.request({
-        'path'     : 'urlshortener/v1/url',
-        'method'   : 'POST',
-        'body'     : {'longUrl'  : url}
-      });
+
+      if (featureFlags.isOn('googl.shortlink')) {
+        gapi.client.setApiKey('AIzaSyAFAxvkl4fQRr7WfWKHQuFKIFvg0oiuZN8');
+        return gapi.client.request({
+          'path'     : 'urlshortener/v1/url',
+          'method'   : 'POST',
+          'body'     : {'longUrl'  : url}
+        });
+
+      } else {
+        var response = { result : { id : 'https://goo.gl/53se3'}};
+        var deferred = $q.defer();
+        deferred.resolve(response);
+        return deferred.promise;
+      }
     };
 
 
