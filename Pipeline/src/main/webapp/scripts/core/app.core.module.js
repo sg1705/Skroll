@@ -20,8 +20,13 @@
 					"active" : false,
 					"name" : "flag for probabilities in TOC",
 					"description" : "no description"
+				},
+				{
+					"key" : "googl.shortlink",
+					"active" : false,
+					"name" : "flag to create shortlinsk",
+					"description" : "no description"
 				}
-
 			];
 	  		featureFlags.set(flags);
 			}

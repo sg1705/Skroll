@@ -24,7 +24,7 @@
 		var isOpen = false;
 
 		//-- public variables
-		service.onSelection = onSelection
+		service.onSelection = onSelection;
 
 		////////////
 
@@ -40,9 +40,7 @@
 			var s = window.getSelection();
 			var oRange = s.getRangeAt(0); //get the text range
 			var oRect = oRange.getBoundingClientRect();			
-			console.log(oRect);
 
-	    //$mdToast.show($mdToast.simple().content('Hello!'));
 	    $mdToast.show({
 	      templateUrl : 'scripts/contextmenu/contextmenu.tmpl.html',
 	      hideDelay 	: 0,
@@ -195,7 +193,7 @@
           $mdToast.hide();
         //});
       }
-
+         
 		}
 
 	}
