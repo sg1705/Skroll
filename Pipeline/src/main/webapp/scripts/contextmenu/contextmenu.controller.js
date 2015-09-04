@@ -16,7 +16,7 @@
 		.controller('ContextMenuCtrl' , ContextMenuCtrl);
 
 	/* @ngInject */
-  function ContextMenuCtrl($mdToast, linkService, selectionService, documentModel) {
+  function ContextMenuCtrl($mdToast, $mdDialog, linkService, selectionService, documentModel) {
 
   	//-- private variables
   	var vm = this;
@@ -25,8 +25,27 @@
   	vm.closeContextMenu = closeContextMenu;
   	vm.copyLink 				= copyLink;
     vm.openTwitter      = openTwitter;
+    vm.openEmailDialog  = openEmailDialog;
 
   	////////
+
+    function openEmailDialog() {
+      closeContextMenu();
+      var activeLink = linkService.getActiveLink(documentModel.documentId, selectionService.serializedSelection);      
+      linkService.shortenLink(activeLink)
+        .then(function(response) {
+          console.log(response.result.id);
+          selectionService.shortLink = response.result.id;
+          var mailBody = createTweetText();
+          window.open('mailto:?body=' + mailBody,'MsgWindow',
+                               'toolbar=no,location=no, status=no,menubar=no,scrollbars=yes,resizable=yes,top=300, left=300,width=550,height=420');      
+
+        }, function(reason) {
+          $log.error(reason);
+        });      
+    }
+
+
 
     /**
     * Copy link to clipboard
@@ -36,12 +55,32 @@
       var shortenedUrl = '';
       linkService.shortenLink(activeLink)
         .then(function(response) {
-          console.log(response.result.id);
+          shortenedUrl = response.result.id;
         }, function(reason) {
           $log.error(reason);
+        }).then(function(){
+          return $mdToast.hide();
+        }).then(function(){
+          showAlert(shortenedUrl);
         });
-  		$mdToast.hide();
   	}
+
+
+    /**
+    * Show dialog
+    **/
+    function showAlert(shortenedUrl) {
+      var alert = $mdDialog.alert({
+        title: 'Copy URL for Selected Text',
+        content: shortenedUrl,
+        ok: 'Close'
+      });
+      $mdDialog
+        .show( alert )
+        .finally(function() {
+          alert = undefined;
+        });
+    }
 
 
     /**

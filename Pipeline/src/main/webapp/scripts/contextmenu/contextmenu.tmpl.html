@@ -8,8 +8,18 @@
 	</md-button>
 
 	<md-button 
+	 	ng-click='ctrl.openEmailDialog()'
+	 	aria-label="Email selected text">
+	 	<md-tooltip>
+	 		Email selected text
+	 	</md-tooltip>   	
+	 	<md-icon md-theme='default-dark' md-svg-icon="images/icons/ic_mail_24px.svg"></md-icon>
+	</md-button>	 
+
+
+
+	<md-button 
 	 	ng-click='ctrl.openTwitter()'
-	 	class="md-icon-button"
 	 	aria-label="Tweet this">
    	<img src="images/icons/TwitterLogo_acee.png" width="24" height="24" 
    			style="vertical-align:middle"/>

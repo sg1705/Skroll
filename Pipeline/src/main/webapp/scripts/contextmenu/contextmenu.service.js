@@ -95,7 +95,7 @@
 
 				return $animate.enter(element, options.parent)
 	      	.then(function(response){
-		      		options.cleanupInteraction = activateInteraction(options);
+		      		//options.cleanupInteraction = activateInteraction(options);
 		      		return response;
 		      });
   	  }
@@ -143,7 +143,7 @@
 			function onRemove(scope, element, options) {
 	      element.off(SWIPE_EVENTS, options.onSwipe);
 	      options.parent.removeClass(options.openClass);
-	      options.cleanupInteraction();
+	      //options.cleanupInteraction();
 	      //options.hideBackdrop();
 	      return $animate.leave(element);
 	    }
