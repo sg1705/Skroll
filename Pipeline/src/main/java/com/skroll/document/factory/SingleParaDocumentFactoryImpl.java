@@ -18,8 +18,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- *
- * Created by saurabh on 4/16/15.
+ * SingleParaDocumentFactoryImpl is used to convert the entire document into a single para. It is used for DocType Classification.
+ * By converting the entire document into one paragraph, we can use the existing model code that works on paragraph level.
+ * Created by saurabhagarwal on 8/30/2015.
  */
 public class SingleParaDocumentFactoryImpl implements DocumentFactory {
 

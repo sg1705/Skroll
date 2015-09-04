@@ -21,14 +21,11 @@ import java.io.File;
 
 
 /**
+ * Commandline utility to train the model, annotate docType and classify Doc Type:
+ * Valid commands are annotateDocType, trainDocTypeModel, trainWithWeight and classifyDocType"
  * Created by saurabhagarwal on 1/19/15.
  */
 
-
-/* current arguments for testing:
---trainWithOverride src/main/resources/trainingDocuments/indentures
---classify src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html
-*/
 
 public class Trainer {
     //The following line needs to be added to enable log4j

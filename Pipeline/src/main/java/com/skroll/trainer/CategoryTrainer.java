@@ -27,14 +27,9 @@ import java.util.List;
 
 
 /**
+ * CategoryTrainer injects right classes for training and classifying using the paragraphs of document for command line utility
  * Created by saurabhagarwal on 1/19/15.
  */
-
-
-/* current arguments for testing:
---trainWithOverride src/main/resources/trainingDocuments/indentures
---classify src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html
-*/
 
 public class CategoryTrainer extends Trainer {
     //The following line needs to be added to enable log4j
@@ -48,11 +43,11 @@ public class CategoryTrainer extends Trainer {
             Injector injector = Guice.createInjector(new AbstractModule() {
                 @Override
                 protected void configure() {
+                    bind(Configuration.class).to(TrainerConfiguration.class);
                     bind(DocumentFactory.class)
                             .to(CorpusFSDocumentFactoryImpl.class);
                     bind(ModelFactory.class)
                             .to(CorpusFSModelFactoryImpl.class);
-                    bind(Configuration.class).to(TrainerConfiguration.class);
                     bind(ClassifierFactory.class);
                     bind(ClassifierFactoryStrategy.class).to(DefaultClassifierFactoryStrategy.class);
                 }

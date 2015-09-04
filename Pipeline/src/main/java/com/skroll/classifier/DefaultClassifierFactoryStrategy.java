@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static com.skroll.classifier.ClassifierId.*;
 
 /**
  * Classifier Factory Strategy is responsible for returning the classifier Ids to classify the document.
@@ -22,7 +21,7 @@ public class DefaultClassifierFactoryStrategy implements ClassifierFactoryStrate
      */
     public static final Logger logger = LoggerFactory.getLogger(DefaultClassifierFactoryStrategy.class);
 
-    public List<ClassifierId> getClassifierIds(Document document)   {
+    public List<Integer> getClassifierIds(Document document)   {
         // By Default the document type is 10K
         int docType = Category.DOCTYPE_NONE;
         try {
@@ -30,14 +29,14 @@ public class DefaultClassifierFactoryStrategy implements ClassifierFactoryStrate
         } catch (Exception e) {
             logger.warn("Document is not annotated with DocType Id, !!!! Assuming the docType is NONE in absence of DocType  !!!!");
         }
-        List<ClassifierId> universal_classifier_ids = newArrayList(UNIVERSAL_DEF_CLASSIFIER, UNIVERSAL_TOC_CLASSIFIER);
+        List<Integer> universal_classifier_ids = newArrayList(ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID, ClassifierFactory.UNIVERSAL_TOC_CLASSIFIER_ID);
         switch (docType) {
             case Category.TEN_K:
-                return newArrayList(TEN_K_DEF_CLASSIFIER, TEN_K_TOC_CLASSIFIER, UNIVERSAL_DEF_CLASSIFIER, UNIVERSAL_TOC_CLASSIFIER);
+                return newArrayList(ClassifierFactory.TEN_K_DEF_CLASSIFIER_ID, ClassifierFactory.TEN_K_TOC_CLASSIFIER_ID,ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID, ClassifierFactory.UNIVERSAL_TOC_CLASSIFIER_ID);
             case Category.TEN_Q:
-                return newArrayList(TEN_Q_DEF_CLASSIFIER, TEN_Q_TOC_CLASSIFIER,UNIVERSAL_DEF_CLASSIFIER, UNIVERSAL_TOC_CLASSIFIER);
+                return newArrayList(ClassifierFactory.TEN_Q_DEF_CLASSIFIER_ID, ClassifierFactory.TEN_Q_TOC_CLASSIFIER_ID,ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID, ClassifierFactory.UNIVERSAL_TOC_CLASSIFIER_ID);
             case Category.INDENTURE:
-                return newArrayList(INDENTURE_DEF_CLASSIFIER, INDENTURE_TOC_CLASSIFIER,UNIVERSAL_DEF_CLASSIFIER, UNIVERSAL_TOC_CLASSIFIER);
+                return newArrayList(ClassifierFactory.INDENTURE_DEF_CLASSIFIER_ID, ClassifierFactory.INDENTURE_TOC_CLASSIFIER_ID,ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID, ClassifierFactory.UNIVERSAL_TOC_CLASSIFIER_ID);
             default:
                 return universal_classifier_ids;
         }

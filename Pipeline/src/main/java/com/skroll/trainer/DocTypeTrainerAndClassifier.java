@@ -19,14 +19,9 @@ import org.slf4j.LoggerFactory;
 
 
 /**
+ * DocTypeTrainerAndClassifier injects right classes for training and classifying the docType for command line utility
  * Created by saurabhagarwal on 1/19/15.
  */
-
-
-/* current arguments for testing:
---trainWithOverride src/main/resources/trainingDocuments/indentures
---classify src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html
-*/
 
 public class DocTypeTrainerAndClassifier extends Trainer {
     //The following line needs to be added to enable log4j

@@ -9,7 +9,6 @@ import com.google.common.io.Files;
 import com.skroll.classifier.Category;
 import com.skroll.classifier.Classifier;
 import com.skroll.classifier.ClassifierFactory;
-import com.skroll.classifier.ClassifierId;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.Token;
@@ -35,13 +34,6 @@ import java.util.List;
  * Created by saurabhagarwal on 1/19/15.
  */
 
-/* arguments to use for testing
---trainWithOverride src/main/resources/trainingDocuments/TOC
---classify src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html
---working path C:\Users\wei2learn\IdeaProjects\Skroll3\Pipeline
-
- */
-
 public class TOCTrainer {
     //The following line needs to be added to enable log4j
     public static final Logger logger = LoggerFactory
@@ -51,8 +43,8 @@ public class TOCTrainer {
     private static Classifier tocClassifier = null;
     static {
         try {
-            documentClassifier = classifierFactory.getClassifier(ClassifierId.TEN_K_DEF_CLASSIFIER);
-            tocClassifier = classifierFactory.getClassifier(ClassifierId.TEN_K_TOC_CLASSIFIER);
+            documentClassifier = classifierFactory.getClassifier(ClassifierFactory.UNIVERSAL_TOC_CLASSIFIER_ID);
+            tocClassifier = classifierFactory.getClassifier(ClassifierFactory.UNIVERSAL_TOC_CLASSIFIER_ID);
         } catch (Exception e) {
             e.printStackTrace();
         }

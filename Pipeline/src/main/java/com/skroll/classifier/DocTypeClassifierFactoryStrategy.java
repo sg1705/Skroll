@@ -5,8 +5,6 @@ import com.skroll.document.Document;
 
 import java.util.List;
 
-import static com.skroll.classifier.ClassifierId.DOCTYPE_CLASSIFIER;
-
 /**
  * Classifier Factory Strategy is responsible for returning the classifier Ids to classify the document.
  *  We can implement this interface to create the strategy for different document types.
@@ -18,8 +16,8 @@ public class DocTypeClassifierFactoryStrategy implements ClassifierFactoryStrate
      * getCLassifierIds return list of doctype classifier ids.
      * @return
      */
-    public List<ClassifierId> getClassifierIds(Document document)   {
-        return Lists.newArrayList(DOCTYPE_CLASSIFIER);
+    public List<Integer> getClassifierIds(Document document)   {
+        return Lists.newArrayList(ClassifierFactory.DOCTYPE_CLASSIFIER_ID);
     }
 
 }

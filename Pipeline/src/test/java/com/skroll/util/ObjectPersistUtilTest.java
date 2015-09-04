@@ -6,7 +6,7 @@ import com.skroll.analyzer.model.applicationModel.DefModelRVSetting;
 import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
 import com.skroll.analyzer.model.applicationModel.TrainingDocumentAnnotatingModel;
 import com.skroll.classifier.Category;
-import com.skroll.classifier.ClassifierId;
+import com.skroll.classifier.ClassifierFactory;
 import com.skroll.classifier.factory.ModelFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,12 +39,12 @@ public class ObjectPersistUtilTest {
     public void testPersistReadObject() throws Exception {
 
         ModelRVSetting modelRVSetting = new DefModelRVSetting(TEST_DEF_CATEGORY_IDS);
-        TrainingDocumentAnnotatingModel model = modelFactory.createModel(ClassifierId.TEN_K_DEF_CLASSIFIER,modelRVSetting);
+        TrainingDocumentAnnotatingModel model = modelFactory.createModel(ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID,modelRVSetting);
 
         ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil("/tmp");
 
         try {
-            objectPersistUtil.persistObject(null, new TrainingDocumentAnnotatingModel(ClassifierId.TEN_K_DEF_CLASSIFIER.getId(),modelRVSetting), "TrainingDocumentAnnotatingModel");
+            objectPersistUtil.persistObject(null, new TrainingDocumentAnnotatingModel(ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID,modelRVSetting), "TrainingDocumentAnnotatingModel");
         } catch (ObjectPersistUtil.ObjectPersistException e) {
             e.printStackTrace();
             fail("failed persist Object");

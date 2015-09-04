@@ -9,8 +9,10 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 
 /**
+ * DocTypeAnnotationHelper provides the functionality related to categoryAnnotation at the document level.
+ * These doc level category annotation are used to store the doc type, user observation and weight for those doc type annotation.
  * Created by saurabhagarwal on 5/12/15.
- *  CategoryAnnotationHelper provides the functionality related to categoryAnnotation
+ *
  */
 public class DocTypeAnnotationHelper {
     public static final Logger logger = LoggerFactory
@@ -33,9 +35,9 @@ public class DocTypeAnnotationHelper {
 
 
     /**
-     * For a document, from the document level annotation, get the docType.
+     * For a document, from the document level annotation, get the weight of docType.
      * @param document
-     * @return List of List of Token String
+     * @return weight
      */
     public static float getDocTypeTrainingWeight(CoreMap document) {
         HashMap<Integer, CoreMap> categoryAnnotation = document.get(CoreAnnotations.CategoryAnnotations.class);
@@ -94,84 +96,4 @@ public class DocTypeAnnotationHelper {
         categoryAnnotation.put(docType,annotationCoreMap);
         doc.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
     }
-
-    /**
-     * clear category annotation of a given document
-     * @param document
-     */
-    public static void clearCategoryAnnotations(Document document){
-        document.set(CoreAnnotations.CategoryAnnotations.class, null);
-    }
-
-    /**
-     * Removes observations in the paragraph
-     * @param document
-     */
-    public static void clearObservations(Document document) {
-        DocTypeAnnotationHelper.clearCategoryAnnotations(document);
-        document.remove(CoreAnnotations.IsUserObservationAnnotation.class);
-        document.remove(CoreAnnotations.TrainingWeightAnnotationFloat.class);
-    }
-
-
-
-    public static void clearCategoryAnnotation(CoreMap paragraph, int categoryId){
-        HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
-        if (categoryAnnotation==null) return;
-        CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
-        if (annotationCoreMap==null) return;
-        categoryAnnotation.remove(categoryId);
-        paragraph.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
-    }
-
-
-    /**
-     * For a given paragraph, for each categories, copy the current category weight into the prior category weight.
-     * @param paragraph
-     */
-    public static void copyCurrentCategoryWeightsToPrior(CoreMap paragraph){
-        HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
-        if (categoryAnnotation==null) return;
-        for (int categoryId : Category.getCategories()) {
-            CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
-            if(annotationCoreMap!=null){
-                float currentWeight = annotationCoreMap.get(CoreAnnotations.CurrentCategoryWeightFloat.class);
-                annotationCoreMap.set(CoreAnnotations.PriorCategoryWeightFloat.class, currentWeight);
-                logger.debug("{} \t {} \t {}", paragraph.getId(), categoryId, currentWeight);
-            }
-        }
-    }
-
-
-    /**
-     * Clear Prior training weight of all categories for a paragraph
-     * @param paragraph
-     */
-    public static void clearPriorCategoryWeight(CoreMap paragraph){
-        HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
-        if (categoryAnnotation==null) return;
-        for (int categoryId : Category.getCategories()) {
-            CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
-            if(annotationCoreMap!=null){
-                annotationCoreMap.set(CoreAnnotations.PriorCategoryWeightFloat.class, (float)0);
-                logger.debug("Cleared \t {} \t {}", paragraph.getId(), categoryId);
-            }
-        }
-
-    }
-
-    /**
-     * Get the categoryAnnotation core map.
-     * @param paragraph
-     * @param categoryId
-     * @return
-     */
-    public static CoreMap getCategoryAnnotation(CoreMap paragraph, int categoryId) {
-        HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
-        if (categoryAnnotation==null) return null;
-        CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
-        if(annotationCoreMap==null) return null;
-        return annotationCoreMap;
-    }
-
 }

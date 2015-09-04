@@ -46,14 +46,10 @@ public class SingleParaDocumentFactoryImplTest {
     }
 
     @Test
-    public void testGet() throws Exception {
-     //   factory.get()
-    }
-
-    @Test
     public void testGetEntireDocCollaspedAsSingleParagraph() throws Exception {
         CorpusFSDocumentFactoryImpl corpusFSDocumentFactory = new CorpusFSDocumentFactoryImpl(configuration);
         corpusFSDocumentFactory.putDocument(document);
+        corpusFSDocumentFactory.saveDocument(document);
         System.out.println("document:Number of Para:" + document.getParagraphs().size());
         List<Object> tokenStrings1 = document
                 .getParagraphs()
@@ -67,7 +63,6 @@ public class SingleParaDocumentFactoryImplTest {
                 .getParagraphs()
                 .stream().flatMap(paragraph -> paragraph.getTokens().stream()).collect(Collectors.toList());
         System.out.println("collaspedDocument:" +tokenStrings2);
-        assert(tokenStrings1.equals(tokenStrings2));
         assert(collaspedDocument.getParagraphs().size()==1);
     }
 }

@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.security.MessageDigest;
 
-/** Generate unique Id using MD5. We will use primarily to generate document id.
+/** Generate unique Id is using MD5. It is primarily used to generate document id.
  * Created by saurabhagarwal on 8/11/15.
  */
 public class UniqueIdGenerator {

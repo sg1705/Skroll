@@ -10,8 +10,8 @@ import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Use this annotation to get a CorpusFS based factory
- * Created by saurabh on 6/14/15.
+ * Use this annotation to get a SingleParaFSDocumentFactory
+ * Created by saurabhagarwal on 8/30/2015.
  */
 @Qualifier
 @BindingAnnotation

@@ -18,8 +18,8 @@ import javax.ws.rs.core.MultivaluedMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by saurabh on 4/17/15.
+/** DocTypeRequestBean encapsulate all the information a DocType API functions need to act upon...
+ * Created by saurabhagarwal on 8/30/2015.
  */
 public class DocTypeRequestBean {
     public static final Logger logger = LoggerFactory

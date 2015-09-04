@@ -1,7 +1,6 @@
 package com.skroll.rest.benchmark;
 
 import com.google.gson.GsonBuilder;
-import com.skroll.benchmark.ClassifierBenchmark;
 import com.skroll.benchmark.QC;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
@@ -69,11 +68,11 @@ public class BenchmarkAPI {
     @Path("/getBenchmarkScore")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getBenchmarkScore(@BeanParam BenchmarkRequestBean request) {
-        ClassifierBenchmark classifierBenchmark = new ClassifierBenchmark(request.getBenchmarkDocumentFactory());
+
         logger.info("Document Id: {}" ,request.getDocumentId());
         QC qc;
         try {
-            qc = classifierBenchmark.runQCOnBenchmarkFolder();
+            qc = request.getBenchmark().runQCOnBenchmarkFolder();
         } catch (Exception e) {
             e.printStackTrace();
             return logErrorResponse("getBenchmarkScore failed: +" + e);

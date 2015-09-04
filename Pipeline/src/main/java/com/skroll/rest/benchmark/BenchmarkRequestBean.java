@@ -1,6 +1,6 @@
 package com.skroll.rest.benchmark;
 
-import com.skroll.classifier.Classifier;
+import com.skroll.benchmark.Benchmark;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.classifier.ClassifierFactoryStrategy;
 import com.skroll.document.Document;
@@ -14,7 +14,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,10 +23,9 @@ public class BenchmarkRequestBean {
 
     private String documentId;
     private Document document;
-    private List<Classifier> classifiers;
     private DocumentFactory benchmarkDocumentFactory;
     private DocumentFactory corpusDocumentFactory;
-
+    private Benchmark benchmark;
     public String getDocumentId() {
         return documentId;
     }
@@ -53,14 +51,12 @@ public class BenchmarkRequestBean {
             this.documentId = documentId;
             this.document = corpusDocumentFactory.get(documentId);
         }
-        this.classifiers = classifierFactory.getClassifiers(classifierFactoryStrategy,document);
         this.benchmarkDocumentFactory = benchmarkDocumentFactory;
         this.corpusDocumentFactory = corpusDocumentFactory;
+        this.benchmark = new Benchmark(benchmarkDocumentFactory,classifierFactory,classifierFactoryStrategy);
     }
 
-    public List<Classifier> getClassifiers() {
-        return classifiers;
-    }
     public DocumentFactory getBenchmarkDocumentFactory() { return benchmarkDocumentFactory;}
     public DocumentFactory getCorpusDocumentFactory() { return corpusDocumentFactory;}
+    public Benchmark getBenchmark() {return benchmark;}
 }

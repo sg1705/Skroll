@@ -8,7 +8,7 @@ import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
 import com.skroll.analyzer.model.applicationModel.ProbabilityDocumentAnnotatingModel;
 import com.skroll.analyzer.model.applicationModel.TrainingDocumentAnnotatingModel;
 import com.skroll.classifier.Category;
-import com.skroll.classifier.ClassifierId;
+import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.Document;
 import com.skroll.parser.Parser;
 import com.skroll.pipeline.util.Constants;
@@ -33,7 +33,7 @@ public class CorpusFSModelFactoryImplTest {
     protected Configuration configuration;
     ModelRVSetting setting;
 
-    ClassifierId classifierId = ClassifierId.UNIVERSAL_DEF_CLASSIFIER;
+    int classifierId = ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID;
     String bniId = classifierId + "." + "bni";
     @Before
     public void setUp() throws Exception {

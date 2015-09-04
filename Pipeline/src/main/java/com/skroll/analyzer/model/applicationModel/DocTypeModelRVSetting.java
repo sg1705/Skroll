@@ -11,8 +11,9 @@ import com.skroll.document.annotation.*;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by wei on 5/11/15.
+/** DocType Model RV Setting defines the Model RVSetting for Doc Type Classifier. It select the doc level and para level features
+ *  that are required to be trained the model and classified the doc
+ *  Created by saurabhagarwal on 5/11/15.
  */
 public class DocTypeModelRVSetting extends ModelRVSetting {
 

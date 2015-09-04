@@ -11,8 +11,6 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static com.skroll.classifier.ClassifierId.TEN_Q_DEF_CLASSIFIER;
-
 public class ClassifierFactoryTest {
 
     ClassifierFactory classifierFactory = null;
@@ -38,11 +36,11 @@ public class ClassifierFactoryTest {
     public void testGetClassifiers() throws Exception {
         List<Classifier> classifiers = classifierFactory.getClassifiers(classifierFactoryStrategy, doc);
         System.out.println("ClassifierFactory.getClassifiers(): " + classifiers);
-        assert(classifiers.contains(classifierFactory.getClassifier(TEN_Q_DEF_CLASSIFIER)));
+        assert(classifiers.contains(classifierFactory.getClassifier(ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID)));
     }
 
     @Test
     public void testGetClassifier() throws Exception {
-        assert(classifierFactory.getClassifier(ClassifierId.TEN_K_DEF_CLASSIFIER).getId() == ClassifierId.TEN_K_DEF_CLASSIFIER);
+        assert(classifierFactory.getClassifier(ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID).getId() == ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID);
     }
 }

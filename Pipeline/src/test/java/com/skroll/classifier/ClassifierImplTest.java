@@ -20,8 +20,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
-import static com.skroll.classifier.ClassifierId.TEN_K_DEF_CLASSIFIER;
-import static com.skroll.classifier.ClassifierId.TEN_K_TOC_CLASSIFIER;
 import static org.junit.Assert.fail;
 
 public class ClassifierImplTest {
@@ -40,8 +38,8 @@ public class ClassifierImplTest {
           Injector injector = Guice.createInjector(new SkrollTestGuiceModule());
           config = injector.getInstance(Configuration.class);
           ClassifierFactory classifierFactory = injector.getInstance(ClassifierFactory.class);
-          documentClassifier = classifierFactory.getClassifier(TEN_K_DEF_CLASSIFIER);
-          tocClassifier = classifierFactory.getClassifier(TEN_K_TOC_CLASSIFIER);
+          documentClassifier = classifierFactory.getClassifier(ClassifierFactory.UNIVERSAL_TOC_CLASSIFIER_ID);
+          tocClassifier = classifierFactory.getClassifier(ClassifierFactory.UNIVERSAL_TOC_CLASSIFIER_ID);
      } catch (Exception e) {
         e.printStackTrace();
         }

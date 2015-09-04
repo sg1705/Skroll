@@ -15,6 +15,6 @@ public interface ClassifierFactoryStrategy {
      * Default implementation of getCLassifierIds return list of classifier ids.
      * @return
      */
-    public  List<ClassifierId> getClassifierIds(Document document);
+    public  List<Integer> getClassifierIds(Document document);
 
 }
