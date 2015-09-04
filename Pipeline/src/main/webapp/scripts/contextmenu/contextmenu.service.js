@@ -17,7 +17,7 @@
 		.service('contextMenuService', ContextMenuService)
 
 	/* @ngInject */
-	function ContextMenuService(textSelectionObserverService, $mdToast, $mdUtil, $mdMedia, $animate, featureFlags) {
+	function ContextMenuService(textSelectionObserverService, $document, $mdToast, $mdUtil, $mdMedia, $animate, featureFlags) {
 
 		//-- private variables
 		var service = this;
@@ -71,7 +71,7 @@
 	      /**  start below is the only part added to standard onShow method **/
 	      var positionStyle = calculatePosition(oRect, options);
 				$(element).css(positionStyle);
-				options.hideBackdrop = showBackdrop(scope, element, options);
+				//options.hideBackdrop = showBackdrop(scope, element, options);
 				/** end below is the only part added to standard onShow method **/
 
 	      options.openClass = toastOpenClass(options.position);
@@ -81,6 +81,17 @@
 	      element.addClass(options.position.split(' ').map(function(pos) {
 	        return 'md-' + pos;
 	      }).join(' '));
+
+	      $document.one('click.toast', clickHandler);
+
+	      function clickHandler(e) {
+					console.log('no click event being captured');
+					scope.$apply(function(){
+						onRemove(scope, element, options);
+					});
+					return false;
+					
+	      }
 
 				return $animate.enter(element, options.parent)
 	      	.then(function(response){
@@ -133,7 +144,7 @@
 	      element.off(SWIPE_EVENTS, options.onSwipe);
 	      options.parent.removeClass(options.openClass);
 	      options.cleanupInteraction();
-	      options.hideBackdrop();
+	      //options.hideBackdrop();
 	      return $animate.leave(element);
 	    }
 
