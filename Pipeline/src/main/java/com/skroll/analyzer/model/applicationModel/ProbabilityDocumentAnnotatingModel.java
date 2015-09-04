@@ -23,8 +23,8 @@ import java.util.*;
  */
 public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
-    static final int NUM_ITERATIONS = 5;
-
+    static final int NUM_ITERATIONS = 2;
+    double[] ANNOTATING_THRESHOLD = new double[]{0, .99999, 0.9999};
     Document doc;
     // todo: should probably store paragraphs, otherwise, need to recreate it everytime when model has new observations
     List<CoreMap> processedParagraphs = new ArrayList<>();
@@ -349,8 +349,11 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
             //todo: a hack for TOC and DocType annotation. should implement HMM for TOC and annotate base on HMM result
             if (this.modelRVSetting instanceof TOCModelRVSetting || this.modelRVSetting instanceof DocTypeModelRVSetting ) {
                 int maxIndex = BNInference.maxIndex(logPrioProbs);
-                RVValues.addTerms(paraCategory, paragraph, tokens, maxIndex);
-                continue;
+                double[] paraProbs = logPrioProbs.clone();
+                BNInference.convertLogBeliefToProb(paraProbs);
+                if (paraProbs[maxIndex] > ANNOTATING_THRESHOLD[maxIndex])
+                    RVValues.addTerms(paraCategory, paragraph, tokens, maxIndex);
+                if (true) continue;
             }
 
             List<String> words = DocumentHelper.getTokenString(tokens);
@@ -475,6 +478,8 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
     }
 
     public List<Double> toParaCategoryDump() {
+        List<AbstractMap.SimpleImmutableEntry<Integer, Double>> probs = new LinkedList<>();
+
         //covert paraCategoryBelief
         List<Double> listOfP = new ArrayList();
         for (int ii = 0; ii < this.getParagraphCategoryProbabilities().length; ii++) {
@@ -482,6 +487,20 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
         }
         return listOfP;
     }
+
+    public Map<String, Double> getParaProbMap() {
+        Map<String, Double> paraProbMap = new HashMap<>();
+        double[][] probs = this.getParagraphCategoryProbabilities();
+        List<CoreMap> originalParagraphs = doc.getParagraphs();
+
+        for (int ii = 0; ii < probs.length; ii++) {
+            int maxIndex = BNInference.maxIndex(probs[ii]);
+            paraProbMap.put(originalParagraphs.get(ii).getId(), probs[ii][maxIndex]);
+        }
+
+        return paraProbMap;
+    }
+
 }
 
 

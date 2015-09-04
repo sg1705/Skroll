@@ -152,25 +152,44 @@ public class NodeTrainingHelper {
         Map<String, double[]> counts = trainingNode.getParameters();
         DiscreteNode parent = trainingNode.getParent();
         int numValues = parent.getVariable().getFeatureSize();
-        //Experiment next line uncommented
-        double [] priorCounts = BNInference.normalize(parent.getParameters(), PRIOR_COUNT);
 
-        for (String w: counts.keySet()){
-            double[] p = new double[ parent.getVariable().getFeatureSize()  ];
-            //double sum=0;
-            //for (int j=0; j<numValues; j++) sum += parameters.get(w)[j];
-
-
-            //hack for testing purpose
-//            if (counts.get(w)[0]+ counts.get(w)[1] <1) continue;
-//          Next 2 lines commented for experiment
-//           for (int j=0; j<numValues; j++) p[j] = Math.log((0.01 +
-//                    counts.get(w)[j])/ parent.getParameter(j));
-//          Next 2 lines experiment code
-           for (int j=0; j<numValues; j++) p[j] = Math.log((priorCounts[j] +
-                    counts.get(w)[j])/ parent.getParameter(j));
-            probs.put(w,p);
+        double[] sum = new double[numValues];
+        Arrays.fill(sum, PRIOR_COUNT);
+        for (double[] countsForWord : counts.values()) {
+            for (int i = 0; i < numValues; i++) {
+                sum[i] += countsForWord[i];
+            }
         }
+
+        double[] logSums = Arrays.stream(sum).map(v -> Math.log(v)).toArray();
+
+        for (String w : counts.keySet()) {
+            double[] p = counts.get(w).clone();
+            double[] logP = new double[numValues];
+            for (int i = 0; i < numValues; i++) {
+                logP[i] = Math.log(p[i]) - logSums[i];
+            }
+            probs.put(w, logP);
+        }
+
+//        //Experiment next line uncommented
+//        double [] priorCounts = BNInference.normalize(parent.getParameters(), PRIOR_COUNT);
+//        for (String w: counts.keySet()){
+//            double[] p = new double[ parent.getVariable().getFeatureSize()  ];
+//            //double sum=0;
+//            //for (int j=0; j<numValues; j++) sum += parameters.get(w)[j];
+//
+//
+//            //hack for testing purpose
+////            if (counts.get(w)[0]+ counts.get(w)[1] <1) continue;
+////          Next 2 lines commented for experiment
+////           for (int j=0; j<numValues; j++) p[j] = Math.log((0.01 +
+////                    counts.get(w)[j])/ parent.getParameter(j));
+////          Next 2 lines experiment code
+//           for (int j=0; j<numValues; j++) p[j] = Math.log((priorCounts[j] +
+//                    counts.get(w)[j])/ parent.getParameter(j));
+//            probs.put(w,p);
+//        }
         return probs;
     }
 }

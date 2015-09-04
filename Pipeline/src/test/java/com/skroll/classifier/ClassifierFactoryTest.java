@@ -42,5 +42,6 @@ public class ClassifierFactoryTest {
     @Test
     public void testGetClassifier() throws Exception {
         assert(classifierFactory.getClassifier(ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID).getId() == ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID);
+
     }
 }

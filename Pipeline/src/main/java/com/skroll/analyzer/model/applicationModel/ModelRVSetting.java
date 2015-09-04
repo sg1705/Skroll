@@ -28,7 +28,7 @@ import java.util.function.BiFunction;
 
 public class ModelRVSetting {
 
-    public static final int NUM_WORDS_TO_USE_PER_PARAGRAPH = 20;
+    public static final int NUM_WORDS_TO_USE_PER_PARAGRAPH = Integer.MAX_VALUE;
     @JsonProperty("nbmnConfig")
     NBMNConfig nbmnConfig;
     @JsonProperty("wordType")

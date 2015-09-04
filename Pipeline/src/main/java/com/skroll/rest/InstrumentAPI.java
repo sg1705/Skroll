@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Path("/instrument")
 public class InstrumentAPI {
@@ -214,9 +215,11 @@ public class InstrumentAPI {
         }
         // get probabilities
         try {
-            List<List<Double>> allPs = new ArrayList();
+            Map<String, Double> allPs = new HashMap();
             for (Classifier classifier : request.getClassifiers()) {
-                allPs.add(classifier.getProbabilityDataForDoc(documentId));
+                if (classifier.getId() == 1) {
+                    allPs = classifier.getProbabilityDataForDoc(documentId);
+                }
             }
             Gson gson = new GsonBuilder().create();
             String json = gson.toJson(allPs);

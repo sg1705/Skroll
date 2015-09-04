@@ -84,7 +84,8 @@ public class NBTrainingHelper {
         }
 
         for (WordNode node : bn.getWordNodes()) {
-            NodeTrainingHelper.updateCount(node, weight);
+            // update the count normalized by the length
+            NodeTrainingHelper.updateCount(node, weight/node.getObservation().length);
         }
         bn.clearObservation(); // probably unnecessary
     }

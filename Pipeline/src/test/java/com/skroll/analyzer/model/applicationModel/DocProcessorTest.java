@@ -61,11 +61,8 @@ public class DocProcessorTest {
     @Test
     public void testProcessParagraphs() throws Exception {
         List<CoreMap> processedParas = DocProcessor.processParas(doc, maxNumWords);
-        for (CoreMap para : processedParas) {
-            assert (para.get(CoreAnnotations.StartsWithQuote.class));
-            System.out.println(para.getTokens().get(1).get(CoreAnnotations.IndexInteger.class));
-            assert (para.getTokens().get(1).get(CoreAnnotations.IndexInteger.class) == 1);
-        }
+        assert (processedParas.get(0).get(CoreAnnotations.StartsWithQuote.class));
+        assert (processedParas.get(0).getTokens().get(1).get(CoreAnnotations.IndexInteger.class) == 1);
     }
 
     @Test
@@ -73,10 +70,10 @@ public class DocProcessorTest {
         List<CoreMap> processedParas = DocProcessor.processParas(doc, maxNumWords);
         NBMNData data = DocProcessor.getParaDataFromDoc(doc, processedParas, setting.getNbmnConfig());
         System.out.print(data);
-        assert (Arrays.deepToString(data.getParaFeatures()).equals("[[3], [3]]"));
-        assert (Arrays.deepToString(data.getParaDocFeatures()).equals("[[1], [1]]"));
+        assert (Arrays.deepToString(data.getParaFeatures()).equals("[[3], [20], [3]]"));
+        assert (Arrays.deepToString(data.getParaDocFeatures()).equals("[[1], [1], [0]]"));
         assert (Arrays.toString(data.getWordsLists()[0].get(0)).equals("[in, out, out]"));
-        assert (Arrays.toString(data.getWordsLists()[1].get(0)).equals("[in, out, out]"));
+        assert (Arrays.toString(data.getWordsLists()[1].get(0)).equals("[in, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out]"));
     }
 
     @Test
@@ -99,16 +96,6 @@ public class DocProcessorTest {
 
         assert (ParaProcessor.getFeatureValue(setting.getNbmnConfig().getAllParagraphFeatures().get(1),
                 Arrays.asList(doc.getParagraphs().get(0), processedParas.get(0))) == 1);
-    }
-
-    @Test
-    public void testGenerateDocumentFeatures() throws Exception {
-        List<CoreMap> processedParas = DocProcessor.processParas(doc, maxNumWords);
-        NBMNData data = DocProcessor.getParaDataFromDoc(doc, processedParas, setting.getNbmnConfig());
-        int[][] docFeatureVals = DocProcessor.generateDocumentFeatures(
-                doc.getParagraphs(), data.getParaDocFeatures(), setting.getNbmnConfig());
-        System.out.println(Arrays.deepToString(docFeatureVals));
-        assert (docFeatureVals.length == 1);
     }
 
 

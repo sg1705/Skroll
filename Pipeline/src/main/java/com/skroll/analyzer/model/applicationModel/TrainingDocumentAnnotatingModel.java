@@ -192,17 +192,20 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
                 .forEach( f -> f.apply(doc.getParagraphs(), processedParas));
 
         NBMNData data = DocProcessor.getParaDataFromDoc(doc, processedParas, nbmnConfig);
-        List<CoreMap> parasWithCategoryAnnotation = new ArrayList<>();
-        for (int categoryId : modelRVSetting.getCategoryIds())
-            parasWithCategoryAnnotation.addAll(CategoryAnnotationHelper.getParagraphsAnnotatedWithCategory(doc, categoryId));
-        updateWithDocument(parasWithCategoryAnnotation, processedParas, data);
+//        List<CoreMap> parasWithCategoryAnnotation = new ArrayList<>();
+//        for (int categoryId : modelRVSetting.getCategoryIds()) // todo: inefficiency here. also better to keep paras in the same order.
+//            parasWithCategoryAnnotation.addAll(CategoryAnnotationHelper.getParagraphsAnnotatedWithCategory(doc, categoryId));
+//        updateWithDocument(parasWithCategoryAnnotation, processedParas, data);
+        updateWithDocument(doc.getParagraphs(), processedParas, data);
     }
 
     public void updateWithDocument(List<CoreMap> originalParas, List<CoreMap> processedParas, NBMNData data) {
         int[][] docFeatures = DocProcessor.generateDocumentFeatures(originalParas, data.getParaDocFeatures(), nbmnConfig);
         for (int p = 0; p < originalParas.size(); p++) {
             CoreMap oPara = originalParas.get(p);
-            CoreMap pPara = processedParas.get(p);
+
+            int i = oPara.get(CoreAnnotations.IndexInteger.class);
+            CoreMap pPara = processedParas.get(i);
             List<CoreMap> opParas = Arrays.asList(oPara, pPara);
             int categoryValue = RVValues.getValue(getParaCategory(), oPara);
             int[] paraFeatures = ParaProcessor.getFeatureVals(nbmnConfig.getFeatureVarList(), opParas);

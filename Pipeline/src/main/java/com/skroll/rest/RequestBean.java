@@ -52,7 +52,7 @@ public class RequestBean {
                  documentId = pathParams.get("documentId").getValue();
         }
 
-        logger.info("Document Id: {}",documentId);
+        logger.info("Document Id: {}", documentId);
 
         if (documentId != null) {
             //fetch it from factory

@@ -34,4 +34,34 @@ public class ParserTest {
         assert (doc.getParagraphs().get(0).get(CoreAnnotations.IsUserObservationAnnotation.class));
         assert (doc.equals(htmlDoc));
     }
+
+    @Test
+    public void testParseDocumentFromUrl() throws Exception {
+        String url = "http://www.sec.gov/Archives/edgar/data/1418091/000095012314003031/twtr-10k_20131231.htm";
+        String fileName = "aa";
+        Document htmlDoc = Parser.parseDocumentFromUrl(url);
+        htmlDoc.setId(fileName);
+        htmlDoc.getParagraphs().get(0).set(CoreAnnotations.IsUserObservationAnnotation.class, true);
+        CategoryAnnotationHelper.annotateCategoryWeight(htmlDoc.getParagraphs().get(1), Category.DEFINITION, 1.0f);
+        //remove version
+        htmlDoc.set(CoreAnnotations.ParserVersionAnnotationInteger.class, 0);
+        Document doc = Parser.reParse(htmlDoc);
+        doc.setId(fileName);
+        System.out.println("New Version:" + doc.get(CoreAnnotations.ParserVersionAnnotationInteger.class));
+        assert (doc.get(CoreAnnotations.ParserVersionAnnotationInteger.class) == Parser.VERSION);
+        assert (doc.getParagraphs().get(0).get(CoreAnnotations.IsUserObservationAnnotation.class));
+        assert (doc.getParagraphs().size() != 0);
+        assert (doc.get(CoreAnnotations.SourceUrlAnnotation.class).equals(url));
+        assert (doc.equals(htmlDoc));
+    }
+
+    @Test
+    public void testParsePartialDocumentFromUrl() throws Exception {
+        String url = "http://www.sec.gov/Archives/edgar/data/1418091/000095012314003031/twtr-10k_20131231.htm";
+        String fileName = "aa";
+        Document htmlDoc = Parser.parsePartialDocumentFromUrl(url);
+        htmlDoc.setId(fileName);
+        assert (htmlDoc.get(CoreAnnotations.SourceUrlAnnotation.class).equals(url));
+        assert (htmlDoc.getParagraphs().size() == 0);
+    }
 }

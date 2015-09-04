@@ -121,6 +121,7 @@ public class ClassifierLogicTest {
 
         // classify
         for (Classifier classifier :classifierFactory.getClassifiers(classifierFactoryStrategy,doc) ){
+
             classifier.classify(doc.getId(), doc);
         }
         assert (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph, Category.TOC_1));

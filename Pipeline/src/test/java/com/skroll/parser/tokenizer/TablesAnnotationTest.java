@@ -5,6 +5,7 @@ import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.PhantomJsExtractor;
+import com.skroll.parser.extractor.TestMode;
 import com.skroll.pipeline.util.Utils;
 import org.junit.Test;
 
@@ -17,7 +18,7 @@ public class TablesAnnotationTest {
 
     @Test
     public void testSimpleTablesAnnotation() throws Exception {
-        PhantomJsExtractor.TEST_FLAGS = true;
+        PhantomJsExtractor.TEST_MODE = TestMode.ON;
         String htmlString = "<table><tr><td>Only 1 column</td></tr></table";
         Document htmlDoc= new Document();
         htmlDoc.setSource(htmlString);
@@ -40,7 +41,7 @@ public class TablesAnnotationTest {
 
     @Test
     public void testTablesAnnotationWithMultipleFragments() throws Exception {
-        PhantomJsExtractor.TEST_FLAGS = true;
+        PhantomJsExtractor.TEST_MODE = TestMode.ON;
         String htmlString = "<table><tr><td><b>Only 1</b> column</td></tr></table";
         Document htmlDoc= new Document();
         htmlDoc.setSource(htmlString);
@@ -63,7 +64,7 @@ public class TablesAnnotationTest {
 
     @Test
     public void testTablesAnnotationWithFile() throws Exception {
-        PhantomJsExtractor.TEST_FLAGS = true;
+        PhantomJsExtractor.TEST_MODE = TestMode.ON;
         // read a sample file
         String fileName = "src/test/resources/document/test-table.html";
         String htmlString = Utils.readStringFromFile(fileName);

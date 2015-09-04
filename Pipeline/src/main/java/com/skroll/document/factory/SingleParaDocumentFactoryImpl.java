@@ -9,6 +9,7 @@ import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.document.annotation.CoreAnnotations.TokenAnnotation;
 import com.skroll.document.annotation.DocTypeAnnotationHelper;
 import com.skroll.util.Configuration;
+import org.eclipse.jetty.util.ConcurrentHashSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
  * By converting the entire document into one paragraph, we can use the existing model code that works on paragraph level.
  * Created by saurabhagarwal on 8/30/2015.
  */
-public class SingleParaDocumentFactoryImpl implements DocumentFactory {
+public class SingleParaDocumentFactoryImpl extends FileSystemDocumentFactoryImpl {
 
     public static final Logger logger = LoggerFactory.getLogger(SingleParaDocumentFactoryImpl.class);
     protected Configuration configuration;
@@ -59,6 +60,16 @@ public class SingleParaDocumentFactoryImpl implements DocumentFactory {
 
     @Override
     public List<String> getDocumentIds() throws Exception {
+        return null;
+    }
+
+    @Override
+    protected CacheService<Document> getDocumentCache() {
+        return null;
+    }
+
+    @Override
+    protected ConcurrentHashSet<String> getSaveLaterDocumentId() {
         return null;
     }
 
