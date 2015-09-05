@@ -18,7 +18,6 @@ import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.ParserException;
 import com.skroll.pipeline.util.Constants;
 import com.skroll.util.Configuration;
-import com.skroll.util.UniqueIdGenerator;
 import org.glassfish.jersey.media.multipart.BodyPart;
 import org.glassfish.jersey.media.multipart.BodyPartEntity;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
@@ -104,7 +103,7 @@ public class DocAPI {
             try {
                 content = CharStreams.toString(reader);
                 //TODO: Add back the UniqueIdGenerator code after viewer integration
-                documentId = UniqueIdGenerator.generateId(content);
+                documentId = fileName; //UniqueIdGenerator.generateId(content);
                 List<Classifier> classifiers = request.getClassifiers();
                 document = fetchOrSaveDocument(documentId, content, request.getDocumentFactory(), classifiers);
                 reader.close();
@@ -194,7 +193,6 @@ public class DocAPI {
         for (File f : iterable) {
             if (f.isFile()) {
                 docLists.add(f.getName());
-
             }
         }
         String docsJson = new GsonBuilder().create().toJson(docLists);
