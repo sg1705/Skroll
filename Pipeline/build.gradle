@@ -62,25 +62,25 @@ task trainBenchmarkModelWithWeight(type: JavaExec) {
 }
 
 
-task annotateDocType(dependsOn: 'classes', type: JavaExec) {
+task annotateDocType(type: JavaExec) {
     main = 'com.skroll.trainer.Trainer'
     File workingDir = new File('Pipeline/')
     classpath = sourceSets.main.runtimeClasspath
     args '-c annotateDocType'
 }
-task trainDocTypeModel(dependsOn: 'classes', type: JavaExec) {
+task trainDocTypeModel(type: JavaExec) {
     main = 'com.skroll.trainer.Trainer'
     File workingDir = new File('Pipeline/')
     classpath = sourceSets.main.runtimeClasspath
     args '-c trainDocTypeModel'
 }
-task trainWithWeight(dependsOn: 'classes', type: JavaExec) {
+task trainWithWeight(type: JavaExec) {
     main = 'com.skroll.trainer.Trainer'
     File workingDir = new File('Pipeline/')
     classpath = sourceSets.main.runtimeClasspath
     args '-c trainWithWeight'
 }
-task classifyDocType(dependsOn: 'classes', type: JavaExec) {
+task classifyDocType(type: JavaExec) {
     main = 'com.skroll.trainer.Trainer'
     File workingDir = new File('Pipeline/')
     classpath = sourceSets.main.runtimeClasspath
