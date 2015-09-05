@@ -19,20 +19,23 @@
       <sk-toolbar />
     </md-toolbar>
 
-    <md-content md-scroll-y id="skrollport" sk-observe-scroll>
+    <md-content id="skrollport" sk-observe-scroll md-scroll-y>
       <div layout="row" flex>
         <!-- hide RHS when small media -->
-        <div hide-sm hide-md flex="5">
+        <div hide-sm hide-md flex="10" >
         </div>
 
         <div ng-controller="ViewPortCtrl as ctrl" >
-            <md-whiteframe class="md-whiteframe-z3">
-              <md-content flex id="content" class="md-padding"  ng-mouseup="ctrl.mouseUp($event)" ng-mousedown="ctrl.mouseDown($event)" ng-mousemove="ctrl.mouseMove($event)" ng-click="ctrl.paraClicked($event)" layout-padding style="padding-left:40px">
-                <sk-content/>
-              </md-content>
-            </md-whiteframe>  
+          <md-content flex 
+            id="content" 
+            class="md-padding md-whiteframe-z3"  
+            ng-mouseup="ctrl.mouseUp($event)" ng-mousedown="ctrl.mouseDown($event)" 
+            ng-mousemove="ctrl.mouseMove($event)" ng-click="ctrl.paraClicked($event)" 
+            layout-padding style="padding-left:60px; padding-right:50px">
+              <sk-content/>
+            </md-content>
         </div>
-        <div hide-sm hide-md flex="5">
+        <div hide-sm hide-md flex="10">
         </div>
 
       </div>

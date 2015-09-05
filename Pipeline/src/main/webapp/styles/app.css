@@ -23,4 +23,10 @@ md-toast.skContextMenu {
     min-width: 24px;
     margin: 6px 0px; }
 
+/**
+* SkrollPort
+**/
+#skrollport {
+  background-color: #e0e0e0; }
+
 /*# sourceMappingURL=app.css.map */
