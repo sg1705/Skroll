@@ -1,11 +1,4 @@
 <md-toast class="skContextMenu">
-  <md-button ng-click='ctrl.copyLink()'>
-		<md-tooltip>
- 			Copy link
- 		</md-tooltip>
-
-		<md-icon md-theme='default-dark' md-svg-icon="images/icons/ic_link_24px.svg"></md-icon>
-	</md-button>
 
 	<md-button 
 	 	ng-click="ctrl.copySelection()"
@@ -14,9 +7,17 @@
 	 	<md-tooltip>
 	 		Copy selected text
 	 	</md-tooltip>   	
-	 	<md-icon md-theme='default-dark' md-svg-icon="images/icons/ic_content_copy_24px.svg"></md-icon>
+	 	<md-icon md-svg-icon="images/icons/ic_content_copy_24px.svg"></md-icon>
 	</md-button>	 
 
+
+  <md-button ng-click='ctrl.copyLink()'>
+		<md-tooltip>
+ 			Copy link
+ 		</md-tooltip>
+
+		<md-icon md-svg-icon="images/icons/ic_link_24px.svg"></md-icon>
+	</md-button>
 
 
 	<md-button 
@@ -25,7 +26,7 @@
 	 	<md-tooltip>
 	 		Email selected text
 	 	</md-tooltip>   	
-	 	<md-icon md-theme='default-dark' md-svg-icon="images/icons/ic_mail_24px.svg"></md-icon>
+	 	<md-icon md-svg-icon="images/icons/ic_mail_24px.svg"></md-icon>
 	</md-button>	 
 
 
@@ -42,8 +43,9 @@
 
 	<md-menu>
 	 <!-- Trigger element is a md-button with an icon -->
+	 <!-- md-theme="default-dark" was removed -->
 	 <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button" aria-label="Open sample menu">
-	   <md-icon md-theme="default-dark" md-svg-icon="images/icons/ic_view_column_24px.svg"></md-icon>
+	   <md-icon md-svg-icon="images/icons/ic_view_column_24px.svg"></md-icon>
 	 </md-button>
 	 <md-menu-content>
 	   <md-menu-item><md-button ng-click="doSomething()">Do Something</md-button></md-menu-item>

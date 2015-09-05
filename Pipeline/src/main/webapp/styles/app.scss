@@ -20,9 +20,11 @@ md-toast.skContextMenu {
   min-height: 40px;
   min-width : 200px;
 	z-index   : 99;
+	background-color: #e0e0e0;
 
 	.md-button {
 		min-width: $icon-width;
+		margin   : 6px 0px;
 	}
 
 }
