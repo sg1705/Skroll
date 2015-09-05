@@ -43,7 +43,7 @@
 
 	    $mdToast.show({
 	      templateUrl : 'scripts/contextmenu/contextmenu.tmpl.html',
-	      hideDelay 	: 0,
+	      hideDelay 	: 6000,
 	      onShow 			: onShow,
 	      onRemove 		: onRemove,
 	      theme 			: 'default-dark',
