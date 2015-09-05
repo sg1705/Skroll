@@ -2,9 +2,9 @@ package com.skroll.document;
 
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.Parser;
-import com.skroll.parser.extractor.PhantomJsExtractor;
 import com.skroll.pipeline.util.Utils;
 import org.junit.Test;
+
 import java.util.List;
 
 public class ModelHelperTest {

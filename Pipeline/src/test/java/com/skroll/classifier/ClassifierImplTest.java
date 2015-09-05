@@ -38,8 +38,8 @@ public class ClassifierImplTest {
           Injector injector = Guice.createInjector(new SkrollTestGuiceModule());
           config = injector.getInstance(Configuration.class);
           ClassifierFactory classifierFactory = injector.getInstance(ClassifierFactory.class);
-          documentClassifier = classifierFactory.getClassifier(Category.DEFINITION);
-          tocClassifier = classifierFactory.getClassifier(Category.TOC_1);
+          documentClassifier = classifierFactory.getClassifier(ClassifierFactory.UNIVERSAL_TOC_CLASSIFIER_ID);
+          tocClassifier = classifierFactory.getClassifier(ClassifierFactory.UNIVERSAL_TOC_CLASSIFIER_ID);
      } catch (Exception e) {
         e.printStackTrace();
         }

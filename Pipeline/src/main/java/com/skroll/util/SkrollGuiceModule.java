@@ -26,6 +26,9 @@ public class SkrollGuiceModule extends AbstractModule {
                 .annotatedWith(CorpusFSDocumentFactory.class)
                 .to(CorpusFSDocumentFactoryImpl.class);
 
+        bind(DocumentFactory.class)
+                .annotatedWith(SingleParaFSDocumentFactory.class)
+                .to(SingleParaDocumentFactoryImpl.class);
 
         bind(DocumentFactory.class)
                 .annotatedWith(BenchmarkFSDocumentFactory.class)

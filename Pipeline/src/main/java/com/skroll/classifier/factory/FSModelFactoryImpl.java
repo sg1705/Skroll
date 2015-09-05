@@ -32,12 +32,12 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
         return model;
     }
 
-    public TrainingDocumentAnnotatingModel createModel(int modelId, ModelRVSetting modelRVSetting) {
+    public TrainingDocumentAnnotatingModel createModel(int classifierId, ModelRVSetting modelRVSetting) {
         TrainingDocumentAnnotatingModel localTrainingModel = null;
 
         if (localTrainingModel == null) {
             try {
-                    localTrainingModel = (TrainingDocumentAnnotatingModel) objectPersistUtil.readObject(null,String.valueOf(modelId));
+                    localTrainingModel = (TrainingDocumentAnnotatingModel) objectPersistUtil.readObject(null,String.valueOf(classifierId));
 
             } catch (Throwable e) {
                 logger.warn("TrainingDocumentAnnotatingModel is not found. creating new one" );
@@ -46,10 +46,10 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
         }
         if (localTrainingModel == null) {
 
-            localTrainingModel = new TrainingDocumentAnnotatingModel(modelId, modelRVSetting);
+            localTrainingModel = new TrainingDocumentAnnotatingModel(classifierId, modelRVSetting);
         }
 
-        TrainingModelMap.put(modelId, localTrainingModel);
+        TrainingModelMap.put(classifierId, localTrainingModel);
         return localTrainingModel;
     }
 

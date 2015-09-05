@@ -1,18 +1,12 @@
 package com.skroll.benchmark;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.skroll.classifier.Classifier;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.classifier.ClassifierFactoryStrategy;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
-import com.skroll.document.factory.BenchmarkFSDocumentFactoryImpl;
 import com.skroll.document.factory.DocumentFactory;
-import com.skroll.util.ObjectPersistUtil;
-import com.skroll.util.SkrollGuiceModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,37 +14,23 @@ import java.util.List;
 
 
 /**
+ * Benchmark class is used for benchmarking the quality of output of our classifiers. It takes the files from benchmark folder and
+ * run against the benchmark model and trained model and show the accuracy of trained model.
  * Created by saurabhagarwal on 6/13/15.
  */
-public class ClassifierBenchmark {
+public class Benchmark {
 
     public static final Logger logger = LoggerFactory
-            .getLogger(ClassifierBenchmark.class);
+            .getLogger(Benchmark.class);
 
     DocumentFactory documentFactory;
-    List<Classifier> classifiers;
+    ClassifierFactory classifierFactory;
+    ClassifierFactoryStrategy classifierFactoryStrategy;
 
-    public static void main(String[] args) throws Exception, ObjectPersistUtil.ObjectPersistException {
-
-       Injector injector = Guice.createInjector(new SkrollGuiceModule());
-        ClassifierFactory classifierFactory = injector.getInstance(ClassifierFactory.class);
-        ClassifierFactoryStrategy classifierFactoryStrategy = injector.getInstance(ClassifierFactoryStrategy.class);
-        DocumentFactory documentFactory = injector.getInstance(BenchmarkFSDocumentFactoryImpl.class);
-
-        ClassifierBenchmark benchmark = new ClassifierBenchmark(documentFactory, classifierFactory.getClassifiers(classifierFactoryStrategy));
-        QC qc = null;
-        try {
-            qc = benchmark.runQCOnBenchmarkFolder();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        System.out.println("QC:" + qc.stats);
-
-    }
-
-    public ClassifierBenchmark(DocumentFactory documentFactory, List<Classifier> classifiers){
+    public Benchmark(DocumentFactory documentFactory, ClassifierFactory classifierFactory, ClassifierFactoryStrategy classifierFactoryStrategy){
         this.documentFactory = documentFactory;
-        this.classifiers = classifiers;
+        this.classifierFactory = classifierFactory;
+        this.classifierFactoryStrategy = classifierFactoryStrategy;
     }
 
     public QC qcDocument(Document firstDoc, Document secondDoc, QC qc){
@@ -88,7 +68,7 @@ public class ClassifierBenchmark {
         return qc;
     }
 
-    public QC runQCForBenchmark(String file, QC qc){
+    public QC runQCForBenchmark(String file, QC qc) throws Exception {
         Document firstDoc = null;
         Document secondDoc = null;
         try {
@@ -103,15 +83,11 @@ public class ClassifierBenchmark {
         }
         DocumentHelper.clearObservedParagraphs(secondDoc);
         final Document finalSecondDoc =secondDoc;
-        try {
-            classifiers.forEach(c -> c.classify(finalSecondDoc.getId(), finalSecondDoc));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        classifierFactory.getClassifiers(classifierFactoryStrategy, secondDoc).forEach(c -> c.classify(finalSecondDoc.getId(), finalSecondDoc));
         return qcDocument(firstDoc, secondDoc, qc);
     }
 
-    public QC runQCOnBenchmarkFile (String file){
+    public QC runQCOnBenchmarkFile (String file) throws Exception {
         QC qc = new QC();
         qc = runQCForBenchmark(file, qc);
         qc.calculateQCScore();

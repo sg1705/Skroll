@@ -13,16 +13,16 @@ import org.junit.Test;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.fail;
 
-public class ClassifierBenchmarkTest {
+public class BenchmarkTest {
 
-    ClassifierBenchmark benchmark = null;
+    Benchmark benchmark = null;
     @Before
     public void setup() throws Exception {
         Injector injector = Guice.createInjector(new SkrollTestGuiceModule());
         ClassifierFactory classifierFactory = injector.getInstance(ClassifierFactory.class);
         ClassifierFactoryStrategy classifierFactoryStrategy = injector.getInstance(ClassifierFactoryStrategy.class);
         DocumentFactory documentFactory = injector.getInstance(BenchmarkFSDocumentFactoryImpl.class);
-        benchmark = new ClassifierBenchmark(documentFactory, classifierFactory.getClassifiers(classifierFactoryStrategy));
+        benchmark = new Benchmark(documentFactory,classifierFactory,classifierFactoryStrategy);
     }
     @Test
     public void testBenchmark(){
@@ -33,7 +33,7 @@ public class ClassifierBenchmarkTest {
             System.out.println("QC output:"+ qc);
             assertNotEquals(qc.stats.get(0).overallOccurance,0);
             assertNotEquals(qc.stats.get(1).overallOccurance,0);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
             fail(" failed to run benchmark");
         }
@@ -46,7 +46,7 @@ public class ClassifierBenchmarkTest {
             System.out.println("QC output:"+ qc);
             assertNotEquals(qc.stats.get(0).overallOccurance,0);
             assertNotEquals(qc.stats.get(1).overallOccurance,0);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
             fail(" failed to run benchmark");
         }

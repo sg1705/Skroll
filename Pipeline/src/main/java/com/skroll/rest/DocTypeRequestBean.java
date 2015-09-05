@@ -4,8 +4,8 @@ import com.skroll.classifier.Classifier;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.classifier.ClassifierFactoryStrategy;
 import com.skroll.document.Document;
-import com.skroll.document.factory.CorpusFSDocumentFactory;
 import com.skroll.document.factory.DocumentFactory;
+import com.skroll.document.factory.SingleParaFSDocumentFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,18 +18,19 @@ import javax.ws.rs.core.MultivaluedMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by saurabh on 4/17/15.
+/** DocTypeRequestBean encapsulate all the information a DocType API functions need to act upon...
+ * Created by saurabhagarwal on 8/30/2015.
  */
-public class RequestBean {
+public class DocTypeRequestBean {
     public static final Logger logger = LoggerFactory
             .getLogger(DocAPI.class);
 
     private String documentId;
+    private int docType;
     private Document document;
     private List<Classifier> classifiers;
 
-    private DocumentFactory documentFactory;
+    private DocumentFactory singleParaDocumentFactory;
 
     public String getDocumentId() {
         return documentId;
@@ -39,12 +40,17 @@ public class RequestBean {
         return document;
     }
 
+    public int getDocType() {
+        return docType;
+    }
+
     @Inject
-    public RequestBean(@QueryParam("documentId") String documentId,
-                       @Context HttpHeaders hh,
-                       @CorpusFSDocumentFactory DocumentFactory documentFactory,
-                       ClassifierFactoryStrategy classifierFactoryStrategy,
-                       ClassifierFactory classifierFactory) throws Exception {
+    public DocTypeRequestBean(@QueryParam("documentId") String documentId,
+                              @QueryParam("docType") int docType,
+                              @Context HttpHeaders hh,
+                              @SingleParaFSDocumentFactory DocumentFactory singleParaDocumentFactory,
+                              ClassifierFactoryStrategy classifierFactoryStrategy,
+                              ClassifierFactory classifierFactory) throws Exception {
         if(documentId == null) {
             MultivaluedMap<String, String> headerParams = hh.getRequestHeaders();
             Map<String, Cookie> pathParams = hh.getCookies();
@@ -52,20 +58,20 @@ public class RequestBean {
                  documentId = pathParams.get("documentId").getValue();
         }
 
-        logger.info("Document Id: {}", documentId);
+        logger.info("Document Id: {}",documentId);
 
         if (documentId != null) {
             //fetch it from factory
             this.documentId = documentId;
-            this.document = documentFactory.get(documentId);
+            this.document = singleParaDocumentFactory.get(documentId);
         }
-
+        this.docType = docType;
         this.classifiers = classifierFactory.getClassifiers(classifierFactoryStrategy,document);
-        this.documentFactory = documentFactory;
+        this.singleParaDocumentFactory = singleParaDocumentFactory;
     }
 
     public List<Classifier> getClassifiers() {
         return classifiers;
     }
-    public DocumentFactory getDocumentFactory() { return documentFactory;}
+    public DocumentFactory getDocumentFactory() { return singleParaDocumentFactory;}
 }

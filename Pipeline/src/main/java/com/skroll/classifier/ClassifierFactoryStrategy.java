@@ -1,6 +1,6 @@
 package com.skroll.classifier;
 
-import com.google.common.collect.Lists;
+import com.skroll.document.Document;
 
 import java.util.List;
 
@@ -16,10 +16,5 @@ public interface ClassifierFactoryStrategy {
      *
      * @return
      */
-    public default List<Integer> getClassifierIds() {
-        return Lists.newArrayList(
-//                ClassifierFactory.DEF_CLASSIFIER_ID,
-                ClassifierFactory.TOC_CLASSIFIER_ID);
-    }
-
+    public  List<Integer> getClassifierIds(Document document);
 }

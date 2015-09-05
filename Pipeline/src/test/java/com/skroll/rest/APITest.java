@@ -1,14 +1,16 @@
 package com.skroll.rest;
 
+import com.google.common.io.Files;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.skroll.document.Document;
 import com.skroll.document.factory.CorpusFSDocumentFactoryImpl;
 import com.skroll.document.factory.DocumentFactory;
-import com.skroll.util.SkrollTestGuiceModule;
 import com.skroll.util.Configuration;
+import com.skroll.util.SkrollTestGuiceModule;
 import com.skroll.util.TestConfiguration;
+import com.skroll.util.UniqueIdGenerator;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
@@ -25,6 +27,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import java.io.File;
+import java.nio.charset.Charset;
 
 /**
  * Created by saurabh on 5/10/15.
@@ -37,6 +40,11 @@ public class APITest {
 
     protected DocumentFactory factory;
     protected Configuration configuration;
+    protected final String TEST_FILE_NAME = "src/test/resources/classifier/smaller-indenture.html";
+
+    public APITest() throws Exception {
+        documentId = UniqueIdGenerator.generateId(Files.toString(new File(TEST_FILE_NAME), Charset.defaultCharset()));
+    }
 
 
     @Before
@@ -80,7 +88,7 @@ public class APITest {
         multiPart.setMediaType(MediaType.MULTIPART_FORM_DATA_TYPE);
 
         FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file",
-                new File("src/test/resources/classifier/smaller-indenture.html"),
+                new File(TEST_FILE_NAME),
                 MediaType.APPLICATION_OCTET_STREAM_TYPE);
         multiPart.bodyPart(fileDataBodyPart);
         Response response =null;
@@ -91,7 +99,7 @@ public class APITest {
             logger.error("SEVERE: An I/O error has occurred while writing a response message entity to the container output stream.");
         }
         logger.debug("Cookies:" + response.getCookies().get("documentId").getValue());
-        Document doc = this.factory.get("smaller-indenture.html");
+        Document doc = this.factory.get(response.getCookies().get("documentId").getValue());
         assert (doc != null);
         //check existence of file in the folder
 

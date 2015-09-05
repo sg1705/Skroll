@@ -9,25 +9,23 @@ import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
+import com.skroll.document.annotation.DocTypeAnnotationHelper;
 import com.skroll.document.factory.DocumentFactory;
 import com.skroll.util.Configuration;
+import com.skroll.util.ObjectPersistUtil;
+import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
+ * Commandline utility to train the model, annotate docType and classify Doc Type:
+ * Valid commands are annotateDocType, trainDocTypeModel, trainWithWeight and classifyDocType"
  * Created by saurabhagarwal on 1/19/15.
  */
 
-
-/* current arguments for testing:
---trainWithOverride src/main/resources/trainingDocuments/indentures
---classify src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html
-*/
 
 public class Trainer {
     //The following line needs to be added to enable log4j
@@ -37,7 +35,9 @@ public class Trainer {
     public ClassifierFactory classifierFactory;
     public ClassifierFactoryStrategy classifierFactoryStrategy;
     public Configuration configuration;
-    public DocumentFactory documentFactory;
+    public DocumentFactory corpusDocumentFactory;
+    public DocumentFactory singleParaDocumentFactory;
+
     public String PRE_EVALUATED_FOLDER;
 
     public void displayHeapStats (){
@@ -61,46 +61,157 @@ public class Trainer {
         //Print Maximum available memory
         logger.debug("Max Memory:{} MB", runtime.maxMemory() / mb);
     }
-    public void trainFolderUsingTrainingWeight (String preEvaluatedFolder) throws Exception {
-        FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(preEvaluatedFolder));
-        List<String> docLists = new ArrayList<String>();
-        int counter=0;
-        for (File f : iterable) {
-            if (f.isFile()) {
-                displayHeapStats ();
-                trainFileUsingTrainingWeight(f.getName());
-            }
-            counter++;
-            if (counter ==10) {
-                for (Classifier classifier : classifierFactory.getClassifiers(classifierFactoryStrategy)) {
-                    classifier.persistModel();
-                }
-                counter=0;
-            }
+
+    public static void main(String[] args) throws ObjectPersistUtil.ObjectPersistException, Exception {
+
+        Options options = new Options();
+        options.addOption("c", "command", true, "Command to execute");
+        options.addOption("f", "folder", true, "provide the location of folder  to train or classify the documents");
+        options.addOption("t", "doctype", true, "Use in annotate Doc Type in the document");
+        options.addOption("w", "weight", true, "Use to set weight for DocType Category at document level");
+
+        CommandLineParser parser=new GnuParser();
+        CommandLine cmd=parser.parse(options,args);
+
+        if (cmd.getOptions().length < 1) {
+            throw new ParseException("Missing commandline arguments. ");
         }
-        for (Classifier classifier : classifierFactory.getClassifiers(classifierFactoryStrategy)) {
-            classifier.persistModel();
+
+        switch (cmd.getOptionValue("command").trim()) {
+            case "help":
+                System.out.println(
+                                "############################################# \n" +
+                                "For following four commands below, the default folder is  \"build/resources/main/preEvaluated/\"."+
+                                "you don't have to provide the -f option, if you are using the default folder. \n" +
+                                "#To annotate Doc type of files of a folder specified by -f, from command line \n" +
+                                "./gradlew trainer -Dexec.args=\"-c annotateDocType -f build/resources/main/preEvaluated/ -t 101 -w 1f\" \n" +
+                                "#To train Doc type Model from a folder containing training files \n" +
+                                "./gradlew trainer -Dexec.args=\"-c trainDocTypeModel -f build/resources/main/preEvaluated/\"\n" +
+                                "#How to train from command line \n" +
+                                "./gradlew trainer -Dexec.args=\"-c trainWithWeight -f build/resources/main/preEvaluated/\"\n" +
+                                "#How to classify doctype from command line \n" +
+                                "./gradlew trainer -Dexec.args=\"-c classifyDocType -f build/resources/main/preEvaluated/\"\n\"" +
+                                "#############################################");
+                return;
+        }
+
+        String folder = cmd.getOptionValue("folder");
+        if(folder == null){
+            folder = "build/resources/main/preEvaluated/";
+        }
+
+        logger.info("Folder name {}", cmd.getOptionValue("folder"));
+        DocTypeTrainerAndClassifier docTypeTrainerAndClassifier = new DocTypeTrainerAndClassifier(folder);
+        CategoryTrainer categoryTrainer = new CategoryTrainer(folder);
+
+        switch (cmd.getOptionValue("command").trim()) {
+            case "annotateDocType":
+                categoryTrainer.annotateDocType(Integer.parseInt(cmd.getOptionValue("doctype")), Float.parseFloat(cmd.getOptionValue("weight")));//Category.INDENTURE, 1f);
+                break;
+            case "trainDocTypeModel":
+                docTypeTrainerAndClassifier.trainDocTypeModelWithWeight();
+                break;
+            case "trainWithWeight":
+                categoryTrainer.trainFolderUsingTrainingWeight();
+                break;
+            case "classifyDocType":
+                docTypeTrainerAndClassifier.classifyAndStoreDocType();
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid command:" + cmd.getOptionValue("command") + " Valid commands are annotateDocType, trainDocTypeModel, trainWithWeight and classifyDocType");
         }
     }
 
-    public  void trainFileUsingTrainingWeight (String preEvaluatedFile) throws Exception {
-        Document doc = documentFactory.get(preEvaluatedFile);
-        //iterate over each paragraph
-        if(doc== null){
-            logger.error("Document can't be parsed. failed to train the model");
-            return;
-        }
-        for(CoreMap paragraph : doc.getParagraphs()) {
-            if (paragraph.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)) {
-                CategoryAnnotationHelper.clearPriorCategoryWeight(paragraph);
+
+    public void trainFolderUsingTrainingWeight () throws Exception {
+        FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(PRE_EVALUATED_FOLDER));
+        for (File f : iterable) {
+            if (f.isFile()) {
+                displayHeapStats();
+                Document doc = corpusDocumentFactory.get(f.getName());
+                //iterate over each paragraph
+                if (doc == null) {
+                    logger.error("Document can't be parsed. failed to train the model");
+                    return;
+                }
+                for (CoreMap paragraph : doc.getParagraphs()) {
+                    if (paragraph.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)) {
+                        CategoryAnnotationHelper.clearPriorCategoryWeight(paragraph);
+                    }
+                }
+                try {
+                    for (Classifier classifier : classifierFactory.getClassifiers(classifierFactoryStrategy, doc)) {
+                        classifier.trainWithWeight(doc);
+                        classifier.persistModel();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-        }
-        try {
-            for (Classifier classifier : classifierFactory.getClassifiers(classifierFactoryStrategy)) {
-                classifier.trainWithWeight(doc);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
+
+    public void trainDocTypeModelWithWeight () throws Exception {
+        FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(PRE_EVALUATED_FOLDER));
+        for (File f : iterable) {
+            if (f.isFile()) {
+                displayHeapStats();
+                Document doc = singleParaDocumentFactory.get(f.getName());
+                //iterate over each paragraph
+                if (doc == null) {
+                    logger.error("Document can't be parsed. failed to train the model");
+                    return;
+                }
+                for (CoreMap paragraph : doc.getParagraphs()) {
+                    if (paragraph.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)) {
+                        CategoryAnnotationHelper.clearPriorCategoryWeight(paragraph);
+                    }
+                }
+                try {
+                    for (Classifier classifier : classifierFactory.getClassifiers(classifierFactoryStrategy, doc)) {
+                        classifier.trainWithWeight(doc);
+                        classifier.persistModel();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+
+    public  void annotateDocType(int docType, float weight) throws Exception {
+        FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(PRE_EVALUATED_FOLDER));
+        int counter = 0;
+        for (File f : iterable) {
+            if (f.isFile()) {
+                Document doc = corpusDocumentFactory.get(f.getName());
+                DocTypeAnnotationHelper.annotateDocTypeWithWeightAndUserObservation(doc, docType, weight);
+                logger.debug("annotateDocType: {}", f.getName());
+                corpusDocumentFactory.saveDocument(doc);
+            }
+        }
+    }
+
+    public  void classifyAndStoreDocType() throws Exception {
+        FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(PRE_EVALUATED_FOLDER));
+        for (File f : iterable) {
+            if (f.isFile()) {
+                Document document = corpusDocumentFactory.get(f.getName());
+                Document singleParaDoc = singleParaDocumentFactory.get(f.getName());
+                try {
+                    for ( Classifier classifier : classifierFactory.getClassifiers(classifierFactoryStrategy, singleParaDoc)) {
+                        classifier.classify(singleParaDoc.getId(), singleParaDoc);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                int docType = DocTypeAnnotationHelper.extractDocTypeFromSingleParaDocument(singleParaDoc.getParagraphs().get(0));
+                DocTypeAnnotationHelper.annotateDocType(document,docType);
+                logger.info("classify file {} as docType {}", f.getName(), DocTypeAnnotationHelper.getDocType(document));
+                corpusDocumentFactory.saveDocument(document);
+            }
+        }
+    }
+
 }

@@ -1,18 +1,12 @@
 package com.skroll.analyzer.model.applicationModel;
 
 import com.skroll.analyzer.data.NBMNData;
-import com.skroll.analyzer.model.bn.node.MultiplexNode;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
-import com.skroll.document.annotation.CategoryAnnotationHelper;
-import com.skroll.document.annotation.CoreAnnotations;
-import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.PhantomJsExtractor;
 import com.skroll.parser.extractor.TestMode;
-import com.skroll.pipeline.Pipeline;
-import com.skroll.pipeline.Pipes;
-import com.skroll.pipeline.util.Utils;
+import com.skroll.util.TestHelper;
 import org.junit.Before;
 import org.junit.Test;
 

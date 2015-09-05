@@ -12,6 +12,7 @@ import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
+import com.skroll.util.TestHelper;
 import org.junit.Before;
 import org.junit.Test;
 
