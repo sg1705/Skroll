@@ -1,6 +1,6 @@
 /* variables */
 $icon-width: 24px;
-
+$skrollport-color : #e0e0e0;
 /**
 * icons
 **/
@@ -20,7 +20,7 @@ md-toast.skContextMenu {
   min-height: 40px;
   min-width : 160px;
 	z-index   : 99;
-	
+
 	min-height      : 30px;
 	padding-right   : 12px;
 	padding-left    : 12px;
@@ -33,5 +33,13 @@ md-toast.skContextMenu {
 
 }
 
+
+
+/**
+* SkrollPort
+**/
+#skrollport {
+	background-color: $skrollport-color;
+}
 
 
