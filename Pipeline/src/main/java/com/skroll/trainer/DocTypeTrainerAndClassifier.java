@@ -28,12 +28,13 @@ public class DocTypeTrainerAndClassifier extends Trainer {
     public static final Logger logger = LoggerFactory
             .getLogger(DocTypeTrainerAndClassifier.class);
 
-    public DocTypeTrainerAndClassifier() {
+    public DocTypeTrainerAndClassifier(String corpusLocation) {
         try {
 
             Injector injector = Guice.createInjector(new AbstractModule() {
                 @Override
                 protected void configure() {
+                    bindConstant().annotatedWith(TrainerConfiguration.Location.class).to(corpusLocation);
                     bind(Configuration.class).to(TrainerConfiguration.class);
                     bind(DocumentFactory.class)
                             .to(CorpusFSDocumentFactoryImpl.class);

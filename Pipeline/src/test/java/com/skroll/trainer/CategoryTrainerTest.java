@@ -12,7 +12,7 @@ public class CategoryTrainerTest {
 
     @Test
     public void TestTrainWithWeight(){
-        CategoryTrainer categoryTrainer = new CategoryTrainer();
+        CategoryTrainer categoryTrainer = new CategoryTrainer("build/resources/main/testDocuments/");
         try {
             categoryTrainer.trainFolderUsingTrainingWeight();
         } catch (Exception e) {
@@ -23,7 +23,7 @@ public class CategoryTrainerTest {
 
 
     public void checkPreEvaluatedFile() {
-        CategoryTrainer categoryTrainer = new CategoryTrainer();
+        CategoryTrainer categoryTrainer = new CategoryTrainer("build/resources/main/testDocuments/");
         categoryTrainer.checkPreEvaluatedFile();
     }
 }

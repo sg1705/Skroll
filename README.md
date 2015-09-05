@@ -8,10 +8,33 @@ gradlew trainWithOverride
 gradlew start
 ```
 
+For following four commands below, the default folder is  "build/resources/main/preEvaluated/".
+you don't have to provide the -f option, if you are using the default folder.
+
+## To annotate Doc type of files of a folder specified by -f, from command line
+
+```
+./gradlew trainer -Dexec.args="-c annotateDocType -f build/resources/main/preEvaluated/ -t 101 -w 1f"
+```
+
+## To train Doc type Model from a folder containing training files
+
+```
+./gradlew trainer -Dexec.args="-c trainDocTypeModel -f build/resources/main/preEvaluated/"
+```
+
 ## How to train from command line
 
 ```
-gradlew trainWithWeight
+./gradlew trainer -Dexec.args="-c trainWithWeight -f build/resources/main/preEvaluated/"
+
+```
+
+## How to classify doctype from command line
+
+```
+./gradlew trainer -Dexec.args="-c classifyDocType -f build/resources/main/preEvaluated/"
+
 ```
 
 ## How to run benchmark from command line
@@ -19,7 +42,6 @@ gradlew trainWithWeight
 ```
 gradlew runBenchmark
 ```
-
 
 
 ## How run Skroll in AWS

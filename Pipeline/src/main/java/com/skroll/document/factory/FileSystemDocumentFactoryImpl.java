@@ -35,14 +35,14 @@ public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory, 
                 logger.info("Fetching [{}] from filesystem [{}]", documentId, folder);
                 jsonString = Files.toString(new File(folder + documentId), Charset.defaultCharset());
             } catch (IOException e) {
-                logger.info("[{}] cannot be found", documentId);
+                logger.info("[{}] cannot be found due to error {}", documentId, e.getMessage());
                 return null;
             }
             try {
                 doc = JsonDeserializer.fromJson(jsonString);
                 doc.setId(documentId);
             } catch (Exception e) {
-                logger.error("[{}] cannot be parsed", documentId);
+                logger.error("[{}] cannot be parsed due to error {}", documentId, e.getMessage());
                 return null;
             }
             doc = getLatestParsed(doc);
@@ -103,7 +103,7 @@ public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory, 
             logger.error("doc is not Found in cache: {}", e.getMessage());
             return null;
         }
-        logger.info("document map size: {}", getDocumentCache().getLoadingCache().size());
+        logger.debug("document map size: {}", getDocumentCache().getLoadingCache().size());
         return doc;
     }
 

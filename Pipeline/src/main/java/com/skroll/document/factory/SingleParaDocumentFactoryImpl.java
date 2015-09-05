@@ -8,7 +8,6 @@ import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.document.annotation.CoreAnnotations.TokenAnnotation;
 import com.skroll.document.annotation.DocTypeAnnotationHelper;
-import com.skroll.util.Configuration;
 import org.eclipse.jetty.util.ConcurrentHashSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,13 +25,10 @@ import java.util.stream.Collectors;
 public class SingleParaDocumentFactoryImpl extends FileSystemDocumentFactoryImpl {
 
     public static final Logger logger = LoggerFactory.getLogger(SingleParaDocumentFactoryImpl.class);
-    protected Configuration configuration;
-    protected String folder;
-    protected int cacheSize;
-    protected DocumentFactory corpusDocumentFactory;
+    protected CorpusFSDocumentFactoryImpl corpusDocumentFactory;
 
     @Inject
-    public SingleParaDocumentFactoryImpl(DocumentFactory corpusDocumentFactory) {
+    public SingleParaDocumentFactoryImpl(CorpusFSDocumentFactoryImpl corpusDocumentFactory) {
         this.corpusDocumentFactory = corpusDocumentFactory;
     }
 

@@ -66,6 +66,7 @@ public class Trainer {
 
         Options options = new Options();
         options.addOption("c", "command", true, "Command to execute");
+        options.addOption("f", "folder", true, "provide the location of folder  to train or classify the documents");
         options.addOption("t", "doctype", true, "Use in annotate Doc Type in the document");
         options.addOption("w", "weight", true, "Use to set weight for DocType Category at document level");
 
@@ -75,8 +76,33 @@ public class Trainer {
         if (cmd.getOptions().length < 1) {
             throw new ParseException("Missing commandline arguments. ");
         }
-        DocTypeTrainerAndClassifier docTypeTrainerAndClassifier = new DocTypeTrainerAndClassifier();
-        CategoryTrainer categoryTrainer = new CategoryTrainer();
+
+        switch (cmd.getOptionValue("command").trim()) {
+            case "help":
+                System.out.println(
+                                "############################################# \n" +
+                                "For following four commands below, the default folder is  \"build/resources/main/preEvaluated/\"."+
+                                "you don't have to provide the -f option, if you are using the default folder. \n" +
+                                "#To annotate Doc type of files of a folder specified by -f, from command line \n" +
+                                "./gradlew trainer -Dexec.args=\"-c annotateDocType -f build/resources/main/preEvaluated/ -t 101 -w 1f\" \n" +
+                                "#To train Doc type Model from a folder containing training files \n" +
+                                "./gradlew trainer -Dexec.args=\"-c trainDocTypeModel -f build/resources/main/preEvaluated/\"\n" +
+                                "#How to train from command line \n" +
+                                "./gradlew trainer -Dexec.args=\"-c trainWithWeight -f build/resources/main/preEvaluated/\"\n" +
+                                "#How to classify doctype from command line \n" +
+                                "./gradlew trainer -Dexec.args=\"-c classifyDocType -f build/resources/main/preEvaluated/\"\n\"" +
+                                "#############################################");
+                return;
+        }
+
+        String folder = cmd.getOptionValue("folder");
+        if(folder == null){
+            folder = "build/resources/main/preEvaluated/";
+        }
+
+        logger.info("Folder name {}", cmd.getOptionValue("folder"));
+        DocTypeTrainerAndClassifier docTypeTrainerAndClassifier = new DocTypeTrainerAndClassifier(folder);
+        CategoryTrainer categoryTrainer = new CategoryTrainer(folder);
 
         switch (cmd.getOptionValue("command").trim()) {
             case "annotateDocType":
@@ -182,7 +208,7 @@ public class Trainer {
                 }
                 int docType = DocTypeAnnotationHelper.extractDocTypeFromSingleParaDocument(singleParaDoc.getParagraphs().get(0));
                 DocTypeAnnotationHelper.annotateDocType(document,docType);
-                logger.info("classify file {} as docTYpe {}", f.getName(), DocTypeAnnotationHelper.getDocType(document));
+                logger.info("classify file {} as docType {}", f.getName(), DocTypeAnnotationHelper.getDocType(document));
                 corpusDocumentFactory.saveDocument(document);
             }
         }

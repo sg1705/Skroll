@@ -1,5 +1,6 @@
 package com.skroll.util;
 
+import com.google.common.base.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,4 +91,10 @@ public class Configuration {
         return prop;
     }
 
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("confMap", confMap)
+                .toString();
+    }
 }
