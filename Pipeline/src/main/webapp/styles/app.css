@@ -13,9 +13,14 @@ md-icon {
 **/
 md-toast.skContextMenu {
   min-height: 40px;
-  min-width: 200px;
-  z-index: 99; }
+  min-width: 160px;
+  z-index: 99;
+  min-height: 30px;
+  padding-right: 12px;
+  padding-left: 12px;
+  background-color: #e0e0e0; }
   md-toast.skContextMenu .md-button {
-    min-width: 24px; }
+    min-width: 24px;
+    margin: 6px 0px; }
 
 /*# sourceMappingURL=app.css.map */
