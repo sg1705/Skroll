@@ -159,7 +159,7 @@ public class DocAPI {
                 .type(MediaType.TEXT_HTML).build();
     }
 
-    public Document fetchOrSaveDocument(String documentId, String content, DocumentFactory documentFactory, List<Classifier> classifiers) throws Exception {
+    private Document fetchOrSaveDocument(String documentId, String content, DocumentFactory documentFactory, List<Classifier> classifiers) throws Exception {
         Document document;
 
         if (documentFactory.isDocumentExist(documentId)) {

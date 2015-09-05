@@ -78,7 +78,7 @@ public class Trainer {
         DocTypeTrainerAndClassifier docTypeTrainerAndClassifier = new DocTypeTrainerAndClassifier();
         CategoryTrainer categoryTrainer = new CategoryTrainer();
 
-        switch (cmd.getOptionValue("command")) {
+        switch (cmd.getOptionValue("command").trim()) {
             case "annotateDocType":
                 categoryTrainer.annotateDocType(Integer.parseInt(cmd.getOptionValue("doctype")), Float.parseFloat(cmd.getOptionValue("weight")));//Category.INDENTURE, 1f);
                 break;
@@ -92,7 +92,7 @@ public class Trainer {
                 docTypeTrainerAndClassifier.classifyAndStoreDocType();
                 break;
             default:
-                throw new IllegalArgumentException("Invalid command: " + cmd.getOptionValue("command") + " Valid commands are annotateDocType, trainDocTypeModel, trainWithWeight and classifyDocType");
+                throw new IllegalArgumentException("Invalid command:" + cmd.getOptionValue("command") + " Valid commands are annotateDocType, trainDocTypeModel, trainWithWeight and classifyDocType");
         }
     }
 
