@@ -16,7 +16,7 @@
 		.controller('ContextMenuCtrl' , ContextMenuCtrl);
 
 	/* @ngInject */
-  function ContextMenuCtrl($mdToast, $mdDialog, linkService, selectionService, documentModel) {
+  function ContextMenuCtrl($mdToast, $mdDialog, $mdUtil, linkService, selectionService, documentModel) {
 
   	//-- private variables
   	var vm = this;
@@ -26,9 +26,15 @@
   	vm.copyLink 				= copyLink;
     vm.openTwitter      = openTwitter;
     vm.openEmailDialog  = openEmailDialog;
-
+    vm.selectedText     = selectionService.selectedText;
+    vm.copySelection    = copySelection;
   	////////
 
+    
+
+    /**
+    * Copy email dialog
+    **/
     function openEmailDialog() {
       closeContextMenu();
       var activeLink = linkService.getActiveLink(documentModel.documentId, selectionService.serializedSelection);      
@@ -39,12 +45,28 @@
           var mailBody = createTweetText();
           window.open('mailto:?body=' + mailBody,'MsgWindow',
                                'toolbar=no,location=no, status=no,menubar=no,scrollbars=yes,resizable=yes,top=300, left=300,width=550,height=420');      
-
         }, function(reason) {
           $log.error(reason);
-        });      
+        });   
     }
 
+    /**
+    * Copy selection
+    **/
+    function copySelection() {
+      closeContextMenu();
+      $mdToast.show({
+        template    : '<md-toast>Selection copied to clipboard</md-toast>',
+        hideDelay   : 2500,
+        theme       : 'default-dark',
+        parent      : angular.element(":root")
+      });
+
+
+
+
+       
+    }
 
 
     /**
@@ -87,7 +109,7 @@
     * Close context menu
     **/
   	function closeContextMenu() {
-  		$mdToast.hide();
+  		$mdUtil.nextTick($mdToast.hide);
   	}
 
     function createTweetText() {

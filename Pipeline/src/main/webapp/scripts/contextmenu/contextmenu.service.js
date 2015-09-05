@@ -71,7 +71,7 @@
 	      /**  start below is the only part added to standard onShow method **/
 	      var positionStyle = calculatePosition(oRect, options);
 				$(element).css(positionStyle);
-				//options.hideBackdrop = showBackdrop(scope, element, options);
+				options.hideBackdrop = showBackdrop(scope, element, options);
 				/** end below is the only part added to standard onShow method **/
 
 	      options.openClass = toastOpenClass(options.position);
@@ -82,20 +82,19 @@
 	        return 'md-' + pos;
 	      }).join(' '));
 
-	      $document.one('click.toast', clickHandler);
+	    //   $document.one('click.toast', clickHandler);
 
-	      function clickHandler(e) {
-					console.log('no click event being captured');
-					scope.$apply(function(){
-						onRemove(scope, element, options);
-					});
-					return false;
+	    //   function clickHandler(e) {
+					// scope.$apply(function(){
+					// 	onRemove(scope, element, options);
+					// });
+					// return false;
 					
-	      }
+	    //   }
 
 				return $animate.enter(element, options.parent)
 	      	.then(function(response){
-		      		//options.cleanupInteraction = activateInteraction(options);
+		      		options.cleanupInteraction = activateInteraction(options);
 		      		return response;
 		      });
   	  }
@@ -143,8 +142,8 @@
 			function onRemove(scope, element, options) {
 	      element.off(SWIPE_EVENTS, options.onSwipe);
 	      options.parent.removeClass(options.openClass);
-	      //options.cleanupInteraction();
-	      //options.hideBackdrop();
+	      options.cleanupInteraction();
+	      options.hideBackdrop();
 	      return $animate.leave(element);
 	    }
 
