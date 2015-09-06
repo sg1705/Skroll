@@ -22,16 +22,16 @@
     <md-content id="skrollport" sk-observe-scroll md-scroll-y>
       <div layout="row" flex>
         <!-- hide RHS when small media -->
-        <div hide-sm hide-md flex="10" >
+        <div id="leftcurtain" hide-sm>
         </div>
 
-        <div ng-controller="ViewPortCtrl as ctrl" >
+        <div ng-controller="ViewPortCtrl as ctrl" style="width:100%">
           <md-content flex 
             id="content" 
             class="md-padding md-whiteframe-z3"  
             ng-mouseup="ctrl.mouseUp($event)" ng-mousedown="ctrl.mouseDown($event)" 
             ng-mousemove="ctrl.mouseMove($event)" ng-click="ctrl.paraClicked($event)" 
-            layout-padding style="padding-left:60px; padding-right:50px">
+            layout-padding>
               <sk-content/>
             </md-content>
         </div>
@@ -45,8 +45,8 @@
   <!-- end content -->
 
   <!-- right sidenav -->
-  <md-sidenav layout="column" class="md-sidenav-right "
-              md-component-id="right" md-is-locked-open="$mdMedia('gt-sm')" 
+  <md-sidenav id="navframe" layout="column" class="md-sidenav-right " 
+              md-component-id="right" md-is-locked-open="$mdMedia('gt-md')" 
               ng-swipe-left="ctrl.toggleSidenav('left')">
 
 
