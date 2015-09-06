@@ -69,6 +69,7 @@ public class BenchmarkAPI {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getBenchmarkScore(@BeanParam BenchmarkRequestBean request) {
 
+        logger.info("Document {} for checking whether the file is already used for benchmark or not." ,request.getDocumentId());
         QC qc;
         try {
             qc = request.getBenchmark().runQCOnBenchmarkFolder();

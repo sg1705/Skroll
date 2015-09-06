@@ -64,7 +64,7 @@ public class Parser {
 
 
     /**
-     * Returns the parsed document from Html file.
+     * Returns the partial parsed document from Html file.
      *
      * @param htmlText
      * @return document
