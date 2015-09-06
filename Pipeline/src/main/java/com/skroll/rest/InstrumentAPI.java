@@ -241,7 +241,7 @@ public class InstrumentAPI {
             return Response.ok().status(Response.Status.OK).entity(json).build();
         } catch (Exception ex) {
             ex.printStackTrace();
-            return Response.status(Response.Status.EXPECTATION_FAILED).entity("documentId is missing from Cookie").type(MediaType.TEXT_HTML).build();
+            return Response.status(Response.Status.EXPECTATION_FAILED).entity("documentId is missing").type(MediaType.TEXT_HTML).build();
 
         }
     }

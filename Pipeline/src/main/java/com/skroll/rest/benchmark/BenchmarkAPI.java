@@ -69,7 +69,6 @@ public class BenchmarkAPI {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getBenchmarkScore(@BeanParam BenchmarkRequestBean request) {
 
-        logger.info("Document Id: {}" ,request.getDocumentId());
         QC qc;
         try {
             qc = request.getBenchmark().runQCOnBenchmarkFolder();

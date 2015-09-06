@@ -63,6 +63,17 @@ public class Parser {
     }
 
 
+    /**
+     * Returns the parsed document from Html file.
+     *
+     * @param htmlText
+     * @return document
+     */
+    public static Document parsePartialDocumentFromHtml(String htmlText) throws ParserException {
+        Document document = new Document();
+        document.setSource(htmlText);
+        return parseInDoc(document, FetchMode.FILE, ParseMode.PARTIAL);
+    }
 
 
 
