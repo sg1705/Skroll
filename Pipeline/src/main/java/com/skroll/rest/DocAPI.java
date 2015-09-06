@@ -111,8 +111,7 @@ public class DocAPI {
                 return logErrorResponse("Failed to classify", e);
             }
             return Response.status(Response.Status.ACCEPTED)
-                    .cookie(new NewCookie("documentId", documentId))
-                    .header("documentId", fileName)
+                    .header("documentId", documentId)
                     .entity(document.getTarget().getBytes(Constants.DEFAULT_CHARSET))
                     .build();
         }
@@ -157,7 +156,6 @@ public class DocAPI {
         }
         logger.info(fileName);
         return Response.status(Response.Status.OK)
-                .cookie(new NewCookie("documentId", fileName))
                 .header("documentId", fileName)
                 .entity(document.getTarget().getBytes(Constants.DEFAULT_CHARSET))
                 .type(MediaType.TEXT_HTML).build();
