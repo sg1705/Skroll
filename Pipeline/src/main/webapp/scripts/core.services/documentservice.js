@@ -101,8 +101,11 @@
       var deferred = $q.defer();
       /** make a get request */
       $http.get(documentServiceBase + 'importDoc' + '?&partialParse=' + partiallyParse + '&documentId=' + url)
-        .success(function(data, status) {
-          deferred.resolve(data);
+        .success(function(data, status, headers) {
+          var resp = {};
+          resp.html = data;
+          resp.documentId = headers('documentId');
+          deferred.resolve(resp);
         })
         .error(function(msg, code) {
           deferred.reject(msg);
