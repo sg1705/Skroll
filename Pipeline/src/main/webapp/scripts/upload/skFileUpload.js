@@ -36,8 +36,6 @@
       function add(e, data) {
         scope.$apply(function() {
             documentModel.isProcessing = true;
-            documentModel.fileName = data.files[0].name;
-            scope.fileName = data.files[0].name;
         })
         data.submit();
       }
@@ -45,11 +43,11 @@
       function done(e, data) {
         var terms;
         $("#content").html(data.result);
+        documentModel.documentId = data.jqXHR.getResponseHeader('documentId');
         //use get terms
-        documentService.getTerms(documentModel.fileName).then(function(terms){
+        documentService.getTerms(documentModel.documentId).then(function(terms){
           //create new LHS model items
           LHSModel.setTerms(terms);
-          //LHSModel.smodel.terms = terms;
         }, function(msg) {
           console.log(msg);
         });
@@ -62,7 +60,6 @@
             documentModel.targetHtml = data.result;
             documentModel.isProcessing = false;
         });
-        documentModel.documentId = documentModel.fileName;
         $location.path('/view/docId/' + documentModel.documentId);
       }
 
