@@ -89,3 +89,9 @@ angular.module('SkrollApp')
   });
 
 }]);
+
+
+angular.module('SkrollApp')
+.config(['$httpProvider', function($httpProvider) {
+	$httpProvider.defaults.withCredentials = true;
+}]);

@@ -18,8 +18,6 @@
 
     //-- private variables
     var url = $routeParams.q;
-    var urlf = url.split('/');
-    var fileName = urlf[urlf.length - 1];
     if (url == null) {
       return;
     }
@@ -32,12 +30,12 @@
 
     console.log(url);
     documentService.importDoc(url, true)
-      .then(function(data) {
-        documentModel.documentId = fileName;
-        documentModel.targetHtml = data;
+      .then(function(response) {
+        documentModel.documentId = response.documentId
+        documentModel.targetHtml = response.html;
         documentModel.isPartiallyParsed = true;
         $location.search({});
-        $location.path('/view/docId/' + fileName);
+        $location.path('/view/docId/' + documentModel.documentId);
       });
   }
 
