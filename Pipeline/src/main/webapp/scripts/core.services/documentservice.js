@@ -157,10 +157,10 @@
     /**
     * Returns a promise to get benchmark score
     */
-    function getBenchmarkScore() {
+    function getBenchmarkScore(documentId) {
       var deferred = $q.defer();
       /** make a get request */
-      $http.get(documentServiceBase + 'getBenchmarkScore')
+      $http.get(documentServiceBase + 'getBenchmarkScore?documentId=' + documentId)
         .success(function(data) {
           deferred.resolve(data);
         })
