@@ -80,6 +80,9 @@ task convertTrainingWeight(type: JavaExec) {
     File workingDir = new File('Pipeline/')
     main = 'com.skroll.util.ConvertTrainingWeight'
     classpath = sourceSets.main.runtimeClasspath
+    if(System.getProperty("exec.args") != null) {
+        args System.getProperty("exec.args").split()
+    }
 }
 
 

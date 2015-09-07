@@ -18,6 +18,7 @@ import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.document.factory.CorpusFSDocumentFactoryImpl;
 import com.skroll.document.factory.DocumentFactory;
 import com.skroll.trainer.TrainerConfiguration;
+import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,11 +43,12 @@ public class ConvertTrainingWeight {
     public String PRE_EVALUATED_FOLDER;
 
     @Inject
-    public ConvertTrainingWeight() {
+    public ConvertTrainingWeight(String corpusLocation) {
         try {
             Injector injector = Guice.createInjector(new AbstractModule() {
                 @Override
                 protected void configure() {
+                    bindConstant().annotatedWith(TrainerConfiguration.Location.class).to(corpusLocation);
                     bind(DocumentFactory.class)
                             .to(CorpusFSDocumentFactoryImpl.class);
                     bind(ModelFactory.class)
@@ -67,21 +69,23 @@ public class ConvertTrainingWeight {
 
     public static void main(String[] args) throws IOException, ObjectPersistUtil.ObjectPersistException, Exception {
 
-        ConvertTrainingWeight convertTrainingWeight = new ConvertTrainingWeight();
-        if (args == null)
-            logger.debug("NO ARGUMENT PROVIDED");
-        logger.debug("args:{}",args);
-        if (args != null && args.length > 1) {
-            if (args[0].equals("dir")) {
-                logger.debug("folder Name :" + args[1]);
-                convertTrainingWeight.convertTrainingWeightAnnotationIntoCategoryWeight(args[1]);
-            }
-        } else {
-            convertTrainingWeight.convertTrainingWeightAnnotationIntoCategoryWeight(convertTrainingWeight.PRE_EVALUATED_FOLDER);
-        }
+    Options options = new Options();
+    options.addOption("f", "folder", true, "provide the location of folder  to train or classify the documents");
+
+    CommandLineParser parser=new GnuParser();
+    CommandLine cmd=parser.parse(options,args);
+
+    String folder = cmd.getOptionValue("folder");
+    if(folder == null){
+        folder = "build/resources/main/preEvaluated/";
     }
 
+    logger.info("Folder name {}", cmd.getOptionValue("folder"));
+    ConvertTrainingWeight convertTrainingWeight = new ConvertTrainingWeight(folder);
+        convertTrainingWeight.convertTrainingWeightAnnotationIntoCategoryWeight(folder);
 
+
+}
     public void convertTrainingWeightAnnotationIntoCategoryWeight(String fileName) {
         FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(fileName));
         List<String> docLists = new ArrayList<String>();
