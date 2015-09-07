@@ -116,47 +116,6 @@ public class DocAPI {
         }
         return logErrorResponse("Failed to process attachments. Reason ");
     }
-
-    @GET
-    @Path("/importDoc")
-    @Produces(MediaType.TEXT_HTML)
-    public Response importDoc(@QueryParam("documentId") String docURL, @QueryParam("partialParse") String partialParse, @Context HttpHeaders hh, @BeanParam RequestBean request) throws Exception {
-        Document document = null;
-        String documentId = null;
-
-        try {
-            String content = DocumentHelper.fetchHtml(docURL);
-            documentId = UniqueIdGenerator.generateId(content);
-            if (request.getDocumentFactory().isDocumentExist(documentId)) {
-                document = request.getDocumentFactory().get(documentId);
-                logger.debug("Fetched the existing document: {}", documentId);
-            } else {
-                if (partialParse.equals("true")) {
-                    document = Parser.parsePartialDocumentFromHtml(content);
-                } else {
-                    document = Parser.parseDocumentFromHtml(content);
-                    //Streams require final objects
-                    String fDocumentId = documentId;
-                    document.setId(documentId);
-                    Document fDoc = document;
-                    request.getClassifiers().forEach(c -> c.classify(fDocumentId, fDoc));
-                    request.getDocumentFactory().putDocument(document);
-                    request.getDocumentFactory().saveDocument(document);
-                    logger.debug("Added document into the documentMap with a generated hash key:{}", documentId);
-                }
-            }
-            }catch(ParserException e){
-                return logErrorResponse("Failed to parse the uploaded file", e);
-            }catch(Exception e){
-                return logErrorResponse("Failed to classify", e);
-            }
-        logger.info("DocumentId:{}",documentId);
-        return Response.status(Response.Status.OK)
-                .header("documentId", documentId)
-                .entity(document.getTarget().getBytes(Constants.DEFAULT_CHARSET))
-                .type(MediaType.TEXT_HTML).build();
-    }
-
     private Document fetchOrSaveDocument(String documentId, String content, DocumentFactory documentFactory, List<Classifier> classifiers) throws Exception {
         Document document;
 
@@ -175,6 +134,54 @@ public class DocAPI {
         }
         return document;
     }
+    @GET
+    @Path("/importDoc")
+    @Produces(MediaType.TEXT_HTML)
+    public Response importDoc(@QueryParam("documentId") String docURL, @QueryParam("partialParse") String partialParse, @Context HttpHeaders hh, @BeanParam RequestBean request) throws Exception {
+        Document document = null;
+        String documentId = null;
+        boolean inCache = false;
+        try {
+            documentId = UniqueIdGenerator.generateId(docURL);
+            if (request.getDocumentFactory().isDocumentExist(documentId)) {
+                document = request.getDocumentFactory().get(documentId);
+                inCache = true;
+                logger.debug("Fetched the existing document: {}", documentId);
+            } else {
+                if (partialParse.equals("true")) {
+                    document = Parser.parsePartialDocumentFromUrl(docURL);
+                } else {
+                    document = Parser.parseDocumentFromUrl(docURL);
+                    //Streams require final objects
+                    String fDocumentId = documentId;
+                    document.setId(documentId);
+                    Document fDoc = document;
+                    request.getClassifiers().forEach(c -> c.classify(fDocumentId, fDoc));
+                    request.getDocumentFactory().putDocument(document);
+                    request.getDocumentFactory().saveDocument(document);
+                    logger.debug("Added document into the documentMap with a generated hash key:{}", documentId);
+                }
+            }
+            }catch(ParserException e){
+                return logErrorResponse("Failed to parse the uploaded file", e);
+            }catch(Exception e){
+                return logErrorResponse("Failed to classify", e);
+            }
+
+        logger.info("DocumentId:{}",documentId);
+        logger.info("InCache:{}",inCache);
+        if (document == null) {
+            logger.debug("Issue in parsing document: {}", documentId.toString());
+            return logErrorResponse("Failed to read/deserialize document from Pre Evaluated Folder");
+        }
+        return Response.status(Response.Status.OK)
+                    .header("documentId", documentId)
+                    .header("inCache",inCache)
+                    .entity(document.getTarget().getBytes(Constants.DEFAULT_CHARSET))
+                    .type(MediaType.TEXT_HTML).build();
+    }
+
+
 
     /**
      * list the docs under the pre Evaluated Folder
