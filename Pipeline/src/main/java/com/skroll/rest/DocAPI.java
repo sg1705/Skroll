@@ -116,24 +116,7 @@ public class DocAPI {
         }
         return logErrorResponse("Failed to process attachments. Reason ");
     }
-    private Document fetchOrSaveDocument(String documentId, String content, DocumentFactory documentFactory, List<Classifier> classifiers) throws Exception {
-        Document document;
 
-        if (documentFactory.isDocumentExist(documentId)) {
-            document = documentFactory.get(documentId);
-            logger.debug("Fetched the existing document: {}", documentId);
-        } else {
-            document = Parser.parseDocumentFromHtml(content);
-            document.setId(documentId);
-            for (Classifier classifier : classifiers) {
-                document = (Document) classifier.classify(documentId, document);
-            }
-            documentFactory.putDocument(document);
-            documentFactory.saveDocument(document);
-            logger.debug("Added document into the documentMap with a generated hash key: {}", documentId);
-        }
-        return document;
-    }
     @GET
     @Path("/importDoc")
     @Produces(MediaType.TEXT_HTML)
@@ -181,7 +164,24 @@ public class DocAPI {
                     .type(MediaType.TEXT_HTML).build();
     }
 
+    private Document fetchOrSaveDocument(String documentId, String content, DocumentFactory documentFactory, List<Classifier> classifiers) throws Exception {
+        Document document;
 
+        if (documentFactory.isDocumentExist(documentId)) {
+            document = documentFactory.get(documentId);
+            logger.debug("Fetched the existing document: {}", documentId);
+        } else {
+            document = Parser.parseDocumentFromHtml(content);
+            document.setId(documentId);
+            for (Classifier classifier : classifiers) {
+                document = (Document) classifier.classify(documentId, document);
+            }
+            documentFactory.putDocument(document);
+            documentFactory.saveDocument(document);
+            logger.debug("Added document into the documentMap with a generated hash key: {}", documentId);
+        }
+        return document;
+    }
 
     /**
      * list the docs under the pre Evaluated Folder
