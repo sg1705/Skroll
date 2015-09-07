@@ -87,8 +87,6 @@ public class Parser {
         return parseInDoc(document, FetchMode.URL, ParseMode.FULL);
     }
 
-
-
     /**
      * Returns a parsed document from a file
      *
