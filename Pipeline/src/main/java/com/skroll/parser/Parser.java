@@ -49,7 +49,6 @@ public class Parser {
         return document;
     }
 
-
     /**
      * Returns the parsed document from Html file.
      *
@@ -61,7 +60,6 @@ public class Parser {
         document.set(CoreAnnotations.SourceUrlAnnotation.class, url);
         return parseInDoc(document, FetchMode.URL, ParseMode.PARTIAL);
     }
-
 
     /**
      * Returns the parsed document from Html file.
@@ -161,5 +159,4 @@ public class Parser {
         }
         return newDoc;
     }
-
 }
