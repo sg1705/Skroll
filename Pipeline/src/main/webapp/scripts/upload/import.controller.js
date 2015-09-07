@@ -33,6 +33,11 @@
       .then(function(response) {
         documentModel.documentId = response.documentId
         documentModel.targetHtml = response.html;
+        if ( (response.inCache == null) || (response.inCache == 'false')) {
+          response.inCache = false;         
+        } else {
+          response.inCache = true;
+        }
         if (response.inCache) {
           documentModel.isPartiallyParsed = false;  
         } else {
