@@ -12,11 +12,8 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MultivaluedMap;
 import java.util.List;
-import java.util.Map;
 
 /** DocTypeRequestBean encapsulate all the information a DocType API functions need to act upon...
  * Created by saurabhagarwal on 8/30/2015.
@@ -52,12 +49,8 @@ public class DocTypeRequestBean {
                               ClassifierFactoryStrategy classifierFactoryStrategy,
                               ClassifierFactory classifierFactory) throws Exception {
         if(documentId == null) {
-            MultivaluedMap<String, String> headerParams = hh.getRequestHeaders();
-            Map<String, Cookie> pathParams = hh.getCookies();
-             if(pathParams.get("documentId")!=null)
-                 documentId = pathParams.get("documentId").getValue();
+            throw new Exception("documentId passed from viewer is null!!");
         }
-
         logger.info("Document Id: {}",documentId);
 
         if (documentId != null) {

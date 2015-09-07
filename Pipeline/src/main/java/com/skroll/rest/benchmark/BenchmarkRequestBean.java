@@ -11,10 +11,7 @@ import com.skroll.document.factory.DocumentFactory;
 import javax.inject.Inject;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MultivaluedMap;
-import java.util.Map;
 
 /**
  * Created by saurabh on 4/17/15.
@@ -40,10 +37,7 @@ public class BenchmarkRequestBean {
                                 ClassifierFactory classifierFactory) throws Exception {
 
         if(documentId == null) {
-            MultivaluedMap<String, String> headerParams = hh.getRequestHeaders();
-            Map<String, Cookie> pathParams = hh.getCookies();
-             if(pathParams.get("documentId")!=null)
-                 documentId = pathParams.get("documentId").getValue();
+            throw new Exception("documentId passed from viewer is null");
         }
 
         if (documentId != null) {

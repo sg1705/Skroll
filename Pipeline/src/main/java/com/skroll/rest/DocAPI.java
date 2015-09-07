@@ -18,6 +18,7 @@ import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.ParserException;
 import com.skroll.pipeline.util.Constants;
 import com.skroll.util.Configuration;
+import com.skroll.util.UniqueIdGenerator;
 import org.glassfish.jersey.media.multipart.BodyPart;
 import org.glassfish.jersey.media.multipart.BodyPartEntity;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
@@ -31,7 +32,6 @@ import javax.ws.rs.core.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -102,8 +102,7 @@ public class DocAPI {
             //parse, classify and store the document
             try {
                 content = CharStreams.toString(reader);
-                //TODO: Add back the UniqueIdGenerator code after viewer integration
-                documentId = fileName; //UniqueIdGenerator.generateId(content);
+                documentId = UniqueIdGenerator.generateId(content);
                 List<Classifier> classifiers = request.getClassifiers();
                 document = fetchOrSaveDocument(documentId, content, request.getDocumentFactory(), classifiers);
                 reader.close();
@@ -121,44 +120,48 @@ public class DocAPI {
     @GET
     @Path("/importDoc")
     @Produces(MediaType.TEXT_HTML)
-    public Response importDoc(@QueryParam("documentId") String documentId, @QueryParam("partialParse") String partialParse, @Context HttpHeaders hh, @BeanParam RequestBean request) throws Exception {
+    public Response importDoc(@QueryParam("documentId") String docURL, @QueryParam("partialParse") String partialParse, @Context HttpHeaders hh, @BeanParam RequestBean request) throws Exception {
         Document document = null;
-        String fileName = new URL(documentId).getPath();
-        String[] strs = fileName.split("/");
-        if (partialParse == null)
-            partialParse = "false";
-        fileName = strs[strs.length - 1];
-        String uniqueDocumentId = null;
+        String documentId = null;
+        boolean inCache = false;
         try {
-            List<Classifier> classifiers = request.getClassifiers();
-            //TODO: Add back the UniqueIdGenerator code after viewer integration
-            //uniqueDocumentId = UniqueIdGenerator.generateId(content);
-            //fetchOrSaveDocument(uniqueDocumentId, content, request.getDocumentFactory(), classifiers);
-
-            if (partialParse.equals("true")) {
-                document = Parser.parsePartialDocumentFromUrl(documentId);
+            documentId = UniqueIdGenerator.generateId(docURL);
+            if (request.getDocumentFactory().isDocumentExist(documentId)) {
+                document = request.getDocumentFactory().get(documentId);
+                inCache = true;
+                logger.debug("Fetched the existing document: {}", documentId);
             } else {
-                document = Parser.parseDocumentFromUrl(documentId);
-                //Streams require final objects
-                String fName = fileName;
-                Document fDoc = document;
-                request.getClassifiers().forEach(c -> c.classify(fName, fDoc));
-                document.setId(fileName);
-                request.getDocumentFactory().putDocument(document);
-                request.getDocumentFactory().saveDocument(document);
-                logger.debug("Added document into the documentMap with a generated hash key:{}" ,fileName);
+                if (partialParse.equals("true")) {
+                    document = Parser.parsePartialDocumentFromUrl(docURL);
+                } else {
+                    document = Parser.parseDocumentFromUrl(docURL);
+                    //Streams require final objects
+                    String fDocumentId = documentId;
+                    document.setId(documentId);
+                    Document fDoc = document;
+                    request.getClassifiers().forEach(c -> c.classify(fDocumentId, fDoc));
+                    request.getDocumentFactory().putDocument(document);
+                    request.getDocumentFactory().saveDocument(document);
+                    logger.debug("Added document into the documentMap with a generated hash key:{}", documentId);
+                }
+            }
+            }catch(ParserException e){
+                return logErrorResponse("Failed to parse the uploaded file", e);
+            }catch(Exception e){
+                return logErrorResponse("Failed to classify", e);
             }
 
-        } catch (ParserException e) {
-            return logErrorResponse("Failed to parse the uploaded file", e);
-        } catch (Exception e) {
-            return logErrorResponse("Failed to classify", e);
+        logger.info("DocumentId:{}",documentId);
+        logger.info("InCache:{}",inCache);
+        if (document == null) {
+            logger.debug("Issue in parsing document: {}", documentId.toString());
+            return logErrorResponse("Failed to read/deserialize document from Pre Evaluated Folder");
         }
-        logger.info(fileName);
         return Response.status(Response.Status.OK)
-                .header("documentId", fileName)
-                .entity(document.getTarget().getBytes(Constants.DEFAULT_CHARSET))
-                .type(MediaType.TEXT_HTML).build();
+                    .header("documentId", documentId)
+                    .header("inCache",inCache)
+                    .entity(document.getTarget().getBytes(Constants.DEFAULT_CHARSET))
+                    .type(MediaType.TEXT_HTML).build();
     }
 
     private Document fetchOrSaveDocument(String documentId, String content, DocumentFactory documentFactory, List<Classifier> classifiers) throws Exception {
@@ -208,20 +211,23 @@ public class DocAPI {
     public Response getDoc(@QueryParam("documentId") String documentId, @Context HttpHeaders hh, @BeanParam RequestBean request) {
 
         logger.info("Opening [{}]", documentId);
-        Document doc = request.getDocument();
-        if (doc == null) {
+        Document document = request.getDocument();
+        if (document == null) {
             logger.debug("Not found in documentMap, fetching from corpus: {}", documentId.toString());
             return logErrorResponse("Failed to read/deserialize document from Pre Evaluated Folder");
         }
         //Streams require final objects
-        final Document finalDoc = doc;
+        final Document finalDoc = document;
         try {
             request.getClassifiers().forEach(c -> c.classify(documentId, finalDoc));
-            request.getDocumentFactory().putDocument(doc);
+            request.getDocumentFactory().putDocument(document);
         } catch (Exception e) {
             return logErrorResponse("Failed to classify/store document", e);
         }
-        return Response.status(Response.Status.OK).cookie(new NewCookie("documentId", documentId)).entity(doc.getTarget().getBytes(Constants.DEFAULT_CHARSET)).build();
+        return Response.status(Response.Status.OK)
+                .header("documentId", documentId)
+                .entity(document.getTarget().getBytes(Constants.DEFAULT_CHARSET))
+                .type(MediaType.TEXT_HTML).build();
     }
 
     @GET
