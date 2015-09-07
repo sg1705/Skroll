@@ -33,7 +33,11 @@
       .then(function(response) {
         documentModel.documentId = response.documentId
         documentModel.targetHtml = response.html;
-        documentModel.isPartiallyParsed = true;
+        if (response.inCache) {
+          documentModel.isPartiallyParsed = false;  
+        } else {
+          documentModel.isPartiallyParsed = true;
+        }
         $location.search({});
         $location.path('/view/docId/' + documentModel.documentId);
       });

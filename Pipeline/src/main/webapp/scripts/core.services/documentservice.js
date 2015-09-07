@@ -105,6 +105,7 @@
           var resp = {};
           resp.html = data;
           resp.documentId = headers('documentId');
+          resp.inCache = headers('inCache');
           deferred.resolve(resp);
         })
         .error(function(msg, code) {
