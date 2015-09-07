@@ -1,14 +1,22 @@
 <!-- Start the layout of the doc -->
 <div layout="row" style="height:100%">
-  <!-- more comment -->
-  <!-- LHS -->
-  <md-sidenav layout="column" class="md-sidenav-left"
-              md-component-id="left" md-is-locked-open="false" >
 
-    <md-content>
-      <pre id="rightPane"></pre>
+  <!-- LHS -->
+  <md-sidenav id="navframe" layout="column" class="md-sidenav-left" 
+              md-component-id="left" md-is-locked-open="$mdMedia('gt-md')" 
+              ng-swipe-left="ctrl.toggleSidenav('left')">
+
+    <div layout="column" flex>
+      <md-toolbar class="skroll-toolbar">
+        <sk-search ng-controller="SearchCtrl as ctrl"/>
+      </md-toolbar>
+
+    <md-content ng-class="{'sk-lhs-search-hover': ctrl.smodel.hover, 'sk-lhs-hover': !ctrl.smodel.hover}" 
+     flex class="md-padding" ng-controller="LHSLevelsCtrl as ctrl">
+      <sk-lhs />
     </md-content>
 
+    </div>
   </md-sidenav>
   <!-- end sidebar -->
 
@@ -45,23 +53,16 @@
   <!-- end content -->
 
   <!-- right sidenav -->
-  <md-sidenav id="navframe" layout="column" class="md-sidenav-right " 
-              md-component-id="right" md-is-locked-open="$mdMedia('gt-md')" 
-              ng-swipe-left="ctrl.toggleSidenav('left')">
+  <md-sidenav layout="column" class="md-sidenav-right"
+              md-component-id="right" md-is-locked-open="false" >
 
-
-    <div layout="column" flex>
-      <md-toolbar class="skroll-toolbar">
-        <sk-search ng-controller="SearchCtrl as ctrl"/>
-      </md-toolbar>
-
-    <md-content ng-class="{'sk-lhs-search-hover': ctrl.smodel.hover, 'sk-lhs-hover': !ctrl.smodel.hover}" 
-     flex class="md-padding" ng-controller="LHSLevelsCtrl as ctrl">
-      <sk-lhs />
+    <md-content>
+      <pre id="rightPane"></pre>
     </md-content>
 
-    </div>
   </md-sidenav>
+
+
   <!-- end sidebar -->
 
 </div>
