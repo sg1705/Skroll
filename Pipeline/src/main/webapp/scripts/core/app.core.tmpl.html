@@ -11,7 +11,7 @@
         <sk-search ng-controller="SearchCtrl as ctrl"/>
       </md-toolbar>
 
-    <md-content ng-class="{'sk-lhs-search-hover': ctrl.smodel.hover, 'sk-lhs-hover': !ctrl.smodel.hover}" 
+    <md-content ng-class="{'sk-lhs-search-hover': ctrl.smodel.hover, 'sk-lhs-hover': !ctrl.smodel.hover}" md-scroll-y
      flex class="md-padding" ng-controller="LHSLevelsCtrl as ctrl">
       <sk-lhs />
     </md-content>
