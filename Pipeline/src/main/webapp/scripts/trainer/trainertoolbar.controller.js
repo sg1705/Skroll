@@ -129,7 +129,7 @@
 							'graph_' + kk));
 						chart.draw(chartData, options);
 					}
-					$mdSidenav('left').toggle();
+					$mdSidenav('right').toggle();
 				}), function(data, status) {
 					console.log(status);
 				});
@@ -167,7 +167,7 @@
 						ds = newJson;
 					}
 					$("#rightPane").html(ds);
-					$mdSidenav('left').toggle();
+					$mdSidenav('right').toggle();
 				}), function(data, status) {
 					console.log(status);
 				});
