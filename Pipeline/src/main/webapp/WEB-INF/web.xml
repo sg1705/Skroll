@@ -6,6 +6,21 @@
 
     <display-name>Skroll</display-name>
 
+    <filter>
+        <filter-name>GzipFilter</filter-name>
+        <filter-class>org.eclipse.jetty.servlets.GzipFilter</filter-class>
+        <init-param>
+            <param-name>mimeTypes</param-name>
+            <param-value>text/html,text/plain,text/xml</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>GzipFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+
     <servlet>
         <servlet-name>Base URL Servlet</servlet-name>
         <servlet-class>com.skroll.viewer.BaseURLServlet</servlet-class>
