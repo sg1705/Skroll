@@ -26,7 +26,8 @@
       observeNone            : observeNone,
       getProbabilityDump     : getProbabilityDump,
       fetchProbabilities     : fetchProbabilities,
-      updateBenchmark        : updateBenchmark
+      updateBenchmark        : updateBenchmark,
+      updateDocType          : updateDocType
 
     };
 
@@ -130,6 +131,25 @@
       var deferred = $q.defer();
       /** make a get request */
       $http.get(instrumentServiceBase + 'getProbabilityDump' + '?documentId=' + documentId)
+        .success(function(data, status) {
+          deferred.resolve(data);
+        })
+        .error(function(msg, code) {
+          deferred.reject(msg);
+          $log.error(msg, code);
+        });;
+      /** done with get request */
+      return deferred.promise;
+    };
+
+
+    /**
+     * Returns a promise to update document type
+     */
+    function updateDocType(documentId, docTypeId) {
+      var deferred = $q.defer();
+      /** make a get request */
+      $http.get(documentServiceBase + 'updateDocType' + '?documentId=' + documentId + '&docType=' + docTypeId)
         .success(function(data, status) {
           deferred.resolve(data);
         })
