@@ -28,7 +28,7 @@ public class ConvertTrainingWeightTest {
 
     @Test
     public void testConvertTrainingWeightAnnotationIntoCategoryWeight() throws Exception {
-        ConvertTrainingWeight convertTrainingWeight = new ConvertTrainingWeight();
+        ConvertTrainingWeight convertTrainingWeight = new ConvertTrainingWeight("build/resources/main/preEvaluated/");
         CoreMap paragraph = document.getParagraphs().get(0);
         int categoryId = Category.DEFINITION;
         CategoryAnnotationHelper.annotateParagraphWithTokensAndCategory(paragraph, DocumentHelper.getTokens(Lists.newArrayList("becontinuing", ",")), Category.DEFINITION);
