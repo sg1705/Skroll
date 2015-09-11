@@ -14,36 +14,38 @@
     .controller('ImportCtrl', ImportCtrl);
 
   /* @ngInject */
-  function ImportCtrl($location, $routeParams, $http) {
+  function ImportCtrl($location, $routeParams, $http, documentService) {
 
     //-- private variables
     var url = $routeParams.q;
-    var urlf = url.split('/');
-    var fileName = urlf[urlf.length - 1];
     if (url == null) {
       return;
     }
     documentModel.isProcessing = true;
+    documentModel.url = url;
 
     //////////////
 
     //-- execute
 
     console.log(url);
-    $http.get('restServices/doc/importDoc?documentId=' + $routeParams.q)
-      .success(function(data) {
-        console.log(data);
-        var docId = data.documentId;
+    documentService.importDoc(url, true)
+      .then(function(response) {
+        documentModel.documentId = response.documentId
+        documentModel.targetHtml = response.html;
+        if ( (response.inCache == null) || (response.inCache == 'false')) {
+          response.inCache = false;         
+        } else {
+          response.inCache = true;
+        }
+        if (response.inCache) {
+          documentModel.isPartiallyParsed = false;  
+        } else {
+          documentModel.isPartiallyParsed = true;
+        }
         $location.search({});
-        $location.path('/view/docId/' + fileName);
+        $location.path('/view/docId/' + documentModel.documentId);
       });
   }
-
-  // var BackdropCtrl = function(documentModel) {
-  //   this.isProcessing = documentModel.isProcessing;
-  // }
-
-  // angular.module('SkrollApp')
-  //   .controller('BackdropCtrl', ['documentModel', BackdropCtrl]);
 
 })();

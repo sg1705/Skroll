@@ -34,13 +34,6 @@ import java.util.List;
  * Created by saurabhagarwal on 1/19/15.
  */
 
-/* arguments to use for testing
---trainWithOverride src/main/resources/trainingDocuments/TOC
---classify src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html
---working path C:\Users\wei2learn\IdeaProjects\Skroll3\Pipeline
-
- */
-
 public class TOCTrainer {
     //The following line needs to be added to enable log4j
     public static final Logger logger = LoggerFactory
@@ -50,8 +43,8 @@ public class TOCTrainer {
     private static Classifier tocClassifier = null;
     static {
         try {
-            documentClassifier = classifierFactory.getClassifier(Category.DEFINITION);
-            tocClassifier = classifierFactory.getClassifier(Category.TOC_1);
+            documentClassifier = classifierFactory.getClassifier(ClassifierFactory.UNIVERSAL_TOC_CLASSIFIER_ID);
+            tocClassifier = classifierFactory.getClassifier(ClassifierFactory.UNIVERSAL_TOC_CLASSIFIER_ID);
         } catch (Exception e) {
             e.printStackTrace();
         }

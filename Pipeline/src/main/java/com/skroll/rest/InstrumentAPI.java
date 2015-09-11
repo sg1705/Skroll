@@ -7,6 +7,7 @@ import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
+import com.skroll.document.annotation.DocTypeAnnotationHelper;
 import com.skroll.util.Configuration;
 import com.skroll.util.Flags;
 import org.slf4j.Logger;
@@ -68,6 +69,13 @@ public class InstrumentAPI {
         String probabilityJson;
         buf.append("[");
         int paraIndex = 0;
+        probabilityJson = gson.toJson("DocType:" + DocTypeAnnotationHelper.getDocType(doc));
+        buf.append(probabilityJson);
+        buf.append(",");
+        probabilityJson = gson.toJson("DocType Training Weight:" + DocTypeAnnotationHelper.getDocTypeTrainingWeight(doc));
+        buf.append(probabilityJson);
+        buf.append(",");
+
         for (CoreMap paragraph : doc.getParagraphs()) {
             if (paragraph.getId().equals(paragraphId)) {
                 //found it
@@ -97,6 +105,9 @@ public class InstrumentAPI {
             buf.append(",");
             */
             for (Classifier classifier : request.getClassifiers()) {
+                probabilityJson = gson.toJson("ClassifierId:" + classifier.getId());
+                buf.append(probabilityJson);
+                buf.append(",");
                 HashMap<String, HashMap<String, HashMap<String, Double>>> map = classifier.getBNIVisualMap(documentId, paraIndex);
                 probabilityJson = gson.toJson(map);
                 buf.append(probabilityJson);
@@ -104,6 +115,9 @@ public class InstrumentAPI {
             }
 
             for (Classifier classifier : request.getClassifiers()) {
+                probabilityJson = gson.toJson("ClassifierId:" + classifier.getId());
+                buf.append(probabilityJson);
+                buf.append(",");
                 HashMap<String, HashMap<String, HashMap<String, Double>>> modelMap = classifier.getModelVisualMap();
                 buf.append(gson.toJson(modelMap));
                 buf.append(",");
@@ -227,7 +241,7 @@ public class InstrumentAPI {
             return Response.ok().status(Response.Status.OK).entity(json).build();
         } catch (Exception ex) {
             ex.printStackTrace();
-            return Response.status(Response.Status.EXPECTATION_FAILED).entity("documentId is missing from Cookie").type(MediaType.TEXT_HTML).build();
+            return Response.status(Response.Status.EXPECTATION_FAILED).entity("documentId is missing").type(MediaType.TEXT_HTML).build();
 
         }
     }

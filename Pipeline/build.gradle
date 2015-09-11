@@ -61,18 +61,28 @@ task trainBenchmarkModelWithWeight(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
 }
 
-task trainWithWeight(type: JavaExec) {
-    args = ['--trainWithWeight', 'build/resources/main/preEvaluated/']
-    File workingDir = new File('Pipeline/')
-    main = 'com.skroll.trainer.SkrollTrainer'
-    classpath = sourceSets.main.runtimeClasspath
-}
 
+
+task trainer (type: JavaExec) {
+    main = 'com.skroll.trainer.Trainer'
+    File workingDir = new File('Pipeline/')
+    classpath = sourceSets.main.runtimeClasspath
+    if(System.getProperty("exec.args") == null) {
+        args '-c help'
+    }
+    if(System.getProperty("exec.args") != null) {
+        args System.getProperty("exec.args").split()
+    }
+
+}
 
 task convertTrainingWeight(type: JavaExec) {
     File workingDir = new File('Pipeline/')
     main = 'com.skroll.util.ConvertTrainingWeight'
     classpath = sourceSets.main.runtimeClasspath
+    if(System.getProperty("exec.args") != null) {
+        args System.getProperty("exec.args").split()
+    }
 }
 
 
@@ -108,6 +118,6 @@ task start(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
 }
 
-trainWithWeight.dependsOn cleanModels
+trainer.dependsOn cleanModels
 clean.dependsOn cleanModels
 test.dependsOn createTestDirectories

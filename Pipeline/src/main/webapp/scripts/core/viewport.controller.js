@@ -40,7 +40,6 @@
     function mouseMove($event) {
       //console.log('mouse moved');
       var paraId = vm.inferParagraphId($event);
-      console.log(paraId);
 
     }
 
@@ -108,9 +107,9 @@
 
     function inferParagraphId($event) {
       var parents = $($event.target).parents("div[id^='p_']");
-      for (var ii = 0; ii < parents.length; ii++) {
-        console.log($(parents[ii]).attr('id'));
-      }
+      // for (var ii = 0; ii < parents.length; ii++) {
+      //   console.log($(parents[ii]).attr('id'));
+      // }
 
       var children = $($event.target).children("div[id^='p_']");
       //console.log('children:' + children.length);

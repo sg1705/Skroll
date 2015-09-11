@@ -14,6 +14,12 @@ public class Category {
     public static final int TOC_2 = 3;
     public static final int USER_TOC = 4;
 
+    //Document Type
+    public static final int DOCTYPE_NONE = 100;
+    public static final int TEN_K = 101;
+    public static final int TEN_Q = 102;
+    public static final int INDENTURE = 103;
+
     int id;
     String name;
 
@@ -27,6 +33,10 @@ public class Category {
     public Category(int id, String name){
         this.id =id;
         this.name=name;
+    }
+
+    public static List<Integer> getDocType()  {
+        return Arrays.asList(TEN_K,TEN_Q,INDENTURE);
     }
 
 }

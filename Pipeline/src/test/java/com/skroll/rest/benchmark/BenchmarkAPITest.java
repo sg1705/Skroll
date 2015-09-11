@@ -12,6 +12,9 @@ import javax.ws.rs.core.NewCookie;
 public class BenchmarkAPITest extends APITest {
 
 
+    public BenchmarkAPITest() throws Exception {
+    }
+
     @Test
     public void testSaveBenchmarkFile() throws Exception {
         String TARGET_URL = "http://localhost:8888/restServices/doc/saveBenchmarkFile";
@@ -46,7 +49,7 @@ public class BenchmarkAPITest extends APITest {
         String TARGET_URL = "http://localhost:8888/restServices/doc/getBenchmarkScore";
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
-        String response = webTarget.request().cookie(new NewCookie("documentId", "smaller-indenture.html")).get(String.class);
+        String response = webTarget.request().cookie(new NewCookie("documentId", documentId)).get(String.class);
         logger.info("Here is the response: " + response);
         assert(response.contains("{\"stats\":[{\"categoyId\""));
         // test setup upload

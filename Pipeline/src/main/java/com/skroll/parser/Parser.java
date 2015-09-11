@@ -4,7 +4,7 @@ import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.document.annotation.CoreAnnotations;
-import com.skroll.parser.extractor.ParserException;
+import com.skroll.parser.extractor.*;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
@@ -21,11 +21,26 @@ public class Parser {
     public static final int VERSION = 1;
     public static final Logger logger = LoggerFactory.getLogger(Parser.class);
 
-    private static Document parseInDoc(Document document) throws ParserException {
+    private static Document parseInDoc(Document document, int fetchMode, int parseMode)
+            throws ParserException {
+
+        //create phantomjs extractor
+        PhantomJsExtractor phExtractor = new PhantomJsExtractor();
+        phExtractor.setFetchMode(fetchMode);
+        phExtractor.setParseMode(parseMode);
+        try {
+            document = phExtractor.process(document);
+        } catch (Exception e) {
+            throw new ParserException(e);
+        }
+
+        if (parseMode == ParseMode.PARTIAL) {
+            return document;
+        }
+
         //create a pipeline
         Pipeline<Document, Document> pipeline =
                 new Pipeline.Builder()
-                        .add(Pipes.PARSE_HTML_TO_DOC)
                         .add(Pipes.POST_EXTRACTION_PIPE)
                         .add(Pipes.TOKENIZE_PARAGRAPH_IN_HTML_DOC)
                         .build();
@@ -34,6 +49,17 @@ public class Parser {
         return document;
     }
 
+    /**
+     * Returns the parsed document from Html file.
+     *
+     * @param url
+     * @return document
+     */
+    public static Document parsePartialDocumentFromUrl(String url) throws ParserException {
+        Document document = new Document();
+        document.set(CoreAnnotations.SourceUrlAnnotation.class, url);
+        return parseInDoc(document, FetchMode.URL, ParseMode.PARTIAL);
+    }
 
     /**
      * Returns the parsed document from Html file.
@@ -44,23 +70,20 @@ public class Parser {
     public static Document parseDocumentFromHtml(String htmlText) throws ParserException {
         Document document = new Document();
         document.setSource(htmlText);
-        return parseInDoc(document);
+        return parseInDoc(document, FetchMode.FILE, ParseMode.FULL);
     }
 
     /**
      * Returns the parsed document from Html file.
      *
-     * @param htmlText
+     * @param url
      * @return document
      */
-    public static Document parseDocumentFromHtml(String htmlText, String url) throws ParserException {
+    public static Document parseDocumentFromUrl(String url) throws ParserException {
         Document document = new Document();
-        document.setSource(htmlText);
         document.set(CoreAnnotations.SourceUrlAnnotation.class, url);
-        return parseInDoc(document);
+        return parseInDoc(document, FetchMode.URL, ParseMode.FULL);
     }
-
-
 
     /**
      * Returns a parsed document from a file
@@ -111,6 +134,10 @@ public class Parser {
         if (newDoc.getParagraphs().size() != document.getParagraphs().size()) {
             return document;
         }
+        if (document.containsKey(CoreAnnotations.SourceUrlAnnotation.class)) {
+            newDoc.set(CoreAnnotations.SourceUrlAnnotation.class,
+                    document.get(CoreAnnotations.SourceUrlAnnotation.class));
+        }
         for(int ii = 0; ii < newDoc.getParagraphs().size(); ii++) {
             //copy annotations over
             CoreMap paragraph = document.getParagraphs().get(ii);
@@ -132,5 +159,4 @@ public class Parser {
         }
         return newDoc;
     }
-
 }

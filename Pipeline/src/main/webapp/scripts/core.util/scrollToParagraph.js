@@ -13,7 +13,7 @@
     .directive('scrollToParagraph', scrollToParagraph);
 
   /* @ngInject */  
-  function scrollToParagraph(selectionService, scrollObserverService) {
+  function scrollToParagraph(selectionService, scrollObserverService, $analytics) {
 
     var directive = {
       restricted: 'A',
@@ -27,6 +27,7 @@
     function link(scope, element, attrs) {
       var paragraphId = attrs.scrollToParagraph;
       var para = $(element).click(function() {
+        $analytics.eventTrack('tocClick');
         scrollObserverService.notify(paragraphId);
         selectionService.scrollToParagraph(paragraphId);
         scope.$apply();

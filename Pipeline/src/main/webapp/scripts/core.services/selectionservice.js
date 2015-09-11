@@ -23,7 +23,8 @@
 				 	selectedText 					= '',
 					mouseDownParaId 			= '',
 					serializedSelection 	= '',
-					serializedParagraphId = '';
+					serializedParagraphId = '',
+					shortLink             = '';
 
     //-- service definition
     var service = {
@@ -34,7 +35,7 @@
     	mouseDownParaId  			: mouseDownParaId,
     	serializedSelection 	: serializedSelection,
     	serializedParagraphId	: serializedParagraphId,
-
+    	shortLink             : shortLink,
 
     	//-- service functions
     	scrollToParagraph 	: scrollToParagraph,
@@ -89,6 +90,7 @@
 			this.paragraphId = paraId;
 			this.selectedText = selectedText;
 			this.serializedParagraphId = paraId;
+			this.shortLink = '';
 			var selection = { };
 			selection.rangy = rangy.getSelection().saveCharacterRanges($("#"+paraId).get(0));
 			selection.paraId = paraId;
@@ -106,6 +108,7 @@
 			this.selectedText = '';
 			this.serializedSelection = "";
 			this.serializedParagraphId = "";
+			this.shortLink = '';
 
 		}
 

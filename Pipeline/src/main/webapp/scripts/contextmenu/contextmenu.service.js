@@ -17,14 +17,14 @@
 		.service('contextMenuService', ContextMenuService)
 
 	/* @ngInject */
-	function ContextMenuService(textSelectionObserverService, $mdToast, $mdUtil, $mdMedia, $animate, featureFlags) {
+	function ContextMenuService(textSelectionObserverService, $document, $mdToast, $mdUtil, $mdMedia, $animate, featureFlags) {
 
 		//-- private variables
 		var service = this;
 		var isOpen = false;
 
 		//-- public variables
-		service.onSelection = onSelection
+		service.onSelection = onSelection;
 
 		////////////
 
@@ -40,12 +40,10 @@
 			var s = window.getSelection();
 			var oRange = s.getRangeAt(0); //get the text range
 			var oRect = oRange.getBoundingClientRect();			
-			console.log(oRect);
 
-	    //$mdToast.show($mdToast.simple().content('Hello!'));
 	    $mdToast.show({
 	      templateUrl : 'scripts/contextmenu/contextmenu.tmpl.html',
-	      hideDelay 	: 0,
+	      hideDelay 	: 6000,
 	      onShow 			: onShow,
 	      onRemove 		: onRemove,
 	      theme 			: 'default-dark',
@@ -83,6 +81,16 @@
 	      element.addClass(options.position.split(' ').map(function(pos) {
 	        return 'md-' + pos;
 	      }).join(' '));
+
+	    //   $document.one('click.toast', clickHandler);
+
+	    //   function clickHandler(e) {
+					// scope.$apply(function(){
+					// 	onRemove(scope, element, options);
+					// });
+					// return false;
+					
+	    //   }
 
 				return $animate.enter(element, options.parent)
 	      	.then(function(response){
@@ -195,7 +203,7 @@
           $mdToast.hide();
         //});
       }
-
+         
 		}
 
 	}

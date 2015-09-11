@@ -13,10 +13,14 @@ angular.module('SkrollApp', [
 	'ngAnimate',
 	'ngMaterial',
 	'ngSanitize',
+	'ngCookies',
 	'ngTouch',
 	'ngRoute',
 	'ngSilent',
 	'feature-flags',
+	'zeroclipboard',
+	'angulartics',
+	'angulartics.google.analytics',
 	'app.core',
 	'app.core.services',
 	'app.core.util',
@@ -77,4 +81,17 @@ angular.module('SkrollApp')
   $mdThemingProvider.theme('default-dark')
   	.primaryPalette('blue')
     .dark();
-});
+})
+.config(['uiZeroclipConfigProvider', function(uiZeroclipConfigProvider) {
+  // config ZeroClipboard
+  uiZeroclipConfigProvider.setZcConf({
+    swfPath: '../bower_components/zeroclipboard/dist/ZeroClipboard.swf'
+  });
+
+}]);
+
+
+angular.module('SkrollApp')
+.config(['$httpProvider', function($httpProvider) {
+	$httpProvider.defaults.withCredentials = true;
+}]);

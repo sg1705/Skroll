@@ -103,7 +103,7 @@ public class DocProcessor {
             }
             if (tocTokensString.contains(paraTokenString)) {
                 processedP.set(CoreAnnotations.IsInUserDefinedTOCAnnotation.class, true);
-                logger.info("Match {}", paraTokenString);
+                logger.debug("Match {}", paraTokenString);
             } else {
                 processedP.set(CoreAnnotations.IsInUserDefinedTOCAnnotation.class, false);
             }

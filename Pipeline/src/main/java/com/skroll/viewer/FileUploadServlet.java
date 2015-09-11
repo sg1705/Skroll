@@ -1,7 +1,6 @@
 package com.skroll.viewer;
 
 import com.google.common.io.CharStreams;
-import com.skroll.classifier.Category;
 import com.skroll.classifier.Classifier;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.Document;
@@ -52,7 +51,7 @@ public class FileUploadServlet extends HttpServlet {
                 Document document = Parser.parseDocumentFromHtml(content);
                 //create a classifier
                 ClassifierFactory classifierFactory = new ClassifierFactory();
-                Classifier classifier = classifierFactory.getClassifier(Category.DEFINITION);
+                Classifier classifier = classifierFactory.getClassifier(ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID);
                 //test the document
                 document = (Document)classifier.classify("documentid", document);
                 //link the document

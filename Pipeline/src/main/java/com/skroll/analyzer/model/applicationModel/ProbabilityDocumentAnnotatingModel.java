@@ -346,8 +346,8 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
             List<Token> tokens = processedPara.getTokens();
 
-            //todo: a hack for TOC annotation. should implement HMM for TOC and annotate base on HMM result
-            if (this.modelRVSetting instanceof TOCModelRVSetting) {
+            //todo: a hack for TOC and DocType annotation. should implement HMM for TOC and annotate base on HMM result
+            if (this.modelRVSetting instanceof TOCModelRVSetting || this.modelRVSetting instanceof DocTypeModelRVSetting ) {
                 int maxIndex = BNInference.maxIndex(logPrioProbs);
                 double[] paraProbs = logPrioProbs.clone();
                 BNInference.convertLogBeliefToProb(paraProbs);

@@ -19,13 +19,8 @@ import javax.inject.Inject;
 
 
 /**
+  This class is used to train the benchmark model using document under benchmark folder.
  * Created by saurabhagarwal on 1/19/15.
- */
-
-
-/* current arguments for testing:
---trainWithOverride src/main/resources/trainingDocuments/indentures
---classify src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html
 */
 
 public class BenchmarkModelTrainer extends Trainer {
@@ -50,7 +45,7 @@ public class BenchmarkModelTrainer extends Trainer {
             }
         });
         classifierFactory = injector.getInstance(ClassifierFactory.class);
-        documentFactory = injector.getInstance(DocumentFactory.class);
+        corpusDocumentFactory = injector.getInstance(DocumentFactory.class);
         configuration = injector.getInstance(Configuration.class);
         PRE_EVALUATED_FOLDER = configuration.get("preEvaluatedFolder", "/tmp/");
     } catch (Exception e) {
@@ -65,10 +60,10 @@ public class BenchmarkModelTrainer extends Trainer {
         if (args!= null && args.length >1) {
             if (args[0].equals("--trainBenchmarkModelWithWeight")) {
                 logger.debug("folder Name :" + args[1]);
-                skrollTrainer.trainFolderUsingTrainingWeight(args[1]);
+                skrollTrainer.trainFolderUsingTrainingWeight();
             }
         } else {
-            skrollTrainer.trainFolderUsingTrainingWeight(skrollTrainer.PRE_EVALUATED_FOLDER);
+            skrollTrainer.trainFolderUsingTrainingWeight();
         }
     }
 }

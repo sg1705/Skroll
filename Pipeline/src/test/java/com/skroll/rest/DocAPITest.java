@@ -11,6 +11,7 @@ import com.skroll.document.JsonDeserializer;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.pipeline.util.Constants;
 import com.skroll.util.ObjectPersistUtil;
+import com.skroll.util.UniqueIdGenerator;
 import org.junit.After;
 import org.junit.Test;
 
@@ -22,11 +23,15 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import java.io.File;
+import java.nio.charset.Charset;
 import java.util.List;
 
 public class DocAPITest extends APITest {
 
-//    @Before
+    public DocAPITest() throws Exception {
+    }
+
+    //    @Before
 //    public void setup () throws Exception {
 //        try {
 //            jettyServer.start();
@@ -119,8 +124,9 @@ public class DocAPITest extends APITest {
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
         String response = webTarget.request().get(String.class);
-        logger.debug("Here is the response: "+response);
-        assert(response.contains("smaller-indenture.html"));
+        logger.info("Here is the response: " + response);
+        String fileId = UniqueIdGenerator.generateId(Files.toString(new File(TEST_FILE_NAME), Charset.defaultCharset()));
+        assert(response.contains(fileId));
         client.close();
     }
 
@@ -129,7 +135,6 @@ public class DocAPITest extends APITest {
         String TARGET_URL = "http://localhost:8888/restServices/doc/getDoc";
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(TARGET_URL);
-        String documentId = "smaller-indenture.html";
         WebTarget webTargetWithQueryParam =
                 webTarget.queryParam("documentId", documentId);
         String response = webTargetWithQueryParam.request().get(String.class);

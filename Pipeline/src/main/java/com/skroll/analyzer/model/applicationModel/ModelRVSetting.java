@@ -23,7 +23,8 @@ import java.util.function.BiFunction;
         property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = DefModelRVSetting.class, name = "DefModelRVSetting"),
-        @JsonSubTypes.Type(value = TOCModelRVSetting.class, name = "TOCModelRVSetting") })
+        @JsonSubTypes.Type(value = TOCModelRVSetting.class, name = "TOCModelRVSetting"),
+        @JsonSubTypes.Type(value = DocTypeModelRVSetting.class, name = "DocTypeModelRVSetting")})
 
 public class ModelRVSetting {
 

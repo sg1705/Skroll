@@ -13,9 +13,43 @@ md-icon {
 **/
 md-toast.skContextMenu {
   min-height: 40px;
-  min-width: 200px;
-  z-index: 99; }
+  min-width: 160px;
+  z-index: 99;
+  min-height: 30px;
+  padding-right: 12px;
+  padding-left: 12px;
+  background-color: #e0e0e0; }
   md-toast.skContextMenu .md-button {
-    min-width: 24px; }
+    min-width: 24px;
+    margin: 6px 0px; }
+
+/**
+* SkrollPort
+**/
+#skrollport {
+  background-color: #e0e0e0; }
+  #skrollport #leftcurtain {
+    width: calc(10% - 60px);
+    min-width: 0px;
+    max-width: 200px; }
+
+/**
+* Docivew
+**/
+#content {
+  min-width: 600px;
+  width: calc(80% + 120px);
+  max-width: 900px;
+  padding-left: 60px;
+  padding-right: 40px; }
+
+/**
+* NAV
+**/
+md-sidenav#navframe.md-locked-open {
+  width: 25%;
+  /*width: 250px; before we got levels*/
+  min-width: 240px;
+  max-width: 540px; }
 
 /*# sourceMappingURL=app.css.map */

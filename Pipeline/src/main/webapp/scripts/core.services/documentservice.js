@@ -20,6 +20,7 @@
       
       getDocumentIds    : getDocumentIds,
       loadDocument      : loadDocument,
+      importDoc         : importDoc,
 
       getParagraphJson  : getParagraphJson,
       getTerms          : getTerms,
@@ -92,6 +93,31 @@
       return deferred.promise;
     };
 
+
+    /**
+    * Returns a promise to update terms for a given document
+    **/
+    function importDoc(url, partiallyParse) {
+      var deferred = $q.defer();
+      /** make a get request */
+      $http.get(documentServiceBase + 'importDoc' + '?&partialParse=' + partiallyParse + '&documentId=' + url)
+        .success(function(data, status, headers) {
+          var resp = {};
+          resp.html = data;
+          resp.documentId = headers('documentId');
+          resp.inCache = headers('inCache');
+          deferred.resolve(resp);
+        })
+        .error(function(msg, code) {
+          deferred.reject(msg);
+          $log.error(msg, code);
+        });;
+      /** done with get request */
+      return deferred.promise;
+    };
+
+
+
     /**
     * Returns a promise to unobserve a paragraph
     **/
@@ -132,10 +158,10 @@
     /**
     * Returns a promise to get benchmark score
     */
-    function getBenchmarkScore() {
+    function getBenchmarkScore(documentId) {
       var deferred = $q.defer();
       /** make a get request */
-      $http.get(documentServiceBase + 'getBenchmarkScore')
+      $http.get(documentServiceBase + 'getBenchmarkScore?documentId=' + documentId)
         .success(function(data) {
           deferred.resolve(data);
         })

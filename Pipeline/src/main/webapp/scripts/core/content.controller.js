@@ -22,7 +22,6 @@
     //-- public variables
     vm.isDocAvailable   = documentModel.isDocAvailable;
     vm.documentModel    = documentModel;
-    vm.fileName         = documentModel.fileName;
     vm.userDocumentIds  = [];
     vm.smodel           = LHSModel.smodel;
 
