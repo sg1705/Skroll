@@ -1,7 +1,7 @@
 {
-  "name": "angular-sanitize",
+  "name": "angular-mocks",
   "version": "1.4.5",
-  "main": "./angular-sanitize.js",
+  "main": "./angular-mocks.js",
   "ignore": [],
   "dependencies": {
     "angular": "1.4.5"
