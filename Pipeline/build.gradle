@@ -116,6 +116,19 @@ task start(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
 }
 
+task startProd(type: JavaExec) {
+    File workingDir = new File('Pipeline/')
+    args = ['--port', '8088', '--baseuri', 'src/main/webapp/build']
+    main = 'com.skroll.rest.WebServer'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+task buildProdApp(type: Exec) {
+    commandLine 'gulp', '--gulpfile', 'src/main/webapp/gulpfile.js', 'build'
+}
+
+
 trainer.dependsOn cleanModels
 clean.dependsOn cleanModels
 test.dependsOn createTestDirectories
+startProd.dependsOn(buildProdApp)
