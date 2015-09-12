@@ -189,7 +189,11 @@ public class CategoryAnnotationHelper {
      */
     public static void annotateParagraphWithTokensAndCategoryOfClassIndex(CoreMap paragraph, List<Token> newTokens, List<Integer> categoryIds, int classIndex) {
         // No weight will be set as this function will be used to infer the categories
-        annotateParagraphWithTokensAndCategory(paragraph, newTokens, categoryIds.get(classIndex));
+        if(classIndex == 0) {
+            categoryIds.forEach(categoryId -> clearCategoryAnnotation(paragraph, categoryId));
+        } else {
+            annotateParagraphWithTokensAndCategory(paragraph, newTokens, categoryIds.get(classIndex));
+        }
 
     }
 
