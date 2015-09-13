@@ -11,7 +11,7 @@ import java.util.*;
 
 // It is okay for these helper method to use nodes parameters
 public class NodeTrainingHelper {
-    protected static final double PRIOR_COUNT = .1;
+    protected static final double PRIOR_COUNT = .0001;
 
     /**
      * Creates a DiscreteNode for training from a list of RandomVariables in the node's family and its parent nodes.
@@ -154,7 +154,7 @@ public class NodeTrainingHelper {
         int numValues = parent.getVariable().getFeatureSize();
 
         double[] sum = new double[numValues];
-        Arrays.fill(sum, PRIOR_COUNT);
+        Arrays.fill(sum, PRIOR_COUNT * counts.values().size());
         for (double[] countsForWord : counts.values()) {
             for (int i = 0; i < numValues; i++) {
                 sum[i] += countsForWord[i];
@@ -167,7 +167,7 @@ public class NodeTrainingHelper {
             double[] p = counts.get(w).clone();
             double[] logP = new double[numValues];
             for (int i = 0; i < numValues; i++) {
-                logP[i] = Math.log(p[i]) - logSums[i];
+                logP[i] = Math.log(p[i] + PRIOR_COUNT) - logSums[i];
             }
             probs.put(w, logP);
         }
