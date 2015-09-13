@@ -10,6 +10,7 @@ import com.skroll.document.factory.DocumentFactory;
 import com.skroll.document.factory.SingleParaDocumentFactoryImpl;
 import com.skroll.document.factory.SingleParaFSDocumentFactory;
 import com.skroll.util.Configuration;
+import com.skroll.util.TestConfigWithPreEvalFolder;
 import com.skroll.util.TestConfiguration;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +34,7 @@ public class DocTypeAnnotationHelperTest {
                 Injector injector = Guice.createInjector(new AbstractModule() {
                     @Override
                     protected void configure() {
-                        bindConstant().annotatedWith(TestConfiguration.Location.class).to("src/test/resources/document/documentFactory/");
+                        bindConstant().annotatedWith(TestConfigWithPreEvalFolder.Location.class).to("src/test/resources/document/documentFactory/");
                         bind(Configuration.class).to(TestConfiguration.class);
                         bind(DocumentFactory.class)
                                 .to(CorpusFSDocumentFactoryImpl.class);

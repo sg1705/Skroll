@@ -14,6 +14,7 @@ import com.skroll.document.factory.*;
 public class SkrollTestGuiceModule extends AbstractModule {
     @Override
     protected void configure() {
+
         bind(Configuration.class).to(TestConfiguration.class);
 
         bind(ClassifierFactoryStrategy.class).to(DefaultClassifierFactoryStrategy.class);

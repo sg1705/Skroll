@@ -119,6 +119,6 @@ task start(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
 }
 
-trainer.dependsOn cleanModels
+
 clean.dependsOn cleanModels
 test.dependsOn createTestDirectories
