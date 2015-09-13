@@ -1,6 +1,8 @@
 package com.skroll.viewer;
 
 import com.aliasi.util.Files;
+import com.skroll.rest.WebServer;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +17,7 @@ public class BaseURLServlet extends HttpServlet{
 
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        File file = new File("src/main/webapp/start.html");
+        File file = new File(WebServer.BASE_URI + "/index.html");
         response.getWriter().write(Files.readFromFile(file, "UTF8"));
     }
 }

@@ -43,6 +43,7 @@ import java.util.logging.Logger;
 public class WebServer {
     public static final org.slf4j.Logger logger = LoggerFactory.getLogger(WebServer.class);
     private static final Logger LOG = Logger.getLogger(WebServer.class.getName());
+    public static String BASE_URI = "src/main/webapp";
 
     private int port;
     private Server server;
@@ -56,6 +57,11 @@ public class WebServer {
             if (args[0].equals("--port")) {
                 if (args[1] != null)
                     port = Integer.parseInt(args[1]);
+            }
+
+            if (args[2].equals("--baseuri")) {
+                if (args[3] != null)
+                    BASE_URI = args[3];
             }
 
         }
@@ -104,7 +110,7 @@ public class WebServer {
     }
 
     private URI getWebRootResourceUri() throws FileNotFoundException, URISyntaxException {
-        URI indexUri = new File("src/main/webapp").toURI();
+        URI indexUri = new File(BASE_URI).toURI();
         LOG.info("indexUri:" + indexUri);
         return indexUri;
     }
@@ -131,6 +137,7 @@ public class WebServer {
         LOG.info("Base URI: " + baseUri);
         holderDefault.setInitParameter("resourceBase", baseUri.toASCIIString());
         holderDefault.setInitParameter("dirAllowed", "true");
+        holderDefault.setInitParameter("cacheControl", "no-transform,public,max-age=3600,s-maxage=86400");
         return holderDefault;
     }
 
