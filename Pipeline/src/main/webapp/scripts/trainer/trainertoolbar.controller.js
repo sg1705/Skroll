@@ -41,10 +41,22 @@
 		vm.showProbabilityDump	= showProbabilityDump;
 		vm.updateModelByTrainer = updateModelByTrainer;
 		vm.showAnnotations 			= showAnnotations;
+		vm.updateDocType   			= updateDocType;
 		vm.toggleTermProbabilities = toggleTermProbabilities;
 
 
+
 		////////////////
+
+		function updateDocType(docTypeId) {
+			console.log(docTypeId);
+			trainerService.updateDocType(documentModel.documentId, docTypeId)
+			.then(function(data){
+				console.log(data);
+			})
+			
+		}
+
 
 		function convertToBenchmark() {
 			documentModel.isProcessing = true;
@@ -175,9 +187,9 @@
 
 	}
 
-	google.load("visualization", "1", {
-		packages: ["corechart"]
-	});
+	// google.load("visualization", "1", {
+	// 	packages: ["corechart"]
+	// });
 
 	angular
 		.module('app.trainer')

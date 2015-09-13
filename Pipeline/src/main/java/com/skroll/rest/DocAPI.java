@@ -484,11 +484,10 @@ public class DocAPI {
     @GET
     @Path("/updateDocType")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateDocType(@Context HttpHeaders hh, @BeanParam DocTypeRequestBean request) {
+    public Response updateDocType(@Context HttpHeaders hh, @BeanParam RequestBean request,@QueryParam("docType") int docType) {
 
         String documentId = request.getDocumentId();
         Document doc = request.getDocument();
-        int docType = request.getDocType();
 
         if (doc == null) {
             return logErrorResponse("document cannot be found for document id: " + documentId);
@@ -496,8 +495,7 @@ public class DocAPI {
 
         DocTypeAnnotationHelper.annotateDocTypeWithWeightAndUserObservation(doc,docType,userWeight);
 
-        logger.debug("updateDocType using document id {}", documentId);
+        logger.info("updateDocType {} using document id {}", docType, documentId);
         return Response.ok().status(Response.Status.OK).entity("DocType has been updated").build();
     }
-
 }

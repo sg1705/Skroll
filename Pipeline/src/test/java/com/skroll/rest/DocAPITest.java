@@ -20,7 +20,6 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.nio.charset.Charset;
@@ -91,12 +90,12 @@ public class DocAPITest extends APITest {
     public void testUpdateTerms() throws Exception {
         String TARGET_URL = "http://localhost:8888/restServices/doc/updateTerms";
         Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(TARGET_URL);
+        WebTarget webTarget = client.target(TARGET_URL).queryParam("documentId", documentId);
 
         String jsonString ="[{\"paragraphId\":\"p_1238\",\"term\":\"Cash Equivalents\", \"classificationId\":0}]";
         //String jsonString ="[{\"paragraphId\":\"p_1371\",\"term\":\"Disclosure Regarding Forward-Looking Statements\", \"classificationId\":2}]";
 
-        Response response = webTarget.request(MediaType.TEXT_HTML).cookie(new  NewCookie("documentId", documentId))
+        Response response = webTarget.request(MediaType.TEXT_HTML)
                 .post(Entity.entity(jsonString, MediaType.APPLICATION_JSON));
 
         //logger.debug("Here is the response: "+response.getEntity().toString());
@@ -110,9 +109,8 @@ public class DocAPITest extends APITest {
         testUpdateTerms();
         String TARGET_URL = "http://localhost:8888/restServices/doc/updateModel";
         Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(TARGET_URL);
-
-        String response = webTarget.request(MediaType.APPLICATION_JSON).cookie(new  NewCookie("documentId", documentId)).get(String.class);
+        WebTarget webTarget = client.target(TARGET_URL).queryParam("documentId", documentId);
+        String response = webTarget.request(MediaType.APPLICATION_JSON).get(String.class);
         logger.debug("Here is the response: " + response);
         assert(response.contains("model has been updated"));
         client.close();
@@ -122,7 +120,7 @@ public class DocAPITest extends APITest {
     public void testUploadListDocs() throws Exception {
         String TARGET_URL = "http://localhost:8888/restServices/doc/listDocs";
         Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(TARGET_URL);
+        WebTarget webTarget = client.target(TARGET_URL).queryParam("documentId", documentId);
         String response = webTarget.request().get(String.class);
         logger.info("Here is the response: " + response);
         String fileId = UniqueIdGenerator.generateId(Files.toString(new File(TEST_FILE_NAME), Charset.defaultCharset()));
@@ -134,21 +132,19 @@ public class DocAPITest extends APITest {
     public void testGetDoc() throws Exception {
         String TARGET_URL = "http://localhost:8888/restServices/doc/getDoc";
         Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(TARGET_URL);
-        WebTarget webTargetWithQueryParam =
-                webTarget.queryParam("documentId", documentId);
-        String response = webTargetWithQueryParam.request().get(String.class);
+        WebTarget webTarget = client.target(TARGET_URL).queryParam("documentId", documentId);
+        String response = webTarget.request().get(String.class);
         assert(response.contains("Restricted Subsidiaries"));
     }
     @Test
     public void testRemoveTerms() throws Exception {
         String TARGET_URL = "http://localhost:8888/restServices/doc/updateTerms";
         Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(TARGET_URL);
+        WebTarget webTarget = client.target(TARGET_URL).queryParam("documentId", documentId);
 
         String jsonString ="[{\"paragraphId\":\"p_1238\",\"term\":\"\", \"classificationId\":1}]";
 
-        Response response = webTarget.request(MediaType.TEXT_HTML).cookie(new  NewCookie("documentId", documentId))
+        Response response = webTarget.request(MediaType.TEXT_HTML).header("documentId", documentId)
                 .post(Entity.entity(jsonString, MediaType.APPLICATION_JSON));
 
         //logger.debug("Here is the response: "+response.getEntity().toString());

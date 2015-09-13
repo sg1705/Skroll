@@ -1,3 +1,6 @@
+(function(){
+
+
 'use strict';
 
 /**
@@ -95,3 +98,5 @@ angular.module('SkrollApp')
 .config(['$httpProvider', function($httpProvider) {
 	$httpProvider.defaults.withCredentials = true;
 }]);
+
+})();

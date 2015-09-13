@@ -4,7 +4,6 @@ import com.google.common.io.Files;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.skroll.document.Document;
 import com.skroll.document.factory.CorpusFSDocumentFactoryImpl;
 import com.skroll.document.factory.DocumentFactory;
 import com.skroll.util.Configuration;
@@ -16,6 +15,7 @@ import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +43,7 @@ public class APITest {
     protected final String TEST_FILE_NAME = "src/test/resources/classifier/smaller-indenture.html";
 
     public APITest() throws Exception {
-        documentId = UniqueIdGenerator.generateId(Files.toString(new File(TEST_FILE_NAME), Charset.defaultCharset()));
+
     }
 
 
@@ -56,7 +56,6 @@ public class APITest {
                 protected void configure() {
                     bind(DocumentFactory.class)
                             .to(CorpusFSDocumentFactoryImpl.class);
-
                     bind(Configuration.class).to(TestConfiguration.class);
                 }
             });
@@ -68,7 +67,7 @@ public class APITest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        documentId = testFileUpload();
+        testFileUpload();
     }
     @After
     public void shutdown() {
@@ -79,8 +78,8 @@ public class APITest {
             e.printStackTrace();
         }
     }
-
-    public String testFileUpload() throws Exception {
+    @Test
+    public void testFileUpload() throws Exception {
         String TARGET_URL = "http://localhost:8888/restServices/doc/upload";
         Client client = ClientBuilder.newBuilder().register(MultiPartFeature.class).build();
         WebTarget webTarget = client.target(TARGET_URL);
@@ -92,18 +91,16 @@ public class APITest {
                 MediaType.APPLICATION_OCTET_STREAM_TYPE);
         multiPart.bodyPart(fileDataBodyPart);
         Response response =null;
+        documentId = UniqueIdGenerator.generateId(Files.toString(new File(TEST_FILE_NAME), Charset.defaultCharset()));
         try {
-            response = webTarget.request(MediaType.TEXT_HTML)
+            WebTarget webTargetWithQueryParam =
+                    webTarget.queryParam("documentId", documentId);
+
+            response = webTargetWithQueryParam.request(MediaType.TEXT_HTML)
                     .post(Entity.entity(multiPart, MediaType.MULTIPART_FORM_DATA));
         } catch(Throwable ex) {
             logger.error("SEVERE: An I/O error has occurred while writing a response message entity to the container output stream.");
         }
-        logger.debug("Cookies:" + response.getCookies().get("documentId").getValue());
-        Document doc = this.factory.get(response.getCookies().get("documentId").getValue());
-        assert (doc != null);
-        //check existence of file in the folder
-
-        return response.getCookies().get("documentId").getValue();
     }
 
     public String testGetTerms(String documentId) throws Exception {
