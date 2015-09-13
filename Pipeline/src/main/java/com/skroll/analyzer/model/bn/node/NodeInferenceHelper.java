@@ -220,9 +220,10 @@ public class NodeInferenceHelper {
         double[] message = new double[node.getParent().getVariable().getFeatureSize()];
         Arrays.fill(message, 0);
         for (String w: node.getObservation()){
+            double[] m = node.getParameters().get(w);
+            if (m == null) continue;
             for (int i=0; i<message.length; i++) {
-                double[] m = node.getParameters().get(w);
-                if (m!=null) message[i] += node.getParameters().get(w)[i];
+                message[i] += m[i];
             }
         }
         return message;
