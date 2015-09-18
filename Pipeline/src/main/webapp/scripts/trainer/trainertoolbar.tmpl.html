@@ -1,15 +1,21 @@
-	<md-menu>
-	 <!-- Trigger element is a md-button with an icon -->
-	 <!-- md-theme="default-dark" was removed -->
-		<md-button ng-click="$mdOpenMenu($event)" class="md-icon-button" aria-label="Open sample menu">
-			<md-icon md-svg-icon="images/icons/ic_insert_drive_file_24px.svg"></md-icon>
-		</md-button>
-		 <md-menu-content>
-		   <md-menu-item><md-button ng-click="ctrl.updateDocType(101)">10-K</md-button></md-menu-item>
-		   <md-menu-item><md-button ng-click="ctrl.updateDocType(102)">10-Q</md-button></md-menu-item>
-		   <md-menu-item><md-button ng-click="ctrl.updateDocType(103)">Indenture</md-button></md-menu-item>
-		 </md-menu-content>
-	</md-menu>
+<md-menu>
+	<!-- Trigger element is a md-button with an icon -->
+	<!-- md-theme="default-dark" was removed -->
+	<md-button ng-click="$mdOpenMenu($event)" class="md-icon-button" aria-label="Open sample menu">
+		<md-icon md-svg-icon="images/icons/ic_insert_drive_file_24px.svg"></md-icon>
+	</md-button>
+	<md-menu-content>
+		<md-menu-item>
+			<md-button ng-click="ctrl.updateDocType(101)">10-K</md-button>
+		</md-menu-item>
+		<md-menu-item>
+			<md-button ng-click="ctrl.updateDocType(102)">10-Q</md-button>
+		</md-menu-item>
+		<md-menu-item>
+			<md-button ng-click="ctrl.updateDocType(103)">Indenture</md-button>
+		</md-menu-item>
+	</md-menu-content>
+</md-menu>
 
 	<md-button feature-flag="trainer" ng-click="ctrl.updateModelByTrainer()" aria-label="annotation" ng-disabled="!ctrl.trainerToolbar.isTrainModel">
 	  <md-icon md-svg-icon="images/icons/ic_visibility_24px.svg"></md-icon>

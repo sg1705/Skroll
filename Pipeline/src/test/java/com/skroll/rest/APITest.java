@@ -78,6 +78,7 @@ public class APITest {
             e.printStackTrace();
         }
     }
+
     @Test
     public void testFileUpload() throws Exception {
         String TARGET_URL = "http://localhost:8888/restServices/doc/upload";
