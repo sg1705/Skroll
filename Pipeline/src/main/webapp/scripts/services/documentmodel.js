@@ -21,7 +21,7 @@ var documentModel = {
 
 
 angular
-	.module('SkrollApp')
+	.module('app.core')
   .factory('documentModel', function () {
     return documentModel;
   });

@@ -12,7 +12,7 @@
  * Main module of the application.
  */
 
-angular.module('SkrollApp', [
+angular.module('SkrollDocView', [
 	'ngAnimate',
 	'ngMaterial',
 	'ngSanitize',
@@ -39,47 +39,17 @@ angular.module('SkrollApp', [
 //this is lifted from http://goo.gl/mrWZ0F
 //reloadOnSearch was because of this plunker http://plnkr.co/edit/tgin0gpQl1qwu9hVXBno?p=preview
 angular
-	.module('SkrollApp')
+	.module('SkrollDocView')
 	.config(function($mdIconProvider, $routeProvider, $locationProvider) {
 		$mdIconProvider
 			.iconSet('viewer', 'img/icons/sets/viewer-24.svg', 24);
 
-		$routeProvider.
-		when('/url', {
-			templateUrl: 'scripts/landing/urlform.tmpl.html',
-			controller: 'UrlFormCtrl',
-			controllerAs: 'ctrl'
-		}).		
-		when('/list', {
-			templateUrl: 'scripts/landing/doclist.tmpl.html',
-			controller: 'ContentCtrl',
-			controllerAs: 'ctrl'
-		}).
-		when('/open', {
-			templateUrl: 'scripts/core/app.core.tmpl.html',
-			controller: 'ImportCtrl'
-		}).
-		when('/view/docId/:docId', {
-			templateUrl: 'scripts/core/app.core.tmpl.html',
-			controller: 'ContentCtrl',
-			controllerAs: 'ctrl',			
-			reloadOnSearch: false
-		}).
-		when('/view/docId/:docId/linkId/:linkId', {
-			templateUrl: 'scripts/core/app.core.tmpl.html',
-			controller: 'ContentCtrl',
-			controllerAs: 'ctrl',
-			reloadOnSearch: false
-		})
-		// .otherwise({
-		// 	redirectTo: '/list'
-		// });
 	    $locationProvider.html5Mode(true);
 	    $locationProvider.hashPrefix("!");
 
 	});
 
-angular.module('SkrollApp')
+angular.module('SkrollDocView')
 .config(function($mdThemingProvider) {
   $mdThemingProvider.theme('default-dark')
   	.primaryPalette('blue')
@@ -94,7 +64,7 @@ angular.module('SkrollApp')
 }]);
 
 
-angular.module('SkrollApp')
+angular.module('SkrollDocView')
 .config(['$httpProvider', function($httpProvider) {
 	$httpProvider.defaults.withCredentials = true;
 }]);

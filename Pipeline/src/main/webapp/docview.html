@@ -1,0 +1,223 @@
+<!doctype html>
+<html ng-app="SkrollDocView" >
+
+<head>
+  <meta charset="utf-8">
+  <title>Skroll</title>
+  <base href="/">
+  <meta name="description" content="">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+  <!-- build:css(.) styles/vendor.css -->
+  <!-- bower:css -->
+  <link rel="stylesheet" href="bower_components/angular-material/angular-material.css" />
+  <!-- endbower -->
+  <!-- endbuild -->
+
+  <!-- build:css styles/main.css -->
+  <link rel="stylesheet" href="styles/main.css"/>
+  <link rel="stylesheet" href="styles/app.css"/>
+  <!-- endbuild -->
+
+</head>
+
+<!--   <md-backdrop ng-show="ctrl.documentModel.isProcessing"  class="md-opaque md-bottom-sheet-backdrop md-default-theme">
+    <md-progress-circular style="z-index: 80; position:absolute;top: 50%;left: 50%;" md-mode="indeterminate"></md-progress-circular>
+  </md-backdrop>
+ -->
+
+<body style="height:100%" ng-controller="ContentCtrl as ctrl" ng-keydown="ctrl.overrideControlF($event)">
+  <div 
+    layout="column"
+    style="-webkit-overflow-scrolling: touch; height:100%" >
+
+
+    <!-- Start the layout of the doc -->
+    <div layout="row" style="height:100%">
+
+      <!-- LHS -->
+      <md-sidenav id="navframe" layout="column" class="md-sidenav-left" 
+                  md-component-id="left" md-is-locked-open="$mdMedia('gt-md')" 
+                  ng-swipe-left="ctrl.toggleSidenav('left')">
+
+        <div layout="column" flex>
+          <md-toolbar class="skroll-toolbar">
+            <sk-search ng-controller="SearchCtrl as ctrl"/>
+          </md-toolbar>
+
+          <md-content ng-class="{'sk-lhs-search-hover': ctrl.smodel.hover, 'sk-lhs-hover': !ctrl.smodel.hover}" md-scroll-y
+           flex class="md-padding" ng-controller="LHSLevelsCtrl as ctrl">
+            <sk-lhs />
+          </md-content>
+
+        </div>
+      </md-sidenav>
+      <!-- end sidebar -->
+
+      <!-- content -->
+      <div layout="column" flex >
+
+        <md-toolbar class="skroll-toolbar">
+          <sk-toolbar />
+        </md-toolbar>
+
+        <md-content id="skrollport" sk-observe-scroll md-scroll-y>
+          <div layout="row" flex>
+            <!-- hide RHS when small media -->
+            <div id="leftcurtain" hide-sm>
+            </div>
+
+            <div ng-controller="ViewPortCtrl as ctrl" style="display:none; width:100%; " id="content1">
+              <md-content flex 
+                id="content" 
+                class="md-padding md-whiteframe-z3"  
+                ng-mouseup="ctrl.mouseUp($event)" ng-mousedown="ctrl.mouseDown($event)" 
+                ng-mousemove="ctrl.mouseMove($event)" ng-click="ctrl.paraClicked($event)" 
+                layout-padding>
+
+                  <!-- Insert Content -->
+
+                </md-content>
+            </div>
+            <div hide-sm hide-md>
+            </div>
+
+          </div>
+        </md-content>
+
+      </div>
+      <!-- end content -->
+
+      <!-- right sidenav -->
+      <md-sidenav layout="column" class="md-sidenav-right"
+                  md-component-id="right" md-is-locked-open="false" >
+
+        <md-content>
+          <pre id="rightPane"></pre>
+        </md-content>
+
+      </md-sidenav>
+
+
+      <!-- end sidebar -->
+
+    </div>
+    <!-- end layout -->
+
+
+  </div>
+</body>
+
+<!-- <script type="text/javascript" src="https://www.google.com/jsapi"></script> -->
+
+<!-- build:js(.) scripts/lib.js -->
+<!-- bower:js -->
+<script src="bower_components/rangy/rangy-core.js"></script>
+<script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+<script src="bower_components/angular-animate/angular-animate.js"></script>
+<script src="bower_components/angular-cookies/angular-cookies.js"></script>
+<script src="bower_components/angular-aria/angular-aria.js"></script>
+<script src="bower_components/angular-material/angular-material.js"></script>
+<script src="bower_components/angular-touch/angular-touch.js"></script>
+<script src="bower_components/underscore.string/dist/underscore.string.js"></script>
+<script src="bower_components/underscore/underscore.js"></script>
+<script src="bower_components/angular-route/angular-route.js"></script>
+<script src="bower_components/rangy/rangy-classapplier.js"></script>
+<script src="bower_components/rangy/rangy-highlighter.js"></script>
+<script src="bower_components/rangy/rangy-selectionsaverestore.js"></script>
+<script src="bower_components/rangy/rangy-serializer.js"></script>
+<script src="bower_components/rangy/rangy-textrange.js"></script>
+<script src="bower_components/angular-feature-flags/dist/featureFlags.js"></script>
+<script src="bower_components/angular-feature-flags/dist/featureFlags.min.js"></script>
+<script src="bower_components/waypoints/lib/noframework.waypoints.min.js"></script>
+<script src="bower_components/SHA-1/sha1.js"></script>
+<script src="bower_components/angulartics/src/angulartics.js"></script>
+<!-- <script src="bower_components/angulartics/src/angulartics-clicky.js"></script>
+<script src="bower_components/angulartics/src/angulartics-cnzz.js"></script>
+<script src="bower_components/angulartics/src/angulartics-ga-cordova.js"></script>
+<script src="bower_components/angulartics/src/angulartics-gtm.js"></script>
+<script src="bower_components/angulartics/src/angulartics-piwik.js"></script>
+<script src="bower_components/angulartics/src/angulartics-scroll.js"></script>
+<script src="bower_components/angulartics/src/angulartics-splunk.js"></script>
+<script src="bower_components/angulartics/src/angulartics-woopra.js"></script>
+<script src="bower_components/angulartics/src/angulartics-marketo.js"></script>
+<script src="bower_components/angulartics/src/angulartics-intercom.js"></script>
+<script src="bower_components/angulartics/src/angulartics-inspectlet.js"></script>
+<script src="bower_components/angulartics/src/angulartics-newrelic-insights.js"></script>
+ --><script src="bower_components/angulartics-google-analytics/dist/angulartics-google-analytics.min.js"></script>
+<script src="bower_components/zeroclipboard/dist/ZeroClipboard.js"></script>
+<script src="bower_components/angular-zeroclipboard/src/angular-zeroclipboard.js"></script>
+<!-- endbower -->
+<!-- endbuild -->
+
+<!-- build:js scripts/app.js -->
+<!-- inject:js -->
+<script src="/scripts/docview.app/docview.app.module.js"></script>
+<script src="/scripts/contextmenu/contextmenu.module.js"></script>
+<script src="/scripts/core.services/core.services.module.js"></script>
+<script src="/scripts/core.util/core.util.module.js"></script>
+<script src="/scripts/core/app.core.module.js"></script>
+<script src="/scripts/landing/landing.module.js"></script>
+<script src="/scripts/search/search.module.js"></script>
+<script src="/scripts/thirdparty/ngsilent.module.js"></script>
+<script src="/scripts/toc/toc.module.js"></script>
+<script src="/scripts/trainer/trainer.module.js"></script>
+<script src="/scripts/upload/upload.module.js"></script>
+<script src="/scripts/contextmenu/contextmenu.controller.js"></script>
+<script src="/scripts/contextmenu/contextmenu.service.js"></script>
+<script src="/scripts/core.services/clickobserverservice.js"></script>
+<script src="/scripts/core.services/documentservice.js"></script>
+<script src="/scripts/core.services/link.service.js"></script>
+<script src="/scripts/core.services/mouseenterobserver.service.js"></script>
+<script src="/scripts/core.services/mouseleaveobserver.service.js"></script>
+<script src="/scripts/core.services/scrollobserverservice.js"></script>
+<script src="/scripts/core.services/selectionservice.js"></script>
+<script src="/scripts/core.services/skObserveScroll.js"></script>
+<script src="/scripts/core.services/textselectionobserverservice.js"></script>
+<script src="/scripts/core.util/scrollToParagraph.js"></script>
+<script src="/scripts/core/content.controller.js"></script>
+<script src="/scripts/core/skContent.js"></script>
+<script src="/scripts/core/skToolbar.js"></script>
+<script src="/scripts/core/toolbar.controller.js"></script>
+<script src="/scripts/core/viewport.controller.js"></script>
+<script src="/scripts/landing/urlform.controller.js"></script>
+<script src="/scripts/search/jqueryhighlight.js"></script>
+<script src="/scripts/search/search.js"></script>
+<script src="/scripts/search/searchservice.js"></script>
+<script src="/scripts/search/skSearch.js"></script>
+<script src="/scripts/services/documentmodel.js"></script>
+<script src="/scripts/services/lhsmodel.js"></script>
+<script src="/scripts/services/selectionmodel.js"></script>
+<script src="/scripts/thirdparty/diff_match_patch_uncompressed.js"></script>
+<script src="/scripts/toc/lhslevels.controller.js"></script>
+<script src="/scripts/toc/skLhs.js"></script>
+<script src="/scripts/toc/toc.controller.js"></script>
+<script src="/scripts/toc/tocterms.filter.js"></script>
+<script src="/scripts/trainer/skTrainerToolbar.js"></script>
+<script src="/scripts/trainer/trainermodel.js"></script>
+<script src="/scripts/trainer/trainerprompt.controller.js"></script>
+<script src="/scripts/trainer/trainerpromptservice.js"></script>
+<script src="/scripts/trainer/trainerservice.js"></script>
+<script src="/scripts/trainer/trainertoolbar.controller.js"></script>
+<script src="/scripts/upload/import.controller.js"></script>
+<script src="/scripts/upload/jquery.fileupload.js"></script>
+<script src="/scripts/upload/skFileUpload.js"></script>
+<!-- endinject -->
+
+<!-- inject:templates:js -->
+<!-- endinject -->
+
+<!-- endbuild -->
+
+<script>
+$(document).ready(function(e) {
+  console.log("onload");
+  $("#content1").show();
+});
+</script>
+
+</html>
+

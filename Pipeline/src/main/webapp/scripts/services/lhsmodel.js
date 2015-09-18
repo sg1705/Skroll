@@ -220,7 +220,7 @@ var LHSModel = {
 
 };
 
-angular.module('SkrollApp')
+angular.module('app.core')
 	.factory('LHSModel', function() {
 		return LHSModel;
 	});

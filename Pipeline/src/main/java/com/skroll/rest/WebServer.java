@@ -1,12 +1,12 @@
 package com.skroll.rest;
 
 
-import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.servlet.GuiceFilter;
 import com.google.inject.servlet.ServletModule;
 import com.skroll.rest.benchmark.BenchmarkAPI;
 import com.skroll.util.SkrollGuiceModule;
+import com.skroll.viewer.DocView;
 import com.squarespace.jersey2.guice.BootstrapUtils;
 import org.apache.tomcat.InstanceManager;
 import org.apache.tomcat.SimpleInstanceManager;
@@ -82,9 +82,10 @@ public class WebServer {
         ServiceLocator locator = BootstrapUtils.newServiceLocator();
         BootstrapUtils.newInjector(locator, Arrays.asList(skrollModule, new ServletModule()));
         BootstrapUtils.install(locator);
-
+        //installServletModule();
         server = new Server();
         ServerConnector connector = connector();
+
         server.addConnector(connector);
 
         URI baseUri = getWebRootResourceUri();
@@ -92,6 +93,7 @@ public class WebServer {
         FilterHolder filterHolder = new FilterHolder(GuiceFilter.class);
         webAppContext.addFilter(filterHolder, "/*", EnumSet.of(DispatcherType.INCLUDE, DispatcherType.REQUEST));
         webAppContext.addServlet(this.getJerseyServlet(), "/restServices/*");
+        webAppContext.addServlet(this.getDocViewServlet(), "/doc/*");
         server.setHandler(webAppContext);
         // Start Server
         server.start();
@@ -126,6 +128,8 @@ public class WebServer {
         context.setAttribute(InstanceManager.class.getName(), new SimpleInstanceManager());
         context.addBean(new ServletContainerInitializersStarter(context), true);
         context.addServlet(defaultServletHolder(baseUri), "/");
+//        context.setConfigurations(new Configuration[] {
+//                new AnnotationConfiguration()});
         return context;
     }
 
@@ -181,6 +185,17 @@ public class WebServer {
         config.register(BenchmarkAPI.class);
         config.register(MultiPartFeature.class);
         config.register(InstrumentAPI.class);
+        ServletContainer container = new ServletContainer(config);
+        return new ServletHolder(container);
+    }
+
+    /**
+     * Adds DocView servlet to Jersey config
+     * @return
+     */
+    private ServletHolder getDocViewServlet() {
+        ResourceConfig config = new ResourceConfig();
+        config.register(DocView.class);
         ServletContainer container = new ServletContainer(config);
         return new ServletHolder(container);
     }

@@ -26,7 +26,14 @@
 					"active" : false,
 					"name" : "flag to create shortlinsk",
 					"description" : "no description"
+				},
+				{
+					"key" : "server.rendering",
+					"active" : true,
+					"name" : "flag to turn on server rendering",
+					"description" : "no description"
 				}
+
 			];
 	  		featureFlags.set(flags);
 			}
