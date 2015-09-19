@@ -80,8 +80,8 @@ public class TrainingDocumentAnnotatingModelTest{
         TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel(TEST_DEF_CLASSIFIER_ID,setting);
         //Document doc = makeTrainingDoc(file);
 
-        List<CoreMap> processedParas = DocProcessor.processParas(document, maxNumWords);
-        NBMNData data = DocProcessor.getParaDataFromDoc(document, processedParas, setting.getNbmnConfig());
+        List<CoreMap> processedParas = DocProcessor.processParas(document);
+        NBMNData data = DocProcessor.getParaDataFromDoc(document, setting.getNbmnConfig());
         int[][] docFeatureValues = DocProcessor.generateDocumentFeatures(
                 document.getParagraphs(), data.getParaDocFeatures(), setting.getNbmnConfig());
 

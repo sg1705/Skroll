@@ -1,6 +1,10 @@
 package com.skroll.analyzer.model.applicationModel;
 
 import com.google.common.base.Joiner;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.skroll.analyzer.data.NBMNData;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
@@ -15,6 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 /**
@@ -23,19 +29,40 @@ import java.util.stream.Collectors;
 public class DocProcessor {
     public static final Logger logger = LoggerFactory.getLogger(DocProcessor.class);
 
+    static int numWordsToUse = ModelRVSetting.NUM_WORDS_TO_USE_PER_PARAGRAPH;
+
+    static LoadingCache<Document, List<CoreMap>> processedParasCache = CacheBuilder.newBuilder()
+            .maximumSize(2)
+            .build(
+                    new CacheLoader<Document, List<CoreMap>>() {
+                        @Override
+                        public List<CoreMap> load(Document doc) throws Exception {
+
+                            return processParagraphs(doc.getParagraphs(), numWordsToUse);
+                        }
+                    }
+            );
+
     //ToDO: commented out the cache
     // static Map<Document, List<CoreMap>> processedParasMap = new HashMap<>();
-    static Map<String, NBMNData> processedDataMap = new HashMap<>();
+//    static Map<String, NBMNData> processedDataMap = new HashMap<>();
+    static Cache<String, NBMNData> processedDataCache = CacheBuilder.newBuilder()
+            .maximumSize(2)
+            .build();
 
-    static List<CoreMap> processParas(Document doc, int numWordsToUse) {
+    public static void setNumWordsToUse(int numWordsToUse) {
+        DocProcessor.numWordsToUse = numWordsToUse;
+    }
 
-        //List<CoreMap> processedParas = processedParasMap.get(doc);
-        //if (processedParas != null) return processedParas;
-        List<CoreMap> processedParas = processParagraphs(doc.getParagraphs(), numWordsToUse);
+    static List<CoreMap> processParas(Document doc) {
 
-        //processedParasMap.put(doc, processedParas);
-        //logger.debug ("processedParasMap.size: {}", processedParasMap.size());
-        return processedParas;
+        try {
+            return processedParasCache.get(doc);
+        } catch (ExecutionException e) {
+            e.printStackTrace(System.err);
+        }
+
+        return null;
 
     }
 
@@ -108,6 +135,9 @@ public class DocProcessor {
                 processedP.set(CoreAnnotations.IsInUserDefinedTOCAnnotation.class, false);
             }
         }
+
+        // todo: in the future, may consider only invalidate the affected data. It is not much different for now.
+        processedDataCache.invalidateAll();
         return null;
     }
 
@@ -197,18 +227,37 @@ public class DocProcessor {
 //        return data;
 //    }
 //
-    static NBMNData getParaDataFromDoc(Document doc, List<CoreMap> processedParas, NBMNConfig config) {
-        String key = doc.getId() + config.getAllParagraphFeatures();
-        NBMNData data = processedDataMap.get(key);
-        if (data != null) return data;
+    static String processedDataCacheKey(Document doc, NBMNConfig config) {
 
+        return doc.getId() + config.getAllParagraphFeatures();
+    }
+
+    static NBMNData getParaDataFromDoc(Document doc, NBMNConfig config) {
+        String key = processedDataCacheKey(doc, config);
+//        NBMNData data = processedDataMap.get(key);
+//        if (data != null) return data;
+        NBMNData data = null;
+        List<CoreMap> processedParas = processParas(doc);
         List<CoreMap> originalParas = doc.getParagraphs();
-        data = getParaDataFromDoc(originalParas, processedParas, config);
+        try {
+            return processedDataCache.get(key, new Callable<NBMNData>() {
+                @Override
+                public NBMNData call() throws Exception {
+                    return getParaDataFromDoc(originalParas, processedParas, config);
+                }
+            });
+
+        } catch (ExecutionException e) {
+            e.printStackTrace(System.err);
+        }
+
+
+//        NBMNData data = getParaDataFromDoc(originalParas, processedParas, config);
         // Wei and Saurabh decided to not cache processedPara because
         // they can change once a user observes UTOC
         //processedDataMap.put(key, data);
 
-        return data;
+        return null;
     }
 
 

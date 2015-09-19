@@ -23,9 +23,10 @@ import java.util.*;
  */
 public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
-    static final int NUM_ITERATIONS = 2;
+    static final int NUM_ITERATIONS = 1;
     double[] ANNOTATING_THRESHOLD = new double[]{0, .99999, 0.9999};
     Document doc;
+    List<CoreMap> paragraphs;
     // todo: should probably store paragraphs, otherwise, need to recreate it everytime when model has new observations
     List<CoreMap> processedParagraphs = new ArrayList<>();
     NBMNData data;
@@ -80,11 +81,11 @@ public class ProbabilityDocumentAnnotatingModel extends DocumentAnnotatingModel{
     void initialize(){
 //        List<CoreMap> originalParagraphs = doc.getParagraphs();
 //        processedParagraphs = DocProcessor.processParas(doc, hmm.size());
-        processedParagraphs = DocProcessor.processParas(doc, modelRVSetting.NUM_WORDS_TO_USE_PER_PARAGRAPH);
+        processedParagraphs = DocProcessor.processParas(doc);
         modelRVSetting.postProcessFunctions
                 .stream()
                 .forEach( f -> f.apply(doc.getParagraphs(), processedParagraphs));
-        data = DocProcessor.getParaDataFromDoc(doc, processedParagraphs, nbmnConfig);
+        data = DocProcessor.getParaDataFromDoc(doc, nbmnConfig);
 //
 //        processedParagraphs = DocProcessor.processParagraphs(originalParagraphs, hmm.size());
 //        paraFeatureValsExistAtDocLevel = DocProcessor.getFeaturesVals(

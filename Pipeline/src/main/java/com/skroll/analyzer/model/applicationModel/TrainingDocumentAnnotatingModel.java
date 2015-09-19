@@ -113,7 +113,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
         // todo: the following two lines can cause a lot of inefficiency with the current approach of
         // updating training model with the whole doc each time user makes an observation.
 //        List<CoreMap> processedParas = DocProcessor.processParas(doc, hmm.size());
-        List<CoreMap> processedParas = DocProcessor.processParas(doc, modelRVSetting.NUM_WORDS_TO_USE_PER_PARAGRAPH);
+        List<CoreMap> processedParas = DocProcessor.processParas(doc);
         modelRVSetting.postProcessFunctions
                 .stream()
                 .forEach( f -> f.apply(doc.getParagraphs(), processedParas));
@@ -121,7 +121,7 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
         // in NBMNData, para features can be preprocessed for the whole doc,
         // but doc features depends on the set of the observed paras and cannot be preprocessed just once.
-        NBMNData data = DocProcessor.getParaDataFromDoc(doc, processedParas, nbmnConfig);
+        NBMNData data = DocProcessor.getParaDataFromDoc(doc, nbmnConfig);
 
         updateWithProcessedParasAndWeight(originalParas, processedParas, data);
 
@@ -186,12 +186,12 @@ public class TrainingDocumentAnnotatingModel extends DocumentAnnotatingModel{
 
 
 //        List<CoreMap> processedParas = DocProcessor.processParas(doc, hmm.size());
-        List<CoreMap> processedParas = DocProcessor.processParas(doc, modelRVSetting.NUM_WORDS_TO_USE_PER_PARAGRAPH);
+        List<CoreMap> processedParas = DocProcessor.processParas(doc);
         modelRVSetting.postProcessFunctions
                 .stream()
                 .forEach( f -> f.apply(doc.getParagraphs(), processedParas));
 
-        NBMNData data = DocProcessor.getParaDataFromDoc(doc, processedParas, nbmnConfig);
+        NBMNData data = DocProcessor.getParaDataFromDoc(doc, nbmnConfig);
 //        List<CoreMap> parasWithCategoryAnnotation = new ArrayList<>();
 //        for (int categoryId : modelRVSetting.getCategoryIds()) // todo: inefficiency here. also better to keep paras in the same order.
 //            parasWithCategoryAnnotation.addAll(CategoryAnnotationHelper.getParagraphsAnnotatedWithCategory(doc, categoryId));

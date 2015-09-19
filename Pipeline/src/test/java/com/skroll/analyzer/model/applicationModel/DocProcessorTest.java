@@ -60,15 +60,15 @@ public class DocProcessorTest {
 
     @Test
     public void testProcessParagraphs() throws Exception {
-        List<CoreMap> processedParas = DocProcessor.processParas(doc, maxNumWords);
+        List<CoreMap> processedParas = DocProcessor.processParas(doc);
         assert (processedParas.get(0).get(CoreAnnotations.StartsWithQuote.class));
         assert (processedParas.get(0).getTokens().get(1).get(CoreAnnotations.IndexInteger.class) == 1);
     }
 
     @Test
     public void testParaGetDataFromDoc() throws Exception {
-        List<CoreMap> processedParas = DocProcessor.processParas(doc, maxNumWords);
-        NBMNData data = DocProcessor.getParaDataFromDoc(doc, processedParas, setting.getNbmnConfig());
+        List<CoreMap> processedParas = DocProcessor.processParas(doc);
+        NBMNData data = DocProcessor.getParaDataFromDoc(doc, setting.getNbmnConfig());
         System.out.print(data);
         assert (Arrays.deepToString(data.getParaFeatures()).equals("[[3], [20], [3]]"));
         assert (Arrays.deepToString(data.getParaDocFeatures()).equals("[[1], [1], [0]]"));
@@ -78,7 +78,7 @@ public class DocProcessorTest {
 
     @Test
     public void testGetFeatureValue() throws Exception {
-        List<CoreMap> processedParas = DocProcessor.processParas(doc, maxNumWords);
+        List<CoreMap> processedParas = DocProcessor.processParas(doc);
         for (int i = 0; i < processedParas.size(); i++) {
             System.out.print("paragraph " + i + ": \n");
             for (RandomVariable rv : setting.getNbmnConfig().getAllParagraphFeatures()) {
@@ -101,7 +101,7 @@ public class DocProcessorTest {
 
     @Test
     public void testGetFeaturesVals() throws Exception {
-        List<CoreMap> processedParas = DocProcessor.processParas(doc, maxNumWords);
+        List<CoreMap> processedParas = DocProcessor.processParas(doc);
         List<RandomVariable> rv = Lists.newArrayList(
                 RVCreater.createRVFromAnnotation(CoreAnnotations.IsBoldAnnotation.class),
                 RVCreater.createRVFromAnnotation(CoreAnnotations.StartsWithQuote.class));
