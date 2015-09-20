@@ -134,10 +134,22 @@ public class Parser {
         if (newDoc.getParagraphs().size() != document.getParagraphs().size()) {
             return document;
         }
+        //set document level annotations in new doc
         if (document.containsKey(CoreAnnotations.SourceUrlAnnotation.class)) {
             newDoc.set(CoreAnnotations.SourceUrlAnnotation.class,
                     document.get(CoreAnnotations.SourceUrlAnnotation.class));
         }
+        if (document.containsKey(CoreAnnotations.CategoryAnnotations.class)) {
+            HashMap classId = document.get(CoreAnnotations.CategoryAnnotations.class);
+            newDoc.set(CoreAnnotations.CategoryAnnotations.class, classId);
+        }
+
+        if (document.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)) {
+            boolean userObservation = document.get(CoreAnnotations.IsUserObservationAnnotation.class);
+            newDoc.set(CoreAnnotations.IsUserObservationAnnotation.class, userObservation);
+        }
+
+
         for(int ii = 0; ii < newDoc.getParagraphs().size(); ii++) {
             //copy annotations over
             CoreMap paragraph = document.getParagraphs().get(ii);
