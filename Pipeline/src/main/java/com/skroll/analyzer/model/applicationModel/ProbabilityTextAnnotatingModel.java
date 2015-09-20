@@ -4,11 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.skroll.analyzer.data.NBMNData;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
-import com.skroll.analyzer.model.bn.NaiveBayesWithMultiNodes;
 import com.skroll.analyzer.model.bn.NBInferenceHelper;
+import com.skroll.analyzer.model.bn.NaiveBayesWithMultiNodes;
 import com.skroll.analyzer.model.bn.config.NBMNConfig;
 import com.skroll.analyzer.model.bn.inference.BNInference;
-import com.skroll.analyzer.model.bn.node.*;
+import com.skroll.analyzer.model.bn.node.DiscreteNode;
+import com.skroll.analyzer.model.bn.node.MultiplexNode;
+import com.skroll.analyzer.model.bn.node.NodeInferenceHelper;
+import com.skroll.analyzer.model.bn.node.WordNode;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -21,7 +24,7 @@ import java.util.*;
 /**
  * Created by wei2learn on 2/16/2015.
  */
-public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatingModel {
+public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
 
     static final int NUM_ITERATIONS = 1;
     double[] ANNOTATING_THRESHOLD = new double[]{0, .99999, 0.9999};
@@ -45,10 +48,14 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
     double[][][] documentFeatureBelief; // feature number, category number, false/true
 
 
-    public ProbabilityDocumentAnnotatingModel(int id,
-                                              NaiveBayesWithMultiNodes tnbm,
-                                              HiddenMarkovModel hmm,
-                                              Document doc, ModelRVSetting setting) {
+    ProbabilityTextAnnotatingModel() {
+
+    }
+
+    public ProbabilityTextAnnotatingModel(int id,
+                                          NaiveBayesWithMultiNodes tnbm,
+                                          HiddenMarkovModel hmm,
+                                          Document doc, ModelRVSetting setting) {
         this(id,
                 tnbm,
                 hmm,
@@ -59,13 +66,13 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
                 setting.getNbmnConfig());
     }
 
-    public ProbabilityDocumentAnnotatingModel(int id, NaiveBayesWithMultiNodes tnbm,
-                                              HiddenMarkovModel hmm,
-                                              Document doc,
-                                              ModelRVSetting setting,
-                                              RandomVariable wordType,
-                                              List<RandomVariable> wordFeatures,
-                                              NBMNConfig nbmnConfig) {
+    public ProbabilityTextAnnotatingModel(int id, NaiveBayesWithMultiNodes tnbm,
+                                          HiddenMarkovModel hmm,
+                                          Document doc,
+                                          ModelRVSetting setting,
+                                          RandomVariable wordType,
+                                          List<RandomVariable> wordFeatures,
+                                          NBMNConfig nbmnConfig) {
         super.nbmnConfig = nbmnConfig;
         super.wordType = wordType;
         super.wordFeatures = wordFeatures;
@@ -78,13 +85,13 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
         this.initialize();
     }
 
-    void initialize(){
+    void initialize() {
 //        List<CoreMap> originalParagraphs = doc.getParagraphs();
 //        processedParagraphs = DocProcessor.processParas(doc, hmm.size());
         processedParagraphs = DocProcessor.processParas(doc);
         modelRVSetting.postProcessFunctions
                 .stream()
-                .forEach( f -> f.apply(doc.getParagraphs(), processedParagraphs));
+                .forEach(f -> f.apply(doc.getParagraphs(), processedParagraphs));
         data = DocProcessor.getParaDataFromDoc(doc, nbmnConfig);
 //
 //        processedParagraphs = DocProcessor.processParagraphs(originalParagraphs, hmm.size());
@@ -97,10 +104,11 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
 
     /**
      * Set belief based on the observed paragraphs.
+     *
      * @param observedParagraphs The paragraphs that are observed.
      */
 
-    public void updateBeliefWithObservation(List<CoreMap> observedParagraphs){
+    public void updateBeliefWithObservation(List<CoreMap> observedParagraphs) {
         computeInitalBeliefs();
     }
 
@@ -124,7 +132,7 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
 
         // compute initial beliefs
         List<List<DiscreteNode>> docFeatureNodes = nbmnModel.getDocumentFeatureNodes();
-        for (int f=0; f<paraDocFeatures.size(); f++)
+        for (int f = 0; f < paraDocFeatures.size(); f++)
             for (int c = 0; c < getParaCategory().getFeatureSize(); c++)
                 documentFeatureBelief[f][c] = docFeatureNodes.get(f).get(c).getParameters().clone();
 
@@ -139,8 +147,8 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
                 int observedVal = RVValues.getValue(paraCategory, originalParagraphs.get(p));
 //                        DocumentAnnotatingHelper.getParagraphFeature(originalParagraphs.get(p), processedParas.get(p), paraCategory);
 
-                for (int i=0; i<paraCategory.getFeatureSize(); i++){
-                    if (i==observedVal) paragraphCategoryBelief[p][i] = 0;
+                for (int i = 0; i < paraCategory.getFeatureSize(); i++) {
+                    if (i == observedVal) paragraphCategoryBelief[p][i] = 0;
                     else paragraphCategoryBelief[p][i] = Double.NEGATIVE_INFINITY;
                 }
                 continue;
@@ -155,17 +163,17 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
             nbmnModel.setParaFeatureObservation(paraFeatures);
 //            nbmnModel.setMultiNodesObservation(allParaDocFeatures[p]);
             paragraphCategoryBelief[p] = categoryNode.getParameters().clone();
-            for (int i=0; i<fnl.size(); i++){
+            for (int i = 0; i < fnl.size(); i++) {
                 if (paraFeatures[i] == -1) continue;
 
                 double[] message = NodeInferenceHelper.sumOutOtherNodesWithObservation(fnl.get(i), categoryNode);
-                for (int j=0; j<message.length; j++)
+                for (int j = 0; j < message.length; j++)
                     paragraphCategoryBelief[p][j] += message[j];
             }
 
             // incorporate word information
             List<WordNode> wordNodes = nbmnModel.getWordNodes();
-            for (WordNode node: wordNodes) {
+            for (WordNode node : wordNodes) {
                 double[] message = NodeInferenceHelper.sumOutWordsWithObservation(node);
                 for (int j = 0; j < message.length; j++)
                     paragraphCategoryBelief[p][j] += message[j];
@@ -177,11 +185,11 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
     }
 
 
-    void passMessagesToParagraphCategories(){
+    void passMessagesToParagraphCategories() {
         List<MultiplexNode> fedna = nbmnModel.getMultiNodes();
 
         int[][] paraFeatureValsExistAtDocLevel = data.getParaDocFeatures();
-        for (int p=0; p<paragraphCategoryBelief.length; p++){
+        for (int p = 0; p < paragraphCategoryBelief.length; p++) {
 
             nbmnModel.setMultiNodesObservation(paraFeatureValsExistAtDocLevel[p]);
 
@@ -220,7 +228,7 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
                 // This normalization is independent of the normalization for other paras,
                 // which should be fine as long as the message contributions are normalized fairly for the para.
 
-                for (int i=0; i<paragraphCategoryBelief[p].length; i++){
+                for (int i = 0; i < paragraphCategoryBelief[p].length; i++) {
                     paragraphCategoryBelief[p][i] += messagesToParagraphCategory[p][f][i];
                 }
 
@@ -229,13 +237,13 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
         }
 
 //        BNInference.normalizeLog(paragraphCategoryBelief);
-        for (double[] belief: paragraphCategoryBelief){
+        for (double[] belief : paragraphCategoryBelief) {
             BNInference.normalizeLog(belief);
         }
 
     }
 
-    void passMessageToDocumentFeatures(){
+    void passMessageToDocumentFeatures() {
         int[][] allParaDocFeatures = data.getParaDocFeatures();
         List<List<DiscreteNode>> dfna = nbmnModel.getDocumentFeatureNodes();
         List<MultiplexNode> multiplexNodes = nbmnModel.getMultiNodes();
@@ -253,7 +261,7 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
         }
 
 
-        for (int p=0; p<paragraphCategoryBelief.length; p++){
+        for (int p = 0; p < paragraphCategoryBelief.length; p++) {
 
             nbmnModel.setMultiNodesObservation(allParaDocFeatures[p]);
 
@@ -290,9 +298,9 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
 //        }
     }
 
-    public void updateBeliefs(){
-        int numIteration =1;
-        for (int i=0; i<numIteration; i++) {
+    public void updateBeliefs() {
+        int numIteration = 1;
+        for (int i = 0; i < numIteration; i++) {
             passMessagesToParagraphCategories();
             passMessageToDocumentFeatures();
         }
@@ -300,26 +308,23 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
     }
 
 
-
-
-
-    void normalize(double[] probs){
-        double sum=0;
-        for (int i=0; i<probs.length; i++) sum+= probs[i];
-        for (int i=0; i<probs.length; i++) probs[i] /= sum;
+    void normalize(double[] probs) {
+        double sum = 0;
+        for (int i = 0; i < probs.length; i++) sum += probs[i];
+        for (int i = 0; i < probs.length; i++) probs[i] /= sum;
     }
 
-    void normalizeParagraphBelieves(){
-        for (int i=0; i<paragraphCategoryBelief.length; i++)
+    void normalizeParagraphBelieves() {
+        for (int i = 0; i < paragraphCategoryBelief.length; i++)
             normalize(paragraphCategoryBelief[i]);
     }
 
-    public void annotateDocument(){
+    public void annotateDocument() {
 
 
         passMessagesToParagraphCategories();
 
-        for (int i=0; i<NUM_ITERATIONS;i++) {
+        for (int i = 0; i < NUM_ITERATIONS; i++) {
             passMessageToDocumentFeatures();
             passMessagesToParagraphCategories();
         }
@@ -328,7 +333,7 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
         List<CoreMap> paragraphList = doc.getParagraphs();
 
         RandomVariable paraCategory = nbmnConfig.getCategoryVar();
-        for (int p=0; p<numParagraphs; p++){
+        for (int p = 0; p < numParagraphs; p++) {
             CoreMap paragraph = paragraphList.get(p);
             if (DocProcessor.isParaObserved(paragraph)) continue; // skip observed paragraphs
             RVValues.clearValue(paraCategory, paragraph);
@@ -348,7 +353,7 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
             List<Token> tokens = processedPara.getTokens();
 
             //todo: a hack for TOC and DocType annotation. should implement HMM for TOC and annotate base on HMM result
-            if (this.modelRVSetting instanceof TOCModelRVSetting || this.modelRVSetting instanceof DocTypeModelRVSetting ) {
+            if (this.modelRVSetting instanceof TOCModelRVSetting || this.modelRVSetting instanceof DocTypeModelRVSetting) {
                 int maxIndex = BNInference.maxIndex(logPrioProbs);
                 double[] paraProbs = logPrioProbs.clone();
                 BNInference.convertLogBeliefToProb(paraProbs);
@@ -363,8 +368,8 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
 
             int length = Math.min(hmm.size(), tokens.size());
             int[][] features = new int[length][wordFeatures.size()];
-            for (int i=0; i<length ;i++){
-                for (int f=0; f<wordFeatures.size();f++){
+            for (int i = 0; i < length; i++) {
+                for (int f = 0; f < wordFeatures.size(); f++) {
 //                    features[i][f] = RVValues.getValue(wordFeatures.get(f), tokens.get(i));
 //                    features[i][f] = DocumentAnnotatingHelper.getWordFeature(paragraph, tokens.get(i), wordFeatures.get(f));
                     features[i][f] = ParaProcessor.getWordFeatureValue(wordFeatures.get(f),
@@ -375,14 +380,14 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
 
             //assume a definition paragraph always has the first word being a defined term.
             // can do this check after naive bayes to make it faster.
-            if (states[0]==0) continue;
+            if (states[0] == 0) continue;
 
             List<Token> terms = new ArrayList<>();
 
-            for (int i=0; i<states.length;i++){
-                if (states[i]==1) terms.add(tokens.get(i));
+            for (int i = 0; i < states.length; i++) {
+                if (states[i] == 1) terms.add(tokens.get(i));
                 else {
-                    if (terms.size()>0){
+                    if (terms.size() > 0) {
                         RVValues.addTerms(paraCategory, paragraph, terms, 1);
 //                        DocumentAnnotatingHelper.addParagraphTermAnnotation(paragraph, paraCategory, terms);
                         terms = new ArrayList<>();
@@ -390,7 +395,7 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
 
                 }
             }
-            if (terms.size()>0){
+            if (terms.size() > 0) {
                 RVValues.addTerms(paraCategory, paragraph, terms, 1);
 //                DocumentAnnotatingHelper.addParagraphTermAnnotation(paragraph, paraCategory, terms);
             }
@@ -404,9 +409,9 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
         return paragraphCategoryBelief;
     }
 
-    public double[][] getParagraphCategoryProbabilities(){
+    public double[][] getParagraphCategoryProbabilities() {
         double[][] paraCatProbs = new double[paragraphCategoryBelief.length][nbmnConfig.getCategoryVar().getFeatureSize()];
-        for (int i=0; i<paraCatProbs.length;i++)
+        for (int i = 0; i < paraCatProbs.length; i++)
             paraCatProbs[i] = paragraphCategoryBelief[i].clone();
         BNInference.convertLogBeliefArrayToProb(paraCatProbs);
         return paraCatProbs;
@@ -429,7 +434,7 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
 
 //        for (int i=0; i<documentFeatureBelief.length; i++)
 //                docFeatureProbs[i] = documentFeatureBelief[i].clone();
-        for (int i=0; i<documentFeatureBelief.length; i++)
+        for (int i = 0; i < documentFeatureBelief.length; i++)
             BNInference.convertLogBeliefArrayToProb(docFeatureProbs[i]);
         return docFeatureProbs;
     }
@@ -461,7 +466,7 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
      * @return
      */
     public HashMap<String, HashMap<String, HashMap<String, Double>>> toVisualMap(int paraIndex) {
-       //covert paraCategoryBelief
+        //covert paraCategoryBelief
         HashMap<String, HashMap<String, HashMap<String, Double>>> map = new LinkedHashMap();
         HashMap<String, HashMap<String, Double>> applicationModelInfo = new LinkedHashMap();
         applicationModelInfo.put(this.nbmnConfig.getCategoryVar().getName(),
