@@ -13,6 +13,7 @@ import java.util.List;
 
 public class NodeTrainingHelperTest {
 
+    double pc = NodeTrainingHelper.PRIOR_COUNT;
     private RandomVariable catVar = new RandomVariable(2, "paraIsDef");
     private RandomVariable multiCatVar = new RandomVariable(3, "paraToc");
     private RandomVariable parentVar = new RandomVariable(2, "defInBold");
@@ -124,7 +125,7 @@ public class NodeTrainingHelperTest {
 
     @Test
     public void testGetLogProbabilities() throws Exception {
-        String result = "[-0.6931471805599453, -0.6931471805599453, -2.4849066497880004, -0.08701137698962981, -0.6931471805599453, -0.6931471805599453, -0.6931471805599453, -0.6931471805599453]";
+        String result = "[-0.6931471805599453, -0.6931471805599453, -9.21054035197885, -9.99850023328921E-5, -0.6931471805599453, -0.6931471805599453, -0.6931471805599453, -0.6931471805599453]";
         DiscreteNode node = NodeTrainingHelper
                 .createTrainingDiscreteNode(this.familyVariables,
                         parentNodes);
@@ -174,13 +175,16 @@ public class NodeTrainingHelperTest {
 
     @Test
     public void testGetLogProbabilities1() throws Exception {
-        String result = "[-Infinity, -0.008298802814695083]";
+//        String result = "[-Infinity, -0.008298802814695083]";
+        String result = "[0.0, 0.0]";
         NodeTrainingHelper.updateCount(wNode, 12);
         System.out.println("word node after updating with observed word abc");
         System.out.println(Arrays.toString(
                 NodeTrainingHelper.getLogProbabilities(wNode).get(observedString)));
         assert (result.equals(Arrays.toString(
                 NodeTrainingHelper.getLogProbabilities(wNode).get(observedString))));
+        // in this test, even though the frequency counts are different for different classes,
+        // but since there is only one observed word, the relative distributions are the same for both.
     }
 
     @Test
@@ -193,9 +197,9 @@ public class NodeTrainingHelperTest {
         System.out.println(Arrays.toString(node.getNodes()[1].getParameters()));
         System.out.println(Arrays.toString(node.getNodes()[2].getParameters()));
         assert (node.getNodes().length == 3);
-        assert (Arrays.toString(node.getNodes()[0].getParameters()).equals("[0.1, 0.1, 0.1, 0.1]"));
-        assert (Arrays.toString(node.getNodes()[1].getParameters()).equals("[0.1, 0.1, 0.1, 0.1]"));
-        assert (Arrays.toString(node.getNodes()[2].getParameters()).equals("[0.1, 0.1, 0.1, 0.1]"));
+        assert (Arrays.toString(node.getNodes()[0].getParameters()).equals("[1.0E-4, 1.0E-4, 1.0E-4, 1.0E-4]"));
+        assert (Arrays.toString(node.getNodes()[1].getParameters()).equals("[1.0E-4, 1.0E-4, 1.0E-4, 1.0E-4]"));
+        assert (Arrays.toString(node.getNodes()[2].getParameters()).equals("[1.0E-4, 1.0E-4, 1.0E-4, 1.0E-4]"));
     }
 
     @Test
@@ -213,14 +217,14 @@ public class NodeTrainingHelperTest {
         System.out.println(Arrays.toString(node.getNodes()[0].getParameters()));
         System.out.println(Arrays.toString(node.getNodes()[1].getParameters()));
         System.out.println(Arrays.toString(node.getNodes()[2].getParameters()));
-        assert (Arrays.toString(node.getNodes()[0].getParameters()).equals("[0.1, 12.1, 0.1, 0.1]"));
-        assert (Arrays.toString(node.getNodes()[1].getParameters()).equals("[0.1, 0.1, 0.1, 0.1]"));
-        assert (Arrays.toString(node.getNodes()[2].getParameters()).equals("[0.1, 0.1, 0.1, 0.1]"));
+        assert (Arrays.toString(node.getNodes()[0].getParameters()).equals("[1.0E-4, 12.0001, 1.0E-4, 1.0E-4]"));
+        assert (Arrays.toString(node.getNodes()[1].getParameters()).equals("[1.0E-4, 1.0E-4, 1.0E-4, 1.0E-4]"));
+        assert (Arrays.toString(node.getNodes()[2].getParameters()).equals("[1.0E-4, 1.0E-4, 1.0E-4, 1.0E-4]"));
 
         multiCatNode.setObservation(1);
         NodeTrainingHelper.updateCount(node, 12.0);
-        assert (Arrays.toString(node.getNodes()[0].getParameters()).equals("[0.1, 12.1, 0.1, 0.1]"));
-        assert (Arrays.toString(node.getNodes()[1].getParameters()).equals("[0.1, 0.1, 0.1, 12.1]"));
+        assert (Arrays.toString(node.getNodes()[0].getParameters()).equals("[1.0E-4, 12.0001, 1.0E-4, 1.0E-4]"));
+        assert (Arrays.toString(node.getNodes()[1].getParameters()).equals("[1.0E-4, 1.0E-4, 1.0E-4, 12.0001]"));
 
 
 //        assert (node.getNodes()[0].getParameter(3) == 12 + NodeTrainingHelper.PRIOR_COUNT);
@@ -246,8 +250,8 @@ public class NodeTrainingHelperTest {
         NodeTrainingHelper.updateCount(node, 1.0);
         System.out.println(Arrays.toString(node.getNodes()[0].getParameters()));
         System.out.println(Arrays.toString(node.getNodes()[1].getParameters()));
-        assert (Arrays.toString(node.getNodes()[0].getParameters()).equals("[0.1, 1.1, 0.1, 0.1]"));
-        assert (Arrays.toString(node.getNodes()[1].getParameters()).equals("[0.1, 0.1, 0.1, 0.1]"));
+        assert (Arrays.toString(node.getNodes()[0].getParameters()).equals("[1.0E-4, 1.0001, 1.0E-4, 1.0E-4]"));
+        assert (Arrays.toString(node.getNodes()[1].getParameters()).equals("[1.0E-4, 1.0E-4, 1.0E-4, 1.0E-4]"));
 //        assert (node.getNodes()[0].getParameter(3) == 1 + NodeTrainingHelper.PRIOR_COUNT);
 
     }

@@ -22,6 +22,7 @@ public class NBTrainingHelperTest {
     NaiveBayesWithMultiNodes nbmn = NBTrainingHelper.createTrainingNBMN(config);
     List<String[]> wordsList;
     NBMNTuple tuple;
+    double priorCount = 0.0001;
 
     @Before
     public void setup() {
@@ -55,14 +56,14 @@ public class NBTrainingHelperTest {
         NBTrainingHelper.addSample(nbmn, tuple);
         System.out.println(nbmn);
         System.out.println(Arrays.toString(nbmn.documentFeatureNodes.get(2).get(1).getParameters()));
-        assert (Arrays.equals(nbmn.documentFeatureNodes.get(0).get(0).getParameters(), new double[]{0.1, 0.1}));
-        assert (Arrays.equals(nbmn.documentFeatureNodes.get(0).get(1).getParameters(), new double[]{0.1, 1.1}));
-        assert (Arrays.equals(nbmn.documentFeatureNodes.get(2).get(1).getParameters(), new double[]{1.1, 0.1}));
+        assert (Arrays.equals(nbmn.documentFeatureNodes.get(0).get(0).getParameters(), new double[]{priorCount, priorCount}));
+        assert (Arrays.equals(nbmn.documentFeatureNodes.get(0).get(1).getParameters(), new double[]{priorCount, 1 + priorCount}));
+        assert (Arrays.equals(nbmn.documentFeatureNodes.get(2).get(1).getParameters(), new double[]{1 + priorCount, priorCount}));
         System.out.println(Arrays.toString(nbmn.getMultiNodes().get(0).getNodes()[1].getParameters()));
-        assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[1].getParameters(), new double[]{0.1, 0.1, 0.1, 1.1}));
-        assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[0].getParameters(), new double[]{0.1, 0.1, 0.1, 0.1}));
+        assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[1].getParameters(), new double[]{priorCount, priorCount, priorCount, 1 + priorCount}));
+        assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[0].getParameters(), new double[]{priorCount, priorCount, priorCount, priorCount}));
 
-        assert (nbmn.getFeatureNodes().get(0).getParameters()[26] == 1.1);
+        assert (nbmn.getFeatureNodes().get(0).getParameters()[26] == 1 + priorCount);
 
     }
 
@@ -70,15 +71,14 @@ public class NBTrainingHelperTest {
     public void testAddSampleWithWeight() throws Exception {
         NBTrainingHelper.addSample(nbmn, tuple, 9);
         System.out.println(nbmn);
-        System.out.println(Arrays.toString(nbmn.documentFeatureNodes.get(2).get(1).getParameters()));
-        assert (Arrays.equals(nbmn.documentFeatureNodes.get(0).get(0).getParameters(), new double[]{0.1, 0.1}));
-        assert (Arrays.equals(nbmn.documentFeatureNodes.get(0).get(1).getParameters(), new double[]{0.1, 9.1}));
-        assert (Arrays.equals(nbmn.documentFeatureNodes.get(2).get(1).getParameters(), new double[]{9.1, 0.1}));
+        assert (Arrays.equals(nbmn.documentFeatureNodes.get(0).get(0).getParameters(), new double[]{priorCount, priorCount}));
+        assert (Arrays.equals(nbmn.documentFeatureNodes.get(0).get(1).getParameters(), new double[]{priorCount, 9 + priorCount}));
+        assert (Arrays.equals(nbmn.documentFeatureNodes.get(2).get(1).getParameters(), new double[]{9 + priorCount, priorCount}));
         System.out.println(Arrays.toString(nbmn.getMultiNodes().get(0).getNodes()[1].getParameters()));
-        assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[1].getParameters(), new double[]{0.1, 0.1, 0.1, 9.1}));
-        assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[0].getParameters(), new double[]{0.1, 0.1, 0.1, 0.1}));
+        assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[1].getParameters(), new double[]{priorCount, priorCount, priorCount, 9 + priorCount}));
+        assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[0].getParameters(), new double[]{priorCount, priorCount, priorCount, priorCount}));
 
-        assert (nbmn.getFeatureNodes().get(0).getParameters()[26] == 9.1);
+        assert (nbmn.getFeatureNodes().get(0).getParameters()[26] == 9 + priorCount);
 
     }
 

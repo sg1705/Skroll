@@ -70,10 +70,10 @@ public class DocProcessorTest {
         List<CoreMap> processedParas = DocProcessor.processParas(doc);
         NBMNData data = DocProcessor.getParaDataFromDoc(doc, setting.getNbmnConfig());
         System.out.print(data);
-        assert (Arrays.deepToString(data.getParaFeatures()).equals("[[3], [20], [3]]"));
+        assert (Arrays.deepToString(data.getParaFeatures()).equals("[[3], [24], [3]]"));
         assert (Arrays.deepToString(data.getParaDocFeatures()).equals("[[1], [1], [0]]"));
         assert (Arrays.toString(data.getWordsLists()[0].get(0)).equals("[in, out, out]"));
-        assert (Arrays.toString(data.getWordsLists()[1].get(0)).equals("[in, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out]"));
+        assert (Arrays.toString(data.getWordsLists()[1].get(0)).equals("[in, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out]"));
     }
 
     @Test

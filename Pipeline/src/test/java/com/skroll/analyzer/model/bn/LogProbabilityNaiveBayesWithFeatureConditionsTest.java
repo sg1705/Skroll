@@ -42,7 +42,7 @@ public class LogProbabilityNaiveBayesWithFeatureConditionsTest extends TestCase 
         BNInference.exp(prob);
         System.out.println("probabilities"+ Arrays.toString(prob));
         //assert((int)(100*pbn.getFeatureExistAtDocLevelNodes().get(0).getParameters()[4])==66);
-        assert((int)(100*prob[4])==91);
+        assert ((int) (10000 * prob[4]) == 9999);
     }
 
 }
