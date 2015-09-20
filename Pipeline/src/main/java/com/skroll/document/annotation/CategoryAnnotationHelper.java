@@ -344,6 +344,27 @@ public class CategoryAnnotationHelper {
         paragraph.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
     }
 
+    /**
+     * Copy annotations from one CoreMap into another
+     * @param copyFrom CoreMap to copy from
+     * @param copyInto
+     */
+    public static void copyAnnotations(CoreMap copyFrom, CoreMap copyInto) {
+        if (copyFrom.containsKey(CoreAnnotations.CategoryAnnotations.class)) {
+            HashMap classId = copyFrom.get(CoreAnnotations.CategoryAnnotations.class);
+            copyInto.set(CoreAnnotations.CategoryAnnotations.class, classId);
+        }
+
+        if (copyFrom.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)) {
+            boolean userObservation = copyFrom.get(CoreAnnotations.IsUserObservationAnnotation.class);
+            copyInto.set(CoreAnnotations.IsUserObservationAnnotation.class, userObservation);
+        }
+
+        if (copyFrom.containsKey(CoreAnnotations.IsTrainerFeedbackAnnotation.class)) {
+            boolean feedback = copyFrom.get(CoreAnnotations.IsTrainerFeedbackAnnotation.class);
+            copyInto.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, feedback);
+        }
+    }
 
 
 
