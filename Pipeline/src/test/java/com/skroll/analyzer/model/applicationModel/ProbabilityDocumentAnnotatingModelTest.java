@@ -70,6 +70,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
     @Test
     public void testDocBeliefs(){
         System.out.println("-----------------");
+        System.out.println(doc.getParagraphs().size() + "paragraphs");
         printDocBeliefs();
         for (int i=0; i<250;i++) {
             System.out.println("iteration " + i);
@@ -116,6 +117,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
             for (int j=0; j<pBelieves[i].length; j++)
                 System.out.printf("%.2f ", pBelieves[i][j]);
             System.out.print("] ");
+            System.out.println(paraList.get(i).getTokens().size());
             System.out.println(paraList.get(i).getText());
 
         }
