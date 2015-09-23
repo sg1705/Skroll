@@ -11,7 +11,7 @@
 
     //-- private variables
     //context root of API
-    var secSearchServiceBase   = 'http://www.sec.gov/cgi-bin/srch-edgar?&output=atom';
+    var secSearchServiceBase   = 'http://www.sec.gov/cgi-bin/srch-edgar?&output=atom&first=2015&last=2015';
     //http://www.sec.gov/cgi-bin/srch-edgar?text=google&output=atom
     //http://www.sec.gov/cgi-bin/srch-edgar?text=google&start=1&count=80&first=2015&last=2015&output=atom
 
