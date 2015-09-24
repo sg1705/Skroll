@@ -19,7 +19,8 @@
     //-- service definition
     var service = {
 
-      getSearchResults  : getSearchResults
+      getSearchResults  : getSearchResults,
+      getIndexHtml      : getIndexHtml
 
     };
 
@@ -43,6 +44,23 @@
         })
       return deferred.promise;
     };
+
+    /**
+    * Returns a promise to retrieve index html
+    **/
+    function getIndexHtml(searchString) {
+      $log.debug("Fetching Indexhtml for:" + searchString);
+      var deferred = $q.defer();
+      $http.get(secSearchServiceBase + 'fetchIndex?url=' + searchString)
+        .success(function(data) {
+          deferred.resolve(data);
+        })
+        .error(function(msg, status) {
+          deferred.reject(msg);
+        })
+      return deferred.promise;
+    };
+
 
 
   };

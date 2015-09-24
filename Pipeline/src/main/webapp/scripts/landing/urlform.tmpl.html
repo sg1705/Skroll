@@ -1,6 +1,15 @@
-<div layout="row" style="height:60%; width: 100%" layout-align="center center">
-	<md-input-container flex="50">
-    <label>Paste URL</label>
+<div layout="column" style="height:60%; width: 100%" layout-align="center center">
+	<md-input-container flex="30">
     <input ng-model="ctrl.url" ng-paste="ctrl.onPasteUrl($event)" ng-enter="ctrl.onEnter()">
   </md-input-container>
+
+  <md-list flex="70">
+  	<md-list-item ng-repeat="result in ctrl.searchResults">
+  		<div flex layout="row" style="width:700px" ng-click="ctrl.onClickedFiling('{{result.href}}')">
+  			<h3 flex="60">{{result.companyName}}</h2>
+  			<h3 flex="15">{{result.formType}}</h2>
+  			<h3 flex="25">{{result.filingDate}}</h2>
+  		</div>
+  		<md-divider/>
+	</md-list>
 </div>

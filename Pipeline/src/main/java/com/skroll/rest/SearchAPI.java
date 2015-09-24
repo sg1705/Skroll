@@ -1,6 +1,8 @@
 package com.skroll.rest;
 
+import com.google.common.net.UrlEscapers;
 import com.skroll.document.DocumentHelper;
+import org.apache.jasper.tagplugins.jstl.core.Url;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,28 +19,34 @@ public class SearchAPI {
 
     private static final Logger logger = LoggerFactory.getLogger(DocAPI.class);
     private static final String SEARCH_URL = "http://www.sec.gov/cgi-bin/srch-edgar?&output=atom";
-
+    private static final String FETCH_INDEX_URL = "http://www.sec.gov";
 
 
     @GET
     @Path("/searchSec")
     @Produces(MediaType.APPLICATION_ATOM_XML)
-    public Response searchSec(@QueryParam("text") String docURL, @QueryParam("partialParse") String partialParse) throws Exception {
+    public Response searchSec(@QueryParam("text") String docURL) throws Exception {
 
+        docURL = UrlEscapers.urlFormParameterEscaper().escape(docURL);
         String rssUrl = SEARCH_URL + "&text=" + docURL;
+        logger.info("Search string for {}", docURL);
         String rssXml = DocumentHelper.fetchHtml(rssUrl);
-//        SAXBuilder jdomBuilder = new SAXBuilder();
-//        Document jdomDocument = jdomBuilder.build(xmlSource);
-//        Element rss = jdomDocument.getRootElement();
-//
-//        RssReader reader = new RssReader(rssUrl);
-//        Feed feed = reader.readFeed();
-//        List<FeedMessage> messages = feed.getMessages();
-//        Gson gson = new GsonBuilder().create();
-//        String rssJson = gson.toJson(messages);
         Response r = Response.ok().status(Response.Status.OK).entity(rssXml).build();
         return r;
     }
+
+    @GET
+    @Path("/fetchIndex")
+    @Produces(MediaType.TEXT_HTML)
+    public Response fetchIndex(@QueryParam("url") String docURL) throws Exception {
+
+        String rssUrl = FETCH_INDEX_URL + docURL;
+        logger.info("Search string for {}", docURL);
+        String rssXml = DocumentHelper.fetchHtml(rssUrl);
+        Response r = Response.ok().status(Response.Status.OK).entity(rssXml).build();
+        return r;
+    }
+
 
 
 }

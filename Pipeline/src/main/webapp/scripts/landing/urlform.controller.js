@@ -14,17 +14,22 @@
 		.controller('UrlFormCtrl', UrlFormCtrl);
 
   /* @ngInject*/
-  function UrlFormCtrl($location, secSearchService) {
+  function UrlFormCtrl($location, secSearchService, $routeParams) {
 
     //-- private variables
-    var vm = this;
+    var searchResults = [];
+    var vm            = this;
 
     //-- public variables
-    vm.url = '';
+    vm.url = $routeParams.searchText;
+    vm.searchResults = searchResults;
 
     //-- public methods
-    vm.onPasteUrl = onPasteUrl;
-    vm.onEnter    = onEnter;
+    vm.onPasteUrl      = onPasteUrl;
+    vm.onEnter         = onEnter;
+    vm.onClickedFiling = onClickedFiling;
+
+    search();
 
     /**
     * Handles when user pastes a url
@@ -39,27 +44,57 @@
 
     function onEnter() {
       console.log('enter pressed');
-      // $.get( "http://www.sec.gov/cgi-bin/srch-edgar?text=google&first=2015&last=2015", function(data) {
-      //   console.log(data);
-      // })
+      //search();
+      $location.path('/url/' + vm.url);
+    }
 
-      secSearchService.getSearchResults('google 10-k')
+    function onClickedFiling(link) {
+      secSearchService.getIndexHtml(link)
         .then(function(data) {
-          console.log(data);
+          var html = $.parseHTML(data);
+          var href = $(html).find('[href^="/Archives/edgar/data"]')[0];
+          href = 'http://www.sec.gov'+$(href).attr('href');
+          console.log(href);
+          $location.path('/open').search('q', href);
+          // http://localhost:8088/open?q=http:%2F%2Fwww.sec.gov%2FArchives%2Fedgar%2Fdata%2F1467373%2F000146737314000467%2Facn831201410k.htm
+        }, function(err) {
+          console.log(err);
+        });
+
+    }
+
+    function search() {
+      vm.searchResults = new Array();
+      secSearchService.getSearchResults(vm.url)
+        .then(function(data) {
           var rss = $.parseXML(data);
           var entries = $(rss).find("entry");
           console.log(entries.length);
           $.each(entries, function(index){
-            console.log($(entries[index]).find('title').text());
-            console.log($(entries[index]).find('link').attr('href'));
+            var result = processXml(entries[index]);
+            vm.searchResults.push(result);
           });
         }, function(err) {
           console.log(err);
         });
+
     }
 
+    function processXml(entry) {
+      var filingDate = $(entry).find('updated').text();
+      var title = $(entry).find('title').text();
+      var href = $(entry).find('link').attr('href');
+      var formType = title.split(' - ')[0];
+      var companyName = title.split(' - ')[1];
+      var result = {
+        'companyName' : companyName,
+        'formType'    : formType,
+        'filingDate'  : filingDate,
+        'href'        : href
+      }
+      return result;
+    }
 
   }
-
 
 })();
