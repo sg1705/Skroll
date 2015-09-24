@@ -39,16 +39,23 @@
 
     function onEnter() {
       console.log('enter pressed');
-      $.get( "http://www.sec.gov/cgi-bin/srch-edgar?text=google&first=2015&last=2015", function(data) {
-        console.log(data);
-      })
+      // $.get( "http://www.sec.gov/cgi-bin/srch-edgar?text=google&first=2015&last=2015", function(data) {
+      //   console.log(data);
+      // })
 
-      // secSearchService.getSearchResults('google')
-      //   .then(function(data) {
-      //     console.log(data);
-      //   }, function(err) {
-      //     console.log(err);
-      //   });
+      secSearchService.getSearchResults('google 10-k')
+        .then(function(data) {
+          console.log(data);
+          var rss = $.parseXML(data);
+          var entries = $(rss).find("entry");
+          console.log(entries.length);
+          $.each(entries, function(index){
+            console.log($(entries[index]).find('title').text());
+            console.log($(entries[index]).find('link').attr('href'));
+          });
+        }, function(err) {
+          console.log(err);
+        });
     }
 
 

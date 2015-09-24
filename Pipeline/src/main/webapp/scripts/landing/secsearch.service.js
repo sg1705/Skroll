@@ -11,7 +11,8 @@
 
     //-- private variables
     //context root of API
-    var secSearchServiceBase   = 'http://www.sec.gov/cgi-bin/srch-edgar?&output=atom&first=2015&last=2015';
+    var secSearchServiceBase   = 'restServices/search/';
+    //var secSearchServiceBase   = 'http://www.sec.gov/cgi-bin/srch-edgar?&output=atom&first=2015&last=2015';
     //http://www.sec.gov/cgi-bin/srch-edgar?text=google&output=atom
     //http://www.sec.gov/cgi-bin/srch-edgar?text=google&start=1&count=80&first=2015&last=2015&output=atom
 
@@ -33,7 +34,7 @@
     function getSearchResults(searchString) {
       $log.debug("Searching SEC.gov for:" + searchString);
       var deferred = $q.defer();
-      $http.get(secSearchServiceBase + '&text=' + searchString)
+      $http.get(secSearchServiceBase + 'searchSec?text=' + searchString)
         .success(function(data) {
           deferred.resolve(data);
         })
