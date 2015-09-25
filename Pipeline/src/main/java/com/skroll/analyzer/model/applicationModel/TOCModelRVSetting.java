@@ -22,7 +22,7 @@ public class TOCModelRVSetting extends ModelRVSetting {
     static final List<RandomVariable> DEFAULT_PARA_FEATURE_VARS = Arrays.asList(
             RVCreater.createDiscreteRVWithComputer(new NumberTokensComputer(), "numTokens")
     );
-    static final List<RandomVariable> DEFAULT_PARA_DOC_FEATURE_VARS = Arrays.asList(
+    static final List<RandomVariable> DEFAULT_SHARED_PARA_FEATURE_VARS = Arrays.asList(
             RVCreater.createDiscreteRVWithComputer(new NotInTableRVComputer(), "notInTable"),
             RVCreater.createDiscreteRVWithComputer(new StartsWithNumberComputer(), "startsWithNumber"),
             RVCreater.createDiscreteRVWithComputer(new EndsWithNumberComputer(), "endsWithNumber"),
@@ -40,11 +40,12 @@ public class TOCModelRVSetting extends ModelRVSetting {
             RVCreater.createWordsRVWithComputer(new FirstWordsComputer(), "firstWord")
     );
 
-    public TOCModelRVSetting(List<Integer> categoryIds) {
+    public TOCModelRVSetting(List<Integer> categoryIds, List<Integer> lowLevelCategoryIds) {
         super(  DEFAULT_WORD_FEATURES,
-                DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS,
+                DEFAULT_PARA_FEATURE_VARS, DEFAULT_SHARED_PARA_FEATURE_VARS,
                 DEFAULT_WORD_VARS,
-                categoryIds);
+                categoryIds,
+                lowLevelCategoryIds);
     }
 
     @JsonCreator
@@ -52,8 +53,10 @@ public class TOCModelRVSetting extends ModelRVSetting {
             @JsonProperty("nbmnConfig") NBMNConfig nbmnConfig,
             @JsonProperty("wordType") RandomVariable wordType,
             @JsonProperty("wordFeatures") List<RandomVariable> wordFeatures,
-            @JsonProperty("categoryIds") List<Integer> categoryIds) {
-        super(nbmnConfig, wordType, wordFeatures, categoryIds);
+            @JsonProperty("categoryIds") List<Integer> categoryIds,
+            @JsonProperty("lowLevelCategoryIds") List<Integer> lowLevelCategoryIds
+    ) {
+        super(nbmnConfig, wordType, wordFeatures, categoryIds, lowLevelCategoryIds);
     }
 
     @Override

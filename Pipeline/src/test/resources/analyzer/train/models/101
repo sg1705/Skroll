@@ -1,0 +1,1884 @@
+{
+  "id" : 101,
+  "nbmnModel" : {
+    "categoryNode" : {
+      "@id" : 1,
+      "parents" : [ ],
+      "parameters" : [ 22.1, 1.1, 14.1 ],
+      "observedValue" : -1,
+      "familyVariables" : [ {
+        "featureSize" : 3,
+        "valueNames" : null,
+        "named" : "paraTypeIsModelID-[0, 2, 3]"
+      } ]
+    },
+    "featureNodes" : [ {
+      "@id" : 2,
+      "parents" : [ 1 ],
+      "parameters" : [ 0.1, 7.1, 1.1, 3.1, 1.1, 1.1, 3.1, 0.1, 0.1, 2.1, 1.1, 0.1, 0.1, 1.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 2.1, 0.1, 0.1, 1.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 2.1, 2.1, 2.1, 0.1, 2.1, 0.1, 1.1, 0.1, 1.1, 0.1, 1.1, 1.1, 1.1, 0.1, 0.1, 0.1, 1.1, 0.1, 0.1, 0.1 ],
+      "observedValue" : -1,
+      "familyVariables" : [ {
+        "featureSize" : 25,
+        "valueNames" : null,
+        "named" : "numTokens"
+      }, {
+        "featureSize" : 3,
+        "valueNames" : null,
+        "named" : "paraTypeIsModelID-[0, 2, 3]"
+      } ]
+    } ],
+    "multiNodes" : [ {
+      "@id" : 3,
+      "nodes" : [ {
+        "@id" : 4,
+        "parents" : [ {
+          "@id" : 5,
+          "parents" : [ ],
+          "parameters" : [ 22.1, 0.1 ],
+          "observedValue" : 0,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_0_notInTable"
+          } ]
+        } ],
+        "parameters" : [ 2.1, 20.1, 0.1, 0.1 ],
+        "observedValue" : 1,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "notInTable"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_0_notInTable"
+        } ]
+      }, {
+        "@id" : 6,
+        "parents" : [ {
+          "@id" : 7,
+          "parents" : [ ],
+          "parameters" : [ 0.1, 1.1 ],
+          "observedValue" : 1,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_1_notInTable"
+          } ]
+        } ],
+        "parameters" : [ 0.1, 0.1, 0.1, 1.1 ],
+        "observedValue" : 1,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "notInTable"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_1_notInTable"
+        } ]
+      }, {
+        "@id" : 8,
+        "parents" : [ {
+          "@id" : 9,
+          "parents" : [ ],
+          "parameters" : [ 0.1, 14.1 ],
+          "observedValue" : 1,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_2_notInTable"
+          } ]
+        } ],
+        "parameters" : [ 0.1, 0.1, 0.1, 14.1 ],
+        "observedValue" : 1,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "notInTable"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_2_notInTable"
+        } ]
+      } ],
+      "selectingNode" : 1
+    }, {
+      "@id" : 10,
+      "nodes" : [ {
+        "@id" : 11,
+        "parents" : [ {
+          "@id" : 12,
+          "parents" : [ ],
+          "parameters" : [ 22.1, 0.1 ],
+          "observedValue" : 0,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_0_startsWithNumber"
+          } ]
+        } ],
+        "parameters" : [ 14.1, 8.1, 0.1, 0.1 ],
+        "observedValue" : 0,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "startsWithNumber"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_0_startsWithNumber"
+        } ]
+      }, {
+        "@id" : 13,
+        "parents" : [ {
+          "@id" : 14,
+          "parents" : [ ],
+          "parameters" : [ 1.1, 0.1 ],
+          "observedValue" : 0,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_1_startsWithNumber"
+          } ]
+        } ],
+        "parameters" : [ 1.1, 0.1, 0.1, 0.1 ],
+        "observedValue" : 0,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "startsWithNumber"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_1_startsWithNumber"
+        } ]
+      }, {
+        "@id" : 15,
+        "parents" : [ {
+          "@id" : 16,
+          "parents" : [ ],
+          "parameters" : [ 14.1, 0.1 ],
+          "observedValue" : 0,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_2_startsWithNumber"
+          } ]
+        } ],
+        "parameters" : [ 14.1, 0.1, 0.1, 0.1 ],
+        "observedValue" : 0,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "startsWithNumber"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_2_startsWithNumber"
+        } ]
+      } ],
+      "selectingNode" : 1
+    }, {
+      "@id" : 17,
+      "nodes" : [ {
+        "@id" : 18,
+        "parents" : [ {
+          "@id" : 19,
+          "parents" : [ ],
+          "parameters" : [ 22.1, 0.1 ],
+          "observedValue" : 0,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_0_endsWithNumber"
+          } ]
+        } ],
+        "parameters" : [ 14.1, 8.1, 0.1, 0.1 ],
+        "observedValue" : 0,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "endsWithNumber"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_0_endsWithNumber"
+        } ]
+      }, {
+        "@id" : 20,
+        "parents" : [ {
+          "@id" : 21,
+          "parents" : [ ],
+          "parameters" : [ 1.1, 0.1 ],
+          "observedValue" : 0,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_1_endsWithNumber"
+          } ]
+        } ],
+        "parameters" : [ 1.1, 0.1, 0.1, 0.1 ],
+        "observedValue" : 0,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "endsWithNumber"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_1_endsWithNumber"
+        } ]
+      }, {
+        "@id" : 22,
+        "parents" : [ {
+          "@id" : 23,
+          "parents" : [ ],
+          "parameters" : [ 14.1, 0.1 ],
+          "observedValue" : 0,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_2_endsWithNumber"
+          } ]
+        } ],
+        "parameters" : [ 14.1, 0.1, 0.1, 0.1 ],
+        "observedValue" : 0,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "endsWithNumber"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_2_endsWithNumber"
+        } ]
+      } ],
+      "selectingNode" : 1
+    }, {
+      "@id" : 24,
+      "nodes" : [ {
+        "@id" : 25,
+        "parents" : [ {
+          "@id" : 26,
+          "parents" : [ ],
+          "parameters" : [ 0.1, 0.1 ],
+          "observedValue" : -1,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_0_inUserTOC"
+          } ]
+        } ],
+        "parameters" : [ 0.1, 0.1, 0.1, 0.1 ],
+        "observedValue" : -1,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "inUserTOC"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_0_inUserTOC"
+        } ]
+      }, {
+        "@id" : 27,
+        "parents" : [ {
+          "@id" : 28,
+          "parents" : [ ],
+          "parameters" : [ 0.1, 0.1 ],
+          "observedValue" : -1,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_1_inUserTOC"
+          } ]
+        } ],
+        "parameters" : [ 0.1, 0.1, 0.1, 0.1 ],
+        "observedValue" : -1,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "inUserTOC"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_1_inUserTOC"
+        } ]
+      }, {
+        "@id" : 29,
+        "parents" : [ {
+          "@id" : 30,
+          "parents" : [ ],
+          "parameters" : [ 0.1, 0.1 ],
+          "observedValue" : -1,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_2_inUserTOC"
+          } ]
+        } ],
+        "parameters" : [ 0.1, 0.1, 0.1, 0.1 ],
+        "observedValue" : -1,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "inUserTOC"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_2_inUserTOC"
+        } ]
+      } ],
+      "selectingNode" : 1
+    }, {
+      "@id" : 31,
+      "nodes" : [ {
+        "@id" : 32,
+        "parents" : [ {
+          "@id" : 33,
+          "parents" : [ ],
+          "parameters" : [ 22.1, 0.1 ],
+          "observedValue" : 0,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_0_paraStartsIsItalicAnnotation"
+          } ]
+        } ],
+        "parameters" : [ 17.1, 5.1, 0.1, 0.1 ],
+        "observedValue" : 0,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "paraStartsIsItalicAnnotation"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_0_paraStartsIsItalicAnnotation"
+        } ]
+      }, {
+        "@id" : 34,
+        "parents" : [ {
+          "@id" : 35,
+          "parents" : [ ],
+          "parameters" : [ 1.1, 0.1 ],
+          "observedValue" : 0,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_1_paraStartsIsItalicAnnotation"
+          } ]
+        } ],
+        "parameters" : [ 1.1, 0.1, 0.1, 0.1 ],
+        "observedValue" : 0,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "paraStartsIsItalicAnnotation"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_1_paraStartsIsItalicAnnotation"
+        } ]
+      }, {
+        "@id" : 36,
+        "parents" : [ {
+          "@id" : 37,
+          "parents" : [ ],
+          "parameters" : [ 14.1, 0.1 ],
+          "observedValue" : 0,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_2_paraStartsIsItalicAnnotation"
+          } ]
+        } ],
+        "parameters" : [ 14.1, 0.1, 0.1, 0.1 ],
+        "observedValue" : 0,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "paraStartsIsItalicAnnotation"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_2_paraStartsIsItalicAnnotation"
+        } ]
+      } ],
+      "selectingNode" : 1
+    }, {
+      "@id" : 38,
+      "nodes" : [ {
+        "@id" : 39,
+        "parents" : [ {
+          "@id" : 40,
+          "parents" : [ ],
+          "parameters" : [ 22.1, 0.1 ],
+          "observedValue" : 0,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_0_paraStartsIsUnderlineAnnotation"
+          } ]
+        } ],
+        "parameters" : [ 22.1, 0.1, 0.1, 0.1 ],
+        "observedValue" : 0,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "paraStartsIsUnderlineAnnotation"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_0_paraStartsIsUnderlineAnnotation"
+        } ]
+      }, {
+        "@id" : 41,
+        "parents" : [ {
+          "@id" : 42,
+          "parents" : [ ],
+          "parameters" : [ 1.1, 0.1 ],
+          "observedValue" : 0,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_1_paraStartsIsUnderlineAnnotation"
+          } ]
+        } ],
+        "parameters" : [ 1.1, 0.1, 0.1, 0.1 ],
+        "observedValue" : 0,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "paraStartsIsUnderlineAnnotation"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_1_paraStartsIsUnderlineAnnotation"
+        } ]
+      }, {
+        "@id" : 43,
+        "parents" : [ {
+          "@id" : 44,
+          "parents" : [ ],
+          "parameters" : [ 14.1, 0.1 ],
+          "observedValue" : 0,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_2_paraStartsIsUnderlineAnnotation"
+          } ]
+        } ],
+        "parameters" : [ 14.1, 0.1, 0.1, 0.1 ],
+        "observedValue" : 0,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "paraStartsIsUnderlineAnnotation"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_2_paraStartsIsUnderlineAnnotation"
+        } ]
+      } ],
+      "selectingNode" : 1
+    }, {
+      "@id" : 45,
+      "nodes" : [ {
+        "@id" : 46,
+        "parents" : [ {
+          "@id" : 47,
+          "parents" : [ ],
+          "parameters" : [ 22.1, 0.1 ],
+          "observedValue" : 0,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_0_paraStartsIsBoldAnnotation"
+          } ]
+        } ],
+        "parameters" : [ 15.1, 7.1, 0.1, 0.1 ],
+        "observedValue" : 1,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "paraStartsIsBoldAnnotation"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_0_paraStartsIsBoldAnnotation"
+        } ]
+      }, {
+        "@id" : 48,
+        "parents" : [ {
+          "@id" : 49,
+          "parents" : [ ],
+          "parameters" : [ 0.1, 1.1 ],
+          "observedValue" : 1,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_1_paraStartsIsBoldAnnotation"
+          } ]
+        } ],
+        "parameters" : [ 0.1, 0.1, 0.1, 1.1 ],
+        "observedValue" : 1,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "paraStartsIsBoldAnnotation"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_1_paraStartsIsBoldAnnotation"
+        } ]
+      }, {
+        "@id" : 50,
+        "parents" : [ {
+          "@id" : 51,
+          "parents" : [ ],
+          "parameters" : [ 0.1, 14.1 ],
+          "observedValue" : 1,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_2_paraStartsIsBoldAnnotation"
+          } ]
+        } ],
+        "parameters" : [ 0.1, 0.1, 0.1, 14.1 ],
+        "observedValue" : 1,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "paraStartsIsBoldAnnotation"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_2_paraStartsIsBoldAnnotation"
+        } ]
+      } ],
+      "selectingNode" : 1
+    }, {
+      "@id" : 52,
+      "nodes" : [ {
+        "@id" : 53,
+        "parents" : [ {
+          "@id" : 54,
+          "parents" : [ ],
+          "parameters" : [ 22.1, 0.1 ],
+          "observedValue" : 0,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_0_IsAnchorAnnotation"
+          } ]
+        } ],
+        "parameters" : [ 22.1, 0.1, 0.1, 0.1 ],
+        "observedValue" : 0,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "IsAnchorAnnotation"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_0_IsAnchorAnnotation"
+        } ]
+      }, {
+        "@id" : 55,
+        "parents" : [ {
+          "@id" : 56,
+          "parents" : [ ],
+          "parameters" : [ 1.1, 0.1 ],
+          "observedValue" : 0,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_1_IsAnchorAnnotation"
+          } ]
+        } ],
+        "parameters" : [ 1.1, 0.1, 0.1, 0.1 ],
+        "observedValue" : 0,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "IsAnchorAnnotation"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_1_IsAnchorAnnotation"
+        } ]
+      }, {
+        "@id" : 57,
+        "parents" : [ {
+          "@id" : 58,
+          "parents" : [ ],
+          "parameters" : [ 14.1, 0.1 ],
+          "observedValue" : 0,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_2_IsAnchorAnnotation"
+          } ]
+        } ],
+        "parameters" : [ 14.1, 0.1, 0.1, 0.1 ],
+        "observedValue" : 0,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "IsAnchorAnnotation"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_2_IsAnchorAnnotation"
+        } ]
+      } ],
+      "selectingNode" : 1
+    }, {
+      "@id" : 59,
+      "nodes" : [ {
+        "@id" : 60,
+        "parents" : [ {
+          "@id" : 61,
+          "parents" : [ ],
+          "parameters" : [ 22.1, 0.1 ],
+          "observedValue" : 0,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_0_IsHrefAnnotation"
+          } ]
+        } ],
+        "parameters" : [ 22.1, 0.1, 0.1, 0.1 ],
+        "observedValue" : 0,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "IsHrefAnnotation"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_0_IsHrefAnnotation"
+        } ]
+      }, {
+        "@id" : 62,
+        "parents" : [ {
+          "@id" : 63,
+          "parents" : [ ],
+          "parameters" : [ 1.1, 0.1 ],
+          "observedValue" : 0,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_1_IsHrefAnnotation"
+          } ]
+        } ],
+        "parameters" : [ 1.1, 0.1, 0.1, 0.1 ],
+        "observedValue" : 0,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "IsHrefAnnotation"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_1_IsHrefAnnotation"
+        } ]
+      }, {
+        "@id" : 64,
+        "parents" : [ {
+          "@id" : 65,
+          "parents" : [ ],
+          "parameters" : [ 14.1, 0.1 ],
+          "observedValue" : 0,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_2_IsHrefAnnotation"
+          } ]
+        } ],
+        "parameters" : [ 14.1, 0.1, 0.1, 0.1 ],
+        "observedValue" : 0,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "IsHrefAnnotation"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_2_IsHrefAnnotation"
+        } ]
+      } ],
+      "selectingNode" : 1
+    }, {
+      "@id" : 66,
+      "nodes" : [ {
+        "@id" : 67,
+        "parents" : [ {
+          "@id" : 68,
+          "parents" : [ ],
+          "parameters" : [ 22.1, 0.1 ],
+          "observedValue" : 0,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_0_IsUpperCaseAnnotation"
+          } ]
+        } ],
+        "parameters" : [ 15.1, 7.1, 0.1, 0.1 ],
+        "observedValue" : 0,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "IsUpperCaseAnnotation"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_0_IsUpperCaseAnnotation"
+        } ]
+      }, {
+        "@id" : 69,
+        "parents" : [ {
+          "@id" : 70,
+          "parents" : [ ],
+          "parameters" : [ 0.1, 1.1 ],
+          "observedValue" : 1,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_1_IsUpperCaseAnnotation"
+          } ]
+        } ],
+        "parameters" : [ 0.1, 0.1, 0.1, 1.1 ],
+        "observedValue" : 0,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "IsUpperCaseAnnotation"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_1_IsUpperCaseAnnotation"
+        } ]
+      }, {
+        "@id" : 71,
+        "parents" : [ {
+          "@id" : 72,
+          "parents" : [ ],
+          "parameters" : [ 14.1, 0.1 ],
+          "observedValue" : 0,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_2_IsUpperCaseAnnotation"
+          } ]
+        } ],
+        "parameters" : [ 14.1, 0.1, 0.1, 0.1 ],
+        "observedValue" : 0,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "IsUpperCaseAnnotation"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_2_IsUpperCaseAnnotation"
+        } ]
+      } ],
+      "selectingNode" : 1
+    }, {
+      "@id" : 73,
+      "nodes" : [ {
+        "@id" : 74,
+        "parents" : [ {
+          "@id" : 75,
+          "parents" : [ ],
+          "parameters" : [ 22.1, 0.1 ],
+          "observedValue" : 0,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_0_IsCenterAlignedAnnotation"
+          } ]
+        } ],
+        "parameters" : [ 15.1, 7.1, 0.1, 0.1 ],
+        "observedValue" : 0,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "IsCenterAlignedAnnotation"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_0_IsCenterAlignedAnnotation"
+        } ]
+      }, {
+        "@id" : 76,
+        "parents" : [ {
+          "@id" : 77,
+          "parents" : [ ],
+          "parameters" : [ 0.1, 1.1 ],
+          "observedValue" : 1,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_1_IsCenterAlignedAnnotation"
+          } ]
+        } ],
+        "parameters" : [ 0.1, 0.1, 0.1, 1.1 ],
+        "observedValue" : 0,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "IsCenterAlignedAnnotation"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_1_IsCenterAlignedAnnotation"
+        } ]
+      }, {
+        "@id" : 78,
+        "parents" : [ {
+          "@id" : 79,
+          "parents" : [ ],
+          "parameters" : [ 14.1, 0.1 ],
+          "observedValue" : 0,
+          "familyVariables" : [ {
+            "featureSize" : 2,
+            "valueNames" : null,
+            "named" : "[0, 2, 3]_2_IsCenterAlignedAnnotation"
+          } ]
+        } ],
+        "parameters" : [ 14.1, 0.1, 0.1, 0.1 ],
+        "observedValue" : 0,
+        "familyVariables" : [ {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "IsCenterAlignedAnnotation"
+        }, {
+          "featureSize" : 2,
+          "valueNames" : null,
+          "named" : "[0, 2, 3]_2_IsCenterAlignedAnnotation"
+        } ]
+      } ],
+      "selectingNode" : 1
+    } ],
+    "documentFeaturesNodes" : [ [ 5, 7, 9 ], [ 12, 14, 16 ], [ 19, 21, 23 ], [ 26, 28, 30 ], [ 33, 35, 37 ], [ 40, 42, 44 ], [ 47, 49, 51 ], [ 54, 56, 58 ], [ 61, 63, 65 ], [ 68, 70, 72 ], [ 75, 77, 79 ] ],
+    "wordNodes" : [ {
+      "parent" : 1,
+      "parameters" : {
+        "foods" : [ 0.16666666666666666, 0.0, 0.0 ],
+        "whole" : [ 0.16666666666666666, 0.0, 0.0 ],
+        "owners" : [ 0.0, 0.0, 0.0625 ],
+        "discussion" : [ 0.0, 0.0, 0.058823529411764705 ],
+        "equity" : [ 0.3666666666666667, 0.0, 0.09523809523809523 ],
+        "issuer" : [ 0.2, 0.0, 0.047619047619047616 ],
+        "securities" : [ 0.2, 0.0, 0.047619047619047616 ],
+        "evaluation" : [ 0.16666666666666666, 0.0, 0.0 ],
+        "executive" : [ 0.0, 0.0, 0.25757575757575757 ],
+        "relationships" : [ 0.0, 0.0, 0.07692307692307693 ],
+        "234" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "—" : [ 0.03488372093023256, 0.0, 0.0 ],
+        "safety" : [ 0.0, 0.0, 0.14285714285714285 ],
+        "359" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "liabilities" : [ 0.03125, 0.0, 0.0 ],
+        "property" : [ 0.015625, 0.0, 0.0 ],
+        "’" : [ 0.29791666666666666, 0.0, 0.10644257703081232 ],
+        "proceedings" : [ 0.0, 0.0, 0.16666666666666666 ],
+        "state" : [ 0.023255813953488372, 0.0, 0.0 ],
+        "brand" : [ 0.07692307692307693, 0.0, 0.0 ],
+        "recent" : [ 0.3333333333333333, 0.0, 0.0 ],
+        "10" : [ 0.023255813953488372, 0.0, 0.09090909090909091 ],
+        "11" : [ 1.0, 0.0, 0.16666666666666666 ],
+        "reduce" : [ 0.07692307692307693, 0.0, 0.0 ],
+        "12" : [ 1.0, 0.0, 0.0625 ],
+        "item" : [ 0.0, 0.0, 1.644711252799488 ],
+        "13" : [ 1.0, 0.0, 0.07692307692307693 ],
+        "•" : [ 0.1111111111111111, 0.0, 0.0 ],
+        "margin" : [ 0.1111111111111111, 0.0, 0.0 ],
+        "15" : [ 1.0, 0.0, 0.1111111111111111 ],
+        "$" : [ 0.06976744186046512, 0.0, 0.0 ],
+        "%" : [ 0.1111111111111111, 0.0, 0.0 ],
+        "in" : [ 0.1267361111111111, 0.0, 0.06666666666666667 ],
+        "director" : [ 0.015625, 0.0, 0.07692307692307693 ],
+        "considering" : [ 0.015625, 0.0, 0.0 ],
+        "impact" : [ 0.07692307692307693, 0.0, 0.0 ],
+        "(" : [ 0.09302325581395349, 0.0, 0.0 ],
+        ")" : [ 0.09302325581395349, 0.0, 0.0 ],
+        "reserves" : [ 0.25, 0.0, 0.0 ],
+        "," : [ 0.27604166666666663, 0.0, 0.32656232656232653 ],
+        "analysis" : [ 0.0, 0.0, 0.058823529411764705 ],
+        "transactions" : [ 0.0, 0.0, 0.07692307692307693 ],
+        "-" : [ 0.015625, 0.0, 0.0 ],
+        "." : [ 0.2592147435897436, 0.0, 3.2894225055989765 ],
+        "1" : [ 0.011627906976744186, 0.0, 0.2 ],
+        "2" : [ 0.011627906976744186, 0.0, 0.2 ],
+        "3" : [ 0.011627906976744186, 0.0, 0.16666666666666666 ],
+        "consolidated" : [ 0.16666666666666666, 0.0, 0.0 ],
+        "4" : [ 0.011627906976744186, 0.0, 0.14285714285714285 ],
+        "provide" : [ 0.015625, 0.0, 0.0 ],
+        "367" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "5" : [ 0.011627906976744186, 0.0, 0.047619047619047616 ],
+        "6" : [ 0.011627906976744186, 0.0, 0.14285714285714285 ],
+        "plans" : [ 0.015625, 0.0, 0.0 ],
+        "7" : [ 1.0, 0.0, 0.058823529411764705 ],
+        "8" : [ 1.0, 0.0, 0.1111111111111111 ],
+        "9" : [ 0.1111111111111111, 0.0, 0.06666666666666667 ],
+        "registrant" : [ 0.0, 0.0, 0.047619047619047616 ],
+        ";" : [ 0.1111111111111111, 0.0, 0.0 ],
+        "care" : [ 0.015625, 0.0, 0.0 ],
+        "deferred" : [ 0.046511627906976744, 0.0, 0.0 ],
+        "internal" : [ 0.1, 0.0, 0.0 ],
+        "our" : [ 0.15384615384615385, 0.0, 0.0 ],
+        "vehicle" : [ 0.015625, 0.0, 0.0 ],
+        "foreign" : [ 0.023255813953488372, 0.0, 0.0 ],
+        "current" : [ 0.046511627906976744, 0.0, 0.0 ],
+        "are" : [ 0.03125, 0.0, 0.0 ],
+        "by" : [ 0.03125, 0.0, 0.0 ],
+        "procedures" : [ 0.16666666666666666, 0.0, 0.0 ],
+        "federal" : [ 0.023255813953488372, 0.0, 0.0 ],
+        "workers" : [ 0.015625, 0.0, 0.0 ],
+        "mine" : [ 0.0, 0.0, 0.14285714285714285 ],
+        "a" : [ 0.015625, 0.0, 0.0 ],
+        "disclosure" : [ 0.16666666666666666, 0.0, 0.06666666666666667 ],
+        "business" : [ 0.07692307692307693, 0.0, 0.2 ],
+        "may" : [ 0.07692307692307693, 0.0, 0.0 ],
+        "shareholders" : [ 0.16666666666666666, 0.0, 0.0 ],
+        "i" : [ 0.0, 0.5, 0.0 ],
+        "health" : [ 0.015625, 0.0, 0.0 ],
+        "the" : [ 0.0625, 0.0, 0.0 ],
+        "s" : [ 0.1, 0.0, 0.10644257703081232 ],
+        "ownership" : [ 0.0, 0.0, 0.0625 ],
+        "corporate" : [ 0.0, 0.0, 0.09090909090909091 ],
+        "associated" : [ 0.015625, 0.0, 0.0 ],
+        "report" : [ 0.1, 0.0, 0.0 ],
+        "closed" : [ 0.25, 0.0, 0.0 ],
+        "self" : [ 0.015625, 0.0, 0.0 ],
+        "information" : [ 0.3333333333333333, 0.0, 0.0 ],
+        "disclosures" : [ 0.0, 0.0, 0.14285714285714285 ],
+        "to" : [ 0.015625, 0.0, 0.0 ],
+        "adverse" : [ 0.07692307692307693, 0.0, 0.0 ],
+        "certain" : [ 0.0, 0.0, 0.13942307692307693 ],
+        "disagreements" : [ 0.0, 0.0, 0.06666666666666667 ],
+        "governance" : [ 0.0, 0.0, 0.09090909090909091 ],
+        "insurance" : [ 0.0625, 0.0, 0.0 ],
+        "44" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "capital" : [ 0.1111111111111111, 0.0, 0.0 ],
+        "controls" : [ 0.16666666666666666, 0.0, 0.0 ],
+        "data" : [ 0.0, 0.0, 0.25396825396825395 ],
+        "stockholder" : [ 0.0, 0.0, 0.11011904761904762 ],
+        "liquidity" : [ 0.1111111111111111, 0.0, 0.0 ],
+        "accounting" : [ 0.3333333333333333, 0.0, 0.06666666666666667 ],
+        "employee" : [ 0.015625, 0.0, 0.0 ],
+        "independence" : [ 0.0, 0.0, 0.07692307692307693 ],
+        "that" : [ 0.015625, 0.0, 0.0 ],
+        "397" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "pronouncements" : [ 0.3333333333333333, 0.0, 0.0 ],
+        "legal" : [ 0.0, 0.0, 0.16666666666666666 ],
+        "supplementary" : [ 0.0, 0.0, 0.1111111111111111 ],
+        "publicity" : [ 0.07692307692307693, 0.0, 0.0 ],
+        "50" : [ 1.0, 0.0, 0.0 ],
+        "stock" : [ 0.5, 0.0, 0.0 ],
+        "results" : [ 0.3333333333333333, 0.0, 0.058823529411764705 ],
+        "potential" : [ 0.015625, 0.0, 0.0 ],
+        "selected" : [ 0.0, 0.0, 0.14285714285714285 ],
+        "53" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "combination" : [ 0.015625, 0.0, 0.0 ],
+        "officers" : [ 0.015625, 0.0, 0.09090909090909091 ],
+        "54" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "purchases" : [ 0.2, 0.0, 0.047619047619047616 ],
+        "liability" : [ 0.046875, 0.0, 0.0 ],
+        "tax" : [ 0.10465116279069767, 0.0, 0.0 ],
+        "expense" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "market" : [ 0.16666666666666666, 0.0, 0.047619047619047616 ],
+        "286" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "condition" : [ 0.1111111111111111, 0.0, 0.058823529411764705 ],
+        "321" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "443" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "beneficial" : [ 0.0, 0.0, 0.0625 ],
+        "accountants" : [ 0.0, 0.0, 0.06666666666666667 ],
+        "benefits" : [ 0.015625, 0.0, 0.0 ],
+        "income" : [ 0.08139534883720931, 0.0, 0.0 ],
+        "66" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "financial" : [ 0.5444444444444444, 0.0, 0.49056956115779643 ],
+        "part" : [ 0.015625, 0.5, 0.0 ],
+        "directors" : [ 0.0, 0.0, 0.09090909090909091 ],
+        "for" : [ 0.28125, 0.0, 0.047619047619047616 ],
+        "changes" : [ 0.1111111111111111, 0.0, 0.06666666666666667 ],
+        "2012" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "statements" : [ 0.16666666666666666, 0.0, 0.1111111111111111 ],
+        "291" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "exhibits" : [ 0.0, 0.0, 0.1111111111111111 ],
+        "general" : [ 0.015625, 0.0, 0.0 ],
+        "total" : [ 0.03488372093023256, 0.0, 0.0 ],
+        "security" : [ 0.0, 0.0, 0.0625 ],
+        "operations" : [ 0.3333333333333333, 0.0, 0.058823529411764705 ],
+        "common" : [ 0.5, 0.0, 0.047619047619047616 ],
+        "related" : [ 0.0, 0.0, 0.18704212454212454 ],
+        "and" : [ 0.6237980769230769, 0.0, 0.7794657956422661 ],
+        "negatively" : [ 0.07692307692307693, 0.0, 0.0 ],
+        "of" : [ 0.9934027777777776, 0.0, 0.22776610644257703 ],
+        "schedules" : [ 0.0, 0.0, 0.1111111111111111 ],
+        "statement" : [ 0.0, 0.0, 0.1111111111111111 ],
+        "company" : [ 0.03125, 0.0, 0.0 ],
+        "73" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "value" : [ 0.07692307692307693, 0.0, 0.0 ],
+        "reporting" : [ 0.1, 0.0, 0.0 ],
+        "inc" : [ 0.16666666666666666, 0.0, 0.0 ],
+        "76" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "on" : [ 0.1, 0.0, 0.06666666666666667 ],
+        "summary" : [ 0.3333333333333333, 0.0, 0.0 ],
+        "over" : [ 0.1, 0.0, 0.0 ],
+        "estimated" : [ 0.015625, 0.0, 0.0 ],
+        "resources" : [ 0.1111111111111111, 0.0, 0.0 ],
+        "ebitda" : [ 0.1111111111111111, 0.0, 0.0 ],
+        "control" : [ 0.1, 0.0, 0.0 ],
+        "with" : [ 0.015625, 0.0, 0.06666666666666667 ],
+        "retained" : [ 0.015625, 0.0, 0.0 ],
+        "343" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "risks" : [ 0.015625, 0.0, 0.0 ],
+        "matters" : [ 0.0, 0.0, 0.11011904761904762 ],
+        "approximately" : [ 0.1111111111111111, 0.0, 0.0 ],
+        "management" : [ 0.1, 0.0, 0.1213235294117647 ],
+        "2014" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "2013" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "uses" : [ 0.015625, 0.0, 0.0 ],
+        "compensation" : [ 0.015625, 0.0, 0.16666666666666666 ],
+        "82" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "properties" : [ 0.25, 0.0, 0.2 ]
+      },
+      "observedWords" : [ ],
+      "copyOfParameters" : {
+        "foods" : [ 0.16666666666666666, 0.0, 0.0 ],
+        "whole" : [ 0.16666666666666666, 0.0, 0.0 ],
+        "owners" : [ 0.0, 0.0, 0.0625 ],
+        "discussion" : [ 0.0, 0.0, 0.058823529411764705 ],
+        "equity" : [ 0.3666666666666667, 0.0, 0.09523809523809523 ],
+        "issuer" : [ 0.2, 0.0, 0.047619047619047616 ],
+        "securities" : [ 0.2, 0.0, 0.047619047619047616 ],
+        "evaluation" : [ 0.16666666666666666, 0.0, 0.0 ],
+        "executive" : [ 0.0, 0.0, 0.25757575757575757 ],
+        "relationships" : [ 0.0, 0.0, 0.07692307692307693 ],
+        "234" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "—" : [ 0.03488372093023256, 0.0, 0.0 ],
+        "safety" : [ 0.0, 0.0, 0.14285714285714285 ],
+        "359" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "liabilities" : [ 0.03125, 0.0, 0.0 ],
+        "property" : [ 0.015625, 0.0, 0.0 ],
+        "’" : [ 0.29791666666666666, 0.0, 0.10644257703081232 ],
+        "proceedings" : [ 0.0, 0.0, 0.16666666666666666 ],
+        "state" : [ 0.023255813953488372, 0.0, 0.0 ],
+        "brand" : [ 0.07692307692307693, 0.0, 0.0 ],
+        "recent" : [ 0.3333333333333333, 0.0, 0.0 ],
+        "10" : [ 0.023255813953488372, 0.0, 0.09090909090909091 ],
+        "11" : [ 1.0, 0.0, 0.16666666666666666 ],
+        "reduce" : [ 0.07692307692307693, 0.0, 0.0 ],
+        "12" : [ 1.0, 0.0, 0.0625 ],
+        "item" : [ 0.0, 0.0, 1.644711252799488 ],
+        "13" : [ 1.0, 0.0, 0.07692307692307693 ],
+        "•" : [ 0.1111111111111111, 0.0, 0.0 ],
+        "margin" : [ 0.1111111111111111, 0.0, 0.0 ],
+        "15" : [ 1.0, 0.0, 0.1111111111111111 ],
+        "$" : [ 0.06976744186046512, 0.0, 0.0 ],
+        "%" : [ 0.1111111111111111, 0.0, 0.0 ],
+        "in" : [ 0.1267361111111111, 0.0, 0.06666666666666667 ],
+        "director" : [ 0.015625, 0.0, 0.07692307692307693 ],
+        "considering" : [ 0.015625, 0.0, 0.0 ],
+        "impact" : [ 0.07692307692307693, 0.0, 0.0 ],
+        "(" : [ 0.09302325581395349, 0.0, 0.0 ],
+        ")" : [ 0.09302325581395349, 0.0, 0.0 ],
+        "reserves" : [ 0.25, 0.0, 0.0 ],
+        "," : [ 0.27604166666666663, 0.0, 0.32656232656232653 ],
+        "analysis" : [ 0.0, 0.0, 0.058823529411764705 ],
+        "transactions" : [ 0.0, 0.0, 0.07692307692307693 ],
+        "-" : [ 0.015625, 0.0, 0.0 ],
+        "." : [ 0.2592147435897436, 0.0, 3.2894225055989765 ],
+        "1" : [ 0.011627906976744186, 0.0, 0.2 ],
+        "2" : [ 0.011627906976744186, 0.0, 0.2 ],
+        "3" : [ 0.011627906976744186, 0.0, 0.16666666666666666 ],
+        "consolidated" : [ 0.16666666666666666, 0.0, 0.0 ],
+        "4" : [ 0.011627906976744186, 0.0, 0.14285714285714285 ],
+        "provide" : [ 0.015625, 0.0, 0.0 ],
+        "367" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "5" : [ 0.011627906976744186, 0.0, 0.047619047619047616 ],
+        "6" : [ 0.011627906976744186, 0.0, 0.14285714285714285 ],
+        "plans" : [ 0.015625, 0.0, 0.0 ],
+        "7" : [ 1.0, 0.0, 0.058823529411764705 ],
+        "8" : [ 1.0, 0.0, 0.1111111111111111 ],
+        "9" : [ 0.1111111111111111, 0.0, 0.06666666666666667 ],
+        "registrant" : [ 0.0, 0.0, 0.047619047619047616 ],
+        ";" : [ 0.1111111111111111, 0.0, 0.0 ],
+        "care" : [ 0.015625, 0.0, 0.0 ],
+        "deferred" : [ 0.046511627906976744, 0.0, 0.0 ],
+        "internal" : [ 0.1, 0.0, 0.0 ],
+        "our" : [ 0.15384615384615385, 0.0, 0.0 ],
+        "vehicle" : [ 0.015625, 0.0, 0.0 ],
+        "foreign" : [ 0.023255813953488372, 0.0, 0.0 ],
+        "current" : [ 0.046511627906976744, 0.0, 0.0 ],
+        "are" : [ 0.03125, 0.0, 0.0 ],
+        "by" : [ 0.03125, 0.0, 0.0 ],
+        "procedures" : [ 0.16666666666666666, 0.0, 0.0 ],
+        "federal" : [ 0.023255813953488372, 0.0, 0.0 ],
+        "workers" : [ 0.015625, 0.0, 0.0 ],
+        "mine" : [ 0.0, 0.0, 0.14285714285714285 ],
+        "a" : [ 0.015625, 0.0, 0.0 ],
+        "disclosure" : [ 0.16666666666666666, 0.0, 0.06666666666666667 ],
+        "business" : [ 0.07692307692307693, 0.0, 0.2 ],
+        "may" : [ 0.07692307692307693, 0.0, 0.0 ],
+        "shareholders" : [ 0.16666666666666666, 0.0, 0.0 ],
+        "i" : [ 0.0, 0.5, 0.0 ],
+        "health" : [ 0.015625, 0.0, 0.0 ],
+        "the" : [ 0.0625, 0.0, 0.0 ],
+        "s" : [ 0.1, 0.0, 0.10644257703081232 ],
+        "ownership" : [ 0.0, 0.0, 0.0625 ],
+        "corporate" : [ 0.0, 0.0, 0.09090909090909091 ],
+        "associated" : [ 0.015625, 0.0, 0.0 ],
+        "report" : [ 0.1, 0.0, 0.0 ],
+        "closed" : [ 0.25, 0.0, 0.0 ],
+        "self" : [ 0.015625, 0.0, 0.0 ],
+        "information" : [ 0.3333333333333333, 0.0, 0.0 ],
+        "disclosures" : [ 0.0, 0.0, 0.14285714285714285 ],
+        "to" : [ 0.015625, 0.0, 0.0 ],
+        "adverse" : [ 0.07692307692307693, 0.0, 0.0 ],
+        "certain" : [ 0.0, 0.0, 0.13942307692307693 ],
+        "disagreements" : [ 0.0, 0.0, 0.06666666666666667 ],
+        "governance" : [ 0.0, 0.0, 0.09090909090909091 ],
+        "insurance" : [ 0.0625, 0.0, 0.0 ],
+        "44" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "capital" : [ 0.1111111111111111, 0.0, 0.0 ],
+        "controls" : [ 0.16666666666666666, 0.0, 0.0 ],
+        "data" : [ 0.0, 0.0, 0.25396825396825395 ],
+        "stockholder" : [ 0.0, 0.0, 0.11011904761904762 ],
+        "liquidity" : [ 0.1111111111111111, 0.0, 0.0 ],
+        "accounting" : [ 0.3333333333333333, 0.0, 0.06666666666666667 ],
+        "employee" : [ 0.015625, 0.0, 0.0 ],
+        "independence" : [ 0.0, 0.0, 0.07692307692307693 ],
+        "that" : [ 0.015625, 0.0, 0.0 ],
+        "397" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "pronouncements" : [ 0.3333333333333333, 0.0, 0.0 ],
+        "legal" : [ 0.0, 0.0, 0.16666666666666666 ],
+        "supplementary" : [ 0.0, 0.0, 0.1111111111111111 ],
+        "publicity" : [ 0.07692307692307693, 0.0, 0.0 ],
+        "50" : [ 1.0, 0.0, 0.0 ],
+        "stock" : [ 0.5, 0.0, 0.0 ],
+        "results" : [ 0.3333333333333333, 0.0, 0.058823529411764705 ],
+        "potential" : [ 0.015625, 0.0, 0.0 ],
+        "selected" : [ 0.0, 0.0, 0.14285714285714285 ],
+        "53" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "combination" : [ 0.015625, 0.0, 0.0 ],
+        "officers" : [ 0.015625, 0.0, 0.09090909090909091 ],
+        "54" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "purchases" : [ 0.2, 0.0, 0.047619047619047616 ],
+        "liability" : [ 0.046875, 0.0, 0.0 ],
+        "tax" : [ 0.10465116279069767, 0.0, 0.0 ],
+        "expense" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "market" : [ 0.16666666666666666, 0.0, 0.047619047619047616 ],
+        "286" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "condition" : [ 0.1111111111111111, 0.0, 0.058823529411764705 ],
+        "321" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "443" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "beneficial" : [ 0.0, 0.0, 0.0625 ],
+        "accountants" : [ 0.0, 0.0, 0.06666666666666667 ],
+        "benefits" : [ 0.015625, 0.0, 0.0 ],
+        "income" : [ 0.08139534883720931, 0.0, 0.0 ],
+        "66" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "financial" : [ 0.5444444444444444, 0.0, 0.49056956115779643 ],
+        "part" : [ 0.015625, 0.5, 0.0 ],
+        "directors" : [ 0.0, 0.0, 0.09090909090909091 ],
+        "for" : [ 0.28125, 0.0, 0.047619047619047616 ],
+        "changes" : [ 0.1111111111111111, 0.0, 0.06666666666666667 ],
+        "2012" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "statements" : [ 0.16666666666666666, 0.0, 0.1111111111111111 ],
+        "291" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "exhibits" : [ 0.0, 0.0, 0.1111111111111111 ],
+        "general" : [ 0.015625, 0.0, 0.0 ],
+        "total" : [ 0.03488372093023256, 0.0, 0.0 ],
+        "security" : [ 0.0, 0.0, 0.0625 ],
+        "operations" : [ 0.3333333333333333, 0.0, 0.058823529411764705 ],
+        "common" : [ 0.5, 0.0, 0.047619047619047616 ],
+        "related" : [ 0.0, 0.0, 0.18704212454212454 ],
+        "and" : [ 0.6237980769230769, 0.0, 0.7794657956422661 ],
+        "negatively" : [ 0.07692307692307693, 0.0, 0.0 ],
+        "of" : [ 0.9934027777777776, 0.0, 0.22776610644257703 ],
+        "schedules" : [ 0.0, 0.0, 0.1111111111111111 ],
+        "statement" : [ 0.0, 0.0, 0.1111111111111111 ],
+        "company" : [ 0.03125, 0.0, 0.0 ],
+        "73" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "value" : [ 0.07692307692307693, 0.0, 0.0 ],
+        "reporting" : [ 0.1, 0.0, 0.0 ],
+        "inc" : [ 0.16666666666666666, 0.0, 0.0 ],
+        "76" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "on" : [ 0.1, 0.0, 0.06666666666666667 ],
+        "summary" : [ 0.3333333333333333, 0.0, 0.0 ],
+        "over" : [ 0.1, 0.0, 0.0 ],
+        "estimated" : [ 0.015625, 0.0, 0.0 ],
+        "resources" : [ 0.1111111111111111, 0.0, 0.0 ],
+        "ebitda" : [ 0.1111111111111111, 0.0, 0.0 ],
+        "control" : [ 0.1, 0.0, 0.0 ],
+        "with" : [ 0.015625, 0.0, 0.06666666666666667 ],
+        "retained" : [ 0.015625, 0.0, 0.0 ],
+        "343" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "risks" : [ 0.015625, 0.0, 0.0 ],
+        "matters" : [ 0.0, 0.0, 0.11011904761904762 ],
+        "approximately" : [ 0.1111111111111111, 0.0, 0.0 ],
+        "management" : [ 0.1, 0.0, 0.1213235294117647 ],
+        "2014" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "2013" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "uses" : [ 0.015625, 0.0, 0.0 ],
+        "compensation" : [ 0.015625, 0.0, 0.16666666666666666 ],
+        "82" : [ 0.011627906976744186, 0.0, 0.0 ],
+        "properties" : [ 0.25, 0.0, 0.2 ]
+      }
+    }, {
+      "parent" : 1,
+      "parameters" : {
+        "11" : [ 1.0, 0.0, 0.0 ],
+        "summary" : [ 1.0, 0.0, 0.0 ],
+        "12" : [ 1.0, 0.0, 0.0 ],
+        "item" : [ 0.0, 0.0, 14.0 ],
+        "13" : [ 1.0, 0.0, 0.0 ],
+        "•" : [ 1.0, 0.0, 0.0 ],
+        "15" : [ 1.0, 0.0, 0.0 ],
+        "part" : [ 0.0, 1.0, 0.0 ],
+        "liquidity" : [ 1.0, 0.0, 0.0 ],
+        "reserves" : [ 1.0, 0.0, 0.0 ],
+        "whole" : [ 1.0, 0.0, 0.0 ],
+        "issuer" : [ 1.0, 0.0, 0.0 ],
+        "the" : [ 1.0, 0.0, 0.0 ],
+        "evaluation" : [ 1.0, 0.0, 0.0 ],
+        "consolidated" : [ 1.0, 0.0, 0.0 ],
+        "common" : [ 1.0, 0.0, 0.0 ],
+        "management" : [ 1.0, 0.0, 0.0 ],
+        "2014" : [ 1.0, 0.0, 0.0 ],
+        "7" : [ 1.0, 0.0, 0.0 ],
+        "8" : [ 1.0, 0.0, 0.0 ],
+        "50" : [ 1.0, 0.0, 0.0 ],
+        "adverse" : [ 1.0, 0.0, 0.0 ],
+        "results" : [ 1.0, 0.0, 0.0 ],
+        "recent" : [ 1.0, 0.0, 0.0 ]
+      },
+      "observedWords" : [ ],
+      "copyOfParameters" : {
+        "11" : [ 1.0, 0.0, 0.0 ],
+        "summary" : [ 1.0, 0.0, 0.0 ],
+        "12" : [ 1.0, 0.0, 0.0 ],
+        "item" : [ 0.0, 0.0, 14.0 ],
+        "13" : [ 1.0, 0.0, 0.0 ],
+        "•" : [ 1.0, 0.0, 0.0 ],
+        "15" : [ 1.0, 0.0, 0.0 ],
+        "part" : [ 0.0, 1.0, 0.0 ],
+        "liquidity" : [ 1.0, 0.0, 0.0 ],
+        "reserves" : [ 1.0, 0.0, 0.0 ],
+        "whole" : [ 1.0, 0.0, 0.0 ],
+        "issuer" : [ 1.0, 0.0, 0.0 ],
+        "the" : [ 1.0, 0.0, 0.0 ],
+        "evaluation" : [ 1.0, 0.0, 0.0 ],
+        "consolidated" : [ 1.0, 0.0, 0.0 ],
+        "common" : [ 1.0, 0.0, 0.0 ],
+        "management" : [ 1.0, 0.0, 0.0 ],
+        "2014" : [ 1.0, 0.0, 0.0 ],
+        "7" : [ 1.0, 0.0, 0.0 ],
+        "8" : [ 1.0, 0.0, 0.0 ],
+        "50" : [ 1.0, 0.0, 0.0 ],
+        "adverse" : [ 1.0, 0.0, 0.0 ],
+        "results" : [ 1.0, 0.0, 0.0 ],
+        "recent" : [ 1.0, 0.0, 0.0 ]
+      }
+    } ]
+  },
+  "wordType" : {
+    "featureSize" : 2,
+    "valueNames" : null,
+    "named" : "wordIsInModelID-[0, 2, 3]"
+  },
+  "wordFeatures" : [ {
+    "featureSize" : 2,
+    "valueNames" : null,
+    "named" : "InQuotesAnnotation"
+  }, {
+    "featureSize" : 2,
+    "valueNames" : null,
+    "named" : "IsUnderlineAnnotation"
+  } ],
+  "nbmnConfig" : {
+    "categoryVar" : {
+      "featureSize" : 3,
+      "valueNames" : null,
+      "named" : "paraTypeIsModelID-[0, 2, 3]"
+    },
+    "featureVarList" : [ {
+      "featureSize" : 25,
+      "valueNames" : null,
+      "named" : "numTokens"
+    } ],
+    "featureExistsAtDocLevelVarList" : [ {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "notInTable"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "startsWithNumber"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "endsWithNumber"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "inUserTOC"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "paraStartsIsItalicAnnotation"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "paraStartsIsUnderlineAnnotation"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "paraStartsIsBoldAnnotation"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "IsAnchorAnnotation"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "IsHrefAnnotation"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "IsUpperCaseAnnotation"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "IsCenterAlignedAnnotation"
+    } ],
+    "documentFeatureVarList" : [ [ {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_0_notInTable"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_1_notInTable"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_2_notInTable"
+    } ], [ {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_0_startsWithNumber"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_1_startsWithNumber"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_2_startsWithNumber"
+    } ], [ {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_0_endsWithNumber"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_1_endsWithNumber"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_2_endsWithNumber"
+    } ], [ {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_0_inUserTOC"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_1_inUserTOC"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_2_inUserTOC"
+    } ], [ {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_0_paraStartsIsItalicAnnotation"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_1_paraStartsIsItalicAnnotation"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_2_paraStartsIsItalicAnnotation"
+    } ], [ {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_0_paraStartsIsUnderlineAnnotation"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_1_paraStartsIsUnderlineAnnotation"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_2_paraStartsIsUnderlineAnnotation"
+    } ], [ {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_0_paraStartsIsBoldAnnotation"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_1_paraStartsIsBoldAnnotation"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_2_paraStartsIsBoldAnnotation"
+    } ], [ {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_0_IsAnchorAnnotation"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_1_IsAnchorAnnotation"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_2_IsAnchorAnnotation"
+    } ], [ {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_0_IsHrefAnnotation"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_1_IsHrefAnnotation"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_2_IsHrefAnnotation"
+    } ], [ {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_0_IsUpperCaseAnnotation"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_1_IsUpperCaseAnnotation"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_2_IsUpperCaseAnnotation"
+    } ], [ {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_0_IsCenterAlignedAnnotation"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_1_IsCenterAlignedAnnotation"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "[0, 2, 3]_2_IsCenterAlignedAnnotation"
+    } ] ],
+    "wordVarList" : [ {
+      "featureSize" : 0,
+      "valueNames" : null,
+      "named" : "lowerCaseWords"
+    }, {
+      "featureSize" : 0,
+      "valueNames" : null,
+      "named" : "firstWord"
+    } ]
+  },
+  "hmm" : {
+    "numberFeatures" : 2,
+    "featureSizes" : [ 2, 2 ],
+    "transitionCounts" : [ [ 36.0, 0.0 ], [ 0.0, 60.0 ] ],
+    "totalStateValueCounts" : [ 36.0, 60.0 ],
+    "tokenCounts" : [ {
+      "insurance" : 2.0,
+      "income" : 1.0,
+      "Company" : 1.0,
+      "2012" : 1.0,
+      "our" : 2.0,
+      "The" : 1.0,
+      "and" : 2.0,
+      "negatively" : 1.0,
+      "of" : 1.0,
+      "359" : 1.0,
+      "federal" : 1.0,
+      "Adverse" : 1.0,
+      "publicity" : 1.0,
+      "brand" : 1.0,
+      "value" : 1.0,
+      "combination" : 1.0,
+      "reduce" : 1.0,
+      "a" : 1.0,
+      "may" : 1.0,
+      "business" : 1.0,
+      "$" : 3.0,
+      "impact" : 1.0,
+      "tax" : 1.0,
+      "-" : 1.0,
+      "321" : 1.0,
+      "plans" : 1.0,
+      "2014" : 1.0,
+      "2013" : 1.0,
+      "self" : 1.0,
+      "uses" : 1.0,
+      "Current" : 1.0
+    }, {
+      "Ownership" : 1.0,
+      "Accounting" : 1.0,
+      "for" : 1.0,
+      "Equity" : 1.0,
+      "Security" : 1.0,
+      "Owners" : 1.0,
+      "Item" : 5.0,
+      "Relationships" : 1.0,
+      "Certain" : 2.0,
+      "and" : 7.0,
+      "of" : 2.0,
+      "’" : 2.0,
+      "on" : 1.0,
+      "Condition" : 1.0,
+      "Changes" : 1.0,
+      "12" : 1.0,
+      "13" : 1.0,
+      "Beneficial" : 1.0,
+      "in" : 1.0,
+      "Independence" : 1.0,
+      "Financial" : 1.0,
+      "Director" : 1.0,
+      "Registrant" : 1.0,
+      "Accountants" : 1.0,
+      "Management" : 2.0,
+      "," : 2.0,
+      "Market" : 1.0,
+      "." : 5.0,
+      "Common" : 1.0,
+      "Disagreements" : 1.0,
+      "with" : 1.0,
+      "Transactions" : 1.0,
+      "s" : 2.0,
+      "Related" : 2.0,
+      "5" : 1.0,
+      "Analysis" : 1.0,
+      "7" : 1.0,
+      "9" : 1.0,
+      "Discussion" : 1.0
+    } ],
+    "nextTokenCounts" : [ {
+      "insurance" : 2.0,
+      "income" : 1.0,
+      "Company" : 1.0,
+      "2012" : 1.0,
+      "our" : 2.0,
+      "234" : 1.0,
+      "and" : 2.0,
+      "negatively" : 1.0,
+      "of" : 1.0,
+      "359" : 1.0,
+      "federal" : 1.0,
+      "publicity" : 1.0,
+      "brand" : 1.0,
+      "value" : 1.0,
+      "combination" : 1.0,
+      "reduce" : 1.0,
+      "a" : 1.0,
+      "may" : 1.0,
+      "business" : 1.0,
+      "$" : 3.0,
+      "impact" : 1.0,
+      "tax" : 1.0,
+      "-" : 1.0,
+      "." : 1.0,
+      "321" : 1.0,
+      "plans" : 1.0,
+      "2013" : 1.0,
+      "self" : 1.0,
+      "uses" : 1.0,
+      "to" : 1.0,
+      "Current" : 1.0
+    }, {
+      "Ownership" : 1.0,
+      "Accounting" : 1.0,
+      "for" : 1.0,
+      "Equity" : 1.0,
+      "Security" : 1.0,
+      "Stockholder" : 1.0,
+      "Owners" : 1.0,
+      "Relationships" : 1.0,
+      "Certain" : 2.0,
+      "and" : 8.0,
+      "of" : 2.0,
+      "’" : 2.0,
+      "on" : 1.0,
+      "Condition" : 1.0,
+      "Changes" : 1.0,
+      "12" : 1.0,
+      "13" : 1.0,
+      "Beneficial" : 1.0,
+      "in" : 1.0,
+      "Independence" : 1.0,
+      "Financial" : 2.0,
+      "Director" : 1.0,
+      "Registrant" : 1.0,
+      "Accountants" : 1.0,
+      "Management" : 2.0,
+      "," : 2.0,
+      "Market" : 1.0,
+      "." : 6.0,
+      "Common" : 1.0,
+      "Disagreements" : 1.0,
+      "with" : 1.0,
+      "Transactions" : 1.0,
+      "s" : 2.0,
+      "Related" : 3.0,
+      "5" : 1.0,
+      "Analysis" : 1.0,
+      "7" : 1.0,
+      "9" : 1.0,
+      "Discussion" : 1.0
+    } ],
+    "stateFeatureValueCounts" : [ [ [ 36.0, 0.0 ], [ 36.0, 0.0 ] ], [ [ 60.0, 0.0 ], [ 60.0, 0.0 ] ] ],
+    "stateNumberCounts" : null,
+    "numStateValues" : 2,
+    "modelLength" : 12,
+    "transitionProbability" : [ [ 0.5, 0.5 ], [ 0.5, 0.5 ] ],
+    "stateValueProbability" : [ 0.5, 0.5 ],
+    "tokenProbabilityGivenStateValue" : [ { }, { } ],
+    "nextTokenProbabilityGivenStateValue" : [ { }, { } ],
+    "stateNumberProbabilityGivenStateValue" : [ [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ], [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ] ],
+    "inQuoteProbabilityGivenStateValue" : null,
+    "featureValueProbabilityGivenState" : [ [ [ 0.5, 0.5 ], [ 0.5, 0.5 ] ], [ [ 0.5, 0.5 ], [ 0.5, 0.5 ] ] ],
+    "probabilitiesUpToDate" : false
+  },
+  "modelRVSetting" : {
+    "type" : "TOCModelRVSetting",
+    "nbmnConfig" : {
+      "categoryVar" : {
+        "featureSize" : 3,
+        "valueNames" : null,
+        "named" : "paraTypeIsModelID-[0, 2, 3]"
+      },
+      "featureVarList" : [ {
+        "featureSize" : 25,
+        "valueNames" : null,
+        "named" : "numTokens"
+      } ],
+      "featureExistsAtDocLevelVarList" : [ {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "notInTable"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "startsWithNumber"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "endsWithNumber"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "inUserTOC"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "paraStartsIsItalicAnnotation"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "paraStartsIsUnderlineAnnotation"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "paraStartsIsBoldAnnotation"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "IsAnchorAnnotation"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "IsHrefAnnotation"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "IsUpperCaseAnnotation"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "IsCenterAlignedAnnotation"
+      } ],
+      "documentFeatureVarList" : [ [ {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_0_notInTable"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_1_notInTable"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_2_notInTable"
+      } ], [ {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_0_startsWithNumber"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_1_startsWithNumber"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_2_startsWithNumber"
+      } ], [ {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_0_endsWithNumber"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_1_endsWithNumber"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_2_endsWithNumber"
+      } ], [ {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_0_inUserTOC"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_1_inUserTOC"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_2_inUserTOC"
+      } ], [ {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_0_paraStartsIsItalicAnnotation"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_1_paraStartsIsItalicAnnotation"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_2_paraStartsIsItalicAnnotation"
+      } ], [ {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_0_paraStartsIsUnderlineAnnotation"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_1_paraStartsIsUnderlineAnnotation"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_2_paraStartsIsUnderlineAnnotation"
+      } ], [ {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_0_paraStartsIsBoldAnnotation"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_1_paraStartsIsBoldAnnotation"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_2_paraStartsIsBoldAnnotation"
+      } ], [ {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_0_IsAnchorAnnotation"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_1_IsAnchorAnnotation"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_2_IsAnchorAnnotation"
+      } ], [ {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_0_IsHrefAnnotation"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_1_IsHrefAnnotation"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_2_IsHrefAnnotation"
+      } ], [ {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_0_IsUpperCaseAnnotation"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_1_IsUpperCaseAnnotation"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_2_IsUpperCaseAnnotation"
+      } ], [ {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_0_IsCenterAlignedAnnotation"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_1_IsCenterAlignedAnnotation"
+      }, {
+        "featureSize" : 2,
+        "valueNames" : null,
+        "named" : "[0, 2, 3]_2_IsCenterAlignedAnnotation"
+      } ] ],
+      "wordVarList" : [ {
+        "featureSize" : 0,
+        "valueNames" : null,
+        "named" : "lowerCaseWords"
+      }, {
+        "featureSize" : 0,
+        "valueNames" : null,
+        "named" : "firstWord"
+      } ]
+    },
+    "wordType" : {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "wordIsInModelID-[0, 2, 3]"
+    },
+    "wordFeatures" : [ {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "InQuotesAnnotation"
+    }, {
+      "featureSize" : 2,
+      "valueNames" : null,
+      "named" : "IsUnderlineAnnotation"
+    } ],
+    "categoryIds" : [ 0, 2, 3 ]
+  }
+}

@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model.applicationModel;
 
 import com.google.common.collect.Lists;
+import com.google.common.io.Files;
 import com.skroll.analyzer.data.NBMNData;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.LowerCaseWordsComputer;
@@ -11,11 +12,14 @@ import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
+import com.skroll.document.JsonDeserializer;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.util.TestHelper;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +49,7 @@ public class DocProcessorTest {
     ModelRVSetting setting = new ModelRVSetting(
              DefModelRVSetting.DEFAULT_WORD_FEATURES,
             DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS, DEFAULT_WORD_VARS,
-            TEST_DEFINITION_CATEGORY_IDS);
+            TEST_DEFINITION_CATEGORY_IDS, null);
 
 
     static String trainingFileName = "src/test/resources/analyzer/definedTermExtractionTraining/AMC Networks CA.html";
@@ -121,4 +125,28 @@ public class DocProcessorTest {
     }
 
 
+    @Test
+    public void testCreateSections() throws Exception {
+
+        String folder = "src/test/resources/analyzer/test10kDoc/";
+        String documentId = "5d73258b753f17b7ccab5f24a2c29a64";
+
+        String jsonString = Files.toString(new File(folder + documentId), Charset.defaultCharset());
+        doc = JsonDeserializer.fromJson(jsonString);
+
+        ModelRVSetting tocRVSetting = new TOCModelRVSetting(Arrays.asList(Category.NONE, Category.TOC_1, Category.TOC_2), null);
+        List<List<CoreMap>> sections = DocProcessor.createSections(doc.getParagraphs(), tocRVSetting.getNbmnConfig().getCategoryVar());
+
+        for (int si = 0; si < sections.size(); si++) {
+            System.out.println();
+            System.out.println();
+            System.out.println("Section " + si);
+            System.out.println("________________________");
+            for (CoreMap p : sections.get(si)) {
+                System.out.println(p.get(CoreAnnotations.IndexInteger.class) + " " + p.getText());
+            }
+        }
+
+
+    }
 }

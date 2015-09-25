@@ -5,6 +5,7 @@ import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
+import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.SyncPipe;
 import com.skroll.util.WordHelper;
 
@@ -20,6 +21,11 @@ public class ExtractDefinitionsFromParagraphInHtmlDocumentPipe extends SyncPipe<
 
     @Override
     public Document process(Document input) {
+//        CoreMap para = new CoreMap();
+//        List<Token> emptyTokenList = new ArrayList<>();
+//        para.set(CoreAnnotations.TokenAnnotation.class, emptyTokenList);
+//        input.getParagraphs().add(0, para);
+
         for(CoreMap paragraph : input.getParagraphs()) {
             List<Token> tokens = paragraph.getTokens();
             if (tokens.size()==0) continue; // skip empty paragraphs
@@ -30,6 +36,7 @@ public class ExtractDefinitionsFromParagraphInHtmlDocumentPipe extends SyncPipe<
                 }
 //                CategoryAnnotationHelper.setDefinedTermTokensInParagraph(definedTerms, paragraph);
                 CategoryAnnotationHelper.annotateParagraphWithTokensListAndCategory(paragraph, Arrays.asList(definedTerms), Category.DEFINITION);
+                System.out.println(paragraph.getText());
             }
 
         }

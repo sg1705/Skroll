@@ -30,7 +30,7 @@ public class DocTypeModelRVSetting extends ModelRVSetting {
         super(
                 DEFAULT_WORD_FEATURES,
                 DEFAULT_PARA_FEATURE_VARS, DEFAULT_PARA_DOC_FEATURE_VARS,
-                DEFAULT_WORD_VARS, categoryIds);
+                DEFAULT_WORD_VARS, categoryIds, null);
     }
 
     @JsonCreator
@@ -39,7 +39,7 @@ public class DocTypeModelRVSetting extends ModelRVSetting {
             @JsonProperty("wordType") RandomVariable wordType,
             @JsonProperty("wordFeatures") List<RandomVariable> wordFeatures,
             @JsonProperty("categoryIds") List<Integer> categoryIds) {
-        super(nbmnConfig, wordType, wordFeatures, categoryIds);
+        super(nbmnConfig, wordType, wordFeatures, categoryIds, null);
     }
     @Override
     protected void initializeStrategies() {

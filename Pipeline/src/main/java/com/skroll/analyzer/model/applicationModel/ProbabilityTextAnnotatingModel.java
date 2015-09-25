@@ -79,6 +79,7 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
         super.modelRVSetting = setting;
         super.id = id;
         this.doc = doc;
+        this.paragraphs = doc.getParagraphs();
         this.nbmnModel = NBInferenceHelper.createLogProbNBMN(tnbm);
         this.hmm = hmm;
         hmm.updateProbabilities();

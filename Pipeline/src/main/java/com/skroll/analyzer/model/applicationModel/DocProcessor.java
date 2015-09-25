@@ -316,4 +316,36 @@ public class DocProcessor {
 //        return docFeatureValues;
 //    }
 
+
+    public static List<List<CoreMap>> createSections(List<CoreMap> paragraphs, RandomVariable paraCategory) {
+        int sectionHeading = 2;
+        int topHeading = 1;
+        int others = 0;
+
+        List<List<CoreMap>> sections = new ArrayList<>();
+        List<CoreMap> section = null;
+        boolean mainBodyStarted = false;
+        boolean sectionStarted = false;
+        for (CoreMap p : paragraphs) {
+            int paraClass = RVValues.getValue(paraCategory, p);
+            if (paraClass == topHeading) mainBodyStarted = true;
+            if (!mainBodyStarted) continue;
+            if (sectionStarted) {
+                if (paraClass == others) {
+                    section.add(p);
+                } else { // end of a section
+                    sectionStarted = false;
+                    sections.add(section);
+                }
+            }
+            if (paraClass == sectionHeading) { // start of a section
+                sectionStarted = true;
+                section = new ArrayList<>();
+            }
+        }
+
+        if (sectionStarted) sections.add(section); // add the last section
+        return sections;
+    }
+
 }
