@@ -26,7 +26,6 @@
 
     //////
 
-
     /**
     * Two paths when a document is loaded.
     * Complete the partially loaded doc
@@ -38,7 +37,8 @@
         if (documentModel.isPartiallyParsed) {
           console.log('partially parsed');
           element.replaceWith(documentModel.targetHtml);
-          documentModel.isProcessing = false;            
+          documentModel.isProcessing = false;
+          showGradually();
           documentService.importDoc(documentModel.url, false)
             .then(function(data) {
               documentModel.isPartiallyParsed = false;
@@ -49,14 +49,17 @@
               console.log(terms);
               LHSModel.setYOffsetForTerms(LHSModel.smodel.terms);
             });
-
         } else {
-
           documentService.loadDocument(documentModel.documentId)
           .then(function(contentHtml) {
             documentModel.targetHtml = contentHtml;
             element.replaceWith(documentModel.targetHtml);
-            //$(element).html(documentModel.targetHtml)
+            documentModel.isProcessing = false;
+            if ((selectionService.serializedSelection === undefined) || (selectionService.serializedSelection == "undefined")) {
+              showGradually();  
+            } else {
+              showEntireDoc();
+            }
             return documentService.getTerms(documentModel.documentId);
           })
           .then(function(terms) {
@@ -84,6 +87,27 @@
         }
       }
     }
+
+    function showGradually() {
+      var elements = $('[id^="p_"]')
+      $.each(elements, function(index) {
+          if (!($(elements[index]).attr('id').indexOf("p_12") === 0)) {
+            $timeout(function(){
+              $(elements[index]).show();  
+            }, 0) 
+          }
+      });      
+    };
+
+    function showEntireDoc() {
+      var elements = $('[id^="p_"]')
+      $.each(elements, function(index) {
+        $(elements[index]).show();  
+      });      
+    };
+
+
+
   }
 
 })();
