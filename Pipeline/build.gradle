@@ -9,7 +9,6 @@ repositories {
     mavenCentral()
     maven{ url "https://clojars.org/repo" }
 }
-
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
     compile 'org.jsoup:jsoup:1.8.1'
@@ -129,7 +128,6 @@ task startProd(type: JavaExec) {
 task buildProdApp(type: Exec) {
     commandLine 'gulp', '--gulpfile', 'src/main/webapp/gulpfile.js', 'build'
 }
-
 
 clean.dependsOn cleanModels
 test.dependsOn createTestDirectories
