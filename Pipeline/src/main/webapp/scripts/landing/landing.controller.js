@@ -11,10 +11,10 @@
 
 	angular
 		.module('app.landing')
-		.controller('UrlFormCtrl', UrlFormCtrl);
+		.controller('LandingCtrl', LandingCtrl);
 
   /* @ngInject*/
-  function UrlFormCtrl($location, secSearchService, $routeParams) {
+  function LandingCtrl($location, secSearchService, $routeParams) {
 
     //-- private variables
     var searchResults = [];
@@ -38,14 +38,14 @@
       vm.url = $event.originalEvent.clipboardData.getData('text');
       console.log('something pasted' + vm.url);
       //http://localhost:8088/open?q=http://www.sec.gov/Archives/edgar/data/820027/000082002715000024/amp.htm
-      $location.search('q', vm.url);
-      $location.path('/open');
+      // $location.search('q', vm.url);
+      // $location.path('/open');
     }
 
     function onEnter() {
       console.log('enter pressed');
       //search();
-      $location.path('/url/' + vm.url);
+      $location.path('/search/' + vm.url);
     }
 
     function onClickedFiling(link) {

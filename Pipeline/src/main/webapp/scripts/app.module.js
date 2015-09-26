@@ -45,14 +45,14 @@ angular
 			.iconSet('viewer', 'img/icons/sets/viewer-24.svg', 24);
 
 		$routeProvider.
-		when('/url', {
-			templateUrl: 'scripts/landing/urlform.tmpl.html',
-			controller: 'UrlFormCtrl',
+		when('/search', {
+			templateUrl: 'scripts/landing/landing.tmpl.html',
+			controller: 'LandingCtrl',
 			controllerAs: 'ctrl'
 		}).		
-		when('/url/:searchText', {
-			templateUrl: 'scripts/landing/urlform.tmpl.html',
-			controller: 'UrlFormCtrl',
+		when('/search/:searchText', {
+			templateUrl: 'scripts/landing/landing.tmpl.html',
+			controller: 'LandingCtrl',
 			controllerAs: 'ctrl'
 		}).		
 		when('/list', {

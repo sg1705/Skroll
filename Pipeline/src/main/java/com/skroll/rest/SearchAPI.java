@@ -2,6 +2,7 @@ package com.skroll.rest;
 
 import com.google.common.net.UrlEscapers;
 import com.skroll.document.DocumentHelper;
+import com.skroll.search.QueryProcessor;
 import org.apache.jasper.tagplugins.jstl.core.Url;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 /**
  * Created by saurabh on 9/21/15.
@@ -25,11 +27,14 @@ public class SearchAPI {
     @GET
     @Path("/searchSec")
     @Produces(MediaType.APPLICATION_ATOM_XML)
-    public Response searchSec(@QueryParam("text") String docURL) throws Exception {
+    public Response searchSec(@QueryParam("text") String searchText) throws Exception {
 
-        docURL = UrlEscapers.urlFormParameterEscaper().escape(docURL);
-        String rssUrl = SEARCH_URL + "&text=" + docURL;
-        logger.info("Search string for {}", docURL);
+        List<String> queryList = QueryProcessor.process(searchText);
+
+        searchText = UrlEscapers.urlFormParameterEscaper().escape(queryList.get(0));
+
+        String rssUrl = SEARCH_URL + "&text=" + searchText + "&first="+queryList.get(1) + "&last=" + queryList.get(2);
+        logger.info("Search string for {}", rssUrl);
         String rssXml = DocumentHelper.fetchHtml(rssUrl);
         Response r = Response.ok().status(Response.Status.OK).entity(rssXml).build();
         return r;
