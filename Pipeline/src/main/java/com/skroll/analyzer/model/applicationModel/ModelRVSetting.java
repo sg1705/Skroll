@@ -120,6 +120,10 @@ public class ModelRVSetting {
         return nbmnConfig;
     }
 
+    public NBMNConfig getLowLevelNbmnConfig() {
+        return lowLevelNbmnConfig;
+    }
+
     public RandomVariable getWordType() {
         return wordType;
     }

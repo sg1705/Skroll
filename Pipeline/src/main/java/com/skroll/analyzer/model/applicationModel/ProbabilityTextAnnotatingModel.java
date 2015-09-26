@@ -53,23 +53,54 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
 
     }
 
-    public ProbabilityTextAnnotatingModel(int id,
-                                          NaiveBayesWithMultiNodes tnbm,
-                                          HiddenMarkovModel hmm,
-                                          List<CoreMap> paragraphs, ModelRVSetting setting) {
-        this(id,
-                tnbm,
-                hmm,
-                paragraphs,
-                setting,
-                setting.getWordType(),
-                setting.getWordFeatures(),
-                setting.getNbmnConfig());
-    }
+//    public ProbabilityTextAnnotatingModel(int id,
+//                                          NaiveBayesWithMultiNodes tnbm,
+//                                          HiddenMarkovModel hmm,
+//                                          List<CoreMap> paragraphs,
+//                                          List<CoreMap> processedParagraphs,
+//                                          NBMNData data,
+//                                          ModelRVSetting setting) {
+//        this(id,
+//                tnbm,
+//                hmm,
+//                paragraphs,
+//                processedParagraphs,
+//                data,
+//                setting,
+//                setting.getWordType(),
+//                setting.getWordFeatures(),
+//                setting.getNbmnConfig());
+//    }
 
-    public ProbabilityTextAnnotatingModel(int id, NaiveBayesWithMultiNodes tnbm,
+    //    public ProbabilityTextAnnotatingModel(int id,
+//                                          NaiveBayesWithMultiNodes tnbm,
+//                                          HiddenMarkovModel hmm,
+//                                          List<CoreMap> paragraphs,
+//                                          List<CoreMap> processedParagraphs,
+//                                          NBMNData data,
+//                                          ModelRVSetting setting,
+//                                          RandomVariable wordType,
+//                                          List<RandomVariable> wordFeatures,
+//                                          NBMNConfig nbmnConfig) {
+//        super.nbmnConfig = nbmnConfig;
+//        super.wordType = wordType;
+//        super.wordFeatures = wordFeatures;
+//        super.modelRVSetting = setting;
+//        super.id = id;
+//        this.paragraphs = paragraphs;
+//        this.processedParagraphs = processedParagraphs;
+//        this.data = data;
+//        this.nbmnModel = NBInferenceHelper.createLogProbNBMN(tnbm);
+//        this.hmm = hmm;
+//        hmm.updateProbabilities();
+//        this.computeInitalBeliefs();
+//    }
+    public ProbabilityTextAnnotatingModel(
+            NaiveBayesWithMultiNodes nbmn,
                                           HiddenMarkovModel hmm,
                                           List<CoreMap> paragraphs,
+            List<CoreMap> processedParagraphs,
+            NBMNData data,
                                           ModelRVSetting setting,
                                           RandomVariable wordType,
                                           List<RandomVariable> wordFeatures,
@@ -78,14 +109,14 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
         super.wordType = wordType;
         super.wordFeatures = wordFeatures;
         super.modelRVSetting = setting;
-        super.id = id;
         this.paragraphs = paragraphs;
-        this.nbmnModel = NBInferenceHelper.createLogProbNBMN(tnbm);
+        this.processedParagraphs = processedParagraphs;
+        this.data = data;
+        this.nbmnModel = nbmn;
         this.hmm = hmm;
         hmm.updateProbabilities();
         this.computeInitalBeliefs();
     }
-
     /**
      * Set belief based on the observed paragraphs.
      *
@@ -309,7 +340,7 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
             normalize(paragraphCategoryBelief[i]);
     }
 
-    public void annotateDocument() {
+    public void annotateParagraphs() {
 
 
         passMessagesToParagraphCategories();

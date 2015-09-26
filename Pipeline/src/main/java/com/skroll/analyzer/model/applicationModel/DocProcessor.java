@@ -317,35 +317,58 @@ public class DocProcessor {
 //    }
 
 
-    public static List<List<CoreMap>> createSections(List<CoreMap> paragraphs, RandomVariable paraCategory) {
+    /**
+     * returns paragraphs and processed paragraphs separated into sections.
+     * The returned list contains the list of sections and list of processed sections.
+     * Each section is a list of paragraphs.
+     *
+     * @param paragraphs
+     * @param processedParas
+     * @param paraCategory   Used to determining the boundary of the sections.
+     * @return list of sections and processed sections.
+     */
+    public static List<List<List<CoreMap>>> createSections(List<CoreMap> paragraphs,
+                                                           List<CoreMap> processedParas,
+                                                           RandomVariable paraCategory) {
         int sectionHeading = 2;
         int topHeading = 1;
         int others = 0;
 
         List<List<CoreMap>> sections = new ArrayList<>();
+        List<List<CoreMap>> processedSections = new ArrayList<>();
         List<CoreMap> section = null;
+        List<CoreMap> processedSection = null;
         boolean mainBodyStarted = false;
         boolean sectionStarted = false;
-        for (CoreMap p : paragraphs) {
-            int paraClass = RVValues.getValue(paraCategory, p);
+        for (int i = 0; i < paragraphs.size(); i++) {
+            CoreMap para = paragraphs.get(i);
+            CoreMap processedPara = processedParas.get(i);
+
+            int paraClass = RVValues.getValue(paraCategory, para);
             if (paraClass == topHeading) mainBodyStarted = true;
             if (!mainBodyStarted) continue;
             if (sectionStarted) {
                 if (paraClass == others) {
-                    section.add(p);
+                    section.add(para);
+                    processedSection.add(processedPara);
                 } else { // end of a section
                     sectionStarted = false;
                     sections.add(section);
+                    processedSections.add(processedSection);
                 }
             }
             if (paraClass == sectionHeading) { // start of a section
                 sectionStarted = true;
                 section = new ArrayList<>();
+                processedSection = new ArrayList<>();
             }
         }
 
-        if (sectionStarted) sections.add(section); // add the last section
-        return sections;
+        if (sectionStarted) {
+            sections.add(section); // add the last section
+            processedSections.add(processedSection);
+        }
+        return Arrays.asList(sections, processedSections);
     }
 
 }

@@ -7,8 +7,6 @@ import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
-import com.skroll.document.Token;
-import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.util.TestHelper;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +47,11 @@ public class ProbabilityDocumentAnnotatingModelTest {
         doneSetup = true;
 
         tModel.updateWithDocument(doc);
-        model = new ProbabilityDocumentAnnotatingModel(TEST_DEF_CLASSIFIER_ID,tModel.getNbmnModel(), tModel.getHmm(), doc,
+        model = new ProbabilityDocumentAnnotatingModel(TEST_DEF_CLASSIFIER_ID, tModel.getNbmnModel(),
+                tModel.getHmm(),
+                tModel.getSecNbmnModel(),
+                tModel.getHmm(),
+                doc,
                 new DefModelRVSetting(TEST_DEF_CATEGORY_IDS)
                 );
         model.getHmm().updateProbabilities();
@@ -183,7 +185,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
     @Test
     public void testAnnotateDocument() throws Exception {
-        model.annotateDocument();
+        model.annotateParagraphs();
 
         System.out.println("annotated terms\n");
         RVValues.printAnnotatedDoc(doc);
@@ -206,8 +208,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
         model.passMessagesToParagraphCategories();
 
 
-
-        model.annotateDocument();
+        model.annotateParagraphs();
 
         System.out.println("annotated terms\n");
         RVValues.printAnnotatedDoc(doc);

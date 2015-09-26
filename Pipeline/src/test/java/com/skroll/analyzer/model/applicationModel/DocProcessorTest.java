@@ -135,7 +135,9 @@ public class DocProcessorTest {
         doc = JsonDeserializer.fromJson(jsonString);
 
         ModelRVSetting tocRVSetting = new TOCModelRVSetting(Arrays.asList(Category.NONE, Category.TOC_1, Category.TOC_2), null);
-        List<List<CoreMap>> sections = DocProcessor.createSections(doc.getParagraphs(), tocRVSetting.getNbmnConfig().getCategoryVar());
+        List<List<List<CoreMap>>> sectionsList = DocProcessor.createSections(doc.getParagraphs(),
+                doc.getParagraphs(), tocRVSetting.getNbmnConfig().getCategoryVar());
+        List<List<CoreMap>> sections = sectionsList.get(0);
 
         for (int si = 0; si < sections.size(); si++) {
             System.out.println();

@@ -51,6 +51,7 @@ public class TOCModelRVSetting extends ModelRVSetting {
     @JsonCreator
     public TOCModelRVSetting(
             @JsonProperty("nbmnConfig") NBMNConfig nbmnConfig,
+            @JsonProperty("lowerLevelNbmnConfig") NBMNConfig lowerLevelNbmnConfig,
             @JsonProperty("wordType") RandomVariable wordType,
             @JsonProperty("wordFeatures") List<RandomVariable> wordFeatures,
             @JsonProperty("categoryIds") List<Integer> categoryIds,

@@ -63,9 +63,11 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
         TrainingDocumentAnnotatingModel tmpModel = createModel(modelId, modelRVSetting);
         tmpModel.updateWithDocumentAndWeight(document);
 
-        ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(modelId, tmpModel.getNbmnModel(),
-                tmpModel.getHmm(), document,modelRVSetting );
-        bniModel.annotateDocument();
+        ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(
+                modelId, tmpModel.getNbmnModel(), tmpModel.getHmm(),
+                tmpModel.getSecNbmnModel(), tmpModel.getSecHmm(),
+                document, modelRVSetting);
+        bniModel.annotateParagraphs();
         //printBelieves(bniModel, document);
 
         bniModelMap.put(getBniId(modelId, documentId), bniModel);
