@@ -17,6 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
+ * Processes query string and converts into a string that is
+ * optimial for searching in SEC.GOV
+ *
  * Created by saurabh on 9/26/15.
  */
 public class QueryProcessor {
@@ -24,6 +27,9 @@ public class QueryProcessor {
     private static final Logger logger = LoggerFactory.getLogger(QueryProcessor.class);
     static HashMap companyNameMap = new HashMap();
 
+    /**
+     * Load all the tickers at startup time
+     */
     static {
         //read files
         URL url = Resources.getResource("cik_ticker.csv");
@@ -45,7 +51,15 @@ public class QueryProcessor {
     }
 
 
-
+    /**
+     * Returns processed query string and start and end years
+     * at index=0, query string
+     * at index=1, start year
+     * at index=2, end year
+     *
+     * @param query input query string
+     * @return list of tokens that include start and end years
+     */
     public static List<String> process(String query) {
         //tokenize the query
         List<String> tokens = Lists.newArrayList(Splitter.on(' ').split(query));

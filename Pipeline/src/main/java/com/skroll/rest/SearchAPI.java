@@ -13,6 +13,8 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 /**
+ * API involved with search on landing page.
+ *
  * Created by saurabh on 9/21/15.
  */
 
@@ -27,6 +29,9 @@ public class SearchAPI {
     @GET
     @Path("/searchSec")
     @Produces(MediaType.APPLICATION_ATOM_XML)
+    /**
+     * Returns results for landing page search
+     */
     public Response searchSec(@QueryParam("text") String searchText) throws Exception {
 
         List<String> queryList = QueryProcessor.process(searchText);
@@ -43,6 +48,9 @@ public class SearchAPI {
     @GET
     @Path("/fetchIndex")
     @Produces(MediaType.TEXT_HTML)
+    /**
+     * Returns the HTML of the page clicked on landing page (from sec.gov)
+     */
     public Response fetchIndex(@QueryParam("url") String docURL) throws Exception {
 
         String rssUrl = FETCH_INDEX_URL + docURL;
@@ -51,7 +59,5 @@ public class SearchAPI {
         Response r = Response.ok().status(Response.Status.OK).entity(rssXml).build();
         return r;
     }
-
-
 
 }
