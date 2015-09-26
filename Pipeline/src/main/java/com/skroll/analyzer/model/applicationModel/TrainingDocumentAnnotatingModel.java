@@ -11,6 +11,7 @@ import com.skroll.analyzer.model.bn.NaiveBayesWithMultiNodes;
 import com.skroll.analyzer.model.bn.config.NBMNConfig;
 import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
+import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
@@ -25,11 +26,15 @@ import java.util.*;
  */
 public class TrainingDocumentAnnotatingModel extends TrainingTextAnnotatingModel {
 
+    @JsonProperty("secModel")
+    TrainingTextAnnotatingModel secModel = null;
+
     @JsonProperty("secNbmnModel")
     NaiveBayesWithMultiNodes secNbmnModel = null;
 
     @JsonProperty("secHmm")
     HiddenMarkovModel secHmm = null;
+
 
     public TrainingDocumentAnnotatingModel( int id, ModelRVSetting setting) {
         this(id, setting.getWordType(), setting.getWordFeatures(), setting.getNbmnConfig(), setting);
@@ -43,7 +48,7 @@ public class TrainingDocumentAnnotatingModel extends TrainingTextAnnotatingModel
                                             ModelRVSetting modelRVSetting) {
 
         this(id, NBTrainingHelper.createTrainingNBMN(nbmnConfig),
-                NBTrainingHelper.createTrainingNBMN(nbmnConfig),
+                NBTrainingHelper.createTrainingNBMN(modelRVSetting.getLowLevelNbmnConfig()),
                 wordType, wordFeatures, nbmnConfig, modelRVSetting);
 
     }
@@ -71,6 +76,8 @@ public class TrainingDocumentAnnotatingModel extends TrainingTextAnnotatingModel
                 wordType.getFeatureSize(), wordFeatureSizes);
         secHmm = new HiddenMarkovModel(HMM_MODEL_LENGTH,
                 wordType.getFeatureSize(), wordFeatureSizes);
+        ModelRVSetting lowerTOCSetting = new TOCModelRVSetting(ClassifierFactory.LOWER_TOC_CATEGORY_IDS, null);
+        secModel = new TrainingTextAnnotatingModel(0, secNbmnModel, wordType, wordFeatures, modelRVSetting.getLowLevelNbmnConfig(), lowerTOCSetting);
     }
 
     public NaiveBayesWithMultiNodes getSecNbmnModel() {
@@ -124,29 +131,40 @@ public class TrainingDocumentAnnotatingModel extends TrainingTextAnnotatingModel
 //    }
 //
 //
-//    /**
-//     * todo: to reduce memory usage at the cost of more computation, can process training paragraph one by one later instead of process all and store them now
-//    * training involves updating Fij for each paragraph i and feature j.
-//    */
-//    public void updateWithDocumentAndWeight(Document doc){
-//        List<CoreMap> originalParas = doc.getParagraphs();
-//
-//        // todo: the following two lines can cause a lot of inefficiency with the current approach of
-//        // updating training model with the whole doc each time user makes an observation.
-////        List<CoreMap> processedParas = DocProcessor.processParas(doc, hmm.size());
-//        List<CoreMap> processedParas = DocProcessor.processParas(doc);
-//        modelRVSetting.postProcessFunctions
-//                .stream()
-//                .forEach( f -> f.apply(doc.getParagraphs(), processedParas));
-//
-//
-//        // in NBMNData, para features can be preprocessed for the whole doc,
-//        // but doc features depends on the set of the observed paras and cannot be preprocessed just once.
-//        NBMNData data = DocProcessor.getParaDataFromDoc(doc, nbmnConfig);
-//
-//        updateWithProcessedParasAndWeight(originalParas, processedParas, data);
-//
-//    }
+
+    /**
+     * todo: to reduce memory usage at the cost of more computation, can process training paragraph one by one later instead of process all and store them now
+     * training involves updating Fij for each paragraph i and feature j.
+     */
+    public void updateWithDocumentAndWeight(Document doc) {
+        List<CoreMap> originalParas = doc.getParagraphs();
+
+        // todo: the following two lines can cause a lot of inefficiency with the current approach of
+        // updating training model with the whole doc each time user makes an observation.
+//        List<CoreMap> processedParas = DocProcessor.processParas(doc, hmm.size());
+        List<CoreMap> processedParas = DocProcessor.processParas(doc);
+        modelRVSetting.postProcessFunctions
+                .stream()
+                .forEach(f -> f.apply(doc.getParagraphs(), processedParas));
+
+
+        // in NBMNData, para features can be preprocessed for the whole doc,
+        // but doc features depends on the set of the observed paras and cannot be preprocessed just once.
+        NBMNData data = DocProcessor.getParaDataFromDoc(doc, nbmnConfig);
+
+        updateWithProcessedParasAndWeight(originalParas, processedParas, data);
+
+        List<List<List<CoreMap>>> sectionsList = DocProcessor.createSections(doc.getParagraphs(), processedParas, getParaCategory());
+        List<List<CoreMap>> sections = sectionsList.get(0);
+        List<List<CoreMap>> processedSections = sectionsList.get(1);
+
+        ModelRVSetting lowerTOCSetting = new TOCModelRVSetting(ClassifierFactory.LOWER_TOC_CATEGORY_IDS, null);
+        for (int i = 0; i < sections.size(); i++) {
+            secModel.updateWithProcessedParasAndWeight(sections.get(i), processedSections.get(i), data);
+        }
+
+
+    }
 //
 //    public int[] concatIntArrays(int[]... intArrays) {
 //        int totalLen = 0;
@@ -199,26 +217,40 @@ public class TrainingDocumentAnnotatingModel extends TrainingTextAnnotatingModel
 //
 //    }
 //
-//    /**
-//     * the old method for training with doc. Does not use weight and go through all paragraphs, not just the observed.
-//     * @param doc
-//     */
-//    public void updateWithDocument(Document doc){
-//
-//
-////        List<CoreMap> processedParas = DocProcessor.processParas(doc, hmm.size());
-//        List<CoreMap> processedParas = DocProcessor.processParas(doc);
-//        modelRVSetting.postProcessFunctions
-//                .stream()
-//                .forEach( f -> f.apply(doc.getParagraphs(), processedParas));
-//
-//        NBMNData data = DocProcessor.getParaDataFromDoc(doc, nbmnConfig);
-////        List<CoreMap> parasWithCategoryAnnotation = new ArrayList<>();
-////        for (int categoryId : modelRVSetting.getCategoryIds()) // todo: inefficiency here. also better to keep paras in the same order.
-////            parasWithCategoryAnnotation.addAll(CategoryAnnotationHelper.getParagraphsAnnotatedWithCategory(doc, categoryId));
-////        updateWithDocument(parasWithCategoryAnnotation, processedParas, data);
-//        updateWithDocument(doc.getParagraphs(), processedParas, data);
-//    }
+
+    /**
+     * the old method for training with doc. Does not use weight and go through all paragraphs, not just the observed.
+     *
+     * @param doc
+     */
+    public void updateWithDocument(Document doc) {
+
+
+//        List<CoreMap> processedParas = DocProcessor.processParas(doc, hmm.size());
+        List<CoreMap> processedParas = DocProcessor.processParas(doc);
+        modelRVSetting.postProcessFunctions
+                .stream()
+                .forEach(f -> f.apply(doc.getParagraphs(), processedParas));
+
+        NBMNData data = DocProcessor.getParaDataFromDoc(doc, nbmnConfig);
+//        List<CoreMap> parasWithCategoryAnnotation = new ArrayList<>();
+//        for (int categoryId : modelRVSetting.getCategoryIds()) // todo: inefficiency here. also better to keep paras in the same order.
+//            parasWithCategoryAnnotation.addAll(CategoryAnnotationHelper.getParagraphsAnnotatedWithCategory(doc, categoryId));
+//        updateWithDocument(parasWithCategoryAnnotation, processedParas, data);
+        updateWithDocument(doc.getParagraphs(), processedParas, data);
+
+
+        List<List<List<CoreMap>>> sectionsList = DocProcessor.createSections(doc.getParagraphs(), processedParas, getParaCategory());
+        List<List<CoreMap>> sections = sectionsList.get(0);
+        List<List<CoreMap>> processedSections = sectionsList.get(1);
+
+        ModelRVSetting lowerTOCSetting = new TOCModelRVSetting(ClassifierFactory.LOWER_TOC_CATEGORY_IDS, null);
+        for (int i = 0; i < sections.size(); i++) {
+            secModel.updateWithDocument(sections.get(i), processedSections.get(i), data);
+        }
+
+
+    }
 //
 //    public void updateWithDocument(List<CoreMap> originalParas, List<CoreMap> processedParas, NBMNData data) {
 //        int[][] docFeatures = DocProcessor.generateDocumentFeatures(originalParas, data.getParaDocFeatures(), nbmnConfig);

@@ -157,7 +157,7 @@ public class TrainingTextAnnotatingModel extends DocumentAnnotatingModel {
      * @param processedParas
      * @param data
      */
-    private void updateWithProcessedParasAndWeight(List<CoreMap> originalParas,
+    void updateWithProcessedParasAndWeight(List<CoreMap> originalParas,
                                                    List<CoreMap> processedParas, NBMNData data) {
 //        List<CoreMap> originalParas = doc.getParagraphs();
         List<CoreMap> observedParas = modelRVSetting.modelClassAndWeightStrategy.getObservedParagraphs(originalParas);
@@ -179,7 +179,13 @@ public class TrainingTextAnnotatingModel extends DocumentAnnotatingModel {
                         wordsList[i], c, paraFeatures[i], paraDocFeatures[i], docFeatures), weights[c]);
             }
 
-            updateHMMWithParagraph(originalParas.get(i), processedParas.get(i));
+//            updateHMMWithParagraph(originalParas.get(i), processedParas.get(i));
+        }
+
+        for (int p = 0; p < originalParas.size(); p++) {
+            if (modelRVSetting.modelClassAndWeightStrategy.isObserved(originalParas.get(p))) {
+                updateHMMWithParagraph(originalParas.get(p), processedParas.get(p));
+            }
         }
 
     }

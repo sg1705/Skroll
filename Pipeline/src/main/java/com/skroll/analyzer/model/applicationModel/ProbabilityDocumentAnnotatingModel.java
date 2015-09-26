@@ -5,6 +5,7 @@ import com.skroll.analyzer.model.bn.NBInferenceHelper;
 import com.skroll.analyzer.model.bn.NaiveBayesWithMultiNodes;
 import com.skroll.analyzer.model.bn.config.NBMNConfig;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
+import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 
@@ -316,6 +317,7 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
         List<List<CoreMap>> sections = sectionsList.get(0);
         List<List<CoreMap>> processedSections = sectionsList.get(1);
 
+        ModelRVSetting lowerTOCSetting = new TOCModelRVSetting(ClassifierFactory.LOWER_TOC_CATEGORY_IDS, null);
         for (int i = 0; i < sections.size(); i++) {
             ProbabilityTextAnnotatingModel secModel = new ProbabilityTextAnnotatingModel(
                     secNbmn,
@@ -323,10 +325,10 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
                     sections.get(i),
                     processedSections.get(i),
                     data,
-                    modelRVSetting,
+                    lowerTOCSetting,
                     wordType,
                     wordFeatures,
-                    modelRVSetting.getLowLevelNbmnConfig()
+                    lowerTOCSetting.getNbmnConfig()
             );
             secModel.annotateParagraphs();
         }

@@ -27,6 +27,8 @@ public interface ModelClassAndWeightStrategy {
      */
     public List<CoreMap> getObservedParagraphs(List<CoreMap> paras);
 
+    public boolean isObserved(CoreMap para);
+
     /**
      * Populate training weight of model using the training weights of categories of a paragraph into array of double that will feed to model.
      * @param paragraph

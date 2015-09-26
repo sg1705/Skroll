@@ -82,8 +82,8 @@ public class ModelRVSetting {
         if (lowLevelategoryIds != null) {
             RandomVariable lowLevelParaType = RVCreater.createDiscreteRVWithComputer(
                     new ParaCategoryComputer(modelClassAndWeightStrategy, lowLevelategoryIds), "paraTypeIsModelID-" + lowLevelategoryIds);
-            lowLevelNbmnConfig = new NBMNConfig(paraType, paraFeatureVars, paraDocFeatureVars,
-                    RVCreater.createNBMNDocFeatureRVs(paraDocFeatureVars, paraType, String.valueOf(lowLevelategoryIds.toString())), wordVars);
+            lowLevelNbmnConfig = new NBMNConfig(lowLevelParaType, paraFeatureVars, paraDocFeatureVars,
+                    RVCreater.createNBMNDocFeatureRVs(paraDocFeatureVars, lowLevelParaType, String.valueOf(lowLevelategoryIds.toString())), wordVars);
             RVValues.addValueSetter(lowLevelParaType, new RVValueSetter(lowLevelategoryIds, CoreAnnotations.CategoryAnnotations.class));
         }
 
