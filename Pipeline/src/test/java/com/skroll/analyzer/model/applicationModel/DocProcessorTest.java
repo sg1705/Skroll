@@ -147,6 +147,8 @@ public class DocProcessorTest {
             }
         }
 
+        assert (sections.size() == 20);
+
 
     }
 }

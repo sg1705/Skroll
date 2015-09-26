@@ -2,7 +2,9 @@ package com.skroll.analyzer.model.applicationModel;
 
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
+import com.skroll.analyzer.model.bn.NBInferenceHelper;
 import com.skroll.analyzer.model.bn.NaiveBayesWithMultiNodes;
+import com.skroll.analyzer.model.bn.config.NBMNConfig;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -27,7 +29,7 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
                                               NaiveBayesWithMultiNodes tnbm,
                                               HiddenMarkovModel hmm,
                                               Document doc, ModelRVSetting setting) {
-        super(id,
+        this(id,
                 tnbm,
                 hmm,
                 doc,
@@ -37,42 +39,35 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
                 setting.getNbmnConfig());
     }
 
-//    public ProbabilityDocumentAnnotatingModel(int id, NaiveBayesWithMultiNodes tnbm,
-//                                              HiddenMarkovModel hmm,
-//                                              Document doc,
-//                                              ModelRVSetting setting,
-//                                              RandomVariable wordType,
-//                                              List<RandomVariable> wordFeatures,
-//                                              NBMNConfig nbmnConfig) {
-//        super.nbmnConfig = nbmnConfig;
-//        super.wordType = wordType;
-//        super.wordFeatures = wordFeatures;
-//        super.modelRVSetting = setting;
-//        super.id = id;
-//        this.doc = doc;
-//        this.nbmnModel = NBInferenceHelper.createLogProbNBMN(tnbm);
-//        this.hmm = hmm;
-//        hmm.updateProbabilities();
-//        this.initialize();
-//    }
-//
-//    void initialize(){
-////        List<CoreMap> originalParagraphs = doc.getParagraphs();
-////        processedParagraphs = DocProcessor.processParas(doc, hmm.size());
-//        processedParagraphs = DocProcessor.processParas(doc);
-//        modelRVSetting.postProcessFunctions
-//                .stream()
-//                .forEach( f -> f.apply(doc.getParagraphs(), processedParagraphs));
-//        data = DocProcessor.getParaDataFromDoc(doc, nbmnConfig);
-////
-////        processedParagraphs = DocProcessor.processParagraphs(originalParagraphs, hmm.size());
-////        paraFeatureValsExistAtDocLevel = DocProcessor.getFeaturesVals(
-////                nbmnConfig.getFeatureExistsAtDocLevelVarList(),
-////                doc.getParagraphs(), processedParagraphs
-////        );
-//        computeInitalBeliefs();
-//    }
-//
+    public ProbabilityDocumentAnnotatingModel(int id, NaiveBayesWithMultiNodes tnbm,
+                                              HiddenMarkovModel hmm,
+                                              Document doc,
+                                              ModelRVSetting setting,
+                                              RandomVariable wordType,
+                                              List<RandomVariable> wordFeatures,
+                                              NBMNConfig nbmnConfig) {
+        super.nbmnConfig = nbmnConfig;
+        super.wordType = wordType;
+        super.wordFeatures = wordFeatures;
+        super.modelRVSetting = setting;
+        super.id = id;
+        this.doc = doc;
+        this.paragraphs = doc.getParagraphs();
+        this.nbmnModel = NBInferenceHelper.createLogProbNBMN(tnbm);
+        this.hmm = hmm;
+        hmm.updateProbabilities();
+        preprocessData();
+        super.computeInitalBeliefs();
+    }
+
+    void preprocessData() {
+        processedParagraphs = DocProcessor.processParas(doc);
+        modelRVSetting.postProcessFunctions
+                .stream()
+                .forEach(f -> f.apply(doc.getParagraphs(), processedParagraphs));
+        data = DocProcessor.getParaDataFromDoc(doc, nbmnConfig);
+    }
+
 //    /**
 //     * Set belief based on the observed paragraphs.
 //     * @param observedParagraphs The paragraphs that are observed.
