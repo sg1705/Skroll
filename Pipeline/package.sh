@@ -2,7 +2,6 @@
 
 #--------------------
 #GCloud setting
-export GCLOUD_HOME=/Users/saurabhagarwal/google-cloud-sdk/bin/
 export USER_ID=skrollioteamsep2015
 export GCLOUD_INSTANCE_NAME=instance-1
 export GCLOUD_ZONE=us-central1-f
@@ -25,14 +24,9 @@ mkdir $HOME_DIR/config
 cp -r src/main/resources/skroll-deploy.properties $HOME_DIR/config/skroll.properties
 cp -r src/main/resources/log4j.xml $HOME_DIR/config/log4j.xml
 
-mkdir $HOME_DIR/data
-mkdir $HOME_DIR/data/preEvaluated
-mkdir $HOME_DIR/data/models
-mkdir $HOME_DIR/data/benchmark
-mkdir $HOME_DIR/logs
 mkdir $HOME_DIR/phantomjs
 cp src/main/resources/parser/extractor/* $HOME_DIR/phantomjs/
 
 rm $PACKAGE_ROOT_DIR/skroll-package.tar.gz
 tar -czvf $PACKAGE_ROOT_DIR/skroll-package.tar.gz -C $PACKAGE_ROOT_DIR $PACKAGE_DIR
-$GCLOUD_HOME/gcloud compute copy-files $PACKAGE_ROOT_DIR/skroll-package.tar.gz $USER_ID@$GCLOUD_INSTANCE_NAME: --zone $GCLOUD_ZONE
+gcloud compute copy-files $PACKAGE_ROOT_DIR/skroll-package.tar.gz $USER_ID@$GCLOUD_INSTANCE_NAME: --zone $GCLOUD_ZONE
