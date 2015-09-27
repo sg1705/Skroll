@@ -21,6 +21,7 @@
       getDocumentIds    : getDocumentIds,
       loadDocument      : loadDocument,
       importDoc         : importDoc,
+      getIndex          : getIndex,
 
       getParagraphJson  : getParagraphJson,
       getTerms          : getTerms,
@@ -211,6 +212,27 @@
       /** done with get request */
       return deferred.promise;
     };
+
+    /**
+    * Returns a promise which will fetch the 
+    * index for a given document
+    **/
+    function getIndex(documentId) {
+      var deferred = $q.defer();
+      /** make a get request */
+      $http.get(documentServiceBase + 'getIndex' + '?documentId=' + documentId)
+        .success(function(data, status) {
+          deferred.resolve(data);
+        })
+        .error(function(msg, code) {
+          deferred.reject(msg);
+          $log.error(msg, code);
+        });;
+      // done with get request
+      return deferred.promise;
+    }
+
+
 
 
   };
