@@ -44,7 +44,7 @@ public class ObjectPersistUtilTest {
         ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil("/tmp");
 
         try {
-            objectPersistUtil.persistObject(null, new TrainingDocumentAnnotatingModel(ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID,modelRVSetting), "TrainingDocumentAnnotatingModel");
+            objectPersistUtil.persistObject(null, model, "TrainingDocumentAnnotatingModel");
         } catch (ObjectPersistUtil.ObjectPersistException e) {
             e.printStackTrace();
             fail("failed persist Object");

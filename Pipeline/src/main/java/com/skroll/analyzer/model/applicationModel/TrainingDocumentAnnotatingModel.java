@@ -61,7 +61,7 @@ public class TrainingDocumentAnnotatingModel extends TrainingTextAnnotatingModel
             @JsonProperty("wordType") RandomVariable wordType,
             @JsonProperty("wordFeatures") List<RandomVariable> wordFeatures,
             @JsonProperty("nbmnConfig") NBMNConfig nbmnConfig,
-            @JsonProperty("ModelRVSetting")ModelRVSetting modelRVSetting){
+            @JsonProperty("modelRVSetting") ModelRVSetting modelRVSetting) {
         this.id = id;
         this.nbmnConfig = nbmnConfig;
         this.nbmnModel = nbmnModel;
