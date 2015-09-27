@@ -11,11 +11,11 @@ export PACKAGE_ROOT_DIR=build
 export PACKAGE_DIR=skroll-package
 export HOME_DIR=$PACKAGE_ROOT_DIR/$PACKAGE_DIR
 
+../gradlew fatjar
+../gradlew buildProdApp
 
 rm -rf $HOME_DIR
 mkdir $HOME_DIR
-../gradlew fatjar
-../gradlew buildProdApp
 cp build/libs/Pipeline-all-1.0.jar $HOME_DIR/
 cp src/main/scripts/* $HOME_DIR/
 cp -r src/main/webapp/build/ $HOME_DIR/webapp
