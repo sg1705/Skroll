@@ -8,8 +8,8 @@
     </layout>
   </appender>
   <appender name="R" class="org.apache.log4j.RollingFileAppender">
-    <param name="file" value="/tmp/skroll.log"/>
-    <param name="MaxFileSize" value="10MB"/>
+    <param name="file" value="logs/skroll.log"/>
+    <param name="MaxFileSize" value="200MB"/>
     <!-- Keep one backup file -->
     <param name="MaxBackupIndex" value="5"/>
     <layout class="org.apache.log4j.PatternLayout">

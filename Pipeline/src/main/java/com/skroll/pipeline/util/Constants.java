@@ -36,10 +36,10 @@ public class Constants {
 
 
     // extractor url
-    public static final String PHANTOM_JS_BIN = "src/main/resources/parser/extractor/phantomjs";
-    public static final String PHANTOM_JS_BIN_WINDOWS = "src/main/resources/parser/extractor/phantomjs.exe";
-    public static final String PHANTOM_JS_BIN_MAC = "src/main/resources/parser/extractor/phantomjs_mac";
-    public static final String JQUERY_PARSER_JS = "src/main/resources/parser/extractor/parser.js";
+    public static final String PHANTOM_JS_BIN = "phantom_js_bin";
+    public static final String PHANTOM_JS_BIN_WINDOWS = "phantom_js_bin_windows";
+    public static final String PHANTOM_JS_BIN_MAC = "phantom_js_bin_mac";
+    public static final String JQUERY_PARSER_JS = "jquery_parser_js";
 
     public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 
