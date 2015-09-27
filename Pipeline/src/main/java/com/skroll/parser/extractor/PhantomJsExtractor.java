@@ -2,6 +2,7 @@ package com.skroll.parser.extractor;
 
 import com.skroll.document.Document;
 import com.skroll.pipeline.util.Constants;
+import com.skroll.util.CmdLineExecutor;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteWatchdog;
@@ -13,7 +14,7 @@ import java.io.ByteArrayOutputStream;
 /**
  * cd by saurabh on 1/16/15.
  */
-public class PhantomJsExtractor {
+public class PhantomJsExtractor implements CmdLineExecutor {
 
     public static final Logger logger = LoggerFactory.getLogger(PhantomJsExtractor.class);
 
@@ -61,27 +62,7 @@ public class PhantomJsExtractor {
     }
 
     private String[] executePhantomJsExtractor(CommandLine cmdLine) throws Exception {
-        ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-        PumpStreamHandler psh = new PumpStreamHandler( stdout );
-
-        DefaultExecutor executor = new DefaultExecutor();
-        executor.setExitValue(1);
-        executor.setStreamHandler(psh);
-        ExecuteWatchdog watchdog = new ExecuteWatchdog(240000);
-        executor.setWatchdog(watchdog);
-        long executionTime = System.currentTimeMillis();
-        int exitValue = executor.execute(cmdLine);
-        if (exitValue != 1) {
-            ParserException ps =  new ParserException("Cannot parse the file. Phantom exited with the return code:" + exitValue);
-            ps.setReturnValue(exitValue);
-            throw ps;
-        }
-        logger.info("Execution time:" + (System.currentTimeMillis() - executionTime));
-        long splitTime = System.currentTimeMillis();
-        byte[] output = stdout.toByteArray();
-        String[] parserOutput = new String(output, Constants.DEFAULT_CHARSET)
-                .split(OUTPUT_DELIMITTER);
-        logger.info("Splitting time:" + (System.currentTimeMillis() - splitTime));
+        String[] parserOutput = execute(cmdLine, 1).split(OUTPUT_DELIMITTER);
         return parserOutput;
     }
 
