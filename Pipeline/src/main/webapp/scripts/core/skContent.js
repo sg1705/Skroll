@@ -48,6 +48,10 @@
               LHSModel.setTerms(terms);
               console.log(terms);
               LHSModel.setYOffsetForTerms(LHSModel.smodel.terms);
+              return documentService.getIndex(documentModel.documentId);
+            })
+            .then(function(data) {
+              console.log(data);
             });
 
         } else {
@@ -78,8 +82,12 @@
 
               documentModel.isProcessing = false;
             }
+            return documentService.getIndex(documentModel.documentId);
           }, function(data, status) {
               console.log(status);
+          })
+          .then(function(data) {
+            console.log(data);
           });
         }
       }

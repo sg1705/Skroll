@@ -1,6 +1,8 @@
 package com.skroll.index;
 
+import com.google.common.io.Files;
 import com.skroll.document.Document;
+import com.skroll.document.JsonDeserializer;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.extractor.ParserException;
 import com.skroll.parser.extractor.TestMode;
@@ -13,6 +15,7 @@ import org.apache.commons.exec.PumpStreamHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 
 
 /**
@@ -28,6 +31,25 @@ public class IndexCreator implements CmdLineExecutor {
     private static String INDEX_CREATOR_JS = "src/main/si/src/SearchIndexer.js";
     private static String INPUT_FILE_ARGUMENT = "--inputFile";
 
+
+    /**
+     * Returns document after generating indexes
+     * @param input input document
+     * @return document parsed document
+     * @throws Exception
+     */
+    public Document process(Document input) throws Exception {
+        long startTime = System.currentTimeMillis();
+        if (input.get(CoreAnnotations.SearchIndexAnnotation.class) == null) {
+            //create file
+            String json = JsonDeserializer.getJson(input);
+            String inputFileName = "/tmp/" + startTime + ".json";
+            Files.write(json.getBytes(Constants.DEFAULT_CHARSET), new File(inputFileName));
+            input = process(input, inputFileName);
+            new File(inputFileName).delete();
+        }
+        return input;
+    }
 
     /**
      *

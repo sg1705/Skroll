@@ -14,6 +14,7 @@ import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.document.annotation.DocTypeAnnotationHelper;
 import com.skroll.document.factory.DocumentFactory;
+import com.skroll.index.IndexCreator;
 import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.ParserException;
 import com.skroll.pipeline.util.Constants;
@@ -163,6 +164,37 @@ public class DocAPI {
                     .entity(document.getTarget().getBytes(Constants.DEFAULT_CHARSET))
                     .type(MediaType.TEXT_HTML).build();
     }
+
+
+    @GET
+    @Path("/getIndex")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getIndex(@QueryParam("documentId") String documentId, @BeanParam RequestBean request) throws Exception {
+
+        logger.info("Opening [{}]", documentId);
+        Document document = request.getDocument();
+        if (document == null) {
+            logger.debug("Not found in documentMap, fetching from corpus: {}", documentId.toString());
+            return logErrorResponse("Failed to read/deserialize document from Pre Evaluated Folder");
+        }
+
+        String index = document.get(CoreAnnotations.SearchIndexAnnotation.class);
+        if (index == null) {
+            //let's create indexes
+            IndexCreator creator = new IndexCreator();
+            document = creator.process(document);
+            request.getDocumentFactory().putDocument(document);
+            request.getDocumentFactory().saveDocument(document);
+            logger.debug("Indexes created for [{}]", documentId);
+            index = document.get(CoreAnnotations.SearchIndexAnnotation.class);
+        }
+        return Response.status(Response.Status.OK)
+                .header("documentId", documentId)
+                .entity(index)
+                .type(MediaType.APPLICATION_JSON).build();
+    }
+
+
 
     private Document fetchOrSaveDocument(String documentId, String content, DocumentFactory documentFactory, List<Classifier> classifiers) throws Exception {
         Document document;
