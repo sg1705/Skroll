@@ -3,10 +3,10 @@
 
 	/**
 	 * @ngdoc function
-	 * @name skrollApp.controller:UrlFormCtrl
+	 * @name skrollApp.controller:LandingCtrl
 	 * @description
-	 * # UrlFormCtrl
-	 * Controller of the UrlFormCtrl
+	 * # LandingCtrl
+	 * Controller of the LandingCtrl
 	 */
 
 	angular
@@ -21,31 +21,19 @@
     var vm            = this;
 
     //-- public variables
-    vm.url = $routeParams.searchText;
+    vm.searchText    = $routeParams.searchText;
     vm.searchResults = searchResults;
 
     //-- public methods
-    vm.onPasteUrl      = onPasteUrl;
     vm.onEnter         = onEnter;
     vm.onClickedFiling = onClickedFiling;
 
     search();
 
-    /**
-    * Handles when user pastes a url
-    **/
-    function onPasteUrl($event) {
-      vm.url = $event.originalEvent.clipboardData.getData('text');
-      console.log('something pasted' + vm.url);
-      //http://localhost:8088/open?q=http://www.sec.gov/Archives/edgar/data/820027/000082002715000024/amp.htm
-      // $location.search('q', vm.url);
-      // $location.path('/open');
-    }
-
     function onEnter() {
-      console.log('enter pressed');
-      //search();
-      $location.path('/search/' + vm.url);
+      if (!((vm.searchText == null)  || (vm.searchText == "undefined"))) {
+        $location.path('/search/' + vm.searchText);
+      }
     }
 
     function onClickedFiling(link) {
@@ -56,7 +44,6 @@
           href = 'http://www.sec.gov'+$(href).attr('href');
           console.log(href);
           $location.path('/open').search('q', href);
-          // http://localhost:8088/open?q=http:%2F%2Fwww.sec.gov%2FArchives%2Fedgar%2Fdata%2F1467373%2F000146737314000467%2Facn831201410k.htm
         }, function(err) {
           console.log(err);
         });
@@ -64,8 +51,11 @@
     }
 
     function search() {
+      if (((vm.searchText == null)  || (vm.searchText == "undefined"))) {
+        return;
+      }      
       vm.searchResults = new Array();
-      secSearchService.getSearchResults(vm.url)
+      secSearchService.getSearchResults(vm.searchText)
         .then(function(data) {
           var rss = $.parseXML(data);
           var entries = $(rss).find("entry");
