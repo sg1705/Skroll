@@ -27,13 +27,15 @@ import java.util.*;
  */
 public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
 
-    static final int NUM_ITERATIONS = 1;
+    static final int DEFAULT_NUM_ITERATIONS = 1;
     double[] ANNOTATING_THRESHOLD = new double[]{0, .99999, 0.9999};
     //    Document doc;
     List<CoreMap> paragraphs;
     // todo: should probably store paragraphs, otherwise, need to recreate it everytime when model has new observations
     List<CoreMap> processedParagraphs = new ArrayList<>();
     NBMNData data;
+
+    int numIterations = DEFAULT_NUM_ITERATIONS;
 //    int [][] paraFeatureValsExistAtDocLevel;
 //    ProcessedData data;
 
@@ -340,12 +342,16 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
             normalize(paragraphCategoryBelief[i]);
     }
 
+    public void setNumIterations(int numIterations) {
+        this.numIterations = numIterations;
+    }
+
     public void annotateParagraphs() {
 
 
         passMessagesToParagraphCategories();
 
-        for (int i = 0; i < NUM_ITERATIONS; i++) {
+        for (int i = 0; i < numIterations; i++) {
             passMessageToDocumentFeatures();
             passMessagesToParagraphCategories();
         }

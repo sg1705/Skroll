@@ -16,10 +16,6 @@ import java.util.*;
  */
 public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatingModel {
 
-    static final int NUM_ITERATIONS = 1;
-    static final int SECTION_HEADING = 2;
-    static final int OTHERS = 0;
-    double[] ANNOTATING_THRESHOLD = new double[]{0, .99999, 0.9999};
     Document doc;
     NaiveBayesWithMultiNodes secNbmn = null;
     HiddenMarkovModel secHmm = null;
@@ -330,6 +326,7 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
                     wordFeatures,
                     lowerTOCSetting.getNbmnConfig()
             );
+            secModel.setNumIterations(5);
             secModel.annotateParagraphs();
         }
 //
