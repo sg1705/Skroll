@@ -88,11 +88,14 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
     public void annotateParagraphs() {
 
         super.annotateParagraphs();
+        if (modelRVSetting.getLowLevelCategoryIds() == null) return;
+
         List<List<List<CoreMap>>> sectionsList = DocProcessor.createSections(paragraphs, processedParagraphs, getParaCategory());
         List<List<CoreMap>> sections = sectionsList.get(0);
         List<List<CoreMap>> processedSections = sectionsList.get(1);
 
-        ModelRVSetting lowerTOCSetting = new TOCModelRVSetting(ClassifierFactory.LOWER_TOC_CATEGORY_IDS, null);
+        // todo: should probably call ModelRVSetting constructor to make it more general.
+        ModelRVSetting lowerTOCSetting = new TOCModelRVSetting(modelRVSetting.getLowLevelCategoryIds(), null);
         for (int i = 0; i < sections.size(); i++) {
             ProbabilityTextAnnotatingModel secModel = new ProbabilityTextAnnotatingModel(
                     secNbmn,

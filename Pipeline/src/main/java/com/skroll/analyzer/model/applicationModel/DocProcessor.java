@@ -350,8 +350,8 @@ public class DocProcessor {
      */
     public static List<int[]> createSections(List<CoreMap> paragraphs,
                                                            RandomVariable paraCategory) {
-        int sectionHeading = 2;
-        int topHeading = 1;
+        int sectionHeading = 1;
+        int topHeading = 0;
         int others = 0;
         final int END = 1;
         final int START = 0;

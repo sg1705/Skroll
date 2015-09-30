@@ -120,6 +120,10 @@ public class ModelRVSetting {
         return nbmnConfig;
     }
 
+    public List<Integer> getLowLevelCategoryIds() {
+        return lowLevelCategoryIds;
+    }
+
     public NBMNConfig getLowLevelNbmnConfig() {
         return lowLevelNbmnConfig;
     }

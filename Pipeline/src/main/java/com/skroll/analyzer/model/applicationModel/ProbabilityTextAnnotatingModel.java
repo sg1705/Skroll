@@ -70,7 +70,7 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
         this.data = data;
         this.nbmnModel = nbmn;
         this.hmm = hmm;
-        hmm.updateProbabilities();
+        if (hmm != null) hmm.updateProbabilities();
         this.computeInitalBeliefs();
     }
     /**

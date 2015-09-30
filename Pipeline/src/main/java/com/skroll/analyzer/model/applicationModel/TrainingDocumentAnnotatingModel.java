@@ -76,6 +76,8 @@ public class TrainingDocumentAnnotatingModel extends TrainingTextAnnotatingModel
                 wordType.getFeatureSize(), wordFeatureSizes);
         secHmm = new HiddenMarkovModel(HMM_MODEL_LENGTH,
                 wordType.getFeatureSize(), wordFeatureSizes);
+        if (modelRVSetting.getLowLevelNbmnConfig() == null) return;
+
         ModelRVSetting lowerTOCSetting = new TOCModelRVSetting(ClassifierFactory.LOWER_TOC_CATEGORY_IDS, null);
         secModel = new TrainingTextAnnotatingModel(0, secNbmnModel, wordType, wordFeatures, modelRVSetting.getLowLevelNbmnConfig(), lowerTOCSetting);
     }
@@ -154,11 +156,13 @@ public class TrainingDocumentAnnotatingModel extends TrainingTextAnnotatingModel
 
         updateWithProcessedParasAndWeight(originalParas, processedParas, data);
 
+        if (secModel == null) return;
+
         List<List<List<CoreMap>>> sectionsList = DocProcessor.createSections(doc.getParagraphs(), processedParas, getParaCategory());
         List<List<CoreMap>> sections = sectionsList.get(0);
         List<List<CoreMap>> processedSections = sectionsList.get(1);
 
-        ModelRVSetting lowerTOCSetting = new TOCModelRVSetting(ClassifierFactory.LOWER_TOC_CATEGORY_IDS, null);
+//        ModelRVSetting lowerTOCSetting = new TOCModelRVSetting(ClassifierFactory.LOWER_TOC_CATEGORY_IDS, null);
         for (int i = 0; i < sections.size(); i++) {
             secModel.updateWithProcessedParasAndWeight(sections.get(i), processedSections.get(i), data);
         }

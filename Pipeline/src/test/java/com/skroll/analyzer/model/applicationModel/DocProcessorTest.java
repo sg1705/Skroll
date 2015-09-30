@@ -131,7 +131,7 @@ public class DocProcessorTest {
     public void testCreateSections() throws Exception {
 
         String folder = "src/test/resources/analyzer/test10kDoc/";
-        String documentId = "5d73258b753f17b7ccab5f24a2c29a64";
+        String documentId = "bb1b0ae115c0bca4262b5e1483346fca";
 
         String jsonString = Files.toString(new File(folder + documentId), Charset.defaultCharset());
         doc = JsonDeserializer.fromJson(jsonString);
@@ -151,7 +151,7 @@ public class DocProcessorTest {
             }
         }
 
-        assert (sections.size() == 20);
+        assert (sections.size() == 24);
 
 
     }
