@@ -81,7 +81,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
         System.out.println("After passing messages :\n");
         double[][][] dBelieves = model.getDocumentFeatureBelief();
         System.out.println(Arrays.deepToString(dBelieves[0]));
-        assert (((int) (dBelieves[0][1][0]) == -24556));
+        assert (((int) (dBelieves[0][1][0]) == -24584));
         assert (((int) (dBelieves[0][1][1]) == 0));
     }
 
@@ -133,8 +133,8 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
         printBelieves();
         System.out.println(Arrays.toString(model.getParagraphCategoryProbabilities()[7]));
-        assert (((int) (model.getParagraphCategoryProbabilities()[7][0] * 1000)) == 997);
-        assert (((int) (model.getParagraphCategoryProbabilities()[7][1] * 1000)) == 2);
+        assert (((int) (model.getParagraphCategoryProbabilities()[7][0] * 1000)) == 999);
+        assert (((int) (model.getParagraphCategoryProbabilities()[7][1] * 1000)) == 0);
     }
 
 
@@ -151,9 +151,13 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
         printBelieves();
 
+
+        System.out.println(Arrays.deepToString(model.getDocumentFeatureBelief()));
+        System.out.println(((int) (model.getDocumentFeatureBelief()[0][1][0] * 10)));
+        System.out.println(((int) (model.getDocumentFeatureBelief()[0][1][1] * 10)));
         // strangely, gradlew test calculation results are different at lower decimal digits.
-        assert (((int) (model.getDocumentFeatureBelief()[0][1][0] * 10)) == -1000);
-        assert (((int) (model.getDocumentFeatureBelief()[0][1][1] * 10)) == -2);
+        assert (((int) (model.getDocumentFeatureBelief()[0][1][0] * 10)) == -898);
+        assert (((int) (model.getDocumentFeatureBelief()[0][1][1] * 10)) == -0);
     }
 
 

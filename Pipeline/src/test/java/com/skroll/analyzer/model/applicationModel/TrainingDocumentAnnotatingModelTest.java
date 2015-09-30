@@ -61,10 +61,11 @@ public class TrainingDocumentAnnotatingModelTest{
         document = TestHelper.makeTrainingDoc(f);
         model.updateWithDocument(document);
         model.getHmm().updateProbabilities();
-
         System.out.println("trained model: \n" + model);
         System.out.println("multiNodes: \n" + model.getNbmnModel().getMultiNodes());
-        assert (model.getNbmnModel().getMultiNodes().toString().contains("RandomVariable{name='[0, 1]_1_notInTable', featureSize=2, valueNames=null}], parameters=[0.1, 0.1, 0.1, 307.1]}]}"));
+        assert (model.getNbmnModel().getMultiNodes().toString().contains(
+                "RandomVariable{name='[0, 1]_1_notInTable', featureSize=2, valueNames=null}], parameters=[1.0E-4, 1.0E-4, 1.0E-4, 307.0001]}]}"
+        ));
 
     }
 
