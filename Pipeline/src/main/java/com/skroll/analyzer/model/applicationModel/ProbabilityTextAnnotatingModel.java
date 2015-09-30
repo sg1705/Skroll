@@ -29,15 +29,12 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
 
     static final int DEFAULT_NUM_ITERATIONS = 1;
     double[] ANNOTATING_THRESHOLD = new double[]{0, .99999, 0.9999};
-    //    Document doc;
     List<CoreMap> paragraphs;
     // todo: should probably store paragraphs, otherwise, need to recreate it everytime when model has new observations
     List<CoreMap> processedParagraphs = new ArrayList<>();
     NBMNData data;
 
     int numIterations = DEFAULT_NUM_ITERATIONS;
-//    int [][] paraFeatureValsExistAtDocLevel;
-//    ProcessedData data;
 
 
     // indexed by feature number, paragraph number, category number
@@ -54,49 +51,6 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
     ProbabilityTextAnnotatingModel() {
 
     }
-
-//    public ProbabilityTextAnnotatingModel(int id,
-//                                          NaiveBayesWithMultiNodes tnbm,
-//                                          HiddenMarkovModel hmm,
-//                                          List<CoreMap> paragraphs,
-//                                          List<CoreMap> processedParagraphs,
-//                                          NBMNData data,
-//                                          ModelRVSetting setting) {
-//        this(id,
-//                tnbm,
-//                hmm,
-//                paragraphs,
-//                processedParagraphs,
-//                data,
-//                setting,
-//                setting.getWordType(),
-//                setting.getWordFeatures(),
-//                setting.getNbmnConfig());
-//    }
-
-    //    public ProbabilityTextAnnotatingModel(int id,
-//                                          NaiveBayesWithMultiNodes tnbm,
-//                                          HiddenMarkovModel hmm,
-//                                          List<CoreMap> paragraphs,
-//                                          List<CoreMap> processedParagraphs,
-//                                          NBMNData data,
-//                                          ModelRVSetting setting,
-//                                          RandomVariable wordType,
-//                                          List<RandomVariable> wordFeatures,
-//                                          NBMNConfig nbmnConfig) {
-//        super.nbmnConfig = nbmnConfig;
-//        super.wordType = wordType;
-//        super.wordFeatures = wordFeatures;
-//        super.modelRVSetting = setting;
-//        super.id = id;
-//        this.paragraphs = paragraphs;
-//        this.processedParagraphs = processedParagraphs;
-//        this.data = data;
-//        this.nbmnModel = NBInferenceHelper.createLogProbNBMN(tnbm);
-//        this.hmm = hmm;
-//        hmm.updateProbabilities();
-//        this.computeInitalBeliefs();
-//    }
     public ProbabilityTextAnnotatingModel(
             NaiveBayesWithMultiNodes nbmn,
                                           HiddenMarkovModel hmm,
@@ -162,7 +116,6 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
 
         // observation is only stored in the orignal paragraphs.
         // May consider to use a separate method to get a list of observed paragrpahs.
-//        List<CoreMap> originalParagraphs = doc.getParagraphs();
         for (int p = 0; p < processedParagraphs.size(); p++) {
             if (DocProcessor.isParaObserved(paragraphs.get(p))) {
                 int observedVal = RVValues.getValue(paraCategory, paragraphs.get(p));
@@ -174,15 +127,11 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
                 continue;
             }
 
-            //todo: consider not using paradoc features here, which should make the code simpler.
-//            int[] paraFeatures = ParaProcessor.getFeatureVals(nbmnConfig.getFeatureVarList(),
-//                    Arrays.asList(originalParagraphs.get(p), processedParagraphs.get(p)));
             int[] paraFeatures = allParaFeatures[getParaIndex(p)];
 
             nbmnModel.setWordsObservation(ParaProcessor.getWordsList(
                     nbmnConfig.getWordVarList(), processedParagraphs.get(p)));
             nbmnModel.setParaFeatureObservation(paraFeatures);
-//            nbmnModel.setMultiNodesObservation(allParaDocFeatures[p]);
             paragraphCategoryBelief[p] = categoryNode.getParameters().clone();
             for (int i = 0; i < fnl.size(); i++) {
                 if (paraFeatures[i] == -1) continue;
