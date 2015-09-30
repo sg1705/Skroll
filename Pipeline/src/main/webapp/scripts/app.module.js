@@ -87,8 +87,16 @@ angular
 angular.module('SkrollApp')
 .config(function($mdThemingProvider) {
   $mdThemingProvider.theme('default-dark')
-  	.primaryPalette('blue')
+  	.primaryPalette('blue', {
+  		'hue-1' : '400'
+  	})
     .dark();
+
+  // $mdThemingProvider.theme('default')
+  // 	.primaryPalette('blue', {
+
+  // 	});
+
 })
 .config(['uiZeroclipConfigProvider', function(uiZeroclipConfigProvider) {
   // config ZeroClipboard
