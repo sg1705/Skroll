@@ -52,4 +52,29 @@ md-sidenav#navframe.md-locked-open {
   min-width: 240px;
   max-width: 540px; }
 
+/*
+*  Landing search
+*/
+.sk-landing-search {
+  height: 60%;
+  width: 100%; }
+  .sk-landing-search .search-frame {
+    height: 59px; }
+    .sk-landing-search .search-frame .search-input {
+      border: none;
+      padding: 15px;
+      font-size: 25px;
+      outline: none; }
+    .sk-landing-search .search-frame .search-button {
+      height: 100%;
+      margin: 0px;
+      padding: 0px; }
+    .sk-landing-search .search-frame .search-icon {
+      width: 48px;
+      height: 48px; }
+  .sk-landing-search .list {
+    padding-top: 50px; }
+    .sk-landing-search .list .list-item {
+      width: 700px; }
+
 /*# sourceMappingURL=app.css.map */

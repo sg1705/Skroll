@@ -1,14 +1,19 @@
 package com.skroll.parser.extractor;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.skroll.document.Document;
 import com.skroll.pipeline.util.Constants;
 import com.skroll.util.CmdLineExecutor;
+import com.skroll.util.Configuration;
+import com.skroll.util.SkrollGuiceModule;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.ByteArrayOutputStream;
 
 /**
@@ -49,15 +54,17 @@ public class PhantomJsExtractor implements CmdLineExecutor {
 
 
     private CommandLine getPhantomJsCommandLine() {
+        Injector injector = Guice.createInjector(new SkrollGuiceModule());
+        Configuration configuration = injector.getInstance(Configuration.class);
         //default command line is linux
-        CommandLine cmdLine = CommandLine.parse(Constants.PHANTOM_JS_BIN);
+        CommandLine cmdLine = CommandLine.parse(configuration.get(Constants.PHANTOM_JS_BIN));
         if (System.getProperty("os.name").contains("windows")) {
-            cmdLine = CommandLine.parse(Constants.PHANTOM_JS_BIN_WINDOWS);
+            cmdLine = CommandLine.parse(configuration.get(Constants.PHANTOM_JS_BIN_WINDOWS));
         } else if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-            cmdLine = CommandLine.parse(Constants.PHANTOM_JS_BIN_MAC);
+            cmdLine = CommandLine.parse(configuration.get(Constants.PHANTOM_JS_BIN_MAC));
         }
         //setup command line arguments
-        cmdLine.addArgument(Constants.JQUERY_PARSER_JS);
+        cmdLine.addArgument(configuration.get(Constants.JQUERY_PARSER_JS));
         return cmdLine;
     }
 

@@ -74,4 +74,43 @@ md-sidenav#navframe.md-locked-open {
   
 }
 
+/*
+*  Landing search
+*/
+.sk-landing-search {
+	height:60%;
+	width: 100%;
+
+	.search-frame {
+		height: 59px;
+
+		.search-input {
+			border:none;
+			padding: 15px;
+			font-size: 25px;
+			outline: none;
+		};
+
+		.search-button {
+			height:100%;
+			margin: 0px;
+			padding: 0px;
+		}
+
+		.search-icon {
+			width: 48px;
+			height: 48px;
+		}
+	}
+
+	.list {
+		padding-top: 50px;
+
+		.list-item {
+			width:700px;
+		}
+
+	}
+
+}
 
