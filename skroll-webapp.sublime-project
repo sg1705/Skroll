@@ -1,0 +1,9 @@
+{
+	"folders":
+	[
+		{
+			"path": "Pipeline/src/main/webapp",
+			"folder_exclude_patterns": ["bower_components", "web-inf"]
+		}
+	]
+}

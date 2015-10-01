@@ -42,8 +42,8 @@
 		.module('app.search')
 		.controller('SearchCtrl', SearchCtrl);
 
-	/** @ngInject **/	
-	function SearchCtrl(selectionService) {
+	/** @ngInject **/
+	function SearchCtrl(selectionService, documentService, $rootScope) {
 
 		//-- private variables
 		/*jshint validthis: true */
@@ -54,26 +54,31 @@
 
 
 		//-- public methods
-		this.getMatches 							= getMatches;
-		vm.getSurroundingText				= getSurroundingText;
-		vm.highlightSearchResults 	= highlightSearchResults;
+		this.getMatches = getMatches;
+		vm.getSurroundingText = getSurroundingText;
+		vm.highlightSearchResults = highlightSearchResults;
 		vm.unHighlightPreviousSearchResults = unHighlightPreviousSearchResults;
-		vm.enterSearchBox						= enterSearchBox;
-		vm.leaveSearchBox						= leaveSearchBox;
-		vm.searchTextChange 				= searchTextChange;
-		vm.selectedItemChange 			= selectedItemChange;
+		vm.enterSearchBox = enterSearchBox;
+		vm.leaveSearchBox = leaveSearchBox;
+		vm.searchTextChange = searchTextChange;
+		vm.selectedItemChange = selectedItemChange;
 
 
-    //////////////
+		//////////////
 
 		function getMatches(searchText) {
 			var items = [];
-			var elements = $(":ContainsCaseInsensitive('" + searchText + "')").filter(":not(:has(*))").closest("[id^='p_']");
+			var lunrIdx = $rootScope.lunrIdx;
+			var elements = lunrIdx.search(searchText).map(function(searchObj) {
+				console.log(searchObj.ref);
+				return document.getElementById(searchObj.ref);
+			});
+			//var elements = $(":ContainsCaseInsensitive('" + searchText + "')").filter(":not(:has(*))").closest("[id^='p_']");
 			//var elements = $("[id^='p_']:not('[id^=\\'p_\\']')").filter(":contains('" + searchText + "')");
 			//var elements = $("[id^='p_']:only-child").filter(":contains('" + searchText + "')");
 			//convert level terms to integers
 			//var headerItems = LHSModel.getTermsForClass(2);
-			var headerItems = LHSModel.getParaFromClassIdRange(2,4);
+			var headerItems = LHSModel.getParaFromClassIdRange(2, 4);
 			var levelsPara = [];
 			for (var ii = 0; ii < headerItems.length; ii++) {
 				var str = headerItems[ii].paragraphId.split("_")[1];
@@ -114,7 +119,7 @@
 						item['header'] = header;
 						item['paragraphId'] = 'p_' + id;
 						item['displayText'] = displayText;
-						items.push(item);				
+						items.push(item);
 					}
 				}
 				if (items.length > 15) {
@@ -146,8 +151,8 @@
 				startLeft = indexOfSearch - expandLeft
 			}
 
-			if ( (length - (indexOfSearch + lengthOfSearch)) < expandRight) {
-				endRight = length -1;
+			if ((length - (indexOfSearch + lengthOfSearch)) < expandRight) {
+				endRight = length - 1;
 			} else {
 				endRight = (indexOfSearch + lengthOfSearch + expandRight);
 			}
@@ -156,51 +161,58 @@
 		}
 
 		function highlightSearchResults(items, searchText) {
-			for(var ii = 0; ii < items.length; ii++) {
+			for (var ii = 0; ii < items.length; ii++) {
 				var paraId = items[ii].paragraphId;
-				$("#"+paraId).highlight(searchText, { wordsOnly: true, element: 'span', className: 'skHighlight' });
+				$("#" + paraId).highlight(searchText, {
+					wordsOnly: true,
+					element: 'span',
+					className: 'skHighlight'
+				});
 			}
 		}
 
 		function unHighlightPreviousSearchResults(items) {
-			for(var ii = 0; ii < items.length; ii++) {
+			for (var ii = 0; ii < items.length; ii++) {
 				var paraId = items[ii].paragraphId;
-				$("#"+paraId).unhighlight({ element: 'span', className: 'skHighlight' });
+				$("#" + paraId).unhighlight({
+					element: 'span',
+					className: 'skHighlight'
+				});
 			}
 		}
 
 
 		function enterSearchBox() {
-		  LHSModel.smodel.hover = true;
+			LHSModel.smodel.hover = true;
 		}
 
 		function leaveSearchBox() {
-		  LHSModel.smodel.hover = false;
+			LHSModel.smodel.hover = false;
 		}
 
 
 
 		function searchTextChange(text) {
-		  if (text == '') {
-		  	console.log("clearing");
-		  	this.unHighlightPreviousSearchResults(this.searchResults);
-		  }
+			if (text == '') {
+				console.log("clearing");
+				this.unHighlightPreviousSearchResults(this.searchResults);
+			}
 		}
 
 		function selectedItemChange(item) {
 			if (item == null) {
 				return;
 			}
-		  var paragraphId = item.paragraphId;
-		  this.selectionService.scrollToParagraph(paragraphId);
+			var paragraphId = item.paragraphId;
+			this.selectionService.scrollToParagraph(paragraphId);
 		}
 
 
 		jQuery.expr[":"].ContainsCaseInsensitive = jQuery.expr.createPseudo(function(arg) {
-		   return function( elem ) {
-		   	return jQuery(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
-		   }; 
-		});	
+			return function(elem) {
+				return jQuery(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
+			};
+		});
 	}
 
 })();

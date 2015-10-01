@@ -1,5 +1,5 @@
-(function(){
-  
+(function() {
+
   'use strict';
 
   /**
@@ -8,7 +8,7 @@
    * @description
    * # fileUpload
    */
-  
+
   angular
     .module('app.core')
     .directive('skContent', skContent);
@@ -28,21 +28,21 @@
 
 
     /**
-    * Two paths when a document is loaded.
-    * Complete the partially loaded doc
-    * Or load the entire document
-    **/
+     * Two paths when a document is loaded.
+     * Complete the partially loaded doc
+     * Or load the entire document
+     **/
     function link(scope, element, attrs) {
       if (documentModel.documentId != null) {
         documentModel.isProcessing = true;
         if (documentModel.isPartiallyParsed) {
           console.log('partially parsed');
           element.replaceWith(documentModel.targetHtml);
-          documentModel.isProcessing = false;            
+          documentModel.isProcessing = false;
           documentService.importDoc(documentModel.url, false)
             .then(function(data) {
               documentModel.isPartiallyParsed = false;
-              return documentService.getTerms(documentModel.documentId);              
+              return documentService.getTerms(documentModel.documentId);
             })
             .then(function(terms) {
               LHSModel.setTerms(terms);
@@ -57,38 +57,38 @@
         } else {
 
           documentService.loadDocument(documentModel.documentId)
-          .then(function(contentHtml) {
-            documentModel.targetHtml = contentHtml;
-            element.replaceWith(documentModel.targetHtml);
-            //$(element).html(documentModel.targetHtml)
-            return documentService.getTerms(documentModel.documentId);
-          })
-          .then(function(terms) {
-            LHSModel.setTerms(terms);
-            console.log(terms);
-            $timeout(timeout, 0); //@see function timeout()
+            .then(function(contentHtml) {
+              documentModel.targetHtml = contentHtml;
+              element.replaceWith(documentModel.targetHtml);
+              //$(element).html(documentModel.targetHtml)
+              return documentService.getTerms(documentModel.documentId);
+            })
+            .then(function(terms) {
+              LHSModel.setTerms(terms);
+              console.log(terms);
+              $timeout(timeout, 0); //@see function timeout()
 
-            function timeout() {
-              console.log(selectionService.serializedSelection);
-              if ((selectionService.serializedSelection === undefined) || (selectionService.serializedSelection == "undefined")) {
+              function timeout() {
+                console.log(selectionService.serializedSelection);
+                if ((selectionService.serializedSelection === undefined) || (selectionService.serializedSelection == "undefined")) {
 
-              } else {
-                selectionService.scrollToSelection(selectionService.serializedSelection);
+                } else {
+                  selectionService.scrollToSelection(selectionService.serializedSelection);
+                }
+                documentModel.isProcessing = false;
+                //calculate offsets for headers
+                //iterate over each term to find Y offset
+                LHSModel.setYOffsetForTerms(LHSModel.smodel.terms);
+
+                documentModel.isProcessing = false;
               }
-              documentModel.isProcessing = false;
-              //calculate offsets for headers
-              //iterate over each term to find Y offset
-              LHSModel.setYOffsetForTerms(LHSModel.smodel.terms);
-
-              documentModel.isProcessing = false;
-            }
-            return documentService.getIndex(documentModel.documentId);
-          }, function(data, status) {
-              console.log(status);
-          })
-          .then(function(data) {
-            console.log(data);
-          });
+              return documentService.getIndex(documentModel.documentId);
+            }, function(error) {
+              console.log(error);
+            })
+            .then(function(searchIndex) {
+              console.log(searchIndex);
+            });
         }
       }
     }
