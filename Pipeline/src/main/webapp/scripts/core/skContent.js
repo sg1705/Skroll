@@ -87,7 +87,7 @@
               console.log(status);
           })
           .then(function(data) {
-            console.log(data);
+            documentModel.lunrIndex = lunr.Index.load(data);
           });
         }
       }

@@ -27,7 +27,7 @@ public class IndexCreator implements CmdLineExecutor {
 
     // modes
     public static int TEST_MODE = TestMode.OFF;
-    private static String NODE_COMMAND = "/tmp/nodejs";
+    private static String NODE_COMMAND = "node";
     private static String INDEX_CREATOR_JS = "src/main/si/src/SearchIndexer.js";
     private static String INPUT_FILE_ARGUMENT = "--inputFile";
 

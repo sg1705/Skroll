@@ -43,7 +43,7 @@
 		.controller('SearchCtrl', SearchCtrl);
 
 	/** @ngInject **/	
-	function SearchCtrl(selectionService) {
+	function SearchCtrl(selectionService, documentModel) {
 
 		//-- private variables
 		/*jshint validthis: true */
@@ -68,7 +68,11 @@
 
 		function getMatches(searchText) {
 			var items = [];
-			var elements = $(":ContainsCaseInsensitive('" + searchText + "')").filter(":not(:has(*))").closest("[id^='p_']");
+			var elements = documentModel.lunrIndex.search(searchText).map(function(searchObj) {
+				console.log(searchObj.ref);
+				return document.getElementById(searchObj.ref);
+			});
+			//var elements = $(":ContainsCaseInsensitive('" + searchText + "')").filter(":not(:has(*))").closest("[id^='p_']");
 			//var elements = $("[id^='p_']:not('[id^=\\'p_\\']')").filter(":contains('" + searchText + "')");
 			//var elements = $("[id^='p_']:only-child").filter(":contains('" + searchText + "')");
 			//convert level terms to integers

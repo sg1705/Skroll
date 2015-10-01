@@ -16,7 +16,8 @@ var documentModel = {
   selectedParagraphId	: "",
   documentId					: "",
   isPartiallyParsed   : false,
-  url                 : ""
+  url                 : "",
+  lunrIndex           : null
 };
 
 
