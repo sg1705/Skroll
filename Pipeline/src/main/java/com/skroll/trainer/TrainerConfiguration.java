@@ -24,7 +24,7 @@ public class TrainerConfiguration extends Configuration {
     String location;
     @Inject
     public TrainerConfiguration(@Location String location) {
-        super("src/main/resources/skroll-trainer.properties");
+        super("skroll.properties");
         this.confMap.put("preEvaluatedFolder",location);
         logger.info("Configuration After overwriting the preEvaluatedFolder: " + this.confMap);
         this.location = location;
