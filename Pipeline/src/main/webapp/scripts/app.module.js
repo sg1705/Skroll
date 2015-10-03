@@ -64,6 +64,10 @@ angular
 			templateUrl: 'scripts/core/app.core.tmpl.html',
 			controller: 'ImportCtrl'
 		}).
+		when('/trainer', {
+			templateUrl: 'scripts/core/app.core.tmpl.html',
+			controller: 'EnableTrainerToolbarCtrl'
+		}).		
 		when('/view/docId/:docId', {
 			templateUrl: 'scripts/core/app.core.tmpl.html',
 			controller: 'ContentCtrl',

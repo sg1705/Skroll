@@ -33,7 +33,7 @@
 
 
 <body style="height:100%" ng-controller="ContentCtrl as ctrl" ng-keydown="ctrl.overrideControlF($event)">
-  <div 
+  <div
     ng-view layout="column"
     style="-webkit-overflow-scrolling: touch; height:100%" >
   </div>
@@ -66,6 +66,7 @@
 <script src="bower_components/zeroclipboard/dist/ZeroClipboard.js"></script>
 <script src="bower_components/angular-zeroclipboard/src/angular-zeroclipboard.js"></script>
 <script src="bower_components/lunr.js/lunr.js"></script>
+<script src="bower_components/moment/moment.js"></script>
 <!-- endbower -->
 <!-- endbuild -->
 
@@ -93,8 +94,8 @@
 <script src="/scripts/core.services/selectionservice.js"></script>
 <script src="/scripts/core.services/skObserveScroll.js"></script>
 <script src="/scripts/core.services/textselectionobserverservice.js"></script>
-<script src="/scripts/core.util/scrollToParagraph.js"></script>
 <script src="/scripts/core.util/ngEnter.directive.js"></script>
+<script src="/scripts/core.util/scrollToParagraph.js"></script>
 <script src="/scripts/core/content.controller.js"></script>
 <script src="/scripts/core/skContent.js"></script>
 <script src="/scripts/core/skToolbar.js"></script>
@@ -114,6 +115,7 @@
 <script src="/scripts/toc/skLhs.js"></script>
 <script src="/scripts/toc/toc.controller.js"></script>
 <script src="/scripts/toc/tocterms.filter.js"></script>
+<script src="/scripts/trainer/enabletrainertoolbar.controller.js"></script>
 <script src="/scripts/trainer/skTrainerToolbar.js"></script>
 <script src="/scripts/trainer/trainermodel.js"></script>
 <script src="/scripts/trainer/trainerprompt.controller.js"></script>

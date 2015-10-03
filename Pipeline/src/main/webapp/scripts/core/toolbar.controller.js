@@ -26,12 +26,14 @@
 		//-- public methods
 		vm.toggleSidenav = toggleSidenav;
 
-
 		/////////////
 
     function toggleSidenav(menuId) {
       $mdSidenav(menuId).toggle();
     };
+
+
+
 
   }
 

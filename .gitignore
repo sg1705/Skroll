@@ -7,3 +7,4 @@ build/
 .idea/libraries
 Pipeline/src/main/webapp/styles/.sass-cache
 node_modules
+Pipeline/logs

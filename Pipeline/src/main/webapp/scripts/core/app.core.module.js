@@ -11,7 +11,7 @@
 			var flags = [ 
 				{
 					"key" : "trainer",
-					"active" : true,
+					"active" : false,
 					"name" : "flag for trainer",
 					"description" : "no description"
 				},

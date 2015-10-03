@@ -25,11 +25,11 @@
 								clickObserverService,
 								textSelectionObserverService,
 								LHSModel,
-								featureFlags) {
+								featureFlags, $window) {
 
 		//-- private variables
 		var vm = this;
-		
+
 		//-- public variables
 		vm.trainerToolbar = trainerModel.trainerToolbar;
 
@@ -43,7 +43,6 @@
 		vm.showAnnotations 			= showAnnotations;
 		vm.updateDocType   			= updateDocType;
 		vm.toggleTermProbabilities = toggleTermProbabilities;
-
 
 
 		////////////////
@@ -74,6 +73,13 @@
 
 		function toggleTrainerMode() {
 			vm.trainerToolbar.isTrainerMode = !vm.trainerToolbar.isTrainerMode;
+      var flagName = 'trainer';
+      var flags = featureFlags.get();
+      var flag = _.find(flags, function(item){ 
+                                  if (item.key == flagName) {return true;}
+                                });
+      featureFlags.disable(flag);
+      $window.location.reload();
 		}
 
 
@@ -93,11 +99,6 @@
 				}
 			}
 		}
-		// function toggleUpdateBNI() {
-
-		// 	rangy.deserializeSelection(selectionService.serializedSelection);
-		// 	selectionService.scrollToParagraph(selectionService.serializedParagraphId);
-		// }
 
 
 		function observeNone() {
@@ -193,17 +194,10 @@
 
 	angular
 		.module('app.trainer')
-		.run(function(textSelectionObserverService, clickObserverService, trainerPromptService, featureFlags){
-			console.log('checking if trainer is on');
-			if (featureFlags.isOn('trainer')) {
-				console.log('train is indeed on');
-				textSelectionObserverService.register(trainerPromptService.handleTrainerTextSelection);
-			}
-			clickObserverService.register(trainerPromptService.handleTrainerParaSelection);
-		})
-
-
-
+		.run(function(trainerPromptService){
+			trainerPromptService.registerTextSelectionObserver();
+			trainerPromptService.registerClickObserver();
+		});
 
 })();
 
