@@ -29,7 +29,7 @@
 
 		//-- private variables
 		var vm = this;
-		
+
 		//-- public variables
 		vm.trainerToolbar = trainerModel.trainerToolbar;
 
@@ -43,7 +43,6 @@
 		vm.showAnnotations 			= showAnnotations;
 		vm.updateDocType   			= updateDocType;
 		vm.toggleTermProbabilities = toggleTermProbabilities;
-
 
 
 		////////////////
@@ -93,11 +92,6 @@
 				}
 			}
 		}
-		// function toggleUpdateBNI() {
-
-		// 	rangy.deserializeSelection(selectionService.serializedSelection);
-		// 	selectionService.scrollToParagraph(selectionService.serializedParagraphId);
-		// }
 
 
 		function observeNone() {
