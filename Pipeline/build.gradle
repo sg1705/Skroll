@@ -9,6 +9,7 @@ repositories {
     mavenCentral()
     maven{ url "https://clojars.org/repo" }
 }
+
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
     compile 'org.jsoup:jsoup:1.8.1'
@@ -88,7 +89,6 @@ task convertTrainingWeight(type: JavaExec) {
 
 //create a single Jar with all dependencies
 task fatJar(type: Jar) {
-    zip64 true
     manifest {
         attributes 'Implementation-Title': 'Skroll Fat Jar',
                 'Implementation-Version': version,
@@ -129,6 +129,14 @@ task startProd(type: JavaExec) {
 task buildProdApp(type: Exec) {
     commandLine 'gulp', '--gulpfile', 'src/main/webapp/gulpfile.js', 'build'
 }
+
+task npmInstall(type: Exec) {
+    commandLine 'npm', '--prefix', 'src/main/si', 'install'
+}
+
+
+test.dependsOn npmInstall
+compileJava.dependsOn npmInstall
 
 clean.dependsOn cleanModels
 test.dependsOn createTestDirectories
