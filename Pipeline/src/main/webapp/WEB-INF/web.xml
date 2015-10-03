@@ -33,6 +33,7 @@
         <url-pattern>/list/*</url-pattern>
         <url-pattern>/view/*</url-pattern>
         <url-pattern>/open/*</url-pattern>
+        <url-pattern>/trainer/*</url-pattern>
     </servlet-mapping>
 
 

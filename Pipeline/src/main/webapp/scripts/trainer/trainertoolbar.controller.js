@@ -25,7 +25,7 @@
 								clickObserverService,
 								textSelectionObserverService,
 								LHSModel,
-								featureFlags) {
+								featureFlags, $window) {
 
 		//-- private variables
 		var vm = this;
@@ -73,6 +73,13 @@
 
 		function toggleTrainerMode() {
 			vm.trainerToolbar.isTrainerMode = !vm.trainerToolbar.isTrainerMode;
+      var flagName = 'trainer';
+      var flags = featureFlags.get();
+      var flag = _.find(flags, function(item){ 
+                                  if (item.key == flagName) {return true;}
+                                });
+      featureFlags.disable(flag);
+      $window.location.reload();
 		}
 
 
@@ -187,14 +194,19 @@
 
 	angular
 		.module('app.trainer')
-		.run(function(textSelectionObserverService, clickObserverService, trainerPromptService, featureFlags){
-			console.log('checking if trainer is on');
-			if (featureFlags.isOn('trainer')) {
-				console.log('train is indeed on');
-				textSelectionObserverService.register(trainerPromptService.handleTrainerTextSelection);
-			}
-			clickObserverService.register(trainerPromptService.handleTrainerParaSelection);
-		})
+		.run(function(trainerPromptService){
+			trainerPromptService.registerTextSelectionObserver();
+			trainerPromptService.registerClickObserver();
+		});
+
+		// .run(function(textSelectionObserverService, clickObserverService, trainerPromptService, featureFlags){
+		// 	console.log('checking if trainer is on');
+		// 	if (featureFlags.isOn('trainer')) {
+		// 		console.log('train is indeed on');
+		// 		textSelectionObserverService.register(trainerPromptService.handleTrainerTextSelection);
+		// 	}
+		// 	clickObserverService.register(trainerPromptService.handleTrainerParaSelection);
+		// })
 
 
 
