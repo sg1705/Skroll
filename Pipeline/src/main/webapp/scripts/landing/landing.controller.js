@@ -79,7 +79,7 @@
       var result = {
         'companyName' : companyName,
         'formType'    : formType,
-        'filingDate'  : filingDate,
+        'filingDate'  : moment(filingDate).format('YYYY MMM DD'),
         'href'        : href
       }
       return result;
