@@ -25,11 +25,12 @@ public class IndexCreatorTest {
         Document doc = Parser.parseDocumentFromHtml(html);
         doc.setId(fileName);
         String json = JsonDeserializer.getJson(doc);
+        String flName = "/tmp/"+Long.toString(System.currentTimeMillis()) + ".json";
         //save it to a file in temp
-        Files.write(json.getBytes(Constants.DEFAULT_CHARSET), new File("/tmp/indexcreatortest.json"));
+        Files.write(json.getBytes(Constants.DEFAULT_CHARSET), new File(flName));
         IndexCreator creator = new IndexCreator();
-        doc = creator.process(doc, "/tmp/indexcreatortest.json");
-        new File("/tmp/indexcreatortest.json").delete();
+        doc = creator.process(doc, flName);
+        new File(flName).delete();
         assert (doc.get(CoreAnnotations.SearchIndexAnnotation.class) != null);
         //convert to an object to see if valid json
         Gson gson = new GsonBuilder().create();
