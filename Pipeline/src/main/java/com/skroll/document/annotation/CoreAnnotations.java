@@ -158,6 +158,23 @@ public class CoreAnnotations {
     }
 
     /**
+     * annotation for keeping the user training weight for a paragraph
+     */
+    public static class TOCParaProbsDocLevel implements CoreAnnotation<List<Double>> {
+        public Class<List<Double>> getType() {
+            return EraserUtils.<Class<List<Double>>> uncheckedCast(List.class);
+        }
+    }
+    /**
+     * annotation for keeping the user training weight for a paragraph
+     */
+    public static class TOCParaProbsSecLevel implements CoreAnnotation<List<Double>> {
+        public Class<List<Double>> getType() {
+            return EraserUtils.<Class<List<Double>>> uncheckedCast(List.class);
+        }
+    }
+
+    /**
      * annotation to store the current training weight for a category
      */
        public static class CurrentCategoryWeightFloat implements CoreAnnotation<Float> {

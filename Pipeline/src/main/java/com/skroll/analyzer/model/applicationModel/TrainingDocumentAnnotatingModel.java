@@ -45,11 +45,16 @@ public class TrainingDocumentAnnotatingModel extends TrainingTextAnnotatingModel
     private TrainingDocumentAnnotatingModel(int id, RandomVariable wordType,
                                            List<RandomVariable> wordFeatures,
                                             NBMNConfig nbmnConfig,
-                                            ModelRVSetting modelRVSetting) {
+                                            ModelRVSetting modelRVSetting
+    ) {
 
         this(id, NBTrainingHelper.createTrainingNBMN(nbmnConfig),
                 NBTrainingHelper.createTrainingNBMN(modelRVSetting.getLowLevelNbmnConfig()),
                 wordType, wordFeatures, nbmnConfig, modelRVSetting);
+        if (modelRVSetting.getLowLevelNbmnConfig() == null) return;
+
+        ModelRVSetting lowerTOCSetting = new TOCModelRVSetting(ClassifierFactory.LOWER_TOC_CATEGORY_IDS, null);
+        secModel = new TrainingTextAnnotatingModel(0, secNbmnModel, wordType, wordFeatures, modelRVSetting.getLowLevelNbmnConfig(), lowerTOCSetting);
 
     }
 
@@ -61,7 +66,7 @@ public class TrainingDocumentAnnotatingModel extends TrainingTextAnnotatingModel
             @JsonProperty("wordType") RandomVariable wordType,
             @JsonProperty("wordFeatures") List<RandomVariable> wordFeatures,
             @JsonProperty("nbmnConfig") NBMNConfig nbmnConfig,
-            @JsonProperty("modelRVSetting") ModelRVSetting modelRVSetting) {
+            @JsonProperty("modelRVSetting") ModelRVSetting modelRVSetting){
         this.id = id;
         this.nbmnConfig = nbmnConfig;
         this.nbmnModel = nbmnModel;
@@ -76,10 +81,10 @@ public class TrainingDocumentAnnotatingModel extends TrainingTextAnnotatingModel
                 wordType.getFeatureSize(), wordFeatureSizes);
         secHmm = new HiddenMarkovModel(HMM_MODEL_LENGTH,
                 wordType.getFeatureSize(), wordFeatureSizes);
-        if (modelRVSetting.getLowLevelNbmnConfig() == null) return;
-
-        ModelRVSetting lowerTOCSetting = new TOCModelRVSetting(ClassifierFactory.LOWER_TOC_CATEGORY_IDS, null);
-        secModel = new TrainingTextAnnotatingModel(0, secNbmnModel, wordType, wordFeatures, modelRVSetting.getLowLevelNbmnConfig(), lowerTOCSetting);
+//        if (modelRVSetting.getLowLevelNbmnConfig() == null) return;
+//
+//        ModelRVSetting lowerTOCSetting = new TOCModelRVSetting(ClassifierFactory.LOWER_TOC_CATEGORY_IDS, null);
+//        secModel = new TrainingTextAnnotatingModel(0, secNbmnModel, wordType, wordFeatures, modelRVSetting.getLowLevelNbmnConfig(), lowerTOCSetting);
     }
 
     public NaiveBayesWithMultiNodes getSecNbmnModel() {

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.skroll.analyzer.data.NBMNData;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
-import com.skroll.analyzer.model.bn.NBInferenceHelper;
 import com.skroll.analyzer.model.bn.NaiveBayesWithMultiNodes;
 import com.skroll.analyzer.model.bn.config.NBMNConfig;
 import com.skroll.analyzer.model.bn.inference.BNInference;
@@ -14,27 +13,28 @@ import com.skroll.analyzer.model.bn.node.NodeInferenceHelper;
 import com.skroll.analyzer.model.bn.node.WordNode;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
 import com.skroll.document.CoreMap;
-import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.util.Visualizer;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by wei2learn on 2/16/2015.
  */
 public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
 
-    static final int DEFAULT_NUM_ITERATIONS = 1;
-    double[] ANNOTATING_THRESHOLD = new double[]{0, .99999, 0.9999};
+    private static final int DEFAULT_NUM_ITERATIONS = 1;
+    private static final double[] DEFAULT_ANNOTATING_THRESHOLD = new double[]{0, .99999, 0.9999};
     List<CoreMap> paragraphs;
     // todo: should probably store paragraphs, otherwise, need to recreate it everytime when model has new observations
     List<CoreMap> processedParagraphs = new ArrayList<>();
     NBMNData data;
 
-    int numIterations = DEFAULT_NUM_ITERATIONS;
+    private int numIterations = DEFAULT_NUM_ITERATIONS;
+    private double[] annotatingThreshold = DEFAULT_ANNOTATING_THRESHOLD;
 
 
     // indexed by feature number, paragraph number, category number
@@ -71,7 +71,8 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
         this.nbmnModel = nbmn;
         this.hmm = hmm;
         if (hmm != null) hmm.updateProbabilities();
-        this.computeInitalBeliefs();
+
+//        this.initialize();
     }
     /**
      * Set belief based on the observed paragraphs.
@@ -80,7 +81,7 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
      */
 
     public void updateBeliefWithObservation(List<CoreMap> observedParagraphs) {
-        computeInitalBeliefs();
+        initialize();
     }
 
     // index of paragraph in the document
@@ -89,7 +90,7 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
     }
 
     //todo: should probably set inital belief based on observations if a document is reopened by the trainer or the same user again.
-    void computeInitalBeliefs() {
+    void initialize() {
 
         int[][] allParaFeatures = data.getParaFeatures();
 
@@ -295,6 +296,18 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
         this.numIterations = numIterations;
     }
 
+    public void setParagraphs(List<CoreMap> paragraphs) {
+        this.paragraphs = paragraphs;
+    }
+
+    public void setProcessedParagraphs(List<CoreMap> processedParagraphs) {
+        this.processedParagraphs = processedParagraphs;
+    }
+
+    public void setAnnotatingThreshold(double[] annotatingThreshold) {
+        this.annotatingThreshold = annotatingThreshold;
+    }
+
     public void annotateParagraphs() {
 
 
@@ -332,8 +345,29 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
                 int maxIndex = BNInference.maxIndex(logPrioProbs);
                 double[] paraProbs = logPrioProbs.clone();
                 BNInference.convertLogBeliefToProb(paraProbs);
-                if (paraProbs[maxIndex] > ANNOTATING_THRESHOLD[maxIndex])
+                if (paraProbs[maxIndex] > annotatingThreshold[maxIndex])
                     RVValues.addTerms(paraCategory, paragraph, tokens, maxIndex);
+
+
+                // todo: if we need to do this for more model types, should implement a hashmap annotating class
+                if (this instanceof ProbabilityDocumentAnnotatingModel) {
+                    processedPara.set(CoreAnnotations.TOCParaProbsDocLevel.class, new ArrayList(
+                                    Arrays.stream(paraProbs)
+                                            .boxed()
+                                            .collect(Collectors.toList())
+                            )
+                    );
+                } else if (this instanceof ProbabilityTextAnnotatingModel) { // can only be sec model now
+                    processedPara.set(CoreAnnotations.TOCParaProbsSecLevel.class, new ArrayList(
+                                    Arrays.stream(paraProbs)
+                                            .boxed()
+                                            .collect(Collectors.toList())
+                            )
+                    );
+
+                }
+
+
                 if (true) continue;
             }
 
@@ -387,9 +421,14 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
     public double[][] getParagraphCategoryProbabilities() {
         double[][] paraCatProbs = new double[paragraphCategoryBelief.length][nbmnConfig.getCategoryVar().getFeatureSize()];
         for (int i = 0; i < paraCatProbs.length; i++)
-            paraCatProbs[i] = paragraphCategoryBelief[i].clone();
-        BNInference.convertLogBeliefArrayToProb(paraCatProbs);
+            paraCatProbs[i] = getParaCategoryProbabilities(i);
         return paraCatProbs;
+    }
+
+    public double[] getParaCategoryProbabilities(int pi) {
+        double[] probs = paragraphCategoryBelief[pi].clone();
+        BNInference.convertLogBeliefToProb(probs);
+        return probs;
     }
 
 
@@ -445,7 +484,7 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
         HashMap<String, HashMap<String, HashMap<String, Double>>> map = new LinkedHashMap();
         HashMap<String, HashMap<String, Double>> applicationModelInfo = new LinkedHashMap();
         applicationModelInfo.put(this.nbmnConfig.getCategoryVar().getName(),
-                Visualizer.toDoubleArrayToMap(this.getParagraphCategoryProbabilities()[paraIndex]));
+                Visualizer.toDoubleArrayToMap(this.getParaCategoryProbabilities(paraIndex)));
         for (int ii = 0; ii < documentFeatureBelief.length; ii++) {
             for (int jj = 0; jj < documentFeatureBelief[0].length; jj++) {
                 applicationModelInfo.put(this.nbmnConfig.getDocumentFeatureVarList().get(ii).get(jj).getName(),

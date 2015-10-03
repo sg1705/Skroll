@@ -351,7 +351,7 @@ public class DocProcessor {
     public static List<int[]> createSections(List<CoreMap> paragraphs,
                                                            RandomVariable paraCategory) {
         int sectionHeading = 1;
-        int topHeading = 0;
+        int topHeading = 1;
         int others = 0;
         final int END = 1;
         final int START = 0;
@@ -370,7 +370,7 @@ public class DocProcessor {
 //                if (paraClass == others) {
 //                    section.add(i);
 //                } else
-                if (paraClass != others) { // end of a section
+                if (paraClass == topHeading || paraClass == sectionHeading) { // end of a section
                     sectionStarted = false;
                     section[END] = i;
                     sections.add(section);

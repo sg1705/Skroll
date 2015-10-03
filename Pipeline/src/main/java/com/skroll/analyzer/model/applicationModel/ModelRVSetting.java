@@ -67,7 +67,7 @@ public class ModelRVSetting {
                           List<RandomVariable> paraDocFeatureVars,
                           List<RandomVariable> wordVars,
                           List<Integer> categoryIds,
-                          List<Integer> lowLevelategoryIds
+                          List<Integer> lowLevelCategoryIds
 
                           ) {
         initializeStrategies();
@@ -79,12 +79,12 @@ public class ModelRVSetting {
                 RVCreater.createNBMNDocFeatureRVs(paraDocFeatureVars, paraType, String.valueOf(categoryIds.toString())), wordVars);
         RVValues.addValueSetter(paraType, new RVValueSetter(categoryIds, CoreAnnotations.CategoryAnnotations.class));
 
-        if (lowLevelategoryIds != null) {
+        if (lowLevelCategoryIds != null) {
             RandomVariable lowLevelParaType = RVCreater.createDiscreteRVWithComputer(
-                    new ParaCategoryComputer(modelClassAndWeightStrategy, lowLevelategoryIds), "paraTypeIsModelID-" + lowLevelategoryIds);
+                    new ParaCategoryComputer(modelClassAndWeightStrategy, lowLevelCategoryIds), "paraTypeIsModelID-" + lowLevelCategoryIds);
             lowLevelNbmnConfig = new NBMNConfig(lowLevelParaType, paraFeatureVars, paraDocFeatureVars,
-                    RVCreater.createNBMNDocFeatureRVs(paraDocFeatureVars, lowLevelParaType, String.valueOf(lowLevelategoryIds.toString())), wordVars);
-            RVValues.addValueSetter(lowLevelParaType, new RVValueSetter(lowLevelategoryIds, CoreAnnotations.CategoryAnnotations.class));
+                    RVCreater.createNBMNDocFeatureRVs(paraDocFeatureVars, lowLevelParaType, String.valueOf(lowLevelCategoryIds.toString())), wordVars);
+            RVValues.addValueSetter(lowLevelParaType, new RVValueSetter(lowLevelCategoryIds, CoreAnnotations.CategoryAnnotations.class));
         }
 
         this.wordType = wordType;

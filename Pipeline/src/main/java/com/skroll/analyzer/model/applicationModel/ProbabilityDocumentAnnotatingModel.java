@@ -5,9 +5,10 @@ import com.skroll.analyzer.model.bn.NBInferenceHelper;
 import com.skroll.analyzer.model.bn.NaiveBayesWithMultiNodes;
 import com.skroll.analyzer.model.bn.config.NBMNConfig;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
-import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
+import com.skroll.document.annotation.CoreAnnotations;
+import com.skroll.util.Visualizer;
 
 import java.util.*;
 
@@ -16,9 +17,12 @@ import java.util.*;
  */
 public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatingModel {
 
+    static final int SEC_NUM_ITERATION = 5;
+    static double[] SEC_ANNOTATING_THRESHOLD = {0, .8};
     Document doc;
     NaiveBayesWithMultiNodes secNbmn = null;
     HiddenMarkovModel secHmm = null;
+    ProbabilityTextAnnotatingModel secModel = null;
 
 
 
@@ -65,15 +69,30 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
         this.paragraphs = doc.getParagraphs();
         this.nbmnModel = NBInferenceHelper.createLogProbNBMN(tnbm);
         this.hmm = hmm;
+        hmm.updateProbabilities();
+
+        preprocessData();
+
+        // create child model if needed.
         if (secNbmnConfig != null) {
             this.secNbmn = NBInferenceHelper.createLogProbNBMN(secTnbm);
             this.secHmm = secHmm;
+            secHmm.updateProbabilities();
+            ModelRVSetting lowerTOCSetting = new TOCModelRVSetting(modelRVSetting.getLowLevelCategoryIds(), null);
+            this.secModel = new ProbabilityTextAnnotatingModel(
+                    secNbmn,
+                    secHmm,
+                    null, // paragraphs will be set later once the sections are determined.
+                    null,
+                    data,
+                    lowerTOCSetting,
+                    wordType,
+                    wordFeatures,
+                    lowerTOCSetting.getNbmnConfig()
+            );
         }
-        hmm.updateProbabilities();
-        secHmm.updateProbabilities();
 
-        preprocessData();
-        super.computeInitalBeliefs();
+        super.initialize();
     }
 
     void preprocessData() {
@@ -97,20 +116,55 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
         // todo: should probably call ModelRVSetting constructor to make it more general.
         ModelRVSetting lowerTOCSetting = new TOCModelRVSetting(modelRVSetting.getLowLevelCategoryIds(), null);
         for (int i = 0; i < sections.size(); i++) {
-            ProbabilityTextAnnotatingModel secModel = new ProbabilityTextAnnotatingModel(
-                    secNbmn,
-                    secHmm,
-                    sections.get(i),
-                    processedSections.get(i),
-                    data,
-                    lowerTOCSetting,
-                    wordType,
-                    wordFeatures,
-                    lowerTOCSetting.getNbmnConfig()
-            );
+//            ProbabilityTextAnnotatingModel secModel = new ProbabilityTextAnnotatingModel(
+//                    secNbmn,
+//                    secHmm,
+//                    sections.get(i),
+//                    processedSections.get(i),
+//                    data,
+//                    lowerTOCSetting,
+//                    wordType,
+//                    wordFeatures,
+//                    lowerTOCSetting.getNbmnConfig()
+//            );
+            secModel.setParagraphs(sections.get(i));
+            secModel.setProcessedParagraphs(processedSections.get(i));
             secModel.setNumIterations(5);
+            secModel.setAnnotatingThreshold(SEC_ANNOTATING_THRESHOLD);
+            secModel.initialize();
             secModel.annotateParagraphs();
         }
+    }
+
+    /**
+     * Returns a string representation of the BNI for viewer.
+     *
+     * @param paraIndex
+     * @return
+     */
+    @Override
+    public HashMap<String, HashMap<String, HashMap<String, Double>>> toVisualMap(int paraIndex) {
+        //covert paraCategoryBelief
+        HashMap<String, HashMap<String, HashMap<String, Double>>> map = new LinkedHashMap();
+        HashMap<String, HashMap<String, Double>> applicationModelInfo = new LinkedHashMap();
+        CoreMap para = processedParagraphs.get(paraIndex);
+        applicationModelInfo.put("doc level model " + this.nbmnConfig.getCategoryVar().getName(),
+                Visualizer.doubleListToMap(para.get(CoreAnnotations.TOCParaProbsDocLevel.class)));
+
+        List<Double> probs = para.get(CoreAnnotations.TOCParaProbsSecLevel.class);
+        if (probs != null)
+            applicationModelInfo.put("sec level model " + this.nbmnConfig.getCategoryVar().getName(),
+                    Visualizer.doubleListToMap(probs));
+        for (int ii = 0; ii < documentFeatureBelief.length; ii++) {
+            for (int jj = 0; jj < documentFeatureBelief[0].length; jj++) {
+                applicationModelInfo.put(this.nbmnConfig.getDocumentFeatureVarList().get(ii).get(jj).getName(),
+                        Visualizer.toDoubleArrayToMap(this.getDocumentFeatureProbabilities()[ii][jj]));
+            }
+        }
+
+        map.put("applicationModelInfo", applicationModelInfo);
+        return super.toVisualMap(map);
+
     }
 
 }
