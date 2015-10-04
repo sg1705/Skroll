@@ -17,7 +17,7 @@
 		.service('contextMenuService', ContextMenuService)
 
 	/* @ngInject */
-	function ContextMenuService(textSelectionObserverService, $document, $mdToast, $mdUtil, $mdMedia, $animate, featureFlags, $analytics, documentModel, serviceSelection) {
+	function ContextMenuService(textSelectionObserverService, $document, $mdToast, $mdUtil, $mdMedia, $animate, featureFlags, $analytics, documentModel, selectionService) {
 
 		//-- private variables
 		var service = this;
@@ -40,7 +40,7 @@
 			var s = window.getSelection();
 			var oRange = s.getRangeAt(0); //get the text range
 			var oRect = oRange.getBoundingClientRect();			
- 			$analytics.eventTrack(documentModel.documentId, { category: 'cm.contextMenuOpen', label: serviceSelection.paragraphId });
+ 			$analytics.eventTrack(documentModel.documentId, { category: 'cm.contextMenuOpen', label: selectionService.paragraphId });
 	    $mdToast.show({
 	      templateUrl : 'scripts/contextmenu/contextmenu.tmpl.html',
 	      hideDelay 	: 6000,
