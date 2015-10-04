@@ -12,11 +12,11 @@ md-icon {
 
 /**
 * context menu
-* 
+*
 *  Width is the same as the width for the md-icon
 **/
 md-toast.skContextMenu {
-	
+
   min-height: 40px;
   min-width : 160px;
 	z-index   : 99;
@@ -71,7 +71,7 @@ md-sidenav#navframe.md-locked-open {
     /*width: 250px; before we got levels*/
     min-width: 240px;
     max-width: 540px;
-  
+
 }
 
 /*
@@ -179,7 +179,7 @@ sk-lhs {
     transition-property: max-height;
     margin: 0px;
     list-style: none;
-    padding: 0;		
+    padding: 0;
 	}
 
 
@@ -198,11 +198,11 @@ sk-lhs {
 		margin-bottom: 5px;
 		font-size: 16px;
 		line-height: 1.5em;
-	
+
 		md-divider {
 			padding-top: 5px;
 			border-width: 1px;
-			border-color: rgba(32, 32, 32, 0.45);		
+			border-color: rgba(32, 32, 32, 0.45);
 		}
 
 		.term {
@@ -229,3 +229,17 @@ sk-lhs {
 
 
 }
+
+
+// Borrowed from http://stackoverflow.com/questions/6222616/with-css-use-for-overflowed-block-of-multi-lines
+.search-surrounting-text-container {
+  width: 250px;
+  overflow: hidden;
+}
+.search-surrounting-text-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  max-height: 42px;
+}
+
