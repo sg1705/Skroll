@@ -71,7 +71,6 @@ public class IndexCreator implements CmdLineExecutor {
         //default command line is linux
         CommandLine cmdLine = CommandLine.parse(NODE_COMMAND);
         //setup command line arguments
-//        cmdLine.addArgument(INDEX_CREATOR_JS);
         cmdLine.addArgument(parser);
         cmdLine.addArgument(INPUT_FILE_ARGUMENT);
         cmdLine.addArgument(inputFileName);

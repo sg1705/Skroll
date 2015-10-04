@@ -30,7 +30,6 @@ public class Parser {
             throws ParserException {
 
         //create phantomjs extractor
-//        PhantomJsExtractor phExtractor = new PhantomJsExtractor();
         PhantomJsExtractor phExtractor = injector.getInstance(PhantomJsExtractor.class);
         phExtractor.setFetchMode(fetchMode);
         phExtractor.setParseMode(parseMode);

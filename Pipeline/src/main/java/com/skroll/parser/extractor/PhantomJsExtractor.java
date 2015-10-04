@@ -59,8 +59,6 @@ public class PhantomJsExtractor implements CmdLineExecutor {
 
 
     private CommandLine getPhantomJsCommandLine() {
-//        Injector injector = Guice.createInjector(new SkrollGuiceModule());
-//        Configuration configuration = injector.getInstance(Configuration.class);
         //default command line is linux
         CommandLine cmdLine = CommandLine.parse(configuration.get(Constants.PHANTOM_JS_BIN));
         if (System.getProperty("os.name").contains("windows")) {
