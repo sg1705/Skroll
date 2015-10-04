@@ -8,3 +8,4 @@ build/
 Pipeline/src/main/webapp/styles/.sass-cache
 node_modules
 Pipeline/logs
+Pipeline/src/test/resources/analyzer/train/models/

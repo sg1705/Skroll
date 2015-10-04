@@ -134,10 +134,16 @@ task npmInstall(type: Exec) {
     commandLine 'npm', '--prefix', 'src/main/si', 'install'
 }
 
+task npmClean(type: Delete) {
+    delete "src/main/si/node_modules"
+}
+
+
 
 test.dependsOn npmInstall
 compileJava.dependsOn npmInstall
 
 clean.dependsOn cleanModels
+clean.dependsOn npmClean
 test.dependsOn createTestDirectories
 startProd.dependsOn(buildProdApp)
