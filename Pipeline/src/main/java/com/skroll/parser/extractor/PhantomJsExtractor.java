@@ -14,6 +14,7 @@ import org.apache.commons.exec.PumpStreamHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 
 /**
@@ -29,6 +30,10 @@ public class PhantomJsExtractor implements CmdLineExecutor {
     public static int TEST_MODE = TestMode.OFF;
     private static int FETCH_MODE;
     private static int PARSE_MODE;
+
+    @Inject
+    private Configuration configuration;
+
 
     /**
      *
@@ -54,8 +59,8 @@ public class PhantomJsExtractor implements CmdLineExecutor {
 
 
     private CommandLine getPhantomJsCommandLine() {
-        Injector injector = Guice.createInjector(new SkrollGuiceModule());
-        Configuration configuration = injector.getInstance(Configuration.class);
+//        Injector injector = Guice.createInjector(new SkrollGuiceModule());
+//        Configuration configuration = injector.getInstance(Configuration.class);
         //default command line is linux
         CommandLine cmdLine = CommandLine.parse(configuration.get(Constants.PHANTOM_JS_BIN));
         if (System.getProperty("os.name").contains("windows")) {

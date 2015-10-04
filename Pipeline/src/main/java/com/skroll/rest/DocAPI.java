@@ -181,7 +181,7 @@ public class DocAPI {
         String index = document.get(CoreAnnotations.SearchIndexAnnotation.class);
         if (index == null) {
             //let's create indexes
-            IndexCreator creator = new IndexCreator();
+            IndexCreator creator = new IndexCreator(configuration.get("searchindex_js"));
             document = creator.process(document);
             request.getDocumentFactory().putDocument(document);
             request.getDocumentFactory().saveDocument(document);

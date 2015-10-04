@@ -4,17 +4,12 @@ import com.google.common.io.Files;
 import com.skroll.document.Document;
 import com.skroll.document.JsonDeserializer;
 import com.skroll.document.annotation.CoreAnnotations;
-import com.skroll.parser.extractor.ParserException;
 import com.skroll.parser.extractor.TestMode;
 import com.skroll.pipeline.util.Constants;
 import com.skroll.util.CmdLineExecutor;
 import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.DefaultExecutor;
-import org.apache.commons.exec.ExecuteWatchdog;
-import org.apache.commons.exec.PumpStreamHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 
@@ -28,7 +23,12 @@ public class IndexCreator implements CmdLineExecutor {
     // modes
     public static int TEST_MODE = TestMode.OFF;
     private static String NODE_COMMAND = "node";
-    private static String INDEX_CREATOR_JS = "src/main/si/src/SearchIndexer.js";
+    private String parser;
+
+    public IndexCreator(String parser) {
+        this.parser = parser;
+    }
+
     private static String INPUT_FILE_ARGUMENT = "--inputFile";
 
 
@@ -71,7 +71,8 @@ public class IndexCreator implements CmdLineExecutor {
         //default command line is linux
         CommandLine cmdLine = CommandLine.parse(NODE_COMMAND);
         //setup command line arguments
-        cmdLine.addArgument(INDEX_CREATOR_JS);
+//        cmdLine.addArgument(INDEX_CREATOR_JS);
+        cmdLine.addArgument(parser);
         cmdLine.addArgument(INPUT_FILE_ARGUMENT);
         cmdLine.addArgument(inputFileName);
         return cmdLine;

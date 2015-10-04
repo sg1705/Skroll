@@ -1,5 +1,7 @@
 package com.skroll.parser;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
@@ -9,6 +11,7 @@ import com.skroll.parser.extractor.*;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
+import com.skroll.util.SkrollGuiceModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,12 +24,14 @@ public class Parser {
 
     public static final int VERSION = 2;
     public static final Logger logger = LoggerFactory.getLogger(Parser.class);
+    private static Injector injector = Guice.createInjector(new SkrollGuiceModule());
 
     private static Document parseInDoc(Document document, int fetchMode, int parseMode)
             throws ParserException {
 
         //create phantomjs extractor
-        PhantomJsExtractor phExtractor = new PhantomJsExtractor();
+//        PhantomJsExtractor phExtractor = new PhantomJsExtractor();
+        PhantomJsExtractor phExtractor = injector.getInstance(PhantomJsExtractor.class);
         phExtractor.setFetchMode(fetchMode);
         phExtractor.setParseMode(parseMode);
         try {
