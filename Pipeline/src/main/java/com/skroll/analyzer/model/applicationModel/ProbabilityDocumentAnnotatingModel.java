@@ -18,7 +18,7 @@ import java.util.*;
 public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatingModel {
 
     static final int SEC_NUM_ITERATION = 5;
-    static double[] SEC_ANNOTATING_THRESHOLD = {0, .8};
+    static double[] SEC_ANNOTATING_THRESHOLD = {0, .99999};
     Document doc;
     NaiveBayesWithMultiNodes secNbmn = null;
     HiddenMarkovModel secHmm = null;
