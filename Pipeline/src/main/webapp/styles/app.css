@@ -67,10 +67,7 @@ md-sidenav#navframe.md-locked-open {
       font-size: 22px;
       outline: none;
       width: 645px;
-      color: rgba(0, 0, 0, 0.87);
-      /*			border-width: 1px;
-      			border-color: rgb(246, 246, 246);
-      */ }
+      color: rgba(0, 0, 0, 0.87); }
     .sk-landing-search .search-frame .search-button {
       height: 100%;
       margin: 0px;
@@ -90,5 +87,68 @@ md-sidenav#navframe.md-locked-open {
         margin-bottom: 10px; }
     .sk-landing-search .list md-list-item:hover {
       background: rgba(63, 81, 181, 0.2); }
+
+/*
+* LHS
+*/
+sk-lhs .menu-toggle-button {
+  text-align: left;
+  text-transform: none;
+  font-size: 18px;
+  width: 100%;
+  margin: 0px auto 5px 20px;
+  /*    margin-bottom     : 20px;*/ }
+  sk-lhs .menu-toggle-button .menu-toggle-icon {
+    transition: transform 0.3s ease-in-out;
+    -webkit-transition: -webkit-transform 0.3s ease-in-out; }
+    sk-lhs .menu-toggle-button .menu-toggle-icon.toggled {
+      transform: rotate(180deg);
+      -webkit-transform: rotate(180deg); }
+
+md-tooltip.sk-lhs-tooltip {
+  background: black;
+  font-size: 16px; }
+
+sk-lhs ul.toc {
+  color: #202020;
+  background: #fff;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+  max-height: 12100px;
+  -webkit-transition: 0.75s cubic-bezier(0.35, 0, 0.25, 1);
+  -webkit-transition-property: max-height;
+  -moz-transition: 0.75s cubic-bezier(0.35, 0, 0.25, 1);
+  -moz-transition-property: max-height;
+  transition: 0.75s cubic-bezier(0.35, 0, 0.25, 1);
+  transition-property: max-height;
+  margin: 0px;
+  list-style: none;
+  padding: 0; }
+sk-lhs .toc li {
+  list-style-position: inside; }
+sk-lhs .toc :hover {
+  color: blue;
+  cursor: pointer; }
+sk-lhs .toc .level-1 {
+  margin-bottom: 5px;
+  font-size: 16px;
+  line-height: 1.5em; }
+  sk-lhs .toc .level-1 md-divider {
+    padding-top: 5px;
+    border-width: 1px;
+    border-color: rgba(32, 32, 32, 0.45); }
+  sk-lhs .toc .level-1 .term {
+    margin-left: 7px; }
+sk-lhs .toc .level-2 {
+  padding-left: 15px;
+  font-size: 14px;
+  margin-bottom: 2px;
+  line-height: 1.5em;
+  color: gray; }
+  sk-lhs .toc .level-2 md-divider {
+    padding-top: 5px;
+    margin-right: 150px;
+    border-top-style: dashed; }
 
 /*# sourceMappingURL=app.css.map */

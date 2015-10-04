@@ -12,7 +12,7 @@
 				</span>
 			</div>		
 		</md-button>
-	
+	  <md-divider style="margin-bottom: 15px"></md-divider>
 	<ul ng-show="class.isSelected" class="menu-list">
 		<li ng-if="class.id != 2" ng-repeat="term in ctrl.smodel.terms | filter: {classificationId:class.id}">
 			<md-button class="md-button" scroll-to-paragraph="{{term.paragraphId}}">{{term.term}}</md-button>
@@ -36,7 +36,9 @@
 			  	md-mode="determinate" value="{{term.probability}}" 
 			  	feature-flag="trainer.probability">
 				</md-progress-linear>
-
+				<md-tooltip class="sk-lhs-tooltip" md-direction="bottom">
+          {{term.term}}
+        </md-tooltip>
 			</md-button>			
 
 			<md-button 
@@ -57,7 +59,9 @@
 				{{term.term}}
 			  <md-progress-linear md-mode="determinate" value="{{term.probability}}" feature-flag='trainer.probability'>
 				</md-progress-linear>
-
+				<md-tooltip class="sk-lhs-tooltip" md-direction="bottom">
+          {{term.term}}
+        </md-tooltip>
 			</md-button>
 
 			<md-button
