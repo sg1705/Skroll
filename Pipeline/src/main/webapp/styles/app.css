@@ -52,4 +52,43 @@ md-sidenav#navframe.md-locked-open {
   min-width: 240px;
   max-width: 540px; }
 
+/*
+*  Landing search
+*/
+.sk-landing-search {
+  height: 100%;
+  width: 100%;
+  background-color: #f6f6f6; }
+  .sk-landing-search .search-frame {
+    height: 45px; }
+    .sk-landing-search .search-frame .search-input {
+      border: none;
+      padding: 15px;
+      font-size: 22px;
+      outline: none;
+      width: 645px;
+      color: rgba(0, 0, 0, 0.87);
+      /*			border-width: 1px;
+      			border-color: rgb(246, 246, 246);
+      */ }
+    .sk-landing-search .search-frame .search-button {
+      height: 100%;
+      margin: 0px;
+      padding: 0px;
+      min-width: 60px;
+      opacity: 0.75; }
+    .sk-landing-search .search-frame .search-icon {
+      width: 45px;
+      height: 45px; }
+  .sk-landing-search .list {
+    padding-top: 50px; }
+    .sk-landing-search .list .list-item {
+      width: 700px; }
+      .sk-landing-search .list .list-item h4 {
+        font-weight: normal;
+        margin-top: 10px;
+        margin-bottom: 10px; }
+    .sk-landing-search .list md-list-item:hover {
+      background: rgba(63, 81, 181, 0.2); }
+
 /*# sourceMappingURL=app.css.map */

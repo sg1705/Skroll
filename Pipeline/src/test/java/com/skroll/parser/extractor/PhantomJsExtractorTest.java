@@ -12,6 +12,8 @@ public class PhantomJsExtractorTest extends TestCase {
     public void testPhantomJsExtract() throws Exception {
         PhantomJsExtractor phantomJsExtractor = new PhantomJsExtractor();
         Document doc = new Document("<div><u>this is a awesome</u></div>");
+        phantomJsExtractor.setFetchMode(FetchMode.FILE);
+        phantomJsExtractor.setParseMode(ParseMode.FULL);
         doc = phantomJsExtractor.process(doc);
         System.out.println(doc.getParagraphs().size());
         assert(doc.getParagraphs().size() == 3);
@@ -21,6 +23,8 @@ public class PhantomJsExtractorTest extends TestCase {
     @Test
     public void testPhantomJsNoScript() throws Exception {
         PhantomJsExtractor phantomJsExtractor = new PhantomJsExtractor();
+        phantomJsExtractor.setFetchMode(FetchMode.FILE);
+        phantomJsExtractor.setParseMode(ParseMode.FULL);
         Document doc = new Document("<script>//this is a comment</script><div>this is a awesome</div>");
         doc = phantomJsExtractor.process(doc);
         System.out.println(doc.getParagraphs().size());
@@ -33,6 +37,8 @@ public class PhantomJsExtractorTest extends TestCase {
         String fileName = "src/test/resources/analyzer/hmmTrainingDocs/Tribune CA 2.html";
         String htmlText = Utils.readStringFromFile(fileName);
         PhantomJsExtractor phantomJsExtractor = new PhantomJsExtractor();
+        phantomJsExtractor.setFetchMode(FetchMode.FILE);
+        phantomJsExtractor.setParseMode(ParseMode.FULL);
         Document doc = new Document(htmlText);
         doc = phantomJsExtractor.process(doc);
         int totalPara = doc.getParagraphs().size();
@@ -47,6 +53,8 @@ public class PhantomJsExtractorTest extends TestCase {
         String fileName = "src/main/resources/trainingDocuments/indentures/AMC Networks Indenture.html";
         String htmlText = Utils.readStringFromFile(fileName);
         PhantomJsExtractor phantomJsExtractor = new PhantomJsExtractor();
+        phantomJsExtractor.setFetchMode(FetchMode.FILE);
+        phantomJsExtractor.setParseMode(ParseMode.FULL);
         Document doc = new Document(htmlText);
         doc = phantomJsExtractor.process(doc);
         System.out.println(doc.getParagraphs().size());

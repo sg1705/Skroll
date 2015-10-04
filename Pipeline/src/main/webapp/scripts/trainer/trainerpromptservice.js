@@ -6,7 +6,7 @@
     .factory('trainerPromptService', TrainerPromptService);
 
   /* @ngInject */
-  function TrainerPromptService(LHSModel, trainerService, documentModel, documentService, $mdBottomSheet, trainerModel) {
+  function TrainerPromptService(LHSModel, trainerService, documentModel, documentService, $mdBottomSheet, trainerModel, textSelectionObserverService, clickObserverService, featureFlags) {
 
     //-- private variables
     var vm = this;
@@ -16,10 +16,17 @@
     vm.showYesNoAllDialog = showYesNoAllDialog;
     vm.showYesNoDialog    = showYesNoDialog;
     vm.trainerPrompt      = trainerModel.trainerPrompt;
+    vm.handleTrainerTextSelection = handleTrainerTextSelection;
+    vm.handleTrainerParaSelection = handleTrainerParaSelection;
+    
     //-- service definition
     var service = {
       handleTrainerTextSelection  : handleTrainerTextSelection,
-      handleTrainerParaSelection  : handleTrainerParaSelection
+      handleTrainerParaSelection  : handleTrainerParaSelection,
+
+      registerTextSelectionObserver : registerTextSelectionObserver,
+      registerClickObserver         : registerClickObserver
+
     };
 
     return service;
@@ -166,6 +173,28 @@
 
       });
     }
+
+    /*
+    * Register text selection observer
+    */
+    function registerTextSelectionObserver() {
+      console.log('checking if trainer is on');
+      if (featureFlags.isOn('trainer')) {
+        console.log('train is indeed on');
+        textSelectionObserverService.register(vm.handleTrainerTextSelection);
+      }
+    }
+
+
+    /*
+    * Register text selection observer
+    */
+    function registerClickObserver() {
+      clickObserverService.register(vm.handleTrainerParaSelection);      
+    }
+
+
+
   }
 
 })();

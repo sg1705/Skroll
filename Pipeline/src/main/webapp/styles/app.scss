@@ -74,4 +74,62 @@ md-sidenav#navframe.md-locked-open {
   
 }
 
+/*
+*  Landing search
+*/
+.sk-landing-search {
+	height:100%;
+	width: 100%;
+	background-color: rgb(246, 246, 246);
+
+	.search-frame {
+		height: 45px;
+
+		.search-input {
+			border: none;
+			padding: 15px;
+			font-size: 22px;
+			outline: none;
+			width: 645px;
+			color: rgba(0, 0, 0, 0.87);
+/*			border-width: 1px;
+			border-color: rgb(246, 246, 246);
+*/		};
+
+		.search-button {
+			height:    100%;
+			margin:    0px;
+			padding:   0px;
+			min-width: 60px;
+			opacity:   0.75;
+		}
+
+		.search-icon {
+			width: 45px;
+			height: 45px;
+		}
+	}
+
+	.list {
+		padding-top: 50px;
+
+		.list-item {
+			width:700px;
+
+			h4 {
+
+				font-weight: normal;
+				margin-top: 10px;
+				margin-bottom: 10px
+
+			}
+		}
+
+		md-list-item:hover {
+			background: rgba(63,81,181, 0.2);
+		}
+
+	}
+
+}
 

@@ -1,0 +1,21 @@
+<div layout="column" layout-align="center center" class="sk-landing-search" >
+    <md-whiteframe class="md-whiteframe-z1" >
+      <div layout="row" flex class="search-frame">
+      <input ng-model="ctrl.searchText" ng-enter="ctrl.onEnter()" size="40" max="100" class="search-input"/>
+        <md-button class="md-raised md-primary search-button" ng-click="ctrl.onEnter()">
+          <md-icon md-svg-icon="images/icons/ic_search_48px.svg" class="search-icon">
+          </md-icon>
+        </md-button>
+      </div>
+    </md-whiteframe>
+
+  <md-list flex="50" class="list">
+  	<md-list-item ng-repeat="result in ctrl.searchResults" md-ink>
+  		<div flex layout="row" ng-click="ctrl.onClickedFiling('{{result.href}}')" class="list-item">
+  			<h4 flex="65">{{result.companyName}}</h2>
+  			<h4 flex="15">{{result.formType}}</h2>
+  			<h4 flex="20" style="text-align: right">{{result.filingDate}}</h2>
+  		</div>
+  		<md-divider/>
+	</md-list>
+</div>
