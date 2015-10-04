@@ -16,7 +16,7 @@
 		.controller('ContextMenuCtrl' , ContextMenuCtrl);
 
 	/* @ngInject */
-  function ContextMenuCtrl($mdToast, $mdDialog, $mdUtil, linkService, selectionService, documentModel) {
+  function ContextMenuCtrl($mdToast, $mdDialog, $mdUtil, linkService, selectionService, documentModel, $analytics) {
 
   	//-- private variables
   	var vm = this;
@@ -36,6 +36,7 @@
     * Copy email dialog
     **/
     function openEmailDialog() {
+      $analytics.eventTrack(documentModel.documentId, { category: 'cm.openEmailDialog', label: selectionService.paragraphId });
       closeContextMenu();
       var activeLink = linkService.getActiveLink(documentModel.documentId, selectionService.serializedSelection);      
       linkService.shortenLink(activeLink)
@@ -54,6 +55,7 @@
     * Copy selection
     **/
     function copySelection() {
+      $analytics.eventTrack(documentModel.documentId, { category: 'cm.openCopySelection', label: selectionService.paragraphId });
       closeContextMenu();
       $mdToast.show({
         template    : '<md-toast>Selection copied to clipboard</md-toast>',
@@ -68,6 +70,7 @@
     * Copy link to clipboard
     **/
   	function copyLink(link) {
+      $analytics.eventTrack(documentModel.documentId, { category: 'cm.copyLink', label: selectionService.paragraphId });
       var activeLink = linkService.getActiveLink(documentModel.documentId, selectionService.serializedSelection);
       var shortenedUrl = '';
       linkService.shortenLink(activeLink)
@@ -133,6 +136,7 @@
     * Open twitter tweet intent when link is clicked.
     **/
     function openTwitter() {
+      $analytics.eventTrack(documentModel.documentId, { category: 'cm.openTwitter', label: selectionService.paragraphId });
       closeContextMenu();
       var activeLink = linkService.getActiveLink(documentModel.documentId, selectionService.serializedSelection);      
       linkService.shortenLink(activeLink)
