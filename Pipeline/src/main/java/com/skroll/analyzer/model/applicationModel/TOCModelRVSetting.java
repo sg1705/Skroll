@@ -37,7 +37,8 @@ public class TOCModelRVSetting extends ModelRVSetting {
     );
     static final List<RandomVariable> DEFAULT_WORD_VARS = Arrays.asList(
             RVCreater.createWordsRVWithComputer(new LowerCaseWordsComputer(), "lowerCaseWords"),
-            RVCreater.createWordsRVWithComputer(new FirstWordsComputer(), "firstWord")
+            RVCreater.createWordsRVWithComputer(new FirstWordComputer(), "firstWord"),
+            RVCreater.createWordsRVWithComputer(new LastWordComputer(), "lastWord")
     );
 
     public TOCModelRVSetting(List<Integer> categoryIds, List<Integer> lowLevelCategoryIds) {

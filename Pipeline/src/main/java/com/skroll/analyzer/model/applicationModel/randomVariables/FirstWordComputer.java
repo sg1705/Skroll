@@ -5,7 +5,7 @@ import com.skroll.document.CoreMap;
 /**
  * Created by wei on 5/9/15.
  */
-public class FirstWordsComputer implements RVWordsComputer {
+public class FirstWordComputer implements RVWordsComputer {
 
     public String[] getWords(CoreMap m) {
         if (m == null || m.getTokens().size() == 0) return new String[0];

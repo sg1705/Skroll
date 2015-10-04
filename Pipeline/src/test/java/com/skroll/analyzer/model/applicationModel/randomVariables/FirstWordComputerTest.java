@@ -8,9 +8,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FirstWordsComputerTest {
+public class FirstWordComputerTest {
 
-    public static final Logger logger = LoggerFactory.getLogger(FirstWordsComputerTest.class);
+    public static final Logger logger = LoggerFactory.getLogger(FirstWordComputerTest.class);
 
     CoreMap m = new CoreMap();
     Token token1 = new Token("First");
@@ -19,7 +19,7 @@ public class FirstWordsComputerTest {
 
     @Test
     public void testGetWords() throws Exception {
-        FirstWordsComputer fWC = new FirstWordsComputer();
+        FirstWordComputer fWC = new FirstWordComputer();
         m.set(CoreAnnotations.TokenAnnotation.class, Lists.newArrayList(token1, token2, token3));
         String[] words = fWC.getWords(m);
         logger.info(words[0]);
@@ -29,7 +29,7 @@ public class FirstWordsComputerTest {
 
     @Test
     public void testGetWords1() throws Exception {
-        FirstWordsComputer fWC = new FirstWordsComputer();
+        FirstWordComputer fWC = new FirstWordComputer();
         m.set(CoreAnnotations.TokenAnnotation.class, Lists.newArrayList(token1, token2, token3));
         String[] words = fWC.getWords(m, 3);
         assert (words[0].toLowerCase().equals("First".toLowerCase()));
