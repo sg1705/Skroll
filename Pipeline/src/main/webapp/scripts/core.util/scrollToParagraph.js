@@ -27,7 +27,7 @@
     function link(scope, element, attrs) {
       var paragraphId = attrs.scrollToParagraph;
       var para = $(element).click(function() {
-        $analytics.eventTrack('tocClick');
+        $analytics.eventTrack(documentModel.documentId, { category: 'toc.Click', label: paragraphId });
         scrollObserverService.notify(paragraphId);
         selectionService.scrollToParagraph(paragraphId);
         scope.$apply();
