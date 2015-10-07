@@ -42,7 +42,7 @@
 		.module('app.search')
 		.controller('SearchCtrl', SearchCtrl);
 
-	/** @ngInject **/	
+	/** @ngInject **/
 	function SearchCtrl(selectionService, documentModel) {
 
 		//-- private variables
@@ -118,7 +118,7 @@
 						item['header'] = header;
 						item['paragraphId'] = 'p_' + id;
 						item['displayText'] = displayText;
-						items.push(item);				
+						items.push(item);
 					}
 				}
 				if (items.length > 15) {
@@ -137,26 +137,18 @@
 		}
 
 		function getSurroundingText(paragraphText, searchString) {
-			var indexOfSearch = paragraphText.indexOf(searchString);
-			var lengthOfSearch = searchString.length;
-			var expandLeft = 65;
-			var expandRight = 65;
-			var startLeft = 0;
-			var endRight = 0;
-			var length = paragraphText.length;
-			if (indexOfSearch < expandLeft) {
-				startLeft = 0;
-			} else {
-				startLeft = indexOfSearch - expandLeft
-			}
-
-			if ( (length - (indexOfSearch + lengthOfSearch)) < expandRight) {
-				endRight = length -1;
-			} else {
-				endRight = (indexOfSearch + lengthOfSearch + expandRight);
-			}
-			var text = paragraphText.substr(startLeft, endRight - startLeft);
-			return text;
+      var possibleWordsBefore = 4;
+      var possibleWordsAfter = 32;
+      var regexStr = "((?:[\\w]*\\s*){"+possibleWordsBefore+"}"+searchString+"(?:\\s*[\\w,-\\.]*){"+possibleWordsAfter+"})";
+      var regex = new RegExp(regexStr, 'i');
+      var matcher;
+      if ((matcher = regex.exec(paragraphText)) !== null) {
+          if (matcher.index === regex.lastIndex) {
+              regex.lastIndex++;
+          }
+          return matcher[0];
+      }
+      return '';
 		}
 
 		function highlightSearchResults(items, searchText) {
@@ -203,8 +195,8 @@
 		jQuery.expr[":"].ContainsCaseInsensitive = jQuery.expr.createPseudo(function(arg) {
 		   return function( elem ) {
 		   	return jQuery(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
-		   }; 
-		});	
+		   };
+		});
 	}
 
 })();

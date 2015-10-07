@@ -8,10 +8,10 @@
 	angular
 		.module('app.core')
 		.run(function(featureFlags, $http) {
-			var flags = [ 
+			var flags = [
 				{
 					"key" : "trainer",
-					"active" : false,
+					"active" : true,
 					"name" : "flag for trainer",
 					"description" : "no description"
 				},
@@ -34,5 +34,5 @@
 
 
 
-    
+
 })();

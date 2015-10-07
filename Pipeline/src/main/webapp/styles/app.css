@@ -8,7 +8,7 @@ md-icon {
 
 /**
 * context menu
-* 
+*
 *  Width is the same as the width for the md-icon
 **/
 md-toast.skContextMenu {
@@ -125,11 +125,14 @@ sk-lhs ul.toc {
   margin: 0px;
   list-style: none;
   padding: 0; }
+
 sk-lhs .toc li {
   list-style-position: inside; }
+
 sk-lhs .toc :hover {
   color: blue;
   cursor: pointer; }
+
 sk-lhs .toc .level-1 {
   margin-bottom: 5px;
   font-size: 16px;
@@ -140,6 +143,7 @@ sk-lhs .toc .level-1 {
     border-color: rgba(32, 32, 32, 0.45); }
   sk-lhs .toc .level-1 .term {
     margin-left: 7px; }
+
 sk-lhs .toc .level-2 {
   padding-left: 15px;
   font-size: 14px;
@@ -151,4 +155,12 @@ sk-lhs .toc .level-2 {
     margin-right: 150px;
     border-top-style: dashed; }
 
-/*# sourceMappingURL=app.css.map */
+.search-surrounting-text-container {
+  width: 250px;
+  overflow: hidden; }
+
+.search-surrounting-text-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  max-height: 42px; }

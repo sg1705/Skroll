@@ -44,7 +44,8 @@ module.exports = function() {
             '**/*.module.js',
             '**/*.js'
         ],
-        less: client + 'styles/styles.less',
+        less: client + 'styles/*.less',
+        sass: client + 'styles/*.scss',
         report: report,
         root: root,
         server: server,
@@ -134,7 +135,7 @@ module.exports = function() {
             bowerJson: config.bower.json,
             directory: config.bower.directory,
             ignorePath: config.bower.ignorePath,
-            exclude: [ 
+            exclude: [
                     'bower_components/angular-feature-flags/dist/featureFlags.js',
                     'bower_components/angulartics/src/angulartics-clicky.js',
                     'bower_components/angulartics/src/angulartics-cnzz.js',
