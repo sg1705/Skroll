@@ -3,6 +3,8 @@ package com.skroll.rest;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -23,6 +25,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.nio.charset.Charset;
+import java.util.HashMap;
 import java.util.List;
 
 public class DocAPITest extends APITest {
@@ -153,5 +156,18 @@ public class DocAPITest extends APITest {
         //String responseString = testGetTerms();
         //assert(!responseString.contains("Cash Equivalents"));
         client.close();
+    }
+
+    @Test
+    public void testGetIndex() throws Exception {
+        String TARGET_URL = "http://localhost:8888/restServices/doc/getIndex";
+        Client client = ClientBuilder.newClient();
+        WebTarget webTarget = client.target(TARGET_URL).queryParam("documentId", documentId);
+        String response = webTarget.request().get(String.class);
+        //validate if response is a valid json
+        Gson gson = new GsonBuilder().create();
+        HashMap map = gson.fromJson(response, HashMap.class);
+        assert(!map.isEmpty());
+        assert (map.get("corpusTokens") != null);
     }
 }

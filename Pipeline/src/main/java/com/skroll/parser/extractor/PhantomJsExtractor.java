@@ -4,6 +4,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.skroll.document.Document;
 import com.skroll.pipeline.util.Constants;
+import com.skroll.util.CmdLineExecutor;
 import com.skroll.util.Configuration;
 import com.skroll.util.SkrollGuiceModule;
 import org.apache.commons.exec.CommandLine;
@@ -13,12 +14,13 @@ import org.apache.commons.exec.PumpStreamHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 
 /**
  * cd by saurabh on 1/16/15.
  */
-public class PhantomJsExtractor {
+public class PhantomJsExtractor implements CmdLineExecutor {
 
     public static final Logger logger = LoggerFactory.getLogger(PhantomJsExtractor.class);
 
@@ -28,6 +30,10 @@ public class PhantomJsExtractor {
     public static int TEST_MODE = TestMode.OFF;
     private static int FETCH_MODE;
     private static int PARSE_MODE;
+
+    @Inject
+    private Configuration configuration;
+
 
     /**
      *
@@ -53,8 +59,6 @@ public class PhantomJsExtractor {
 
 
     private CommandLine getPhantomJsCommandLine() {
-        Injector injector = Guice.createInjector(new SkrollGuiceModule());
-        Configuration configuration = injector.getInstance(Configuration.class);
         //default command line is linux
         CommandLine cmdLine = CommandLine.parse(configuration.get(Constants.PHANTOM_JS_BIN));
         if (System.getProperty("os.name").contains("windows")) {
@@ -68,27 +72,7 @@ public class PhantomJsExtractor {
     }
 
     private String[] executePhantomJsExtractor(CommandLine cmdLine) throws Exception {
-        ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-        PumpStreamHandler psh = new PumpStreamHandler( stdout );
-
-        DefaultExecutor executor = new DefaultExecutor();
-        executor.setExitValue(1);
-        executor.setStreamHandler(psh);
-        ExecuteWatchdog watchdog = new ExecuteWatchdog(240000);
-        executor.setWatchdog(watchdog);
-        long executionTime = System.currentTimeMillis();
-        int exitValue = executor.execute(cmdLine);
-        if (exitValue != 1) {
-            ParserException ps =  new ParserException("Cannot parse the file. Phantom exited with the return code:" + exitValue);
-            ps.setReturnValue(exitValue);
-            throw ps;
-        }
-        logger.info("Execution time:" + (System.currentTimeMillis() - executionTime));
-        long splitTime = System.currentTimeMillis();
-        byte[] output = stdout.toByteArray();
-        String[] parserOutput = new String(output, Constants.DEFAULT_CHARSET)
-                .split(OUTPUT_DELIMITTER);
-        logger.info("Splitting time:" + (System.currentTimeMillis() - splitTime));
+        String[] parserOutput = execute(cmdLine, 1).split(OUTPUT_DELIMITTER);
         return parserOutput;
     }
 

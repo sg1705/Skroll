@@ -382,5 +382,15 @@ public class CoreAnnotations {
         }
     }
 
+    /**
+     * Annotation to store search index
+     */
+    public static class SearchIndexAnnotation implements CoreAnnotation<String> {
+        public Class<String> getType() {
+            return String.class;
+        }
+    }
+
+
 
 }
