@@ -68,10 +68,13 @@
 
 		function getMatches(searchText) {
 			var items = [];
-			var elements = documentModel.lunrIndex.search(searchText).map(function(searchObj) {
-				console.log(searchObj.ref);
-				return document.getElementById(searchObj.ref);
-			});
+			var elements = documentModel.lunrIndex
+        .search(searchText)
+        .sort(function(a,b){return a.ref.split('_')[1] - b.ref.split('_')[1];})
+        .map(function(searchObj) {
+  				console.log(searchObj.ref);
+  				return document.getElementById(searchObj.ref);
+  			});
 			//var elements = $(":ContainsCaseInsensitive('" + searchText + "')").filter(":not(:has(*))").closest("[id^='p_']");
 			//var elements = $("[id^='p_']:not('[id^=\\'p_\\']')").filter(":contains('" + searchText + "')");
 			//var elements = $("[id^='p_']:only-child").filter(":contains('" + searchText + "')");
@@ -121,7 +124,7 @@
 						items.push(item);
 					}
 				}
-				if (items.length > 15) {
+				if (items.length > 25) {
 					return false;
 				}
 			})
@@ -154,7 +157,7 @@
 		function highlightSearchResults(items, searchText) {
 			for(var ii = 0; ii < items.length; ii++) {
 				var paraId = items[ii].paragraphId;
-				$("#"+paraId).highlight(searchText, { wordsOnly: true, element: 'span', className: 'skHighlight' });
+				$("#"+paraId).highlight(searchText, { wordsOnly: false, element: 'span', className: 'skHighlight' });
 			}
 		}
 
