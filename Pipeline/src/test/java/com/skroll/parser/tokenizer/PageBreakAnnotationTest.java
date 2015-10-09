@@ -8,13 +8,16 @@ import com.skroll.parser.extractor.PhantomJsExtractor;
 import com.skroll.parser.extractor.TestMode;
 import com.skroll.pipeline.util.Utils;
 import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.util.List;
 
 /**
  * Created by saurabh on 3/8/15.
  */
-public class PageBreakAnnotationTest extends TestCase {
+public class PageBreakAnnotationTest {
+
+    @Test
     public void testPageBreak() throws Exception {
         PhantomJsExtractor.TEST_MODE = TestMode.ON;
         // read a sample file
@@ -38,11 +41,11 @@ public class PageBreakAnnotationTest extends TestCase {
         assert ( countPageBreak == 121);
     }
 
+    @Test
     public void testPageBreak10k() throws Exception {
         // read a sample file
-        //String fileName = "src/main/resources/parser/extractor/jQuery/dish-10k.html";
+        String fileName = "src/main/resources/parser/extractor/jQuery/form-10k-g.html";
         PhantomJsExtractor.TEST_MODE = TestMode.ON;
-        String fileName = "src/main/resources/parser/extractor/jQuery/brightcove-10k.html";
         String htmlString = Utils.readStringFromFile(fileName);
 
 
@@ -60,7 +63,7 @@ public class PageBreakAnnotationTest extends TestCase {
         }
         System.out.println(countPageBreak);
 
-        assert(countPageBreak == 105);
+        assert(countPageBreak == 99);
     }
 
 }
