@@ -129,7 +129,7 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
 //            );
             secModel.setParagraphs(sections.get(i));
             secModel.setProcessedParagraphs(processedSections.get(i));
-            secModel.setNumIterations(5);
+            secModel.setNumIterations(4);
             secModel.setAnnotatingThreshold(SEC_ANNOTATING_THRESHOLD);
             secModel.initialize();
             secModel.annotateParagraphs();
