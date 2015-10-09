@@ -4,6 +4,7 @@ var config = require('./gulp.config')();
 var del = require('del');
 var glob = require('glob');
 var gulp = require('gulp');
+var sass = require('gulp-sass');
 var path = require('path');
 var _ = require('lodash');
 var $ = require('gulp-load-plugins')({lazy: true});
@@ -107,6 +108,16 @@ gulp.task('images', ['clean-images'], function() {
 
 gulp.task('less-watcher', function() {
     gulp.watch([config.less], ['styles']);
+});
+
+gulp.task('sass', function () {
+  gulp.src(config.sass)
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('./styles'));
+});
+
+gulp.task('sass:watch', function () {
+  gulp.watch([config.sass], ['sass']);
 });
 
 /**
@@ -504,8 +515,12 @@ function startBrowserSync(isDev, specRunner) {
     if (isDev) {
         gulp.watch([config.less], ['styles'])
             .on('change', changeEvent);
+        gulp.watch([config.sass], ['sass'])
+            .on('change', changeEvent);
     } else {
         gulp.watch([config.less, config.js, config.html], ['browserSyncReload'])
+            .on('change', changeEvent);
+        gulp.watch([config.sass, config.js, config.html], ['browserSyncReload'])
             .on('change', changeEvent);
     }
 

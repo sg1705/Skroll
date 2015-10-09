@@ -42,8 +42,8 @@
 		.module('app.search')
 		.controller('SearchCtrl', SearchCtrl);
 
-	/** @ngInject **/	
-	function SearchCtrl(selectionService) {
+	/** @ngInject **/
+	function SearchCtrl(selectionService, documentModel) {
 
 		//-- private variables
 		/*jshint validthis: true */
@@ -68,7 +68,14 @@
 
 		function getMatches(searchText) {
 			var items = [];
-			var elements = $(":ContainsCaseInsensitive('" + searchText + "')").filter(":not(:has(*))").closest("[id^='p_']");
+			var elements = documentModel.lunrIndex
+        .search(searchText)
+        .sort(function(a,b){return a.ref.split('_')[1] - b.ref.split('_')[1];})
+        .map(function(searchObj) {
+  				console.log(searchObj.ref);
+  				return document.getElementById(searchObj.ref);
+  			});
+			//var elements = $(":ContainsCaseInsensitive('" + searchText + "')").filter(":not(:has(*))").closest("[id^='p_']");
 			//var elements = $("[id^='p_']:not('[id^=\\'p_\\']')").filter(":contains('" + searchText + "')");
 			//var elements = $("[id^='p_']:only-child").filter(":contains('" + searchText + "')");
 			//convert level terms to integers
@@ -114,10 +121,10 @@
 						item['header'] = header;
 						item['paragraphId'] = 'p_' + id;
 						item['displayText'] = displayText;
-						items.push(item);				
+						items.push(item);
 					}
 				}
-				if (items.length > 15) {
+				if (items.length > 25) {
 					return false;
 				}
 			})
@@ -133,32 +140,24 @@
 		}
 
 		function getSurroundingText(paragraphText, searchString) {
-			var indexOfSearch = paragraphText.indexOf(searchString);
-			var lengthOfSearch = searchString.length;
-			var expandLeft = 65;
-			var expandRight = 65;
-			var startLeft = 0;
-			var endRight = 0;
-			var length = paragraphText.length;
-			if (indexOfSearch < expandLeft) {
-				startLeft = 0;
-			} else {
-				startLeft = indexOfSearch - expandLeft
-			}
-
-			if ( (length - (indexOfSearch + lengthOfSearch)) < expandRight) {
-				endRight = length -1;
-			} else {
-				endRight = (indexOfSearch + lengthOfSearch + expandRight);
-			}
-			var text = paragraphText.substr(startLeft, endRight - startLeft);
-			return text;
+      var possibleWordsBefore = 4;
+      var possibleWordsAfter = 32;
+      var regexStr = "((?:[\\w]*\\s*){"+possibleWordsBefore+"}"+searchString+"(?:\\s*[\\w,-\\.]*){"+possibleWordsAfter+"})";
+      var regex = new RegExp(regexStr, 'i');
+      var matcher;
+      if ((matcher = regex.exec(paragraphText)) !== null) {
+          if (matcher.index === regex.lastIndex) {
+              regex.lastIndex++;
+          }
+          return matcher[0];
+      }
+      return '';
 		}
 
 		function highlightSearchResults(items, searchText) {
 			for(var ii = 0; ii < items.length; ii++) {
 				var paraId = items[ii].paragraphId;
-				$("#"+paraId).highlight(searchText, { wordsOnly: true, element: 'span', className: 'skHighlight' });
+				$("#"+paraId).highlight(searchText, { wordsOnly: false, element: 'span', className: 'skHighlight' });
 			}
 		}
 
@@ -199,8 +198,8 @@
 		jQuery.expr[":"].ContainsCaseInsensitive = jQuery.expr.createPseudo(function(arg) {
 		   return function( elem ) {
 		   	return jQuery(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
-		   }; 
-		});	
+		   };
+		});
 	}
 
 })();

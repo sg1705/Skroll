@@ -24,6 +24,9 @@ mkdir $HOME_DIR/config
 cp -r src/main/resources/skroll-deploy.properties $HOME_DIR/config/skroll.properties
 cp -r src/main/resources/log4j.xml $HOME_DIR/config/log4j.xml
 
+mkdir $HOME_DIR/si
+cp -R src/main/si/* $HOME_DIR/si/
+
 mkdir $HOME_DIR/phantomjs
 cp src/main/resources/parser/extractor/* $HOME_DIR/phantomjs/
 

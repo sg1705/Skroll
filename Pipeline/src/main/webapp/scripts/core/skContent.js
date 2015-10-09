@@ -14,7 +14,7 @@
     .directive('skContent', skContent);
 
   /* @ngInject */
-  function skContent(documentModel, documentService, LHSModel, selectionService, $timeout, $http) {
+  function skContent(documentModel, documentService, LHSModel, selectionService, $timeout, $http, $analytics) {
 
     var directive = {
       restricted: 'E',
@@ -36,6 +36,7 @@
         documentModel.isProcessing = true;
         if (documentModel.isPartiallyParsed) {
           console.log('partially parsed');
+          $analytics.eventTrack(documentModel.documentId, { category: 'doc.View', label: selectionService.paragraphId });
           element.replaceWith(documentModel.targetHtml);
           documentModel.isProcessing = false;
           showGradually();
@@ -48,6 +49,10 @@
               LHSModel.setTerms(terms);
               console.log(terms);
               LHSModel.setYOffsetForTerms(LHSModel.smodel.terms);
+              return documentService.getIndex(documentModel.documentId);
+            })
+            .then(function(data) {
+              console.log(data);
             });
         } else {
           documentService.loadDocument(documentModel.documentId)
@@ -55,6 +60,7 @@
             documentModel.targetHtml = contentHtml;
             element.replaceWith(documentModel.targetHtml);
             documentModel.isProcessing = false;
+            $analytics.eventTrack(documentModel.documentId, { category: 'doc.View', label: selectionService.paragraphId });
             if ((selectionService.serializedSelection === undefined) || (selectionService.serializedSelection == "undefined")) {
               showGradually();  
             } else {
@@ -81,8 +87,12 @@
 
               documentModel.isProcessing = false;
             }
+            return documentService.getIndex(documentModel.documentId);
           }, function(data, status) {
               console.log(status);
+          })
+          .then(function(data) {
+            documentModel.lunrIndex = lunr.Index.load(data);
           });
         }
       }

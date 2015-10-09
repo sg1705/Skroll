@@ -23,7 +23,7 @@ var SelectionModel = {
 	    $("#skrollport").animate({
 	      scrollTop: ($("#skrollport").scrollTop() - 200 + $(
 	        para).offset().top)
-	    }, "slow");
+	    }, "fast");
 	    $(para).css("background-color", "yellow");
 	    SelectionModel.paragraphId = paragraphId;
 	  }

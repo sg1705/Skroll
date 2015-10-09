@@ -16,8 +16,7 @@
   /**
   * Controller for the directive
   **/
-  function TocCtrl(LHSModel, scrollObserverService) {
-
+  function TocCtrl(LHSModel, scrollObserverService, $analytics) {
     //-- private variables
     var ctrl      = this,
     		LHSModel	= LHSModel;
