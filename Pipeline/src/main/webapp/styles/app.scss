@@ -90,7 +90,7 @@ md-sidenav#navframe.md-locked-open {
 			padding: 15px;
 			font-size: 22px;
 			outline: none;
-			width: 645px;
+/*			width: 645px;*/
 			color: rgba(0, 0, 0, 0.87);
 		};
 
@@ -110,9 +110,8 @@ md-sidenav#navframe.md-locked-open {
 
 	.list {
 		padding-top: 50px;
-
+		width: 700px;
 		.list-item {
-			width:700px;
 
 			h4 {
 
