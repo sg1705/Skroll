@@ -1,14 +1,14 @@
 <md-toast class="skContextMenu">
 
-	<md-button 
+	<md-button
 	 	ng-click="ctrl.copySelection()"
 	 	aria-label="Copy selected text"
 	 	ui-zeroclip zeroclip-copied="copied=true" zeroclip-model="ctrl.selectedText">
 	 	<md-tooltip>
 	 		Copy selected text
-	 	</md-tooltip>   	
+	 	</md-tooltip>
 	 	<md-icon md-svg-icon="images/icons/ic_content_copy_24px.svg"></md-icon>
-	</md-button>	 
+	</md-button>
 
 
   <md-button ng-click='ctrl.copyLink()'>
@@ -20,26 +20,26 @@
 	</md-button>
 
 
-	<md-button 
+	<md-button
 	 	ng-click='ctrl.openEmailDialog()'
 	 	aria-label="Email selected text">
 	 	<md-tooltip>
 	 		Email selected text
-	 	</md-tooltip>   	
+	 	</md-tooltip>
 	 	<md-icon md-svg-icon="images/icons/ic_mail_24px.svg"></md-icon>
-	</md-button>	 
+	</md-button>
 
 
 
-	<md-button 
+	<md-button
 	 	ng-click='ctrl.openTwitter()'
 	 	aria-label="Tweet this">
-   	<img src="images/icons/TwitterLogo_acee.png" width="24" height="24" 
+   	<img src="images/icons/TwitterLogo_acee.png" width="24" height="24"
    			style="vertical-align:middle"/>
 	 	<md-tooltip>
 	 		Tweet this
-	 	</md-tooltip>   	
-	</md-button>	 
+	 	</md-tooltip>
+	</md-button>
 
 	<md-menu>
 	 <!-- Trigger element is a md-button with an icon -->

@@ -6,36 +6,36 @@
 	<ul class="toc">
 		<li ng-repeat="term in ctrl.smodel.terms | tocTerms">
 
-			<div 
-				ng-if="term.classificationId == 2" 
+			<div
+				ng-if="term.classificationId == 2"
 				ng-class = "{'md-primary md-warn' : ctrl.smodel.visibleHeaders.indexOf(term.paragraphId) != -1, 'md-primary' : ctrl.smodel.visibleHeaders.indexOf(term.paragraphId) == -1}"
 
 				scroll-to-paragraph="{{term.paragraphId}}"
 				class="level-1">
 				<md-divider ng-if="$index != 0"></md-divider>
-				<md-icon 
+				<md-icon
 				  feature-flag="trainer"
 				  ng-if="term.isUserObserved"
 				  md-svg-icon="images/icons/ic_error_18px.svg" >
 				</md-icon>
 			  <div class="term">{{term.term}}</div>
-			  <md-progress-linear 
-			  	md-mode="determinate" value="{{term.probability}}" 
+			  <md-progress-linear
+			  	md-mode="determinate" value="{{term.probability}}"
 			  	feature-flag="trainer.probability">
 				</md-progress-linear>
-			</div>			
+			</div>
 
-			<div  
+			<div
 				class="level-2"
 				ng-if="term.classificationId == 3"
-				ng-class = "{'md-primary md-warn menu-item-level-2' 
-								: ctrl.smodel.visibleHeaders.indexOf(term.paragraphId) != -1, 
-							'md-primary menu-item-level-2' 
+				ng-class = "{'md-primary md-warn menu-item-level-2'
+								: ctrl.smodel.visibleHeaders.indexOf(term.paragraphId) != -1,
+							'md-primary menu-item-level-2'
 								: ctrl.smodel.visibleHeaders.indexOf(term.paragraphId) == -1}"
 
 				scroll-to-paragraph="{{term.paragraphId}}">
 				<md-divider></md-divider>
-				<md-icon 
+				<md-icon
 				  feature-flag="trainer"
 				  ng-if="term.isUserObserved"
 				  md-svg-icon="images/icons/ic_error_18px.svg" >

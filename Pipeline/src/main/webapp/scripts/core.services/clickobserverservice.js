@@ -1,52 +1,50 @@
 (function() {
-	'use strict';
+  'use strict';
 
-	/**
-	 * @ngdoc service
-	 * @name SkrollApp.clickObserverService
-	 * @description
-	 * # clickObserverService
-	 * Manages all click, touch events on a paragraph
-	 */
+  /**
+   * @ngdoc service
+   * @name SkrollApp.clickObserverService
+   * @description
+   * # clickObserverService
+   * Manages all click, touch events on a paragraph
+   */
 
-	angular
-		.module('app.core.services')
-		.factory('clickObserverService', ClickObserverService);
+  angular
+    .module('app.core.services')
+    .factory('clickObserverService', ClickObserverService);
 
-	/** @ngInject **/
-	function ClickObserverService() {
+  /** @ngInject **/
+  function ClickObserverService() {
 
-		//-- private variables
-		var listeners = [];
+    //-- private variables
+    var listeners = [];
 
-		var service = {
-			register: register,
-			notify  : notify			
-		};
+    var service = {
+      register: register,
+      notify: notify
+    };
 
-		return service;
+    return service;
 
 
-		//-- private methods
+    //-- private methods
 
-		/**
-		* Method to register listeners
-		**/
-		function register(callback) {
-			listeners.push(callback);
-		};
+    /**
+     * Method to register listeners
+     **/
+    function register(callback) {
+      listeners.push(callback);
+    };
 
-		/**
-		* Method to notify all listeners
-		**/
-		function notify(args) {
-			listeners.forEach(function(cb) {
+    /**
+     * Method to notify all listeners
+     **/
+    function notify(args) {
+      listeners.forEach(function(cb) {
         cb(args);
       });
-		};
+    };
 
-	}
+  }
 
 })();
-
-

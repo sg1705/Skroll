@@ -9,21 +9,20 @@
  */
 
 var documentModel = {
-  targetHtml					: "",
-  isDocAvailable			: false,
-  isProcessing				: false,
-  fileName						: "",
-  selectedParagraphId	: "",
-  documentId					: "",
-  isPartiallyParsed   : false,
-  url                 : "",
-  lunrIndex           : null
+  targetHtml: "",
+  isDocAvailable: false,
+  isProcessing: false,
+  fileName: "",
+  selectedParagraphId: "",
+  documentId: "",
+  isPartiallyParsed: false,
+  url: "",
+  lunrIndex: null
 };
 
 
 angular
-	.module('SkrollApp')
-  .factory('documentModel', function () {
+  .module('SkrollApp')
+  .factory('documentModel', function() {
     return documentModel;
   });
-

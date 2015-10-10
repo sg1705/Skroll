@@ -1,4 +1,4 @@
-(function(){
+(function() {
 
   'use strict';
 
@@ -12,7 +12,7 @@
     .module('app.core.util')
     .directive('ngEnter', NgEnter);
 
-  /* @ngInject */  
+  /* @ngInject */
   function NgEnter() {
 
     var directive = {
@@ -23,15 +23,15 @@
     return directive;
 
     //////////
-    
-    function link(scope, element, attrs) {
-      element.bind("keydown keypress", function (event) {
-        if(event.which === 13) {
-            scope.$apply(function (){
-                scope.$eval(attrs.ngEnter);
-            });
 
-            event.preventDefault();
+    function link(scope, element, attrs) {
+      element.bind("keydown keypress", function(event) {
+        if (event.which === 13) {
+          scope.$apply(function() {
+            scope.$eval(attrs.ngEnter);
+          });
+
+          event.preventDefault();
         }
       });
     }
