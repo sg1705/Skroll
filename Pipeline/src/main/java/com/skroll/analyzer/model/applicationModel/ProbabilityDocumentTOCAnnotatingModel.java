@@ -110,22 +110,11 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
     }
 
 
-    void annotateParaProbs() {
-        for (int p = 0; p < processedParagraphs.size(); p++) {
-            double[] paraProbs = paragraphCategoryBelief[p].clone();
-            BNInference.convertLogBeliefToProb(paraProbs);
-            processedParagraphs.get(p).set(CoreAnnotations.TOCParaProbsDocLevel.class, new ArrayList(
-                    Arrays.stream(paraProbs)
-                            .boxed()
-                            .collect(Collectors.toList())
-            ));
-        }
-    }
     @Override
     public void annotateParagraphs() {
 
         super.annotateParagraphs();
-        annotateParaProbs(CoreAnnotations.TOCParaProbsDocLevel.class);
+        annotateParaProbs(CoreAnnotations.TOCParaProbsDocLevel.class, processedParagraphs, paragraphCategoryBelief);
 
         List<Integer> lowerCatIds = ((TOCModelRVSetting) modelRVSetting).getLowLevelCategoryIds();
         if (lowerCatIds == null) return;
@@ -141,7 +130,7 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
             secModel.setAnnotatingThreshold(SEC_ANNOTATING_THRESHOLD);
             secModel.initialize();
             secModel.annotateParagraphs();
-            annotateParaProbs(CoreAnnotations.TOCParaProbsSecLevel.class);
+            annotateParaProbs(CoreAnnotations.TOCParaProbsSecLevel.class, processedSections.get(i), secModel.getParagraphCategoryBelief());
         }
     }
 

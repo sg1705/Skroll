@@ -422,11 +422,11 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
 
     // annotate paragraphs with probabilities for debugging/displaying purpose
     // todo: if we need to do this for more model types, should probably implement a hashmap annotating class
-    public void annotateParaProbs(Class key) {
-        for (int p = 0; p < processedParagraphs.size(); p++) {
-            double[] paraProbs = paragraphCategoryBelief[p].clone();
+    public void annotateParaProbs(Class key, List<CoreMap> processedParas, double[][] logBeliefs) {
+        for (int p = 0; p < processedParas.size(); p++) {
+            double[] paraProbs = logBeliefs[p].clone();
             BNInference.convertLogBeliefToProb(paraProbs);
-            processedParagraphs.get(p).set(key, new ArrayList(
+            processedParas.get(p).set(key, new ArrayList(
                     Arrays.stream(paraProbs)
                             .boxed()
                             .collect(Collectors.toList())
