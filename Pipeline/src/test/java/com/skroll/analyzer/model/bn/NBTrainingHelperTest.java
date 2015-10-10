@@ -2,6 +2,7 @@ package com.skroll.analyzer.model.bn;
 
 import com.skroll.analyzer.model.applicationModel.DefModelRVSetting;
 import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
+import com.skroll.analyzer.model.applicationModel.randomVariables.RVCreater;
 import com.skroll.analyzer.model.bn.config.NBMNConfig;
 import com.skroll.analyzer.model.bn.node.NodeTrainingHelper;
 import com.skroll.classifier.Category;
@@ -64,7 +65,7 @@ public class NBTrainingHelperTest {
         assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[1].getParameters(), new double[]{priorCount, priorCount, priorCount, 1 + priorCount}));
         assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[0].getParameters(), new double[]{priorCount, priorCount, priorCount, priorCount}));
 
-        assert (nbmn.getFeatureNodes().get(0).getParameters()[26] == 1 + priorCount);
+        assert (nbmn.getFeatureNodes().get(0).getParameters()[RVCreater.DEFAULT_NUM_INT_VALS + 1] == 1 + priorCount);
 
     }
 
@@ -80,7 +81,8 @@ public class NBTrainingHelperTest {
         assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[1].getParameters(), new double[]{priorCount, priorCount, priorCount, 9 + priorCount}));
         assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[0].getParameters(), new double[]{priorCount, priorCount, priorCount, priorCount}));
 
-        assert (nbmn.getFeatureNodes().get(0).getParameters()[26] == 9 + priorCount);
+        System.out.println(Arrays.toString(nbmn.getFeatureNodes().get(0).getParameters()));
+        assert (nbmn.getFeatureNodes().get(0).getParameters()[RVCreater.DEFAULT_NUM_INT_VALS + 1] == 9 + priorCount);
 
     }
 
