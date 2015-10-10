@@ -1,4 +1,4 @@
-(function(){
+(function() {
   /**
    * @ngdoc directive
    * @name SkrollApp.directive:skObserveScroll
@@ -13,8 +13,8 @@
   function skObserverScroll($document, $interval, $window, LHSModel, scrollObserverService) {
 
     var directive = {
-      restricted  : 'A',
-      link        : link
+      restricted: 'A',
+      link: link
     }
 
     return directive;
@@ -61,10 +61,10 @@
         //calculate offsets for headers
         //iterate over each term to find Y offset
         var offsets = _.map(terms, function(term) {
-          return  $("#"+term.paragraphId).offset().top;
+          return $("#" + term.paragraphId).offset().top;
         });
 
-        for(var ii = 0; ii < terms.length; ii++) {
+        for (var ii = 0; ii < terms.length; ii++) {
           if (offsets[ii] == currentY) {
             //found it
             headerPara = terms[ii].paragraphId;

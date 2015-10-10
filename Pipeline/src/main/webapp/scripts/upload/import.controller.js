@@ -33,13 +33,13 @@
       .then(function(response) {
         documentModel.documentId = response.documentId
         documentModel.targetHtml = response.html;
-        if ( (response.inCache == null) || (response.inCache == 'false')) {
-          response.inCache = false;         
+        if ((response.inCache == null) || (response.inCache == 'false')) {
+          response.inCache = false;
         } else {
           response.inCache = true;
         }
         if (response.inCache) {
-          documentModel.isPartiallyParsed = false;  
+          documentModel.isPartiallyParsed = false;
         } else {
           documentModel.isPartiallyParsed = true;
         }

@@ -49,12 +49,12 @@ angular
 			templateUrl: 'scripts/landing/landing.tmpl.html',
 			controller: 'LandingCtrl',
 			controllerAs: 'ctrl'
-		}).		
+		}).
 		when('/search/:searchText', {
 			templateUrl: 'scripts/landing/landing.tmpl.html',
 			controller: 'LandingCtrl',
 			controllerAs: 'ctrl'
-		}).		
+		}).
 		when('/list', {
 			templateUrl: 'scripts/landing/doclist.tmpl.html',
 			controller: 'ContentCtrl',
@@ -67,11 +67,11 @@ angular
 		when('/trainer', {
 			templateUrl: 'scripts/core/app.core.tmpl.html',
 			controller: 'EnableTrainerToolbarCtrl'
-		}).		
+		}).
 		when('/view/docId/:docId', {
 			templateUrl: 'scripts/core/app.core.tmpl.html',
 			controller: 'ContentCtrl',
-			controllerAs: 'ctrl',			
+			controllerAs: 'ctrl',
 			reloadOnSearch: false
 		}).
 		when('/view/docId/:docId/linkId/:linkId', {
@@ -79,7 +79,7 @@ angular
 			controller: 'ContentCtrl',
 			controllerAs: 'ctrl',
 			reloadOnSearch: false
-		}).		
+		}).
 		otherwise({
 			redirectTo: '/list'
 		});

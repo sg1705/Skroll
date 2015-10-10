@@ -1,60 +1,60 @@
-(function(){
-	'use strict';
-
-	/**
-	 * @ngdoc function
-	 * @name skrollApp.controller:TocCtrl
-	 * @description
-	 * # TocCtrl
-	 * Controller of the TocCtrl
-	 */
-
-	angular
-		.module('app.toc')
-		.controller('TocCtrl', ['LHSModel', 'scrollObserverService', TocCtrl]);
+(function() {
+  'use strict';
 
   /**
-  * Controller for the directive
-  **/
+   * @ngdoc function
+   * @name skrollApp.controller:TocCtrl
+   * @description
+   * # TocCtrl
+   * Controller of the TocCtrl
+   */
+
+  angular
+    .module('app.toc')
+    .controller('TocCtrl', ['LHSModel', 'scrollObserverService', TocCtrl]);
+
+  /**
+   * Controller for the directive
+   **/
   function TocCtrl(LHSModel, scrollObserverService, $analytics) {
     //-- private variables
-    var ctrl      = this,
-    		LHSModel	= LHSModel;
+    var ctrl = this,
+      LHSModel = LHSModel;
 
     //-- public variables
-    ctrl.classes            = LHSModel.classes;
-    ctrl.smodel             = LHSModel.smodel;
-    ctrl.sections           = LHSModel.sections;
+    ctrl.classes = LHSModel.classes;
+    ctrl.smodel = LHSModel.smodel;
+    ctrl.sections = LHSModel.sections;
 
     //-- public methods
-    ctrl.toggleSection      = toggleSection;
+    ctrl.toggleSection = toggleSection;
 
     //-- register for notification
     scrollObserverService.register(observeScroll);
 
     /**
-    * Toggles the section when user clicks on close/open in TOC
-    **/
+     * Toggles the section when user clicks on close/open in TOC
+     **/
     function toggleSection(index) {
       ctrl.classes[index].isSelected = !this.classes[index].isSelected;
     }
 
     /**
-    * Callback to handle a scroll event
-    **/
+     * Callback to handle a scroll event
+     **/
     function observeScroll(paraId) {
-      
+
       if (paraId == null)
-      	return null;
+        return null;
       ctrl.smodel.visibleHeaders = new Array();
-      var headerItems = LHSModel.getParaFromClassIdRange(2,4);
+      var headerItems = LHSModel.getParaFromClassIdRange(2, 4);
       if (headerItems.length > 0) {
         //convert clicked paragraphId to integer
         var levelsPara = [];
         var paraStr = paraId.split("_")[1];
         var paraIdInt = parseInt(paraStr);
         var nearestHeader;
-        
+
         //convert header paragraphIds to itegrations
         for (var ii = 0; ii < headerItems.length; ii++) {
           var str = headerItems[ii].paragraphId.split("_")[1];
@@ -75,7 +75,7 @@
           }
           nearestHeader = headerItems[ii].paragraphId;
         }
-      	ctrl.smodel.visibleHeaders.push(nearestHeader);	
+        ctrl.smodel.visibleHeaders.push(nearestHeader);
       }
     }
 

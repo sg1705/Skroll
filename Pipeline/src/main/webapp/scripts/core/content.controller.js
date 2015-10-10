@@ -20,15 +20,15 @@
     var vm = this;
 
     //-- public variables
-    vm.isDocAvailable   = documentModel.isDocAvailable;
-    vm.documentModel    = documentModel;
-    vm.userDocumentIds  = [];
-    vm.smodel           = LHSModel.smodel;
+    vm.isDocAvailable = documentModel.isDocAvailable;
+    vm.documentModel = documentModel;
+    vm.userDocumentIds = [];
+    vm.smodel = LHSModel.smodel;
 
     //-- public methods
-    vm.getDocumentIds   = getDocumentIds;
-    vm.loadDocument     = loadDocument;
-    vm.toggleSidenav    = toggleSidenav;
+    vm.getDocumentIds = getDocumentIds;
+    vm.loadDocument = loadDocument;
+    vm.toggleSidenav = toggleSidenav;
     vm.overrideControlF = overrideControlF;
 
 
@@ -61,7 +61,7 @@
     };
 
     function overrideControlF($event) {
-      if ((event.keyCode == 114) || (event.ctrlKey && event.keyCode == 70)) { 
+      if ((event.keyCode == 114) || (event.ctrlKey && event.keyCode == 70)) {
         // Block CTRL + F event
         event.preventDefault();
         searchService.focusOnSearchBox();
@@ -133,7 +133,7 @@
 //       };
 
 //       $scope.overrideControlF = function($event) {
-//         if ((event.keyCode == 114) || (event.ctrlKey && event.keyCode == 70)) { 
+//         if ((event.keyCode == 114) || (event.ctrlKey && event.keyCode == 70)) {
 //           // Block CTRL + F event
 //           event.preventDefault();
 //           searchService.focusOnSearchBox();

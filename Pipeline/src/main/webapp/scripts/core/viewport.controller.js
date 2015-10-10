@@ -1,4 +1,4 @@
-(function(){
+(function() {
   /**
    * @ngdoc function
    * @name skrollApp.controller:ViewPortCtrl
@@ -13,21 +13,21 @@
     .controller('ViewPortCtrl', ViewPortCtrl);
 
   /* @ngInject */
-  function ViewPortCtrl(selectionService, $log, $routeParams, 
-                        scrollObserverService, clickObserverService, 
-                        textSelectionObserverService,
-                        mouseEnterObserverService, mouseLeaveObserverService) {
+  function ViewPortCtrl(selectionService, $log, $routeParams,
+    scrollObserverService, clickObserverService,
+    textSelectionObserverService,
+    mouseEnterObserverService, mouseLeaveObserverService) {
 
     //-- private variables
     var vm = this;
 
 
     //-- public methods
-    vm.mouseDown    = mouseDown;
-    vm.mouseUp      = mouseUp;
-    vm.mouseMove    = mouseMove;
-    vm.paraClicked  = paraClicked;
-    vm.inferParagraphId   = inferParagraphId;
+    vm.mouseDown = mouseDown;
+    vm.mouseUp = mouseUp;
+    vm.mouseMove = mouseMove;
+    vm.paraClicked = paraClicked;
+    vm.inferParagraphId = inferParagraphId;
     vm.highlightParagraph = highlightParagraph;
 
     //-- initialization
@@ -55,9 +55,9 @@
       //should mouse click handle it
       //find out if this is a selection
       if (rangy.getSelection().toString() != '') {
-        //rangy.getSelection().expand("word", { trim: true });  
+        //rangy.getSelection().expand("word", { trim: true });
       }
-      
+
       var selection = window.getSelection().toString();
       if ((selection == '') || (selection == undefined))
         return;
@@ -69,7 +69,10 @@
         return;
       //save selection
       selectionService.saveSelection(paraId, selection);
-      textSelectionObserverService.notify({'paraId' : paraId, 'selectedText' : selection});
+      textSelectionObserverService.notify({
+        'paraId': paraId,
+        'selectedText': selection
+      });
     }
 
 
@@ -117,7 +120,7 @@
         return $(parents[0]).attr('id');
       } else {
 
-        if ((children.length == 0) && (parents.length ==1)) {
+        if ((children.length == 0) && (parents.length == 1)) {
           return $(parents[0]).attr('id');
         }
         return null;

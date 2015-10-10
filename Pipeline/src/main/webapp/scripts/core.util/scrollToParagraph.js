@@ -1,4 +1,4 @@
-(function(){
+(function() {
 
   'use strict';
 
@@ -12,7 +12,7 @@
     .module('app.core.util')
     .directive('scrollToParagraph', scrollToParagraph);
 
-  /* @ngInject */  
+  /* @ngInject */
   function scrollToParagraph(selectionService, scrollObserverService, $analytics) {
 
     var directive = {
@@ -23,11 +23,14 @@
     return directive;
 
     //////////
-    
+
     function link(scope, element, attrs) {
       var paragraphId = attrs.scrollToParagraph;
       var para = $(element).click(function() {
-        $analytics.eventTrack(documentModel.documentId, { category: 'toc.navClick', label: paragraphId });
+        $analytics.eventTrack(documentModel.documentId, {
+          category: 'toc.navClick',
+          label: paragraphId
+        });
         scrollObserverService.notify(paragraphId);
         selectionService.scrollToParagraph(paragraphId);
         scope.$apply();
