@@ -13,7 +13,6 @@ public class Category {
     public static final int TOC_1 = 2;
     public static final int TOC_2 = 3;
     public static final int USER_TOC = 4;
-    public static final int TOC_3 = 5;
 
     //Document Type
     public static final int DOCTYPE_NONE = 100;
