@@ -56,7 +56,7 @@ md-sidenav#navframe.md-locked-open {
 *  Landing search
 */
 .sk-landing-search {
-  height: 100%;
+  padding-top: 100px;
   width: 100%;
   background-color: #f6f6f6; }
   .sk-landing-search .search-frame {
@@ -125,14 +125,11 @@ sk-lhs ul.toc {
   margin: 0px;
   list-style: none;
   padding: 0; }
-
 sk-lhs .toc li {
   list-style-position: inside; }
-
 sk-lhs .toc :hover {
   color: blue;
   cursor: pointer; }
-
 sk-lhs .toc .level-1 {
   margin-bottom: 5px;
   font-size: 16px;
@@ -143,7 +140,6 @@ sk-lhs .toc .level-1 {
     border-color: rgba(32, 32, 32, 0.45); }
   sk-lhs .toc .level-1 .term {
     margin-left: 7px; }
-
 sk-lhs .toc .level-2 {
   padding-left: 15px;
   font-size: 14px;
@@ -164,3 +160,5 @@ sk-lhs .toc .level-2 {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   max-height: 42px; }
+
+/*# sourceMappingURL=app.css.map */
