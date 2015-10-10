@@ -7,7 +7,7 @@
               ng-swipe-left="ctrl.toggleSidenav('left')">
 
     <md-toolbar class="skroll-toolbar">
-      <sk-search ng-controller="SearchCtrl as ctrl"/>
+      <sk-search ng-controller="SearchCtrl as ctrl" feature-flag="search.old" />
     </md-toolbar>
 
     <md-content ng-class="{'sk-lhs-search-hover': ctrl.smodel.hover, 'sk-lhs-hover': !ctrl.smodel.hover}" md-scroll-y

@@ -23,6 +23,11 @@
         "active": false,
         "name": "flag to create shortlinsk",
         "description": "no description"
+      }, {
+        "key": "search.old",
+        "active": false,
+        "name": "Use old autocomplete based search",
+        "description": "no description"
       }];
       featureFlags.set(flags);
     });
