@@ -22,7 +22,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
     private static final int TEST_DEF_CLASSIFIER_ID = 2;
     ModelRVSetting setting = new DefModelRVSetting(TEST_DEF_CATEGORY_IDS);
 
-    TrainingDocumentAnnotatingModel tModel = new TrainingDocumentAnnotatingModel(TEST_DEF_CLASSIFIER_ID,setting);
+    TrainingTextAnnotatingModel tModel = new TrainingTextAnnotatingModel(TEST_DEF_CLASSIFIER_ID, setting);
 
     //    String testingFileName = "src/test/resources/classifier/smaller-indenture.html";
 //    String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/mini-indenture.html";
@@ -35,7 +35,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
 //
 //    Document doc = TestHelper.setUpTestDoc();
 
-    ProbabilityDocumentAnnotatingModel model;
+    ProbabilityTextAnnotatingModel model;
     boolean doneSetup=false;
 
     RandomVariable paraType = RVCreater.createDiscreteRVWithComputer(new ParaInCategoryComputer(Category.DEFINITION), "paraTypeIsCategory-" + Category.DEFINITION);
@@ -47,9 +47,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
         doneSetup = true;
 
         tModel.updateWithDocument(doc);
-        model = new ProbabilityDocumentAnnotatingModel(TEST_DEF_CLASSIFIER_ID, tModel.getNbmnModel(),
-                tModel.getHmm(),
-                tModel.getSecNbmnModel(),
+        model = new ProbabilityTextAnnotatingModel(tModel.getNbmnModel(),
                 tModel.getHmm(),
                 doc,
                 new DefModelRVSetting(TEST_DEF_CATEGORY_IDS)

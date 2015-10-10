@@ -23,7 +23,7 @@ public class TrainingDocumentAnnotatingModelTest{
     private static final List<Integer> TEST_DEF_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE,Category.DEFINITION));
     private static final int TEST_DEF_CLASSIFIER_ID = 2;
     ModelRVSetting setting = new DefModelRVSetting(TEST_DEF_CATEGORY_IDS);
-    TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel(TEST_DEF_CLASSIFIER_ID,setting);
+    TrainingTextAnnotatingModel model = new TrainingTextAnnotatingModel(TEST_DEF_CLASSIFIER_ID, setting);
     Document document;
     @Before
     public void setup() throws Exception {
@@ -78,7 +78,7 @@ public class TrainingDocumentAnnotatingModelTest{
 
         ModelRVSetting setting = new DefModelRVSetting(TEST_DEF_CATEGORY_IDS);
 
-        TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel(TEST_DEF_CLASSIFIER_ID,setting);
+        TrainingTextAnnotatingModel model = new TrainingTextAnnotatingModel(TEST_DEF_CLASSIFIER_ID, setting);
         //Document doc = makeTrainingDoc(file);
 
         List<CoreMap> processedParas = DocProcessor.processParas(document);
@@ -91,7 +91,7 @@ public class TrainingDocumentAnnotatingModelTest{
         assert (Arrays.deepEquals(docFeatureValues, new int[][]{{0, 0}, {0, 1}, {0, 0}, {0, 0}, {0, 0}}));
     }
 
-    public TrainingDocumentAnnotatingModel getModel() {
+    public TrainingTextAnnotatingModel getModel() {
         return model;
     }
 }

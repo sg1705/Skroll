@@ -4,22 +4,15 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skroll.analyzer.data.NBMNData;
 import com.skroll.analyzer.model.RandomVariable;
-import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
-import com.skroll.analyzer.model.bn.NBMNTuple;
 import com.skroll.analyzer.model.bn.NBTrainingHelper;
 import com.skroll.analyzer.model.bn.NaiveBayesWithMultiNodes;
 import com.skroll.analyzer.model.bn.config.NBMNConfig;
-import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
-import com.skroll.document.DocumentHelper;
-import com.skroll.document.Token;
-import com.skroll.document.annotation.CategoryAnnotationHelper;
-import com.skroll.document.annotation.CoreAnnotations;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * Base class for training document model.
@@ -29,7 +22,7 @@ import java.util.*;
  *
  */
 
-public class TrainingDocumentAnnotatingModel extends TrainingTextAnnotatingModel {
+public class TrainingDocumentTOCAnnotatingModel extends TrainingTextAnnotatingModel {
 
     @JsonProperty("secModel")
     TrainingTextAnnotatingModel secModel = null;
@@ -41,16 +34,16 @@ public class TrainingDocumentAnnotatingModel extends TrainingTextAnnotatingModel
     HiddenMarkovModel secHmm = null;
 
 
-    public TrainingDocumentAnnotatingModel( int id, ModelRVSetting setting) {
+    public TrainingDocumentTOCAnnotatingModel(int id, TOCModelRVSetting setting) {
         this(id, setting.getWordType(), setting.getWordFeatures(), setting.getNbmnConfig(), setting);
         this.id =id;
         modelRVSetting = setting;
     }
 
-    private TrainingDocumentAnnotatingModel(int id, RandomVariable wordType,
-                                           List<RandomVariable> wordFeatures,
-                                            NBMNConfig nbmnConfig,
-                                            ModelRVSetting modelRVSetting
+    private TrainingDocumentTOCAnnotatingModel(int id, RandomVariable wordType,
+                                               List<RandomVariable> wordFeatures,
+                                               NBMNConfig nbmnConfig,
+                                               TOCModelRVSetting modelRVSetting
     ) {
 
         this(id, NBTrainingHelper.createTrainingNBMN(nbmnConfig),
@@ -64,14 +57,14 @@ public class TrainingDocumentAnnotatingModel extends TrainingTextAnnotatingModel
     }
 
     @JsonCreator
-    public TrainingDocumentAnnotatingModel(
+    public TrainingDocumentTOCAnnotatingModel(
             @JsonProperty("id") int id,
             @JsonProperty("nbmnModel") NaiveBayesWithMultiNodes nbmnModel,
             @JsonProperty("secNbmnModel") NaiveBayesWithMultiNodes secNbmnModel,
             @JsonProperty("wordType") RandomVariable wordType,
             @JsonProperty("wordFeatures") List<RandomVariable> wordFeatures,
             @JsonProperty("nbmnConfig") NBMNConfig nbmnConfig,
-            @JsonProperty("modelRVSetting") ModelRVSetting modelRVSetting){
+            @JsonProperty("modelRVSetting") TOCModelRVSetting modelRVSetting) {
         this.id = id;
         this.nbmnConfig = nbmnConfig;
         this.nbmnModel = nbmnModel;

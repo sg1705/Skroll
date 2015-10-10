@@ -1,21 +1,27 @@
 package com.skroll.analyzer.model.applicationModel;
 
 import com.skroll.analyzer.model.RandomVariable;
+import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
 import com.skroll.analyzer.model.bn.NBInferenceHelper;
 import com.skroll.analyzer.model.bn.NaiveBayesWithMultiNodes;
 import com.skroll.analyzer.model.bn.config.NBMNConfig;
+import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
+import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.util.Visualizer;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
+ * Probability model for annotating the Document headings.
+ * todo: should probably make it more general to handle lower level TOC model recursively. But it may not worth the effort needed at this point.
  * Created by wei2learn on 2/16/2015.
  */
-public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatingModel {
+public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnotatingModel {
 
     static final int SEC_NUM_ITERATION = 5;
     static double[] SEC_ANNOTATING_THRESHOLD = {0, .99999};
@@ -25,15 +31,12 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
     ProbabilityTextAnnotatingModel secModel = null;
 
 
-
-
-
-    public ProbabilityDocumentAnnotatingModel(int id,
-                                              NaiveBayesWithMultiNodes tnbm,
-                                              HiddenMarkovModel hmm,
-                                              NaiveBayesWithMultiNodes secTnbm,
-                                              HiddenMarkovModel secHmm,
-                                              Document doc, ModelRVSetting setting) {
+    public ProbabilityDocumentTOCAnnotatingModel(int id,
+                                                 NaiveBayesWithMultiNodes tnbm,
+                                                 HiddenMarkovModel hmm,
+                                                 NaiveBayesWithMultiNodes secTnbm,
+                                                 HiddenMarkovModel secHmm,
+                                                 Document doc, TOCModelRVSetting setting) {
         this(id,
                 tnbm,
                 hmm,
@@ -43,22 +46,20 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
                 setting,
                 setting.getWordType(),
                 setting.getWordFeatures(),
-                setting.getNbmnConfig(),
-                setting.getLowLevelNbmnConfig()
+                setting.getNbmnConfig()
         );
     }
 
-    public ProbabilityDocumentAnnotatingModel(int id,
-                                              NaiveBayesWithMultiNodes tnbm,
-                                              HiddenMarkovModel hmm,
-                                              NaiveBayesWithMultiNodes secTnbm,
-                                              HiddenMarkovModel secHmm,
-                                              Document doc,
-                                              ModelRVSetting setting,
-                                              RandomVariable wordType,
-                                              List<RandomVariable> wordFeatures,
-                                              NBMNConfig nbmnConfig,
-                                              NBMNConfig secNbmnConfig
+    public ProbabilityDocumentTOCAnnotatingModel(int id,
+                                                 NaiveBayesWithMultiNodes tnbm,
+                                                 HiddenMarkovModel hmm,
+                                                 NaiveBayesWithMultiNodes secTnbm,
+                                                 HiddenMarkovModel secHmm,
+                                                 Document doc,
+                                                 TOCModelRVSetting setting,
+                                                 RandomVariable wordType,
+                                                 List<RandomVariable> wordFeatures,
+                                                 NBMNConfig nbmnConfig
     ) {
         super.nbmnConfig = nbmnConfig;
         super.wordType = wordType;
@@ -74,21 +75,19 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
         preprocessData();
 
         // create child model if needed.
-        if (secNbmnConfig != null) {
+        List<Integer> lowerCatIds = setting.getLowLevelCategoryIds();
+        if (lowerCatIds != null) {
             this.secNbmn = NBInferenceHelper.createLogProbNBMN(secTnbm);
             this.secHmm = secHmm;
             secHmm.updateProbabilities();
-            ModelRVSetting lowerTOCSetting = new TOCModelRVSetting(modelRVSetting.getLowLevelCategoryIds(), null);
+            ModelRVSetting lowerTOCSetting = new TOCModelRVSetting(lowerCatIds, null);
             this.secModel = new ProbabilityTextAnnotatingModel(
                     secNbmn,
                     secHmm,
                     null, // paragraphs will be set later once the sections are determined.
                     null,
                     data,
-                    lowerTOCSetting,
-                    wordType,
-                    wordFeatures,
-                    lowerTOCSetting.getNbmnConfig()
+                    lowerTOCSetting
             );
         }
 
@@ -103,36 +102,39 @@ public class ProbabilityDocumentAnnotatingModel extends ProbabilityTextAnnotatin
         data = DocProcessor.getParaDataFromDoc(doc, nbmnConfig);
     }
 
+
+    void annotateParaProbs() {
+        for (int p = 0; p < processedParagraphs.size(); p++) {
+            double[] paraProbs = paragraphCategoryBelief[p].clone();
+            BNInference.convertLogBeliefToProb(paraProbs);
+            processedParagraphs.get(p).set(CoreAnnotations.TOCParaProbsDocLevel.class, new ArrayList(
+                    Arrays.stream(paraProbs)
+                            .boxed()
+                            .collect(Collectors.toList())
+            ));
+        }
+    }
     @Override
     public void annotateParagraphs() {
 
         super.annotateParagraphs();
-        if (modelRVSetting.getLowLevelCategoryIds() == null) return;
+        annotateParaProbs(CoreAnnotations.TOCParaProbsDocLevel.class);
+
+        List<Integer> lowerCatIds = ((TOCModelRVSetting) modelRVSetting).getLowLevelCategoryIds();
+        if (lowerCatIds == null) return;
 
         List<List<List<CoreMap>>> sectionsList = DocProcessor.createSections(paragraphs, processedParagraphs, getParaCategory());
         List<List<CoreMap>> sections = sectionsList.get(0);
         List<List<CoreMap>> processedSections = sectionsList.get(1);
 
-        // todo: should probably call ModelRVSetting constructor to make it more general.
-        ModelRVSetting lowerTOCSetting = new TOCModelRVSetting(modelRVSetting.getLowLevelCategoryIds(), null);
         for (int i = 0; i < sections.size(); i++) {
-//            ProbabilityTextAnnotatingModel secModel = new ProbabilityTextAnnotatingModel(
-//                    secNbmn,
-//                    secHmm,
-//                    sections.get(i),
-//                    processedSections.get(i),
-//                    data,
-//                    lowerTOCSetting,
-//                    wordType,
-//                    wordFeatures,
-//                    lowerTOCSetting.getNbmnConfig()
-//            );
             secModel.setParagraphs(sections.get(i));
             secModel.setProcessedParagraphs(processedSections.get(i));
             secModel.setNumIterations(4);
             secModel.setAnnotatingThreshold(SEC_ANNOTATING_THRESHOLD);
             secModel.initialize();
             secModel.annotateParagraphs();
+            annotateParaProbs(CoreAnnotations.TOCParaProbsSecLevel.class);
         }
     }
 

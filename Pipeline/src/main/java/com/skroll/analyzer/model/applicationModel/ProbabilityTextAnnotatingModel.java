@@ -13,9 +13,11 @@ import com.skroll.analyzer.model.bn.node.NodeInferenceHelper;
 import com.skroll.analyzer.model.bn.node.WordNode;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
 import com.skroll.document.CoreMap;
+import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
+import com.skroll.document.annotation.TypesafeMap;
 import com.skroll.util.Visualizer;
 
 import java.util.*;
@@ -51,19 +53,32 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
     ProbabilityTextAnnotatingModel() {
 
     }
-    public ProbabilityTextAnnotatingModel(
-            NaiveBayesWithMultiNodes nbmn,
+
+    public ProbabilityTextAnnotatingModel(NaiveBayesWithMultiNodes nbmn,
+                                          HiddenMarkovModel hmm,
+                                          Document doc,
+                                          ModelRVSetting setting) {
+        this(nbmn, hmm, doc.getParagraphs(),
+                DocProcessor.processParas(doc), // both processed Paras and data should be already stored in cache, so computation here should be fast.
+                DocProcessor.getParaDataFromDoc(doc, setting.getNbmnConfig()),
+                setting);
+        this.initialize();
+    }
+
+    // constructor used by lower TOC model.
+    // todo: It might be better to have a separate class for lower TOC model, or make TOCModel more general to handle lower TOC model.
+    // The only difficulty with making TOCModel more general is that probability annotation also need to be made more general,
+    // which may create more complexity not really worth the effort needed at this point.
+    public ProbabilityTextAnnotatingModel(NaiveBayesWithMultiNodes nbmn,
                                           HiddenMarkovModel hmm,
                                           List<CoreMap> paragraphs,
-            List<CoreMap> processedParagraphs,
-            NBMNData data,
-                                          ModelRVSetting setting,
-                                          RandomVariable wordType,
-                                          List<RandomVariable> wordFeatures,
-                                          NBMNConfig nbmnConfig) {
-        super.nbmnConfig = nbmnConfig;
-        super.wordType = wordType;
-        super.wordFeatures = wordFeatures;
+                                          List<CoreMap> processedParagraphs,
+                                          NBMNData data,
+                                          ModelRVSetting setting
+    ) {
+        super.nbmnConfig = setting.getNbmnConfig();
+        super.wordType = setting.getWordType();
+        super.wordFeatures = setting.getWordFeatures();
         super.modelRVSetting = setting;
         this.paragraphs = paragraphs;
         this.processedParagraphs = processedParagraphs;
@@ -325,7 +340,6 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
             CoreMap paragraph = paragraphs.get(p);
             if (DocProcessor.isParaObserved(paragraph)) continue; // skip observed paragraphs
             RVValues.clearValue(paraCategory, paragraph);
-//            DocumentAnnotatingHelper.clearParagraphCateoryAnnotation(paragraph, paraCategory);
             if (paragraph.getTokens().size() == 0)
                 continue;
             CoreMap processedPara = processedParagraphs.get(p);
@@ -342,34 +356,18 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
 
             //todo: a hack for TOC and DocType annotation. should implement HMM for TOC and annotate base on HMM result
             if (this.modelRVSetting instanceof TOCModelRVSetting || this.modelRVSetting instanceof DocTypeModelRVSetting) {
-                int maxIndex = BNInference.maxIndex(logPrioProbs);
-                double[] paraProbs = logPrioProbs.clone();
-                BNInference.convertLogBeliefToProb(paraProbs);
-                if (paraProbs[maxIndex] > annotatingThreshold[maxIndex])
-                    RVValues.addTerms(paraCategory, paragraph, tokens, maxIndex);
-
-
-                // todo: if we need to do this for more model types, should implement a hashmap annotating class
-                if (this instanceof ProbabilityDocumentAnnotatingModel) {
-                    processedPara.set(CoreAnnotations.TOCParaProbsDocLevel.class, new ArrayList(
-                                    Arrays.stream(paraProbs)
-                                            .boxed()
-                                            .collect(Collectors.toList())
-                            )
-                    );
-                } else if (this instanceof ProbabilityTextAnnotatingModel) { // can only be sec model now
-                    processedPara.set(CoreAnnotations.TOCParaProbsSecLevel.class, new ArrayList(
-                                    Arrays.stream(paraProbs)
-                                            .boxed()
-                                            .collect(Collectors.toList())
-                            )
-                    );
-
-                }
-
-
+                annotateParagraph(paragraph, paraCategory, tokens, logPrioProbs);
                 if (true) continue;
             }
+
+            annotateTermsWithHMM(paragraph, processedPara, paraCategory, tokens, logPrioProbs);
+
+        }
+
+    }
+
+    void annotateTermsWithHMM(CoreMap paragraph, CoreMap processedPara, RandomVariable paraCategory,
+                              List<Token> tokens, double[] logPrioProbs) {
 
             List<String> words = DocumentHelper.getTokenString(tokens);
 
@@ -389,7 +387,7 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
 
             //assume a definition paragraph always has the first word being a defined term.
             // can do this check after naive bayes to make it faster.
-            if (states[0] == 0) continue;
+        if (states[0] == 0) return;
 
             List<Token> terms = new ArrayList<>();
 
@@ -409,10 +407,32 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
 //                DocumentAnnotatingHelper.addParagraphTermAnnotation(paragraph, paraCategory, terms);
             }
 
-        }
+    }
+
+    void annotateParagraph(CoreMap paragraph, RandomVariable paraCategory,
+                           List<Token> tokens, double[] logPrioProbs) {
+        int maxIndex = BNInference.maxIndex(logPrioProbs);
+        double[] paraProbs = logPrioProbs.clone();
+        BNInference.convertLogBeliefToProb(paraProbs);
+        if (paraProbs[maxIndex] > annotatingThreshold[maxIndex])
+            RVValues.addTerms(paraCategory, paragraph, tokens, maxIndex);
 
     }
 
+
+    // annotate paragraphs with probabilities for debugging/displaying purpose
+    // todo: if we need to do this for more model types, should probably implement a hashmap annotating class
+    public void annotateParaProbs(Class key) {
+        for (int p = 0; p < processedParagraphs.size(); p++) {
+            double[] paraProbs = paragraphCategoryBelief[p].clone();
+            BNInference.convertLogBeliefToProb(paraProbs);
+            processedParagraphs.get(p).set(key, new ArrayList(
+                    Arrays.stream(paraProbs)
+                            .boxed()
+                            .collect(Collectors.toList())
+            ));
+        }
+    }
     @JsonIgnore
     public double[][] getParagraphCategoryBelief() {
         return paragraphCategoryBelief;

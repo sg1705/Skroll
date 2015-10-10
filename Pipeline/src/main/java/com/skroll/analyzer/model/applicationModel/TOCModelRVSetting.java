@@ -15,6 +15,9 @@ import java.util.List;
  */
 public class TOCModelRVSetting extends ModelRVSetting {
 
+    NBMNConfig lowLevelNbmnConfig = null;
+    List<Integer> lowLevelCategoryIds = null;
+
     static final List<RandomVariable> DEFAULT_WORD_FEATURES = Arrays.asList(
             RVCreater.createRVFromAnnotation(CoreAnnotations.InQuotesAnnotation.class),
             RVCreater.createRVFromAnnotation(CoreAnnotations.IsUnderlineAnnotation.class)
@@ -42,11 +45,38 @@ public class TOCModelRVSetting extends ModelRVSetting {
     );
 
     public TOCModelRVSetting(List<Integer> categoryIds, List<Integer> lowLevelCategoryIds) {
-        super(  DEFAULT_WORD_FEATURES,
+        this(DEFAULT_WORD_FEATURES,
                 DEFAULT_PARA_FEATURE_VARS, DEFAULT_SHARED_PARA_FEATURE_VARS,
                 DEFAULT_WORD_VARS,
                 categoryIds,
-                lowLevelCategoryIds);
+                lowLevelCategoryIds
+        );
+
+
+    }
+
+    public TOCModelRVSetting(
+            List<RandomVariable> wordFeatures,
+            List<RandomVariable> paraFeatureVars,
+            List<RandomVariable> paraDocFeatureVars,
+            List<RandomVariable> wordVars,
+            List<Integer> categoryIds,
+            List<Integer> lowLevelCategoryIds
+    ) {
+        super(wordFeatures,
+                paraFeatureVars, paraDocFeatureVars,
+                wordVars,
+                categoryIds
+        );
+        this.lowLevelCategoryIds = lowLevelCategoryIds;
+
+        if (lowLevelCategoryIds != null) {
+            RandomVariable lowLevelParaType = RVCreater.createDiscreteRVWithComputer(
+                    new ParaCategoryComputer(modelClassAndWeightStrategy, lowLevelCategoryIds), "paraTypeIsModelID-" + lowLevelCategoryIds);
+            lowLevelNbmnConfig = new NBMNConfig(lowLevelParaType, paraFeatureVars, paraDocFeatureVars,
+                    RVCreater.createNBMNDocFeatureRVs(paraDocFeatureVars, lowLevelParaType, String.valueOf(lowLevelCategoryIds.toString())), wordVars);
+            RVValues.addValueSetter(lowLevelParaType, new RVValueSetter(lowLevelCategoryIds, CoreAnnotations.CategoryAnnotations.class));
+        }
     }
 
     @JsonCreator
@@ -58,7 +88,9 @@ public class TOCModelRVSetting extends ModelRVSetting {
             @JsonProperty("categoryIds") List<Integer> categoryIds,
             @JsonProperty("lowLevelCategoryIds") List<Integer> lowLevelCategoryIds
     ) {
-        super(nbmnConfig, wordType, wordFeatures, categoryIds, lowLevelCategoryIds);
+        super(nbmnConfig, wordType, wordFeatures, categoryIds);
+        this.lowLevelCategoryIds = lowLevelCategoryIds;
+
     }
 
     @Override
@@ -68,4 +100,14 @@ public class TOCModelRVSetting extends ModelRVSetting {
         UnManagedCategoryStrategy unManagedCategoryStrategy = new DefaultUnManagedCategoryStrategy();
         this.modelClassAndWeightStrategy = new DefaultModelClassAndWeightStrategy(managedCategoryStrategy, unManagedCategoryStrategy);
     }
+
+
+    public List<Integer> getLowLevelCategoryIds() {
+        return lowLevelCategoryIds;
+    }
+
+    public NBMNConfig getLowLevelNbmnConfig() {
+        return lowLevelNbmnConfig;
+    }
+
 }

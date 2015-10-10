@@ -4,7 +4,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.skroll.analyzer.model.applicationModel.DefModelRVSetting;
 import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
-import com.skroll.analyzer.model.applicationModel.TrainingDocumentAnnotatingModel;
+import com.skroll.analyzer.model.applicationModel.TrainingTextAnnotatingModel;
 import com.skroll.classifier.Category;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.classifier.factory.ModelFactory;
@@ -39,7 +39,7 @@ public class ObjectPersistUtilTest {
     public void testPersistReadObject() throws Exception {
 
         ModelRVSetting modelRVSetting = new DefModelRVSetting(TEST_DEF_CATEGORY_IDS);
-        TrainingDocumentAnnotatingModel model = modelFactory.createModel(ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID,modelRVSetting);
+        TrainingTextAnnotatingModel model = modelFactory.createModel(ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID, modelRVSetting);
 
         ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil("/tmp");
 
@@ -57,8 +57,8 @@ public class ObjectPersistUtilTest {
             fail("failed readObject");
         }
         //logger.info(obj.getClass().getName() + ":" + (PersistModelTestClass) obj);
-        if ( obj instanceof TrainingDocumentAnnotatingModel) {
-            TrainingDocumentAnnotatingModel readPersistModelTestClass = (TrainingDocumentAnnotatingModel)obj;
+        if (obj instanceof TrainingTextAnnotatingModel) {
+            TrainingTextAnnotatingModel readPersistModelTestClass = (TrainingTextAnnotatingModel) obj;
             logger.info(readPersistModelTestClass.toString());
             assert (readPersistModelTestClass.toString().contains("nbmnModel"));
         }

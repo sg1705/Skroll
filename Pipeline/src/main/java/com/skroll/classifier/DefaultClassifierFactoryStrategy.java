@@ -29,17 +29,29 @@ public class DefaultClassifierFactoryStrategy implements ClassifierFactoryStrate
         } catch (Exception e) {
             logger.warn("Document is not annotated with DocType Id, !!!! Assuming the docType is NONE in absence of DocType  !!!!");
         }
-        List<Integer> universal_classifier_ids = newArrayList(ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID, ClassifierFactory.UNIVERSAL_TOC_CLASSIFIER_ID);
+//        List<Integer> universal_classifier_ids = newArrayList(ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID, ClassifierFactory.UNIVERSAL_TOC_CLASSIFIER_ID);
+//        switch (docType) {
+//            case Category.TEN_K:
+//                return newArrayList(ClassifierFactory.TEN_K_DEF_CLASSIFIER_ID, ClassifierFactory.TEN_K_TOC_CLASSIFIER_ID,ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID, ClassifierFactory.UNIVERSAL_TOC_CLASSIFIER_ID);
+//            case Category.TEN_Q:
+//                return newArrayList(ClassifierFactory.TEN_Q_DEF_CLASSIFIER_ID, ClassifierFactory.TEN_Q_TOC_CLASSIFIER_ID,ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID, ClassifierFactory.UNIVERSAL_TOC_CLASSIFIER_ID);
+//            case Category.INDENTURE:
+//                return newArrayList(ClassifierFactory.INDENTURE_DEF_CLASSIFIER_ID, ClassifierFactory.INDENTURE_TOC_CLASSIFIER_ID,ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID, ClassifierFactory.UNIVERSAL_TOC_CLASSIFIER_ID);
+//            default:
+//                return universal_classifier_ids;
+//        }
+        List<Integer> universal_classifier_ids = newArrayList(ClassifierFactory.UNIVERSAL_TOC_CLASSIFIER_ID);
         switch (docType) {
             case Category.TEN_K:
-                return newArrayList(ClassifierFactory.TEN_K_DEF_CLASSIFIER_ID, ClassifierFactory.TEN_K_TOC_CLASSIFIER_ID,ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID, ClassifierFactory.UNIVERSAL_TOC_CLASSIFIER_ID);
+                return newArrayList(ClassifierFactory.TEN_K_TOC_CLASSIFIER_ID, ClassifierFactory.UNIVERSAL_TOC_CLASSIFIER_ID);
             case Category.TEN_Q:
-                return newArrayList(ClassifierFactory.TEN_Q_DEF_CLASSIFIER_ID, ClassifierFactory.TEN_Q_TOC_CLASSIFIER_ID,ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID, ClassifierFactory.UNIVERSAL_TOC_CLASSIFIER_ID);
+                return newArrayList(ClassifierFactory.TEN_Q_TOC_CLASSIFIER_ID, ClassifierFactory.UNIVERSAL_TOC_CLASSIFIER_ID);
             case Category.INDENTURE:
-                return newArrayList(ClassifierFactory.INDENTURE_DEF_CLASSIFIER_ID, ClassifierFactory.INDENTURE_TOC_CLASSIFIER_ID,ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID, ClassifierFactory.UNIVERSAL_TOC_CLASSIFIER_ID);
+                return newArrayList(ClassifierFactory.INDENTURE_TOC_CLASSIFIER_ID, ClassifierFactory.UNIVERSAL_TOC_CLASSIFIER_ID);
             default:
                 return universal_classifier_ids;
         }
+
     }
 
 }

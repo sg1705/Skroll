@@ -31,14 +31,12 @@ public class ModelRVSetting {
     public static final int NUM_WORDS_TO_USE_PER_PARAGRAPH = Integer.MAX_VALUE;
     @JsonProperty("nbmnConfig")
     NBMNConfig nbmnConfig;
-    NBMNConfig lowLevelNbmnConfig;
     @JsonProperty("wordType")
     RandomVariable wordType;
     @JsonProperty("wordFeatures")
     List<RandomVariable> wordFeatures;
     @JsonProperty("categoryIds")
     List<Integer> categoryIds=null;
-    List<Integer> lowLevelCategoryIds = null;
 
     /* Various strategies for the model */
     @JsonIgnore
@@ -66,26 +64,16 @@ public class ModelRVSetting {
                           List<RandomVariable> paraFeatureVars,
                           List<RandomVariable> paraDocFeatureVars,
                           List<RandomVariable> wordVars,
-                          List<Integer> categoryIds,
-                          List<Integer> lowLevelCategoryIds
+                          List<Integer> categoryIds
 
                           ) {
         initializeStrategies();
         this.categoryIds=categoryIds;
-        this.lowLevelCategoryIds = lowLevelCategoryIds;
         RandomVariable wordType = RVCreater.createWordLevelRVWithComputer(new WordIsInCategoryComputer(modelClassAndWeightStrategy, categoryIds), "wordIsInModelID-" + categoryIds);
         RandomVariable paraType = RVCreater.createDiscreteRVWithComputer(new ParaCategoryComputer(modelClassAndWeightStrategy,categoryIds), "paraTypeIsModelID-" + categoryIds);
         nbmnConfig = new NBMNConfig(paraType, paraFeatureVars, paraDocFeatureVars,
                 RVCreater.createNBMNDocFeatureRVs(paraDocFeatureVars, paraType, String.valueOf(categoryIds.toString())), wordVars);
         RVValues.addValueSetter(paraType, new RVValueSetter(categoryIds, CoreAnnotations.CategoryAnnotations.class));
-
-        if (lowLevelCategoryIds != null) {
-            RandomVariable lowLevelParaType = RVCreater.createDiscreteRVWithComputer(
-                    new ParaCategoryComputer(modelClassAndWeightStrategy, lowLevelCategoryIds), "paraTypeIsModelID-" + lowLevelCategoryIds);
-            lowLevelNbmnConfig = new NBMNConfig(lowLevelParaType, paraFeatureVars, paraDocFeatureVars,
-                    RVCreater.createNBMNDocFeatureRVs(paraDocFeatureVars, lowLevelParaType, String.valueOf(lowLevelCategoryIds.toString())), wordVars);
-            RVValues.addValueSetter(lowLevelParaType, new RVValueSetter(lowLevelCategoryIds, CoreAnnotations.CategoryAnnotations.class));
-        }
 
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;
@@ -98,15 +86,13 @@ public class ModelRVSetting {
             @JsonProperty("nbmnConfig") NBMNConfig nbmnConfig,
             @JsonProperty("wordType") RandomVariable wordType,
             @JsonProperty("wordFeatures") List<RandomVariable> wordFeatures,
-            @JsonProperty("categoryIds") List<Integer> categoryIds,
-            @JsonProperty("lowLevelCategoryIds") List<Integer> lowLevelCategoryIds
+            @JsonProperty("categoryIds") List<Integer> categoryIds
     ) {
         initializeStrategies();
         this.nbmnConfig = nbmnConfig;
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;
         this.categoryIds = categoryIds;
-        this.lowLevelCategoryIds = lowLevelCategoryIds;
     }
 
     /**
@@ -120,13 +106,6 @@ public class ModelRVSetting {
         return nbmnConfig;
     }
 
-    public List<Integer> getLowLevelCategoryIds() {
-        return lowLevelCategoryIds;
-    }
-
-    public NBMNConfig getLowLevelNbmnConfig() {
-        return lowLevelNbmnConfig;
-    }
 
     public RandomVariable getWordType() {
         return wordType;
