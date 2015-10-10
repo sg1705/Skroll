@@ -51,8 +51,17 @@ public class TrainingDocumentTOCAnnotatingModel extends TrainingTextAnnotatingMo
                 wordType, wordFeatures, nbmnConfig, modelRVSetting);
         if (modelRVSetting.getLowLevelNbmnConfig() == null) return;
 
-        ModelRVSetting lowerTOCSetting = new TOCModelRVSetting(ClassifierFactory.LOWER_TOC_CATEGORY_IDS, null);
-        secModel = new TrainingTextAnnotatingModel(0, secNbmnModel, wordType, wordFeatures, modelRVSetting.getLowLevelNbmnConfig(), lowerTOCSetting);
+        List<Integer> lowerCatIds = modelRVSetting.getLowLevelCategoryIds();
+        if (lowerCatIds != null) {
+//        ModelRVSetting lowerTOCSetting = new TOCModelRVSetting(ClassifierFactory.LOWER_TOC_CATEGORY_IDS, null);
+            ModelRVSetting lowerTOCSetting = new TOCModelRVSetting(
+                    modelRVSetting.wordFeatures,
+                    nbmnConfig.getFeatureVarList(),
+                    nbmnConfig.getFeatureExistsAtDocLevelVarList(),
+                    nbmnConfig.getWordVarList(),
+                    lowerCatIds, null);
+            secModel = new TrainingTextAnnotatingModel(0, secNbmnModel, wordType, wordFeatures, modelRVSetting.getLowLevelNbmnConfig(), lowerTOCSetting);
+        }
 
     }
 

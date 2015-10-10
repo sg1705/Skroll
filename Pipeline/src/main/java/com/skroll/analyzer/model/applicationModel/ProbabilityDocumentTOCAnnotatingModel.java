@@ -80,7 +80,14 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
             this.secNbmn = NBInferenceHelper.createLogProbNBMN(secTnbm);
             this.secHmm = secHmm;
             secHmm.updateProbabilities();
-            ModelRVSetting lowerTOCSetting = new TOCModelRVSetting(lowerCatIds, null);
+
+//            ModelRVSetting lowerTOCSetting = new TOCModelRVSetting(lowerCatIds, null);
+            ModelRVSetting lowerTOCSetting = new TOCModelRVSetting(
+                    modelRVSetting.wordFeatures,
+                    nbmnConfig.getFeatureVarList(),
+                    nbmnConfig.getFeatureExistsAtDocLevelVarList(),
+                    nbmnConfig.getWordVarList(),
+                    lowerCatIds, null);
             this.secModel = new ProbabilityTextAnnotatingModel(
                     secNbmn,
                     secHmm,
