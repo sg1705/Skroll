@@ -14,7 +14,7 @@
     .controller('LandingCtrl', LandingCtrl);
 
   /* @ngInject*/
-  function LandingCtrl($location, secSearchService, $routeParams) {
+  function LandingCtrl($location, secSearchService, $routeParams, importService) {
 
     //-- private variables
     var searchResults = [];
@@ -43,7 +43,12 @@
           var href = $(html).find('[href^="/Archives/edgar/data"]')[0];
           href = 'http://www.sec.gov' + $(href).attr('href');
           console.log(href);
-          $location.path('/open').search('q', href);
+          importService.importDocFromUrl(href)
+            .then(function(partial) {
+              $location.search({});
+              $location.path('/view/docId/' + documentModel.documentId);
+            })
+          // $location.path('/open').search('q', href);
         }, function(err) {
           console.log(err);
         });

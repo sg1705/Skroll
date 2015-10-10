@@ -81,7 +81,7 @@ angular
 			reloadOnSearch: false
 		}).
 		otherwise({
-			redirectTo: '/list'
+			redirectTo: '/search'
 		});
 	    $locationProvider.html5Mode(true);
 	    $locationProvider.hashPrefix("!");
