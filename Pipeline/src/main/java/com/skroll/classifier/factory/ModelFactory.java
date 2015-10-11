@@ -17,8 +17,6 @@ public interface ModelFactory {
      */
     public TrainingDocumentAnnotatingModel createModel(int modelId, ModelRVSetting modelRVSetting);
 
-    ProbabilityDocumentAnnotatingModel getBNIModel(int modelId, ModelRVSetting modelRVSetting, Document document);
-
     /**
      * Persist the training model into store
      * @param modelRVSetting
@@ -40,5 +38,14 @@ public interface ModelFactory {
      * @return
      */
     public ProbabilityDocumentAnnotatingModel createBNIModel(int modelId, String documentId, ModelRVSetting modelRVSetting, Document document);
+
+    /**
+     * get the BNI Model for the document
+     * @param modelId
+     * @param modelRVSetting
+     * @param document
+     * @return
+     */
+    public ProbabilityDocumentAnnotatingModel getBNIModel(int modelId, ModelRVSetting modelRVSetting, Document document);
 
 }
