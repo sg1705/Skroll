@@ -20,6 +20,8 @@ public interface Classifier {
     // will be created in the main instances of our production installation.
 
 
+    public Map<String, Double> getProbabilityDataForDoc(Document document);
+
     public void persistModel() throws  Exception;
     public Object classify(String documentId, Document doc);
     public void trainWithWeight(Document doc);
@@ -31,9 +33,9 @@ public interface Classifier {
 
     public ModelRVSetting getModelRVSetting();
 
-    public HashMap<String, HashMap<String, HashMap<String, Double>>> getBNIVisualMap(String documentId, int paraIndex);
+    public HashMap<String, HashMap<String, HashMap<String, Double>>> getBNIVisualMap(Document document, int paraIndex);
+
     public HashMap<String, HashMap<String, HashMap<String, Double>>> getModelVisualMap();
 
-    public Map<String, Double> getProbabilityDataForDoc(String documentId);
 
 }

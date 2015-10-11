@@ -257,7 +257,10 @@ public class CategoryAnnotationHelper {
             logger.error("Existing document's paragraph {} does not contains Selected text {} ", paraTokenString,selectedTermString);
             return false;
         }
-
+        if(categoryId == Category.USER_TOC) {
+            annotateParagraphWithTokensAndCategory(paragraph, paragraph.getTokens(), categoryId);
+            return true;
+        }
 
         List<Token> returnList = new ArrayList<>();
         int lastTokenPointer=0;
@@ -295,7 +298,6 @@ public class CategoryAnnotationHelper {
             }
         annotateParagraphWithTokensAndCategory(paragraph, returnList, categoryId);
         return true;
-
     }
 
     /**

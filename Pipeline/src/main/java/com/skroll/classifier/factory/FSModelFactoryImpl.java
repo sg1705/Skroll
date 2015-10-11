@@ -20,7 +20,7 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
     protected String modelFolderName = null;
     protected ObjectPersistUtil objectPersistUtil = null;
     protected  static Map<Integer, TrainingDocumentAnnotatingModel> TrainingModelMap = new HashMap<>();
-    protected static Map<String, ProbabilityDocumentAnnotatingModel> bniModelMap = new HashMap<>();
+   // protected static Map<String, ProbabilityDocumentAnnotatingModel> bniModelMap = new HashMap<>();
 
     public TrainingDocumentAnnotatingModel getTrainingModel(int modelId, ModelRVSetting modelRVSetting) {
         if (TrainingModelMap.containsKey(modelId)){
@@ -28,7 +28,7 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
         }
         TrainingDocumentAnnotatingModel model = createModel(modelId, modelRVSetting);
         logger.debug("training model Map Size:{}",TrainingModelMap.size());
-        logger.debug("bni model Map Size:{}",bniModelMap.size());
+       // logger.debug("bni model Map Size:{}",bniModelMap.size());
         return model;
     }
 
@@ -60,7 +60,7 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
     @Override
     public ProbabilityDocumentAnnotatingModel createBNIModel(int modelId, String documentId, ModelRVSetting modelRVSetting, Document document) {
 
-        TrainingDocumentAnnotatingModel tmpModel = createModel(modelId, modelRVSetting);
+        TrainingDocumentAnnotatingModel tmpModel = getTrainingModel(modelId, modelRVSetting);
         tmpModel.updateWithDocumentAndWeight(document);
 
         ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(modelId, tmpModel.getNbmnModel(),
@@ -68,17 +68,18 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
         bniModel.annotateDocument();
         //printBelieves(bniModel, document);
 
-        bniModelMap.put(getBniId(modelId, documentId), bniModel);
+       // bniModelMap.put(getBniId(modelId, documentId), bniModel);
 
         return bniModel;
     }
 
     @Override
-    public ProbabilityDocumentAnnotatingModel getBNIModel(int modelId, String documentId) {
-        if (bniModelMap.containsKey(getBniId(modelId, documentId))) {
-            return bniModelMap.get(getBniId(modelId, documentId));
-        }
-        return null;
+    public ProbabilityDocumentAnnotatingModel getBNIModel(int modelId,  ModelRVSetting modelRVSetting, Document document) {
+        TrainingDocumentAnnotatingModel tmpModel = getTrainingModel(modelId, modelRVSetting);
+        ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(modelId, tmpModel.getNbmnModel(),
+                tmpModel.getHmm(), document,modelRVSetting );
+        bniModel.annotateDocument();
+        return bniModel;
     }
 
     public void saveTrainingModel(int modelId, ModelRVSetting modelRVSetting) throws Exception {
