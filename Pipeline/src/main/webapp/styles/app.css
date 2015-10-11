@@ -56,9 +56,17 @@ md-sidenav#navframe.md-locked-open {
 *  Landing search
 */
 .sk-landing-search {
-  padding-top: 100px;
   width: 100%;
   background-color: #f6f6f6; }
+  @media (min-width: 960px) {
+    .sk-landing-search {
+      padding-top: 100px; } }
+  @media (min-width: 600px) and (max-width: 959px) {
+    .sk-landing-search {
+      padding-top: 20px; } }
+  @media (max-width: 599px) {
+    .sk-landing-search {
+      padding-top: 20px; } }
   .sk-landing-search .search-frame {
     height: 45px; }
     .sk-landing-search .search-frame .search-input {
