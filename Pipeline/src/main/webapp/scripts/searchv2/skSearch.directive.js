@@ -16,7 +16,7 @@
   function SkSearch() {
 
 	  return {
-	    templateUrl: 'scripts/search/search.tmpl.html',
+	    templateUrl: 'scripts/searchv2/search.tmpl.html',
 	    restrict: 'E',
 	    controller: 'SearchCtrl',
 	    controllerAs: 'searchCtrl'

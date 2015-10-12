@@ -5,7 +5,7 @@
     .controller('LHSLevelsCtrl', LHSLevelsCtrl);
 
   /* @ngInject */
-  function LHSLevelsCtrl(LHSModel) {
+  function LHSLevelsCtrl(LHSModel, searchFactory) {
 
     //-- private variables
     var vm = this;
@@ -14,6 +14,9 @@
     vm.sections = LHSModel.sections;
     vm.smodel = LHSModel.smodel;
     vm.classes = LHSModel.classes;
+    vm.searchState = searchFactory.searchState;
+    console.log('sdsadasda');
+    console.log(vm);
 
     //-- public methods
     vm.toggleSection = toggleSection;

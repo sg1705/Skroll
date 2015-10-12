@@ -164,3 +164,11 @@ sk-lhs .toc .level-2 {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   max-height: 42px; }
+
+.md-whiteframe-1dp {
+  background: #fff;
+  margin: 30px;
+  height: 100px; }
+
+.highlight {
+  color: red; }
