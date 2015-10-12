@@ -2,21 +2,19 @@
 <div layout="row" style="height:100%">
 
   <!-- LHS -->
-  <md-sidenav id="navframe" layout="column" class="md-sidenav-left" 
-              md-component-id="left" md-is-locked-open="$mdMedia('gt-md')" 
+  <md-sidenav id="navframe" layout="column" class="md-sidenav-left"
+              md-component-id="left" md-is-locked-open="$mdMedia('gt-md')"
               ng-swipe-left="ctrl.toggleSidenav('left')">
 
-    <div layout="column" flex>
-      <md-toolbar class="skroll-toolbar">
-        <sk-search ng-controller="SearchCtrl as ctrl"/>
-      </md-toolbar>
+    <md-toolbar class="skroll-toolbar">
+      <sk-search ng-controller="SearchCtrl as ctrl"/>
+    </md-toolbar>
 
     <md-content ng-class="{'sk-lhs-search-hover': ctrl.smodel.hover, 'sk-lhs-hover': !ctrl.smodel.hover}" md-scroll-y
      flex class="md-padding" ng-controller="LHSLevelsCtrl as ctrl">
       <sk-lhs />
     </md-content>
 
-    </div>
   </md-sidenav>
   <!-- end sidebar -->
 
@@ -34,11 +32,11 @@
         </div>
 
         <div ng-controller="ViewPortCtrl as ctrl" style="width:100%">
-          <md-content flex 
-            id="content" 
-            class="md-padding md-whiteframe-z3"  
-            ng-mouseup="ctrl.mouseUp($event)" ng-mousedown="ctrl.mouseDown($event)" 
-            ng-mousemove="ctrl.mouseMove($event)" ng-click="ctrl.paraClicked($event)" 
+          <md-content flex
+            id="content"
+            class="md-padding md-whiteframe-z3"
+            ng-mouseup="ctrl.mouseUp($event)" ng-mousedown="ctrl.mouseDown($event)"
+            ng-mousemove="ctrl.mouseMove($event)" ng-click="ctrl.paraClicked($event)"
             layout-padding>
               <sk-content/>
             </md-content>

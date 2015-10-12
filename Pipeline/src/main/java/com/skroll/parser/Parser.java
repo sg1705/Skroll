@@ -1,13 +1,17 @@
 package com.skroll.parser;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
+import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.extractor.*;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
+import com.skroll.util.SkrollGuiceModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,14 +22,15 @@ import java.util.HashMap;
  */
 public class Parser {
 
-    public static final int VERSION = 1;
+    public static final int VERSION = 2;
     public static final Logger logger = LoggerFactory.getLogger(Parser.class);
+    private static Injector injector = Guice.createInjector(new SkrollGuiceModule());
 
     private static Document parseInDoc(Document document, int fetchMode, int parseMode)
             throws ParserException {
 
         //create phantomjs extractor
-        PhantomJsExtractor phExtractor = new PhantomJsExtractor();
+        PhantomJsExtractor phExtractor = injector.getInstance(PhantomJsExtractor.class);
         phExtractor.setFetchMode(fetchMode);
         phExtractor.setParseMode(parseMode);
         try {
@@ -134,23 +139,18 @@ public class Parser {
         if (newDoc.getParagraphs().size() != document.getParagraphs().size()) {
             return document;
         }
+        //set document level annotations in new doc
         if (document.containsKey(CoreAnnotations.SourceUrlAnnotation.class)) {
             newDoc.set(CoreAnnotations.SourceUrlAnnotation.class,
                     document.get(CoreAnnotations.SourceUrlAnnotation.class));
         }
+        CategoryAnnotationHelper.copyAnnotations(document, newDoc);
+
         for(int ii = 0; ii < newDoc.getParagraphs().size(); ii++) {
             //copy annotations over
             CoreMap paragraph = document.getParagraphs().get(ii);
             CoreMap nPara = newDoc.getParagraphs().get(ii);
-            if (paragraph.containsKey(CoreAnnotations.CategoryAnnotations.class)) {
-                HashMap classId = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
-                nPara.set(CoreAnnotations.CategoryAnnotations.class, classId);
-            }
-
-            if (paragraph.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)) {
-                boolean userObservation = paragraph.get(CoreAnnotations.IsUserObservationAnnotation.class);
-                nPara.set(CoreAnnotations.IsUserObservationAnnotation.class, userObservation);
-            }
+            CategoryAnnotationHelper.copyAnnotations(paragraph, nPara);
         }
         if (!document.equals(newDoc)) {
             logger.info("Reparsed document is not the same as the old doc. " +
@@ -159,4 +159,5 @@ public class Parser {
         }
         return newDoc;
     }
+
 }

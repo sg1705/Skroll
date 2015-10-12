@@ -1,4 +1,4 @@
-(function(){
+(function() {
 
   'use strict';
 
@@ -35,7 +35,7 @@
 
       function add(e, data) {
         scope.$apply(function() {
-            documentModel.isProcessing = true;
+          documentModel.isProcessing = true;
         })
         data.submit();
       }
@@ -45,20 +45,20 @@
         $("#content").html(data.result);
         documentModel.documentId = data.jqXHR.getResponseHeader('documentId');
         //use get terms
-        documentService.getTerms(documentModel.documentId).then(function(terms){
+        documentService.getTerms(documentModel.documentId).then(function(terms) {
           //create new LHS model items
           LHSModel.setTerms(terms);
         }, function(msg) {
           console.log(msg);
         });
         scope.$apply(function() {
-            scope.targetHtml = data.result;
-            scope.isDocAvailable = true;
-            scope.isProcessing = false;
-            LHSModel.model = terms;
-            documentModel.isDocAvailable = true;
-            documentModel.targetHtml = data.result;
-            documentModel.isProcessing = false;
+          scope.targetHtml = data.result;
+          scope.isDocAvailable = true;
+          scope.isProcessing = false;
+          LHSModel.model = terms;
+          documentModel.isDocAvailable = true;
+          documentModel.targetHtml = data.result;
+          documentModel.isProcessing = false;
         });
         $location.path('/view/docId/' + documentModel.documentId);
       }

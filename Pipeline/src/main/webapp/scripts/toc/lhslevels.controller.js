@@ -1,16 +1,16 @@
-(function(){
+(function() {
 
   angular
-  	.module('app.toc')
+    .module('app.toc')
     .controller('LHSLevelsCtrl', LHSLevelsCtrl);
 
   /* @ngInject */
   function LHSLevelsCtrl(LHSModel) {
 
-  	//-- private variables
-  	var vm = this;
+    //-- private variables
+    var vm = this;
 
-  	//-- public variables
+    //-- public variables
     vm.sections = LHSModel.sections;
     vm.smodel = LHSModel.smodel;
     vm.classes = LHSModel.classes;
@@ -19,8 +19,8 @@
     vm.toggleSection = toggleSection;
 
     function toggleSection(index) {
-    	vm.classes[index].isSelected = !vm.classes[index].isSelected;	
+      vm.classes[index].isSelected = !vm.classes[index].isSelected;
     }
   }
-	
+
 })();

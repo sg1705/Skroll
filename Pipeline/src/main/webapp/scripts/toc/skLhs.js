@@ -1,4 +1,4 @@
-(function(){
+(function() {
   'use strict';
 
   /**
@@ -8,14 +8,14 @@
    * # skLhs
    */
   angular
-  .module('app.toc')
-  .directive('skLhs', SkLhs);
+    .module('app.toc')
+    .directive('skLhs', SkLhs);
 
 
   function SkLhs() {
 
     var directive = {
-      templateUrl: 'scripts/toc/sklhs.tmpl.html',
+      templateUrl: 'scripts/toc/toc.tmpl.html',
       restrict: 'E',
       controller: 'TocCtrl',
       controllerAs: 'ctrl'
@@ -48,7 +48,7 @@
   // angular.module('SkrollApp')
   //   .controller('LHSLevelsCtrl', LHSLevelsCtrl);
 
-  })();
+})();
 
 
 // 'use strict';

@@ -14,7 +14,7 @@
     .controller('ImportCtrl', ImportCtrl);
 
   /* @ngInject */
-  function ImportCtrl($location, $routeParams, $http, documentService) {
+  function ImportCtrl($location, $routeParams, $http, importService) {
 
     //-- private variables
     var url = $routeParams.q;
@@ -22,27 +22,14 @@
       return;
     }
     documentModel.isProcessing = true;
-    documentModel.url = url;
 
     //////////////
 
     //-- execute
 
-    console.log(url);
-    documentService.importDoc(url, true)
-      .then(function(response) {
-        documentModel.documentId = response.documentId
-        documentModel.targetHtml = response.html;
-        if ( (response.inCache == null) || (response.inCache == 'false')) {
-          response.inCache = false;         
-        } else {
-          response.inCache = true;
-        }
-        if (response.inCache) {
-          documentModel.isPartiallyParsed = false;  
-        } else {
-          documentModel.isPartiallyParsed = true;
-        }
+    importService
+      .importDocFromUrl(url)
+      .then(function() {
         $location.search({});
         $location.path('/view/docId/' + documentModel.documentId);
       });

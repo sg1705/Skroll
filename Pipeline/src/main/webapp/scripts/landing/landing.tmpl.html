@@ -1,0 +1,36 @@
+<div style="height:100%">
+  <div layout="column" layout-align="center center" class="sk-landing-search" flex>
+    <div layout="row" layout-align="center center" >
+      <md-whiteframe class="md-whiteframe-z1" flex="90">
+        <div layout="row" lflex class="search-frame">
+          <input style="width:100%" ng-model="ctrl.searchText" ng-enter="ctrl.onEnter()" size="40" max="100" class="search-input"/>
+            <md-button class="md-raised md-primary search-button" ng-click="ctrl.onEnter()">
+              <md-icon md-svg-icon="images/icons/ic_search_48px.svg" class="search-icon">
+              </md-icon>
+            </md-button>
+        </div>
+      </md-whiteframe>
+    </div>
+    <md-list flex="50" class="list" hide show-gt-md>
+    	<md-list-item ng-repeat="result in ctrl.searchResults" md-ink>
+    		<div flex layout="row" layout-align="space-between center" ng-click="ctrl.onClickedFiling('{{result.href}}')" class="list-item" flex>
+    			<h4 flex="65" style="padding-right: 10px">{{result.companyName}}</h2>
+    			<h4 flex="15" style="padding-right: 10px">{{result.formType}}</h2>
+    			<h4 flex="20" style="text-align: right;">{{result.filingDate}}</h2>
+    		</div>
+    		<md-divider/>
+  	</md-list>
+
+    <div flex="50" show-sm show-md hide-gt-md style="width: 100%">
+      <md-card ng-repeat="result in ctrl.searchResults" ng-click="ctrl.onClickedFiling('{{result.href}}')">
+       <md-card-content>
+         <h2>{{result.companyName}}</h2>
+         <p>{{result.formType}}</p>
+       </md-card-content>
+       <md-card-footer>
+         {{result.filingDate}}
+       </md-card-footer>
+      </md-card>
+    </div>
+  </div>
+</div>

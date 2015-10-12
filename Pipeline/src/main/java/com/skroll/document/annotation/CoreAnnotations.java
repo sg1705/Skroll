@@ -15,6 +15,7 @@ import java.util.Set;
 public class CoreAnnotations {
 
     public static HashMap<Class, String> aMap = new HashMap();
+    public static Class[] TRANSIENT_ANNOTATIONS = {CoreAnnotations.IndexInteger.class};
 
     static {
         Reflections reflections = new Reflections("com.skroll.document.annotation");
@@ -397,6 +398,16 @@ public class CoreAnnotations {
             return Boolean.class;
         }
     }
+
+    /**
+     * Annotation to store search index
+     */
+    public static class SearchIndexAnnotation implements CoreAnnotation<String> {
+        public Class<String> getType() {
+            return String.class;
+        }
+    }
+
 
 
 }

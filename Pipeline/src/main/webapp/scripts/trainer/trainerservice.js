@@ -16,18 +16,18 @@
 
     //-- service definition
     var service = {
-      
-      rejectClassFromPara    : rejectClassFromPara,
-      approveClassForPara    : approveClassForPara,
-      unObservePara          : unObservePara,
-      addTermToPara          : addTermToPara,
-      updateModel            : updateModel,
-      setFlags               : setFlags,
-      observeNone            : observeNone,
-      getProbabilityDump     : getProbabilityDump,
-      fetchProbabilities     : fetchProbabilities,
-      updateBenchmark        : updateBenchmark,
-      updateDocType          : updateDocType
+
+      rejectClassFromPara: rejectClassFromPara,
+      approveClassForPara: approveClassForPara,
+      unObservePara: unObservePara,
+      addTermToPara: addTermToPara,
+      updateModel: updateModel,
+      setFlags: setFlags,
+      observeNone: observeNone,
+      getProbabilityDump: getProbabilityDump,
+      fetchProbabilities: fetchProbabilities,
+      updateBenchmark: updateBenchmark,
+      updateDocType: updateDocType
 
     };
 
@@ -36,8 +36,8 @@
     //////////////
 
     /**
-    * Removes all instances of paraId from smodel.terms and updates it
-    **/
+     * Removes all instances of paraId from smodel.terms and updates it
+     **/
     function rejectClassFromPara(documentId, classId, paraId) {
       //get a filtered list
       var terms = LHSModel.filterOutClassFromPara(classId, paraId);
@@ -164,10 +164,10 @@
 
 
     function fetchProbabilities(documentId, terms) {
-        getProbabilityDump(documentId)
+      getProbabilityDump(documentId)
         .then(function(data) {
           //update probabilities of terms
-          for(var ii = 0; ii < terms.length; ii++) {
+          for (var ii = 0; ii < terms.length; ii++) {
             var p = data[terms[ii].paragraphId];
             terms[ii].probability = p * 100;
           }
@@ -176,36 +176,33 @@
 
 
     /**
-    * Fetches benchmark score
-    **/
+     * Fetches benchmark score
+     **/
     function updateBenchmark() {
-        console.log("fetching score");
-        var self = this;
-        documentService.getBenchmarkScore(documentModel.documentId).then(function(benchmarkScore){
-          trainerToolbar.benchmarkScore = benchmarkScore;
-          console.log(benchmarkScore);
-          trainerToolbar.level1TypeAError = benchmarkScore.qc.stats[1].type1Error;
-          trainerToolbar.level1TypeBError = benchmarkScore.qc.stats[1].type2Error;
-          trainerToolbar.level1QcScore = benchmarkScore.qc.stats[1].qcScore;
-          trainerToolbar.level2TypeAError = benchmarkScore.qc.stats[2].type1Error;
-          trainerToolbar.level2TypeBError = benchmarkScore.qc.stats[2].type2Error;
-          trainerToolbar.level2QcScore = benchmarkScore.qc.stats[2].qcScore;
+      console.log("fetching score");
+      var self = this;
+      documentService.getBenchmarkScore(documentModel.documentId).then(function(benchmarkScore) {
+        trainerToolbar.benchmarkScore = benchmarkScore;
+        console.log(benchmarkScore);
+        trainerToolbar.level1TypeAError = benchmarkScore.qc.stats[1].type1Error;
+        trainerToolbar.level1TypeBError = benchmarkScore.qc.stats[1].type2Error;
+        trainerToolbar.level1QcScore = benchmarkScore.qc.stats[1].qcScore;
+        trainerToolbar.level2TypeAError = benchmarkScore.qc.stats[2].type1Error;
+        trainerToolbar.level2TypeBError = benchmarkScore.qc.stats[2].type2Error;
+        trainerToolbar.level2QcScore = benchmarkScore.qc.stats[2].qcScore;
 
-          if (benchmarkScore.isFileBenchmarked && !benchmarkScore.isFileTrained) {
-            trainerToolbar.isBenchmark = true;
-            trainerToolbar.isTrainModel = false;
-          } else if (benchmarkScore.isFileTrained) {
-            trainerToolbar.isBenchmark = false;
-            trainerToolbar.isTrainModel = true;
-          } else if (!benchmarkScore.isFileBenchmarked && !benchmarkScore.isFileTrained) {
-            trainerToolbar.isBenchmark = true;
-            trainerToolbar.isTrainModel = true;
-          }
-        });                
+        if (benchmarkScore.isFileBenchmarked && !benchmarkScore.isFileTrained) {
+          trainerToolbar.isBenchmark = true;
+          trainerToolbar.isTrainModel = false;
+        } else if (benchmarkScore.isFileTrained) {
+          trainerToolbar.isBenchmark = false;
+          trainerToolbar.isTrainModel = true;
+        } else if (!benchmarkScore.isFileBenchmarked && !benchmarkScore.isFileTrained) {
+          trainerToolbar.isBenchmark = true;
+          trainerToolbar.isTrainModel = true;
+        }
+      });
     }
-
-
-
 
   }
 

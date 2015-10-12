@@ -45,11 +45,16 @@ angular
 			.iconSet('viewer', 'img/icons/sets/viewer-24.svg', 24);
 
 		$routeProvider.
-		when('/url', {
-			templateUrl: 'scripts/landing/urlform.tmpl.html',
-			controller: 'UrlFormCtrl',
+		when('/search', {
+			templateUrl: 'scripts/landing/landing.tmpl.html',
+			controller: 'LandingCtrl',
 			controllerAs: 'ctrl'
-		}).		
+		}).
+		when('/search/:searchText', {
+			templateUrl: 'scripts/landing/landing.tmpl.html',
+			controller: 'LandingCtrl',
+			controllerAs: 'ctrl'
+		}).
 		when('/list', {
 			templateUrl: 'scripts/landing/doclist.tmpl.html',
 			controller: 'ContentCtrl',
@@ -59,10 +64,14 @@ angular
 			templateUrl: 'scripts/core/app.core.tmpl.html',
 			controller: 'ImportCtrl'
 		}).
+		when('/trainer', {
+			templateUrl: 'scripts/core/app.core.tmpl.html',
+			controller: 'EnableTrainerToolbarCtrl'
+		}).
 		when('/view/docId/:docId', {
 			templateUrl: 'scripts/core/app.core.tmpl.html',
 			controller: 'ContentCtrl',
-			controllerAs: 'ctrl',			
+			controllerAs: 'ctrl',
 			reloadOnSearch: false
 		}).
 		when('/view/docId/:docId/linkId/:linkId', {
@@ -70,9 +79,9 @@ angular
 			controller: 'ContentCtrl',
 			controllerAs: 'ctrl',
 			reloadOnSearch: false
-		}).		
+		}).
 		otherwise({
-			redirectTo: '/list'
+			redirectTo: '/search'
 		});
 	    $locationProvider.html5Mode(true);
 	    $locationProvider.hashPrefix("!");
@@ -82,8 +91,16 @@ angular
 angular.module('SkrollApp')
 .config(function($mdThemingProvider) {
   $mdThemingProvider.theme('default-dark')
-  	.primaryPalette('blue')
+  	.primaryPalette('blue', {
+  		'hue-1' : '400'
+  	})
     .dark();
+
+  // $mdThemingProvider.theme('default')
+  // 	.primaryPalette('blue', {
+
+  // 	});
+
 })
 .config(['uiZeroclipConfigProvider', function(uiZeroclipConfigProvider) {
   // config ZeroClipboard
@@ -97,6 +114,8 @@ angular.module('SkrollApp')
 angular.module('SkrollApp')
 .config(['$httpProvider', function($httpProvider) {
 	$httpProvider.defaults.withCredentials = true;
+	$httpProvider.defaults.useXDomain = true;
+	delete $httpProvider.defaults.headers.common['X-Requested-With'];
 }]);
 
 })();
