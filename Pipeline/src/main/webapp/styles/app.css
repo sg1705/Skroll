@@ -56,9 +56,17 @@ md-sidenav#navframe.md-locked-open {
 *  Landing search
 */
 .sk-landing-search {
-  height: 100%;
   width: 100%;
   background-color: #f6f6f6; }
+  @media (min-width: 960px) {
+    .sk-landing-search {
+      padding-top: 100px; } }
+  @media (min-width: 600px) and (max-width: 959px) {
+    .sk-landing-search {
+      padding-top: 20px; } }
+  @media (max-width: 599px) {
+    .sk-landing-search {
+      padding-top: 20px; } }
   .sk-landing-search .search-frame {
     height: 45px; }
     .sk-landing-search .search-frame .search-input {
@@ -66,7 +74,7 @@ md-sidenav#navframe.md-locked-open {
       padding: 15px;
       font-size: 22px;
       outline: none;
-      width: 645px;
+      /*			width: 645px;*/
       color: rgba(0, 0, 0, 0.87); }
     .sk-landing-search .search-frame .search-button {
       height: 100%;
@@ -78,13 +86,12 @@ md-sidenav#navframe.md-locked-open {
       width: 45px;
       height: 45px; }
   .sk-landing-search .list {
-    padding-top: 50px; }
-    .sk-landing-search .list .list-item {
-      width: 700px; }
-      .sk-landing-search .list .list-item h4 {
-        font-weight: normal;
-        margin-top: 10px;
-        margin-bottom: 10px; }
+    padding-top: 50px;
+    width: 700px; }
+    .sk-landing-search .list .list-item h4 {
+      font-weight: normal;
+      margin-top: 10px;
+      margin-bottom: 10px; }
     .sk-landing-search .list md-list-item:hover {
       background: rgba(63, 81, 181, 0.2); }
 

@@ -1,6 +1,30 @@
 /* variables */
 $icon-width: 24px;
 $skrollport-color : #e0e0e0;
+$sm-width: 600px;
+$md-width: 960px;
+$lg-width: 1200px;
+
+
+@mixin phone {
+  @media (max-width: #{$sm-width - 1px}) {
+    @content;
+  }
+}
+
+
+@mixin tablet {
+  @media (min-width: #{$sm-width}) and (max-width: #{$md-width - 1px}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{$md-width}) {
+    @content;
+  }
+}
+
 /**
 * icons
 **/
@@ -78,7 +102,20 @@ md-sidenav#navframe.md-locked-open {
 *  Landing search
 */
 .sk-landing-search {
-	height:100%;
+
+	@include desktop {
+		padding-top: 100px;	
+	};
+	
+	@include tablet {
+		padding-top: 20px;	
+	};
+
+	@include phone {
+		padding-top: 20px;	
+	};
+
+
 	width: 100%;
 	background-color: rgb(246, 246, 246);
 
@@ -90,7 +127,7 @@ md-sidenav#navframe.md-locked-open {
 			padding: 15px;
 			font-size: 22px;
 			outline: none;
-			width: 645px;
+/*			width: 645px;*/
 			color: rgba(0, 0, 0, 0.87);
 		};
 
@@ -110,9 +147,8 @@ md-sidenav#navframe.md-locked-open {
 
 	.list {
 		padding-top: 50px;
-
+		width: 700px;
 		.list-item {
-			width:700px;
 
 			h4 {
 
