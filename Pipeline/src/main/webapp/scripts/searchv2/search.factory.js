@@ -28,12 +28,25 @@
       //-- service variables
       searchState: {
         searchText: searchText,
-        searchActive: searchActive
+        searchActive: searchActive,
+        clear: clear
       },
-      searchResults: searchResults,
+      searchResults: searchResults
     }
 
     return service;
+
+
+    //////////////
+
+    /**
+     * Clear search
+     **/
+    function clear() {
+      service.searchState.searchActive = false;
+      service.searchState.searchText = '';
+      service.searchState.searchResults = [];
+    };
 
   };
 
