@@ -7,6 +7,14 @@ md-icon {
   width: 24px; }
 
 /**
+* Skroll Main
+**/
+.main {
+  background-color: #e0e0e0;
+  -webkit-overflow-scrolling: touch;
+  height: 100%; }
+
+/**
 * context menu
 *
 *  Width is the same as the width for the md-icon
@@ -56,9 +64,17 @@ md-sidenav#navframe.md-locked-open {
 *  Landing search
 */
 .sk-landing-search {
-  padding-top: 100px;
   width: 100%;
-  background-color: #f6f6f6; }
+  /*background-color: rgb(246, 246, 246);*/ }
+  @media (min-width: 960px) {
+    .sk-landing-search {
+      padding-top: 100px; } }
+  @media (min-width: 600px) and (max-width: 959px) {
+    .sk-landing-search {
+      padding-top: 20px; } }
+  @media (max-width: 599px) {
+    .sk-landing-search {
+      padding-top: 20px; } }
   .sk-landing-search .search-frame {
     height: 45px; }
     .sk-landing-search .search-frame .search-input {
@@ -80,6 +96,9 @@ md-sidenav#navframe.md-locked-open {
   .sk-landing-search .list {
     padding-top: 50px;
     width: 700px; }
+    .sk-landing-search .list :focus {
+      outline: none;
+      border: 0; }
     .sk-landing-search .list .list-item h4 {
       font-weight: normal;
       margin-top: 10px;
@@ -124,11 +143,14 @@ sk-lhs ul.toc {
   margin: 0px;
   list-style: none;
   padding: 0; }
+
 sk-lhs .toc li {
   list-style-position: inside; }
+
 sk-lhs .toc :hover {
   color: blue;
   cursor: pointer; }
+
 sk-lhs .toc .level-1 {
   margin-bottom: 5px;
   font-size: 16px;
@@ -139,6 +161,7 @@ sk-lhs .toc .level-1 {
     border-color: rgba(32, 32, 32, 0.45); }
   sk-lhs .toc .level-1 .term {
     margin-left: 7px; }
+
 sk-lhs .toc .level-2 {
   padding-left: 15px;
   font-size: 14px;
@@ -160,4 +183,10 @@ sk-lhs .toc .level-2 {
   -webkit-box-orient: vertical;
   max-height: 42px; }
 
-/*# sourceMappingURL=app.css.map */
+.md-whiteframe-1dp {
+  background: #fff;
+  margin: 30px;
+  height: 100px; }
+
+.highlight {
+  color: red; }

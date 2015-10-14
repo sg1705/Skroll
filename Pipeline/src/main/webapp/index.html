@@ -32,10 +32,10 @@
   </md-backdrop>
 
 
-<body style="height:100%" ng-controller="ContentCtrl as ctrl" ng-keydown="ctrl.overrideControlF($event)">
+<body style="height:100%">
   <div
     ng-view layout="column"
-    style="-webkit-overflow-scrolling: touch; height:100%" >
+    class="main" >
   </div>
 </body>
 
@@ -78,7 +78,8 @@
 <script src="/scripts/core.util/core.util.module.js"></script>
 <script src="/scripts/core/app.core.module.js"></script>
 <script src="/scripts/landing/landing.module.js"></script>
-<script src="/scripts/search/search.module.js"></script>
+<!-- <script src="/scripts/search/search.module.js"></script> -->
+<script src="/scripts/searchv2/search.module.js"></script>
 <script src="/scripts/thirdparty/ngsilent.module.js"></script>
 <script src="/scripts/toc/toc.module.js"></script>
 <script src="/scripts/trainer/trainer.module.js"></script>
@@ -103,10 +104,14 @@
 <script src="/scripts/core/viewport.controller.js"></script>
 <script src="/scripts/landing/landing.controller.js"></script>
 <script src="/scripts/landing/secsearch.service.js"></script>
-<script src="/scripts/search/jqueryhighlight.js"></script>
-<script src="/scripts/search/search.js"></script>
-<script src="/scripts/search/searchservice.js"></script>
-<script src="/scripts/search/skSearch.js"></script>
+<!-- <script src="/scripts/search/jqueryhighlight.js"></script> -->
+<!-- <script src="/scripts/search/search.js"></script> -->
+<!-- <script src="/scripts/search/searchservice.js"></script> -->
+<!-- <script src="/scripts/search/skSearch.js"></script> -->
+<script src="/scripts/searchv2/search.controller.js"></script>
+<script src="/scripts/searchv2/search.service.js"></script>
+<script src="/scripts/searchv2/skSearch.directive.js"></script>
+<script src="/scripts/searchv2/search.factory.js"></script>
 <script src="/scripts/services/documentmodel.js"></script>
 <script src="/scripts/services/lhsmodel.js"></script>
 <script src="/scripts/services/selectionmodel.js"></script>

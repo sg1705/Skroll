@@ -1,4 +1,4 @@
-<div class="sk-landing-search" style="height:100%">
+<div style="height:100%">
   <div layout="column" layout-align="center center" class="sk-landing-search" flex>
     <div layout="row" layout-align="center center" >
       <md-whiteframe class="md-whiteframe-z1" flex="90">
@@ -22,7 +22,7 @@
   	</md-list>
 
     <div flex="50" show-sm show-md hide-gt-md style="width: 100%">
-      <md-card ng-repeat="result in ctrl.searchResults">
+      <md-card ng-repeat="result in ctrl.searchResults" ng-click="ctrl.onClickedFiling('{{result.href}}')">
        <md-card-content>
          <h2>{{result.companyName}}</h2>
          <p>{{result.formType}}</p>

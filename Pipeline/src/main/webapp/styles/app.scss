@@ -1,12 +1,46 @@
 /* variables */
 $icon-width: 24px;
 $skrollport-color : #e0e0e0;
+$sm-width: 600px;
+$md-width: 960px;
+$lg-width: 1200px;
+
+
+@mixin phone {
+  @media (max-width: #{$sm-width - 1px}) {
+    @content;
+  }
+}
+
+
+@mixin tablet {
+  @media (min-width: #{$sm-width}) and (max-width: #{$md-width - 1px}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{$md-width}) {
+    @content;
+  }
+}
+
 /**
 * icons
 **/
 md-icon {
     height: $icon-width;
     width : $icon-width;
+}
+
+
+/**
+* Skroll Main
+**/
+.main {
+	background-color: $skrollport-color;
+	-webkit-overflow-scrolling: touch;
+	height:100%	
 }
 
 
@@ -78,9 +112,22 @@ md-sidenav#navframe.md-locked-open {
 *  Landing search
 */
 .sk-landing-search {
-	padding-top: 100px;
+
+	@include desktop {
+		padding-top: 100px;	
+	};
+	
+	@include tablet {
+		padding-top: 20px;	
+	};
+
+	@include phone {
+		padding-top: 20px;	
+	};
+
+
 	width: 100%;
-	background-color: rgb(246, 246, 246);
+	/*background-color: rgb(246, 246, 246);*/
 
 	.search-frame {
 		height: 45px;
@@ -111,6 +158,12 @@ md-sidenav#navframe.md-locked-open {
 	.list {
 		padding-top: 50px;
 		width: 700px;
+
+		:focus {
+	    outline: none;
+	    border: 0;
+ 		}
+
 		.list-item {
 
 			h4 {
@@ -242,3 +295,14 @@ sk-lhs {
   max-height: 42px;
 }
 
+
+.md-whiteframe-1dp {
+  background: #fff;
+  margin: 30px;
+  height: 100px; 
+}
+
+
+.highlight {
+	color:red;
+}
