@@ -63,7 +63,7 @@ public class PageBreakAnnotationTest {
         }
         System.out.println(countPageBreak);
 
-        assert(countPageBreak == 99);
+        assert (countPageBreak == 99);
     }
 
 }

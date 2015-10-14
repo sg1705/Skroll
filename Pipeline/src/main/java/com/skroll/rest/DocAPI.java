@@ -515,7 +515,7 @@ public class DocAPI {
     @GET
     @Path("/updateDocType")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateDocType(@Context HttpHeaders hh, @BeanParam RequestBean request,@QueryParam("docType") int docType) {
+    public Response updateDocType(@Context HttpHeaders hh, @BeanParam RequestBean request, @QueryParam("docType") int docType) {
 
         String documentId = request.getDocumentId();
         Document doc = request.getDocument();

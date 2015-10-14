@@ -2,7 +2,9 @@ package com.skroll.analyzer.model.bn;
 
 import com.skroll.analyzer.model.applicationModel.DefModelRVSetting;
 import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
+import com.skroll.analyzer.model.applicationModel.randomVariables.RVCreater;
 import com.skroll.analyzer.model.bn.config.NBMNConfig;
+import com.skroll.analyzer.model.bn.node.NodeTrainingHelper;
 import com.skroll.classifier.Category;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +23,7 @@ public class NBTrainingHelperTest {
     NBMNConfig config = setting.getNbmnConfig();
     NaiveBayesWithMultiNodes nbmn = NBTrainingHelper.createTrainingNBMN(config);
     List<String[]> wordsList;
+    double priorCount = NodeTrainingHelper.PRIOR_COUNT;
     NBMNTuple tuple;
 
     @Before
@@ -55,14 +58,14 @@ public class NBTrainingHelperTest {
         NBTrainingHelper.addSample(nbmn, tuple);
         System.out.println(nbmn);
         System.out.println(Arrays.toString(nbmn.documentFeatureNodes.get(2).get(1).getParameters()));
-        assert (Arrays.equals(nbmn.documentFeatureNodes.get(0).get(0).getParameters(), new double[]{0.1, 0.1}));
-        assert (Arrays.equals(nbmn.documentFeatureNodes.get(0).get(1).getParameters(), new double[]{0.1, 1.1}));
-        assert (Arrays.equals(nbmn.documentFeatureNodes.get(2).get(1).getParameters(), new double[]{1.1, 0.1}));
+        assert (Arrays.equals(nbmn.documentFeatureNodes.get(0).get(0).getParameters(), new double[]{priorCount, priorCount}));
+        assert (Arrays.equals(nbmn.documentFeatureNodes.get(0).get(1).getParameters(), new double[]{priorCount, 1 + priorCount}));
+        assert (Arrays.equals(nbmn.documentFeatureNodes.get(2).get(1).getParameters(), new double[]{1 + priorCount, priorCount}));
         System.out.println(Arrays.toString(nbmn.getMultiNodes().get(0).getNodes()[1].getParameters()));
-        assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[1].getParameters(), new double[]{0.1, 0.1, 0.1, 1.1}));
-        assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[0].getParameters(), new double[]{0.1, 0.1, 0.1, 0.1}));
+        assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[1].getParameters(), new double[]{priorCount, priorCount, priorCount, 1 + priorCount}));
+        assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[0].getParameters(), new double[]{priorCount, priorCount, priorCount, priorCount}));
 
-        assert (nbmn.getFeatureNodes().get(0).getParameters()[26] == 1.1);
+        assert (nbmn.getFeatureNodes().get(0).getParameters()[RVCreater.DEFAULT_NUM_INT_VALS + 1] == 1 + priorCount);
 
     }
 
@@ -71,14 +74,15 @@ public class NBTrainingHelperTest {
         NBTrainingHelper.addSample(nbmn, tuple, 9);
         System.out.println(nbmn);
         System.out.println(Arrays.toString(nbmn.documentFeatureNodes.get(2).get(1).getParameters()));
-        assert (Arrays.equals(nbmn.documentFeatureNodes.get(0).get(0).getParameters(), new double[]{0.1, 0.1}));
-        assert (Arrays.equals(nbmn.documentFeatureNodes.get(0).get(1).getParameters(), new double[]{0.1, 9.1}));
-        assert (Arrays.equals(nbmn.documentFeatureNodes.get(2).get(1).getParameters(), new double[]{9.1, 0.1}));
+        assert (Arrays.equals(nbmn.documentFeatureNodes.get(0).get(0).getParameters(), new double[]{priorCount, priorCount}));
+        assert (Arrays.equals(nbmn.documentFeatureNodes.get(0).get(1).getParameters(), new double[]{priorCount, 9 + priorCount}));
+        assert (Arrays.equals(nbmn.documentFeatureNodes.get(2).get(1).getParameters(), new double[]{9 + priorCount, priorCount}));
         System.out.println(Arrays.toString(nbmn.getMultiNodes().get(0).getNodes()[1].getParameters()));
-        assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[1].getParameters(), new double[]{0.1, 0.1, 0.1, 9.1}));
-        assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[0].getParameters(), new double[]{0.1, 0.1, 0.1, 0.1}));
+        assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[1].getParameters(), new double[]{priorCount, priorCount, priorCount, 9 + priorCount}));
+        assert (Arrays.equals(nbmn.getMultiNodes().get(0).getNodes()[0].getParameters(), new double[]{priorCount, priorCount, priorCount, priorCount}));
 
-        assert (nbmn.getFeatureNodes().get(0).getParameters()[26] == 9.1);
+        System.out.println(Arrays.toString(nbmn.getFeatureNodes().get(0).getParameters()));
+        assert (nbmn.getFeatureNodes().get(0).getParameters()[RVCreater.DEFAULT_NUM_INT_VALS + 1] == 9 + priorCount);
 
     }
 

@@ -5,8 +5,8 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.skroll.analyzer.model.applicationModel.DefModelRVSetting;
 import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
-import com.skroll.analyzer.model.applicationModel.ProbabilityDocumentAnnotatingModel;
-import com.skroll.analyzer.model.applicationModel.TrainingDocumentAnnotatingModel;
+import com.skroll.analyzer.model.applicationModel.ProbabilityTextAnnotatingModel;
+import com.skroll.analyzer.model.applicationModel.TrainingTextAnnotatingModel;
 import com.skroll.classifier.Category;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.Document;
@@ -53,14 +53,14 @@ public class CorpusFSModelFactoryImplTest {
     }
     @Test
     public void testGetTrainingModel() {
-        TrainingDocumentAnnotatingModel model = factory.getTrainingModel(classifierId, setting);
+        TrainingTextAnnotatingModel model = factory.getTrainingModel(classifierId, setting);
         if(model==null){
             fail("failed to create training model");
         }
     }
     @Test
     public void testCreateModel() throws Exception {
-          TrainingDocumentAnnotatingModel model = factory.createModel(classifierId, setting);
+        TrainingTextAnnotatingModel model = factory.createModel(classifierId, setting);
         if(model==null){
             fail("failed to create training model");
         }
@@ -69,7 +69,7 @@ public class CorpusFSModelFactoryImplTest {
     @Test
     public void testGetBNIModel() throws Exception {
         Document doc =  Parser.parseDocumentFromHtml(Files.toString(new File("src/test/resources/classifier/smaller-indenture.html"), Constants.DEFAULT_CHARSET));
-        ProbabilityDocumentAnnotatingModel model = factory.createBNIModel(classifierId, bniId, setting, doc);
+        ProbabilityTextAnnotatingModel model = factory.createBNIModel(classifierId, bniId, setting, doc);
         if(model==null){
             fail("failed to get BNI training model");
         }

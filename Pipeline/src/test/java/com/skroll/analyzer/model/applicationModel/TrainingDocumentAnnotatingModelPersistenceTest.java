@@ -54,7 +54,7 @@ public class TrainingDocumentAnnotatingModelPersistenceTest {
     @Test
     public void testPersistModel() throws Exception {
         ModelRVSetting setting = new DefModelRVSetting(TEST_DEF_CATEGORY_IDS);
-        TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel(TEST_DEF_CLASSIFIER_ID,setting);
+        TrainingTextAnnotatingModel model = new TrainingTextAnnotatingModel(TEST_DEF_CLASSIFIER_ID, setting);
         doc = TestHelper.setUpTestDoc();
         //doc.getParagraphs().get(0).set(CoreAnnotations.IsTOCAnnotation.class, true);
         model.updateWithDocument(doc);
@@ -86,11 +86,11 @@ public class TrainingDocumentAnnotatingModelPersistenceTest {
             throw e;
         }
 
-        TrainingDocumentAnnotatingModel obj = null;
+        TrainingTextAnnotatingModel obj = null;
         try {
             ObjectMapper mapper = new ObjectMapper();
             mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-            obj = mapper.readValue(reader, TrainingDocumentAnnotatingModel.class);
+            obj = mapper.readValue(reader, TrainingTextAnnotatingModel.class);
         } catch (Exception e) {
             e.printStackTrace();
         }

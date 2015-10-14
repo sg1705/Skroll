@@ -1,6 +1,10 @@
 package com.skroll.analyzer.model.applicationModel;
 
 import com.google.common.base.Joiner;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.skroll.analyzer.data.NBMNData;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
@@ -15,6 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 /**
@@ -23,19 +29,40 @@ import java.util.stream.Collectors;
 public class DocProcessor {
     public static final Logger logger = LoggerFactory.getLogger(DocProcessor.class);
 
+    static int numWordsToUse = ModelRVSetting.NUM_WORDS_TO_USE_PER_PARAGRAPH;
+
+    static LoadingCache<Document, List<CoreMap>> processedParasCache = CacheBuilder.newBuilder()
+            .maximumSize(2)
+            .build(
+                    new CacheLoader<Document, List<CoreMap>>() {
+                        @Override
+                        public List<CoreMap> load(Document doc) throws Exception {
+
+                            return processParagraphs(doc.getParagraphs(), numWordsToUse);
+                        }
+                    }
+            );
+
     //ToDO: commented out the cache
     // static Map<Document, List<CoreMap>> processedParasMap = new HashMap<>();
-    static Map<String, NBMNData> processedDataMap = new HashMap<>();
+//    static Map<String, NBMNData> processedDataMap = new HashMap<>();
+    static Cache<String, NBMNData> processedDataCache = CacheBuilder.newBuilder()
+            .maximumSize(2)
+            .build();
 
-    static List<CoreMap> processParas(Document doc, int numWordsToUse) {
+    public static void setNumWordsToUse(int numWordsToUse) {
+        DocProcessor.numWordsToUse = numWordsToUse;
+    }
 
-        //List<CoreMap> processedParas = processedParasMap.get(doc);
-        //if (processedParas != null) return processedParas;
-        List<CoreMap> processedParas = processParagraphs(doc.getParagraphs(), numWordsToUse);
+    static List<CoreMap> processParas(Document doc) {
 
-        //processedParasMap.put(doc, processedParas);
-        //logger.debug ("processedParasMap.size: {}", processedParasMap.size());
-        return processedParas;
+        try {
+            return processedParasCache.get(doc);
+        } catch (ExecutionException e) {
+            e.printStackTrace(System.err);
+        }
+
+        return null;
 
     }
 
@@ -108,6 +135,9 @@ public class DocProcessor {
                 processedP.set(CoreAnnotations.IsInUserDefinedTOCAnnotation.class, false);
             }
         }
+
+        // todo: in the future, may consider only invalidate the affected data. It is not much different for now.
+        processedDataCache.invalidateAll();
         return null;
     }
 
@@ -197,18 +227,37 @@ public class DocProcessor {
 //        return data;
 //    }
 //
-    static NBMNData getParaDataFromDoc(Document doc, List<CoreMap> processedParas, NBMNConfig config) {
-        String key = doc.getId() + config.getAllParagraphFeatures();
-        NBMNData data = processedDataMap.get(key);
-        if (data != null) return data;
+    static String processedDataCacheKey(Document doc, NBMNConfig config) {
 
+        return doc.getId() + config.getAllParagraphFeatures();
+    }
+
+    static NBMNData getParaDataFromDoc(Document doc, NBMNConfig config) {
+        String key = processedDataCacheKey(doc, config);
+//        NBMNData data = processedDataMap.get(key);
+//        if (data != null) return data;
+        NBMNData data = null;
+        List<CoreMap> processedParas = processParas(doc);
         List<CoreMap> originalParas = doc.getParagraphs();
-        data = getParaDataFromDoc(originalParas, processedParas, config);
+        try {
+            return processedDataCache.get(key, new Callable<NBMNData>() {
+                @Override
+                public NBMNData call() throws Exception {
+                    return getParaDataFromDoc(originalParas, processedParas, config);
+                }
+            });
+
+        } catch (ExecutionException e) {
+            e.printStackTrace(System.err);
+        }
+
+
+//        NBMNData data = getParaDataFromDoc(originalParas, processedParas, config);
         // Wei and Saurabh decided to not cache processedPara because
         // they can change once a user observes UTOC
         //processedDataMap.put(key, data);
 
-        return data;
+        return null;
     }
 
 
@@ -266,5 +315,80 @@ public class DocProcessor {
 //        }
 //        return docFeatureValues;
 //    }
+
+    public static List<List<List<CoreMap>>> createSections(List<CoreMap> paragraphs,
+                                                           List<CoreMap> processedParas,
+                                                           RandomVariable paraCategory) {
+        final int END = 1;
+        final int START = 0;
+        List<int[]> sectionIndices = createSections(paragraphs, paraCategory);
+
+        List<List<CoreMap>> sections = new ArrayList<>();
+        List<List<CoreMap>> processedSections = new ArrayList<>();
+        for (int[] sectionIndex : sectionIndices) {
+            List<CoreMap> section = new ArrayList<>();
+            List<CoreMap> processedSection = new ArrayList<>();
+            for (int i = sectionIndex[START]; i < sectionIndex[END]; i++) {
+                section.add(paragraphs.get(i));
+                processedSection.add(processedParas.get(i));
+            }
+            sections.add(section);
+            processedSections.add(processedSection);
+        }
+        return Arrays.asList(sections, processedSections);
+
+    }
+
+    /**
+     * returns indices of the paragraphs separated into sections.
+     * The returned list contains the start and end indices of the sections
+     * Each section is a list of paragraphs.
+     *
+     * @param paragraphs
+     * @param paraCategory   Used to determining the boundary of the sections.
+     * @return list of start and endsections indices.
+     */
+    public static List<int[]> createSections(List<CoreMap> paragraphs,
+                                                           RandomVariable paraCategory) {
+        int sectionHeading = 1;
+        int topHeading = 1;
+        int others = 0;
+        final int END = 1;
+        final int START = 0;
+
+        List<int[]> sections = new ArrayList<>();
+        int[] section = null;
+        boolean mainBodyStarted = false;
+        boolean sectionStarted = false;
+        for (int i = 0; i < paragraphs.size(); i++) {
+            CoreMap para = paragraphs.get(i);
+
+            int paraClass = RVValues.getValue(paraCategory, para);
+            if (paraClass == topHeading) mainBodyStarted = true;
+            if (!mainBodyStarted) continue;
+            if (sectionStarted) {
+//                if (paraClass == others) {
+//                    section.add(i);
+//                } else
+                if (paraClass == topHeading || paraClass == sectionHeading) { // end of a section
+                    sectionStarted = false;
+                    section[END] = i;
+                    sections.add(section);
+                }
+            }
+            if (paraClass == sectionHeading) { // start of a section
+                sectionStarted = true;
+//                section = new ArrayList<>();
+                section = new int[2];
+                section[START] = i + 1; // start index of the section
+            }
+        }
+
+        if (sectionStarted) {
+            section[END] = paragraphs.size();
+            sections.add(section); // add the last section
+        }
+        return sections;
+    }
 
 }

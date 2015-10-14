@@ -65,6 +65,7 @@ public class ModelRVSetting {
                           List<RandomVariable> paraDocFeatureVars,
                           List<RandomVariable> wordVars,
                           List<Integer> categoryIds
+
                           ) {
         initializeStrategies();
         this.categoryIds=categoryIds;
@@ -73,6 +74,7 @@ public class ModelRVSetting {
         nbmnConfig = new NBMNConfig(paraType, paraFeatureVars, paraDocFeatureVars,
                 RVCreater.createNBMNDocFeatureRVs(paraDocFeatureVars, paraType, String.valueOf(categoryIds.toString())), wordVars);
         RVValues.addValueSetter(paraType, new RVValueSetter(categoryIds, CoreAnnotations.CategoryAnnotations.class));
+
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;
 
@@ -84,7 +86,8 @@ public class ModelRVSetting {
             @JsonProperty("nbmnConfig") NBMNConfig nbmnConfig,
             @JsonProperty("wordType") RandomVariable wordType,
             @JsonProperty("wordFeatures") List<RandomVariable> wordFeatures,
-            @JsonProperty("categoryIds") List<Integer> categoryIds) {
+            @JsonProperty("categoryIds") List<Integer> categoryIds
+    ) {
         initializeStrategies();
         this.nbmnConfig = nbmnConfig;
         this.wordType = wordType;
@@ -102,6 +105,7 @@ public class ModelRVSetting {
     public NBMNConfig getNbmnConfig() {
         return nbmnConfig;
     }
+
 
     public RandomVariable getWordType() {
         return wordType;

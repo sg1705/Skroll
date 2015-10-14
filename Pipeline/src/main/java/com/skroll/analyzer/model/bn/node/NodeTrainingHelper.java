@@ -11,7 +11,7 @@ import java.util.*;
 
 // It is okay for these helper method to use nodes parameters
 public class NodeTrainingHelper {
-    protected static final double PRIOR_COUNT = .0001;
+    public static final double PRIOR_COUNT = .0001;
 
     /**
      * Creates a DiscreteNode for training from a list of RandomVariables in the node's family and its parent nodes.

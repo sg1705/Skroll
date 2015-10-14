@@ -15,7 +15,7 @@ public interface ModelFactory {
      * @param modelRVSetting
      * @return
      */
-    public TrainingDocumentAnnotatingModel createModel(int modelId, ModelRVSetting modelRVSetting);
+    public TrainingTextAnnotatingModel createModel(int modelId, ModelRVSetting modelRVSetting);
 
     /**
      * Persist the training model into store
@@ -29,7 +29,7 @@ public interface ModelFactory {
      * @param modelRVSetting
      * @return
      */
-    public TrainingDocumentAnnotatingModel getTrainingModel(int modelId, ModelRVSetting modelRVSetting);
+    public TrainingTextAnnotatingModel getTrainingModel(int modelId, ModelRVSetting modelRVSetting);
 
     /**
      * Create the BNI model per document and update the probabilities of categories
@@ -37,15 +37,11 @@ public interface ModelFactory {
      * @param document
      * @return
      */
-    public ProbabilityDocumentAnnotatingModel createBNIModel(int modelId, String documentId, ModelRVSetting modelRVSetting, Document document);
+    public ProbabilityTextAnnotatingModel createBNIModel(int modelId, String documentId, ModelRVSetting modelRVSetting, Document document);
 
     /**
-     * get the BNI Model for the document
-     * @param modelId
-     * @param modelRVSetting
-     * @param document
+     * retrieve the BNI model from cache
      * @return
      */
-    public ProbabilityDocumentAnnotatingModel getBNIModel(int modelId, ModelRVSetting modelRVSetting, Document document);
-
+    public ProbabilityTextAnnotatingModel getBNIModel(int modelId, String documentId);
 }

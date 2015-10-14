@@ -33,6 +33,7 @@ public class ClassifierFactory {
     public static final int TEN_Q_TOC_CLASSIFIER_ID = 102;
     public static final int INDENTURE_TOC_CLASSIFIER_ID = 103;
     private static final List<Integer> TOC_CATEGORY_IDS = new ArrayList<>(Arrays.asList(Category.NONE, Category.TOC_1, Category.TOC_2));
+    public static final List<Integer> LOWER_TOC_CATEGORY_IDS = new ArrayList<>(Arrays.asList(Category.NONE, Category.TOC_2));
 
 
     //Def Classifier
@@ -55,7 +56,7 @@ public class ClassifierFactory {
                 break;
             case TEN_K_TOC_CLASSIFIER_ID: case TEN_Q_TOC_CLASSIFIER_ID:case INDENTURE_TOC_CLASSIFIER_ID:case UNIVERSAL_TOC_CLASSIFIER_ID:
                 ClassifierProto tocClassifierProto = new ClassifierProto(classifierId, TOC_CATEGORY_IDS);
-                classifier = new ClassifierImpl(classifierId, tocClassifierProto, modelFactory, new TOCModelRVSetting(tocClassifierProto.getCategoryIds()));
+                classifier = new ClassifierImpl(classifierId, tocClassifierProto, modelFactory, new TOCModelRVSetting(tocClassifierProto.getCategoryIds(), LOWER_TOC_CATEGORY_IDS));
                 break;
             case TEN_K_DEF_CLASSIFIER_ID:case TEN_Q_DEF_CLASSIFIER_ID:case INDENTURE_DEF_CLASSIFIER_ID:case UNIVERSAL_DEF_CLASSIFIER_ID:
                 ClassifierProto defClassifierProto = new ClassifierProto(classifierId, DEF_CATEGORY_IDS);

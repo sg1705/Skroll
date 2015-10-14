@@ -50,7 +50,7 @@ public class SearchAPITest extends APITest {
         String response = webTarget.request().get(String.class);
         String[] totalEntries = response.split("entry");
         System.out.println(totalEntries.length);
-        assert(totalEntries.length > 1);
+        assert (totalEntries.length > 1);
         client.close();
     }
 
@@ -62,7 +62,7 @@ public class SearchAPITest extends APITest {
         WebTarget webTarget = client.target(TARGET_URL).queryParam("url", query);
 
         String response = webTarget.request().get(String.class);
-        assert(response.startsWith("<!DOCTYPE HTML"));
+        assert (response.startsWith("<!DOCTYPE HTML"));
         client.close();
 
     }

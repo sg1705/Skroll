@@ -2,7 +2,9 @@ package com.skroll.classifier.factory;
 
 import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
 import com.skroll.analyzer.model.applicationModel.ProbabilityDocumentAnnotatingModel;
+import com.skroll.analyzer.model.applicationModel.ProbabilityTextAnnotatingModel;
 import com.skroll.analyzer.model.applicationModel.TrainingDocumentAnnotatingModel;
+import com.skroll.analyzer.model.applicationModel.TrainingTextAnnotatingModel;
 import com.skroll.document.Document;
 import com.skroll.util.ObjectPersistUtil;
 import org.slf4j.Logger;
@@ -19,14 +21,16 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
 
     protected String modelFolderName = null;
     protected ObjectPersistUtil objectPersistUtil = null;
-    protected  static Map<Integer, TrainingDocumentAnnotatingModel> TrainingModelMap = new HashMap<>();
+    protected static Map<Integer, TrainingTextAnnotatingModel> TrainingModelMap = new HashMap<>();
+    protected static Map<String, ProbabilityTextAnnotatingModel> bniModelMap = new HashMap<>();
 
-    public TrainingDocumentAnnotatingModel getTrainingModel(int modelId, ModelRVSetting modelRVSetting) {
+    public TrainingTextAnnotatingModel getTrainingModel(int modelId, ModelRVSetting modelRVSetting) {
         if (TrainingModelMap.containsKey(modelId)){
             return TrainingModelMap.get(modelId);
         }
-        TrainingDocumentAnnotatingModel model = createModel(modelId, modelRVSetting);
+        TrainingTextAnnotatingModel model = createModel(modelId, modelRVSetting);
         logger.debug("training model Map Size:{}",TrainingModelMap.size());
+        logger.debug("bni model Map Size:{}",bniModelMap.size());
         return model;
     }
 
@@ -58,23 +62,40 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
     @Override
     public ProbabilityDocumentAnnotatingModel createBNIModel(int modelId, String documentId, ModelRVSetting modelRVSetting, Document document) {
 
-        TrainingDocumentAnnotatingModel tmpModel = getTrainingModel(modelId, modelRVSetting);
-        tmpModel.updateWithDocumentAndWeight(document);
+        ProbabilityTextAnnotatingModel bniModel;
+        if (modelRVSetting instanceof TOCModelRVSetting) {
+            TrainingDocumentTOCAnnotatingModel tmpModel =
+                    (TrainingDocumentTOCAnnotatingModel) createModel(modelId, modelRVSetting);
+            tmpModel.updateWithDocumentAndWeight(document);
+            bniModel = new ProbabilityDocumentTOCAnnotatingModel(
+                    modelId, tmpModel.getNbmnModel(), tmpModel.getHmm(),
+                    tmpModel.getSecNbmnModel(), tmpModel.getSecHmm(),
+                    document, (TOCModelRVSetting) modelRVSetting);
+        } else {
+            TrainingTextAnnotatingModel tmpModel =
+                    createModel(modelId, modelRVSetting);
+            tmpModel.updateWithDocumentAndWeight(document);
+            bniModel = new ProbabilityTextAnnotatingModel(
+                    tmpModel.getNbmnModel(), tmpModel.getHmm(),
+                    document, modelRVSetting);
+        }
 
         ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(modelId, tmpModel.getNbmnModel(),
                 tmpModel.getHmm(), document,modelRVSetting );
         bniModel.annotateDocument();
+        //printBelieves(bniModel, document);
+
+        bniModelMap.put(getBniId(modelId, documentId), bniModel);
 
         return bniModel;
     }
 
     @Override
-    public ProbabilityDocumentAnnotatingModel getBNIModel(int modelId,  ModelRVSetting modelRVSetting, Document document) {
-        TrainingDocumentAnnotatingModel tmpModel = getTrainingModel(modelId, modelRVSetting);
-        ProbabilityDocumentAnnotatingModel bniModel = new ProbabilityDocumentAnnotatingModel(modelId, tmpModel.getNbmnModel(),
-                tmpModel.getHmm(), document,modelRVSetting );
-        bniModel.annotateDocument();
-        return bniModel;
+    public ProbabilityTextAnnotatingModel getBNIModel(int modelId, String documentId) {
+        if (bniModelMap.containsKey(getBniId(modelId, documentId))) {
+            return bniModelMap.get(getBniId(modelId, documentId));
+        }
+        return null;
     }
 
     public void saveTrainingModel(int modelId, ModelRVSetting modelRVSetting) throws Exception {
