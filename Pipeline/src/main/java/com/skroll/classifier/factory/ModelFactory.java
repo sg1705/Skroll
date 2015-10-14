@@ -1,8 +1,8 @@
 package com.skroll.classifier.factory;
 
 import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
-import com.skroll.analyzer.model.applicationModel.ProbabilityDocumentAnnotatingModel;
-import com.skroll.analyzer.model.applicationModel.TrainingDocumentAnnotatingModel;
+import com.skroll.analyzer.model.applicationModel.ProbabilityTextAnnotatingModel;
+import com.skroll.analyzer.model.applicationModel.TrainingTextAnnotatingModel;
 import com.skroll.document.Document;
 
 /**
@@ -43,5 +43,5 @@ public interface ModelFactory {
      * retrieve the BNI model from cache
      * @return
      */
-    public ProbabilityTextAnnotatingModel getBNIModel(int modelId, String documentId);
+    public ProbabilityTextAnnotatingModel getBNIModel(int modelId, ModelRVSetting modelRVSetting, Document document);
 }
