@@ -7,6 +7,14 @@ md-icon {
   width: 24px; }
 
 /**
+* Skroll Main
+**/
+.main {
+  background-color: #e0e0e0;
+  -webkit-overflow-scrolling: touch;
+  height: 100%; }
+
+/**
 * context menu
 *
 *  Width is the same as the width for the md-icon
@@ -57,7 +65,7 @@ md-sidenav#navframe.md-locked-open {
 */
 .sk-landing-search {
   width: 100%;
-  background-color: #f6f6f6; }
+  /*background-color: rgb(246, 246, 246);*/ }
   @media (min-width: 960px) {
     .sk-landing-search {
       padding-top: 100px; } }
@@ -88,6 +96,9 @@ md-sidenav#navframe.md-locked-open {
   .sk-landing-search .list {
     padding-top: 50px;
     width: 700px; }
+    .sk-landing-search .list :focus {
+      outline: none;
+      border: 0; }
     .sk-landing-search .list .list-item h4 {
       font-weight: normal;
       margin-top: 10px;
