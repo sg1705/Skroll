@@ -10,6 +10,7 @@ import com.skroll.util.CmdLineExecutor;
 import org.apache.commons.exec.CommandLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.File;
 
 
@@ -34,6 +35,7 @@ public class IndexCreator implements CmdLineExecutor {
 
     /**
      * Returns document after generating indexes
+     *
      * @param input input document
      * @return document parsed document
      * @throws Exception
@@ -52,7 +54,6 @@ public class IndexCreator implements CmdLineExecutor {
     }
 
     /**
-     *
      * @param input input document
      * @return document parsed document
      * @throws Exception

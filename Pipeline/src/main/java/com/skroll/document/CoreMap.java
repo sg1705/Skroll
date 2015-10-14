@@ -112,7 +112,7 @@ public class CoreMap implements TypesafeMap  {
         Set<String> nKeys = coremap.keyNameSet();
         //remove transient annotations from both
 
-        for(int ii = 0; ii < CoreAnnotations.TRANSIENT_ANNOTATIONS.length; ii++) {
+        for (int ii = 0; ii < CoreAnnotations.TRANSIENT_ANNOTATIONS.length; ii++) {
             keys.remove(CoreAnnotations.TRANSIENT_ANNOTATIONS[ii].getSimpleName());
             nKeys.remove(CoreAnnotations.TRANSIENT_ANNOTATIONS[ii].getSimpleName());
         }

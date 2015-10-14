@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.skroll.analyzer.data.NBMNData;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
+import com.skroll.analyzer.model.bn.NBInferenceHelper;
 import com.skroll.analyzer.model.bn.NaiveBayesWithMultiNodes;
 import com.skroll.analyzer.model.bn.config.NBMNConfig;
 import com.skroll.analyzer.model.bn.inference.BNInference;
@@ -54,11 +55,13 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
 
     }
 
-    public ProbabilityTextAnnotatingModel(NaiveBayesWithMultiNodes nbmn,
+    public ProbabilityTextAnnotatingModel(NaiveBayesWithMultiNodes tnbm,
                                           HiddenMarkovModel hmm,
                                           Document doc,
                                           ModelRVSetting setting) {
-        this(nbmn, hmm, doc.getParagraphs(),
+        this(
+                NBInferenceHelper.createLogProbNBMN(tnbm),
+                hmm, doc.getParagraphs(),
                 DocProcessor.processParas(doc), // both processed Paras and data should be already stored in cache, so computation here should be fast.
                 DocProcessor.getParaDataFromDoc(doc, setting.getNbmnConfig()),
                 setting);

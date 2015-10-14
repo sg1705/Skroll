@@ -5,5 +5,7 @@
   "description": "Simple full-text search in your browser.",
   "license": "MIT",
   "main": "lunr.js",
-  "scripts": ["lunr.js"]
+  "scripts": [
+    "lunr.js"
+  ]
 }

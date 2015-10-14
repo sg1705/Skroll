@@ -3,16 +3,16 @@
     <md-card-content>
       <md-toolbar class="skroll-toolbar">
         <h1>
-        {{prompt}}
+          {{prompt}}
         </h1>
       </md-toolbar>
-        <md-list>
-            <md-item ng-repeat="item in items">
-              <md-item-content>
-                    <md-button class="md-primary" ng-click="itemClicked($index)">{{item}}</md-button>
-                </md-item-content>
-            </md-item>
-        </md-list>
+      <md-list>
+        <md-item ng-repeat="item in items">
+          <md-item-content>
+            <md-button class="md-primary" ng-click="itemClicked($index)">{{item}}</md-button>
+          </md-item-content>
+        </md-item>
+      </md-list>
   </md-card-content>
 </md-card>
 </md-bottom-sheet>

@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Processes query string and converts into a string that is
  * optimial for searching in SEC.GOV
- *
+ * <p>
  * Created by saurabh on 9/26/15.
  */
 public class QueryProcessor {
@@ -41,12 +41,13 @@ public class QueryProcessor {
                     try {
                         String cik = String.format("%010d", Integer.parseInt(tokens.get(0)));
                         companyNameMap.put(tokens.get(1).toLowerCase(), cik);
-                    } catch (Exception e) {}
+                    } catch (Exception e) {
+                    }
                 }
             });
 
         } catch (Exception e) {
-            logger.error("Cannot read CIK ticker file",e);
+            logger.error("Cannot read CIK ticker file", e);
         }
     }
 
@@ -76,7 +77,7 @@ public class QueryProcessor {
                 }
             } else {
                 //get fuzzy match
-                String fuzzyMatch = (String)companyNameMap.get(token.toLowerCase());
+                String fuzzyMatch = (String) companyNameMap.get(token.toLowerCase());
                 if (fuzzyMatch != null) {
                     newTokens.add(fuzzyMatch);
                 } else {

@@ -346,6 +346,7 @@ public class CategoryAnnotationHelper {
 
     /**
      * Copy annotations from one CoreMap into another
+     *
      * @param copyFrom CoreMap to copy from
      * @param copyInto
      */

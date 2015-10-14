@@ -167,7 +167,7 @@ public class DocAPITest extends APITest {
         //validate if response is a valid json
         Gson gson = new GsonBuilder().create();
         HashMap map = gson.fromJson(response, HashMap.class);
-        assert(!map.isEmpty());
+        assert (!map.isEmpty());
         assert (map.get("corpusTokens") != null);
     }
 }
