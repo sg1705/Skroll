@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * API involved with search on landing page.
- *
+ * <p>
  * Created by saurabh on 9/21/15.
  */
 
@@ -38,7 +38,7 @@ public class SearchAPI {
 
         searchText = UrlEscapers.urlFormParameterEscaper().escape(queryList.get(0));
 
-        String rssUrl = SEARCH_URL + "&text=" + searchText + "&first="+queryList.get(1) + "&last=" + queryList.get(2);
+        String rssUrl = SEARCH_URL + "&text=" + searchText + "&first=" + queryList.get(1) + "&last=" + queryList.get(2);
         logger.info("Search string for {}", rssUrl);
         String rssXml = DocumentHelper.fetchHtml(rssUrl);
         Response r = Response.ok().status(Response.Status.OK).entity(rssXml).build();

@@ -18,8 +18,12 @@
     md-no-cache>
     <md-item-template md-theme="default">
       <div style="word-wrap: break-word;margin-top:5px; margin-bottom: 5px">
-        <span md-theme="default" style="font-size:14px; color:rgb(63, 81, 181)" class="md-primary">{{item.header}}</span><br/>
-        <div style="white-space: normal; font-size: 12px; word-wrap: break-word;" class="md-primary md-hue-1 search-surrounting-text-container search-surrounting-text-clamp" md-highlight-text="ctrl.searchText" md-highlight-flags="ig">
+        <span md-theme="default" style="font-size:14px; color:rgb(63, 81, 181)"
+              class="md-primary">{{item.header}}</span><br/>
+
+        <div style="white-space: normal; font-size: 12px; word-wrap: break-word;"
+             class="md-primary md-hue-1 search-surrounting-text-container search-surrounting-text-clamp"
+             md-highlight-text="ctrl.searchText" md-highlight-flags="ig">
           {{item.displayText}}
         </div>
       </div>

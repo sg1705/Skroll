@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model.applicationModel;
 
 import com.google.common.collect.Lists;
+import com.google.common.io.Files;
 import com.skroll.analyzer.data.NBMNData;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.LowerCaseWordsComputer;
@@ -11,11 +12,14 @@ import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
+import com.skroll.document.JsonDeserializer;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.util.TestHelper;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -60,25 +64,27 @@ public class DocProcessorTest {
 
     @Test
     public void testProcessParagraphs() throws Exception {
-        List<CoreMap> processedParas = DocProcessor.processParas(doc, maxNumWords);
+        List<CoreMap> processedParas = DocProcessor.processParas(doc);
         assert (processedParas.get(0).get(CoreAnnotations.StartsWithQuote.class));
         assert (processedParas.get(0).getTokens().get(1).get(CoreAnnotations.IndexInteger.class) == 1);
     }
 
     @Test
     public void testParaGetDataFromDoc() throws Exception {
-        List<CoreMap> processedParas = DocProcessor.processParas(doc, maxNumWords);
-        NBMNData data = DocProcessor.getParaDataFromDoc(doc, processedParas, setting.getNbmnConfig());
+        List<CoreMap> processedParas = DocProcessor.processParas(doc);
+        NBMNData data = DocProcessor.getParaDataFromDoc(doc, setting.getNbmnConfig());
         System.out.print(data);
-        assert (Arrays.deepToString(data.getParaFeatures()).equals("[[3], [20], [3]]"));
+        assert (Arrays.deepToString(data.getParaFeatures()).equals("[[3], [29], [3]]"));
         assert (Arrays.deepToString(data.getParaDocFeatures()).equals("[[1], [1], [0]]"));
         assert (Arrays.toString(data.getWordsLists()[0].get(0)).equals("[in, out, out]"));
-        assert (Arrays.toString(data.getWordsLists()[1].get(0)).equals("[in, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out]"));
+        assert (Arrays.toString(data.getWordsLists()[1].get(0)).equals(
+                "[in, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out, out]"
+        ));
     }
 
     @Test
     public void testGetFeatureValue() throws Exception {
-        List<CoreMap> processedParas = DocProcessor.processParas(doc, maxNumWords);
+        List<CoreMap> processedParas = DocProcessor.processParas(doc);
         for (int i = 0; i < processedParas.size(); i++) {
             System.out.print("paragraph " + i + ": \n");
             for (RandomVariable rv : setting.getNbmnConfig().getAllParagraphFeatures()) {
@@ -101,7 +107,7 @@ public class DocProcessorTest {
 
     @Test
     public void testGetFeaturesVals() throws Exception {
-        List<CoreMap> processedParas = DocProcessor.processParas(doc, maxNumWords);
+        List<CoreMap> processedParas = DocProcessor.processParas(doc);
         List<RandomVariable> rv = Lists.newArrayList(
                 RVCreater.createRVFromAnnotation(CoreAnnotations.IsBoldAnnotation.class),
                 RVCreater.createRVFromAnnotation(CoreAnnotations.StartsWithQuote.class));
@@ -121,4 +127,32 @@ public class DocProcessorTest {
     }
 
 
+    @Test
+    public void testCreateSections() throws Exception {
+
+        String folder = "src/test/resources/analyzer/test10kDoc/";
+        String documentId = "bb1b0ae115c0bca4262b5e1483346fca";
+
+        String jsonString = Files.toString(new File(folder + documentId), Charset.defaultCharset());
+        doc = JsonDeserializer.fromJson(jsonString);
+
+        ModelRVSetting tocRVSetting = new TOCModelRVSetting(Arrays.asList(Category.NONE, Category.TOC_1, Category.TOC_2), null);
+        List<List<List<CoreMap>>> sectionsList = DocProcessor.createSections(doc.getParagraphs(),
+                doc.getParagraphs(), tocRVSetting.getNbmnConfig().getCategoryVar());
+        List<List<CoreMap>> sections = sectionsList.get(0);
+
+        for (int si = 0; si < sections.size(); si++) {
+            System.out.println();
+            System.out.println();
+            System.out.println("Section " + si);
+            System.out.println("________________________");
+            for (CoreMap p : sections.get(si)) {
+                System.out.println(p.get(CoreAnnotations.IndexInteger.class) + " " + p.getText());
+            }
+        }
+
+        assert (sections.size() == 24);
+
+
+    }
 }

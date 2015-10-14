@@ -55,19 +55,20 @@ public class RVCreaterTest {
 
     @Test
     public void testCreateWordsRVWithComputer() throws Exception {
-        FirstWordsComputer fWC;
+        FirstWordComputer fWC;
         CoreMap m = new CoreMap();
         Token token1;
         Token token2;
-        Token token3;fWC = new FirstWordsComputer();
+        Token token3;
+        fWC = new FirstWordComputer();
         token1 = new Token("First");
         token2 = new Token("token");
         token3 = new Token("only");
         m.set(CoreAnnotations.TokenAnnotation.class, Lists.newArrayList(token1, token2, token3));
-        RandomVariable rv = RVCreater.createWordsRVWithComputer(fWC, "FirstWordsComputer");
+        RandomVariable rv = RVCreater.createWordsRVWithComputer(fWC, "FirstWordComputer");
         logger.info("{}", rv);
         logger.info("{}", RVValues.getWords(rv, m));
-        assert(rv.getName().equals("FirstWordsComputer"));
+        assert (rv.getName().equals("FirstWordComputer"));
         assert(RVValues.getWords(rv, m)[0].equals("First".toLowerCase()));
     }
 

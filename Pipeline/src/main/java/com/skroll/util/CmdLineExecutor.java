@@ -13,7 +13,7 @@ import java.io.ByteArrayOutputStream;
 
 /**
  * Allows a given class to be have a command line execution
- *
+ * <p>
  * Created by saurabh on 9/27/15.
  */
 public interface CmdLineExecutor {
@@ -30,7 +30,7 @@ public interface CmdLineExecutor {
      */
     default public String execute(CommandLine cmdLine, int expectedReturnCode) throws Exception {
         ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-        PumpStreamHandler psh = new PumpStreamHandler( stdout );
+        PumpStreamHandler psh = new PumpStreamHandler(stdout);
         DefaultExecutor executor = new DefaultExecutor();
         executor.setExitValue(expectedReturnCode);
         executor.setStreamHandler(psh);
@@ -39,7 +39,7 @@ public interface CmdLineExecutor {
         long executionTime = System.currentTimeMillis();
         int exitValue = executor.execute(cmdLine);
         if (exitValue != expectedReturnCode) {
-            ParserException ps =  new ParserException("Cannot obtain index. Node exited with the return code:" + exitValue);
+            ParserException ps = new ParserException("Cannot obtain index. Node exited with the return code:" + exitValue);
             ps.setReturnValue(exitValue);
             throw ps;
         }

@@ -23,7 +23,7 @@ public class TrainingDocumentAnnotatingModelTest{
     private static final List<Integer> TEST_DEF_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE,Category.DEFINITION));
     private static final int TEST_DEF_CLASSIFIER_ID = 2;
     ModelRVSetting setting = new DefModelRVSetting(TEST_DEF_CATEGORY_IDS);
-    TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel(TEST_DEF_CLASSIFIER_ID,setting);
+    TrainingTextAnnotatingModel model = new TrainingTextAnnotatingModel(TEST_DEF_CLASSIFIER_ID, setting);
     Document document;
     @Before
     public void setup() throws Exception {
@@ -61,10 +61,11 @@ public class TrainingDocumentAnnotatingModelTest{
         document = TestHelper.makeTrainingDoc(f);
         model.updateWithDocument(document);
         model.getHmm().updateProbabilities();
-
         System.out.println("trained model: \n" + model);
         System.out.println("multiNodes: \n" + model.getNbmnModel().getMultiNodes());
-        assert (model.getNbmnModel().getMultiNodes().toString().contains("RandomVariable{name='[0, 1]_1_notInTable', featureSize=2, valueNames=null}], parameters=[0.1, 0.1, 0.1, 307.1]}]}"));
+        assert (model.getNbmnModel().getMultiNodes().toString().contains(
+                "RandomVariable{name='[0, 1]_1_notInTable', featureSize=2, valueNames=null}], parameters=[1.0E-4, 1.0E-4, 1.0E-4, 307.0001]}]}"
+        ));
 
     }
 
@@ -77,11 +78,11 @@ public class TrainingDocumentAnnotatingModelTest{
 
         ModelRVSetting setting = new DefModelRVSetting(TEST_DEF_CATEGORY_IDS);
 
-        TrainingDocumentAnnotatingModel model = new TrainingDocumentAnnotatingModel(TEST_DEF_CLASSIFIER_ID,setting);
+        TrainingTextAnnotatingModel model = new TrainingTextAnnotatingModel(TEST_DEF_CLASSIFIER_ID, setting);
         //Document doc = makeTrainingDoc(file);
 
-        List<CoreMap> processedParas = DocProcessor.processParas(document, maxNumWords);
-        NBMNData data = DocProcessor.getParaDataFromDoc(document, processedParas, setting.getNbmnConfig());
+        List<CoreMap> processedParas = DocProcessor.processParas(document);
+        NBMNData data = DocProcessor.getParaDataFromDoc(document, setting.getNbmnConfig());
         int[][] docFeatureValues = DocProcessor.generateDocumentFeatures(
                 document.getParagraphs(), data.getParaDocFeatures(), setting.getNbmnConfig());
 
@@ -90,7 +91,7 @@ public class TrainingDocumentAnnotatingModelTest{
         assert (Arrays.deepEquals(docFeatureValues, new int[][]{{0, 0}, {0, 1}, {0, 0}, {0, 0}, {0, 0}}));
     }
 
-    public TrainingDocumentAnnotatingModel getModel() {
+    public TrainingTextAnnotatingModel getModel() {
         return model;
     }
 }

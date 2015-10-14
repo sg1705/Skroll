@@ -141,6 +141,7 @@ public class NBTrainingHelper {
     }
 
     public static NaiveBayesWithMultiNodes createTrainingNBMN(NBMNConfig config) {
+        if (config == null) return null;
 
         DiscreteNode categoryNode = NodeTrainingHelper.createTrainingDiscreteNode(
                 Arrays.asList(config.getCategoryVar()));

@@ -123,10 +123,10 @@ public class Trainer {
         }
     }
 
-    public  static void printHelpMessage () {
+    public static void printHelpMessage() {
         System.out.println(
-                        "############################################# \n" +
-                        "For following four commands below, the default folder is  \"data/preEvaluated/\"."+
+                "############################################# \n" +
+                        "For following four commands below, the default folder is  \"data/preEvaluated/\"." +
                         "you don't have to provide the -f option, if you are using the default folder. \n" +
                         "#To annotate Doc type of files of a folder specified by -f, from command line \n" +
                         "./trainer.sh -c annotateDocType -f data/preEvaluated/ -t 101 -w 1f \n" +

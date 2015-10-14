@@ -2,6 +2,7 @@ package com.skroll.analyzer.model.bn;
 
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.bn.config.NBFCConfig;
+import com.skroll.analyzer.model.bn.node.NodeTrainingHelper;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.List;
 
 public class TrainingNaiveBayesWithFeatureConditionsTest extends TestCase {
 
+    double priorCount = NodeTrainingHelper.PRIOR_COUNT;
     public void testAddSample() throws Exception {
 //        NaiveBayesWithFeatureConditions nb =
 //                NBTrainingHelper.createTrainingNBWithFeatureConditioning(
@@ -40,7 +42,7 @@ public class TrainingNaiveBayesWithFeatureConditionsTest extends TestCase {
         NBTrainingHelper.addSample(nb, tuple);
         System.out.println("model after");
         System.out.println(nb);
-        assert(nb.getFeatureExistAtDocLevelNodes().get(0).getParameters()[4]==1.1);
+        assert (nb.getFeatureExistAtDocLevelNodes().get(0).getParameters()[4] == 1 + priorCount);
 
     }
 }

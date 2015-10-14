@@ -16,9 +16,9 @@ public class TestConfigWithPreEvalFolder extends Configuration {
     String location;
 
     @Inject
-    public TestConfigWithPreEvalFolder (@Location String location) {
+    public TestConfigWithPreEvalFolder(@Location String location) {
         super("src/main/resources/skroll-trainer.properties");
-        this.confMap.put("preEvaluatedFolder",location);
+        this.confMap.put("preEvaluatedFolder", location);
         logger.info("Configuration After overwriting the preEvaluatedFolder: " + this.confMap);
         this.location = location;
     }
@@ -26,5 +26,6 @@ public class TestConfigWithPreEvalFolder extends Configuration {
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.FIELD, ElementType.PARAMETER})
     @BindingAnnotation
-    public @interface Location {}
+    public @interface Location {
+    }
 }

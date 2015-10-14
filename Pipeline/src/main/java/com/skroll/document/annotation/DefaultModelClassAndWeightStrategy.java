@@ -93,11 +93,15 @@ public class DefaultModelClassAndWeightStrategy implements ModelClassAndWeightSt
     public List<CoreMap> getObservedParagraphs(List<CoreMap> paras) {
         List<CoreMap> observedParagraphs = new ArrayList<>();
         for (CoreMap paragraph : paras) {
-            if (DocumentHelper.isObserved(paragraph)) {
+            if (isObserved(paragraph)) {
                         observedParagraphs.add(paragraph);
             }
         }
         return observedParagraphs;
+    }
+
+    public boolean isObserved(CoreMap para) {
+        return DocumentHelper.isObserved(para);
     }
 
 
