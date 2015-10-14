@@ -154,7 +154,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
         System.out.println(((int) (model.getDocumentFeatureBelief()[0][1][0] * 10)));
         System.out.println(((int) (model.getDocumentFeatureBelief()[0][1][1] * 10)));
         // strangely, gradlew test calculation results are different at lower decimal digits.
-        assert (((int) (model.getDocumentFeatureBelief()[0][1][0] * 10)) == -898);
+        assert (((int) (model.getDocumentFeatureBelief()[0][1][0])) == -89);
         assert (((int) (model.getDocumentFeatureBelief()[0][1][1] * 10)) == -0);
     }
 
