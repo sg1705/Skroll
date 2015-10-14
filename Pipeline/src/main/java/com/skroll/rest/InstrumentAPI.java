@@ -57,26 +57,26 @@ public class InstrumentAPI {
     public Response getParagraphJson(@QueryParam("paragraphId") String paragraphId, @Context HttpHeaders hh,@BeanParam RequestBean request) {
 
         String documentId = request.getDocumentId();
-        Document doc = request.getDocument();
-        if (doc == null) {
+        Document document = request.getDocument();
+        if (document == null) {
             return logErrorResponse("document cannot be found for document id: " + documentId);
         }
         //For debug purpose, display top 20 paragraph to know the company name of the document.
-        doc.getParagraphs().stream().limit(20).forEach(para -> logger.debug("{}: {}", para.getId(), para.getText()));
+        document.getParagraphs().stream().limit(20).forEach(para -> logger.debug("{}: {}", para.getId(), para.getText()));
         Gson gson = new GsonBuilder().create();
         StringBuffer buf = new StringBuffer();
         String annotationJson = "";
         String probabilityJson;
         buf.append("[");
         int paraIndex = 0;
-        probabilityJson = gson.toJson("DocType:" + DocTypeAnnotationHelper.getDocType(doc));
+        probabilityJson = gson.toJson("DocType:" + DocTypeAnnotationHelper.getDocType(document));
         buf.append(probabilityJson);
         buf.append(",");
-        probabilityJson = gson.toJson("DocType Training Weight:" + DocTypeAnnotationHelper.getDocTypeTrainingWeight(doc));
+        probabilityJson = gson.toJson("DocType Training Weight:" + DocTypeAnnotationHelper.getDocTypeTrainingWeight(document));
         buf.append(probabilityJson);
         buf.append(",");
 
-        for (CoreMap paragraph : doc.getParagraphs()) {
+        for (CoreMap paragraph : document.getParagraphs()) {
             if (paragraph.getId().equals(paragraphId)) {
                 //found it
                 annotationJson = gson.toJson(paragraph);
@@ -85,7 +85,7 @@ public class InstrumentAPI {
             paraIndex++;
         }
 
-        for (CoreMap table : doc.getTables()) {
+        for (CoreMap table : document.getTables()) {
             if (table.get(CoreAnnotations.ParagraphIdAnnotation.class).equals(paragraphId)) {
                 //found a matching table
                 annotationJson = annotationJson + "," + gson.toJson(table);
@@ -108,7 +108,7 @@ public class InstrumentAPI {
                 probabilityJson = gson.toJson("ClassifierId:" + classifier.getId());
                 buf.append(probabilityJson);
                 buf.append(",");
-                HashMap<String, HashMap<String, HashMap<String, Double>>> map = classifier.getBNIVisualMap(documentId, paraIndex);
+                HashMap<String, HashMap<String, HashMap<String, Double>>> map = classifier.getBNIVisualMap(document, paraIndex);
                 probabilityJson = gson.toJson(map);
                 buf.append(probabilityJson);
                 buf.append(",");
@@ -221,9 +221,9 @@ public class InstrumentAPI {
     public Response getProbabilityDump(@Context HttpHeaders hh, @BeanParam RequestBean request) throws IOException {
 
         String documentId = request.getDocumentId();
-        Document doc = request.getDocument();
-        if (doc == null) return logErrorResponse("document cannot be found for document id: " + documentId);
-        if (doc == null) {
+        Document document = request.getDocument();
+        if (document == null) return logErrorResponse("document cannot be found for document id: " + documentId);
+        if (document == null) {
             logger.warn("document cannot be found for document id: " + documentId);
             return Response.status(Response.Status.NOT_FOUND).entity("Failed to find the document in Map").type(MediaType.TEXT_PLAIN).build();
         }
@@ -232,7 +232,7 @@ public class InstrumentAPI {
             Map<String, Double> allPs = new HashMap();
             for (Classifier classifier : request.getClassifiers()) {
                 if (classifier.getId() == 1) {
-                    allPs = classifier.getProbabilityDataForDoc(documentId);
+                    allPs = classifier.getProbabilityDataForDoc(document);
                 }
             }
             Gson gson = new GsonBuilder().create();

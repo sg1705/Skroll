@@ -252,7 +252,6 @@ public class DocAPI {
         final Document finalDoc = document;
         try {
             request.getClassifiers().forEach(c -> c.classify(documentId, finalDoc));
-            request.getDocumentFactory().putDocument(document);
         } catch (Exception e) {
             return logErrorResponse("Failed to classify/store document", e);
         }
