@@ -27,12 +27,10 @@
 
 </head>
 
-  <md-backdrop ng-show="ctrl.documentModel.isProcessing"  class="md-opaque md-bottom-sheet-backdrop md-default-theme">
-    <md-progress-circular style="z-index: 80; position:absolute;top: 50%;left: 50%;" md-mode="indeterminate"></md-progress-circular>
-  </md-backdrop>
-
+<sk-backdrop></sk-backdrop>
 
 <body style="height:100%">
+
   <div
     ng-view layout="column"
     class="main" >
@@ -97,6 +95,7 @@
 <script src="/scripts/core.services/textselectionobserverservice.js"></script>
 <script src="/scripts/core.util/ngEnter.directive.js"></script>
 <script src="/scripts/core.util/scrollToParagraph.js"></script>
+<script src="/scripts/core.util/skBackdrop.directive.js"></script>
 <script src="/scripts/core/content.controller.js"></script>
 <script src="/scripts/core/skContent.js"></script>
 <script src="/scripts/core/skToolbar.js"></script>
