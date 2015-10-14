@@ -58,7 +58,7 @@ angular
 		when('/list', {
 			templateUrl: 'scripts/landing/doclist.tmpl.html',
 			controller: 'ContentCtrl',
-			controllerAs: 'ctrl'
+			controllerAs: 'contentCtrl'
 		}).
 		when('/open', {
 			templateUrl: 'scripts/core/app.core.tmpl.html',
@@ -71,13 +71,13 @@ angular
 		when('/view/docId/:docId', {
 			templateUrl: 'scripts/core/app.core.tmpl.html',
 			controller: 'ContentCtrl',
-			controllerAs: 'ctrl',
+			controllerAs: 'contentCtrl',
 			reloadOnSearch: false
 		}).
 		when('/view/docId/:docId/linkId/:linkId', {
 			templateUrl: 'scripts/core/app.core.tmpl.html',
 			controller: 'ContentCtrl',
-			controllerAs: 'ctrl',
+			controllerAs: 'contentCtrl',
 			reloadOnSearch: false
 		}).
 		otherwise({
