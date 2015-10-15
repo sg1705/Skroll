@@ -13,7 +13,7 @@
     .module('app.core.services')
     .factory('mouseEnterObserverService', MouseEnterObserverService);
 
-  /** @ngInject **/
+  /* @ngInject */
   function MouseEnterObserverService() {
 
     //-- private variables

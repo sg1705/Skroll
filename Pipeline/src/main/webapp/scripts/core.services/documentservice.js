@@ -5,8 +5,7 @@
     .module('app.core.services')
     .service('documentService', DocumentService);
 
-  /** @ngInject **/
-
+  /* @ngInject */
   function DocumentService($http, $q, $log) {
 
     //-- private variables

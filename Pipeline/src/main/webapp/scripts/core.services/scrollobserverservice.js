@@ -13,7 +13,7 @@
     .module('app.core.services')
     .factory('scrollObserverService', ScrollObserverService);
 
-  /** @ngInject **/
+  /* @ngInject */
   function ScrollObserverService() {
 
     //-- private variables

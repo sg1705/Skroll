@@ -13,7 +13,7 @@
     .module('app.core.services')
     .factory('textSelectionObserverService', TextSelectionObserverService);
 
-  /** @ngInject **/
+  /* @ngInject */
   function TextSelectionObserverService() {
 
     //-- private variables
