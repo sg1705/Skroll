@@ -16,6 +16,7 @@
     .module('app.search')
     .service('searchService', SearchService);
 
+  /* @ngInject */
   function SearchService($http, $q, $log, LHSModel) {
 
     //-- private variables

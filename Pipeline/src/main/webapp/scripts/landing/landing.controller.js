@@ -13,7 +13,7 @@
     .module('app.landing')
     .controller('LandingCtrl', LandingCtrl);
 
-  /* @ngInject*/
+  /* @ngInject */
   function LandingCtrl($location, secSearchService, $routeParams, importService) {
 
     //-- private variables

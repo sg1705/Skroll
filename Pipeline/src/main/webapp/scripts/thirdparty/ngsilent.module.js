@@ -19,7 +19,7 @@
    *
    */
   angular.module('ngSilent', [])
-    .factory('$ngSilentLocation', function($location) {
+    .factory('$ngSilentLocation', ['$location', function($location) {
       return {
         '$$silentChangePath': false,
         'silent': function(path, needReplace) {
@@ -42,8 +42,8 @@
           })();
         }
       }
-    })
-    .run(function($rootScope, $location, $ngSilentLocation) {
+    }])
+    .run(['$rootScope', '$location', '$ngSilentLocation', function($rootScope, $location, $ngSilentLocation) {
 
       var listener = function(event) {
 
@@ -60,5 +60,5 @@
       listener.__silentModeMarker = true;
 
       $rootScope.$on('$locationChangeSuccess', listener);
-    });
+    }]);
 })();
