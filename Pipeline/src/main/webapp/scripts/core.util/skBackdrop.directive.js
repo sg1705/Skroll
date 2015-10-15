@@ -20,7 +20,12 @@
       template: '<md-backdrop ng-show="backdropCtrl.documentModel.isProcessing"  class="md-opaque md-bottom-sheet-backdrop md-default-theme"> \
                    <md-progress-circular style="z-index: 80; position:absolute;top: 50%;left: 50%;" md-mode="indeterminate"></md-progress-circular> \
                   </md-backdrop>',
-      controller: SkBackdropCtrl,
+      controller: function() {
+        //-- private variables
+        var vm = this;
+        //-- public methods
+        vm.documentModel = documentModel;
+      },
       controllerAs: 'backdropCtrl'
     }
 
