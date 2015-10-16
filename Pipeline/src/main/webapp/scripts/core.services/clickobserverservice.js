@@ -13,7 +13,7 @@
     .module('app.core.services')
     .factory('clickObserverService', ClickObserverService);
 
-  /** @ngInject **/
+  /* @ngInject */
   function ClickObserverService() {
 
     //-- private variables

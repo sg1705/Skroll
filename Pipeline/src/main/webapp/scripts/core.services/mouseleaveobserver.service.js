@@ -13,7 +13,7 @@
     .module('app.core.services')
     .factory('mouseLeaveObserverService', MouseLeaveObserverService);
 
-  /** @ngInject **/
+  /* @ngInject */
   function MouseLeaveObserverService() {
 
     //-- private variables

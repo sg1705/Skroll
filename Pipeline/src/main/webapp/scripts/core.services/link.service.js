@@ -5,7 +5,7 @@
     .module('app.core.services')
     .service('linkService', LinkService);
 
-  /** @ngInject **/
+  /* @ngInject */
   function LinkService($log, $q, featureFlags) {
 
     //-- private variables

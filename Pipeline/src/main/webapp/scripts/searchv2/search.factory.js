@@ -15,7 +15,7 @@
     .factory('searchFactory', SearchFactory);
 
 
-  /** @ngInject **/
+  /* @ngInject */
   function SearchFactory() {
 
     //-- private variables

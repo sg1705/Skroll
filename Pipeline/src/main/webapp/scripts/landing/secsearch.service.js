@@ -5,8 +5,7 @@
     .module('app.landing')
     .service('secSearchService', SecSearchService);
 
-  /** @ngInject **/
-
+  /* @ngInject */
   function SecSearchService($http, $q, $log) {
 
     //-- private variables

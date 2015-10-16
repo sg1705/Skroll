@@ -11,7 +11,7 @@
         <filter-class>org.eclipse.jetty.servlets.GzipFilter</filter-class>
         <init-param>
             <param-name>mimeTypes</param-name>
-            <param-value>text/html,text/plain,text/xml, application/json</param-value>
+            <param-value>text/html,text/plain,text/xml, application/json,application/javascript,text/css</param-value>
         </init-param>
     </filter>
 

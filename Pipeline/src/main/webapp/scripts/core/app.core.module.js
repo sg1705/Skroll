@@ -7,7 +7,7 @@
 
   angular
     .module('app.core')
-    .run(function(featureFlags, $http) {
+    .run(['featureFlags', '$http', function(featureFlags, $http) {
       var flags = [{
         "key": "trainer",
         "active": false,
@@ -30,7 +30,7 @@
         "description": "no description"
       }];
       featureFlags.set(flags);
-    });
+    }]);
 
 
 

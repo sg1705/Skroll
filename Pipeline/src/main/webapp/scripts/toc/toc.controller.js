@@ -16,6 +16,8 @@
   /**
    * Controller for the directive
    **/
+
+  /* @ngInject */
   function TocCtrl(LHSModel, scrollObserverService, $analytics) {
     //-- private variables
     var ctrl = this,
