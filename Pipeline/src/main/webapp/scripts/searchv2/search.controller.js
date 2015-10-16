@@ -109,16 +109,12 @@
         searchResultsIdx++;
       }
 
-
       var self = this;
       var ii = 0;
       for (var idx in elementsOrganizedInHeaders) {
         var header = headerItems[idx];
         var results = elementsOrganizedInHeaders[idx];
 
-        // results.sort(function(a, b) {
-        //   return b.score - a.score;
-        // });
         var searchedItems = [];
 
         results.forEach(function(result) {
@@ -128,7 +124,6 @@
           var resultElement = document.getElementById(result.ref);
           var resultText = self.getSurroundingText(resultElement.textContent, searchText);
           var item = {
-            //'header': idx === "-1" ? "DocumentStart" : header.term,
             'paragraphId': result.ref,
             'displayText': resultText
           };
@@ -136,25 +131,17 @@
         });
 
         var headerObj = {
-          'headerTerm': idx === "-1" ? '' : header.term,
+          'headerTerm': idx === '-1' ? '' : header.term,
           'paragraphId': header.paragraphId,
-          'isHidden': idx === "-1",
+          'isHidden': idx === '-1',
           'searchedItems': searchedItems
         };
-        if (idx === "-1") {
+        if (idx === '-1') {
           items.unshift(headerObj);
         } else {
           items.push(headerObj);
         }
       }
-
-      //vm.unHighlightPreviousSearchResults(vm.searchResults);
-      //vm.highlightSearchResults(items, searchText);
-      // vm.searchResults = items;
-      // vm.searchText = searchText;
-      // items = _.groupBy(items, function(item) {
-      //   return item.header
-      // });
 
       return items;
     }
@@ -162,7 +149,8 @@
     function getSurroundingText(paragraphText, searchString) {
       var possibleWordsBefore = 2;
       var possibleWordsAfter = 16;
-      var regexStr = "((?:[\\w]*\\s*){" + possibleWordsBefore + "}" + searchString + "(?:\\s*[\\w,-\\.]*){" + possibleWordsAfter + "})";
+      var regexStr = '((?:[\\w]*\\s*){' + possibleWordsBefore + '}' +
+        searchString + '(?:\\s*[\\w,-\\.]*){' + possibleWordsAfter + '})';
       var regex = new RegExp(regexStr, 'i');
       var matcher;
       if ((matcher = regex.exec(paragraphText)) !== null) {
@@ -181,7 +169,7 @@
     function highlightSearchResults(items, searchText) {
       for (var ii = 0; ii < items.length; ii++) {
         var paraId = items[ii].paragraphId;
-        $("#" + paraId).highlight(searchText, {
+        $('#' + paraId).highlight(searchText, {
           wordsOnly: false,
           element: 'span',
           className: 'skHighlight'
@@ -192,7 +180,7 @@
     function unHighlightPreviousSearchResults(items) {
       for (var ii = 0; ii < items.length; ii++) {
         var paraId = items[ii].paragraphId;
-        $("#" + paraId).unhighlight({
+        $('#' + paraId).unhighlight({
           element: 'span',
           className: 'skHighlight'
         });
@@ -220,10 +208,5 @@
       var paragraphId = item.paragraphId;
       this.selectionService.scrollToParagraph(paragraphId);
     }
-    // jQuery.expr[":"].ContainsCaseInsensitive = jQuery.expr.createPseudo(function(arg) {
-    //   return function(elem) {
-    //     return jQuery(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
-    //   };
-    // });
   }
 })();
