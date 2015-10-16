@@ -22,7 +22,6 @@
     vm.selectionService = selectionService;
     vm.searchState = $scope.searchState = searchFactory.searchState;
     vm.searchResults = searchFactory.searchResults;
-    //console.log(searchFactory);
 
     //-- public methods
     this.getMatches = getMatches;
@@ -34,15 +33,11 @@
     vm.searchTextChange = searchTextChange;
     vm.selectedItemChange = selectedItemChange;
 
-
     //////////////////
     $scope.$watch('searchState.searchText', function(searchText) {
       vm.searchState.searchActive = searchText.length ? true : false;
       if (vm.searchState.searchActive) {
         vm.searchResults = vm.getMatches(searchText);
-        console.log('searchResults');
-        console.dir(vm.searchResults);
-
       }
     }, 250); // delay 250 ms
 
@@ -54,26 +49,25 @@
       var searchResults = documentModel.lunrIndex
         .search(searchText);
 
-
-      searchResults = searchResults.slice(0, 25);
+      searchResults = searchResults.slice(0, 50);
 
       searchResults = searchResults.sort(function(a, b) {
-        return a.ref.split('_')[1] - b.ref.split('_')[1];
+        return parseInt(a.ref.split('_')[1]) - parseInt(b.ref.split('_')[1]);
       });
-
 
       var elementsOrganizedInHeaders = {};
       var headerItems = LHSModel.getParaFromClassIdRange(2, 4);
       var currHeader = headerItems[0];
-      var nextHeaderIdx = 0, currHeaderIdx = 0;
+      var nextHeaderIdx = 0,
+        currHeaderIdx = 0;
       nextHeaderIdx++;
       var searchResultsIdx = 0;
       var nextHeader = headerItems[nextHeaderIdx];
       while (searchResultsIdx < searchResults.length && nextHeaderIdx < headerItems.length) {
         var result = searchResults[searchResultsIdx];
-        var resultParaId = result.ref.split('_')[1];
-        if (resultParaId > currHeader.paragraphId.split('_')[1]) {
-          if (resultParaId <= nextHeader.paragraphId.split('_')[1]) {
+        var resultParaId = parseInt(result.ref.split('_')[1]);
+        if (resultParaId > parseInt(currHeader.paragraphId.split('_')[1])) {
+          if (resultParaId < parseInt(nextHeader.paragraphId.split('_')[1])) {
             if (typeof elementsOrganizedInHeaders[currHeaderIdx] === 'undefined') {
               elementsOrganizedInHeaders[currHeaderIdx] = [];
             }
@@ -85,6 +79,19 @@
             nextHeaderIdx++;
             nextHeader = headerItems[nextHeaderIdx];
           }
+        } else if (resultParaId === parseInt(currHeader.paragraphId.split('_')[1])) {
+          if (typeof elementsOrganizedInHeaders[currHeaderIdx] === 'undefined') {
+            elementsOrganizedInHeaders[currHeaderIdx] = [];
+          }
+          result.para
+          elementsOrganizedInHeaders[currHeaderIdx].push(result);
+          searchResultsIdx++;
+        } else if (currHeaderIdx === 0) {
+          if (typeof elementsOrganizedInHeaders[-1] === 'undefined') {
+            elementsOrganizedInHeaders[-1] = [];
+          }
+          elementsOrganizedInHeaders[-1].push(result);
+          searchResultsIdx++;
         } else {
           currHeader = nextHeader;
           currHeaderIdx = nextHeaderIdx;
@@ -94,10 +101,11 @@
       }
 
       while (searchResultsIdx < searchResults.length) {
-            if (typeof elementsOrganizedInHeaders[currHeaderIdx] === 'undefined') {
-              elementsOrganizedInHeaders[currHeaderIdx] = [];
-            }
-            elementsOrganizedInHeaders[currHeaderIdx].push(result);
+        var result = searchResults[searchResultsIdx];
+        if (typeof elementsOrganizedInHeaders[currHeaderIdx] === 'undefined') {
+          elementsOrganizedInHeaders[currHeaderIdx] = [];
+        }
+        elementsOrganizedInHeaders[currHeaderIdx].push(result);
         searchResultsIdx++;
       }
 
@@ -108,24 +116,36 @@
         var header = headerItems[idx];
         var results = elementsOrganizedInHeaders[idx];
 
-        results.sort(function(a, b) {
-          return b.score - a.score;
-        });
-        items[ii] = [];
+        // results.sort(function(a, b) {
+        //   return b.score - a.score;
+        // });
+        var searchedItems = [];
+
         results.forEach(function(result) {
+          if (result.ref === header.paragraphId) {
+            return;
+          }
           var resultElement = document.getElementById(result.ref);
           var resultText = self.getSurroundingText(resultElement.textContent, searchText);
           var item = {
-            'header': header.term,
+            //'header': idx === "-1" ? "DocumentStart" : header.term,
             'paragraphId': result.ref,
             'displayText': resultText
           };
-          console.log(item);
-          items[ii].push(item);
+          searchedItems.push(item);
         });
-        ii++;
 
-
+        var headerObj = {
+          'headerTerm': idx === "-1" ? '' : header.term,
+          'paragraphId': header.paragraphId,
+          'isHidden': idx === "-1",
+          'searchedItems': searchedItems
+        };
+        if (idx === "-1") {
+          items.unshift(headerObj);
+        } else {
+          items.push(headerObj);
+        }
       }
 
       //vm.unHighlightPreviousSearchResults(vm.searchResults);
@@ -179,7 +199,6 @@
       }
     }
 
-
     function enterSearchBox() {
       LHSModel.smodel.hover = true;
     }
@@ -188,11 +207,8 @@
       LHSModel.smodel.hover = false;
     }
 
-
-
     function searchTextChange(text) {
       if (text == '') {
-        console.log("clearing");
         this.unHighlightPreviousSearchResults(this.searchResults);
       }
     }
@@ -210,5 +226,4 @@
     //   };
     // });
   }
-
 })();
