@@ -5,6 +5,7 @@ build/
 .idea/tasks.xml
 .idea/uiDesigner.xml
 .idea/libraries
+*.sublime-workspace
 Pipeline/src/main/webapp/styles/.sass-cache
 node_modules
 Pipeline/logs
