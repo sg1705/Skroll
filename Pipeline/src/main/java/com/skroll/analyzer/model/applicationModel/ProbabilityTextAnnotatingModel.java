@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
 
     private static final int DEFAULT_NUM_ITERATIONS = 1;
-    private static final double[] DEFAULT_ANNOTATING_THRESHOLD = new double[]{0, .999999, 0.99999};
+    private static final double[] DEFAULT_ANNOTATING_THRESHOLD = new double[]{0, .999999, 0.99999, 0.99999};
     List<CoreMap> paragraphs;
     // todo: should probably store paragraphs, otherwise, need to recreate it everytime when model has new observations
     List<CoreMap> processedParagraphs = new ArrayList<>();
