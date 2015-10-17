@@ -87,13 +87,37 @@ md-toast.skContextMenu {
 * Docivew
 **/
 #content {
-	min-width: 600px;
+
+  @include desktop {
+    min-width: 600px;
+    width: calc(80% + 120px);
+    max-width: 900px;
+    padding-left: 7.5%;
+    padding-right: 6%;  
+  }
+
+  @include tablet {
+    min-width: 600px;
+    width: calc(80% + 120px);
+    max-width: 900px;
+    padding-left: 7.5%;
+    padding-right: 6%;  
+  }
+
+
+  @include phone {
+    width: 100%;
+    padding-left: 7.5%;
+    padding-right: 6%;   
+  }
+
+
+/*	min-width: 600px;
 	width    : calc(80% + 120px);
 	max-width: 900px;
-
 	padding-left: 7.5%;
 	padding-right: 6%;
-
+*/
 }
 
 
