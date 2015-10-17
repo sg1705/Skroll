@@ -20,9 +20,6 @@
     //-- private variables
     var vm = this;
 
-    //-- public variables
-    vm.documentId = documentModel.documentId;
-
     //-- public methods
     vm.toggleSidenav = toggleSidenav;
     vm.navigateToLanding = navigateToLanding;

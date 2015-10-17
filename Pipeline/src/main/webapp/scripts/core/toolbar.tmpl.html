@@ -1,18 +1,18 @@
 
-	<div layout="row" flex style="height: 48px">
+	<div layout="row" layout-align-gt-md="end center" layout-align="space-between center" flex style="height: 48px">
 
 		<md-button ng-click="toolbarCtrl.toggleSidenav('left')" aria-label="menu" hide-gt-md>
 			<md-icon md-svg-icon="images/icons/ic_menu_24px.svg"></md-icon>
 		</md-button>
 
 
-		<h1>{{toolbarCtrl.documentId}}</h1>
-
 		<sk-trainer-toolbar feature-flag="trainer">
 		</sk-trainer-toolbar>
 
-    <md-button>Share</md-primary></md-button>
-    <span style="width: 20px"></span>
-    <md-button ng-click="toolbarCtrl.navigateToLanding()">Find Another Filing</md-button>
+    <div>
+      <md-button>Share</md-primary></md-button>
+      <span style="width: 20px"></span>
+      <md-button ng-click="toolbarCtrl.navigateToLanding()">Find Another Filing</md-button>
+    </div>
 
 	</div>
