@@ -15,7 +15,7 @@
     .controller('ToolbarCtrl', ToolbarCtrl);
 
   /* @ngInject */
-  function ToolbarCtrl($mdSidenav, documentModel) {
+  function ToolbarCtrl($mdSidenav, documentModel, $location) {
 
     //-- private variables
     var vm = this;
@@ -25,6 +25,7 @@
 
     //-- public methods
     vm.toggleSidenav = toggleSidenav;
+    vm.navigateToLanding = navigateToLanding;
 
     /////////////
 
@@ -32,6 +33,9 @@
       $mdSidenav(menuId).toggle();
     };
 
+    function navigateToLanding() {
+      $location.path('/');
+    }
 
 
   }

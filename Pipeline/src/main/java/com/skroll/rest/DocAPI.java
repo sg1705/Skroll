@@ -422,7 +422,7 @@ public class DocAPI {
             logErrorResponse("Failed to persist the document object: {}", e);
         }
 //        logger.debug("train the model using document is stored in {} {}", preEvaluatedFolder, documentId);
-        return Response.ok().status(Response.Status.OK).entity("model has been updated").build();
+        return Response.ok().status(Response.Status.OK).entity("").build();
     }
 
     @GET
@@ -527,6 +527,6 @@ public class DocAPI {
         DocTypeAnnotationHelper.annotateDocTypeWithWeightAndUserObservation(doc,docType,userWeight);
 
         logger.info("updateDocType {} using document id {}", docType, documentId);
-        return Response.ok().status(Response.Status.OK).entity("DocType has been updated").build();
+        return Response.ok().status(Response.Status.OK).entity("").build();
     }
 }
