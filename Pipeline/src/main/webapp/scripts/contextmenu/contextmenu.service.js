@@ -214,8 +214,16 @@
 
   angular
     .module('app.contextmenu')
-    .run(function(textSelectionObserverService, contextMenuService) {
+    .run(function(textSelectionObserverService, contextMenuService, $document, $mdMedia) {
       textSelectionObserverService.register(contextMenuService.onSelection);
+      if ($mdMedia('sm')) {
+        $document.bind('contextmenu', function(event) {
+         event.preventDefault();
+         event.stopPropagation();
+         return false;
+        });
+      }
+
     });
 
 })();
