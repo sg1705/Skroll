@@ -34,7 +34,9 @@
         <url-pattern>/view/*</url-pattern>
         <url-pattern>/open/*</url-pattern>
         <url-pattern>/trainer/*</url-pattern>
+        <url-pattern>/error/*</url-pattern>
     </servlet-mapping>
 
 
 </web-app>
+
