@@ -1,7 +1,6 @@
 package com.skroll.classifier.factory;
 
 import com.skroll.analyzer.model.applicationModel.*;
-import com.skroll.analyzer.model.applicationModel.ProbabilityTextAnnotatingModel;
 import com.skroll.document.Document;
 import com.skroll.util.ObjectPersistUtil;
 import org.slf4j.Logger;
@@ -19,7 +18,6 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
     protected String modelFolderName = null;
     protected ObjectPersistUtil objectPersistUtil = null;
     protected static Map<Integer, TrainingTextAnnotatingModel> TrainingModelMap = new HashMap<>();
-    protected static Map<String, ProbabilityTextAnnotatingModel> bniModelMap = new HashMap<>();
 
     public TrainingTextAnnotatingModel getTrainingModel(int modelId, ModelRVSetting modelRVSetting) {
         if (TrainingModelMap.containsKey(modelId)){
@@ -27,7 +25,6 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
         }
         TrainingTextAnnotatingModel model = createModel(modelId, modelRVSetting);
         logger.debug("training model Map Size:{}",TrainingModelMap.size());
-        logger.debug("bni model Map Size:{}",bniModelMap.size());
         return model;
     }
 
@@ -59,14 +56,12 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
         return localTrainingModel;
     }
 
-    public String getBniId(int modelId, String documentId) {
-        return modelId + "." + documentId;
-    }
 
     @Override
     public ProbabilityTextAnnotatingModel createBNIModel(int modelId, String documentId, ModelRVSetting modelRVSetting, Document document) {
 
         ProbabilityTextAnnotatingModel bniModel;
+
         if (modelRVSetting instanceof TOCModelRVSetting) {
             TrainingDocumentTOCAnnotatingModel tmpModel =
                     (TrainingDocumentTOCAnnotatingModel) createModel(modelId, modelRVSetting);
@@ -84,21 +79,35 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
                     document, modelRVSetting);
         }
 
-
         bniModel.annotateParagraphs();
         //printBelieves(bniModel, document);
-
-        bniModelMap.put(getBniId(modelId, documentId), bniModel);
 
         return bniModel;
     }
 
     @Override
-    public ProbabilityTextAnnotatingModel getBNIModel(int modelId, String documentId) {
-        if (bniModelMap.containsKey(getBniId(modelId, documentId))) {
-            return bniModelMap.get(getBniId(modelId, documentId));
+    public ProbabilityTextAnnotatingModel getBNIModel(int modelId, ModelRVSetting modelRVSetting, Document document ) {
+        ProbabilityTextAnnotatingModel bniModel;
+
+        if (modelRVSetting instanceof TOCModelRVSetting) {
+            TrainingDocumentTOCAnnotatingModel tmpModel =
+                    (TrainingDocumentTOCAnnotatingModel) createModel(modelId, modelRVSetting);
+
+            bniModel = new ProbabilityDocumentTOCAnnotatingModel(
+                    modelId, tmpModel.getNbmnModel(), tmpModel.getHmm(),
+                    tmpModel.getSecNbmnModel(), tmpModel.getSecHmm(),
+                    document, (TOCModelRVSetting) modelRVSetting);
+        } else {
+            TrainingTextAnnotatingModel tmpModel =
+                    createModel(modelId, modelRVSetting);
+
+            bniModel = new ProbabilityTextAnnotatingModel(
+                    tmpModel.getNbmnModel(), tmpModel.getHmm(),
+                    document, modelRVSetting);
         }
-        return null;
+
+        bniModel.annotateParagraphs();
+        return bniModel;
     }
 
     public void saveTrainingModel(int modelId, ModelRVSetting modelRVSetting) throws Exception {

@@ -5,7 +5,7 @@
     .module('app.trainer')
     .service('trainerService', TrainerService);
 
-  /** @ngInject **/
+  /* @ngInject */
   function TrainerService($http, $q, $log, documentService, trainerModel, documentModel) {
 
     //context root of API

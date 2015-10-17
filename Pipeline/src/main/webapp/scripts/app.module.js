@@ -57,8 +57,8 @@ angular
 		}).
 		when('/list', {
 			templateUrl: 'scripts/landing/doclist.tmpl.html',
-			controller: 'ContentCtrl',
-			controllerAs: 'contentCtrl'
+			controller: 'DocListCtrl',
+			controllerAs: 'doclistCtrl'
 		}).
 		when('/open', {
 			templateUrl: 'scripts/core/app.core.tmpl.html',

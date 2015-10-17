@@ -6,9 +6,7 @@ import com.skroll.document.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by saurabhagarwal on 5/12/15.
@@ -31,8 +29,9 @@ public class CategoryAnnotationHelper {
         List<List<Token>> definitionList = categoryAnnotation.get(categoryId).get(CoreAnnotations.TermTokensAnnotation.class);
         List<List<String>> strings = new ArrayList<>();
         if (definitionList==null) return strings;
+
         for (List<Token> list: definitionList){
-            strings.add(DocumentHelper.getTokenString(list));
+                strings.add(DocumentHelper.getTokenString(list));
         }
         return strings;
     }
@@ -56,23 +55,31 @@ public class CategoryAnnotationHelper {
      * @return List of Paragragh
      */
     public static List<TermProto> getParagraphsAnnotatedWithAnyCategory(Document document) {
-        List<TermProto> termList = new ArrayList<>();
-        for (CoreMap paragraph : document.getParagraphs()) {
+        List<TermProto> termProto = new ArrayList<>();
+            Map<Integer,Set<String>> check = new HashMap<>();
             for (int categoryId : Category.getCategoriesExcludingNONE()) {
-                List<List<String>> definitionList = getTokenStringsForCategory(paragraph, categoryId);
-                for (List<String> definition : definitionList) {
+                check.put(categoryId, new HashSet<>());
+            }
+            for (CoreMap paragraph : document.getParagraphs()) {
+                for (int categoryId : Category.getCategoriesExcludingNONE()) {
+                List<List<String>> terms = getTokenStringsForCategory(paragraph, categoryId);
+                for (List<String> term : terms) {
                     if(logger.isTraceEnabled())
-                        logger.trace( "{} \t {} \t {}",paragraph.getId(),categoryId , definition);
-                    if (!definition.isEmpty()) {
-                        if (!(Joiner.on(" ").join(definition).equals(""))) {
-                            boolean isObserved = DocumentHelper.isObserved(paragraph);
-                            termList.add(new TermProto(paragraph.getId(), Joiner.on(" ").join(definition), categoryId, isObserved));
+                        logger.trace( "{} \t {} \t {}",paragraph.getId(),categoryId , term);
+                    if (!term.isEmpty()) {
+                        String termString = Joiner.on(" ").join(term);
+                        if (!(termString.equals(""))) {
+                            if(!check.get(categoryId).contains(termString)) {
+                                boolean isObserved = DocumentHelper.isObserved(paragraph);
+                                termProto.add(new TermProto(paragraph.getId(), termString, categoryId, isObserved));
+                                check.get(categoryId).add(termString);
+                            }
                         }
                     }
                 }
             }
         }
-        return termList;
+        return termProto;
     }
 
     /**
@@ -257,7 +264,10 @@ public class CategoryAnnotationHelper {
             logger.error("Existing document's paragraph {} does not contains Selected text {} ", paraTokenString,selectedTermString);
             return false;
         }
-
+        if(categoryId == Category.USER_TOC) {
+            annotateParagraphWithTokensAndCategory(paragraph, paragraph.getTokens(), categoryId);
+            return true;
+        }
 
         List<Token> returnList = new ArrayList<>();
         int lastTokenPointer=0;
@@ -295,7 +305,6 @@ public class CategoryAnnotationHelper {
             }
         annotateParagraphWithTokensAndCategory(paragraph, returnList, categoryId);
         return true;
-
     }
 
     /**

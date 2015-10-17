@@ -13,7 +13,7 @@
     .module('app.search')
     .controller('SearchCtrl', SearchCtrl);
 
-  /** @ngInject **/
+  /* @ngInject */
   function SearchCtrl($scope, selectionService, documentModel, searchFactory) {
 
     //-- private variables

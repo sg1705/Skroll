@@ -43,5 +43,5 @@ public interface ModelFactory {
      * retrieve the BNI model from cache
      * @return
      */
-    public ProbabilityTextAnnotatingModel getBNIModel(int modelId, String documentId);
+    public ProbabilityTextAnnotatingModel getBNIModel(int modelId, ModelRVSetting modelRVSetting, Document document);
 }

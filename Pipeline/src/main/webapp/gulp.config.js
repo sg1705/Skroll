@@ -37,7 +37,11 @@ module.exports = function() {
         js: [
             clientApp + '**/*.module.js',
             clientApp + '**/*.js',
-            '!' + clientApp + '**/*.spec.js'
+            '!' + clientApp + '**/*.spec.js',
+            '!' + clientApp + '**/search/*.js', //@todo: remove this later
+            '!' + clientApp + '**/upload/jquery.fileupload.js', //@todo: remove this later
+            '!' + clientApp + '**/upload/skFileUpload.js' //@todo: remove this later
+
         ],
         jsOrder: [
             '**/app.module.js',

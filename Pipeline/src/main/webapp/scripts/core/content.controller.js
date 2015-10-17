@@ -25,33 +25,11 @@
     vm.userDocumentIds = [];
     vm.smodel = LHSModel.smodel;
     vm.searchState = searchFactory.searchState;
-    //console.log('from content controller');
-    //console.log(vm.searchState.searchText);
-    //console.trace();
 
     //-- public methods
-    vm.getDocumentIds = getDocumentIds;
     vm.loadDocument = loadDocument;
     vm.toggleSidenav = toggleSidenav;
     vm.overrideControlF = overrideControlF;
-
-
-    // $scope.targetHtml = documentModel.targetHtml;
-    // $scope.definitions = [];
-    // $scope.isEdit = false;
-    // $scope.similarPara = [];
-
-    //$scope.documentModel = documentModel;
-    // $scope.documentService = documentService;
-    // $scope.searchService = searchService;
-    // $scope.$location = $location;
-
-
-    function getDocumentIds() {
-      documentService.getDocumentIds().then(function(documentIds) {
-        vm.userDocumentIds = documentIds;
-      });
-    }
 
     function loadDocument(documentId) {
       vm.documentModel.isProcessing = true;
@@ -72,7 +50,6 @@
       }
     };
 
-    vm.getDocumentIds();
   }
 
 })();

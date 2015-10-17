@@ -15,7 +15,7 @@
     .factory('selectionService', SelectionService);
 
 
-  /** @ngInject **/
+  /* @ngInject */
   function SelectionService($ngSilentLocation) {
 
     //-- private variables

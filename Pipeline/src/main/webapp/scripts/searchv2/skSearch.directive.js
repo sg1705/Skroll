@@ -12,7 +12,7 @@
 		.module('app.search')
 	  .directive('skSearch', SkSearch);
 
-  /** ngInject **/
+  /* ngInject */
   function SkSearch() {
 
 	  return {
