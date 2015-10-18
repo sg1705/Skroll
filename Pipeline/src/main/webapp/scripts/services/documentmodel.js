@@ -9,16 +9,32 @@
  */
 
 var documentModel = {
-  targetHtml: "",
+  targetHtml: '',
   isDocAvailable: false,
   isProcessing: false,
-  fileName: "",
-  selectedParagraphId: "",
-  documentId: "",
+  fileName: '',
+  selectedParagraphId: '',
+  documentId: '',
   isPartiallyParsed: false,
-  url: "",
+  url: '',
   lunrIndex: null,
-  isTocLoaded: false
+  isTocLoaded: false,
+
+  clear: function() {
+    this.targetHtml = '';
+    this.isDocAvailable = false;
+    // this.isProcessing = false;
+    this.fileName = '';
+    this.selectedParagraphId = '';
+    this.documentId = '';
+    this.isPartiallyParsed = false;
+    this.url = '';
+    this.lunrIndex = null;
+    this.isTocLoaded = false;
+
+  },
+
+
 };
 
 
