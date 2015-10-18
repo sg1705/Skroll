@@ -1,7 +1,7 @@
+<div layout="row" layout-align-gt-md="space-between center" layout-align="space-between center" flex
+     style="height: 48px">
 
-	<div layout="row" layout-align-gt-md="space-between center" layout-align="space-between center" flex style="height: 48px">
-
-		<md-button ng-click="toolbarCtrl.toggleSidenav('left')" aria-label="menu" hide-gt-md>
+  <md-button ng-click="toolbarCtrl.toggleSidenav('left')" aria-label="menu" hide-gt-md>
 			<md-icon md-svg-icon="images/icons/ic_menu_24px.svg"></md-icon>
 		</md-button>
 
@@ -9,12 +9,15 @@
 		<sk-trainer-toolbar feature-flag="trainer">
 		</sk-trainer-toolbar>
 
-    <h1 ng-click="toolbarCtrl.navigateToLanding()">Find Filings in Skroll</h1>
+  <h1 ng-click="toolbarCtrl.navigateToLanding()">Find Filings in Skroll</h1>
 
-    <div style="margin-right: 5px">
-      <md-button ng-click="toolbarCtrl.showShareDialog()"><md-icon md-svg-icon="images/icons/ic_open_24px.svg"></md-button>
-      <md-button ng-click="toolbarCtrl.openEmailDialog()">
-        </md-primary><md-icon md-svg-icon="images/icons/ic_mail_24px.svg"></md-icon>
-      </md-button>
-    </div>
+  <div style="margin-right: 5px">
+    <md-button ng-click="toolbarCtrl.showShareDialog()">
+      <md-icon md-svg-icon="images/icons/ic_open_24px.svg">
+    </md-button>
+    <md-button ng-click="toolbarCtrl.openEmailDialog()">
+      </md-primary>
+      <md-icon md-svg-icon="images/icons/ic_mail_24px.svg"></md-icon>
+    </md-button>
+  </div>
 	</div>
