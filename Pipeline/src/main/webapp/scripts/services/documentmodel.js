@@ -17,7 +17,8 @@ var documentModel = {
   documentId: "",
   isPartiallyParsed: false,
   url: "",
-  lunrIndex: null
+  lunrIndex: null,
+  isTocLoaded: false
 };
 
 

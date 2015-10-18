@@ -14,7 +14,7 @@ var LHSModel = {
     terms: [],
     levelTerms: [],
     hover: false,
-    visibleHeaders: [],
+    visibleHeaders: []
   },
 
   /*
