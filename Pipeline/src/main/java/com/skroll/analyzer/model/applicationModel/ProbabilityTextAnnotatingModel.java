@@ -184,6 +184,8 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
             nbmnModel.setMultiNodesObservation(paraFeatureValsExistAtDocLevel[pi]);
 
             for (int f = 0; f < nbmnConfig.getFeatureExistsAtDocLevelVarList().size(); f++) {
+
+                if (modelRVSetting.disabledParaDocFeatures[f]) continue;
                 if (paraFeatureValsExistAtDocLevel[pi][f] == -1) continue;
 
                 double[][] messageFromDocFeature = new double[documentFeatureBelief[f].length][];
@@ -257,6 +259,7 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
             nbmnModel.setMultiNodesObservation(allParaDocFeatures[pi]);
 
             for (int f = 0; f < nbmnConfig.getFeatureExistsAtDocLevelVarList().size(); f++) {
+                if (modelRVSetting.disabledParaDocFeatures[f]) continue;
                 if (allParaDocFeatures[pi][f] == -1) continue;
                 double[] messageFromParaCategory = paragraphCategoryBelief[p].clone();
                 for (int i = 0; i < messageFromParaCategory.length; i++)
