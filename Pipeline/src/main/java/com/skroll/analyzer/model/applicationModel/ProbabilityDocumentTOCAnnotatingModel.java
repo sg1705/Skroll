@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  */
 public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnotatingModel {
 
-    static final int SEC_NUM_ITERATION = 40;
+    static final int SEC_NUM_ITERATION = 80;
     static double[] SEC_ANNOTATING_THRESHOLD = {0, 0.8};
     Document doc;
     NaiveBayesWithMultiNodes secNbmn = null;
@@ -50,8 +50,8 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
         );
 
         // quick way to disable features without retraining.
-        setting.disableParaDocFeature(1); //para starts with number
-        setting.disableParaDocFeature(2); //para ends with number
+//        setting.disableParaDocFeature(1); //para starts with number
+//        setting.disableParaDocFeature(2); //para ends with number
 //        setting.disableParaDocFeature(3); //para is number
     }
 
@@ -93,8 +93,8 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
                     nbmnConfig.getWordVarList(),
                     lowerCatIds, null);
 
-            lowerTOCSetting.disableParaDocFeature(1);
-            lowerTOCSetting.disableParaDocFeature(2);
+//            lowerTOCSetting.disableParaDocFeature(1);
+//            lowerTOCSetting.disableParaDocFeature(2);
 
             this.secModel = new ProbabilityTextAnnotatingModel(
                     secNbmn,

@@ -25,6 +25,15 @@ public class RVCreater {
         return rv;
     }
 
+    public static RandomVariable createParagraphIsRV(Class wordAnnotation) {
+        ParaIsFeatureComputer computer = new ParaIsFeatureComputer(wordAnnotation);
+        RandomVariable rv = new RandomVariable(2, "paraIs" + wordAnnotation.getSimpleName());
+        RVValues.addValueComputer(rv, computer);
+        return rv;
+    }
+
+
+
     static Class annotationType(Class ann) {
         Class c = null;
         try {
