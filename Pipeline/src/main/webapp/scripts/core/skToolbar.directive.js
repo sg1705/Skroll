@@ -16,7 +16,7 @@
 	      templateUrl: 'scripts/core/toolbar.tmpl.html',
 	      restrict: 'E',
 	      controller: 'ToolbarCtrl',
-	      controllerAs: 'ctrl'
+	      controllerAs: 'toolbarCtrl'
 	    };
 
 	  });

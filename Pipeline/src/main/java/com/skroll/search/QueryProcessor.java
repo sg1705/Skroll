@@ -26,6 +26,7 @@ public class QueryProcessor {
 
     private static final Logger logger = LoggerFactory.getLogger(QueryProcessor.class);
     static HashMap companyNameMap = new HashMap();
+    static HashMap<String, String> filingKeyWords = new HashMap();
 
     /**
      * Load all the tickers at startup time
@@ -49,6 +50,11 @@ public class QueryProcessor {
         } catch (Exception e) {
             logger.error("Cannot read CIK ticker file", e);
         }
+
+        //add filing keywords
+        filingKeyWords.put("10k", "10-K");
+        filingKeyWords.put("10q", "10-Q");
+        filingKeyWords.put("8k", "8-K");
     }
 
 
@@ -75,6 +81,8 @@ public class QueryProcessor {
                 } else {
                     newTokens.add(token);
                 }
+            } else if (filingKeyWords.get(token.toLowerCase()) != null) {
+                newTokens.add(filingKeyWords.get(token.toLowerCase()));
             } else {
                 //get fuzzy match
                 String fuzzyMatch = (String) companyNameMap.get(token.toLowerCase());
