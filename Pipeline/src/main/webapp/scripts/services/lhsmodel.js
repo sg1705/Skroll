@@ -13,7 +13,6 @@ var LHSModel = {
   smodel: {
     terms: [],
     levelTerms: [],
-    hover: false,
     visibleHeaders: []
   },
 
