@@ -2,7 +2,7 @@ package com.skroll.analyzer.model.bn.config;
 
 import com.google.common.collect.Lists;
 import com.skroll.analyzer.model.RandomVariable;
-import com.skroll.analyzer.model.applicationModel.randomVariables.FirstWordsComputer;
+import com.skroll.analyzer.model.applicationModel.randomVariables.FirstWordComputer;
 import com.skroll.analyzer.model.applicationModel.randomVariables.LowerCaseWordsComputer;
 import com.skroll.analyzer.model.applicationModel.randomVariables.ParaInCategoryComputer;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVCreater;
@@ -34,7 +34,7 @@ public class NBConfigTest {
 
         wordVarList = Arrays.asList(
                 RVCreater.createWordsRVWithComputer(new LowerCaseWordsComputer(), "lowerCaseWords"),
-                RVCreater.createWordsRVWithComputer(new FirstWordsComputer(), "firstWord")
+                RVCreater.createWordsRVWithComputer(new FirstWordComputer(), "firstWord")
         );
 
         config = new NBConfig(categoryVar, featureVarList, wordVarList);

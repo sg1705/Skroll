@@ -11,6 +11,7 @@ import java.util.List;
 
 public class TrainingNaiveBayesWithFeatureConditionsTest extends TestCase {
 
+    double priorCount = NodeTrainingHelper.PRIOR_COUNT;
     public void testAddSample() throws Exception {
 //        NaiveBayesWithFeatureConditions nb =
 //                NBTrainingHelper.createTrainingNBWithFeatureConditioning(
@@ -41,7 +42,7 @@ public class TrainingNaiveBayesWithFeatureConditionsTest extends TestCase {
         NBTrainingHelper.addSample(nb, tuple);
         System.out.println("model after");
         System.out.println(nb);
-        assert (nb.getFeatureExistAtDocLevelNodes().get(0).getParameters()[4] == 1 + NodeTrainingHelper.PRIOR_COUNT);
+        assert (nb.getFeatureExistAtDocLevelNodes().get(0).getParameters()[4] == 1 + priorCount);
 
     }
 }

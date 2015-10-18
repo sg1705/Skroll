@@ -2,9 +2,11 @@ package com.skroll.util;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Files;
-import com.skroll.analyzer.model.applicationModel.TrainingDocumentAnnotatingModel;
+import com.skroll.analyzer.model.applicationModel.TrainingDocumentTOCAnnotatingModel;
+import com.skroll.analyzer.model.applicationModel.TrainingTextAnnotatingModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,11 +93,11 @@ public class ObjectPersistUtil {
         }
 //        Gson gson = new GsonBuilder().create();
 //        Object obj = gson.fromJson(reader, type);
-        TrainingDocumentAnnotatingModel obj = null;
+        TrainingTextAnnotatingModel obj = null;
         try {
             ObjectMapper mapper = new ObjectMapper();
             mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-            obj = mapper.readValue(reader, TrainingDocumentAnnotatingModel.class);
+            obj = mapper.readValue(reader, (Class<TrainingTextAnnotatingModel>) type);
         } catch (Exception e) {
             e.printStackTrace();
         }

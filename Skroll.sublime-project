@@ -1,0 +1,39 @@
+{
+  "folders": [
+    {
+      "binary_file_patterns": [
+        "*.jpg",
+        "*.jpeg",
+        "*.png",
+        "*.gif",
+        "*.ttf",
+        "*.tga",
+        "*.dds",
+        "*.ico",
+        "*.eot",
+        "*.pdf",
+        "*.swf",
+        "*.jar",
+        "*.zip"
+      ],
+      "folder_exclude_patterns": [
+        "resources",
+        "build",
+        "node_modules",
+        "gradle",
+        ".idea",
+        ".gradle",
+        ".svn",
+        ".git"
+      ],
+      "path": "."
+    }
+  ],
+  "settings": {
+    "AngularJS": {
+      "exclude_dirs": [
+        "Pipeline/build/resources"
+      ]
+    }
+  }
+}

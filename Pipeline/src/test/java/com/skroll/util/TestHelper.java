@@ -44,6 +44,7 @@ public class TestHelper {
                             .add(Pipes.EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC)
                             .build();
             Document doc = pipeline.process(htmlDoc);
+
             for (CoreMap paragraph : doc.getParagraphs()) {
                 if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph, Category.DEFINITION)) {
                     CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.DEFINITION, (float) 1.0);

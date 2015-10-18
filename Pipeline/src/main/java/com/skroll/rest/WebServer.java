@@ -178,6 +178,7 @@ public class WebServer {
     private ServletHolder getJerseyServlet() {
         ResourceConfig config = new ResourceConfig();
         config.register(DocAPI.class);
+        config.register(SearchAPI.class);
         config.register(BenchmarkAPI.class);
         config.register(MultiPartFeature.class);
         config.register(InstrumentAPI.class);

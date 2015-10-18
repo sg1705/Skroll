@@ -16,7 +16,7 @@ import java.util.Set;
 public class RVCreater {
 
     public static final Logger logger = LoggerFactory.getLogger(RVCreater.class);
-    static final int DEFAULT_NUM_INT_VALS = 25;
+    public static final int DEFAULT_NUM_INT_VALS = 30;
 
     public static RandomVariable createParagraphStartsWithRV(Class wordAnnotation) {
         ParaStartsWithFeatureComputer computer = new ParaStartsWithFeatureComputer(wordAnnotation);
@@ -24,6 +24,15 @@ public class RVCreater {
         RVValues.addValueComputer(rv, computer);
         return rv;
     }
+
+    public static RandomVariable createParagraphIsRV(Class wordAnnotation) {
+        ParaIsFeatureComputer computer = new ParaIsFeatureComputer(wordAnnotation);
+        RandomVariable rv = new RandomVariable(2, "paraIs" + wordAnnotation.getSimpleName());
+        RVValues.addValueComputer(rv, computer);
+        return rv;
+    }
+
+
 
     static Class annotationType(Class ann) {
         Class c = null;

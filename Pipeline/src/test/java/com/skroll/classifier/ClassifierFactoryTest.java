@@ -36,7 +36,7 @@ public class ClassifierFactoryTest {
     public void testGetClassifiers() throws Exception {
         List<Classifier> classifiers = classifierFactory.getClassifiers(classifierFactoryStrategy, doc);
         System.out.println("ClassifierFactory.getClassifiers(): " + classifiers);
-        assert(classifiers.contains(classifierFactory.getClassifier(ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID)));
+        assert (classifiers.contains(classifierFactory.getClassifier(ClassifierFactory.UNIVERSAL_TOC_CLASSIFIER_ID)));
     }
 
     @Test

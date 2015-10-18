@@ -14,40 +14,22 @@
     .controller('ContentCtrl', ContentCtrl);
 
   /* @ngInject */
-  function ContentCtrl(documentModel, documentService, $mdSidenav, $location, searchService, $scope) {
+  function ContentCtrl(documentModel, documentService, $mdSidenav, $location, searchFactory, $scope) {
 
     //-- private variables
     var vm = this;
 
     //-- public variables
-    vm.isDocAvailable   = documentModel.isDocAvailable;
-    vm.documentModel    = documentModel;
-    vm.userDocumentIds  = [];
-    vm.smodel           = LHSModel.smodel;
+    vm.isDocAvailable = documentModel.isDocAvailable;
+    vm.documentModel = documentModel;
+    vm.userDocumentIds = [];
+    vm.smodel = LHSModel.smodel;
+    vm.searchState = searchFactory.searchState;
 
     //-- public methods
-    vm.getDocumentIds   = getDocumentIds;
-    vm.loadDocument     = loadDocument;
-    vm.toggleSidenav    = toggleSidenav;
+    vm.loadDocument = loadDocument;
+    vm.toggleSidenav = toggleSidenav;
     vm.overrideControlF = overrideControlF;
-
-
-    // $scope.targetHtml = documentModel.targetHtml;
-    // $scope.definitions = [];
-    // $scope.isEdit = false;
-    // $scope.similarPara = [];
-
-    //$scope.documentModel = documentModel;
-    // $scope.documentService = documentService;
-    // $scope.searchService = searchService;
-    // $scope.$location = $location;
-
-
-    function getDocumentIds() {
-      documentService.getDocumentIds().then(function(documentIds) {
-        vm.userDocumentIds = documentIds;
-      });
-    }
 
     function loadDocument(documentId) {
       vm.documentModel.isProcessing = true;
@@ -61,14 +43,13 @@
     };
 
     function overrideControlF($event) {
-      if ((event.keyCode == 114) || (event.ctrlKey && event.keyCode == 70)) { 
+      if ((event.keyCode == 114) || (event.ctrlKey && event.keyCode == 70)) {
         // Block CTRL + F event
         event.preventDefault();
         searchService.focusOnSearchBox();
       }
     };
 
-    vm.getDocumentIds();
   }
 
 })();
@@ -133,7 +114,7 @@
 //       };
 
 //       $scope.overrideControlF = function($event) {
-//         if ((event.keyCode == 114) || (event.ctrlKey && event.keyCode == 70)) { 
+//         if ((event.keyCode == 114) || (event.ctrlKey && event.keyCode == 70)) {
 //           // Block CTRL + F event
 //           event.preventDefault();
 //           searchService.focusOnSearchBox();

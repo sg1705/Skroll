@@ -110,6 +110,12 @@ public class CoreMap implements TypesafeMap  {
     public boolean equals(CoreMap coremap) {
         Set<String> keys = this.keyNameSet();
         Set<String> nKeys = coremap.keyNameSet();
+        //remove transient annotations from both
+
+        for (int ii = 0; ii < CoreAnnotations.TRANSIENT_ANNOTATIONS.length; ii++) {
+            keys.remove(CoreAnnotations.TRANSIENT_ANNOTATIONS[ii].getSimpleName());
+            nKeys.remove(CoreAnnotations.TRANSIENT_ANNOTATIONS[ii].getSimpleName());
+        }
         if (keys.size() != nKeys.size()) {
             return false;
         }

@@ -4,3 +4,4 @@ node_modules/
 
 # other
 .tmp
+*.sublime-workspace

@@ -12,8 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class NodeTrainingHelperTest {
-
-    double pc = NodeTrainingHelper.PRIOR_COUNT;
+    double priorCount = NodeTrainingHelper.PRIOR_COUNT;
     private RandomVariable catVar = new RandomVariable(2, "paraIsDef");
     private RandomVariable multiCatVar = new RandomVariable(3, "paraToc");
     private RandomVariable parentVar = new RandomVariable(2, "defInBold");
@@ -35,8 +34,7 @@ public class NodeTrainingHelperTest {
     private List<RandomVariable> familyVariables = Arrays.asList(var, catVar, parentVar);
     private List<RandomVariable> nbmnFamilyVariables = new ArrayList(Arrays.asList(var, multiCatVar));
 
-    private double[] parameters = {NodeTrainingHelper.PRIOR_COUNT, NodeTrainingHelper.PRIOR_COUNT,
-                NodeTrainingHelper.PRIOR_COUNT, NodeTrainingHelper.PRIOR_COUNT,};
+    private double[] parameters = {priorCount, priorCount, priorCount, priorCount};
 
     private WordNode wNode;
     private String observedString = "abc";
@@ -175,7 +173,6 @@ public class NodeTrainingHelperTest {
 
     @Test
     public void testGetLogProbabilities1() throws Exception {
-//        String result = "[-Infinity, -0.008298802814695083]";
         String result = "[0.0, 0.0]";
         NodeTrainingHelper.updateCount(wNode, 12);
         System.out.println("word node after updating with observed word abc");
@@ -183,8 +180,6 @@ public class NodeTrainingHelperTest {
                 NodeTrainingHelper.getLogProbabilities(wNode).get(observedString)));
         assert (result.equals(Arrays.toString(
                 NodeTrainingHelper.getLogProbabilities(wNode).get(observedString))));
-        // in this test, even though the frequency counts are different for different classes,
-        // but since there is only one observed word, the relative distributions are the same for both.
     }
 
     @Test

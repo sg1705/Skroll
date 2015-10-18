@@ -37,14 +37,19 @@ module.exports = function() {
         js: [
             clientApp + '**/*.module.js',
             clientApp + '**/*.js',
-            '!' + clientApp + '**/*.spec.js'
+            '!' + clientApp + '**/*.spec.js',
+            '!' + clientApp + '**/search/*.js', //@todo: remove this later
+            '!' + clientApp + '**/upload/jquery.fileupload.js', //@todo: remove this later
+            '!' + clientApp + '**/upload/skFileUpload.js' //@todo: remove this later
+
         ],
         jsOrder: [
             '**/app.module.js',
             '**/*.module.js',
             '**/*.js'
         ],
-        less: client + 'styles/styles.less',
+        less: client + 'styles/*.less',
+        sass: client + 'styles/*.scss',
         report: report,
         root: root,
         server: server,
@@ -133,7 +138,25 @@ module.exports = function() {
         var options = {
             bowerJson: config.bower.json,
             directory: config.bower.directory,
-            ignorePath: config.bower.ignorePath
+            ignorePath: config.bower.ignorePath,
+            exclude: [
+                    'bower_components/angular-feature-flags/dist/featureFlags.js',
+                    'bower_components/angulartics/src/angulartics-clicky.js',
+                    'bower_components/angulartics/src/angulartics-cnzz.js',
+                    'bower_components/angulartics/src/angulartics-ga-cordova.js',
+                    'bower_components/angulartics/src/angulartics-gtm.js',
+                    'bower_components/angulartics/src/angulartics-piwik.js',
+                    'bower_components/angulartics/src/angulartics-scroll.js',
+                    'bower_components/angulartics/src/angulartics-splunk.js',
+                    'bower_components/angulartics/src/angulartics-woopra.js',
+                    'bower_components/angulartics/src/angulartics-marketo.js',
+                    'bower_components/angulartics/src/angulartics-intercom.js',
+                    'bower_components/angulartics/src/angulartics-inspectlet.js',
+                    'bower_components/angulartics/src/angulartics-newrelic-insights.js',
+                    'bower_components/rangy/rangy-classapplier.js',
+                    'bower_components/rangy/rangy-highlighter.js',
+                    'bower_components/rangy/rangy-selectionsaverestore.js']
+
         };
         return options;
     };

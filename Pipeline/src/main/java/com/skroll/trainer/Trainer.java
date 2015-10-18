@@ -74,6 +74,7 @@ public class Trainer {
         CommandLine cmd=parser.parse(options,args);
 
         if (cmd.getOptions().length < 1) {
+            printHelpMessage();
             throw new ParseException("Missing commandline arguments. ");
         }
 
@@ -122,7 +123,21 @@ public class Trainer {
         }
     }
 
-
+    public static void printHelpMessage() {
+        System.out.println(
+                "############################################# \n" +
+                        "For following four commands below, the default folder is  \"data/preEvaluated/\"." +
+                        "you don't have to provide the -f option, if you are using the default folder. \n" +
+                        "#To annotate Doc type of files of a folder specified by -f, from command line \n" +
+                        "./trainer.sh -c annotateDocType -f data/preEvaluated/ -t 101 -w 1f \n" +
+                        "#To train Doc type Model from a folder containing training files \n" +
+                        "./trainer.sh -c trainDocTypeModel -f data/preEvaluated/ \n" +
+                        "#How to train from command line \n" +
+                        "./trainer.sh -c trainWithWeight -f data/preEvaluated/ \n" +
+                        "#How to classify doctype from command line \n" +
+                        "./trainer.sh -c classifyDocType -f data/preEvaluated/ \n\"" +
+                        "#############################################");
+    }
     public void trainFolderUsingTrainingWeight () throws Exception {
         FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(PRE_EVALUATED_FOLDER));
         for (File f : iterable) {

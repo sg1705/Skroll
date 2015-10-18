@@ -15,6 +15,7 @@ import java.util.Set;
 public class CoreAnnotations {
 
     public static HashMap<Class, String> aMap = new HashMap();
+    public static Class[] TRANSIENT_ANNOTATIONS = {CoreAnnotations.IndexInteger.class};
 
     static {
         Reflections reflections = new Reflections("com.skroll.document.annotation");
@@ -154,6 +155,23 @@ public class CoreAnnotations {
     public static class TrainingWeightAnnotationFloat implements CoreAnnotation<List<Float>> {
         public Class<List<Float>> getType() {
             return EraserUtils.<Class<List<Float>>> uncheckedCast(List.class);
+        }
+    }
+
+    /**
+     * annotation for keeping the user training weight for a paragraph
+     */
+    public static class TOCParaProbsDocLevel implements CoreAnnotation<List<Double>> {
+        public Class<List<Double>> getType() {
+            return EraserUtils.<Class<List<Double>>> uncheckedCast(List.class);
+        }
+    }
+    /**
+     * annotation for keeping the user training weight for a paragraph
+     */
+    public static class TOCParaProbsSecLevel implements CoreAnnotation<List<Double>> {
+        public Class<List<Double>> getType() {
+            return EraserUtils.<Class<List<Double>>> uncheckedCast(List.class);
         }
     }
 
@@ -380,6 +398,16 @@ public class CoreAnnotations {
             return Boolean.class;
         }
     }
+
+    /**
+     * Annotation to store search index
+     */
+    public static class SearchIndexAnnotation implements CoreAnnotation<String> {
+        public Class<String> getType() {
+            return String.class;
+        }
+    }
+
 
 
 }

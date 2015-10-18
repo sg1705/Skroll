@@ -7,8 +7,6 @@ import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
-import com.skroll.document.Token;
-import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.util.TestHelper;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +22,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
     private static final int TEST_DEF_CLASSIFIER_ID = 2;
     ModelRVSetting setting = new DefModelRVSetting(TEST_DEF_CATEGORY_IDS);
 
-    TrainingDocumentAnnotatingModel tModel = new TrainingDocumentAnnotatingModel(TEST_DEF_CLASSIFIER_ID,setting);
+    TrainingTextAnnotatingModel tModel = new TrainingTextAnnotatingModel(TEST_DEF_CLASSIFIER_ID, setting);
 
     //    String testingFileName = "src/test/resources/classifier/smaller-indenture.html";
 //    String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/mini-indenture.html";
@@ -37,7 +35,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
 //
 //    Document doc = TestHelper.setUpTestDoc();
 
-    ProbabilityDocumentAnnotatingModel model;
+    ProbabilityTextAnnotatingModel model;
     boolean doneSetup=false;
 
     RandomVariable paraType = RVCreater.createDiscreteRVWithComputer(new ParaInCategoryComputer(Category.DEFINITION), "paraTypeIsCategory-" + Category.DEFINITION);
@@ -49,7 +47,9 @@ public class ProbabilityDocumentAnnotatingModelTest {
         doneSetup = true;
 
         tModel.updateWithDocument(doc);
-        model = new ProbabilityDocumentAnnotatingModel(TEST_DEF_CLASSIFIER_ID,tModel.getNbmnModel(), tModel.getHmm(), doc,
+        model = new ProbabilityTextAnnotatingModel(tModel.getNbmnModel(),
+                tModel.getHmm(),
+                doc,
                 new DefModelRVSetting(TEST_DEF_CATEGORY_IDS)
                 );
         model.getHmm().updateProbabilities();
@@ -69,8 +69,6 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
     @Test
     public void testDocBeliefs(){
-        System.out.println("-----------------");
-        System.out.println(doc.getParagraphs().size() + "paragraphs");
         printDocBeliefs();
         for (int i=0; i<250;i++) {
             System.out.println("iteration " + i);
@@ -81,7 +79,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
         System.out.println("After passing messages :\n");
         double[][][] dBelieves = model.getDocumentFeatureBelief();
         System.out.println(Arrays.deepToString(dBelieves[0]));
-        assert (((int) (dBelieves[0][1][0]) / 100 == -245));
+        assert (((int) (dBelieves[0][1][0]) == -24584));
         assert (((int) (dBelieves[0][1][1]) == 0));
     }
 
@@ -117,7 +115,6 @@ public class ProbabilityDocumentAnnotatingModelTest {
             for (int j=0; j<pBelieves[i].length; j++)
                 System.out.printf("%.2f ", pBelieves[i][j]);
             System.out.print("] ");
-            System.out.println(paraList.get(i).getTokens().size());
             System.out.println(paraList.get(i).getText());
 
         }
@@ -152,12 +149,13 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
         printBelieves();
 
-        System.out.println(Arrays.toString(model.getDocumentFeatureBelief()[0][1]));
-        System.out.println(((int) (model.getDocumentFeatureBelief()[0][1][0])));
-        System.out.println(((int) (model.getDocumentFeatureBelief()[0][1][1])));
+
+        System.out.println(Arrays.deepToString(model.getDocumentFeatureBelief()));
+        System.out.println(((int) (model.getDocumentFeatureBelief()[0][1][0] * 10)));
+        System.out.println(((int) (model.getDocumentFeatureBelief()[0][1][1] * 10)));
         // strangely, gradlew test calculation results are different at lower decimal digits.
         assert (((int) (model.getDocumentFeatureBelief()[0][1][0])) == -89);
-        assert (((int) (model.getDocumentFeatureBelief()[0][1][1])) == -0);
+        assert (((int) (model.getDocumentFeatureBelief()[0][1][1] * 10)) == -0);
     }
 
 
@@ -189,7 +187,7 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
     @Test
     public void testAnnotateDocument() throws Exception {
-        model.annotateDocument();
+        model.annotateParagraphs();
 
         System.out.println("annotated terms\n");
         RVValues.printAnnotatedDoc(doc);
@@ -212,11 +210,11 @@ public class ProbabilityDocumentAnnotatingModelTest {
         model.passMessagesToParagraphCategories();
 
 
-
-        model.annotateDocument();
+        model.annotateParagraphs();
 
         System.out.println("annotated terms\n");
         RVValues.printAnnotatedDoc(doc);
 //        DocumentAnnotatingHelper.printAnnotatedDoc(doc);
     }
+
 }

@@ -38,6 +38,8 @@ public class ModelRVSetting {
     @JsonProperty("categoryIds")
     List<Integer> categoryIds=null;
 
+
+    boolean[] disabledParaDocFeatures = null;
     /* Various strategies for the model */
     @JsonIgnore
     protected List<BiFunction<List<CoreMap>, List<CoreMap>, Void>> postProcessFunctions
@@ -65,6 +67,7 @@ public class ModelRVSetting {
                           List<RandomVariable> paraDocFeatureVars,
                           List<RandomVariable> wordVars,
                           List<Integer> categoryIds
+
                           ) {
         initializeStrategies();
         this.categoryIds=categoryIds;
@@ -73,8 +76,10 @@ public class ModelRVSetting {
         nbmnConfig = new NBMNConfig(paraType, paraFeatureVars, paraDocFeatureVars,
                 RVCreater.createNBMNDocFeatureRVs(paraDocFeatureVars, paraType, String.valueOf(categoryIds.toString())), wordVars);
         RVValues.addValueSetter(paraType, new RVValueSetter(categoryIds, CoreAnnotations.CategoryAnnotations.class));
+
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;
+        disabledParaDocFeatures = new boolean[paraDocFeatureVars.size()];
 
     }
 
@@ -84,12 +89,18 @@ public class ModelRVSetting {
             @JsonProperty("nbmnConfig") NBMNConfig nbmnConfig,
             @JsonProperty("wordType") RandomVariable wordType,
             @JsonProperty("wordFeatures") List<RandomVariable> wordFeatures,
-            @JsonProperty("categoryIds") List<Integer> categoryIds) {
+            @JsonProperty("categoryIds") List<Integer> categoryIds
+    ) {
         initializeStrategies();
         this.nbmnConfig = nbmnConfig;
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;
         this.categoryIds = categoryIds;
+        disabledParaDocFeatures = new boolean[nbmnConfig.getFeatureExistsAtDocLevelVarList().size()];
+    }
+
+    public void disableParaDocFeature(int i) {
+        disabledParaDocFeatures[i] = true;
     }
 
     /**
@@ -102,6 +113,7 @@ public class ModelRVSetting {
     public NBMNConfig getNbmnConfig() {
         return nbmnConfig;
     }
+
 
     public RandomVariable getWordType() {
         return wordType;

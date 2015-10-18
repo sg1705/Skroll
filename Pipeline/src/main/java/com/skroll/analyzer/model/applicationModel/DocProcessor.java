@@ -316,4 +316,79 @@ public class DocProcessor {
 //        return docFeatureValues;
 //    }
 
+    public static List<List<List<CoreMap>>> createSections(List<CoreMap> paragraphs,
+                                                           List<CoreMap> processedParas,
+                                                           RandomVariable paraCategory) {
+        final int END = 1;
+        final int START = 0;
+        List<int[]> sectionIndices = createSections(paragraphs, paraCategory);
+
+        List<List<CoreMap>> sections = new ArrayList<>();
+        List<List<CoreMap>> processedSections = new ArrayList<>();
+        for (int[] sectionIndex : sectionIndices) {
+            List<CoreMap> section = new ArrayList<>();
+            List<CoreMap> processedSection = new ArrayList<>();
+            for (int i = sectionIndex[START]; i < sectionIndex[END]; i++) {
+                section.add(paragraphs.get(i));
+                processedSection.add(processedParas.get(i));
+            }
+            sections.add(section);
+            processedSections.add(processedSection);
+        }
+        return Arrays.asList(sections, processedSections);
+
+    }
+
+    /**
+     * returns indices of the paragraphs separated into sections.
+     * The returned list contains the start and end indices of the sections
+     * Each section is a list of paragraphs.
+     *
+     * @param paragraphs
+     * @param paraCategory   Used to determining the boundary of the sections.
+     * @return list of start and endsections indices.
+     */
+    public static List<int[]> createSections(List<CoreMap> paragraphs,
+                                                           RandomVariable paraCategory) {
+        int sectionHeading = 1;
+        int topHeading = 1;
+        int others = 0;
+        final int END = 1;
+        final int START = 0;
+
+        List<int[]> sections = new ArrayList<>();
+        int[] section = null;
+        boolean mainBodyStarted = false;
+        boolean sectionStarted = false;
+        for (int i = 0; i < paragraphs.size(); i++) {
+            CoreMap para = paragraphs.get(i);
+
+            int paraClass = RVValues.getValue(paraCategory, para);
+            if (paraClass == topHeading) mainBodyStarted = true;
+            if (!mainBodyStarted) continue;
+            if (sectionStarted) {
+//                if (paraClass == others) {
+//                    section.add(i);
+//                } else
+                if (paraClass == topHeading || paraClass == sectionHeading) { // end of a section
+                    sectionStarted = false;
+                    section[END] = i;
+                    sections.add(section);
+                }
+            }
+            if (paraClass == sectionHeading) { // start of a section
+                sectionStarted = true;
+//                section = new ArrayList<>();
+                section = new int[2];
+                section[START] = i + 1; // start index of the section
+            }
+        }
+
+        if (sectionStarted) {
+            section[END] = paragraphs.size();
+            sections.add(section); // add the last section
+        }
+        return sections;
+    }
+
 }

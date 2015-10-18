@@ -6,6 +6,7 @@ import com.skroll.classifier.ClassifierFactoryStrategy;
 import com.skroll.classifier.DefaultClassifierFactoryStrategy;
 import com.skroll.classifier.factory.*;
 import com.skroll.document.factory.*;
+import com.skroll.parser.extractor.PhantomJsExtractor;
 
 /**
  * Created by saurabhagarwal on 4/26/15.
@@ -16,6 +17,7 @@ public class SkrollGuiceModule extends AbstractModule {
     protected void configure() {
         bind(Configuration.class);
         bind(ClassifierFactory.class);
+        bind(PhantomJsExtractor.class);
         bind(ClassifierFactoryStrategy.class).to(DefaultClassifierFactoryStrategy.class);
 
         //default binding for document factory

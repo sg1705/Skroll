@@ -1,7 +1,13 @@
+.DS_Store
 .gradle
 build/
 .idea/workspace.xml
 .idea/tasks.xml
 .idea/uiDesigner.xml
 .idea/libraries
+*.sublime-workspace
 Pipeline/src/main/webapp/styles/.sass-cache
+node_modules
+Pipeline/logs
+logs/
+Pipeline/src/test/resources/analyzer/train/models/

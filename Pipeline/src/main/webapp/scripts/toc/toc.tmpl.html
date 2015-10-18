@@ -1,0 +1,52 @@
+<div class="md-primary" style="text-align: center;">
+  <span style="font-size: 18px;">Table of Contents</span>
+</div>
+<md-divider
+  style="padding-top: 5px; border-width: 1px; border-color: rgba(32, 32, 32, 0.45); margin-bottom: 10px"></md-divider>
+
+<ul class="toc">
+  <li ng-repeat="term in ctrl.smodel.terms | tocTerms">
+
+    <div
+      ng-if="term.classificationId == 2"
+      ng-class="{'md-primary md-warn' : ctrl.smodel.visibleHeaders.indexOf(term.paragraphId) != -1, 'md-primary' : ctrl.smodel.visibleHeaders.indexOf(term.paragraphId) == -1}"
+
+      scroll-to-paragraph="{{term.paragraphId}}"
+      class="level-1">
+      <md-divider ng-if="$index != 0"></md-divider>
+      <md-icon
+        feature-flag="trainer"
+        ng-if="term.isUserObserved"
+        md-svg-icon="images/icons/ic_error_18px.svg">
+      </md-icon>
+      <div class="term">{{term.term}}</div>
+      <md-progress-linear
+        md-mode="determinate" value="{{term.probability}}"
+        feature-flag="trainer.probability">
+      </md-progress-linear>
+    </div>
+
+    <div
+      class="level-2"
+      ng-if="term.classificationId == 3"
+      ng-class="{'md-primary md-warn menu-item-level-2'
+								: ctrl.smodel.visibleHeaders.indexOf(term.paragraphId) != -1,
+							'md-primary menu-item-level-2'
+								: ctrl.smodel.visibleHeaders.indexOf(term.paragraphId) == -1}"
+
+      scroll-to-paragraph="{{term.paragraphId}}">
+      <md-divider></md-divider>
+      <md-icon
+        feature-flag="trainer"
+        ng-if="term.isUserObserved"
+        md-svg-icon="images/icons/ic_error_18px.svg">
+      </md-icon>
+      <div class="term">{{term.term}}</div>
+      <md-progress-linear md-mode="determinate" value="{{term.probability}}" feature-flag='trainer.probability'>
+      </md-progress-linear>
+    </div>
+
+  </li>
+</ul>
+<md-divider></md-divider>
+

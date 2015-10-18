@@ -19,8 +19,8 @@
 	    templateUrl: 'scripts/search/search.tmpl.html',
 	    restrict: 'E',
 	    controller: 'SearchCtrl',
-	    controllerAs: 'ctrl'
-	  };  	
+	    controllerAs: 'searchCtrl'
+	  };
 
   }
 

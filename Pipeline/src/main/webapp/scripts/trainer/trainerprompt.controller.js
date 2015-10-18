@@ -4,6 +4,7 @@
   	.module('app.trainer')
   	.controller('TrainerPromptCtrl', TrainerPromptCtrl);
 
+  /* @ngInject */
 	function TrainerPromptCtrl($scope, $mdBottomSheet, documentService, trainerModel) {
     $scope.prompt = trainerModel.trainerPrompt.text;
     $scope.items = trainerModel.trainerPrompt.items;

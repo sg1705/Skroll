@@ -12,7 +12,7 @@
 		.module('app.trainer')
 	  .directive('skTrainerToolbar', SkTrainerToolbar);
 
-  /** ngInject **/
+  /* ngInject */
   function SkTrainerToolbar(documentService, trainerService) {
 
 	  return {
