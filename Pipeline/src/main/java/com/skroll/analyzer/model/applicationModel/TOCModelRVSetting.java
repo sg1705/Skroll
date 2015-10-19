@@ -27,16 +27,11 @@ public class TOCModelRVSetting extends ModelRVSetting {
     );
     static final List<RandomVariable> DEFAULT_SHARED_PARA_FEATURE_VARS = Arrays.asList(
             RVCreater.createDiscreteRVWithComputer(new NotInTableRVComputer(), "notInTable"),
-//            RVCreater.createDiscreteRVWithComputer(new StartsWithNumberComputer(), "startsWithNumber"),
-//            RVCreater.createDiscreteRVWithComputer(new EndsWithNumberComputer(), "endsWithNumber"),
             RVCreater.createDiscreteRVWithComputer(new IsParaNumberComputer(), "isParaNumber"),
             RVCreater.createDiscreteRVWithComputer(new IsInUserTOCRVComputer(), "inUserTOC"),
             RVCreater.createParagraphIsRV(CoreAnnotations.IsItalicAnnotation.class),
             RVCreater.createParagraphIsRV(CoreAnnotations.IsUnderlineAnnotation.class),
             RVCreater.createParagraphIsRV(CoreAnnotations.IsBoldAnnotation.class),
-//            RVCreater.createParagraphStartsWithRV(CoreAnnotations.IsItalicAnnotation.class),
-//            RVCreater.createParagraphStartsWithRV(CoreAnnotations.IsUnderlineAnnotation.class),
-//            RVCreater.createParagraphStartsWithRV(CoreAnnotations.IsBoldAnnotation.class),
             RVCreater.createRVFromAnnotation(CoreAnnotations.IsAnchorAnnotation.class),
             RVCreater.createRVFromAnnotation(CoreAnnotations.IsHrefAnnotation.class),
             RVCreater.createRVFromAnnotation(CoreAnnotations.IsUpperCaseAnnotation.class),

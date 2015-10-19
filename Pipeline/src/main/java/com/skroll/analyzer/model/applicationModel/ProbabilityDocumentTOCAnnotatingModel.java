@@ -50,9 +50,7 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
         );
 
         // quick way to disable features without retraining.
-//        setting.disableParaDocFeature(1); //para starts with number
-//        setting.disableParaDocFeature(2); //para ends with number
-//        setting.disableParaDocFeature(3); //para is number
+//        setting.disableParaDocFeature(n); // disable the nth paraDoc feature
     }
 
     public ProbabilityDocumentTOCAnnotatingModel(int id,
@@ -93,8 +91,9 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
                     nbmnConfig.getWordVarList(),
                     lowerCatIds, null);
 
-//            lowerTOCSetting.disableParaDocFeature(1);
-//            lowerTOCSetting.disableParaDocFeature(2);
+
+            // quick way to disable features without retraining.
+//            lowerTOCSetting.disableParaDocFeature(n); // disable the nth paraDoc feature
 
             this.secModel = new ProbabilityTextAnnotatingModel(
                     secNbmn,
