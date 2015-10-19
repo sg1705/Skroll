@@ -30,7 +30,9 @@
      **/
     function getActiveLink(documentId, serializedSelection) {
       var activeLink = baseUrl + '/view/docId/' + documentId;
-      activeLink = activeLink + '/linkId/' + serializedSelection;
+      if (serializedSelection != null) {
+        activeLink = activeLink + '/linkId/' + serializedSelection;
+      }
       return activeLink;
     };
 

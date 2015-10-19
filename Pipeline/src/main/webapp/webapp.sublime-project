@@ -1,0 +1,19 @@
+{
+	"folders":
+	[
+		{
+			"folder_exclude_patterns":
+			[
+				"resources",
+				"build",
+				"node_modules",
+				"gradle",
+				".idea",
+				".gradle",
+				".svn",
+				".git"
+			],
+			"path": "."
+		}
+	]
+}

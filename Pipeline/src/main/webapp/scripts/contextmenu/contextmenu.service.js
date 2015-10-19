@@ -112,8 +112,7 @@
         //how many pixels above or below
         var CONTEXT_MENU_WIDTH = 200;
         var CONTEXT_MENU_HEIGHT = 40;
-        //we can use $mdMedia
-        var SCREEN_WIDTH = 800;
+        var SCREEN_WIDTH = screen.width;
         var VERTICAL_OFFSET = 50;
         var HORIZONTAL_OFFSET = CONTEXT_MENU_WIDTH / 2; //200 is the min width context bar
 
@@ -215,8 +214,16 @@
 
   angular
     .module('app.contextmenu')
-    .run(function(textSelectionObserverService, contextMenuService) {
+    .run(function(textSelectionObserverService, contextMenuService, $document, $mdMedia) {
       textSelectionObserverService.register(contextMenuService.onSelection);
+      if ($mdMedia('sm')) {
+        $document.bind('contextmenu', function(event) {
+         event.preventDefault();
+         event.stopPropagation();
+         return false;
+        });
+      }
+
     });
 
 })();
