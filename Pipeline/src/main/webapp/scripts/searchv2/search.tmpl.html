@@ -1,13 +1,10 @@
 <md-list>
-  <md-list-item class="md-2-line" ng-repeat="header in searchCtrl.searchResults">
+  <md-list-item class="md-2-line" ng-repeat="header in searchCtrl.searchResults" >
     <div>
-      <h3 ng-if="header.isHidden === false" md-highlight-text="searchCtrl.searchState.searchText"
-          md-highlight-flags="ig" scroll-to-paragraph="{{header.paragraphId}}">{{header.headerTerm}}</h3>
+      <h3 ng-if="header.isHidden === false" md-highlight-text="searchCtrl.searchState.searchText" md-highlight-flags="ig" scroll-to-paragraph="{{header.paragraphId}}">{{header.headerTerm}}</h3>
       <md-list ng-if="header.searchedItems.length">
         <md-list-item class="md-2-line" ng-repeat="searchedItem in header.searchedItems">
-          <p class="search-surrounting-text-container search-surrounting-text-clamp"
-             md-highlight-text="searchCtrl.searchState.searchText" md-highlight-flags="ig"
-             scroll-to-paragraph="{{searchedItem.paragraphId}}">{{searchedItem.displayText}}</p>
+          <p class="search-surrounting-text-container search-surrounting-text-clamp" md-highlight-text="searchCtrl.searchState.searchText" md-highlight-flags="ig" scroll-to-paragraph="{{searchedItem.paragraphId}}">{{searchedItem.displayText}}</p>
           <md-divider/>
         </md-list-item>
       </md-list>
