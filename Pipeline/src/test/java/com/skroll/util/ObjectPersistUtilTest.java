@@ -44,14 +44,14 @@ public class ObjectPersistUtilTest {
         ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil("/tmp");
 
         try {
-            objectPersistUtil.persistObject(null, model, "TrainingDocumentAnnotatingModel");
+            objectPersistUtil.persistObject(TrainingTextAnnotatingModel.class, model, "TrainingDocumentAnnotatingModel");
         } catch (ObjectPersistUtil.ObjectPersistException e) {
             e.printStackTrace();
             fail("failed persist Object");
         }
         Object obj = null;
         try {
-            obj = objectPersistUtil.readObject(null, "TrainingDocumentAnnotatingModel");
+            obj = objectPersistUtil.readObject(TrainingTextAnnotatingModel.class, "TrainingDocumentAnnotatingModel");
         } catch (ObjectPersistUtil.ObjectPersistException e) {
             e.printStackTrace();
             fail("failed readObject");

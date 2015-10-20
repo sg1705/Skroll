@@ -38,6 +38,8 @@ public class ModelRVSetting {
     @JsonProperty("categoryIds")
     List<Integer> categoryIds=null;
 
+
+    boolean[] disabledParaDocFeatures = null;
     /* Various strategies for the model */
     @JsonIgnore
     protected List<BiFunction<List<CoreMap>, List<CoreMap>, Void>> postProcessFunctions
@@ -77,6 +79,7 @@ public class ModelRVSetting {
 
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;
+        disabledParaDocFeatures = new boolean[paraDocFeatureVars.size()];
 
     }
 
@@ -93,6 +96,11 @@ public class ModelRVSetting {
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;
         this.categoryIds = categoryIds;
+        disabledParaDocFeatures = new boolean[nbmnConfig.getFeatureExistsAtDocLevelVarList().size()];
+    }
+
+    public void disableParaDocFeature(int i) {
+        disabledParaDocFeatures[i] = true;
     }
 
     /**

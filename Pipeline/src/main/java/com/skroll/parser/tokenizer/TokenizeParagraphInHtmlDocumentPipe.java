@@ -28,6 +28,8 @@ public class TokenizeParagraphInHtmlDocumentPipe extends SyncPipe<Document, Docu
 
 
         List<CoreMap> newList = new ArrayList<CoreMap>();
+        System.out.println("new paragraphs size before tokenize= " + input.getParagraphs().size());
+
         for(CoreMap paragraph : input.getParagraphs()) {
             //get fragments
             List<CoreMap> fragments = paragraph.get(CoreAnnotations.ParagraphFragmentAnnotation.class);
@@ -138,6 +140,7 @@ public class TokenizeParagraphInHtmlDocumentPipe extends SyncPipe<Document, Docu
                 newList.add(paragraph);
 
         }
+        System.out.println("new paragraphs size after tokenize= " + newList.size());
         input.setParagraphs(newList);
         return this.target.process(input);
     }

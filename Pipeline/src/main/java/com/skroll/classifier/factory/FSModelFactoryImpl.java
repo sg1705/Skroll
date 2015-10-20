@@ -84,7 +84,7 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
     }
 
     @Override
-    public ProbabilityTextAnnotatingModel getBNIModel(int modelId, ModelRVSetting modelRVSetting, Document document ) {
+    public ProbabilityTextAnnotatingModel getBNIModel(int modelId, ModelRVSetting modelRVSetting, Document document) {
         ProbabilityTextAnnotatingModel bniModel;
 
         if (modelRVSetting instanceof TOCModelRVSetting) {

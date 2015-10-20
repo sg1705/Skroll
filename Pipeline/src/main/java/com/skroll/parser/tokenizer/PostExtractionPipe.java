@@ -20,6 +20,7 @@ public class PostExtractionPipe extends SyncPipe<Document, Document> {
     public Document process(Document input) {
         //TODO some instance where there is just a blank like (maybe because of new line)
         List<CoreMap> newParagraph = new ArrayList<CoreMap>();
+        System.out.println("----------- num paragraphs = " + input.getParagraphs().size());
         for(CoreMap paragraph : input.getParagraphs()) {
             List<CoreMap> newFragments = new ArrayList<>();
             List<CoreMap> fragments = paragraph.get(CoreAnnotations.ParagraphFragmentAnnotation.class);
@@ -53,6 +54,7 @@ public class PostExtractionPipe extends SyncPipe<Document, Document> {
                 newParagraph.add(paragraph);
             }
         }
+        System.out.println("new paragraphs size = " + newParagraph.size());
         input.setParagraphs(newParagraph);
 
         return this.target.process(input);

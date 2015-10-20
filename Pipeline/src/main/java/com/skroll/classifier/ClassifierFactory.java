@@ -32,7 +32,7 @@ public class ClassifierFactory {
     public static final int TEN_K_TOC_CLASSIFIER_ID = 101;
     public static final int TEN_Q_TOC_CLASSIFIER_ID = 102;
     public static final int INDENTURE_TOC_CLASSIFIER_ID = 103;
-    private static final List<Integer> TOC_CATEGORY_IDS = new ArrayList<>(Arrays.asList(Category.NONE, Category.TOC_1, Category.TOC_2));
+    private static final List<Integer> TOC_CATEGORY_IDS = new ArrayList<>(Arrays.asList(Category.NONE, Category.TOC_1, Category.TOC_2, Category.USER_TOC));
     public static final List<Integer> LOWER_TOC_CATEGORY_IDS = new ArrayList<>(Arrays.asList(Category.NONE, Category.TOC_2));
 
 

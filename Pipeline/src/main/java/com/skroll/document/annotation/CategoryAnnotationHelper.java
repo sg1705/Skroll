@@ -31,7 +31,7 @@ public class CategoryAnnotationHelper {
         if (definitionList==null) return strings;
 
         for (List<Token> list: definitionList){
-                strings.add(DocumentHelper.getTokenString(list));
+            strings.add(DocumentHelper.getTokenString(list));
         }
         return strings;
     }
@@ -56,20 +56,20 @@ public class CategoryAnnotationHelper {
      */
     public static List<TermProto> getParagraphsAnnotatedWithAnyCategory(Document document) {
         List<TermProto> termProto = new ArrayList<>();
-            Map<Integer,Set<String>> check = new HashMap<>();
+        Map<Integer, Set<String>> check = new HashMap<>();
             for (int categoryId : Category.getCategoriesExcludingNONE()) {
                 check.put(categoryId, new HashSet<>());
             }
-            for (CoreMap paragraph : document.getParagraphs()) {
-                for (int categoryId : Category.getCategoriesExcludingNONE()) {
+        for (CoreMap paragraph : document.getParagraphs()) {
+            for (int categoryId : Category.getCategoriesExcludingNONE()) {
                 List<List<String>> terms = getTokenStringsForCategory(paragraph, categoryId);
                 for (List<String> term : terms) {
                     if(logger.isTraceEnabled())
-                        logger.trace( "{} \t {} \t {}",paragraph.getId(),categoryId , term);
+                        logger.trace("{} \t {} \t {}", paragraph.getId(), categoryId, term);
                     if (!term.isEmpty()) {
                         String termString = Joiner.on(" ").join(term);
                         if (!(termString.equals(""))) {
-                            if(!check.get(categoryId).contains(termString)) {
+                            if (!check.get(categoryId).contains(termString)) {
                                 boolean isObserved = DocumentHelper.isObserved(paragraph);
                                 termProto.add(new TermProto(paragraph.getId(), termString, categoryId, isObserved));
                                 check.get(categoryId).add(termString);
@@ -264,7 +264,7 @@ public class CategoryAnnotationHelper {
             logger.error("Existing document's paragraph {} does not contains Selected text {} ", paraTokenString,selectedTermString);
             return false;
         }
-        if(categoryId == Category.USER_TOC) {
+        if (categoryId == Category.USER_TOC) {
             annotateParagraphWithTokensAndCategory(paragraph, paragraph.getTokens(), categoryId);
             return true;
         }

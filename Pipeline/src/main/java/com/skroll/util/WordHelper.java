@@ -18,4 +18,13 @@ public class WordHelper {
         return true;
     }
 
+    public static boolean isInt(String str) {
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            if (c < 0x30 || c > 0x39)
+                return false;
+        }
+        return true;
+    }
+
 }
