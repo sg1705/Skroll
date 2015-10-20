@@ -112,7 +112,7 @@ public class ClassifierImpl implements Classifier {
 
     @Override
     public Map<String, Double> getProbabilityDataForDoc(Document document) {
-        return modelFactory.getBNIModel(id,modelRVSetting, document).getParaProbMap();
+        return modelFactory.getBNIModel(id, modelRVSetting, document).getParaProbMap();
     }
 
     @Override
