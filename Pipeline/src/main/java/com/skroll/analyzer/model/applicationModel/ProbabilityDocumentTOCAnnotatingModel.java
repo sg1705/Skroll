@@ -23,8 +23,8 @@ import java.util.stream.Collectors;
  */
 public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnotatingModel {
 
-    static final int SEC_NUM_ITERATION = 5;
-    static double[] SEC_ANNOTATING_THRESHOLD = {0, .99999};
+    static final int SEC_NUM_ITERATION = 80;
+    static double[] SEC_ANNOTATING_THRESHOLD = {0, 0.8};
     Document doc;
     NaiveBayesWithMultiNodes secNbmn = null;
     HiddenMarkovModel secHmm = null;
@@ -48,6 +48,9 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
                 setting.getWordFeatures(),
                 setting.getNbmnConfig()
         );
+
+        // quick way to disable features without retraining.
+//        setting.disableParaDocFeature(n); // disable the nth paraDoc feature
     }
 
     public ProbabilityDocumentTOCAnnotatingModel(int id,
@@ -81,13 +84,17 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
             this.secHmm = secHmm;
             secHmm.updateProbabilities();
 
-//            ModelRVSetting lowerTOCSetting = new TOCModelRVSetting(lowerCatIds, null);
             ModelRVSetting lowerTOCSetting = new TOCModelRVSetting(
                     modelRVSetting.wordFeatures,
                     nbmnConfig.getFeatureVarList(),
                     nbmnConfig.getFeatureExistsAtDocLevelVarList(),
                     nbmnConfig.getWordVarList(),
                     lowerCatIds, null);
+
+
+            // quick way to disable features without retraining.
+//            lowerTOCSetting.disableParaDocFeature(n); // disable the nth paraDoc feature
+
             this.secModel = new ProbabilityTextAnnotatingModel(
                     secNbmn,
                     secHmm,
@@ -126,7 +133,7 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
         for (int i = 0; i < sections.size(); i++) {
             secModel.setParagraphs(sections.get(i));
             secModel.setProcessedParagraphs(processedSections.get(i));
-            secModel.setNumIterations(4);
+            secModel.setNumIterations(SEC_NUM_ITERATION);
             secModel.setAnnotatingThreshold(SEC_ANNOTATING_THRESHOLD);
             secModel.initialize();
             secModel.annotateParagraphs();
