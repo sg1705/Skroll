@@ -51,6 +51,7 @@
             .then(function(terms) {
               LHSModel.setTerms(terms);
               console.log(terms);
+              documentModel.isTocLoaded = true;
               LHSModel.setYOffsetForTerms(LHSModel.smodel.terms);
               return documentService.getIndex(documentModel.documentId);
             })
@@ -77,6 +78,7 @@
             .then(function(terms) {
               LHSModel.setTerms(terms);
               console.log(terms);
+              documentModel.isTocLoaded = true;
               $timeout(timeout, 0); //@see function timeout()
 
               function timeout() {

@@ -34,7 +34,6 @@
       var inputElement = $("#searchBox").find("input");
       if (inputElement.length > 0) {
         $(inputElement[0]).focus();
-        LHSModel.smodel.hover = true;
       }
     }
 

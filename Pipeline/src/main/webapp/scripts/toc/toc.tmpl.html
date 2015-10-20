@@ -19,7 +19,7 @@
         ng-if="term.isUserObserved"
         md-svg-icon="images/icons/ic_error_18px.svg">
       </md-icon>
-      <div class="term">{{term.term}}</div>
+      <div class="term">{{term.term | words: 15}}</div>
       <md-progress-linear
         md-mode="determinate" value="{{term.probability}}"
         feature-flag="trainer.probability">
@@ -41,7 +41,7 @@
         ng-if="term.isUserObserved"
         md-svg-icon="images/icons/ic_error_18px.svg">
       </md-icon>
-      <div class="term">{{term.term}}</div>
+      <div class="term">{{term.term | words: 15}}</div>
       <md-progress-linear md-mode="determinate" value="{{term.probability}}" feature-flag='trainer.probability'>
       </md-progress-linear>
     </div>

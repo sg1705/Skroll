@@ -21,6 +21,7 @@
     enableTrainerFlag();
     //register
     trainerPromptService.registerTextSelectionObserver();
+    trainerPromptService.registerClickObserver();
 
     $location.path("/list");
 

@@ -194,7 +194,9 @@
      * Register text selection observer
      */
     function registerClickObserver() {
-      clickObserverService.register(vm.handleTrainerParaSelection);
+      if (featureFlags.isOn('trainer')) {
+        clickObserverService.register(vm.handleTrainerParaSelection);
+      }
     }
 
 
