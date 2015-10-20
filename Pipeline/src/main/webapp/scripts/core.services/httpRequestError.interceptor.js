@@ -40,7 +40,7 @@
 
 
     function request(config) {
-      config.timeout = 10000;
+      config.timeout = 40000;
       return config;
     }
 

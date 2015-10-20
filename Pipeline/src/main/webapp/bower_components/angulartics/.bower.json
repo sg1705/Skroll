@@ -1,6 +1,6 @@
 {
   "name": "angulartics",
-  "version": "0.20.0",
+  "version": "0.20.1",
   "main": [
     "src/angulartics.js",
     "src/angulartics-clicky.js",
@@ -29,15 +29,14 @@
   "resolutions": {
     "angular": ">= 1.1.5"
   },
-  "homepage": "https://github.com/luisfarzati/angulartics",
-  "_release": "0.20.0",
+  "homepage": "https://github.com/angulartics/angulartics",
+  "_release": "0.20.1",
   "_resolution": {
     "type": "version",
-    "tag": "0.20.0",
-    "commit": "0f1c681ec95f624a951a8969a5cb3049e0384aca"
+    "tag": "0.20.1",
+    "commit": "f5362fc1255b683b9daccbb72f4b630f7c7dc5e4"
   },
-  "_source": "git://github.com/luisfarzati/angulartics.git",
+  "_source": "git://github.com/angulartics/angulartics.git",
   "_target": "~0.20.0",
-  "_originalSource": "angulartics",
-  "_direct": true
+  "_originalSource": "angulartics"
 }

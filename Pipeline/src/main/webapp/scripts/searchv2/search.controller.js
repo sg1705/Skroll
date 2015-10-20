@@ -28,8 +28,8 @@
     vm.getSurroundingText = getSurroundingText;
     vm.highlightSearchResults = highlightSearchResults;
     vm.unHighlightPreviousSearchResults = unHighlightPreviousSearchResults;
-    vm.enterSearchBox = enterSearchBox;
-    vm.leaveSearchBox = leaveSearchBox;
+    // vm.enterSearchBox = enterSearchBox;
+    // vm.leaveSearchBox = leaveSearchBox;
     vm.searchTextChange = searchTextChange;
     vm.selectedItemChange = selectedItemChange;
 
@@ -187,13 +187,14 @@
       }
     }
 
-    function enterSearchBox() {
-      LHSModel.smodel.hover = true;
-    }
+    //@todo remove these
+    // function enterSearchBox() {
+    //   LHSModel.smodel.hover = true;
+    // }
 
-    function leaveSearchBox() {
-      LHSModel.smodel.hover = false;
-    }
+    // function leaveSearchBox() {
+    //   LHSModel.smodel.hover = false;
+    // }
 
     function searchTextChange(text) {
       if (text == '') {
