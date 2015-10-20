@@ -50,7 +50,7 @@
       }
     };
 
-    documentModel.clear();
+    documentModel.clearToc();
 
   }
 

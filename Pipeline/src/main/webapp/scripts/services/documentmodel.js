@@ -20,18 +20,8 @@ var documentModel = {
   lunrIndex: null,
   isTocLoaded: false,
 
-  clear: function() {
-    this.targetHtml = '';
-    this.isDocAvailable = false;
-    // this.isProcessing = false;
-    this.fileName = '';
-    this.selectedParagraphId = '';
-    this.documentId = '';
-    this.isPartiallyParsed = false;
-    this.url = '';
-    this.lunrIndex = null;
+  clearToc: function() {
     this.isTocLoaded = false;
-
   },
 
 
