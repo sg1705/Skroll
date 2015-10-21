@@ -3,7 +3,7 @@
 
   "name": "Skroll",
   "description": "This extension opens Skroll in new tab",
-  "version": "4.3",
+  "version": "4.4",
 
   "background" : {
     "scripts" : ["background.js"]
