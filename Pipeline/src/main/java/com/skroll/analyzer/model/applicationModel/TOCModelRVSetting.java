@@ -23,20 +23,25 @@ public class TOCModelRVSetting extends ModelRVSetting {
             RVCreater.createRVFromAnnotation(CoreAnnotations.IsUnderlineAnnotation.class)
     );
     static final List<RandomVariable> DEFAULT_PARA_FEATURE_VARS = Arrays.asList(
-            RVCreater.createDiscreteRVWithComputer(new NumberTokensComputer(), "numTokens")
-    );
-    static final List<RandomVariable> DEFAULT_SHARED_PARA_FEATURE_VARS = Arrays.asList(
-            RVCreater.createDiscreteRVWithComputer(new NotInTableRVComputer(), "notInTable"),
+            RVCreater.createDiscreteRVWithComputer(new NumberTokensComputer(), "numTokens"),
             RVCreater.createDiscreteRVWithComputer(new IsParaNumberComputer(), "isParaNumber"),
-            RVCreater.createDiscreteRVWithComputer(new IsInUserTOCRVComputer(), "inUserTOC"),
-            RVCreater.createParagraphIsRV(CoreAnnotations.IsItalicAnnotation.class),
-            RVCreater.createParagraphIsRV(CoreAnnotations.IsUnderlineAnnotation.class),
-            RVCreater.createParagraphIsRV(CoreAnnotations.IsBoldAnnotation.class),
-            RVCreater.createRVFromAnnotation(CoreAnnotations.IsAnchorAnnotation.class),
-            RVCreater.createRVFromAnnotation(CoreAnnotations.IsHrefAnnotation.class),
-            RVCreater.createRVFromAnnotation(CoreAnnotations.IsUpperCaseAnnotation.class),
-            RVCreater.createRVFromAnnotation(CoreAnnotations.IsCenterAlignedAnnotation.class)
+            RVCreater.createDiscreteRVWithComputer(new EndsWithNumberComputer(), "paraEndsWithNumber")
     );
+    static List<RandomVariable> DEFAULT_SHARED_PARA_FEATURE_VARS =
+            RVCreater.addNegationRVs(
+                    Arrays.asList(
+                            RVCreater.createDiscreteRVWithComputer(new StartsWithNumberComputer(), "paraStartsWithNumber"),
+                            RVCreater.createDiscreteRVWithComputer(new NotInTableRVComputer(), "notInTable"),
+                            RVCreater.createParagraphIsRV(CoreAnnotations.IsItalicAnnotation.class),
+                            RVCreater.createParagraphIsRV(CoreAnnotations.IsUnderlineAnnotation.class),
+                            RVCreater.createParagraphIsRV(CoreAnnotations.IsBoldAnnotation.class),
+                            RVCreater.createRVFromAnnotation(CoreAnnotations.IsAnchorAnnotation.class),
+                            RVCreater.createRVFromAnnotation(CoreAnnotations.IsHrefAnnotation.class),
+                            RVCreater.createRVFromAnnotation(CoreAnnotations.IsUpperCaseAnnotation.class),
+                            RVCreater.createRVFromAnnotation(CoreAnnotations.IsCenterAlignedAnnotation.class)
+
+                    )
+            );
 
     static final List<RandomVariable> DEFAULT_WORD_VARS = Arrays.asList(
             RVCreater.createWordsRVWithComputer(new LowerCaseWordsComputer(), "lowerCaseWords"),
