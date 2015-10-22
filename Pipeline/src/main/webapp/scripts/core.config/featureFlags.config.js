@@ -18,6 +18,11 @@
       "name": "flag for probabilities in TOC",
       "description": "no description"
     }, {
+      "key": "trainer.benchmark",
+      "active": false,
+      "name": "flag for fetching benchmark score",
+      "description": "no description"
+    }, {
       "key": "googl.shortlink",
       "active": false,
       "name": "flag to create shortlinsk",

@@ -6,7 +6,7 @@
     .service('trainerService', TrainerService);
 
   /* @ngInject */
-  function TrainerService($http, $q, $log, documentService, trainerModel, documentModel) {
+  function TrainerService($http, $q, $log, documentService, trainerModel, documentModel, featureFlags) {
 
     //context root of API
     var documentServiceBase = 'restServices/doc/';
@@ -180,6 +180,11 @@
      **/
     function updateBenchmark() {
       console.log("fetching score");
+
+      if (!featureFlags.isOn('trainer.benchmark')) {
+        return;
+      }
+
       var self = this;
       documentService.getBenchmarkScore(documentModel.documentId).then(function(benchmarkScore) {
         trainerToolbar.benchmarkScore = benchmarkScore;
