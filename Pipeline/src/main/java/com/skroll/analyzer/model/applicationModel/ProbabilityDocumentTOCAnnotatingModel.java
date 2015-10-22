@@ -123,22 +123,22 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
         super.annotateParagraphs();
         annotateParaProbs(CoreAnnotations.TOCParaProbsDocLevel.class, processedParagraphs, paragraphCategoryBelief);
 
-        List<Integer> lowerCatIds = ((TOCModelRVSetting) modelRVSetting).getLowLevelCategoryIds();
-        if (lowerCatIds == null) return;
-
-        List<List<List<CoreMap>>> sectionsList = DocProcessor.createSections(paragraphs, processedParagraphs, getParaCategory());
-        List<List<CoreMap>> sections = sectionsList.get(0);
-        List<List<CoreMap>> processedSections = sectionsList.get(1);
-
-        for (int i = 0; i < sections.size(); i++) {
-            secModel.setParagraphs(sections.get(i));
-            secModel.setProcessedParagraphs(processedSections.get(i));
-            secModel.setNumIterations(SEC_NUM_ITERATION);
-            secModel.setAnnotatingThreshold(SEC_ANNOTATING_THRESHOLD);
-            secModel.initialize();
-            secModel.annotateParagraphs();
-            annotateParaProbs(CoreAnnotations.TOCParaProbsSecLevel.class, processedSections.get(i), secModel.getParagraphCategoryBelief());
-        }
+//        List<Integer> lowerCatIds = ((TOCModelRVSetting) modelRVSetting).getLowLevelCategoryIds();
+//        if (lowerCatIds == null) return;
+//
+//        List<List<List<CoreMap>>> sectionsList = DocProcessor.createSections(paragraphs, processedParagraphs, getParaCategory());
+//        List<List<CoreMap>> sections = sectionsList.get(0);
+//        List<List<CoreMap>> processedSections = sectionsList.get(1);
+//
+//        for (int i = 0; i < sections.size(); i++) {
+//            secModel.setParagraphs(sections.get(i));
+//            secModel.setProcessedParagraphs(processedSections.get(i));
+//            secModel.setNumIterations(SEC_NUM_ITERATION);
+//            secModel.setAnnotatingThreshold(SEC_ANNOTATING_THRESHOLD);
+//            secModel.initialize();
+//            secModel.annotateParagraphs();
+//            annotateParaProbs(CoreAnnotations.TOCParaProbsSecLevel.class, processedSections.get(i), secModel.getParagraphCategoryBelief());
+//        }
     }
 
     /**
