@@ -24,7 +24,7 @@ public class Parser {
 
     public static final int VERSION = 2;
     public static final Logger logger = LoggerFactory.getLogger(Parser.class);
-    private static Injector injector = Guice.createInjector(new SkrollGuiceModule());
+    public static Injector injector = Guice.createInjector(new SkrollGuiceModule());
 
     private static Document parseInDoc(Document document, int fetchMode, int parseMode)
             throws ParserException {

@@ -1,5 +1,6 @@
 package com.skroll.analyzer.model.applicationModel;
 
+import com.google.inject.Guice;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.ParaInCategoryComputer;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVCreater;
@@ -7,6 +8,8 @@ import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
+import com.skroll.parser.Parser;
+import com.skroll.util.SkrollTestGuiceModule;
 import com.skroll.util.TestHelper;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,24 +28,31 @@ public class ProbabilityDocumentAnnotatingModelTest {
     TrainingTextAnnotatingModel tModel = new TrainingTextAnnotatingModel(TEST_DEF_CLASSIFIER_ID, setting);
 
     //    String testingFileName = "src/test/resources/classifier/smaller-indenture.html";
-//    String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/mini-indenture.html";
+    //    String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/mini-indenture.html";
     String testingFileName = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
-//    String testingFileName = "src/test/resources/analyzer/hmmTrainingDocs/AMD CA - Def No Quotes.html";
+    //    String testingFileName = "src/test/resources/analyzer/hmmTrainingDocs/AMD CA - Def No Quotes.html";
 
 
-    File file = new File(testingFileName);
-    Document doc = TestHelper.makeTrainingDoc(file);
-//
-//    Document doc = TestHelper.setUpTestDoc();
+//    File file = new File(testingFileName);
+//    Document doc = TestHelper.makeTrainingDoc(file);
+//    ProbabilityTextAnnotatingModel model;
+//    boolean doneSetup=false;
+//    RandomVariable paraType = RVCreater.createDiscreteRVWithComputer(new ParaInCategoryComputer(Category.DEFINITION), "paraTypeIsCategory-" + Category.DEFINITION);
 
+    File file;
+    Document doc;
     ProbabilityTextAnnotatingModel model;
     boolean doneSetup=false;
+    RandomVariable paraType;
 
-    RandomVariable paraType = RVCreater.createDiscreteRVWithComputer(new ParaInCategoryComputer(Category.DEFINITION), "paraTypeIsCategory-" + Category.DEFINITION);
 
 
     @Before
-    public void setup() throws Exception{
+    public void setup() throws Exception {
+        file = new File(testingFileName);
+        doc = TestHelper.makeTrainingDoc(file);
+        paraType = RVCreater.createDiscreteRVWithComputer(new ParaInCategoryComputer(Category.DEFINITION), "paraTypeIsCategory-" + Category.DEFINITION);
+
         if (doneSetup) return;
         doneSetup = true;
 
@@ -85,7 +95,6 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
     void printDocBeliefs(){
         System.out.print("document level feature believes\n");
-//        System.out.println(model.DEFAULT_DOCUMENT_FEATURES);
         System.out.print(" " + model.getNbmnConfig().getDocumentFeatureVarList());
         System.out.println();
         double[][][] dBelieves = model.getDocumentFeatureBelief();
@@ -96,7 +105,6 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
     void printBelieves(){
         System.out.print("document level feature believes\n");
-//        System.out.println(model.DEFAULT_DOCUMENT_FEATURES);
         System.out.println(" " + model.getNbmnConfig().getDocumentFeatureVarList());
         double[][][] dBelieves = model.getDocumentFeatureProbabilities();
         for (int i=0; i<dBelieves.length; i++){
@@ -118,10 +126,6 @@ public class ProbabilityDocumentAnnotatingModelTest {
             System.out.println(paraList.get(i).getText());
 
         }
-    }
-
-    public void testComputeInitalBelieves() throws Exception {
-
     }
 
     @Test
@@ -173,17 +177,6 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
         printBelieves();
     }
-    public void testUpdateBelieves() throws Exception {
-
-    }
-
-    public void testNormalize() throws Exception {
-
-    }
-
-    public void testNormalizeParagraphBelieves() throws Exception {
-
-    }
 
     @Test
     public void testAnnotateDocument() throws Exception {
@@ -192,14 +185,6 @@ public class ProbabilityDocumentAnnotatingModelTest {
         System.out.println("annotated terms\n");
         RVValues.printAnnotatedDoc(doc);
         printBelieves();
-    }
-
-    public void testGetParagraphCategoryBelief() throws Exception {
-
-    }
-
-    public void testGetDocumentFeatureBelief() throws Exception {
-
     }
 
 
@@ -214,7 +199,6 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
         System.out.println("annotated terms\n");
         RVValues.printAnnotatedDoc(doc);
-//        DocumentAnnotatingHelper.printAnnotatedDoc(doc);
     }
 
 }

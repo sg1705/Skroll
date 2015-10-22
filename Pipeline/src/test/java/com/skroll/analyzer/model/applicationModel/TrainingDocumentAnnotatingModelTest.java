@@ -1,11 +1,15 @@
 package com.skroll.analyzer.model.applicationModel;
 
+import com.google.inject.Guice;
 import com.skroll.analyzer.data.NBMNData;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
+import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.PhantomJsExtractor;
 import com.skroll.parser.extractor.TestMode;
+import com.skroll.util.SkrollGuiceModule;
+import com.skroll.util.SkrollTestGuiceModule;
 import com.skroll.util.TestHelper;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TrainingDocumentAnnotatingModelTest{
+public class TrainingDocumentAnnotatingModelTest {
     int maxNumWords = 20;
     String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining/mini-indenture.html";
     //    String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
@@ -25,11 +29,20 @@ public class TrainingDocumentAnnotatingModelTest{
     ModelRVSetting setting = new DefModelRVSetting(TEST_DEF_CATEGORY_IDS);
     TrainingTextAnnotatingModel model = new TrainingTextAnnotatingModel(TEST_DEF_CLASSIFIER_ID, setting);
     Document document;
+
+    static {
+        PhantomJsExtractor.TEST_MODE = TestMode.ON;
+        Parser.injector = Guice.createInjector(new SkrollTestGuiceModule());
+    }
+
+
     @Before
     public void setup() throws Exception {
+        model = new TrainingTextAnnotatingModel(TEST_DEF_CLASSIFIER_ID, setting);
         File f = new File(trainingFolderName);
         document = TestHelper.setUpTestDoc();
     }
+
     @Test
     public void testGetTrainingWeights() {
         // training weight already set in test doc
