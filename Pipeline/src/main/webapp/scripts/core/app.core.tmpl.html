@@ -21,7 +21,8 @@
                     name="searchInput"
                     autocomplete="off"
                     ng-model="contentCtrl.searchState.searchText"
-                    ng-keydown="contentCtrl.onKeyDown($event)"
+                    ng-keydown="searchCtrl.onKeyDown($event)"
+                    ng-keyUp="searchCtrl.onKeyUp($event, contentCtrl.searchState.searchText)"
                     placeholder="Search"
            />
          </md-input-container>
@@ -37,7 +38,7 @@
     <md-content md-scroll-y flex class="md-padding" ng-controller="LHSLevelsCtrl as lhsCtrl" ng-hide="lhsCtrl.searchState.searchActive" >
       <sk-lhs ng-hide="!contentCtrl.documentModel.isTocLoaded"/>
     </md-content>
-  <md-content ng-show="contentCtrl.searchState.searchActive">
+  <md-content ng-keydown="searchCtrl.onKeyDown($event)" ng-show="contentCtrl.searchState.searchActive">
      <sk-search />
   </md-content>
 

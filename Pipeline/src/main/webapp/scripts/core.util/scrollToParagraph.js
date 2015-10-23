@@ -34,7 +34,7 @@
         });
         scrollObserverService.notify(paragraphId);
         selectionService.scrollToParagraph(paragraphId, searchText);
-        scope.$apply();
+        // scope.$apply();
       });
     }
   }

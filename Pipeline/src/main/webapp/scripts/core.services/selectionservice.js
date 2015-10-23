@@ -51,7 +51,7 @@
       $('#' + SelectionModel.paragraphId).css('background-color', '');
       if (para != null) {
         var contentDiv = $('#skrollport');
-        $('#skrollport').animate({
+        $('#skrollport').stop(true, true).animate({
           scrollTop: ($('#skrollport').scrollTop() - 200 + $(
             para).offset().top)
         }, 'slow');
@@ -74,15 +74,15 @@
 
         range.selectNodeContents(document.body);
         searchResultApplier.undoToRange(range);
+        if (typeof selectedText !== 'undefined') {
+          var escapedSearcedText = selectedText.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+          var searchTerm = new RegExp('\\b(' + escapedSearcedText + ')\\b', 'ig');
 
-        var escapedSearcedText = selectedText.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
-        var searchTerm = new RegExp('\\b(' + escapedSearcedText + ')\\b', 'ig');
-
-        while (range.findText(searchTerm, options)) {
-          searchResultApplier.applyToRange(range);
-          range.collapse(false);
+          while (range.findText(searchTerm, options)) {
+            searchResultApplier.applyToRange(range);
+            range.collapse(false);
+          }
         }
-
         SelectionModel.paragraphId = paragraphId;
       }
     }

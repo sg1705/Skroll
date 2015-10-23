@@ -25,7 +25,6 @@
     vm.userDocumentIds = [];
     vm.smodel = LHSModel.smodel;
     vm.searchState = searchFactory.searchState;
-    vm.onKeyDown = searchFactory.onKeyDown;
 
     //-- public methods
     vm.loadDocument = loadDocument;

@@ -14,7 +14,7 @@
     .controller('SearchCtrl', SearchCtrl);
 
   /* @ngInject */
-  function SearchCtrl($scope, selectionService, documentModel, searchFactory) {
+  function SearchCtrl($scope, $timeout, selectionService, documentModel, searchFactory) {
 
     //-- private variables
     /*jshint validthis: true */
@@ -32,18 +32,107 @@
     // vm.leaveSearchBox = leaveSearchBox;
     vm.searchTextChange = searchTextChange;
     vm.selectedItemChange = selectedItemChange;
-    vm.onKeyDown = searchFactory.onKeyDown;
+    vm.onKeyDown = onKeyDown;
+    vm.onKeyUp = onKeyUp;
+    vm.onClick = onClick;
+
+    vm.typingTimer;
+    vm.doneTypingInterval = 50;
+    vm.doneTyping = doneTyping;
 
     //////////////////
-    $scope.$watch('searchState.searchText', function(searchText) {
+    // $scope.$watch('searchState.searchText', _.debounce(function(searchText) {
+    //   $scope.$apply(function() {
+    //     vm.searchState.searchActive = searchText.length ? true : false;
+    //     if (vm.searchState.searchActive) {
+    //       vm.searchResults = vm.getMatches(searchText);
+    //     }
+    //   });
+    // }, 50));
+
+    function onKeyDown(event) {
+      if (event.keyCode === 40 || event.keyCode === 38) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      //clearTimeout(vm.typingTimer);
+      $timeout.cancel(vm.typingTimer)
+
+      if (event.keyCode === 40 || event.keyCode === 38) {
+        var prevSelectedIndex = vm.searchState.currSelectedIndex;
+        var lhsContent = $('sk-search').parent();
+        vm.searchListItems = $('sk-search .highlight').parent();
+        if (event.keyCode === 40) { //DownArrow
+          vm.searchState.currSelectedIndex = Math.min(vm.searchState.currSelectedIndex + 1, vm.searchListItems.length - 1);
+        } else if (event.keyCode === 38) { //UpArrow
+          vm.searchState.currSelectedIndex = Math.max(vm.searchState.currSelectedIndex - 1, 0);
+        }
+        var index = vm.searchState.currSelectedIndex;
+        vm.searchListItems.eq(prevSelectedIndex).toggleClass('selected-list-item', false);
+        var listItem = vm.searchListItems.eq(index);
+        listItem.toggleClass('selected-list-item', true);
+
+        if (event.keyCode === 40) { //DownArrow
+          lhsContent.stop(true, true).animate({
+            scrollTop: (function() {
+              return lhsContent.scrollTop() + Math.max(0, listItem.height() - (lhsContent.height() - listItem.offset().top) - lhsContent.parent().find('md-toolbar').height());
+            })()
+          }, 'fast');
+        } else if (event.keyCode === 38) { //UpArrow
+          lhsContent.stop(true, true).animate({
+            scrollTop: (function() {
+              return lhsContent.scrollTop() + Math.min(listItem.offset().top - lhsContent.parent().find('md-toolbar').height(), 0);
+            })()
+          }, 'fast');
+        }
+        listItem.click();
+      }
+    }
+
+    //user is "finished typing,"
+    function doneTyping() {
+      var searchText = vm.searchState.searchText;
       vm.searchState.searchActive = searchText.length ? true : false;
       if (vm.searchState.searchActive) {
         vm.searchResults = vm.getMatches(searchText);
       }
-    }, 250); // delay 250 ms
+    }
 
-    function onKeyDown() {
-      console.log(arguments);
+    function onKeyUp(event, searchText) {
+      if (event.keyCode === 40 || event.keyCode === 38) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
+      vm.searchState.searchText = searchText;
+      //clearTimeout(vm.typingTimer);
+      $timeout.cancel(vm.typingTimer)
+      vm.typingTimer = $timeout(vm.doneTyping, vm.doneTypingInterval);
+    }
+
+    function onClick(event) {
+      vm.searchListItems = $('sk-search .highlight').parent();
+      var lhsContent = $('sk-search').parent();
+      var listItem = $(event.target);
+      listItem.toggleClass('selected-list-item', true);
+      var prevSelectedIndex = vm.searchState.currSelectedIndex;
+      vm.searchListItems.eq(prevSelectedIndex).toggleClass('selected-list-item', false);
+      var index = vm.searchState.currSelectedIndex = vm.searchListItems.index(listItem);
+
+      if (((listItem.offset().top - lhsContent.parent().find('md-toolbar').height())) < 0) {
+        lhsContent.stop(true, true).animate({
+          scrollTop: (function() {
+            return lhsContent.scrollTop() + Math.min(listItem.offset().top - lhsContent.parent().find('md-toolbar').height(), 0);
+          })()
+        }, 'fast');
+      } else if (listItem.height() - (lhsContent.height() - listItem.offset().top) - lhsContent.parent().find('md-toolbar').height() > 0) {
+        lhsContent.stop(true, true).animate({
+          scrollTop: (function() {
+            return lhsContent.scrollTop() + Math.max(0, listItem.height() - (lhsContent.height() - listItem.offset().top) - lhsContent.parent().find('md-toolbar').height());
+          })()
+        }, 'fast');
+      }
+
     }
 
     function getMatches(searchText) {
