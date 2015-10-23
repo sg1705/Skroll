@@ -10,6 +10,7 @@ import com.skroll.document.annotation.CategoryAnnotationHelper;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by wei on 5/9/15.
@@ -25,6 +26,7 @@ public class RVValues {
     static private Map<RandomVariable, RVValueSetter> valueSetterMap = new HashMap<>();
     static private Map<RandomVariable, WRVValueComputer> wordLevelValueComputerMap = new HashMap<>();
     static private Map<RandomVariable, RVWordsComputer> wordsComputerMap = new HashMap<>();
+    static private Map<RandomVariable, RandomVariable> negationRVMap = new HashMap<>();
 
 
     static Class getAnnotationClass(RandomVariable rv) {
@@ -86,6 +88,17 @@ public class RVValues {
     }
 
     public static int getValue(RandomVariable rv, CoreMap m) {
+        RandomVariable negationRV = negationRVMap.get(rv); // only for binary RVs
+        if (negationRV != null){
+            int negVal = getValueHelper(negationRV, m);
+            if (negVal == -1)
+                return -1; // unobserved
+            return 1-negVal;
+        }
+        return getValueHelper(rv,m);
+   }
+
+    public static int getValueHelper(RandomVariable rv, CoreMap m){
         RVValueComputer processor = valueComputerMap.get(rv);
         if (processor != null) return processor.getValue(m);
         return getValueFromMap(rv, m);
@@ -112,6 +125,10 @@ public class RVValues {
         WRVValueComputer processor = wordLevelValueComputerMap.get(rv);
         if (processor != null) return processor.getValue(token, para);
         return getValueFromMap(rv, token);
+    }
+
+    public static void addNegationRV(RandomVariable negationRv,RandomVariable rv){
+        negationRVMap.put(negationRv, rv);
     }
 
 
