@@ -24,15 +24,18 @@ public class TOCModelRVSetting extends ModelRVSetting {
     );
     static final List<RandomVariable> DEFAULT_PARA_FEATURE_VARS = Arrays.asList(
             RVCreater.createDiscreteRVWithComputer(new NumberTokensComputer(), "numTokens"),
-            RVCreater.createDiscreteRVWithComputer(new IsParaNumberComputer(), "isParaNumber"),
-            RVCreater.createDiscreteRVWithComputer(new EndsWithNumberComputer(), "paraEndsWithNumber")
+            RVCreater.createDiscreteRVWithComputer(new IsParaNumberComputer(), "isParaNumber")
+//            RVCreater.createDiscreteRVWithComputer(new IsInUserTOCRVComputer(), "inUserTOC"),
+//            RVCreater.createDiscreteRVWithComputer(new StartsWithNumberComputer(), "startsWithNumber")
+//            RVCreater.createDiscreteRVWithComputer(new EndsWithNumberComputer(), "endsWithNumber"),
+//            RVCreater.createDiscreteRVWithComputer(new EndsWithNumberComputer(), "paraEndsWithNumber")
     );
     static List<RandomVariable> DEFAULT_SHARED_PARA_FEATURE_VARS =
             RVCreater.addNegationRVs(
                     Arrays.asList(
                             RVCreater.createDiscreteRVWithComputer(new StartsWithNumberComputer(), "paraStartsWithNumber"),
                             RVCreater.createDiscreteRVWithComputer(new NotInTableRVComputer(), "notInTable"),
-                            RVCreater.createParagraphIsRV(CoreAnnotations.IsItalicAnnotation.class),
+                            RVCreater.createParagraphIsRV (CoreAnnotations.IsItalicAnnotation.class),
                             RVCreater.createParagraphIsRV(CoreAnnotations.IsUnderlineAnnotation.class),
                             RVCreater.createParagraphIsRV(CoreAnnotations.IsBoldAnnotation.class),
                             RVCreater.createRVFromAnnotation(CoreAnnotations.IsAnchorAnnotation.class),
