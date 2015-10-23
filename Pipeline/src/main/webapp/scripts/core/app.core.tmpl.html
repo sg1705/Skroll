@@ -34,8 +34,8 @@
 
     </md-toolbar>
 
-    <md-content ng-class="{'sk-lhs-search-hover': lhsCtrl.smodel.hover, 'sk-lhs-hover': !lhsCtrl.smodel.hover}" md-scroll-y flex class="md-padding" ng-controller="LHSLevelsCtrl as lhsCtrl" ng-hide="lhsCtrl.searchState.searchActive" >
-      <sk-lhs />
+    <md-content md-scroll-y flex class="md-padding" ng-controller="LHSLevelsCtrl as lhsCtrl" ng-hide="lhsCtrl.searchState.searchActive" >
+      <sk-lhs ng-hide="!contentCtrl.documentModel.isTocLoaded"/>
     </md-content>
   <md-content ng-show="contentCtrl.searchState.searchActive">
      <sk-search />

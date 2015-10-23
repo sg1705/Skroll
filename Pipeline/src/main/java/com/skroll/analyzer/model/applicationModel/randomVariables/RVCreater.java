@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -24,6 +25,15 @@ public class RVCreater {
         RVValues.addValueComputer(rv, computer);
         return rv;
     }
+
+    public static RandomVariable createParagraphIsRV(Class wordAnnotation) {
+        ParaIsFeatureComputer computer = new ParaIsFeatureComputer(wordAnnotation);
+        RandomVariable rv = new RandomVariable(2, "paraIs" + wordAnnotation.getSimpleName());
+        RVValues.addValueComputer(rv, computer);
+        return rv;
+    }
+
+
 
     static Class annotationType(Class ann) {
         Class c = null;
@@ -85,6 +95,28 @@ public class RVCreater {
         RVValues.addValueComputer(rv, computer);
         return rv;
     }
+
+    /**
+     * Creating a negation RV from a RV. Only works for binary RVs.
+     * @param rv  original RV.
+     * @return negationRV
+     */
+    public static RandomVariable createNegationRV(RandomVariable rv) {
+        RandomVariable negationgRv = new RandomVariable(2, "not_"+rv.getName());
+        RVValues.addNegationRV(negationgRv, rv);
+        return negationgRv;
+    }
+
+
+    public static List<RandomVariable> addNegationRVs(List<RandomVariable> rvs){
+        List<RandomVariable> newRvs = new LinkedList<>();
+        for (RandomVariable rv: rvs){
+            newRvs.add( createNegationRV(rv));
+        }
+        newRvs.addAll(rvs);
+        return newRvs;
+    }
+
 
     public static RandomVariable createWordsRVWithComputer(RVWordsComputer computer, String name) {
         RandomVariable rv = new RandomVariable(0, name);

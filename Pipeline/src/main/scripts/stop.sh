@@ -8,6 +8,6 @@ if [ $PROCESS_NUM -eq 0 ];
                 echo "No Skroll Server is running..."
         else
                 echo "stopping Skroll Server"
-                ps -ef | grep $PROCESS_NAME |grep -v "grep" | awk '{print $2}' | xargs kill
+                ps -ef | grep $PROCESS_NAME |grep -v "grep" | awk '{print $2}' | xargs sudo kill
                 echo "Skroll Server stopped"
         fi

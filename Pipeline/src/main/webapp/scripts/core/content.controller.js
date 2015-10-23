@@ -51,6 +51,8 @@
       }
     };
 
+    documentModel.clearToc();
+
   }
 
 })();

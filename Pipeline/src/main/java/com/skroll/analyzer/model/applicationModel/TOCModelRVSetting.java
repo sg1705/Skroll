@@ -23,21 +23,26 @@ public class TOCModelRVSetting extends ModelRVSetting {
             RVCreater.createRVFromAnnotation(CoreAnnotations.IsUnderlineAnnotation.class)
     );
     static final List<RandomVariable> DEFAULT_PARA_FEATURE_VARS = Arrays.asList(
-            RVCreater.createDiscreteRVWithComputer(new NumberTokensComputer(), "numTokens")
+            RVCreater.createDiscreteRVWithComputer(new NumberTokensComputer(), "numTokens"),
+            RVCreater.createDiscreteRVWithComputer(new IsParaNumberComputer(), "isParaNumber"),
+            RVCreater.createDiscreteRVWithComputer(new EndsWithNumberComputer(), "paraEndsWithNumber")
     );
-    static final List<RandomVariable> DEFAULT_SHARED_PARA_FEATURE_VARS = Arrays.asList(
-            RVCreater.createDiscreteRVWithComputer(new NotInTableRVComputer(), "notInTable"),
-            RVCreater.createDiscreteRVWithComputer(new StartsWithNumberComputer(), "startsWithNumber"),
-            RVCreater.createDiscreteRVWithComputer(new EndsWithNumberComputer(), "endsWithNumber"),
-            RVCreater.createDiscreteRVWithComputer(new IsInUserTOCRVComputer(), "inUserTOC"),
-            RVCreater.createParagraphStartsWithRV(CoreAnnotations.IsItalicAnnotation.class),
-            RVCreater.createParagraphStartsWithRV(CoreAnnotations.IsUnderlineAnnotation.class),
-            RVCreater.createParagraphStartsWithRV(CoreAnnotations.IsBoldAnnotation.class),
-            RVCreater.createRVFromAnnotation(CoreAnnotations.IsAnchorAnnotation.class),
-            RVCreater.createRVFromAnnotation(CoreAnnotations.IsHrefAnnotation.class),
-            RVCreater.createRVFromAnnotation(CoreAnnotations.IsUpperCaseAnnotation.class),
-            RVCreater.createRVFromAnnotation(CoreAnnotations.IsCenterAlignedAnnotation.class)
-    );
+    static List<RandomVariable> DEFAULT_SHARED_PARA_FEATURE_VARS =
+            RVCreater.addNegationRVs(
+                    Arrays.asList(
+                            RVCreater.createDiscreteRVWithComputer(new StartsWithNumberComputer(), "paraStartsWithNumber"),
+                            RVCreater.createDiscreteRVWithComputer(new NotInTableRVComputer(), "notInTable"),
+                            RVCreater.createParagraphIsRV(CoreAnnotations.IsItalicAnnotation.class),
+                            RVCreater.createParagraphIsRV(CoreAnnotations.IsUnderlineAnnotation.class),
+                            RVCreater.createParagraphIsRV(CoreAnnotations.IsBoldAnnotation.class),
+                            RVCreater.createRVFromAnnotation(CoreAnnotations.IsAnchorAnnotation.class),
+                            RVCreater.createRVFromAnnotation(CoreAnnotations.IsHrefAnnotation.class),
+                            RVCreater.createRVFromAnnotation(CoreAnnotations.IsUpperCaseAnnotation.class),
+                            RVCreater.createRVFromAnnotation(CoreAnnotations.IsCenterAlignedAnnotation.class)
+
+                    )
+            );
+
     static final List<RandomVariable> DEFAULT_WORD_VARS = Arrays.asList(
             RVCreater.createWordsRVWithComputer(new LowerCaseWordsComputer(), "lowerCaseWords"),
             RVCreater.createWordsRVWithComputer(new FirstWordComputer(), "firstWord"),
@@ -95,7 +100,7 @@ public class TOCModelRVSetting extends ModelRVSetting {
 
     @Override
     protected void initializeStrategies() {
-        this.postProcessFunctions.add(DocProcessor::annotateProcessParaWithTOCMatch);
+//        this.postProcessFunctions.add(DocProcessor::annotateProcessParaWithTOCMatch);
         ManagedCategoryStrategy managedCategoryStrategy = new DefaultManagedCategoryStrategy();
         UnManagedCategoryStrategy unManagedCategoryStrategy = new DefaultUnManagedCategoryStrategy();
         this.modelClassAndWeightStrategy = new DefaultModelClassAndWeightStrategy(managedCategoryStrategy, unManagedCategoryStrategy);

@@ -36,6 +36,7 @@ module.exports = function() {
         // app js, with no specs
         js: [
             clientApp + '**/*.module.js',
+            clientApp + '**/core.config/*.js',
             clientApp + '**/*.js',
             '!' + clientApp + '**/*.spec.js',
             '!' + clientApp + '**/search/*.js', //@todo: remove this later

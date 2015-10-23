@@ -100,7 +100,7 @@ public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory, 
         try {
             doc = getDocumentCache().getLoadingCache().get(documentId);
         } catch (CacheLoader.InvalidCacheLoadException e){
-            logger.error("doc is not Found in cache: {}", e.getMessage());
+            logger.warn("doc is not Found in cache: {}", e.getMessage());
             return null;
         }
         logger.debug("document map size: {}", getDocumentCache().getLoadingCache().size());
