@@ -21,7 +21,7 @@
                     name="searchInput"
                     autocomplete="off"
                     ng-model="contentCtrl.searchState.searchText"
-                    ng-keydown=""
+                    ng-keydown="contentCtrl.onKeyDown($event)"
                     placeholder="Search"
            />
          </md-input-container>

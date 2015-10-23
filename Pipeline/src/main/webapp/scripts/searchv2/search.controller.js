@@ -32,6 +32,7 @@
     vm.leaveSearchBox = leaveSearchBox;
     vm.searchTextChange = searchTextChange;
     vm.selectedItemChange = selectedItemChange;
+    vm.onKeyDown = searchFactory.onKeyDown;
 
     //////////////////
     $scope.$watch('searchState.searchText', function(searchText) {
@@ -41,6 +42,10 @@
       }
     }, 250); // delay 250 ms
 
+    function onKeyDown() {
+      console.log(arguments);
+    }
+
     function getMatches(searchText) {
       if (!documentModel.lunrIndex) {
         return;
@@ -49,7 +54,7 @@
       var searchResults = documentModel.lunrIndex
         .search(searchText);
 
-      searchResults = searchResults.slice(0, 50);
+      searchResults = searchResults.slice(0, 100);
 
       searchResults = searchResults.sort(function(a, b) {
         return parseInt(a.ref.split('_')[1]) - parseInt(b.ref.split('_')[1]);
@@ -118,7 +123,7 @@
         var searchedItems = [];
 
         results.forEach(function(result) {
-          if (result.ref === header.paragraphId) {
+          if (typeof header !== 'undefined' && result.ref === header.paragraphId) {
             return;
           }
           var resultElement = document.getElementById(result.ref);
@@ -132,7 +137,7 @@
 
         var headerObj = {
           'headerTerm': idx === '-1' ? '' : header.term,
-          'paragraphId': header.paragraphId,
+          'paragraphId': idx === '-1' ? '' : header.paragraphId,
           'isHidden': idx === '-1',
           'searchedItems': searchedItems
         };

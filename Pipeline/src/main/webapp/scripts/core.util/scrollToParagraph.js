@@ -26,13 +26,14 @@
 
     function link(scope, element, attrs) {
       var paragraphId = attrs.scrollToParagraph;
+      var searchText = attrs.searchText;
       var para = $(element).click(function() {
         $analytics.eventTrack(documentModel.documentId, {
           category: 'toc.navClick',
           label: paragraphId
         });
         scrollObserverService.notify(paragraphId);
-        selectionService.scrollToParagraph(paragraphId);
+        selectionService.scrollToParagraph(paragraphId, searchText);
         scope.$apply();
       });
     }

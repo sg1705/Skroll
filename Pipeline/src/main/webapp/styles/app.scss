@@ -314,9 +314,9 @@ sk-lhs {
 }
 .search-surrounting-text-clamp {
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
-  max-height: 42px;
+  //max-height: 40px;
 }
 
 
@@ -328,5 +328,13 @@ sk-lhs {
 
 
 .highlight {
-	color:red;
+	color: #FF6138;
+}
+
+.selected-para-rhs {
+	background-color: #fff7e5;
+}
+
+.searched-text-rhs {
+	color: #FF6138;
 }
