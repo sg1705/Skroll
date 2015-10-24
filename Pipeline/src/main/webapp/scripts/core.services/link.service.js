@@ -10,7 +10,7 @@
 
     //-- private variables
     //context root of API
-    var baseUrl = 'http://k2.skroll.io:8088';
+    var baseUrl = 'http://skroll.io';
 
 
     //-- service definition
