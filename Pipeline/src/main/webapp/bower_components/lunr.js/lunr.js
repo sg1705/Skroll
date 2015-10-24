@@ -25,13 +25,13 @@
  *       this.field('title', 10)
  *       this.field('tags', 100)
  *       this.field('body')
- *       
+ *
  *       this.ref('cid')
- *       
+ *
  *       this.pipeline.add(function () {
  *         // some custom pipeline function
  *       })
- *       
+ *
  *     })
  *
  * @param {Function} config A function that will be called with the new instance
