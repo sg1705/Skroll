@@ -68,7 +68,7 @@ task trainer (type: JavaExec) {
     main = 'com.skroll.trainer.Trainer'
     File workingDir = new File('Pipeline/')
     classpath = sourceSets.main.runtimeClasspath
-    jvmArgs = [ '-Xms1024m', '-Xmx2028m']
+    jvmArgs = [ '-Xms1024m', '-Xmx3028m']
     if(System.getProperty("exec.args") == null) {
         args '-c help'
     }

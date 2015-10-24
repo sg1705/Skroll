@@ -24,7 +24,9 @@ public class TOCModelRVSetting extends ModelRVSetting {
     );
     static final List<RandomVariable> DEFAULT_PARA_FEATURE_VARS = Arrays.asList(
             RVCreater.createDiscreteRVWithComputer(new NumberTokensComputer(), "numTokens"),
-            RVCreater.createDiscreteRVWithComputer(new IsParaNumberComputer(), "isParaNumber")
+            RVCreater.createDiscreteRVWithComputer(new IsParaNumberComputer(), "isParaNumber"),
+            RVCreater.createDiscreteRVWithComputer(new EndsWithAlphaWordComputer(), "endsWithAlphaWord"),
+            RVCreater.createDiscreteRVWithComputer(new IsParaTitleCaseComputer(), "isParaTitleCase")
 //            RVCreater.createDiscreteRVWithComputer(new IsInUserTOCRVComputer(), "inUserTOC"),
 //            RVCreater.createDiscreteRVWithComputer(new StartsWithNumberComputer(), "startsWithNumber")
 //            RVCreater.createDiscreteRVWithComputer(new EndsWithNumberComputer(), "endsWithNumber"),
@@ -33,8 +35,10 @@ public class TOCModelRVSetting extends ModelRVSetting {
     static List<RandomVariable> DEFAULT_SHARED_PARA_FEATURE_VARS =
             RVCreater.addNegationRVs(
                     Arrays.asList(
-                            RVCreater.createDiscreteRVWithComputer(new StartsWithNumberComputer(), "paraStartsWithNumber"),
-                            RVCreater.createDiscreteRVWithComputer(new NotInTableRVComputer(), "notInTable"),
+                            RVCreater.createDiscreteRVWithComputer(new StartsWithNumberComputer(), "paraStartsWithNumber_S"),
+                            RVCreater.createDiscreteRVWithComputer(new NotInTableRVComputer(), "notInTable_S"),
+                            RVCreater.createDiscreteRVWithComputer(new IsParaTitleCaseComputer(), "isParaTitleCase_S"),
+                            RVCreater.createDiscreteRVWithComputer(new EndsWithAlphaWordComputer(), "endsWithAlphaWord_S"),
                             RVCreater.createParagraphIsRV (CoreAnnotations.IsItalicAnnotation.class),
                             RVCreater.createParagraphIsRV(CoreAnnotations.IsUnderlineAnnotation.class),
                             RVCreater.createParagraphIsRV(CoreAnnotations.IsBoldAnnotation.class),
@@ -49,7 +53,8 @@ public class TOCModelRVSetting extends ModelRVSetting {
     static final List<RandomVariable> DEFAULT_WORD_VARS = Arrays.asList(
             RVCreater.createWordsRVWithComputer(new LowerCaseWordsComputer(), "lowerCaseWords"),
             RVCreater.createWordsRVWithComputer(new FirstWordComputer(), "firstWord"),
-            RVCreater.createWordsRVWithComputer(new LastWordComputer(), "lastWord")
+            RVCreater.createWordsRVWithComputer(new LastWordComputer(), "LastWord"),
+            RVCreater.createWordsRVWithComputer(new LastAlphaWordComputer(), "lastAlphaWord")
     );
 
     public TOCModelRVSetting(List<Integer> categoryIds, List<Integer> lowLevelCategoryIds) {

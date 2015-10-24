@@ -19,7 +19,7 @@
       "description": "no description"
     }, {
       "key": "trainer.benchmark",
-      "active": false,
+      "active": true,
       "name": "flag for fetching benchmark score",
       "description": "no description"
     }, {
