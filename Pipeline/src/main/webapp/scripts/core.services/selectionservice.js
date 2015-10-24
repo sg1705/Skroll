@@ -72,8 +72,8 @@
           withinRange: searchScopeRange
         };
 
-        range.selectNodeContents(document.body);
-        searchResultApplier.undoToRange(range);
+        //range.selectNodeContents(document.body);
+        //searchResultApplier.undoToRange(range);
         if (typeof selectedText !== 'undefined') {
           var escapedSearcedText = selectedText.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
           var searchTerm = new RegExp('\\b(' + escapedSearcedText + ')\\b', 'ig');
