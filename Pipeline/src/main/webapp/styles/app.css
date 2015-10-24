@@ -193,13 +193,16 @@ sk-lhs .toc .level-2 {
     margin-right: 150px;
     border-top-style: dashed; }
 
-.search-surrounting-text-container {
-  width: 250px;
-  overflow: hidden; }
-
-.search-surrounting-text-clamp {
+.search-results-text-clamp {
+  overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical; }
+
+.search-header-text-clamp {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical; }
 
 .md-whiteframe-1dp {
@@ -217,4 +220,4 @@ sk-lhs .toc .level-2 {
   color: #FF6138; }
 
 .selected-list-item {
-  background-color: whitesmoke; }
+  background-color: gainsboro; }

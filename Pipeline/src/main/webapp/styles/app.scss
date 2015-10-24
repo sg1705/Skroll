@@ -308,22 +308,24 @@ sk-lhs {
 
 
 // Borrowed from http://stackoverflow.com/questions/6222616/with-css-use-for-overflowed-block-of-multi-lines
-.search-surrounting-text-container {
-  width: 250px;
+.search-results-text-clamp {
   overflow: hidden;
-}
-.search-surrounting-text-clamp {
   display: -webkit-box;
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
-  //max-height: 40px;
+}
+.search-header-text-clamp {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
 }
 
 
 .md-whiteframe-1dp {
   background: #fff;
   margin: 30px;
-  height: 100px; 
+  height: 100px;
 }
 
 
@@ -340,5 +342,5 @@ sk-lhs {
 }
 
 .selected-list-item {
-	background-color: whitesmoke;
+	background-color: gainsboro;
 }

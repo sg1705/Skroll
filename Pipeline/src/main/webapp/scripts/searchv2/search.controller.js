@@ -40,6 +40,10 @@
     vm.doneTypingInterval = 50;
     vm.doneTyping = doneTyping;
 
+    vm.settledSearchTimer;
+    vm.settledSearchInterval = 2000;
+    vm.settledSearch = settledSearch;
+
     //////////////////
     // $scope.$watch('searchState.searchText', _.debounce(function(searchText) {
     //   $scope.$apply(function() {
@@ -56,7 +60,8 @@
         event.stopPropagation();
       }
       //clearTimeout(vm.typingTimer);
-      $timeout.cancel(vm.typingTimer)
+      $timeout.cancel(vm.typingTimer);
+      $timeout.cancel(vm.settledSearchTimer);
 
       if (event.keyCode === 40 || event.keyCode === 38) {
         var prevSelectedIndex = vm.searchState.currSelectedIndex;
@@ -98,16 +103,28 @@
       }
     }
 
+    //user is "finished typing," for seme time.
+    function settledSearch() {
+      var searchText = vm.searchState.searchText;
+      console.log('Settled on search after '+vm.settledSearchInterval+' ms:' + searchText);
+    }
+
     function onKeyUp(event, searchText) {
       if (event.keyCode === 40 || event.keyCode === 38) {
         event.preventDefault();
         event.stopPropagation();
         return;
       }
+      if (searchText === '') {
+        return;
+      }
+      vm.searchState.currSelectedIndex = -1;
       vm.searchState.searchText = searchText;
       //clearTimeout(vm.typingTimer);
-      $timeout.cancel(vm.typingTimer)
+      $timeout.cancel(vm.typingTimer);
       vm.typingTimer = $timeout(vm.doneTyping, vm.doneTypingInterval);
+      $timeout.cancel(vm.settledSearchTimer)
+      vm.settledSearchTimer = $timeout(vm.settledSearch, vm.settledSearchInterval);
     }
 
     function onClick(event) {
@@ -242,7 +259,7 @@
 
     function getSurroundingText(paragraphText, searchString) {
       var possibleWordsBefore = 2;
-      var possibleWordsAfter = 16;
+      var possibleWordsAfter = 24;
       var regexStr = '((?:[\\w]*\\s*){' + possibleWordsBefore + '}' +
         searchString + '(?:\\s*[\\w,-\\.]*){' + possibleWordsAfter + '})';
       var regex = new RegExp(regexStr, 'i');
