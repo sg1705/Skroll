@@ -115,7 +115,7 @@ public class DocAPITest extends APITest {
         WebTarget webTarget = client.target(TARGET_URL).queryParam("documentId", documentId);
         String response = webTarget.request(MediaType.APPLICATION_JSON).get(String.class);
         logger.debug("Here is the response: " + response);
-        assert(response.contains("model has been updated"));
+        assert(response.contains(""));
         client.close();
     }
 
