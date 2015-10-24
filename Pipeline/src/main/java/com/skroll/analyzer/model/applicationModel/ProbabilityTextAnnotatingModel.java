@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
 
     private static final int DEFAULT_NUM_ITERATIONS = 1;
-    private static final double[] DEFAULT_ANNOTATING_THRESHOLD = new double[]{0, .999999, 0.99999};
+    private static final double[] DEFAULT_ANNOTATING_THRESHOLD = new double[]{0, .999999, 0.99999, 0.99999};
     List<CoreMap> paragraphs;
     // todo: should probably store paragraphs, otherwise, need to recreate it everytime when model has new observations
     List<CoreMap> processedParagraphs = new ArrayList<>();
@@ -169,6 +169,7 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
             }
 
             BNInference.normalizeLog(paragraphCategoryBelief[p]);
+            increaseWeight(paragraphCategoryBelief[p],1 );
         }
 
     }
@@ -184,6 +185,8 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
             nbmnModel.setMultiNodesObservation(paraFeatureValsExistAtDocLevel[pi]);
 
             for (int f = 0; f < nbmnConfig.getFeatureExistsAtDocLevelVarList().size(); f++) {
+
+                if (modelRVSetting.disabledParaDocFeatures[f]) continue;
                 if (paraFeatureValsExistAtDocLevel[pi][f] == -1) continue;
 
                 double[][] messageFromDocFeature = new double[documentFeatureBelief[f].length][];
@@ -233,6 +236,12 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
 
     }
 
+    void increaseWeight(double[] belief, int weight){
+        for (int i=0; i<belief.length; i++){
+            belief[i]*=weight;
+        }
+    }
+
     void passMessageToDocumentFeatures() {
         int[][] allParaDocFeatures = data.getParaDocFeatures();
         List<List<DiscreteNode>> dfna = nbmnModel.getDocumentFeatureNodes();
@@ -257,6 +266,7 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
             nbmnModel.setMultiNodesObservation(allParaDocFeatures[pi]);
 
             for (int f = 0; f < nbmnConfig.getFeatureExistsAtDocLevelVarList().size(); f++) {
+                if (modelRVSetting.disabledParaDocFeatures[f]) continue;
                 if (allParaDocFeatures[pi][f] == -1) continue;
                 double[] messageFromParaCategory = paragraphCategoryBelief[p].clone();
                 for (int i = 0; i < messageFromParaCategory.length; i++)

@@ -7,6 +7,7 @@
 				"resources",
 				"build",
 				"node_modules",
+				"bower_components",
 				"gradle",
 				".idea",
 				".gradle",

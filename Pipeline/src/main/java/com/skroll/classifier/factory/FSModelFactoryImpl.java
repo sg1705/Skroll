@@ -64,7 +64,7 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
 
         if (modelRVSetting instanceof TOCModelRVSetting) {
             TrainingDocumentTOCAnnotatingModel tmpModel =
-                    (TrainingDocumentTOCAnnotatingModel) createModel(modelId, modelRVSetting);
+                    (TrainingDocumentTOCAnnotatingModel) getTrainingModel(modelId, modelRVSetting);
             tmpModel.updateWithDocumentAndWeight(document);
             bniModel = new ProbabilityDocumentTOCAnnotatingModel(
                     modelId, tmpModel.getNbmnModel(), tmpModel.getHmm(),
@@ -72,7 +72,7 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
                     document, (TOCModelRVSetting) modelRVSetting);
         } else {
             TrainingTextAnnotatingModel tmpModel =
-                    createModel(modelId, modelRVSetting);
+                    getTrainingModel(modelId, modelRVSetting);
             tmpModel.updateWithDocumentAndWeight(document);
             bniModel = new ProbabilityTextAnnotatingModel(
                     tmpModel.getNbmnModel(), tmpModel.getHmm(),
@@ -80,18 +80,16 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
         }
 
         bniModel.annotateParagraphs();
-        //printBelieves(bniModel, document);
-
         return bniModel;
     }
 
     @Override
-    public ProbabilityTextAnnotatingModel getBNIModel(int modelId, ModelRVSetting modelRVSetting, Document document ) {
+    public ProbabilityTextAnnotatingModel getBNIModel(int modelId, ModelRVSetting modelRVSetting, Document document) {
         ProbabilityTextAnnotatingModel bniModel;
 
         if (modelRVSetting instanceof TOCModelRVSetting) {
             TrainingDocumentTOCAnnotatingModel tmpModel =
-                    (TrainingDocumentTOCAnnotatingModel) createModel(modelId, modelRVSetting);
+                    (TrainingDocumentTOCAnnotatingModel) getTrainingModel(modelId, modelRVSetting);
 
             bniModel = new ProbabilityDocumentTOCAnnotatingModel(
                     modelId, tmpModel.getNbmnModel(), tmpModel.getHmm(),
@@ -99,7 +97,7 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
                     document, (TOCModelRVSetting) modelRVSetting);
         } else {
             TrainingTextAnnotatingModel tmpModel =
-                    createModel(modelId, modelRVSetting);
+                    getTrainingModel(modelId, modelRVSetting);
 
             bniModel = new ProbabilityTextAnnotatingModel(
                     tmpModel.getNbmnModel(), tmpModel.getHmm(),

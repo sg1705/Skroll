@@ -21,7 +21,8 @@
     //-- private variables
     var searchText = '',
       searchActive = false,
-      searchResults = [];
+      searchResults = [],
+      currSelectedIndex = -1;
 
     //-- service definition
     var service = {
@@ -29,6 +30,7 @@
       searchState: {
         searchText: searchText,
         searchActive: searchActive,
+        currSelectedIndex: currSelectedIndex,
         clear: clear
       },
       searchResults: searchResults

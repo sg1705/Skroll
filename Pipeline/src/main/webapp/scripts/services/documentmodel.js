@@ -9,15 +9,22 @@
  */
 
 var documentModel = {
-  targetHtml: "",
+  targetHtml: '',
   isDocAvailable: false,
   isProcessing: false,
-  fileName: "",
-  selectedParagraphId: "",
-  documentId: "",
+  fileName: '',
+  selectedParagraphId: '',
+  documentId: '',
   isPartiallyParsed: false,
-  url: "",
-  lunrIndex: null
+  url: '',
+  lunrIndex: null,
+  isTocLoaded: false,
+
+  clearToc: function() {
+    this.isTocLoaded = false;
+  },
+
+
 };
 
 
