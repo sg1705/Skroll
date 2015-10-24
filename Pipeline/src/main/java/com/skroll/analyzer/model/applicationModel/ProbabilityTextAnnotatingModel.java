@@ -169,6 +169,7 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
             }
 
             BNInference.normalizeLog(paragraphCategoryBelief[p]);
+            increaseWeight(paragraphCategoryBelief[p],1 );
         }
 
     }
@@ -233,6 +234,12 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
             BNInference.normalizeLog(belief);
         }
 
+    }
+
+    void increaseWeight(double[] belief, int weight){
+        for (int i=0; i<belief.length; i++){
+            belief[i]*=weight;
+        }
     }
 
     void passMessageToDocumentFeatures() {
