@@ -84,6 +84,7 @@ md-sidenav#navframe.md-locked-open {
 *  Landing search
 */
 .sk-landing-search {
+  background-color: #e0e0e0;
   width: 100%;
   /*background-color: rgb(246, 246, 246);*/ }
   @media (min-width: 960px) {

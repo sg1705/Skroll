@@ -96,8 +96,8 @@ public class QueryProcessor {
         }
         //rejoin all tokens
         String newToken = Joiner.on(' ').join(newTokens);
-        String startYear = "";
-        String endYear = "";
+        String startYear = "1994";
+        String endYear = "2015";
         //process year
         if (year.size() == 1) {
             startYear = year.get(0).toString();
