@@ -300,8 +300,13 @@ function processTextNode(index, element) {
 }
 
 function processTableText(tableElement) {
-    var chunkText = getTextFromTable(tableElement);
-    createChunk(chunkText, tableElement);
+//    var chunkText = getTextFromTable(tableElement);
+//    createChunk(chunkText, tableElement);
+    var textNodesInTable = getTextNodesFromTable(tableElement);
+    $.each(textNodesInTable, function(index, node) {
+          processTextNode(index, node);
+    });
+
 }
 
 function createChunk(chunkText, element) {
@@ -312,7 +317,6 @@ function createChunk(chunkText, element) {
         isChunkRequired = true;
         isFirstChunkOfPara = false;
     }
-
     if (isBold(element.parentNode)) {
         newChunk[IS_BOLD_ANNOTATION] = true;
         isChunkRequired = true;
