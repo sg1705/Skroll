@@ -5,6 +5,9 @@ $sm-width: 600px;
 $md-width: 960px;
 $lg-width: 1200px;
 
+* {
+	outline: none;
+}
 
 @mixin phone {
   @media (max-width: #{$sm-width - 1px}) {
