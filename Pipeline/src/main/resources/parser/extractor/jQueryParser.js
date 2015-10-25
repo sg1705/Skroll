@@ -300,12 +300,16 @@ function processTextNode(index, element) {
 }
 
 function processTableText(tableElement) {
-//    var chunkText = getTextFromTable(tableElement);
-//    createChunk(chunkText, tableElement);
     var textNodesInTable = getTextNodesFromTable(tableElement);
-    $.each(textNodesInTable, function(index, node) {
-          processTextNode(index, node);
-    });
+    // if nodes are less than 10
+    if (textNodesInTable.length <= 10) {
+        $.each(textNodesInTable, function(index, node) {
+              processTextNode(index, node);
+        });
+    } else {
+        var chunkText = getTextFromTable(tableElement);
+        createChunk(chunkText, tableElement);
+    }
 
 }
 
