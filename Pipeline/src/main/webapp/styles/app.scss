@@ -353,3 +353,28 @@ sk-lhs {
 .selected-list-item {
 	background-color: gainsboro;
 }
+
+
+/*
+* Toolbar
+*/
+md-toolbar {
+
+	.sk-logo  {
+
+		cursor: pointer;
+
+		@include desktop {
+			margin-left: 400px;	
+		};
+		
+		@include tablet {
+			margin: auto;
+		};
+
+		@include phone {
+			margin: auto;
+		};
+	}
+
+}

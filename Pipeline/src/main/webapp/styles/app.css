@@ -224,4 +224,19 @@ sk-lhs .toc .level-2 {
 .selected-list-item {
   background-color: gainsboro; }
 
+/*
+* Toolbar
+*/
+md-toolbar .sk-logo {
+  cursor: pointer; }
+  @media (min-width: 960px) {
+    md-toolbar .sk-logo {
+      margin-left: 400px; } }
+  @media (min-width: 600px) and (max-width: 959px) {
+    md-toolbar .sk-logo {
+      margin: auto; } }
+  @media (max-width: 599px) {
+    md-toolbar .sk-logo {
+      margin: auto; } }
+
 /*# sourceMappingURL=app.css.map */
