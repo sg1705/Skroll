@@ -37,7 +37,7 @@ public class BoldAnnotationTest extends TestCase {
             }
         }
         System.out.println("Total number of bold words:" + count);
-        assert ( count == 1);
+        assert ( count == 2);
     }
 
 }
