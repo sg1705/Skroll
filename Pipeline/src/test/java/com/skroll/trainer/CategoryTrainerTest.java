@@ -26,4 +26,9 @@ public class CategoryTrainerTest {
         CategoryTrainer categoryTrainer = new CategoryTrainer("build/resources/main/testDocuments/");
         categoryTrainer.checkPreEvaluatedFile();
     }
+    @Test
+    public void testFindTrainingDoc() {
+        CategoryTrainer categoryTrainer = new CategoryTrainer("/Users/saurabhagarwal/IdeaProjects/data/preEvaluated/");
+        categoryTrainer.findTrainingDoc();
+    }
 }

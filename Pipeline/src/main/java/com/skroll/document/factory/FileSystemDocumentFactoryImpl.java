@@ -28,6 +28,7 @@ public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory, 
     protected Configuration configuration;
     protected String folder;
     protected int cacheSize;
+
     public Document load(String documentId) throws Exception {
             Document doc = null;
             String jsonString;
@@ -61,6 +62,8 @@ public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory, 
                 getSaveLaterDocumentId().remove(key);
             }
         }
+        // call explicitly to cleanup the guava cache
+        getDocumentCache().getLoadingCache().cleanUp();
     }
 
     /**

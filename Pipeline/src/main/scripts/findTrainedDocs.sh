@@ -1,0 +1,2 @@
+# To run the command line utility.
+java -Xms4g -Xmx4g -XX:MaxGCPauseMillis=1000 -cp .:config/:Pipeline-all-1.0.jar -Dlog4j.configuration=config/log4j.xml -Dprocess.name=trainer com.skroll.trainer.Trainer $*
