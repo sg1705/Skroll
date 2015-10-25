@@ -49,11 +49,11 @@ md-toast.skContextMenu {
 **/
 #content {
   /*	min-width: 600px;
-	width    : calc(80% + 120px);
-	max-width: 900px;
-	padding-left: 7.5%;
-	padding-right: 6%;
-*/ }
+  	width    : calc(80% + 120px);
+  	max-width: 900px;
+  	padding-left: 7.5%;
+  	padding-right: 6%;
+  */ }
   @media (min-width: 960px) {
     #content {
       min-width: 600px;
@@ -117,6 +117,8 @@ md-sidenav#navframe.md-locked-open {
     .sk-landing-search .search-frame .search-icon {
       width: 45px;
       height: 45px; }
+  .sk-landing-search .sk-logo {
+    margin-bottom: 50px; }
   .sk-landing-search .list {
     padding-top: 50px;
     width: 700px; }
@@ -167,14 +169,11 @@ sk-lhs ul.toc {
   margin: 0px;
   list-style: none;
   padding: 0; }
-
 sk-lhs .toc li {
   list-style-position: inside; }
-
 sk-lhs .toc :hover {
   color: blue;
   cursor: pointer; }
-
 sk-lhs .toc .level-1 {
   margin-bottom: 5px;
   font-size: 16px;
@@ -185,7 +184,6 @@ sk-lhs .toc .level-1 {
     border-color: rgba(32, 32, 32, 0.45); }
   sk-lhs .toc .level-1 .term {
     margin-left: 7px; }
-
 sk-lhs .toc .level-2 {
   padding-left: 15px;
   font-size: 14px;
@@ -225,3 +223,5 @@ sk-lhs .toc .level-2 {
 
 .selected-list-item {
   background-color: gainsboro; }
+
+/*# sourceMappingURL=app.css.map */
