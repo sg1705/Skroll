@@ -232,7 +232,9 @@ sk-lhs .toc .level-2 {
 * Toolbar
 */
 md-toolbar .sk-logo {
-  cursor: pointer; }
+  cursor: pointer;
+  width: 120px;
+  height: 35px; }
   @media (min-width: 960px) {
     md-toolbar .sk-logo {
       margin-left: 400px; } }
@@ -242,5 +244,11 @@ md-toolbar .sk-logo {
   @media (max-width: 599px) {
     md-toolbar .sk-logo {
       margin: auto; } }
+@media (min-width: 600px) and (max-width: 959px) {
+  md-toolbar #sk-toolbar-chromeextension-button {
+    display: none; } }
+@media (max-width: 599px) {
+  md-toolbar #sk-toolbar-chromeextension-button {
+    display: none; } }
 
 /*# sourceMappingURL=app.css.map */

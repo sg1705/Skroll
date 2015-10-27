@@ -15,7 +15,7 @@
     .controller('ToolbarCtrl', ToolbarCtrl);
 
   /* @ngInject */
-  function ToolbarCtrl($mdSidenav, documentModel, $location, linkService, $mdDialog) {
+  function ToolbarCtrl($mdSidenav, documentModel, $location, linkService, $mdDialog, $mdMedia) {
 
     //-- private variables
     var vm = this;

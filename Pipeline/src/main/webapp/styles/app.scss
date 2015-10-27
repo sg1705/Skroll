@@ -368,6 +368,8 @@ md-toolbar {
 	.sk-logo  {
 
 		cursor: pointer;
+		width: 120px ;
+		height: 35px ;
 
 		@include desktop {
 			margin-left: 400px;	
@@ -380,6 +382,21 @@ md-toolbar {
 		@include phone {
 			margin: auto;
 		};
+	}
+
+	#sk-toolbar-chromeextension-button {
+		@include desktop {
+			
+		};
+		
+		@include tablet {
+			display: none;
+		};
+
+		@include phone {
+			display: none;
+		};
+
 	}
 
 }
