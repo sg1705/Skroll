@@ -300,8 +300,17 @@ function processTextNode(index, element) {
 }
 
 function processTableText(tableElement) {
-    var chunkText = getTextFromTable(tableElement);
-    createChunk(chunkText, tableElement);
+    var textNodesInTable = getTextNodesFromTable(tableElement);
+    // if nodes are less than 10
+    if (textNodesInTable.length <= 10) {
+        $.each(textNodesInTable, function(index, node) {
+              processTextNode(index, node);
+        });
+    } else {
+        var chunkText = getTextFromTable(tableElement);
+        createChunk(chunkText, tableElement);
+    }
+
 }
 
 function createChunk(chunkText, element) {
@@ -312,7 +321,6 @@ function createChunk(chunkText, element) {
         isChunkRequired = true;
         isFirstChunkOfPara = false;
     }
-
     if (isBold(element.parentNode)) {
         newChunk[IS_BOLD_ANNOTATION] = true;
         isChunkRequired = true;
