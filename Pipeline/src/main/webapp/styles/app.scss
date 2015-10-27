@@ -5,6 +5,9 @@ $sm-width: 600px;
 $md-width: 960px;
 $lg-width: 1200px;
 
+* {
+	outline: none;
+}
 
 @mixin phone {
   @media (max-width: #{$sm-width - 1px}) {
@@ -64,6 +67,12 @@ md-toast.skContextMenu {
 		min-width: $icon-width;
 		margin   : 6px 0px;
 	}
+
+	transition-property: all;
+  transition-duration: 0.1s;
+  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition-delay: initial;
+
 
 }
 
@@ -150,7 +159,7 @@ md-sidenav#navframe.md-locked-open {
 	};
 
 	background-color: #e0e0e0;
-	
+
 	width: 100%;
 	/*background-color: rgb(246, 246, 246);*/
 

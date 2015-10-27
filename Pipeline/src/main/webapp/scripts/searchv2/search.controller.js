@@ -58,10 +58,11 @@
       if (event.keyCode === 40 || event.keyCode === 38) {
         event.preventDefault();
         event.stopPropagation();
-      }
+      } else {
       //clearTimeout(vm.typingTimer);
-      $timeout.cancel(vm.typingTimer);
-      $timeout.cancel(vm.settledSearchTimer);
+        $timeout.cancel(vm.typingTimer);
+        $timeout.cancel(vm.settledSearchTimer);
+      }
 
       if (event.keyCode === 40 || event.keyCode === 38) {
         var prevSelectedIndex = vm.searchState.currSelectedIndex;
@@ -90,7 +91,8 @@
             })()
           }, 'fast');
         }
-        listItem.click();
+        // listItem.click();
+        selectionService.scrollToParagraph(listItem.attr('scroll-to-paragraph'), vm.searchState.searchText);
       }
     }
 
@@ -128,6 +130,9 @@
     }
 
     function onClick(event) {
+      if (typeof event === 'undefined') {
+        return;
+      }
       vm.searchListItems = $('sk-search .highlight').parent();
       var lhsContent = $('sk-search').parent();
       var listItem = $(event.target);

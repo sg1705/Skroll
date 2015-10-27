@@ -1,5 +1,6 @@
 package com.skroll.document;
 
+import com.google.common.base.CharMatcher;
 import com.google.common.io.Resources;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.Parser;
@@ -162,13 +163,19 @@ public class DocumentHelper {
             CoreMap map1 = doc1.getParagraphs().get(ii);
             CoreMap map2 = doc2.getParagraphs().get(ii);
             //check if text is the same
-            if (!map1.getText().equals(map2.getText())) {
+            String map1Text = CharMatcher.ASCII.retainFrom(CharMatcher.JAVA_DIGIT.or(CharMatcher.JAVA_LOWER_CASE).retainFrom(map1.getText()));
+            String map2Text = CharMatcher.ASCII.retainFrom(CharMatcher.JAVA_DIGIT.or(CharMatcher.JAVA_LOWER_CASE).retainFrom(map2.getText()));
+
+            if (!map1Text.trim().equals(map1Text.trim())) {
                 return false;
             }
-            boolean isEqual = map1.equals(map2);
-            if (!isEqual) {
-                return false;
-            }
+
+            // This has been commented because when we add new annotation, it doesn't make sense
+            // to compare the diff
+//            boolean isEqual = map1.equals(map2);
+//            if (!isEqual) {
+//                return false;
+//            }
         }
         //looks good
         return true;

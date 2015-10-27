@@ -102,6 +102,23 @@
           trainerService.fetchProbabilities(documentModel.documentId, LHSModel.smodel.terms);
         }
       }
+
+      flagName = 'trainer.benchmark';
+      flags = featureFlags.get();
+      flag = _.find(flags, function(item) {
+        if (item.key == flagName) {
+          return true;
+        }
+      });
+      if (flag != null) {
+        if (featureFlags.isOn(flag.key)) {
+          featureFlags.disable(flag);
+        } else {
+          featureFlags.enable(flag);
+          trainerService.updateBenchmark();
+        }
+      }
+
     }
 
 

@@ -23,7 +23,8 @@
       mouseDownParaId = '',
       serializedSelection = '',
       serializedParagraphId = '',
-      shortLink = '';
+      shortLink = '',
+      searchSelectionRange = null;
 
     //-- service definition
     var service = {
@@ -34,6 +35,7 @@
       serializedSelection: serializedSelection,
       serializedParagraphId: serializedParagraphId,
       shortLink: shortLink,
+      searchSelectionRange: searchSelectionRange,
 
       //-- service functions
       scrollToParagraph: scrollToParagraph,
@@ -62,6 +64,7 @@
         var searchResultApplier = rangy.createClassApplier('searched-text-rhs');
 
         // Remove existing highlights
+        var prevRange = service.searchSelectionRange;
         var range = rangy.createRange();
         var searchScopeRange = rangy.createRange();
         searchScopeRange.selectNodeContents(para[0]);
@@ -72,8 +75,10 @@
           withinRange: searchScopeRange
         };
 
-        //range.selectNodeContents(document.body);
-        //searchResultApplier.undoToRange(range);
+        //prevRange.selectNodeContents('searched-text-rhs');
+        if( prevRange !== null) {
+          searchResultApplier.undoToRange(prevRange);
+        }
         if (typeof selectedText !== 'undefined') {
           var escapedSearcedText = selectedText.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
           var searchTerm = new RegExp('\\b(' + escapedSearcedText + ')\\b', 'ig');
@@ -83,6 +88,7 @@
             range.collapse(false);
           }
         }
+        service.searchSelectionRange = searchScopeRange;
         SelectionModel.paragraphId = paragraphId;
       }
     }
