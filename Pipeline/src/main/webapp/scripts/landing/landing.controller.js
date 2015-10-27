@@ -57,6 +57,8 @@
 
     function search() {
       if (((vm.searchText == null) || (vm.searchText == "undefined"))) {
+        var searchText = 'Google 10K 2012 2015';
+        $location.path('/search/' + searchText);
         return;
       }
       vm.searchResults = new Array();
