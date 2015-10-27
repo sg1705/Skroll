@@ -18,7 +18,7 @@
    **/
 
   /* @ngInject */
-  function TocCtrl(LHSModel, scrollObserverService, $analytics, $mdSidenav) {
+  function TocCtrl(LHSModel, scrollObserverService, $analytics, $mdSidenav, featureFlags) {
     //-- private variables
     var ctrl = this,
       LHSModel = LHSModel;
