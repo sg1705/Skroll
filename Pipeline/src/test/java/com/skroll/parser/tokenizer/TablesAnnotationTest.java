@@ -10,6 +10,7 @@ import com.skroll.pipeline.util.Utils;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by saurabh on 5/9/15.
@@ -85,6 +86,21 @@ public class TablesAnnotationTest {
         assert ( cols.size() == 7);
         assert ( fragments.size() == 0);
         assert(paraId.equals(paraIdInTable));
+    }
+
+
+    @Test
+    public void testSimpleTablesWithBoldAnnotation() throws Exception {
+        PhantomJsExtractor.TEST_MODE = TestMode.ON;
+        String htmlString = "<table><tr><td></td><td></td></tr><tr><td><b>Only 1 column</b></td><td><b>Only 1 column</b></td></tr></table>";
+        Document htmlDoc= new Document();
+        htmlDoc.setSource(htmlString);
+        htmlDoc = Parser.parseDocumentFromHtml(htmlString);
+
+        //find out how many paragraphs have bold annotation
+        List<CoreMap> paragraphs = htmlDoc.getParagraphs();
+        List<CoreMap> boldParagraphs = paragraphs.stream().filter( p -> p.get(CoreAnnotations.IsBoldAnnotation.class)).collect(Collectors.toList());
+        assert(boldParagraphs.size() == 1);
     }
 
 
