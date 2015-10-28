@@ -189,6 +189,11 @@ md-sidenav#navframe.md-locked-open {
 		}
 	}
 
+	.sk-logo {
+		margin-bottom: 50px;
+	}
+
+
 	.list {
 		padding-top: 50px;
 		width: 700px;
@@ -353,4 +358,45 @@ sk-lhs {
 
 .selected-list-item {
 	background-color: gainsboro;
+}
+
+/*
+* Toolbar
+*/
+md-toolbar {
+
+	.sk-logo  {
+
+		cursor: pointer;
+		width: 120px ;
+		height: 35px ;
+
+		@include desktop {
+			margin-left: 400px;	
+		};
+		
+		@include tablet {
+			margin: auto;
+		};
+
+		@include phone {
+			margin: auto;
+		};
+	}
+
+	#sk-toolbar-chromeextension-button {
+		@include desktop {
+			
+		};
+		
+		@include tablet {
+			display: none;
+		};
+
+		@include phone {
+			display: none;
+		};
+
+	}
+
 }
