@@ -145,6 +145,30 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
         }
     }
 
+    public double[][][] getSecFeatureProbs(int paraIndex){
+        List<Integer> lowerCatIds = ((TOCModelRVSetting) modelRVSetting).getLowLevelCategoryIds();
+        if (lowerCatIds == null) return null;
+
+        List<List<List<CoreMap>>> sectionsList = DocProcessor.createSections(paragraphs, processedParagraphs, getParaCategory());
+        List<List<CoreMap>> sections = sectionsList.get(0);
+        List<List<CoreMap>> processedSections = sectionsList.get(1);
+
+        int sectionNum = 0;
+        for (; sectionNum < sections.size(); sectionNum++){
+            List<CoreMap> paras = sections.get(sectionNum);
+            if (paras.size()==0) continue;
+            int lastParaIndexOfSec = paras.get(paras.size()-1).get(CoreAnnotations.IndexInteger.class);
+            if (lastParaIndexOfSec >= paraIndex) break;
+        }
+        secModel.setParagraphs(sections.get(sectionNum));
+        secModel.setProcessedParagraphs(processedSections.get(sectionNum));
+        secModel.setNumIterations(SEC_NUM_ITERATION);
+        secModel.setAnnotatingThreshold(SEC_ANNOTATING_THRESHOLD);
+        secModel.initialize();
+        secModel.annotateParagraphs();
+
+        return secModel.getDocumentFeatureProbabilities();
+    }
     /**
      * Returns a string representation of the BNI for viewer.
      *
@@ -170,6 +194,18 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
                         Visualizer.toDoubleArrayToMap(this.getDocumentFeatureProbabilities()[ii][jj]));
             }
         }
+
+        double[][][] secFeatureProbs = getSecFeatureProbs(paraIndex);
+
+
+        if (secFeatureProbs != null)
+            for (int ii = 0; ii < secFeatureProbs.length; ii++) {
+                for (int jj = 0; jj < secFeatureProbs[0].length; jj++) {
+                    applicationModelInfo.put(this.secModel.getNbmnConfig().getDocumentFeatureVarList().get(ii).get(jj).getName(),
+                            Visualizer.toDoubleArrayToMap(secFeatureProbs[ii][jj]));
+                }
+            }
+
 
         map.put("applicationModelInfo", applicationModelInfo);
         return super.toVisualMap(map);

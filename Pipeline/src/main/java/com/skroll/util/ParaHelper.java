@@ -14,7 +14,7 @@ public class ParaHelper {
         if (para==null) return "";
         List<Token> tokens = para.getTokens();
         int n = tokens.size();
-        for (int i = n - 1; i > 0; i--) {
+        for (int i = n - 1; i >= 0; i--) {
             String word = tokens.get(i).getText();
             if (WordHelper.isAlphanumeric(word)) return word;
         }
@@ -25,7 +25,7 @@ public class ParaHelper {
         if (para==null) return "";
         List<Token> tokens = para.getTokens();
         int n = tokens.size();
-        for (int i = n - 1; i > 0; i--) {
+        for (int i = n - 1; i >= 0; i--) {
             String word = tokens.get(i).getText();
             if (WordHelper.isAlpha(word)) return word;
         }

@@ -29,8 +29,9 @@ import java.util.stream.Collectors;
  */
 public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
 
-    private static final int DEFAULT_NUM_ITERATIONS = 1;
-    private static final double[] DEFAULT_ANNOTATING_THRESHOLD = new double[]{0, .999999, 0.99999, 0.99999};
+    private static final int DEFAULT_NUM_ITERATIONS = 0;
+//    private static final double[] DEFAULT_ANNOTATING_THRESHOLD = new double[]{0, .999999, 0.99999, 0.99999};
+    private static final double[] DEFAULT_ANNOTATING_THRESHOLD = new double[]{0, .999999, 2, 0.99999}; //disable level 2 annotation in the doc model.
     List<CoreMap> paragraphs;
     // todo: should probably store paragraphs, otherwise, need to recreate it everytime when model has new observations
     List<CoreMap> processedParagraphs = new ArrayList<>();
@@ -124,11 +125,19 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
         paragraphCategoryBelief = new double[numParagraphs][getParaCategory().getFeatureSize()];
         documentFeatureBelief = new double[docFeatures.size()][getParaCategory().getFeatureSize()][2];
 
+        List<CoreMap> observedParas = modelRVSetting.modelClassAndWeightStrategy.getObservedParagraphs(paragraphs);
+        int[][] docFeatureVals = DocProcessor.generateDocumentFeatures(observedParas, data.getParaDocFeatures(), nbmnConfig);
+
         // compute initial beliefs
         List<List<DiscreteNode>> docFeatureNodes = nbmnModel.getDocumentFeatureNodes();
         for (int f = 0; f < paraDocFeatures.size(); f++)
             for (int c = 0; c < getParaCategory().getFeatureSize(); c++)
-                documentFeatureBelief[f][c] = docFeatureNodes.get(f).get(c).getParameters().clone();
+                if (docFeatureVals[f][c] ==-1 )
+                    documentFeatureBelief[f][c] = docFeatureNodes.get(f).get(c).getParameters().clone();
+                else if (docFeatureVals[f][c] == 0)
+                    documentFeatureBelief[f][c] = new double[]{0, Double.NEGATIVE_INFINITY};
+                else if (docFeatureVals[f][c] == 1)
+                    documentFeatureBelief[f][c] = new double[]{Double.NEGATIVE_INFINITY, 0};
 
         List<DiscreteNode> fnl = nbmnModel.getFeatureNodes();
         DiscreteNode categoryNode = nbmnModel.getCategoryNode();
