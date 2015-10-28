@@ -47,7 +47,7 @@
           console.log(response.result.id);
           selectionService.shortLink = response.result.id;
           var mailBody = createEmailText();
-          window.open('mailto:?body=' + mailBody, 'MsgWindow',
+          window.open('mailto:?subject=Email from Skroll.io&' + 'body=' + mailBody, 'MsgWindow',
             'toolbar=no,location=no, status=no,menubar=no,scrollbars=yes,resizable=yes,top=300, left=300,width=550,height=420');
         }, function(reason) {
           $log.error(reason);
@@ -135,7 +135,7 @@
     function createEmailText() {
       var selectedText = selectionService.selectedText;
       var shortLink = selectionService.shortLink;
-      var emailText = shortLink + ' -  ' + selectedText;
+      var emailText = selectedText + ' -  ' + shortLink + '%0A%0A--------%0A Use Skroll.io to view SEC filings';
       return emailText;
     }
 

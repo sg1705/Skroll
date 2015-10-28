@@ -12,7 +12,7 @@
     .directive('skLhs', SkLhs);
 
 
-  function SkLhs() {
+  function SkLhs(featureFlags) {
 
     var directive = {
       templateUrl: 'scripts/toc/toc.tmpl.html',

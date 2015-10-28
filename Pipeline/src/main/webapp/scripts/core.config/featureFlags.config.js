@@ -24,7 +24,7 @@
       "description": "no description"
     }, {
       "key": "googl.shortlink",
-      "active": false,
+      "active": true,
       "name": "flag to create shortlinsk",
       "description": "no description"
     }, {
