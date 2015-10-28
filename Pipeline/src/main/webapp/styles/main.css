@@ -1,11 +1,15 @@
 /**
 Size of the header in toolbar
 **/
+/*
+@todo : to be deleted;
 md-toolbar h1 {
     font-size: 1.0em;
     font-weight: 200;
     margin: auto;
 }
+*/
+
 
 /**
 To configure the list in the sidebar

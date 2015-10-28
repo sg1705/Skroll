@@ -10,7 +10,7 @@
     <div
       ng-if="term.classificationId == 2"
       ng-class="{'md-primary md-warn' : ctrl.smodel.visibleHeaders.indexOf(term.paragraphId) != -1, 'md-primary' : ctrl.smodel.visibleHeaders.indexOf(term.paragraphId) == -1}"
-
+      ng-click="ctrl.tocSelected()"
       scroll-to-paragraph="{{term.paragraphId}}"
       class="level-1">
       <md-divider ng-if="$index != 0"></md-divider>
@@ -22,7 +22,7 @@
       <div class="term">{{term.term | words: 15}}</div>
       <md-progress-linear
         md-mode="determinate" value="{{term.probability}}"
-        feature-flag="trainer.probability">
+        feature-flag='trainer.probability'>
       </md-progress-linear>
     </div>
 

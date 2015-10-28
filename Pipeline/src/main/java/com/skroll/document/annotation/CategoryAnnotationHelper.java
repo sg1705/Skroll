@@ -374,6 +374,13 @@ public class CategoryAnnotationHelper {
             boolean feedback = copyFrom.get(CoreAnnotations.IsTrainerFeedbackAnnotation.class);
             copyInto.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, feedback);
         }
+
+        if (copyFrom.containsKey(CoreAnnotations.SearchIndexAnnotation.class)) {
+            String indexes = copyFrom.get(CoreAnnotations.SearchIndexAnnotation.class);
+            copyInto.set(CoreAnnotations.SearchIndexAnnotation.class, indexes);
+        }
+
+
     }
 
 

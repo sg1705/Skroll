@@ -5,6 +5,9 @@ $sm-width: 600px;
 $md-width: 960px;
 $lg-width: 1200px;
 
+* {
+	outline: none;
+}
 
 @mixin phone {
   @media (max-width: #{$sm-width - 1px}) {
@@ -64,6 +67,12 @@ md-toast.skContextMenu {
 		min-width: $icon-width;
 		margin   : 6px 0px;
 	}
+
+	transition-property: all;
+  transition-duration: 0.1s;
+  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition-delay: initial;
+
 
 }
 
@@ -149,6 +158,7 @@ md-sidenav#navframe.md-locked-open {
 		padding-top: 20px;	
 	};
 
+	background-color: #e0e0e0;
 
 	width: 100%;
 	/*background-color: rgb(246, 246, 246);*/
@@ -178,6 +188,11 @@ md-sidenav#navframe.md-locked-open {
 			height: 45px;
 		}
 	}
+
+	.sk-logo {
+		margin-bottom: 50px;
+	}
+
 
 	.list {
 		padding-top: 50px;
@@ -308,25 +323,80 @@ sk-lhs {
 
 
 // Borrowed from http://stackoverflow.com/questions/6222616/with-css-use-for-overflowed-block-of-multi-lines
-.search-surrounting-text-container {
-  width: 250px;
+.search-results-text-clamp {
   overflow: hidden;
-}
-.search-surrounting-text-clamp {
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
-  max-height: 42px;
+}
+.search-header-text-clamp {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
 }
 
 
 .md-whiteframe-1dp {
   background: #fff;
   margin: 30px;
-  height: 100px; 
+  height: 100px;
 }
 
 
 .highlight {
-	color:red;
+	color: #FF6138;
+}
+
+.selected-para-rhs {
+	background-color: #fff7e5;
+}
+
+.searched-text-rhs {
+	color: #FF6138;
+}
+
+.selected-list-item {
+	background-color: gainsboro;
+}
+
+/*
+* Toolbar
+*/
+md-toolbar {
+
+	.sk-logo  {
+
+		cursor: pointer;
+		width: 120px ;
+		height: 35px ;
+
+		@include desktop {
+			margin-left: 400px;	
+		};
+		
+		@include tablet {
+			margin: auto;
+		};
+
+		@include phone {
+			margin: auto;
+		};
+	}
+
+	#sk-toolbar-chromeextension-button {
+		@include desktop {
+			
+		};
+		
+		@include tablet {
+			display: none;
+		};
+
+		@include phone {
+			display: none;
+		};
+
+	}
+
 }

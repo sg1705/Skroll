@@ -1,4 +1,7 @@
 /* variables */
+* {
+  outline: none; }
+
 /**
 * icons
 **/
@@ -26,7 +29,11 @@ md-toast.skContextMenu {
   min-height: 30px;
   padding-right: 12px;
   padding-left: 12px;
-  background-color: #e0e0e0; }
+  background-color: #e0e0e0;
+  transition-property: all;
+  transition-duration: 0.1s;
+  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition-delay: initial; }
   md-toast.skContextMenu .md-button {
     min-width: 24px;
     margin: 6px 0px; }
@@ -84,6 +91,7 @@ md-sidenav#navframe.md-locked-open {
 *  Landing search
 */
 .sk-landing-search {
+  background-color: #e0e0e0;
   width: 100%;
   /*background-color: rgb(246, 246, 246);*/ }
   @media (min-width: 960px) {
@@ -113,6 +121,8 @@ md-sidenav#navframe.md-locked-open {
     .sk-landing-search .search-frame .search-icon {
       width: 45px;
       height: 45px; }
+  .sk-landing-search .sk-logo {
+    margin-bottom: 50px; }
   .sk-landing-search .list {
     padding-top: 50px;
     width: 700px; }
@@ -189,15 +199,17 @@ sk-lhs .toc .level-2 {
     margin-right: 150px;
     border-top-style: dashed; }
 
-.search-surrounting-text-container {
-  width: 250px;
-  overflow: hidden; }
-
-.search-surrounting-text-clamp {
+.search-results-text-clamp {
+  overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  max-height: 42px; }
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical; }
+
+.search-header-text-clamp {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical; }
 
 .md-whiteframe-1dp {
   background: #fff;
@@ -205,6 +217,38 @@ sk-lhs .toc .level-2 {
   height: 100px; }
 
 .highlight {
-  color: red; }
+  color: #FF6138; }
+
+.selected-para-rhs {
+  background-color: #fff7e5; }
+
+.searched-text-rhs {
+  color: #FF6138; }
+
+.selected-list-item {
+  background-color: gainsboro; }
+
+/*
+* Toolbar
+*/
+md-toolbar .sk-logo {
+  cursor: pointer;
+  width: 120px;
+  height: 35px; }
+  @media (min-width: 960px) {
+    md-toolbar .sk-logo {
+      margin-left: 400px; } }
+  @media (min-width: 600px) and (max-width: 959px) {
+    md-toolbar .sk-logo {
+      margin: auto; } }
+  @media (max-width: 599px) {
+    md-toolbar .sk-logo {
+      margin: auto; } }
+@media (min-width: 600px) and (max-width: 959px) {
+  md-toolbar #sk-toolbar-chromeextension-button {
+    display: none; } }
+@media (max-width: 599px) {
+  md-toolbar #sk-toolbar-chromeextension-button {
+    display: none; } }
 
 /*# sourceMappingURL=app.css.map */

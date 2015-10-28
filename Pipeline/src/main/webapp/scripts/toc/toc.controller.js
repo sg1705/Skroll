@@ -11,14 +11,14 @@
 
   angular
     .module('app.toc')
-    .controller('TocCtrl', ['LHSModel', 'scrollObserverService', TocCtrl]);
+    .controller('TocCtrl', TocCtrl);
 
   /**
    * Controller for the directive
    **/
 
   /* @ngInject */
-  function TocCtrl(LHSModel, scrollObserverService, $analytics) {
+  function TocCtrl(LHSModel, scrollObserverService, $analytics, $mdSidenav, featureFlags) {
     //-- private variables
     var ctrl = this,
       LHSModel = LHSModel;
@@ -30,6 +30,7 @@
 
     //-- public methods
     ctrl.toggleSection = toggleSection;
+    ctrl.tocSelected = tocSelected;
 
     //-- register for notification
     scrollObserverService.register(observeScroll);
@@ -78,6 +79,12 @@
           nearestHeader = headerItems[ii].paragraphId;
         }
         ctrl.smodel.visibleHeaders.push(nearestHeader);
+      }
+    }
+
+    function tocSelected() {
+      if (!$mdSidenav('left').isLockedOpen()) {
+        $mdSidenav('left').close();
       }
     }
 

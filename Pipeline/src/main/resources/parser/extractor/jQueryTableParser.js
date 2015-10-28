@@ -102,3 +102,17 @@ function getTextNodesIn(node, includeWhitespaceNodes) {
     getTextNodes(node);
     return textNodes;
 }
+
+/*
+* Returns all the text nodes in a table
+*/
+function getTextNodesFromTable(tableElement) {
+    var textNodesArray = [];
+    $(tableElement).find('tr').each(function(rowIndex,r) {
+        $(this).find('th, td').each(function(cellIndex, c) {
+            var textNodes = getTextNodesIn(c, false);
+            textNodesArray = textNodesArray.concat(textNodes);
+        });
+    });
+    return textNodesArray;
+}
