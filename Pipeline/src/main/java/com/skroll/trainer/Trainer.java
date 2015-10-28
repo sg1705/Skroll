@@ -251,15 +251,19 @@ public class Trainer {
                     logger.error(" {} document can't be parsed.",doc.getId());
                     continue;
                 }
+                boolean isUserObservationAnnotation = false;
                 for (CoreMap paragraph : doc.getParagraphs()) {
                     if (!paragraph.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)) {
+                        isUserObservationAnnotation = true;
                         break;
                     }
                 }
-                System.out.println(doc.getId());
-                counter++;
+                if (isUserObservationAnnotation) {
+                    System.out.println(doc.getId());
+                    counter++;
+                }
             }
         }
-        System.out.println("Number of trained files" + counter);
+        logger.info("Number of trained files: {}", counter);
     }
 }
