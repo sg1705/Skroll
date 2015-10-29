@@ -67,7 +67,7 @@
       if (event.keyCode === 40 || event.keyCode === 38) {
         var prevSelectedIndex = vm.searchState.currSelectedIndex;
         var lhsContent = $('sk-search').parent();
-        vm.searchListItems = $('sk-search .highlight').parent();
+        vm.searchListItems = $('sk-search .highlight').closest('.search-result-container');
         if (event.keyCode === 40) { //DownArrow
           vm.searchState.currSelectedIndex = Math.min(vm.searchState.currSelectedIndex + 1, vm.searchListItems.length - 1);
         } else if (event.keyCode === 38) { //UpArrow
@@ -81,18 +81,21 @@
         if (event.keyCode === 40) { //DownArrow
           lhsContent.stop(true, true).animate({
             scrollTop: (function() {
-              return lhsContent.scrollTop() + Math.max(0, listItem.height() - (lhsContent.height() - listItem.offset().top) - lhsContent.parent().find('md-toolbar').height());
+              return lhsContent.scrollTop() + Math.max(0, listItem.outerHeight() - (lhsContent.outerHeight() - listItem.offset().top) - lhsContent.parent().find('md-toolbar').outerHeight());
             })()
           }, 'fast');
         } else if (event.keyCode === 38) { //UpArrow
           lhsContent.stop(true, true).animate({
             scrollTop: (function() {
-              return lhsContent.scrollTop() + Math.min(listItem.offset().top - lhsContent.parent().find('md-toolbar').height(), 0);
+              return lhsContent.scrollTop() + Math.min(listItem.offset().top - lhsContent.parent().find('md-toolbar').outerHeight(), 0);
             })()
           }, 'fast');
         }
-        // listItem.click();
-        selectionService.scrollToParagraph(listItem.attr('scroll-to-paragraph'), vm.searchState.searchText);
+        if(listItem.attr('scroll-to-paragraph')) {
+          selectionService.scrollToParagraph(listItem.attr('scroll-to-paragraph'), vm.searchState.searchText);
+        } else {
+          selectionService.scrollToParagraph(listItem.find('[scroll-to-paragraph]').attr('scroll-to-paragraph'), vm.searchState.searchText);
+        }
       }
     }
 
@@ -133,24 +136,26 @@
       if (typeof event === 'undefined') {
         return;
       }
-      vm.searchListItems = $('sk-search .highlight').parent();
+      vm.searchListItems = $('sk-search .highlight').closest('.search-result-container');
       var lhsContent = $('sk-search').parent();
-      var listItem = $(event.target);
-      listItem.toggleClass('selected-list-item', true);
+      var listItem = $(event.target).closest('.search-result-container');
+      if($(event.target).hasClass('highlight') || $(event.target).find('.highlight').length != 0) {
+        listItem.toggleClass('selected-list-item', true);
+      }
       var prevSelectedIndex = vm.searchState.currSelectedIndex;
       vm.searchListItems.eq(prevSelectedIndex).toggleClass('selected-list-item', false);
       var index = vm.searchState.currSelectedIndex = vm.searchListItems.index(listItem);
 
-      if (((listItem.offset().top - lhsContent.parent().find('md-toolbar').height())) < 0) {
+      if (((listItem.offset().top - lhsContent.parent().find('md-toolbar').outerHeight())) < 0) {
         lhsContent.stop(true, true).animate({
           scrollTop: (function() {
-            return lhsContent.scrollTop() + Math.min(listItem.offset().top - lhsContent.parent().find('md-toolbar').height(), 0);
+            return lhsContent.scrollTop() + Math.min(listItem.offset().top - lhsContent.parent().find('md-toolbar').outerHeight(), 0);
           })()
         }, 'fast');
-      } else if (listItem.height() - (lhsContent.height() - listItem.offset().top) - lhsContent.parent().find('md-toolbar').height() > 0) {
+      } else if (listItem.outerHeight() - (lhsContent.outerHeight() - listItem.offset().top) - lhsContent.parent().find('md-toolbar').outerHeight() > 0) {
         lhsContent.stop(true, true).animate({
           scrollTop: (function() {
-            return lhsContent.scrollTop() + Math.max(0, listItem.height() - (lhsContent.height() - listItem.offset().top) - lhsContent.parent().find('md-toolbar').height());
+            return lhsContent.scrollTop() + Math.max(0, listItem.outerHeight() - (lhsContent.outerHeight() - listItem.offset().top) - lhsContent.parent().find('md-toolbar').outerHeight());
           })()
         }, 'fast');
       }

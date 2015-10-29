@@ -321,19 +321,59 @@ sk-lhs {
 
 }
 
+.search-results-header-list-item {
+	min-height: 0px !important;
+	padding: 0px !important;
+	.search-results-header-list-item-inner-container {
+		width: 100%;
+	}
+	.search-results-header-parent {
+		padding-top: 5px;
+		padding-bottom: 5px;
+		padding-left: 15px;
+		padding-right: 10px;
+		.search-results-header {
+			overflow: hidden;
+			display: -webkit-box;
+			-webkit-line-clamp: 1;
+			-webkit-box-orient: vertical;
 
-// Borrowed from http://stackoverflow.com/questions/6222616/with-css-use-for-overflowed-block-of-multi-lines
-.search-results-text-clamp {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-}
-.search-header-text-clamp {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
+		    text-align: justify;
+
+			line-height: 26px;
+
+			margin: 0px;
+			// margin-top: 5px;
+			// margin-bottom: 0px;
+			// padding-top: 0px;
+			// padding-bottom: 0px;
+			// padding-left: 10px;
+			// padding-right: 10px;
+		}
+	}
+	.search-results-list {
+		padding: 0px;
+		.search-results-list-item {
+			min-height: 0px;
+			padding-top: 5px;
+			padding-bottom: 5px;
+			padding-left: 30px;
+			padding-right: 10px;
+			.search-result {
+				overflow: hidden;
+				display: -webkit-box;
+				-webkit-line-clamp: 4;
+				-webkit-box-orient: vertical;
+
+			    text-align: justify;
+
+
+				line-height: 22px;
+
+				// padding: 0px 15px;
+			}
+		}
+	}
 }
 
 
