@@ -20,7 +20,7 @@
   function SkClipboardConfig(uiZeroclipConfigProvider) {
     // config ZeroClipboard
     uiZeroclipConfigProvider.setZcConf({
-      swfPath: '../bower_components/zeroclipboard/dist/ZeroClipboard.swf'
+      swfPath: 'other/ZeroClipboard.swf'
     });
   }
 

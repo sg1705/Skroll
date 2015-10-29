@@ -106,6 +106,16 @@ gulp.task('images', ['clean-images'], function() {
         .pipe(gulp.dest(config.build + 'images'));
 });
 
+
+gulp.task('other', ['clean-other'], function() {
+    log('Copying other files');
+
+    return gulp
+        .src(config.other)
+        .pipe(gulp.dest(config.build + 'other'));
+});
+
+
 gulp.task('less-watcher', function() {
     gulp.watch([config.less], ['styles']);
 });
@@ -211,7 +221,7 @@ gulp.task('build-specs', ['templatecache'], function(done) {
  * This is separate so we can run tests on
  * optimize before handling image or fonts
  */
-gulp.task('build', ['optimize', 'images', 'fonts', 'copyWEBINF'], function() {
+gulp.task('build', ['optimize', 'images', 'other', 'fonts', 'copyWEBINF'], function() {
     log('Building everything');
 
     var msg = {
@@ -294,6 +304,16 @@ gulp.task('clean-fonts', function(done) {
 gulp.task('clean-images', function(done) {
     clean(config.build + 'images/**/*.*', done);
 });
+
+/**
+ * Remove all other from the build folder
+ * @param  {Function} done - callback when complete
+ */
+gulp.task('clean-other', function(done) {
+    clean(config.build + 'other/**/*', done);
+});
+
+
 
 /**
  * Remove all styles from the build and temp folders
