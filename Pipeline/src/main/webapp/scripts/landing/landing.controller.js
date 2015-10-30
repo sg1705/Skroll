@@ -32,7 +32,7 @@
 
     function onEnter() {
       if (!((vm.searchText == null) || (vm.searchText == "undefined"))) {
-      $analytics.eventTrack("LandingPage", {
+      $analytics.eventTrack("main", {
               category: 'landingPage.searchText',
               label: vm.searchText
             });
