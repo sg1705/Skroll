@@ -23,8 +23,9 @@ public class EndsWithAlphaWordComputer implements RVValueComputer {
         this.numVals = numVals;
     }
 
-    public int getValue(CoreMap m) {
-        return ( RVValues.booleanToInt( !ParaHelper.getLastAlphaWord(m).equals("")) );
+    // only need to check the original paragraph
+    public int getValue(List<CoreMap> m) {
+        return ( RVValues.booleanToInt( !ParaHelper.getLastAlphaWord(m.get(0)).equals("")) );
     }
 
     @Override

@@ -8,6 +8,8 @@ import com.skroll.document.annotation.CoreAnnotations;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 
 public class NumberTokensComputerTest {
@@ -34,7 +36,7 @@ public class NumberTokensComputerTest {
     public void testGetValue() throws Exception {
         assert (nTC.getNumVals() == RVCreater.DEFAULT_NUM_INT_VALS);
         m = ParaProcessor.processParagraph(m);
-        int value = nTC.getValue(m);
+        int value = nTC.getValue(Arrays.asList(m));
         System.out.println(value);
         assert(value == 3);
 
@@ -45,7 +47,7 @@ public class NumberTokensComputerTest {
         m.set(CoreAnnotations.TokenAnnotation.class, Lists.newArrayList(token1, token2, token3, token1, token2, token3, token1, token2, token3, token1, token2, token3, token1, token2, token3));
 
         m = ParaProcessor.processParagraph(m);
-        value = nTC.getValue(m);
+        value = nTC.getValue(Arrays.asList(m));
         System.out.println(value);
         assert (value == 15);
     }

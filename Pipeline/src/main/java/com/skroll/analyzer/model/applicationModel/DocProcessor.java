@@ -286,7 +286,7 @@ public class DocProcessor {
             Arrays.fill(vals, -1);
         for (int p = 0; p < observedParas.size(); p++) {
             CoreMap paragraph = observedParas.get(p);
-            int categoryValue = RVValues.getValue(categoryVar, observedParas.get(p));
+            int categoryValue = RVValues.getValue(categoryVar, Arrays.asList(observedParas.get(p)));
             int paraIndex = paragraph.get(CoreAnnotations.IndexInteger.class);
             for (int f = 0; f < docFeatureValues.length; f++) {
                 docFeatureValues[f][categoryValue] &= allParaDocFeatures[paraIndex][f];
@@ -363,7 +363,7 @@ public class DocProcessor {
         for (int i = 0; i < paragraphs.size(); i++) {
             CoreMap para = paragraphs.get(i);
 
-            int paraClass = RVValues.getValue(paraCategory, para);
+            int paraClass = RVValues.getValue(paraCategory, Arrays.asList(para));
             if (paraClass == topHeading) mainBodyStarted = true;
             if (!mainBodyStarted) continue;
             if (sectionStarted) {

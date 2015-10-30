@@ -21,9 +21,9 @@ public class EndsWithNumberComputer implements RVValueComputer {
         this.numVals = numVals;
     }
 
-    public int getValue(CoreMap m) {
+    public int getValue(List<CoreMap> m) {
         //get first token
-        List<Token> tokens = m.getTokens();
+        List<Token> tokens = m.get(0).getTokens();
         if (tokens == null || tokens.size() == 0) return 0;
         Token token = tokens.get(tokens.size() - 1);
         //logic to check if a number

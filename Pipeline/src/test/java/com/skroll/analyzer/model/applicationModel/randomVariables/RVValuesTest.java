@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -33,7 +34,7 @@ public class RVValuesTest {
 
         para.set(ac, 3);
         RandomVariable rv = RVCreater.createRVFromAnnotation(ac);
-        int v = RVValues.getValue(rv, para);
+        int v = RVValues.getValue(rv, Arrays.asList(para));
         System.out.println(v);
         assert (v == 3);
 
@@ -47,7 +48,7 @@ public class RVValuesTest {
 
         para.set(ac, Boolean.TRUE);
         RandomVariable rv = RVCreater.createRVFromAnnotation(ac);
-        int v = RVValues.getValue(rv, para);
+        int v = RVValues.getValue(rv, Arrays.asList(para));
         System.out.println(v);
         assert (v == 1);
 

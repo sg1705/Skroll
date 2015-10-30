@@ -3,6 +3,8 @@ package com.skroll.analyzer.model.applicationModel.randomVariables;
 import com.skroll.document.CoreMap;
 import com.skroll.util.ParaHelper;
 
+import java.util.List;
+
 /**
  * Computes if a given paragraph has the first word as a number
  * <p>
@@ -19,10 +21,11 @@ public class IsParaTitleCaseComputer implements RVValueComputer {
         this.numVals = numVals;
     }
 
-    public int getValue(CoreMap m) {
+    // only check the original paragraph
+    public int getValue(List<CoreMap> m) {
 
         // for simplicity and efficiency, testing only the last word.
-        String lastWord = ParaHelper.getLastAlphaWord(m);
+        String lastWord = ParaHelper.getLastAlphaWord(m.get(0));
         if (lastWord == null || lastWord.length() == 0) return 0;
 
         return RVValues.booleanToInt(Character.isUpperCase(lastWord.charAt(0)));

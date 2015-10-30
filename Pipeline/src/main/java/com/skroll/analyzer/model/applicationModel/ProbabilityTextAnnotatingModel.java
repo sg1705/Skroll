@@ -6,7 +6,6 @@ import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
 import com.skroll.analyzer.model.bn.NBInferenceHelper;
 import com.skroll.analyzer.model.bn.NaiveBayesWithMultiNodes;
-import com.skroll.analyzer.model.bn.config.NBMNConfig;
 import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.analyzer.model.bn.node.DiscreteNode;
 import com.skroll.analyzer.model.bn.node.MultiplexNode;
@@ -18,7 +17,6 @@ import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
-import com.skroll.document.annotation.TypesafeMap;
 import com.skroll.util.Visualizer;
 
 import java.util.*;
@@ -39,6 +37,8 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
 
     private int numIterations = DEFAULT_NUM_ITERATIONS;
     private double[] annotatingThreshold = DEFAULT_ANNOTATING_THRESHOLD;
+    private int enforcingDominatingFeatureForClass = -1;
+    private boolean useFirstParaFormat = false;
 
 
     // indexed by feature number, paragraph number, category number
@@ -146,7 +146,7 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
         // May consider to use a separate method to get a list of observed paragrpahs.
         for (int p = 0; p < processedParagraphs.size(); p++) {
             if (DocProcessor.isParaObserved(paragraphs.get(p))) {
-                int observedVal = RVValues.getValue(paraCategory, paragraphs.get(p));
+                int observedVal = RVValues.getValue(paraCategory, Arrays.asList(paragraphs.get(p)));
 
                 for (int i = 0; i < paraCategory.getFeatureSize(); i++) {
                     if (i == observedVal) paragraphCategoryBelief[p][i] = 0;
@@ -308,13 +308,57 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
 //        }
     }
 
-    public void updateBeliefs() {
-        int numIteration = 1;
-        for (int i = 0; i < numIteration; i++) {
+    int[] findDominatingFeatures(int classIndex){
+        int[] dominatingFeatures = null;
+        int numParagraphs = paragraphCategoryBelief.length;
+        if (useFirstParaFormat){
+            for (int p=0; p< numParagraphs; p++){
+                CoreMap paragraph = paragraphs.get(p);
+                double[] logPrioProbs = paragraphCategoryBelief[p].clone();
+                double[] paraProbs = logPrioProbs.clone();
+                BNInference.convertLogBeliefToProb(paraProbs);
+                if (paraProbs[classIndex] > annotatingThreshold[classIndex]) {
+                    dominatingFeatures = data.getParaDocFeatures()[paragraph.get(CoreAnnotations.IndexInteger.class)];
+                    break;
+                }
+            }
+        } else {
+            double maxProb = 0;
+             for (int p=0; p< numParagraphs; p++) {
+                 CoreMap paragraph = paragraphs.get(p);
+                 double[] logPrioProbs = paragraphCategoryBelief[p].clone();
+                 double[] paraProbs = logPrioProbs.clone();
+                 BNInference.convertLogBeliefToProb(paraProbs);
+                 if (paraProbs[classIndex] > annotatingThreshold[classIndex] && paraProbs[classIndex]>maxProb){
+                     maxProb = paraProbs[classIndex];
+                     dominatingFeatures = data.getParaDocFeatures()[paragraph.get(CoreAnnotations.IndexInteger.class)];
+                 }
+             }
+
+        }
+        return dominatingFeatures;
+    }
+
+    private void setDocFeatures(int classIndex, int[] dominatingFeatures){
+        for (int f = 0; f < dominatingFeatures.length; f++){
+            if (dominatingFeatures[f] == 1){
+                documentFeatureBelief[f][classIndex] = new double[]{Double.NEGATIVE_INFINITY, 0};
+            }
+
+        }
+    }
+
+    private void updateBeliefs() {
+        passMessagesToParagraphCategories();
+        if (enforcingDominatingFeatureForClass >-1) {
+            int[] dominatingFeatures = findDominatingFeatures(enforcingDominatingFeatureForClass);
+            if (dominatingFeatures != null)
+                setDocFeatures(enforcingDominatingFeatureForClass, dominatingFeatures);
+        }
+        for (int i = 0; i < numIterations; i++) {
             passMessagesToParagraphCategories();
             passMessageToDocumentFeatures();
         }
-        passMessagesToParagraphCategories();
     }
 
 
@@ -341,6 +385,14 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
         this.processedParagraphs = processedParagraphs;
     }
 
+    public void setEnforcingDominatingFeatureForClass(int enforcingDominatingFeatureForClass) {
+        this.enforcingDominatingFeatureForClass = enforcingDominatingFeatureForClass;
+    }
+
+    public void setUseFirstParaFormat(boolean useFirstParaFormat) {
+        this.useFirstParaFormat = useFirstParaFormat;
+    }
+
     public void setAnnotatingThreshold(double[] annotatingThreshold) {
         this.annotatingThreshold = annotatingThreshold;
     }
@@ -348,12 +400,8 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
     public void annotateParagraphs() {
 
 
-        passMessagesToParagraphCategories();
+        updateBeliefs();
 
-        for (int i = 0; i < numIterations; i++) {
-            passMessageToDocumentFeatures();
-            passMessagesToParagraphCategories();
-        }
         int numParagraphs = paragraphCategoryBelief.length;
 
 

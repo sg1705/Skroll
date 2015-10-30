@@ -20,13 +20,14 @@ public class NumberTokensComputer implements RVValueComputer {
         this.numVals = numVals;
     }
 
-    public int getValue(CoreMap m) {
+    // use the original paragraph
+    public int getValue(List<CoreMap> m) {
 //        int n = m.getTokens().size();
 //        return n < numVals ? n : numVals - 1;
         // alternative way to get the number of tokens using token index,
         // to avoid the problem of original para has more tokens then processed para,
         // and so the original token number is used.
-        List<Token> tokens = m.getTokens();
+        List<Token> tokens = m.get(0).getTokens();
         if (tokens == null || tokens.size() == 0) return 0;
         Token lastToken = tokens.get(tokens.size() - 1);
         Integer lastIndex = lastToken.get(CoreAnnotations.IndexInteger.class);

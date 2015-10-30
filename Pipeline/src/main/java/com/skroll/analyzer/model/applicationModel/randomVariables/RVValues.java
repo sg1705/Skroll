@@ -7,10 +7,7 @@ import com.skroll.document.Document;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by wei on 5/9/15.
@@ -67,9 +64,13 @@ public class RVValues {
         return null;
     }
 
-    static int getValueFromMap(RandomVariable rv, CoreMap m) {
+    static int getValueFromMap(RandomVariable rv, List<CoreMap> ms) {
         Class ann = rvaMap.get(rv);
-        Object val = m.get(ann);
+        Object val = null;
+        for (CoreMap m: ms){
+            val = m.get(ann);
+            if (val != null) break;
+        }
 
         if (val == null) return 0; // todo: missing annotation is used as false. May not be the best thing to do.
 
@@ -86,8 +87,7 @@ public class RVValues {
         return -1;
 
     }
-
-    public static int getValue(RandomVariable rv, CoreMap m) {
+    public static int getValue(RandomVariable rv, List<CoreMap> m) {
         RandomVariable negationRV = negationRVMap.get(rv); // only for binary RVs
         if (negationRV != null){
             int negVal = getValueHelper(negationRV, m);
@@ -97,12 +97,30 @@ public class RVValues {
         }
         return getValueHelper(rv,m);
    }
+//
+//    public static int getValue(RandomVariable rv, CoreMap m) {
+//        RandomVariable negationRV = negationRVMap.get(rv); // only for binary RVs
+//        if (negationRV != null){
+//            int negVal = getValueHelper(negationRV, m);
+//            if (negVal == -1)
+//                return -1; // unobserved
+//            return 1-negVal;
+//        }
+//        return getValueHelper(rv,m);
+//   }
 
-    public static int getValueHelper(RandomVariable rv, CoreMap m){
+    public static int getValueHelper(RandomVariable rv, List<CoreMap> m){
         RVValueComputer processor = valueComputerMap.get(rv);
         if (processor != null) return processor.getValue(m);
         return getValueFromMap(rv, m);
     }
+
+//
+//    public static int getValueHelper(RandomVariable rv, CoreMap m){
+//        RVValueComputer processor = valueComputerMap.get(rv);
+//        if (processor != null) return processor.getValue(m);
+//        return getValueFromMap(rv, m);
+//    }
 
     // this is for setting user observation of the paragraph category
     public static void setValue(RandomVariable rv, int val, CoreMap m, List<List<Token>> terms) {
@@ -120,11 +138,11 @@ public class RVValues {
         setter.clearValue(m);
     }
 
-    public static int getWordLevelRVValue(RandomVariable rv, Token token, CoreMap para) {
+    public static int getWordLevelRVValue(RandomVariable rv, Token token, List<CoreMap> paras) {
 
         WRVValueComputer processor = wordLevelValueComputerMap.get(rv);
-        if (processor != null) return processor.getValue(token, para);
-        return getValueFromMap(rv, token);
+        if (processor != null) return processor.getValue(token, paras);
+        return getValueFromMap(rv, Arrays.asList(token));
     }
 
     public static void addNegationRV(RandomVariable negationRv,RandomVariable rv){

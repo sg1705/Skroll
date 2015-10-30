@@ -23,12 +23,16 @@ public class ParaProcessor {
     // take the maximum of the values from different CoreMap, because -1 or 0 indicates no value present in the Coremap
     // todo: this may not be a good approach
     static int getFeatureValue(RandomVariable v, List<CoreMap> mList) {
-        int result = -1; // -1 means unobserved/missing
-        for (CoreMap m : mList) {
-            int value = RVValues.getValue(v, m);
-            if (value > result) result = value;
-        }
-        return result;
+
+        return RVValues.getValue(v, mList);
+//
+//        int result = -1; // -1 means unobserved/missing
+//
+//        for (CoreMap m : mList) {
+//            int value = RVValues.getValue(v, m);
+//            if (value > result) result = value;
+//        }
+//        return result;
     }
 
     /**
@@ -41,7 +45,7 @@ public class ParaProcessor {
     static int getWordFeatureValue(RandomVariable v, Token token, List<CoreMap> mList) {
         int result = 0; // return 0 in case of null.
         for (CoreMap m : mList) {
-            int value = RVValues.getWordLevelRVValue(v, token, m);
+            int value = RVValues.getWordLevelRVValue(v, token, mList);
             if (value > result) result = value;
         }
         return result;

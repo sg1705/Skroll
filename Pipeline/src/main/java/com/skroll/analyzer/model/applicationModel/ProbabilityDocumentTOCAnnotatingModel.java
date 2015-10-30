@@ -1,20 +1,16 @@
 package com.skroll.analyzer.model.applicationModel;
 
 import com.skroll.analyzer.model.RandomVariable;
-import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
 import com.skroll.analyzer.model.bn.NBInferenceHelper;
 import com.skroll.analyzer.model.bn.NaiveBayesWithMultiNodes;
 import com.skroll.analyzer.model.bn.config.NBMNConfig;
-import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
-import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.util.Visualizer;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Probability model for annotating the Document headings.
@@ -23,7 +19,7 @@ import java.util.stream.Collectors;
  */
 public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnotatingModel {
 
-    static final int SEC_NUM_ITERATION = 80;
+    static final int SEC_NUM_ITERATION = 40;
     static double[] SEC_ANNOTATING_THRESHOLD = {0, 0.8};
     Document doc;
     NaiveBayesWithMultiNodes secNbmn = null;
@@ -139,6 +135,9 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
             secModel.setProcessedParagraphs(processedSections.get(i));
             secModel.setNumIterations(SEC_NUM_ITERATION);
             secModel.setAnnotatingThreshold(SEC_ANNOTATING_THRESHOLD);
+            secModel.setEnforcingDominatingFeatureForClass(1); // class index 1 represent level 2 in the section model.
+//            secModel.setUseFirstParaFormat(true);
+
             secModel.initialize();
             secModel.annotateParagraphs();
             annotateParaProbs(CoreAnnotations.TOCParaProbsSecLevel.class, processedSections.get(i), secModel.getParagraphCategoryBelief());
