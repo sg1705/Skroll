@@ -45,14 +45,14 @@ public class CacheService<T> extends CacheLoader<String, T> implements RemovalLi
     public void logCacheStats(){
         CacheStats delta = loadingCache.stats().minus(cacheStats);
         cacheStats = loadingCache.stats();
-        logger.info("Cumulative Cache stats: hitCount: {}, missCount: {}, loadSuccessCount: {}, loadExceptionCount: {}, totalLoadTime: {}",
+        logger.debug("Cumulative Cache stats: hitCount: {}, missCount: {}, loadSuccessCount: {}, loadExceptionCount: {}, totalLoadTime: {}",
                 cacheStats.hitCount(),
                 cacheStats.missCount(),
                 cacheStats.loadSuccessCount(),
                 cacheStats.loadExceptionCount(),
                 cacheStats.totalLoadTime()
                 );
-        logger.info("Delta Cache stats: hitCount: {}, missCount: {}, loadSuccessCount: {}, loadExceptionCount: {}, totalLoadTime: {}",
+        logger.debug("Delta Cache stats: hitCount: {}, missCount: {}, loadSuccessCount: {}, loadExceptionCount: {}, totalLoadTime: {}",
                 delta.hitCount(),
                 delta.missCount(),
                 delta.loadSuccessCount(),

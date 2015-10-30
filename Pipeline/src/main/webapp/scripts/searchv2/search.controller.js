@@ -14,7 +14,7 @@
     .controller('SearchCtrl', SearchCtrl);
 
   /* @ngInject */
-  function SearchCtrl($scope, $timeout, selectionService, documentModel, searchFactory) {
+  function SearchCtrl($scope, $timeout, selectionService, documentModel, searchFactory, $analytics) {
 
     //-- private variables
     /*jshint validthis: true */
@@ -112,6 +112,10 @@
     function settledSearch() {
       var searchText = vm.searchState.searchText;
       console.log('Settled on search after '+vm.settledSearchInterval+' ms:' + searchText);
+      $analytics.eventTrack(documentModel.documentId, {
+              category: 'searchText',
+              label: searchText
+            });
     }
 
     function onKeyUp(event, searchText) {

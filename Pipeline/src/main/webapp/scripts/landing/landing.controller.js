@@ -14,7 +14,7 @@
     .controller('LandingCtrl', LandingCtrl);
 
   /* @ngInject */
-  function LandingCtrl($location, secSearchService, $routeParams, importService) {
+  function LandingCtrl($location, secSearchService, $routeParams, importService, $analytics) {
 
     //-- private variables
     var searchResults = [];
@@ -32,6 +32,10 @@
 
     function onEnter() {
       if (!((vm.searchText == null) || (vm.searchText == "undefined"))) {
+      $analytics.eventTrack("LandingPage", {
+              category: 'landingPage.searchText',
+              label: vm.searchText
+            });
         $location.path('/search/' + vm.searchText);
       }
     }
