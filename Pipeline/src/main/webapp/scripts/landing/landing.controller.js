@@ -14,7 +14,7 @@
     .controller('LandingCtrl', LandingCtrl);
 
   /* @ngInject */
-  function LandingCtrl($location, secSearchService, $routeParams, importService, $analytics) {
+  function LandingCtrl($location, secSearchService, $routeParams, importService, documentModel, $analytics) {
 
     //-- private variables
     var searchResults = [];
@@ -60,6 +60,7 @@
     }
 
     function search() {
+      documentModel.isProcessing = true;
       if (((vm.searchText == null) || (vm.searchText == "undefined"))) {
         var searchText = 'Google 10K 2012 2015';
         $location.path('/search/' + searchText);
@@ -75,8 +76,10 @@
             var result = processXml(entries[index]);
             vm.searchResults.push(result);
           });
+          documentModel.isProcessing = false;
         }, function(err) {
           console.log(err);
+          documentModel.isProcessing = false;
         });
 
     }
