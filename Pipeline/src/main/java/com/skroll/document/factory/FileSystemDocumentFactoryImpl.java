@@ -28,6 +28,7 @@ public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory, 
     protected Configuration configuration;
     protected String folder;
     protected int cacheSize;
+
     public Document load(String documentId) throws Exception {
             Document doc = null;
             String jsonString;
@@ -58,9 +59,10 @@ public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory, 
                 } catch (Exception e) {
                     logger.error("Error in saving Document", e);
                 }
-                getSaveLaterDocumentId().remove(key);
             }
         }
+        // call explicitly to cleanup the guava cache
+        getDocumentCache().getLoadingCache().cleanUp();
     }
 
     /**
@@ -103,7 +105,7 @@ public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory, 
             logger.warn("doc is not Found in cache: {}", e.getMessage());
             return null;
         }
-        logger.debug("document map size: {}", getDocumentCache().getLoadingCache().size());
+        logger.info("document map size: {}", getDocumentCache().getLoadingCache().size());
         return doc;
     }
 
@@ -138,8 +140,6 @@ public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory, 
 
     @Override
     public void saveDocument(Document document) throws Exception {
-        // call explicitly to cleanup the guava cache
-        getDocumentCache().getLoadingCache().cleanUp();
         try {
             if (document.getId() == null) {
                 throw new Exception("Cannot save a document with [null] documentId");
@@ -159,7 +159,8 @@ public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory, 
             logger.error(e.getMessage(), e);
             throw e;
         }
-
+        getSaveLaterDocumentId().remove(document.getId());
+        getDocumentCache().logCacheStats();
     }
     @Override
     public List<String> getDocumentIds() throws Exception {

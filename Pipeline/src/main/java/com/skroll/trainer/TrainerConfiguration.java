@@ -26,6 +26,7 @@ public class TrainerConfiguration extends Configuration {
     public TrainerConfiguration(@Location String location) {
         super("skroll.properties");
         this.confMap.put("preEvaluatedFolder",location);
+        this.confMap.put("preEvaluatedDocumentCacheSize", "1");
         logger.info("Configuration After overwriting the preEvaluatedFolder: " + this.confMap);
         this.location = location;
         }
