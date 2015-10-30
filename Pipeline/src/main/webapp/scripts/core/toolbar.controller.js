@@ -65,6 +65,7 @@
         locals: {
           activeLink: vm.activeLink
         },
+        /* @ngInject */
         controller: function($mdDialog) {
           this.hide = function() {
             $mdDialog.hide();
