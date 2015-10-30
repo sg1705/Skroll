@@ -25,6 +25,7 @@
     vm.navigateToLanding = navigateToLanding;
     vm.openEmailDialog = openEmailDialog;
     vm.showShareDialog = showShareDialog;
+    vm.showSendFeedbackDialog = showSendFeedbackDialog;
 
     /////////////
 
@@ -91,6 +92,41 @@
           alert = undefined;
         });
     }
+
+    /**
+     * Show send feedback dialog
+     **/
+    function showSendFeedbackDialog() {
+      var alert = {
+        templateUrl: 'scripts/core/sendfeedback.tmpl.html',
+        clickOutsideToClose: true,
+        locals: {
+          //activeLink: vm.activeLink
+        },
+        /* @ngInject */
+        controller: function($mdDialog) {
+          this.hide = function() {
+            $mdDialog.hide();
+          }
+        },
+        bindToController: true,
+        controllerAs: 'copydialogCtrl',
+        openFrom: angular.element('#sk-toolbar-send-feedback-button'),
+        closeTo: angular.element('#sk-toolbar-send-feedback-button'),
+        onComplete: function() {
+
+        }
+
+      }
+
+      $mdDialog
+        .show(alert)
+        .finally(function() {
+          console.log('hidden');
+          alert = undefined;
+        });
+    }
+
 
   }
 

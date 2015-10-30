@@ -1,0 +1,19 @@
+<md-dialog-content class="md-dialog-content" role="document" tabindex="-1" id="dialog_1">
+  <md-icon class="md-primary" md-svg-icon="images/icons/ic_feedback_48px.svg"></md-icon>
+  <h2 class="md-title ng-binding">We'd love to hear from you!</h2>
+  <div class="md-dialog-content-body" md-template="::dialog.mdContent">
+   <md-input-container>
+    <label>Email address</label>
+    <input type="text" ng-model="user.name">
+  </md-input-container>
+  <md-input-container>
+    <label>Feedback</label>
+    <textarea rows="4" cols="50" ng-model="user.description"></textarea>
+  </md-input-container>
+  </div>
+</md-dialog-content>
+<div class="md-actions">
+  <button class="md-primary md-button md-default-theme md-ink-ripple" ng-click="copydialogCtrl.hide()">
+    <span class="ng-binding ng-scope">Submit Feedback</span>
+  </button>
+</div>
