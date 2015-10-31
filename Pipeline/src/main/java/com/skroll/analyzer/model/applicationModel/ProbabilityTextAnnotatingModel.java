@@ -352,8 +352,10 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
         passMessagesToParagraphCategories();
         if (enforcingDominatingFeatureForClass >-1) {
             int[] dominatingFeatures = findDominatingFeatures(enforcingDominatingFeatureForClass);
-            if (dominatingFeatures != null)
-                setDocFeatures(enforcingDominatingFeatureForClass, dominatingFeatures);
+
+            // skip enforcing formating consistency if no dominating candidate found.
+            if (dominatingFeatures == null) return;
+            setDocFeatures(enforcingDominatingFeatureForClass, dominatingFeatures);
         }
         for (int i = 0; i < numIterations; i++) {
             passMessagesToParagraphCategories();
