@@ -54,8 +54,7 @@
       if (para != null) {
         var contentDiv = $('#skrollport');
         $('#skrollport').stop(true, true).animate({
-          scrollTop: ($('#skrollport').scrollTop() - 200 + $(
-            para).offset().top)
+          scrollTop: ($('#skrollport').scrollTop() - 200 + $(para).offset().top)
         }, 'slow');
         $('.selected-para-rhs').toggleClass('selected-para-rhs', false);
         //$('.searched-text-rhs').toggleClass('searched-text-rhs', false);

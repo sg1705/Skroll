@@ -14,16 +14,18 @@ public class CacheService<T> extends CacheLoader<String, T> implements RemovalLi
     private static final int CACHE_SIZE = 10;
     private CacheHandler<T> cacheHandler;
     LoadingCache<String, T> loadingCache;
-
+    CacheStats cacheStats = null;
     @Inject
     public CacheService(CacheHandler cacheHandler, int cacheSize){
         this.cacheHandler = cacheHandler;
-        loadingCache = CacheBuilder.newBuilder().maximumSize(cacheSize).removalListener(this).build(this);
+        loadingCache = CacheBuilder.newBuilder().recordStats().maximumSize(cacheSize).removalListener(this).build(this);
+        cacheStats = loadingCache.stats();
     }
 
     public CacheService(CacheHandler cacheHandler){
         this.cacheHandler = cacheHandler;
-        loadingCache = CacheBuilder.newBuilder().maximumSize(CACHE_SIZE).removalListener(this).build(this);
+        loadingCache = CacheBuilder.newBuilder().recordStats().maximumSize(CACHE_SIZE).removalListener(this).build(this);
+        cacheStats = loadingCache.stats();
     }
 
     public LoadingCache<String, T> getLoadingCache() {
@@ -38,5 +40,23 @@ public class CacheService<T> extends CacheLoader<String, T> implements RemovalLi
     @Override
     public void onRemoval(RemovalNotification<String, T> removal) {
         cacheHandler.onRemoval(removal.getKey(),removal.getValue());
+    }
+
+    public void logCacheStats(){
+        CacheStats delta = loadingCache.stats().minus(cacheStats);
+        cacheStats = loadingCache.stats();
+        logger.info("Cumulative Cache stats: hitCount: {}, missCount: {}, loadSuccessCount: {}, loadExceptionCount: {}, totalLoadTime: {}",
+                cacheStats.hitCount(),
+                cacheStats.missCount(),
+                cacheStats.loadSuccessCount(),
+                cacheStats.loadExceptionCount(),
+                cacheStats.totalLoadTime()
+                );
+        logger.info("Delta Cache stats: hitCount: {}, missCount: {}, loadSuccessCount: {}, loadExceptionCount: {}, totalLoadTime: {}",
+                delta.hitCount(),
+                delta.missCount(),
+                delta.loadSuccessCount(),
+                delta.loadExceptionCount(),
+                delta.totalLoadTime());
     }
 }

@@ -8,4 +8,5 @@ public interface CacheHandler<T> {
     public T load(String key) throws Exception;
 
     public void onRemoval(String key, T value);
+
 }

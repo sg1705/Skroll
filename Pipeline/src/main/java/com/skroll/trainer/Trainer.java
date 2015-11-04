@@ -118,6 +118,9 @@ public class Trainer {
             case "classifyDocType":
                 docTypeTrainerAndClassifier.classifyAndStoreDocType();
                 break;
+            case "findTrainingDoc":
+                categoryTrainer.findTrainingDoc();
+                break;
             default:
                 throw new IllegalArgumentException("Invalid command:" + cmd.getOptionValue("command") + " Valid commands are annotateDocType, trainDocTypeModel, trainWithWeight and classifyDocType");
         }
@@ -132,10 +135,12 @@ public class Trainer {
                         "./trainer.sh -c annotateDocType -f data/preEvaluated/ -t 101 -w 1f \n" +
                         "#To train Doc type Model from a folder containing training files \n" +
                         "./trainer.sh -c trainDocTypeModel -f data/preEvaluated/ \n" +
-                        "#How to train from command line \n" +
+                        "#To train from command line \n" +
                         "./trainer.sh -c trainWithWeight -f data/preEvaluated/ \n" +
-                        "#How to classify doctype from command line \n" +
+                        "#To classify doctype from command line \n" +
                         "./trainer.sh -c classifyDocType -f data/preEvaluated/ \n\"" +
+                        "#To find training documents from command line \n" +
+                        "./trainer.sh -c findTrainingDoc -f data/preEvaluated/ \n\"" +
                         "#############################################");
     }
     public void trainFolderUsingTrainingWeight () throws Exception {
@@ -229,4 +234,36 @@ public class Trainer {
         }
     }
 
+    public void findTrainingDoc () {
+        FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(PRE_EVALUATED_FOLDER));
+        int counter = 0;
+        for (File f : iterable) {
+            if (f.isFile()) {
+                Document doc = null;
+                try {
+                    doc = corpusDocumentFactory.get(f.getName());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    logger.error(" {} file can't be found.",f.getName());
+                }
+                //iterate over each paragraph
+                if (doc == null) {
+                    logger.error(" {} document can't be parsed.",doc.getId());
+                    continue;
+                }
+                boolean isUserObservationAnnotation = false;
+                for (CoreMap paragraph : doc.getParagraphs()) {
+                    if (!paragraph.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)) {
+                        isUserObservationAnnotation = true;
+                        break;
+                    }
+                }
+                if (isUserObservationAnnotation) {
+                    System.out.println(doc.getId());
+                    counter++;
+                }
+            }
+        }
+        logger.info("Number of trained files: {}", counter);
+    }
 }

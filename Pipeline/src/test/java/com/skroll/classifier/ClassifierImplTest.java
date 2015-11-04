@@ -53,6 +53,7 @@ public class ClassifierImplTest {
         Document document = null;
         try {
             document = (Document)documentClassifier.classify(testingFile,Parser.parseDocumentFromHtmlFile(testingFile));
+            document.setId("");
         } catch (ParserException e) {
             e.printStackTrace();
             fail("failed to parse document");
@@ -80,6 +81,7 @@ public class ClassifierImplTest {
                 Document doc = null;
                 try {
                     doc = Parser.parseDocumentFromHtml(htmlText);
+                    doc.setId("");
                 } catch (ParserException e) {
                     e.printStackTrace();
                     fail("failed to parse the file");
@@ -112,6 +114,7 @@ public class ClassifierImplTest {
         Document doc = null;
         try {
             doc = Parser.parseDocumentFromHtml(htmlText);
+            doc.setId("test");
         } catch (ParserException e) {
             e.printStackTrace();
             fail("failed to parse the file");
@@ -123,6 +126,7 @@ public class ClassifierImplTest {
                         .add(Pipes.EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC)
                         .build();
         doc = pipeline.process(doc);
+            doc.setId("test");
             documentClassifier.train(doc);
             documentClassifier.persistModel();
         } catch (Throwable e) {
