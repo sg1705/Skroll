@@ -21,7 +21,7 @@ import java.util.List;
 @Path("/search")
 public class SearchAPI {
 
-    private static final Logger logger = LoggerFactory.getLogger(DocAPI.class);
+    private static final Logger logger = LoggerFactory.getLogger(SearchAPI.class);
     private static final String SEARCH_URL = "http://www.sec.gov/cgi-bin/srch-edgar?&output=atom";
     private static final String FETCH_INDEX_URL = "http://www.sec.gov";
 
