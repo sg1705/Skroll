@@ -550,6 +550,11 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
         return documentFeatureBelief;
     }
 
+    @JsonIgnore
+    public ModelRVSetting getModelRVSetting(){
+        return modelRVSetting;
+    }
+
     public NaiveBayesWithMultiNodes getLpnbfModel() {
         return nbmnModel;
     }
@@ -578,6 +583,8 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
         applicationModelInfo.put(this.nbmnConfig.getCategoryVar().getName(),
                 Visualizer.toDoubleArrayToMap(this.getParaCategoryProbabilities(paraIndex)));
         for (int ii = 0; ii < documentFeatureBelief.length; ii++) {
+            applicationModelInfo.put(this.nbmnConfig.getFeatureExistsAtDocLevelVarList().get(ii).getName(),
+                    Visualizer.toDoubleArrayToMap(new double[]{.0 +data.getParaDocFeatures()[paraIndex][ii]}));
             for (int jj = 0; jj < documentFeatureBelief[0].length; jj++) {
                 applicationModelInfo.put(this.nbmnConfig.getDocumentFeatureVarList().get(ii).get(jj).getName(),
                         Visualizer.toDoubleArrayToMap(this.getDocumentFeatureProbabilities()[ii][jj]));

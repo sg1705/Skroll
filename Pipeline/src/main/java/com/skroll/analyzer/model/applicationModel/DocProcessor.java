@@ -316,6 +316,26 @@ public class DocProcessor {
 //        return docFeatureValues;
 //    }
 
+
+    /**
+     * Remove annotations from paragraphs with duplicate text.
+     * @param paragraphs
+     * @param categoryId
+     */
+    public static void removeDuplicateAnnotations(List<CoreMap> paragraphs, int categoryId){
+
+        Set<String> headings = new HashSet<>();
+        for (CoreMap para:paragraphs){
+            if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(para, categoryId)){
+                if ( headings.contains( para.getText())) {
+                    CategoryAnnotationHelper.clearCategoryAnnotation(para, categoryId);
+                } else {
+                    headings.add(para.getText());
+                }
+            }
+        }
+    }
+
     public static List<List<List<CoreMap>>> createSections(List<CoreMap> paragraphs,
                                                            List<CoreMap> processedParas,
                                                            RandomVariable paraCategory) {

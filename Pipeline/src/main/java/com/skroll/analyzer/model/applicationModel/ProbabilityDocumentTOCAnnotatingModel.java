@@ -126,6 +126,8 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
         List<Integer> lowerCatIds = ((TOCModelRVSetting) modelRVSetting).getLowLevelCategoryIds();
         if (lowerCatIds == null) return;
 
+        // remove duplicate annotations for level 1.
+        DocProcessor.removeDuplicateAnnotations(paragraphs, modelRVSetting.getCategoryIds().get(1));
         List<List<List<CoreMap>>> sectionsList = DocProcessor.createSections(paragraphs, processedParagraphs, getParaCategory());
         List<List<CoreMap>> sections = sectionsList.get(0);
         List<List<CoreMap>> processedSections = sectionsList.get(1);
@@ -144,10 +146,17 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
         }
     }
 
+    /**
+     * todo: temporarily used display sec features on the right side for debugging purpose.
+     * @param paraIndex
+     * @return
+     */
     public double[][][] getSecFeatureProbs(int paraIndex){
         List<Integer> lowerCatIds = ((TOCModelRVSetting) modelRVSetting).getLowLevelCategoryIds();
         if (lowerCatIds == null) return null;
 
+        // remove duplicate annotations for level 1.
+        DocProcessor.removeDuplicateAnnotations(paragraphs, modelRVSetting.getCategoryIds().get(1));
         List<List<List<CoreMap>>> sectionsList = DocProcessor.createSections(paragraphs, processedParagraphs, getParaCategory());
         List<List<CoreMap>> sections = sectionsList.get(0);
         List<List<CoreMap>> processedSections = sectionsList.get(1);
@@ -188,6 +197,9 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
             applicationModelInfo.put("sec level model " + this.nbmnConfig.getCategoryVar().getName(),
                     Visualizer.doubleListToMap(probs));
         for (int ii = 0; ii < documentFeatureBelief.length; ii++) {
+            System.out.println("paraDocFeatures for para " + paraIndex + "\n" + Arrays.toString(data.getParaDocFeatures()[paraIndex]));
+            applicationModelInfo.put(this.nbmnConfig.getFeatureExistsAtDocLevelVarList().get(ii).getName(),
+                    Visualizer.toDoubleArrayToMap(new double[]{.0 + data.getParaDocFeatures()[paraIndex][ii]}));
             for (int jj = 0; jj < documentFeatureBelief[0].length; jj++) {
                 applicationModelInfo.put(this.nbmnConfig.getDocumentFeatureVarList().get(ii).get(jj).getName(),
                         Visualizer.toDoubleArrayToMap(this.getDocumentFeatureProbabilities()[ii][jj]));
