@@ -138,7 +138,7 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
             secModel.setNumIterations(SEC_NUM_ITERATION);
             secModel.setAnnotatingThreshold(SEC_ANNOTATING_THRESHOLD);
             secModel.setEnforcingDominatingFeatureForClass(1); // class index 1 represent level 2 in the section model.
-//            secModel.setUseFirstParaFormat(true);
+            secModel.setUseFirstParaFormat(true);
 
             secModel.initialize();
             secModel.annotateParagraphs();
@@ -196,8 +196,8 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
         if (probs != null)
             applicationModelInfo.put("sec level model " + this.nbmnConfig.getCategoryVar().getName(),
                     Visualizer.doubleListToMap(probs));
+        System.out.println("paraDocFeatures for para " + paraIndex + "\n" + Arrays.toString(data.getParaDocFeatures()[paraIndex]));
         for (int ii = 0; ii < documentFeatureBelief.length; ii++) {
-            System.out.println("paraDocFeatures for para " + paraIndex + "\n" + Arrays.toString(data.getParaDocFeatures()[paraIndex]));
             applicationModelInfo.put(this.nbmnConfig.getFeatureExistsAtDocLevelVarList().get(ii).getName(),
                     Visualizer.toDoubleArrayToMap(new double[]{.0 + data.getParaDocFeatures()[paraIndex][ii]}));
             for (int jj = 0; jj < documentFeatureBelief[0].length; jj++) {

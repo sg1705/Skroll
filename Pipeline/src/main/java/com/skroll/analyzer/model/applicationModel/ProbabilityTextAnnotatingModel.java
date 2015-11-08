@@ -173,7 +173,7 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
             List<WordNode> wordNodes = nbmnModel.getWordNodes();
             for (WordNode node : wordNodes) {
                 double[] message = NodeInferenceHelper.sumOutWordsWithObservation(node);
-                for (int j = 0; j < message.length; j++)
+               for (int j = 0; j < message.length; j++)
                     paragraphCategoryBelief[p][j] += message[j];
             }
 

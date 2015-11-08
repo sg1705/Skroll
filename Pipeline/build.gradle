@@ -46,7 +46,9 @@ dependencies {
     compile "com.squarespace.jersey2-guice:jersey2-guice:0.10"
     compile 'org.reflections:reflections:0.9.9'
 }
-
+war {
+    zip64 true
+}
 
 task runBenchmark(type: JavaExec) {
     File workingDir = new File('Pipeline/')
