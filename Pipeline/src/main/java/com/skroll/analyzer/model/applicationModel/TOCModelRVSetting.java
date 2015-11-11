@@ -24,9 +24,9 @@ public class TOCModelRVSetting extends ModelRVSetting {
     );
     static final List<RandomVariable> DEFAULT_PARA_FEATURE_VARS = Arrays.asList(
             RVCreater.createDiscreteRVWithComputer(new NumberTokensComputer(), "numTokens"),
-            RVCreater.createDiscreteRVWithComputer(new IsParaNumberComputer(), "isParaNumber"),
-            RVCreater.createDiscreteRVWithComputer(new EndsWithAlphaWordComputer(), "endsWithAlphaWord"),
-            RVCreater.createDiscreteRVWithComputer(new IsParaTitleCaseComputer(), "isParaTitleCase")
+            RVCreater.createDiscreteRVWithComputer(new IsParaNumberComputer(), "isParaNumber")
+//            RVCreater.createDiscreteRVWithComputer(new EndsWithAlphaWordComputer(), "endsWithAlphaWord"),
+//            RVCreater.createDiscreteRVWithComputer(new IsParaTitleCaseComputer(), "isParaTitleCase")
 //            RVCreater.createDiscreteRVWithComputer(new IsInUserTOCRVComputer(), "inUserTOC"),
 //            RVCreater.createDiscreteRVWithComputer(new StartsWithNumberComputer(), "startsWithNumber")
 //            RVCreater.createDiscreteRVWithComputer(new EndsWithNumberComputer(), "endsWithNumber"),
