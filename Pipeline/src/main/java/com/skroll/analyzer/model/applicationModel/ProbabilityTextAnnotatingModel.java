@@ -39,6 +39,7 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
     private double[] annotatingThreshold = DEFAULT_ANNOTATING_THRESHOLD;
     private int enforcingDominatingFeatureForClass = -1;
     private boolean useFirstParaFormat = false;
+    private double enforcingConsistencyStrength = Double.NEGATIVE_INFINITY; // the lower, the more consistent.
 
 
     // indexed by feature number, paragraph number, category number
@@ -342,7 +343,7 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
     private void setDocFeatures(int classIndex, int[] dominatingFeatures){
         for (int f = 0; f < dominatingFeatures.length; f++){
             if (dominatingFeatures[f] == 1){
-                documentFeatureBelief[f][classIndex] = new double[]{Double.NEGATIVE_INFINITY, 0};
+                documentFeatureBelief[f][classIndex] = new double[]{enforcingConsistencyStrength, 0};
             }
 
         }
