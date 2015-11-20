@@ -42,7 +42,7 @@
           });
           element.replaceWith(documentModel.targetHtml);
           documentModel.isProcessing = false;
-          showGradually();
+          // showGradually();
           documentService.importDoc(documentModel.url, false)
             .then(function(data) {
               documentModel.isPartiallyParsed = false;
@@ -68,11 +68,11 @@
                 category: 'doc.View',
                 label: selectionService.paragraphId
               });
-              if ((selectionService.serializedSelection === undefined) || (selectionService.serializedSelection == "undefined")) {
-                showGradually();
-              } else {
-                showEntireDoc();
-              }
+              // if ((selectionService.serializedSelection === undefined) || (selectionService.serializedSelection == "undefined")) {
+              //   showGradually();
+              // } else {
+              //   showEntireDoc();
+              // }
               return documentService.getTerms(documentModel.documentId);
             })
             .then(function(terms) {

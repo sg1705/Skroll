@@ -375,9 +375,9 @@ function insertMarker(paragraphId, element) {
     //$(element ).attr('id','p_' + (paragraphId +1) );
     //$('"p_' + (paragraphId +1) + '"').insertBefore($(element));
     var displayStyle = '';
-    if (paragraphId > 1300) {
-        displayStyle = 'style="display:none"';
-    }
+//    if (paragraphId > 1300) {
+//        displayStyle = 'style="display:none"';
+//    }
     $('<!--sk <div id="p_' + (paragraphId +1) + '" ' + displayStyle +' > sk-->').insertBefore($(element));
 
 //    $('<!--sk <div id="p_' + (paragraphId +1) + '"> sk-->').insertBefore($(element));
