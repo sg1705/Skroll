@@ -19,7 +19,7 @@ import java.util.*;
  */
 public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnotatingModel {
 
-    static final int SEC_NUM_ITERATION = 20;
+    static final int SEC_NUM_ITERATION = 10;
     static double[] SEC_ANNOTATING_THRESHOLD = {0, 0.9};
     Document doc;
     NaiveBayesWithMultiNodes secNbmn = null;

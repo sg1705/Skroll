@@ -26,7 +26,10 @@ public class IsParaTitleCaseComputer implements RVValueComputer {
 
         // for simplicity and efficiency, testing only the last word.
         String lastWord = ParaHelper.getLastAlphaWord(m.get(0));
-        if (lastWord == null || lastWord.length() == 0) return 0;
+        if (lastWord == null || lastWord.length() == 0) return -1;
+
+        // return unobserved if there is only one word.
+        if (m.get(0).getTokens().size() == 1) return -1;
 
         return RVValues.booleanToInt(Character.isUpperCase(lastWord.charAt(0)));
 
