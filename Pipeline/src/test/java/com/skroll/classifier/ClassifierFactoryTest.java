@@ -38,12 +38,12 @@ public class ClassifierFactoryTest {
     public void testGetClassifiers() throws Exception {
         List<Classifier> classifiers = classifierFactory.getClassifiers(classifierFactoryStrategyForClassify, doc);
         System.out.println("ClassifierFactory.getClassifiers(): " + classifiers);
-        assert (classifiers.contains(classifierFactory.getClassifier(ClassifierFactory.UNIVERSAL_TOC_CLASSIFIER_ID)));
+        assert (classifiers.contains(classifierFactory.getClassifier(ClassifierFactory.TEN_K_TOC_CLASSIFIER_ID)));
     }
 
     @Test
     public void testGetClassifier() throws Exception {
-        assert(classifierFactory.getClassifier(ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID).getId() == ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID);
+        assert(classifierFactory.getClassifier(ClassifierFactory.TEN_K_TOC_CLASSIFIER_ID).getId() == ClassifierFactory.TEN_K_TOC_CLASSIFIER_ID);
 
     }
 }

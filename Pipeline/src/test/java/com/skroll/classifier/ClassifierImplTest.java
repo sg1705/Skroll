@@ -53,7 +53,7 @@ public class ClassifierImplTest {
         Document document = null;
         try {
             document = (Document)documentClassifier.classify(testingFile,Parser.parseDocumentFromHtmlFile(testingFile));
-            document.setId("");
+            document.setId("1");
         } catch (ParserException e) {
             e.printStackTrace();
             fail("failed to parse document");
