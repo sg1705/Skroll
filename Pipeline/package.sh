@@ -2,9 +2,9 @@
 
 #--------------------
 #GCloud setting
-export USER_ID=skrollioteamsep2015
+export USER_ID=skrollioteamnov2015
 export GCLOUD_INSTANCE_NAME=instance-1
-export GCLOUD_ZONE=us-central1-f
+export GCLOUD_ZONE=us-east1-c
 #---------------------
 
 export PACKAGE_ROOT_DIR=build

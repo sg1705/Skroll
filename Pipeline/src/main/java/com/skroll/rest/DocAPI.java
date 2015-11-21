@@ -104,7 +104,7 @@ public class DocAPI {
             try {
                 content = CharStreams.toString(reader);
                 documentId = UniqueIdGenerator.generateId(content);
-                List<Classifier> classifiers = request.getClassifiers();
+                List<Classifier> classifiers = request.getClassifiersForClassify();
                 document = fetchOrSaveDocument(documentId, content, request.getDocumentFactory(), classifiers);
                 reader.close();
             } catch (Exception e) {
@@ -140,7 +140,7 @@ public class DocAPI {
                     String fDocumentId = documentId;
                     document.setId(documentId);
                     Document fDoc = document;
-                    request.getClassifiers().forEach(c -> c.classify(fDocumentId, fDoc));
+                    request.getClassifiersForClassify().forEach(c -> c.classify(fDocumentId, fDoc));
                     request.getDocumentFactory().putDocument(document);
                     request.getDocumentFactory().saveDocument(document);
                     logger.debug("Added document into the documentMap with a generated hash key:{}", documentId);
@@ -251,7 +251,7 @@ public class DocAPI {
         //Streams require final objects
         final Document finalDoc = document;
         try {
-            request.getClassifiers().forEach(c -> c.classify(documentId, finalDoc));
+            request.getClassifiersForClassify().forEach(c -> c.classify(documentId, finalDoc));
         } catch (Exception e) {
             return logErrorResponse("Failed to classify/store document", e);
         }
@@ -373,7 +373,7 @@ public class DocAPI {
         // persist the document using document id. Let's use the file name
         try {
             if (!parasForUpdateBNI.isEmpty()) {
-                for (Classifier classifier : request.getClassifiers()) {
+                for (Classifier classifier : request.getClassifiersForClassify()) {
                     logger.debug("updateCategoryId: {}", updateCategoryId);
                     //if(classifier.getModelRVSetting().getCategoryId() == updateCategoryId) {
                         doc = (Document) classifier.updateBNI(documentId, doc, parasForUpdateBNI);
@@ -400,7 +400,7 @@ public class DocAPI {
             return logErrorResponse("document cannot be found for document id: " + documentId);
         }
 
-        for (Classifier classifier : request.getClassifiers()) {
+        for (Classifier classifier : request.getClassifiersForTraining()) {
             classifier.trainWithWeight(doc);
             try {
                 classifier.persistModel();
@@ -500,7 +500,7 @@ public class DocAPI {
         }
         try {
             if (!parasForUpdateBNI.isEmpty()) {
-                for (Classifier classifier : request.getClassifiers()) {
+                for (Classifier classifier : request.getClassifiersForClassify()) {
                     doc = (Document) classifier.updateBNI(documentId, doc, parasForUpdateBNI);
                 }
                 request.getDocumentFactory().putDocument(doc);

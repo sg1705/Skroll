@@ -1,8 +1,6 @@
 package com.skroll.rest;
 
-import com.skroll.classifier.Classifier;
-import com.skroll.classifier.ClassifierFactory;
-import com.skroll.classifier.ClassifierFactoryStrategy;
+import com.skroll.classifier.*;
 import com.skroll.document.Document;
 import com.skroll.document.factory.CorpusFSDocumentFactory;
 import com.skroll.document.factory.DocumentFactory;
@@ -24,7 +22,8 @@ public class RequestBean {
 
     private String documentId;
     private Document document;
-    private List<Classifier> classifiers;
+    private List<Classifier> classifiersForTraining;
+    private List<Classifier> classifiersForClassify;
 
     private DocumentFactory documentFactory;
 
@@ -40,7 +39,8 @@ public class RequestBean {
     public RequestBean(@QueryParam("documentId") String documentId,
                        @Context HttpHeaders hh,
                        @CorpusFSDocumentFactory DocumentFactory documentFactory,
-                       ClassifierFactoryStrategy classifierFactoryStrategy,
+                       @ClassifierFactoryStrategyForTraining ClassifierFactoryStrategy classifierFactoryStrategyForTraining,
+                       @ClassifierFactoryStrategyForClassify ClassifierFactoryStrategy classifierFactoryStrategyForClassify,
                        ClassifierFactory classifierFactory) throws Exception {
         if(documentId == null) {
             throw new Exception("documentId passed from viewer is null");
@@ -54,12 +54,17 @@ public class RequestBean {
             this.document = documentFactory.get(documentId);
         }
 
-        this.classifiers = classifierFactory.getClassifiers(classifierFactoryStrategy,document);
+        this.classifiersForTraining = classifierFactory.getClassifiers(classifierFactoryStrategyForTraining,document);
+        this.classifiersForClassify = classifierFactory.getClassifiers(classifierFactoryStrategyForClassify,document);
         this.documentFactory = documentFactory;
     }
 
-    public List<Classifier> getClassifiers() {
-        return classifiers;
+    public List<Classifier> getClassifiersForTraining() {
+        return classifiersForTraining;
+    }
+
+    public List<Classifier> getClassifiersForClassify() {
+        return classifiersForClassify;
     }
     public DocumentFactory getDocumentFactory() { return documentFactory;}
 }

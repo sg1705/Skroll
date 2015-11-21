@@ -104,7 +104,7 @@ public class InstrumentAPI {
             buf.append(probabilityJson);
             buf.append(",");
             */
-            for (Classifier classifier : request.getClassifiers()) {
+            for (Classifier classifier : request.getClassifiersForClassify()) {
                 probabilityJson = gson.toJson("ClassifierId:" + classifier.getId());
                 buf.append(probabilityJson);
                 buf.append(",");
@@ -114,7 +114,7 @@ public class InstrumentAPI {
                 buf.append(",");
             }
 
-            for (Classifier classifier : request.getClassifiers()) {
+            for (Classifier classifier : request.getClassifiersForClassify()) {
                 probabilityJson = gson.toJson("ClassifierId:" + classifier.getId());
                 buf.append(probabilityJson);
                 buf.append(",");
@@ -230,7 +230,7 @@ public class InstrumentAPI {
         // get probabilities
         try {
             Map<String, Double> allPs = new HashMap();
-            for (Classifier classifier : request.getClassifiers()) {
+            for (Classifier classifier : request.getClassifiersForClassify()) {
                 if (classifier.getId() == 1) {
                     allPs = classifier.getProbabilityDataForDoc(document);
                 }

@@ -2,6 +2,7 @@ package com.skroll.classifier;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Key;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.DocTypeAnnotationHelper;
 import com.skroll.parser.Parser;
@@ -14,7 +15,7 @@ import java.util.List;
 public class ClassifierFactoryTest {
 
     ClassifierFactory classifierFactory = null;
-    ClassifierFactoryStrategy classifierFactoryStrategy = null;
+    ClassifierFactoryStrategy classifierFactoryStrategyForClassify = null;
     Document doc = null;
 
     @Before
@@ -22,7 +23,8 @@ public class ClassifierFactoryTest {
         try {
             Injector injector = Guice.createInjector(new SkrollTestGuiceModule());
             classifierFactory = injector.getInstance(ClassifierFactory.class);
-            classifierFactoryStrategy = injector.getInstance(ClassifierFactoryStrategy.class);
+            classifierFactoryStrategyForClassify = injector.getInstance(Key.get(ClassifierFactoryStrategy.class, ClassifierFactoryStrategyForClassify.class));
+
             //create a new document
             doc = Parser.parseDocumentFromHtml("<div><u>This is a awesome</u></div>" +
                     "<div><u>This is a awesome</u></div>" +
@@ -34,7 +36,7 @@ public class ClassifierFactoryTest {
     }
     @Test
     public void testGetClassifiers() throws Exception {
-        List<Classifier> classifiers = classifierFactory.getClassifiers(classifierFactoryStrategy, doc);
+        List<Classifier> classifiers = classifierFactory.getClassifiers(classifierFactoryStrategyForClassify, doc);
         System.out.println("ClassifierFactory.getClassifiers(): " + classifiers);
         assert (classifiers.contains(classifierFactory.getClassifier(ClassifierFactory.UNIVERSAL_TOC_CLASSIFIER_ID)));
     }
