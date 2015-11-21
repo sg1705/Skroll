@@ -39,7 +39,7 @@ public class TOCModelRVSetting extends ModelRVSetting {
                             RVCreater.createDiscreteRVWithComputer(new NotInTableRVComputer(), "notInTable_S"),
                             RVCreater.createDiscreteRVWithComputer(new IsParaTitleCaseComputer(), "isParaTitleCase_S"),
                             RVCreater.createDiscreteRVWithComputer(new EndsWithAlphaWordComputer(), "endsWithAlphaWord_S"),
-                            RVCreater.createDiscreteRVWithComputer(new IsSecondWordNumberComputer(), "isSecondWordNumber_S"),
+                            RVCreater.createDiscreteRVWithComputer(new IsSecondWordStartsWithNumberComputer(), "isSecondWordNumber_S"),
                             RVCreater.createParagraphIsRV (CoreAnnotations.IsItalicAnnotation.class),
                             RVCreater.createParagraphIsRV(CoreAnnotations.IsUnderlineAnnotation.class),
                             RVCreater.createParagraphIsRV(CoreAnnotations.IsBoldAnnotation.class),
