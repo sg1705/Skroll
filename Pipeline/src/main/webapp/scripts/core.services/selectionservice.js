@@ -24,7 +24,9 @@
       serializedSelection = '',
       serializedParagraphId = '',
       shortLink = '',
-      searchSelectionRange = null;
+      searchSelectionRange = null,
+      iframeElement = null,
+      vm = this;
 
     //-- service definition
     var service = {
@@ -42,15 +44,29 @@
       scrollToSelection: scrollToSelection,
       saveSelection: saveSelection,
       clearSelection: clearSelection,
-      removeHighlightParagraph: removeHighlightParagraph
+      removeHighlightParagraph: removeHighlightParagraph,
+      getJQParaElement: getJQParaElement
     }
 
     return service;
 
+    function getJQParaElement(paraId) {
+      if (vm.iframeElement == null) {
+        vm.iframeElement = $(document.getElementById("docViewIframe").contentWindow.document.body);
+      }
+      return $('#' + paraId, vm.iframeElement)[0];
+    }
+
+
     function scrollToParagraph(paragraphId, selectedText) {
       var me = this;
-      var para = $('#' + paragraphId);
-      $('#' + SelectionModel.paragraphId).css('background-color', '');
+      // var para = $('#' + paragraphId);
+      var para = getJQParaElement(paragraphId);
+      // $('#' + SelectionModel.paragraphId).css('background-color', '');
+      if (SelectionModel.paragraphId !== '' && SelectionModel.paragraphId !== undefined) {
+        getJQParaElement(SelectionModel.paragraphId).css('background-color', '');
+      }
+
       if (para != null) {
         var contentDiv = $('#skrollport');
         $('#skrollport').stop(true, true).animate({

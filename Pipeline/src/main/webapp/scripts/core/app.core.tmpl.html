@@ -48,25 +48,30 @@
   <!-- content -->
   <div layout="column" flex >
 
-    <md-toolbar class="skroll-toolbar">
+    <md-toolbar id="toolbar" class="skroll-toolbar">
       <sk-toolbar />
     </md-toolbar>
 
-    <md-content id="skrollport" sk-observe-scroll md-scroll-y>
+    <md-content id="skrollport">
       <div layout="row" flex>
         <!-- hide RHS when small media -->
         <div id="leftcurtain" hide-sm>
         </div>
 
-        <div ng-controller="ViewPortCtrl as viewCtrl" style="width:100%">
-          <md-content flex
+        <div id="content" ng-controller="ViewPortCtrl as viewCtrl" style="width:100%">
+<!--           <md-content flex
             id="content"
             class="md-padding md-whiteframe-z3"
             ng-mouseup="viewCtrl.mouseUp($event)" ng-mousedown="viewCtrl.mouseDown($event)"
             ng-mousemove="viewCtrl.mouseMove($event)" ng-click="viewCtrl.paraClicked($event)"
             layout-padding>
-              <sk-content/>
-            </md-content>
+ -->
+
+            <iframe class="md-whiteframe-z3" onload="resizeFrame()" height="100%" width="100%" scrolling="no" frameborder="0" id="docViewIframe" noborder="noborder" style="overflow: hidden" src="about:blank"></iframe>
+            <sk-content/>
+
+
+<!--             </md-content> -->
         </div>
         <div hide-sm hide-md>
         </div>

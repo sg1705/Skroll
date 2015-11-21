@@ -14,7 +14,7 @@
     .directive('skContent', skContent);
 
   /* @ngInject */
-  function skContent(documentModel, documentService, LHSModel, selectionService, $timeout, $http, $analytics) {
+  function skContent(documentModel, documentService, LHSModel, selectionService, $timeout, $http, $analytics, $document) {
 
     var directive = {
       restricted: 'E',
@@ -40,7 +40,8 @@
             category: 'doc.View',
             label: selectionService.paragraphId
           });
-          element.replaceWith(documentModel.targetHtml);
+          // element.replaceWith(documentModel.targetHtml);
+          insertHtmlInIframe();
           documentModel.isProcessing = false;
           // showGradually();
           documentService.importDoc(documentModel.url, false)
@@ -62,7 +63,8 @@
           documentService.loadDocument(documentModel.documentId)
             .then(function(contentHtml) {
               documentModel.targetHtml = contentHtml;
-              element.replaceWith(documentModel.targetHtml);
+              // element.replaceWith(documentModel.targetHtml);
+              insertHtmlInIframe();
               documentModel.isProcessing = false;
               $analytics.eventTrack(documentModel.documentId, {
                 category: 'doc.View',
@@ -124,7 +126,13 @@
       });
     };
 
-
+    function insertHtmlInIframe() {
+      var iframe = $('#docViewIframe')[0];
+      var iframeDoc = iframe.contentWindow.document;
+      iframeDoc.open();
+      iframeDoc.write(documentModel.targetHtml);
+      iframeDoc.close();
+    }
 
   }
 
