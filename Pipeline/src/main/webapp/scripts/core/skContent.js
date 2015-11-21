@@ -54,9 +54,11 @@
               documentModel.isTocLoaded = true;
               LHSModel.setYOffsetForTerms(LHSModel.smodel.terms);
               return documentService.getIndex(documentModel.documentId);
-            })
+            }, function(data, status) {
+                      console.log(status);
+                         })
             .then(function(data) {
-              console.log(data);
+              documentModel.lunrIndex = lunr.Index.load(data);
             });
         } else {
           documentService.loadDocument(documentModel.documentId)
