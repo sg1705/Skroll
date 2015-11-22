@@ -14,11 +14,12 @@
     .directive('skContent', skContent);
 
   /* @ngInject */
-  function skContent(documentModel, documentService, LHSModel, selectionService, $timeout, $http, $analytics, $document) {
+  function skContent(documentModel, documentService, LHSModel, selectionService, $timeout, $http, $analytics, $window) {
 
     var directive = {
       restricted: 'E',
-      transclude: true,
+      controller: 'ViewPortCtrl',
+      scope: true,
       link: link
     }
 
@@ -31,7 +32,7 @@
      * Complete the partially loaded doc
      * Or load the entire document
      **/
-    function link(scope, element, attrs) {
+    function link(scope, element, attrs, viewCtrl) {
       if (documentModel.documentId != null) {
         documentModel.isProcessing = true;
         if (documentModel.isPartiallyParsed) {
@@ -106,6 +107,35 @@
             });
         }
       }
+
+      function insertHtmlInIframe() {
+        var iframe = $('#docViewIframe')[0];
+        var iframeDoc = iframe.contentWindow.document;
+        iframeDoc.open();
+        iframeDoc.write(documentModel.targetHtml);
+        iframeDoc.close();
+        viewCtrl.resizeFrame();
+        var elmt = angular.element(iframeDoc.body);
+
+        elmt.bind('click', function($event) {
+          viewCtrl.paraClicked($event)
+        });
+
+
+        elmt.bind('mouseup', function($event) {
+          viewCtrl.mouseUp($event)
+        });
+
+        angular.element($window).bind('resize', function($event) {
+          viewCtrl.resetFrameHeight();
+          viewCtrl.resizeFrame();
+        });
+
+
+
+      }
+
+
     }
 
     function showGradually() {
@@ -126,13 +156,6 @@
       });
     };
 
-    function insertHtmlInIframe() {
-      var iframe = $('#docViewIframe')[0];
-      var iframeDoc = iframe.contentWindow.document;
-      iframeDoc.open();
-      iframeDoc.write(documentModel.targetHtml);
-      iframeDoc.close();
-    }
 
   }
 

@@ -1,6 +1,7 @@
 /* variables */
 $icon-width: 24px;
 $skrollport-color : #e0e0e0;
+$docview-color : #ffffff;
 $sm-width: 600px;
 $md-width: 960px;
 $lg-width: 1200px;
@@ -97,6 +98,7 @@ md-toast.skContextMenu {
 **/
 #content {
 
+
   @include desktop {
     min-width: 600px;
     width: calc(80% + 120px);
@@ -127,6 +129,11 @@ md-toast.skContextMenu {
 	padding-left: 7.5%;
 	padding-right: 6%;
 */
+	
+	#docViewIframe {
+		background-color: $docview-color;
+	}
+
 }
 
 

@@ -151,21 +151,5 @@
   ga('send', 'pageview');
 </script>
 
-<script>
-  function resizeFrame() {
-    var mainDiv = document.getElementById("main");
-    var iframeDiv = document.getElementById("docViewIframe");
-    var iframeBody = document.getElementById("docViewIframe").contentWindow.document.body;
-    var skrollportDiv = document.getElementById("skrollport");
-    var toolbar = document.getElementById("toolbar");
-    // iframeDiv.height = mainDiv.offsetHeight - toolbar.offsetHeight;
-    iframeDiv.height = iframeBody.offsetHeight;
-    console.log(iframeBody.offsetHeight);
-    skrollportDiv.height = mainDiv.offsetHeight - toolbar.offsetHeight;
-  }
-
-</script>
-
-
 </html>
 

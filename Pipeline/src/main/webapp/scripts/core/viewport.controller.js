@@ -29,6 +29,8 @@
     vm.paraClicked = paraClicked;
     vm.inferParagraphId = inferParagraphId;
     vm.highlightParagraph = highlightParagraph;
+    vm.resizeFrame = resizeFrame;
+    vm.resetFrameHeight = resetFrameHeight;
 
     //-- initialization
     documentModel.documentId = $routeParams.docId;
@@ -43,7 +45,6 @@
 
     }
 
-
     function mouseDown($event) {
       var selection = window.getSelection().toString();
       var paraId = vm.inferParagraphId($event);
@@ -54,11 +55,11 @@
       console.log("mouseup clicked");
       //should mouse click handle it
       //find out if this is a selection
-      if (rangy.getSelection().toString() != '') {
+      if (selectionService.getRangySelection().toString() != '') {
         //rangy.getSelection().expand("word", { trim: true });
       }
 
-      var selection = window.getSelection().toString();
+      var selection = selectionService.getWindowSelection().toString();
       if ((selection == '') || (selection == undefined))
         return;
 
@@ -101,7 +102,8 @@
 
 
     function highlightParagraph(paraId) {
-      $("#" + paraId).css("background-color", "yellow");
+      var paraElement = selectionService.getJQParaElement(paraId);
+      $(paraElement).css("background-color", "yellow");
     }
 
     // ViewPortCtrl.prototype.removeHighlightParagraph = function(paraId) {
@@ -110,12 +112,7 @@
 
     function inferParagraphId($event) {
       var parents = $($event.target).parents("div[id^='p_']");
-      // for (var ii = 0; ii < parents.length; ii++) {
-      //   console.log($(parents[ii]).attr('id'));
-      // }
-
       var children = $($event.target).children("div[id^='p_']");
-      //console.log('children:' + children.length);
       if (parents.length > 1) {
         return $(parents[0]).attr('id');
       } else {
@@ -127,6 +124,24 @@
       }
 
     }
+
+    function resizeFrame() {
+      var iframeDiv = document.getElementById("docViewIframe");
+      var iframeBody = document.getElementById("docViewIframe").contentWindow.document.body;
+      iframeDiv.height = iframeBody.offsetHeight + "px";
+      iframeDiv.height = iframeBody.offsetHeight + "px";
+
+
+    }
+
+    function resetFrameHeight() {
+      var iframeDiv = document.getElementById("docViewIframe");
+      var iframeBody = document.getElementById("docViewIframe").contentWindow.document.body;
+      iframeDiv.height = 0;
+      resizeFrame();
+    }
+
+
   }
 
 })();

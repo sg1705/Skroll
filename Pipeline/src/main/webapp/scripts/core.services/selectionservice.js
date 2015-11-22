@@ -45,7 +45,9 @@
       saveSelection: saveSelection,
       clearSelection: clearSelection,
       removeHighlightParagraph: removeHighlightParagraph,
-      getJQParaElement: getJQParaElement
+      getJQParaElement: getJQParaElement,
+      getRangySelection: getRangySelection,
+      getWindowSelection: getWindowSelection
     }
 
     return service;
@@ -54,8 +56,25 @@
       if (vm.iframeElement == null) {
         vm.iframeElement = $(document.getElementById("docViewIframe").contentWindow.document.body);
       }
-      return $('#' + paraId, vm.iframeElement)[0];
+      return $('#' + paraId, vm.iframeElement);
     }
+
+    function getIframeElement() {
+      if (vm.iframeElement == null) {
+        vm.iframeElement = $(document.getElementById("docViewIframe").contentWindow.document.body);
+      }
+      return vm.iframeElement;
+    }
+
+    function getRangySelection() {
+      return rangy.getSelection(document.getElementById("docViewIframe"));
+    }
+
+    function getWindowSelection() {
+     return document.getElementById("docViewIframe").contentWindow.getSelection();
+    }
+
+
 
 
     function scrollToParagraph(paragraphId, selectedText) {
@@ -112,8 +131,10 @@
       var savedSelection = JSON.parse(selectionId);
       var rangySelection = savedSelection.rangy;
       var paraId = savedSelection.paraId;
-      rangy.getSelection().restoreCharacterRanges($('#' + paraId).get(0), rangySelection);
-      var selection = rangy.getSelection();
+      // rangy.getSelection().restoreCharacterRanges($('#' + paraId).get(0), rangySelection);
+      rangy.getSelection(document.getElementById("docViewIframe")).restoreCharacterRanges($('#' + paraId, getIframeElement()).get(0), rangySelection);
+      var selection = rangy.getSelection(document.getElementById("docViewIframe"));
+      // var selection = rangy.getSelection();
       var dom = selection.anchorNode;
       var para = $(dom);
       //assuming that node is a text node
@@ -138,7 +159,12 @@
       this.serializedParagraphId = paraId;
       this.shortLink = '';
       var selection = {};
-      selection.rangy = rangy.getSelection().saveCharacterRanges($('#' + paraId).get(0));
+      // selection.rangy = rangy.getSelection().saveCharacterRanges($('#' + paraId).get(0));
+      var iframe = $(document.getElementById("docViewIframe").contentWindow.document.body);
+      selection.rangy = rangy.getSelection(document.getElementById("docViewIframe")).saveCharacterRanges($('#' + paraId, getIframeElement()).get(0));
+      // selection.rangy = rangy.getSelection(getIframeElement()[0]).saveCharacterRanges(getJQParaElement()[0]);
+      // selection.rangy = rangy.getSelection().saveCharacterRanges($('#' + paraId, getIframeElement()).get(0));
+
       selection.paraId = paraId;
       this.serializedSelection = JSON.stringify(selection);
       this.serializedSelection = encodeURIComponent(encodeURIComponent(this.serializedSelection));
