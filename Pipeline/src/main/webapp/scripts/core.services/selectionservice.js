@@ -193,7 +193,7 @@
     }
 
     function removeHighlightParagraph(paraId) {
-      $('#' + paraId).css('background-color', '');
+      getJQParaElement(paraId).css('background-color', '');
     }
 
   };
