@@ -69,10 +69,10 @@ public class InstrumentAPI {
         String probabilityJson;
         buf.append("[");
         int paraIndex = 0;
-        probabilityJson = gson.toJson("DocType:" + DocTypeAnnotationHelper.getDocType(document));
+        probabilityJson = gson.toJson("DocType Annotation : ");
         buf.append(probabilityJson);
         buf.append(",");
-        probabilityJson = gson.toJson("DocType Training Weight:" + DocTypeAnnotationHelper.getDocTypeTrainingWeight(document));
+        probabilityJson = gson.toJson(DocTypeAnnotationHelper.getDocLevelCategoryAnnotation(document));
         buf.append(probabilityJson);
         buf.append(",");
 
@@ -104,7 +104,7 @@ public class InstrumentAPI {
             buf.append(probabilityJson);
             buf.append(",");
             */
-            for (Classifier classifier : request.getClassifiersForClassify()) {
+            for (Classifier classifier : request.getClassifiersForClassify(document)) {
                 probabilityJson = gson.toJson("ClassifierId:" + classifier.getId());
                 buf.append(probabilityJson);
                 buf.append(",");
@@ -114,7 +114,7 @@ public class InstrumentAPI {
                 buf.append(",");
             }
 
-            for (Classifier classifier : request.getClassifiersForClassify()) {
+            for (Classifier classifier : request.getClassifiersForClassify(document)) {
                 probabilityJson = gson.toJson("ClassifierId:" + classifier.getId());
                 buf.append(probabilityJson);
                 buf.append(",");
@@ -230,7 +230,7 @@ public class InstrumentAPI {
         // get probabilities
         try {
             Map<String, Double> allPs = new HashMap();
-            for (Classifier classifier : request.getClassifiersForClassify()) {
+            for (Classifier classifier : request.getClassifiersForClassify(document)) {
                 if (classifier.getId() == 1) {
                     allPs = classifier.getProbabilityDataForDoc(document);
                 }

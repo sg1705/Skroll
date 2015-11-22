@@ -218,16 +218,7 @@ public class Trainer {
         for (File f : iterable) {
             if (f.isFile()) {
                 Document document = corpusDocumentFactory.get(f.getName());
-                Document singleParaDoc = singleParaDocumentFactory.get(f.getName());
-                try {
-                    for ( Classifier classifier : classifierFactory.getClassifiers(classifierFactoryStrategy, singleParaDoc)) {
-                        classifier.classify(singleParaDoc.getId(), singleParaDoc);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                int docType = DocTypeAnnotationHelper.extractDocTypeFromSingleParaDocument(singleParaDoc.getParagraphs().get(0));
-                DocTypeAnnotationHelper.annotateDocType(document,docType);
+                DocTypeAnnotationHelper.classifyDocType(classifierFactory.getClassifiers(classifierFactoryStrategy, document),document);
                 logger.info("classify file {} as docType {}", f.getName(), DocTypeAnnotationHelper.getDocType(document));
                 corpusDocumentFactory.saveDocument(document);
             }
