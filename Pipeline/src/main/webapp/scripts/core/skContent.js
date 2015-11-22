@@ -112,7 +112,14 @@
         var iframe = $('#docViewIframe')[0];
         var iframeDoc = iframe.contentWindow.document;
         iframeDoc.open();
-        iframeDoc.write(documentModel.targetHtml);
+        iframeDoc.write(documentModel.targetHtml + '<style> \
+          .selected-para-rhs { \
+            background-color: #fff7e5; \
+          } \
+          .searched-text-rhs { \
+            color: #FF6138; \
+          } \
+          </style>');
         iframeDoc.close();
         viewCtrl.resizeFrame();
         var elmt = angular.element(iframeDoc.body);

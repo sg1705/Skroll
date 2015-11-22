@@ -66,6 +66,12 @@
       return vm.iframeElement;
     }
 
+    function getIframeDocument() {
+      return document.getElementById("docViewIframe").contentWindow.document;
+    }
+
+
+
     function getRangySelection() {
       return rangy.getSelection(document.getElementById("docViewIframe"));
     }
@@ -88,18 +94,20 @@
 
       if (para != null) {
         var contentDiv = $('#skrollport');
-        $('#skrollport').stop(true, true).animate({
-          scrollTop: ($('#skrollport').scrollTop() - 200 + $(para).offset().top)
-        }, 'slow');
-        $('.selected-para-rhs').toggleClass('selected-para-rhs', false);
-        //$('.searched-text-rhs').toggleClass('searched-text-rhs', false);
+        contentDiv.stop(true, true).animate({
+              scrollTop: ($(para).offset().top)
+          }, 'slow');
+
+
+        // $('.selected-para-rhs').toggleClass('selected-para-rhs', false);
+        $('.selected-para-rhs', getIframeElement()).toggleClass('selected-para-rhs', false);
         para.toggleClass('selected-para-rhs', true);
 
         var searchResultApplier = rangy.createClassApplier('searched-text-rhs');
 
         // Remove existing highlights
         var prevRange = service.searchSelectionRange;
-        var range = rangy.createRange();
+        var range = rangy.createRange(getIframeDocument());
         var searchScopeRange = rangy.createRange();
         searchScopeRange.selectNodeContents(para[0]);
 
