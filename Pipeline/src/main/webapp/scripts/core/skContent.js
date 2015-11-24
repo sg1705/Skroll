@@ -142,8 +142,10 @@
         });
 
         angular.element($window).bind('resize', function($event) {
-          viewCtrl.resetFrameHeight();
-          viewCtrl.resizeFrame();
+          $timeout(function() {
+            viewCtrl.resetFrameHeight();
+          }, 200);
+          // viewCtrl.resizeFrame();
         });
 
 

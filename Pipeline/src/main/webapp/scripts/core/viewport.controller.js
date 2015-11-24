@@ -16,7 +16,7 @@
   function ViewPortCtrl(selectionService, $log, $routeParams,
     scrollObserverService, clickObserverService,
     textSelectionObserverService,
-    mouseEnterObserverService, mouseLeaveObserverService) {
+    mouseEnterObserverService, mouseLeaveObserverService, $timeout) {
 
     //-- private variables
     var vm = this;
@@ -128,15 +128,14 @@
     function resizeFrame() {
       var iframeDiv = document.getElementById("docViewIframe");
       var iframeBody = document.getElementById("docViewIframe").contentWindow.document.body;
+      console.log('iFrame scroll height:' + iframeBody.scrollHeight);
+      console.log('iFrame offsetHeight:' + iframeBody.scrollHeight);
       iframeDiv.height = iframeBody.offsetHeight + "px";
       iframeDiv.height = iframeBody.offsetHeight + "px";
-
-
     }
 
     function resetFrameHeight() {
       var iframeDiv = document.getElementById("docViewIframe");
-      var iframeBody = document.getElementById("docViewIframe").contentWindow.document.body;
       iframeDiv.height = 0;
       resizeFrame();
     }
