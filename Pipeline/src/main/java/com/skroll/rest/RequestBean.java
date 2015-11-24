@@ -29,7 +29,6 @@ public class RequestBean {
     private ClassifierFactoryStrategy  classifierFactoryStrategyForDocType;
 
     private DocumentFactory documentFactory;
-    private DocumentFactory singleParaFSDocumentFactory;
 
     public String getDocumentId() {
         return documentId;
@@ -43,13 +42,11 @@ public class RequestBean {
     public RequestBean(@QueryParam("documentId") String documentId,
                        @Context HttpHeaders hh,
                        @CorpusFSDocumentFactory DocumentFactory documentFactory,
-                       @SingleParaFSDocumentFactory DocumentFactory singleParaFSDocumentFactory,
                        @ClassifierFactoryStrategyForTraining ClassifierFactoryStrategy classifierFactoryStrategyForTraining,
                        @ClassifierFactoryStrategyForClassify ClassifierFactoryStrategy classifierFactoryStrategyForClassify,
                        @ClassifierFactoryStrategyForDocType ClassifierFactoryStrategy classifierFactoryStrategyForDocType,
                        ClassifierFactory classifierFactory) throws Exception {
         this.documentFactory = documentFactory;
-        this.singleParaFSDocumentFactory = singleParaFSDocumentFactory;
         this.classifierFactory = classifierFactory;
         this.classifierFactoryStrategyForTraining = classifierFactoryStrategyForTraining;
         this.classifierFactoryStrategyForClassify = classifierFactoryStrategyForClassify;
@@ -82,6 +79,4 @@ public class RequestBean {
 
     }
     public DocumentFactory getDocumentFactory() { return documentFactory;}
-
-    public DocumentFactory getSingleParaFSDocumentFactory() { return singleParaFSDocumentFactory;}
 }

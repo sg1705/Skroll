@@ -18,6 +18,7 @@ public class SkrollTestGuiceModule extends AbstractModule {
         bind(PhantomJsExtractor.class);
         bind(ClassifierFactoryStrategy.class).annotatedWith(ClassifierFactoryStrategyForClassify.class).to(DefaultClassifierFactoryStrategyForClassify.class);
         bind(ClassifierFactoryStrategy.class).annotatedWith(ClassifierFactoryStrategyForTraining.class).to(DefaultClassifierFactoryStrategyForTraining.class);
+        bind(ClassifierFactoryStrategy.class).annotatedWith(ClassifierFactoryStrategyForDocType.class).to(DocTypeClassifierFactoryStrategy.class);
 
         //default binding
         bind(DocumentFactory.class)
