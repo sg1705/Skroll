@@ -257,6 +257,8 @@ public class DocAPI {
         //Streams require final objects
         final Document finalDoc = document;
         try {
+            DocTypeAnnotationHelper.classifyDocType(request.getClassifiersForDocType(document), finalDoc);
+            logger.info("DocType:" + DocTypeAnnotationHelper.getDocType(finalDoc));
             request.getClassifiersForClassify(finalDoc).forEach(c -> c.classify(documentId, finalDoc));
         } catch (Exception e) {
             return logErrorResponse("Failed to classify/store document", e);
