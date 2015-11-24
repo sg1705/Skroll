@@ -17,9 +17,9 @@
   function skContent(documentModel, documentService, LHSModel, selectionService, $timeout, $http, $analytics, $window) {
 
     var directive = {
-      restricted: 'E',
+      restricted: 'EA',
       controller: 'ViewPortCtrl',
-      scope: true,
+      scope: false,
       link: link
     }
 
@@ -41,10 +41,12 @@
             category: 'doc.View',
             label: selectionService.paragraphId
           });
-          // element.replaceWith(documentModel.targetHtml);
-          insertHtmlInIframe();
-          documentModel.isProcessing = false;
-          // showGradually();
+
+          $timeout(function() {
+            insertHtmlInIframe();
+            documentModel.isProcessing = false;
+          }, 0);
+
           documentService.importDoc(documentModel.url, false)
             .then(function(data) {
               documentModel.isPartiallyParsed = false;
@@ -113,6 +115,12 @@
         var iframeDoc = iframe.contentWindow.document;
         iframeDoc.open();
         iframeDoc.write(documentModel.targetHtml + '<style> \
+          ::selection { \
+              background: #F8E0F7; \
+          } \
+          ::-moz-selection { \
+              background: #F8E0F7; \
+          } \
           .selected-para-rhs { \
             background-color: #fff7e5; \
           } \
