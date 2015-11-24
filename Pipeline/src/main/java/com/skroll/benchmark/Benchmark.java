@@ -38,9 +38,12 @@ public class Benchmark {
             logger.error("both benchamrk docuemnts can not pointing to the same document");
             return null;
         }
+        int type1Error = 0;
+        int type2Error = 0;
         for(CoreMap firstDocParagraph : firstDoc.getParagraphs()) {
             for(CoreMap secondDocParagraph : secondDoc.getParagraphs()) {
                 if (firstDocParagraph.getId().equalsIgnoreCase(secondDocParagraph.getId())) {
+
                     for (QC.Stats stats : qc.stats) {
                         if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(firstDocParagraph, stats.categoyId)) {
                             stats.overallOccurance++;
@@ -52,19 +55,24 @@ public class Benchmark {
                                 CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(secondDocParagraph, stats.categoyId))
                          {
                              // false positive
-                             logger.trace("category [{}] type1Error [{}]",stats.categoyId, firstDocParagraph.getText());
+                             type1Error++;
+                             logger.debug("category [{}] type1Error [{}]", stats.categoyId, firstDocParagraph.getText());
                             stats.type1Error++;
                         } else if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(firstDocParagraph, stats.categoyId) &&
                                 !CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(secondDocParagraph, stats.categoyId)) {
                             // false negative
-                            logger.trace("category [{}] type2Error [{}]",stats.categoyId, firstDocParagraph.getText());
+                            type2Error++;
+                            logger.debug("category [{}] type2Error [{}]", stats.categoyId, firstDocParagraph.getText());
                             stats.type2Error++;
                         }
                     }
+
                     break;
                 }
             }
         }
+        logger.info("type1Error [{}] for document {}", type1Error, firstDoc.getId());
+        logger.info("type2Error [{}] for document {}", type2Error, firstDoc.getId());
         return qc;
     }
 
