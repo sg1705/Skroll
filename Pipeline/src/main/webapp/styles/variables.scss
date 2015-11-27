@@ -1,0 +1,30 @@
+/* variables */
+$icon-width: 24px;
+$skrollport-color : #e0e0e0;
+$docview-color : #ffffff;
+$sm-width: 600px;
+$md-width: 960px;
+$lg-width: 1200px;
+
+* {
+	outline: none;
+}
+
+@mixin phone {
+  @media (max-width: #{$sm-width - 1px}) {
+    @content;
+  }
+}
+
+
+@mixin tablet {
+  @media (min-width: #{$sm-width}) and (max-width: #{$md-width - 1px}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{$md-width}) {
+    @content;
+  }
+}
