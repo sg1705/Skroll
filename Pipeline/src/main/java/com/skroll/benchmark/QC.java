@@ -13,9 +13,13 @@ public class QC {
     List<Stats> stats = new ArrayList<>();
 
     public QC() {
+        stats.add(new Stats(Category.TOC_1));
+        stats.add(new Stats(Category.TOC_2));
+        /*
         for (int category : Category.getCategoriesExcludingNONE()){
             stats.add(new Stats(category));
         }
+        */
     }
     public void calculateQCScore() {
         for (Stats stat : stats){

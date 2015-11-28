@@ -6,8 +6,6 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 import com.google.common.primitives.Ints;
-import com.skroll.pipeline.Pipeline;
-import com.skroll.pipeline.Pipes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,6 +86,8 @@ public class QueryProcessor {
                 String fuzzyMatch = (String) companyNameMap.get(token.toLowerCase());
                 if (fuzzyMatch != null) {
                     newTokens.add(fuzzyMatch);
+                    newTokens.add("or");
+                    newTokens.add(token);
                 } else {
                     newTokens.add(token);
                 }

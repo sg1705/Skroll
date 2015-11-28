@@ -1,11 +1,10 @@
 package com.skroll.rest;
 
-import com.skroll.classifier.Classifier;
-import com.skroll.classifier.ClassifierFactory;
-import com.skroll.classifier.ClassifierFactoryStrategy;
+import com.skroll.classifier.*;
 import com.skroll.document.Document;
 import com.skroll.document.factory.CorpusFSDocumentFactory;
 import com.skroll.document.factory.DocumentFactory;
+import com.skroll.document.factory.SingleParaFSDocumentFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +23,10 @@ public class RequestBean {
 
     private String documentId;
     private Document document;
-    private List<Classifier> classifiers;
+    private ClassifierFactory classifierFactory;
+    private ClassifierFactoryStrategy classifierFactoryStrategyForTraining;
+    private ClassifierFactoryStrategy  classifierFactoryStrategyForClassify;
+    private ClassifierFactoryStrategy  classifierFactoryStrategyForDocType;
 
     private DocumentFactory documentFactory;
 
@@ -40,8 +42,16 @@ public class RequestBean {
     public RequestBean(@QueryParam("documentId") String documentId,
                        @Context HttpHeaders hh,
                        @CorpusFSDocumentFactory DocumentFactory documentFactory,
-                       ClassifierFactoryStrategy classifierFactoryStrategy,
+                       @ClassifierFactoryStrategyForTraining ClassifierFactoryStrategy classifierFactoryStrategyForTraining,
+                       @ClassifierFactoryStrategyForClassify ClassifierFactoryStrategy classifierFactoryStrategyForClassify,
+                       @ClassifierFactoryStrategyForDocType ClassifierFactoryStrategy classifierFactoryStrategyForDocType,
                        ClassifierFactory classifierFactory) throws Exception {
+        this.documentFactory = documentFactory;
+        this.classifierFactory = classifierFactory;
+        this.classifierFactoryStrategyForTraining = classifierFactoryStrategyForTraining;
+        this.classifierFactoryStrategyForClassify = classifierFactoryStrategyForClassify;
+        this.classifierFactoryStrategyForDocType = classifierFactoryStrategyForDocType;
+
         if(documentId == null) {
             throw new Exception("documentId passed from viewer is null");
         }
@@ -54,12 +64,19 @@ public class RequestBean {
             this.document = documentFactory.get(documentId);
         }
 
-        this.classifiers = classifierFactory.getClassifiers(classifierFactoryStrategy,document);
-        this.documentFactory = documentFactory;
     }
 
-    public List<Classifier> getClassifiers() {
-        return classifiers;
+    public List<Classifier> getClassifiersForTraining(Document document) throws Exception {
+        return classifierFactory.getClassifiers(classifierFactoryStrategyForTraining,document);
+    }
+
+    public List<Classifier> getClassifiersForClassify(Document document) throws Exception {
+        return classifierFactory.getClassifiers(classifierFactoryStrategyForClassify,document);
+
+    }
+    public List<Classifier> getClassifiersForDocType(Document document) throws Exception {
+        return classifierFactory.getClassifiers(classifierFactoryStrategyForDocType,document);
+
     }
     public DocumentFactory getDocumentFactory() { return documentFactory;}
 }

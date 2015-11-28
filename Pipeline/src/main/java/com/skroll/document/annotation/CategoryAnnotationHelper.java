@@ -311,10 +311,10 @@ public class CategoryAnnotationHelper {
      * For a given paragraph, for each categories, copy the current category weight into the prior category weight.
      * @param paragraph
      */
-    public static void copyCurrentCategoryWeightsToPrior(CoreMap paragraph){
+    public static void copyCurrentCategoryWeightsToPrior(CoreMap paragraph,List<Integer> categories){
         HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
         if (categoryAnnotation==null) return;
-        for (int categoryId : Category.getCategories()) {
+        for (int categoryId : categories) {
             CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
             if(annotationCoreMap!=null){
                 float currentWeight = annotationCoreMap.get(CoreAnnotations.CurrentCategoryWeightFloat.class);
@@ -322,6 +322,22 @@ public class CategoryAnnotationHelper {
                 logger.debug("{} \t {} \t {}", paragraph.getId(), categoryId, currentWeight);
             }
         }
+    }
+
+    /**
+     * For a given paragraph, for each categories, copy the current category weight into the prior category weight.
+     * @param paragraph
+     */
+    public static void copyCurrentCategoryWeightsToPrior(CoreMap paragraph){
+        copyCurrentCategoryWeightsToPrior(paragraph,Category.getCategories());
+    }
+
+    /**
+     * For a given paragraph, for each categories, copy the current category weight into the prior category weight.
+     * @param paragraph
+     */
+    public static void copyCurrentCategoryWeightsToPriorForDocType(CoreMap paragraph){
+        copyCurrentCategoryWeightsToPrior(paragraph,Category.getDocType());
     }
 
     /**

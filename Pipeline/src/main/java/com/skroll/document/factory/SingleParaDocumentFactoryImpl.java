@@ -41,7 +41,7 @@ public class SingleParaDocumentFactoryImpl extends FileSystemDocumentFactoryImpl
             logger.error("doc is not Found in cache: {}", e.getMessage());
             return null;
         }
-        return getEntireDocCollaspedAsSingleParagraph(doc);
+        return DocTypeAnnotationHelper.getEntireDocCollaspedAsSingleParagraph(doc);
     }
 
     @Override
@@ -74,24 +74,5 @@ public class SingleParaDocumentFactoryImpl extends FileSystemDocumentFactoryImpl
         return false;
     }
 
-    public Document getEntireDocCollaspedAsSingleParagraph(Document entireDocument) throws Exception{
 
-        Document singleParaDocument = new Document();
-        CoreMap singleParagraph = new CoreMap("collapsedPara", "collapsedPara");
-
-        List<Token> allTokens = entireDocument.getParagraphs()
-                .stream()
-                .flatMap( paragraph -> paragraph.get(CoreAnnotations.TokenAnnotation.class).stream())
-                .collect(Collectors.toList());
-        singleParagraph.set(TokenAnnotation.class, allTokens);
-        List<CoreMap> paraList = new ArrayList<>();
-        paraList.add(singleParagraph);
-        int docType = DocTypeAnnotationHelper.getDocType(entireDocument);
-        float currentWeight = DocTypeAnnotationHelper.getDocTypeTrainingWeight(entireDocument);
-        CategoryAnnotationHelper.annotateCategoryWeight(singleParagraph, docType,currentWeight);
-        boolean isUserObserved = entireDocument.containsKey(CoreAnnotations.IsUserObservationAnnotation.class);
-        singleParagraph.set(CoreAnnotations.IsUserObservationAnnotation.class, isUserObserved);
-        singleParaDocument.set(CoreAnnotations.ParagraphsAnnotation.class, paraList);
-        return singleParaDocument;
-    }
 }

@@ -1,12 +1,18 @@
 package com.skroll.document.annotation;
 
 import com.skroll.classifier.Category;
+import com.skroll.classifier.Classifier;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
+import com.skroll.document.Token;
+import com.skroll.document.factory.DocumentFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * DocTypeAnnotationHelper provides the functionality related to categoryAnnotation at the document level.
@@ -32,8 +38,31 @@ public class DocTypeAnnotationHelper {
         }
         return Category.DOCTYPE_NONE;
     }
+    /**
+     * For a document, from the document level annotation, get the docType.
+     * @param document
+     * @return List of List of Token String
+     */
+    public static HashMap<Integer, CoreMap>  getDocLevelCategoryAnnotation(CoreMap document) {
+         return document.get(CoreAnnotations.CategoryAnnotations.class);
+    }
+    /**
+     * For a document, from the document level annotation, get the docType.
+     * @param document
+     * @return List of List of Token String
+     */
+    public static void copyDocLevelCategoryAnnotationToParaLevel(CoreMap document, CoreMap paragraph) {
+        paragraph.set(CoreAnnotations.CategoryAnnotations.class, document.get(CoreAnnotations.CategoryAnnotations.class));
+    }
 
-
+    /**
+     * For a document, from the document level annotation, get the docType.
+     * @param document
+     * @return List of List of Token String
+     */
+    public static void copyParaLevelCategoryAnnotationToDocLevel(CoreMap document, CoreMap paragraph) {
+        document.set(CoreAnnotations.CategoryAnnotations.class, paragraph.get(CoreAnnotations.CategoryAnnotations.class));
+    }
     /**
      * For a document, from the document level annotation, get the weight of docType.
      * @param document
@@ -95,5 +124,68 @@ public class DocTypeAnnotationHelper {
         CoreMap annotationCoreMap  = new CoreMap();
         categoryAnnotation.put(docType,annotationCoreMap);
         doc.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
+    }
+
+    public static void trainDocType (List <Classifier> classifiersForDocType, Document document) throws Exception
+    {
+        Document singleParaDoc = getEntireDocCollaspedAsSingleParagraph(document);
+        //iterate over each paragraph
+        if (singleParaDoc == null) {
+            logger.error("Document can't be parsed. failed to train the model");
+            return;
+        }
+        try {
+            for (Classifier classifier : classifiersForDocType) {
+                classifier.trainWithWeight(singleParaDoc);
+                classifier.persistModel();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        for (CoreMap paragraph : singleParaDoc.getParagraphs()) {
+            if (paragraph.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)) {
+                CategoryAnnotationHelper.copyCurrentCategoryWeightsToPriorForDocType(paragraph);
+            }
+        }
+        copyParaLevelCategoryAnnotationToDocLevel(document,singleParaDoc.getParagraphs().get(0));
+    }
+
+    public static void classifyDocType (List<Classifier> classifiersForDocType, Document document) throws Exception {
+
+        Document singleParaDoc = getEntireDocCollaspedAsSingleParagraph(document);
+        try {
+            for (Classifier classifier : classifiersForDocType) {
+                classifier.classify(singleParaDoc.getId(), singleParaDoc);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        copyParaLevelCategoryAnnotationToDocLevel(document,singleParaDoc.getParagraphs().get(0));
+        //int docType = DocTypeAnnotationHelper.extractDocTypeFromSingleParaDocument(singleParaDoc.getParagraphs().get(0));
+        //DocTypeAnnotationHelper.annotateDocType(document,docType);
+    }
+
+    public static Document getEntireDocCollaspedAsSingleParagraph(Document entireDocument) throws Exception{
+
+        Document singleParaDocument = new Document();
+        CoreMap singleParagraph = new CoreMap("collapsedPara", "collapsedPara");
+
+        List<Token> allTokens = entireDocument.getParagraphs()
+                .stream()
+                .flatMap( paragraph -> paragraph.get(CoreAnnotations.TokenAnnotation.class).stream())
+                .collect(Collectors.toList());
+        singleParagraph.set(CoreAnnotations.TokenAnnotation.class, allTokens);
+        DocTypeAnnotationHelper.copyDocLevelCategoryAnnotationToParaLevel(entireDocument,singleParagraph);
+        List<CoreMap> paraList = new ArrayList<>();
+        paraList.add(singleParagraph);
+       /*
+        int docType = DocTypeAnnotationHelper.getDocType(entireDocument);
+        float currentWeight = DocTypeAnnotationHelper.getDocTypeTrainingWeight(entireDocument);
+        CategoryAnnotationHelper.annotateCategoryWeight(singleParagraph, docType,currentWeight);
+        */
+        boolean isUserObserved = entireDocument.containsKey(CoreAnnotations.IsUserObservationAnnotation.class);
+        singleParagraph.set(CoreAnnotations.IsUserObservationAnnotation.class, isUserObserved);
+        singleParaDocument.set(CoreAnnotations.ParagraphsAnnotation.class, paraList);
+        return singleParaDocument;
     }
 }

@@ -2,8 +2,11 @@ package com.skroll.benchmark;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Key;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.classifier.ClassifierFactoryStrategy;
+import com.skroll.classifier.ClassifierFactoryStrategyForClassify;
+import com.skroll.classifier.ClassifierFactoryStrategyForTraining;
 import com.skroll.document.factory.BenchmarkFSDocumentFactoryImpl;
 import com.skroll.document.factory.DocumentFactory;
 import com.skroll.util.SkrollTestGuiceModule;
@@ -20,9 +23,9 @@ public class BenchmarkTest {
     public void setup() throws Exception {
         Injector injector = Guice.createInjector(new SkrollTestGuiceModule());
         ClassifierFactory classifierFactory = injector.getInstance(ClassifierFactory.class);
-        ClassifierFactoryStrategy classifierFactoryStrategy = injector.getInstance(ClassifierFactoryStrategy.class);
+        ClassifierFactoryStrategy classifierFactoryStrategyForClassify = injector.getInstance(Key.get(ClassifierFactoryStrategy.class, ClassifierFactoryStrategyForClassify.class));
         DocumentFactory documentFactory = injector.getInstance(BenchmarkFSDocumentFactoryImpl.class);
-        benchmark = new Benchmark(documentFactory,classifierFactory,classifierFactoryStrategy);
+        benchmark = new Benchmark(documentFactory,classifierFactory,classifierFactoryStrategyForClassify);
     }
     @Test
     public void testBenchmark(){
