@@ -160,8 +160,8 @@ public class DocAPI {
         }
         return Response.status(Response.Status.OK)
                     .header("documentId", documentId)
-                    .header("inCache",inCache)
-                    .entity(document.getTarget().getBytes(Constants.DEFAULT_CHARSET))
+                    .header("inCache", inCache)
+                    .entity(DocumentHelper.getProcessedHtml(document).getBytes(Constants.DEFAULT_CHARSET))
                     .type(MediaType.TEXT_HTML).build();
     }
 
@@ -240,7 +240,7 @@ public class DocAPI {
     @GET
     @Path("/getDoc")
     @Produces(MediaType.TEXT_HTML)
-    public Response getDoc(@QueryParam("documentId") String documentId, @Context HttpHeaders hh, @BeanParam RequestBean request) {
+    public Response getDoc(@QueryParam("documentId") String documentId, @Context HttpHeaders hh, @BeanParam RequestBean request) throws Exception {
 
         logger.info("Opening [{}]", documentId);
         Document document = request.getDocument();
@@ -257,7 +257,7 @@ public class DocAPI {
         }
         return Response.status(Response.Status.OK)
                 .header("documentId", documentId)
-                .entity(document.getTarget().getBytes(Constants.DEFAULT_CHARSET))
+                .entity(DocumentHelper.getProcessedHtml(document).getBytes(Constants.DEFAULT_CHARSET))
                 .type(MediaType.TEXT_HTML).build();
     }
 

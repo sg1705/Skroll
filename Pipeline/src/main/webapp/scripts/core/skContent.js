@@ -68,18 +68,12 @@
           documentService.loadDocument(documentModel.documentId)
             .then(function(contentHtml) {
               documentModel.targetHtml = contentHtml;
-              // element.replaceWith(documentModel.targetHtml);
               insertHtmlInIframe();
               documentModel.isProcessing = false;
               $analytics.eventTrack(documentModel.documentId, {
                 category: 'doc.View',
                 label: selectionService.paragraphId
               });
-              // if ((selectionService.serializedSelection === undefined) || (selectionService.serializedSelection == "undefined")) {
-              //   showGradually();
-              // } else {
-              //   showEntireDoc();
-              // }
               return documentService.getTerms(documentModel.documentId);
             })
             .then(function(terms) {
@@ -98,7 +92,7 @@
                 documentModel.isProcessing = false;
                 //calculate offsets for headers
                 //iterate over each term to find Y offset
-                LHSModel.setYOffsetForTerms(LHSModel.smodel.terms);
+                // LHSModel.setYOffsetForTerms(LHSModel.smodel.terms);
 
                 documentModel.isProcessing = false;
               }
@@ -113,25 +107,21 @@
       }
 
       function insertHtmlInIframe() {
+        if (navigator.userAgent.indexOf('iPhone') > -1) {
+          $('#docViewIframe').attr('scrolling', 'no');
+          $('#docViewIframe').wrap('<md-content id="docViewIframeParent"></md-content>');
+        }
+
         var iframe = $('#docViewIframe')[0];
         var iframeDoc = iframe.contentWindow.document;
+
         iframeDoc.open();
-        iframeDoc.write(documentModel.targetHtml + '<style> \
-          ::selection { \
-              background: #F8E0F7; \
-          } \
-          ::-moz-selection { \
-              background: #F8E0F7; \
-          } \
-          .selected-para-rhs { \
-            background-color: #fff7e5; \
-          } \
-          .searched-text-rhs { \
-            color: #FF6138; \
-          } \
-          </style>');
+        iframeDoc.write(documentModel.targetHtml);
         iframeDoc.close();
-        viewCtrl.resizeFrame();
+        // if (navigator.userAgent.indexOf('Chrome') > -1) {
+          viewCtrl.resizeFrame();
+        // }
+
         var elmt = angular.element(iframeDoc.body);
 
         elmt.bind('click', function($event) {
@@ -147,34 +137,9 @@
           $timeout(function() {
             viewCtrl.resetFrameHeight();
           }, 200);
-          // viewCtrl.resizeFrame();
         });
-
-
-
       }
-
-
     }
-
-    function showGradually() {
-      var elements = $('[id^="p_"]')
-      $.each(elements, function(index) {
-        if (!($(elements[index]).attr('id').indexOf("p_12") === 0)) {
-          $timeout(function() {
-            $(elements[index]).show();
-          }, 0)
-        }
-      });
-    };
-
-    function showEntireDoc() {
-      var elements = $('[id^="p_"]')
-      $.each(elements, function(index) {
-        $(elements[index]).show();
-      });
-    };
-
 
   }
 

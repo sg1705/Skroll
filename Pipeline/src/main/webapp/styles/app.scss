@@ -419,3 +419,12 @@ md-toolbar {
 	}
 
 }
+
+
+::-moz-selection {
+	background: #F8E0F7;
+}
+
+::selection {
+	background: #F8E0F7;
+}

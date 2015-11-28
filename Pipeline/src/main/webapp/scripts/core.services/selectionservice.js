@@ -80,21 +80,34 @@
      return document.getElementById("docViewIframe").contentWindow.getSelection();
     }
 
-
+    function getIframeScrollable() {
+      var scrollable;
+      console.log(navigator.userAgent);
+      if (navigator.userAgent.indexOf('iP') > -1) {
+        scrollable = $('#docViewIframeParent');
+      } else {
+        if (navigator.userAgent.indexOf('Chrome') > -1) {
+          scrollable = $('#docViewIframe').contents().find('body');
+        } else if (navigator.userAgent.indexOf('Safari') > -1) {
+          scrollable = $(document.getElementById("docViewIframe").contentWindow.document.body);
+        } else {
+          scrollable = $('#docViewIframe').contents().children();
+        }
+      }
+      return scrollable;
+    }
 
 
     function scrollToParagraph(paragraphId, selectedText) {
       var me = this;
-      // var para = $('#' + paragraphId);
       var para = getJQParaElement(paragraphId);
-      // $('#' + SelectionModel.paragraphId).css('background-color', '');
       if (SelectionModel.paragraphId !== '' && SelectionModel.paragraphId !== undefined) {
         getJQParaElement(SelectionModel.paragraphId).css('background-color', '');
       }
 
       if (para != null) {
-        var contentDiv = $('#skrollport');
-        contentDiv.stop(true, true).animate({
+        var scrollable = getIframeScrollable();
+        scrollable.stop(true, true).animate({
               scrollTop: ($(para).offset().top)
           }, 'slow');
 
@@ -147,7 +160,6 @@
       var para = $(dom);
       //assuming that node is a text node
       if (para != null) {
-        var contentDiv = $('#skrollport');
         var paraOffset = 0;
         if ($(para).get(0).nodeType == 3) {
           //use parent
@@ -155,9 +167,11 @@
         } else {
           paraOffset = $(para).offset().top;
         }
-        $('#skrollport').animate({
-          scrollTop: ($('#skrollport').scrollTop() - 200 + paraOffset)
-        }, 'slow');
+
+        var scrollable = getIframeScrollable();
+        scrollable.stop(true, true).animate({
+              scrollTop: (paraOffset - 200)
+          }, 'slow');
       }
     }
 

@@ -4,19 +4,27 @@
 <head>
   <meta charset="utf-8">
   <meta name="description" content="">
-  <meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
-  <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+  <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0' name='viewport' />
 
-  <!-- build:css styles/iframe.css -->
-  <link rel="stylesheet" href="styles/iframe.css"/>
+  <!-- build:css /styles/iframe.css -->
+  <link rel="stylesheet" href="/styles/iframe.css"/>
   <!-- endbuild -->
 
 </head>
 
-<body style="height:100%">
-  <div>
+<body style="height:100%; padding: 0px; margin: 0px">
+  <div id="skrollport" layout="row" flex>
+    <!-- hide RHS when small media -->
+    <div id="leftcurtain">
+    </div>
 
-    <!-- insert doc here -->
+    <div id="content"  class="md-whiteframe-z3">
+      INSERTDOC
+    </div>
+
+    <div id="rightcurtain">
+    </div>
+
   </div>
 </body>
 

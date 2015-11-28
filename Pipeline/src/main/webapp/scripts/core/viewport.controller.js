@@ -127,11 +127,11 @@
 
     function resizeFrame() {
       var iframeDiv = document.getElementById("docViewIframe");
+      var toolbarDiv = document.getElementById("toolbar");
       var iframeBody = document.getElementById("docViewIframe").contentWindow.document.body;
-      console.log('iFrame scroll height:' + iframeBody.scrollHeight);
-      console.log('iFrame offsetHeight:' + iframeBody.scrollHeight);
       iframeDiv.height = iframeBody.offsetHeight + "px";
-      iframeDiv.height = iframeBody.offsetHeight + "px";
+      console.log(toolbarDiv.offsetWidth);
+      iframeDiv.width = toolbarDiv.offsetWidth + "px";
     }
 
     function resetFrameHeight() {
