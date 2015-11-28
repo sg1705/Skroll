@@ -8,7 +8,6 @@ import com.google.inject.Injector;
 import com.skroll.classifier.Classifier;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.classifier.ClassifierFactoryStrategy;
-import com.skroll.classifier.DefaultClassifierFactoryStrategy;
 import com.skroll.classifier.factory.CorpusFSModelFactoryImpl;
 import com.skroll.classifier.factory.ModelFactory;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
@@ -39,7 +38,7 @@ public class ConvertDocToText {
     static final String OUTPUT_FILE_NAME = "build/resources/main/preEvaluatedTxtOneFile.txt";
 
     public static void convertDocsToText () throws Exception {
-
+//
         try {
 
             Injector injector = Guice.createInjector(new AbstractModule() {
