@@ -110,7 +110,7 @@ md-sidenav#navframe.md-locked-open {
     height: 45px; }
     .sk-landing-search .search-frame .search-input {
       border: none;
-      padding: 15px;
+      padding: 7px;
       font-size: 22px;
       outline: none;
       /*			width: 645px;*/
@@ -275,5 +275,11 @@ md-toolbar .sk-logo {
 @media (max-width: 599px) {
   md-toolbar #sk-toolbar-chromeextension-button {
     display: none; } }
+
+::-moz-selection {
+  background: #F8E0F7; }
+
+::selection {
+  background: #F8E0F7; }
 
 /*# sourceMappingURL=app.css.map */
