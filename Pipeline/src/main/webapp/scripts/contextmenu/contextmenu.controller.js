@@ -62,6 +62,7 @@
         category: 'cm.openCopySelection',
         label: selectionService.paragraphId
       });
+
       closeContextMenu();
       $mdToast.show({
         template: '<md-toast>Selection copied to clipboard</md-toast>',
