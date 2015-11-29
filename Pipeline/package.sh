@@ -12,14 +12,13 @@ export PACKAGE_DIR=skroll-package
 export HOME_DIR=$PACKAGE_ROOT_DIR/$PACKAGE_DIR
 
 ../gradlew fatjar
-#../gradlew buildProdApp
+../gradlew buildProdApp
 
 rm -rf $HOME_DIR
 mkdir $HOME_DIR
 cp build/libs/Pipeline-all-1.0.jar $HOME_DIR/
 cp src/main/scripts/* $HOME_DIR/
-cp -r src/main/webapp/ $HOME_DIR/webapp
-#cp -r src/main/webapp/build/ $HOME_DIR/webapp
+cp -r src/main/webapp/build/ $HOME_DIR/webapp
 
 mkdir $HOME_DIR/config
 cp -r src/main/resources/skroll-deploy.properties $HOME_DIR/config/skroll.properties
