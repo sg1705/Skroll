@@ -28,7 +28,7 @@ public class CategoryTrainerTest {
     }
     @Test
     public void testFindTrainingDoc() {
-        CategoryTrainer categoryTrainer = new CategoryTrainer("/Users/saurabhagarwal/IdeaProjects/data/preEvaluated/");
+        CategoryTrainer categoryTrainer = new CategoryTrainer("build/resources/main/preEvaluated/");
         categoryTrainer.findTrainingDoc();
     }
 }

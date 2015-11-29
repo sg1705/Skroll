@@ -19,7 +19,7 @@ public class Category {
     public static final int TEN_K = 101;
     public static final int TEN_Q = 102;
     public static final int INDENTURE = 103;
-
+    public static final int S4 = 104;
     int id;
     String name;
 
@@ -36,7 +36,7 @@ public class Category {
     }
 
     public static List<Integer> getDocType()  {
-        return Arrays.asList(TEN_K,TEN_Q,INDENTURE);
+        return Arrays.asList(TEN_K,TEN_Q,INDENTURE,S4);
     }
 
 }
