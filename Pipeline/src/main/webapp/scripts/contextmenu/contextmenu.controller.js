@@ -162,7 +162,7 @@
           console.log(response.result.id);
           selectionService.shortLink = response.result.id;
           var tweetText = createTweetText();
-          window.open('https://twitter.com/intent/tweet?text=' + tweetText, 'MsgWindow',
+          window.open('https://twitter.com/intent/tweet?text=' + tweetText, '_blank',
             'toolbar=no,location=no, status=no,menubar=no,scrollbars=yes,resizable=yes,top=300, left=300,width=550,height=420');
 
         }, function(reason) {
