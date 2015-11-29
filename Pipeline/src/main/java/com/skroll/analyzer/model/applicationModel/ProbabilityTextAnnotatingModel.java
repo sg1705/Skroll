@@ -301,6 +301,8 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
             }
         }
 
+
+        // todo: may need to take another look at the usage of normalization.
 //        BNInference.normalizeLog(documentFeatureBelief);
 
 //        for (double[][] beliefs : documentFeatureBelief) {
@@ -341,9 +343,11 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
         return dominatingFeatures;
     }
 
+    // dominating features will increase the strength of the consistent format features.
     private void setDocFeatures(int classIndex, int[] dominatingFeatures){
         for (int f = 0; f < dominatingFeatures.length; f++){
             if (dominatingFeatures[f] == 1){
+                // increasing the consistent strength should be better than setting the strength.
 //                documentFeatureBelief[f][classIndex] = new double[]{enforcingConsistencyStrength, 0};
                 documentFeatureBelief[f][classIndex][0] += enforcingConsistencyStrength;
             }

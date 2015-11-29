@@ -10,7 +10,7 @@ import java.util.List;
  * Computes if a given paragraph has the second word starts with a digit
  * This is a simple hack to take care of the case of section 1.3.3 or 1.A for example, where the second word is not a number.
  *
- * Created by saurabh on 7/12/15.
+ * Created by wei  on 7/12/15.
  */
 public class IsSecondWordStartsWithNumberComputer implements RVValueComputer {
     int numVals = 2;

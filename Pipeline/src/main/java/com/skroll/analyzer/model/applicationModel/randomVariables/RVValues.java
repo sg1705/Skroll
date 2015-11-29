@@ -97,17 +97,6 @@ public class RVValues {
         }
         return getValueHelper(rv,m);
    }
-//
-//    public static int getValue(RandomVariable rv, CoreMap m) {
-//        RandomVariable negationRV = negationRVMap.get(rv); // only for binary RVs
-//        if (negationRV != null){
-//            int negVal = getValueHelper(negationRV, m);
-//            if (negVal == -1)
-//                return -1; // unobserved
-//            return 1-negVal;
-//        }
-//        return getValueHelper(rv,m);
-//   }
 
     public static int getValueHelper(RandomVariable rv, List<CoreMap> m){
         RVValueComputer processor = valueComputerMap.get(rv);
@@ -115,12 +104,6 @@ public class RVValues {
         return getValueFromMap(rv, m);
     }
 
-//
-//    public static int getValueHelper(RandomVariable rv, CoreMap m){
-//        RVValueComputer processor = valueComputerMap.get(rv);
-//        if (processor != null) return processor.getValue(m);
-//        return getValueFromMap(rv, m);
-//    }
 
     // this is for setting user observation of the paragraph category
     public static void setValue(RandomVariable rv, int val, CoreMap m, List<List<Token>> terms) {

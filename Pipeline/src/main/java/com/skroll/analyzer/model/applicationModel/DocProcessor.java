@@ -298,25 +298,6 @@ public class DocProcessor {
         return docFeatureValues;
     }
 
-//    public static int[] generateDocumentFeatures(List<CoreMap> originalParas, List<CoreMap> processedParagraphs,
-//                                                 NBMNConfig nbfcConfig) {
-//
-//        int[] docFeatureValues = new int[nbfcConfig.getDocumentFeatureVarList().size()];
-//
-//        Arrays.fill(docFeatureValues, 1);
-//        for (int p = 0; p < processedParagraphs.size(); p++) {
-//            CoreMap paragraph = processedParagraphs.get(p);
-//            for (int f = 0; f < docFeatureValues.length; f++) {
-//                if (RVValues.getValue(nbfcConfig.getCategoryVar(), originalParas.get(p)) == 1)
-//                    docFeatureValues[f] &= (ParaProcessor.getFeatureValue(
-//                            nbfcConfig.getFeatureExistsAtDocLevelVarList().get(f),
-//                            Arrays.asList(originalParas.get(p), paragraph)));
-//            }
-//        }
-//        return docFeatureValues;
-//    }
-
-
     /**
      * Remove annotations from paragraphs with duplicate text.
      * @param paragraphs

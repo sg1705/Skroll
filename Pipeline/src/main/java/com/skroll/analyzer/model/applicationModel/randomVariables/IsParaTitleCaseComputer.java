@@ -6,9 +6,10 @@ import com.skroll.util.ParaHelper;
 import java.util.List;
 
 /**
- * Computes if a given paragraph has the first word as a number
- * <p>
- * Created by saurabh on 7/12/15.
+ * Computes if a given paragraph is Title case.
+ * Just checking if the last word is title case.
+ * todo: may need to check how good is this.
+ * Created by wei on 7/12/15.
  */
 public class IsParaTitleCaseComputer implements RVValueComputer {
     int numVals = 2;

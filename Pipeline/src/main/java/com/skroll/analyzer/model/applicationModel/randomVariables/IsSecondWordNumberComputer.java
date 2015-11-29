@@ -7,9 +7,9 @@ import com.skroll.util.WordHelper;
 import java.util.List;
 
 /**
- * Computes if a given paragraph has the first word as a number
+ * Computes if a given paragraph has the second word as a number
  *
- * Created by saurabh on 7/12/15.
+ * Created by wei on 7/12/15.
  */
 public class IsSecondWordNumberComputer implements RVValueComputer {
     int numVals = 2;
