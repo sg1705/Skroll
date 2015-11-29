@@ -64,4 +64,40 @@ public class ObjectPersistUtilTest {
         }
     }
 
+    @Test
+    public void testCopyObject() throws Exception {
+
+        ModelRVSetting modelRVSetting = new DefModelRVSetting(TEST_DEF_CATEGORY_IDS);
+        TrainingTextAnnotatingModel model = modelFactory.createModel(ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID, modelRVSetting);
+
+        ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil("/tmp");
+
+        try {
+            objectPersistUtil.persistObject(TrainingTextAnnotatingModel.class, model, "TrainingDocumentAnnotatingModel");
+        } catch (ObjectPersistUtil.ObjectPersistException e) {
+            e.printStackTrace();
+            fail("failed persist Object");
+        }
+        Object obj = null;
+        try {
+            obj = objectPersistUtil.readObject(TrainingTextAnnotatingModel.class, "TrainingDocumentAnnotatingModel");
+        } catch (ObjectPersistUtil.ObjectPersistException e) {
+            e.printStackTrace();
+            fail("failed readObject");
+        }
+        Object copyObj = null;
+        try {
+            copyObj = objectPersistUtil.copy(model, TrainingTextAnnotatingModel.class );
+        } catch (ObjectPersistUtil.ObjectPersistException e) {
+            e.printStackTrace();
+            fail("failed readObject");
+        }
+        //logger.info(obj.getClass().getName() + ":" + (PersistModelTestClass) obj);
+        if (copyObj instanceof TrainingTextAnnotatingModel) {
+            TrainingTextAnnotatingModel readPersistModelTestClass = (TrainingTextAnnotatingModel) copyObj;
+            logger.info(readPersistModelTestClass.toString());
+            assert (readPersistModelTestClass.toString().contains("nbmnModel"));
+        }
     }
+
+}
