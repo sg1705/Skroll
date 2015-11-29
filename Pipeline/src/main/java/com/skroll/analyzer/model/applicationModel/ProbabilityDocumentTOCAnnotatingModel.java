@@ -9,6 +9,8 @@ import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.util.Visualizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -18,7 +20,7 @@ import java.util.*;
  * Created by wei2learn on 2/16/2015.
  */
 public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnotatingModel {
-
+    public static final Logger logger = LoggerFactory.getLogger(ProbabilityDocumentTOCAnnotatingModel.class);
     static final int SEC_NUM_ITERATION = 10;
     static double[] SEC_ANNOTATING_THRESHOLD = {0, 0.9};
     Document doc;
@@ -104,8 +106,9 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
                     lowerTOCSetting
             );
         }
-
+        logger.info("initializing model");
         super.initialize();
+        logger.info("finished initializing");
     }
 
     void preprocessData() {
@@ -120,18 +123,21 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
     @Override
     public void annotateParagraphs() {
 
+        logger.info("annotating top level headings");
         super.annotateParagraphs();
         annotateParaProbs(CoreAnnotations.TOCParaProbsDocLevel.class, processedParagraphs, paragraphCategoryBelief);
 
         List<Integer> lowerCatIds = ((TOCModelRVSetting) modelRVSetting).getLowLevelCategoryIds();
         if (lowerCatIds == null) return;
 
+        logger.info("creating sections");
         // remove duplicate annotations for level 1.
         DocProcessor.removeDuplicateAnnotations(paragraphs, modelRVSetting.getCategoryIds().get(1));
         List<List<List<CoreMap>>> sectionsList = DocProcessor.createSections(paragraphs, processedParagraphs, getParaCategory());
         List<List<CoreMap>> sections = sectionsList.get(0);
         List<List<CoreMap>> processedSections = sectionsList.get(1);
 
+        logger.info("annotating section level headings");
         for (int i = 0; i < sections.size(); i++) {
             secModel.setParagraphs(sections.get(i));
             secModel.setProcessedParagraphs(processedSections.get(i));
@@ -144,6 +150,7 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
             secModel.annotateParagraphs();
             annotateParaProbs(CoreAnnotations.TOCParaProbsSecLevel.class, processedSections.get(i), secModel.getParagraphCategoryBelief());
         }
+        logger.info("done annotating section level headings");
     }
 
     /**
@@ -172,10 +179,16 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
         secModel.setProcessedParagraphs(processedSections.get(sectionNum));
         secModel.setNumIterations(SEC_NUM_ITERATION);
         secModel.setAnnotatingThreshold(SEC_ANNOTATING_THRESHOLD);
+
+        logger.info("annotating section level headings for section " + sectionNum);
+
         secModel.initialize();
         secModel.annotateParagraphs();
 
+        logger.info("done annotating section level headings");
+
         return secModel.getDocumentFeatureProbabilities();
+
     }
     /**
      * Returns a string representation of the BNI for viewer.
@@ -196,7 +209,7 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
         if (probs != null)
             applicationModelInfo.put("sec level model " + this.nbmnConfig.getCategoryVar().getName(),
                     Visualizer.doubleListToMap(probs));
-        System.out.println("paraDocFeatures for para " + paraIndex + "\n" + Arrays.toString(data.getParaDocFeatures()[paraIndex]));
+        logger.info("paraDocFeatures for para " + paraIndex + "\n" + Arrays.toString(data.getParaDocFeatures()[paraIndex]));
         for (int ii = 0; ii < documentFeatureBelief.length; ii++) {
             applicationModelInfo.put(this.nbmnConfig.getFeatureExistsAtDocLevelVarList().get(ii).getName(),
                     Visualizer.toDoubleArrayToMap(new double[]{.0 + data.getParaDocFeatures()[paraIndex][ii]}));
