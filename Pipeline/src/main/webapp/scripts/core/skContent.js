@@ -53,10 +53,7 @@
               return documentService.getTerms(documentModel.documentId);
             })
             .then(function(terms) {
-              LHSModel.setTerms(terms);
-              console.log(terms);
-              documentModel.isTocLoaded = true;
-              LHSModel.setYOffsetForTerms(LHSModel.smodel.terms);
+              setTerms(terms);
               return documentService.getIndex(documentModel.documentId);
             }, function(data, status) {
                       console.log(status);
@@ -77,9 +74,7 @@
               return documentService.getTerms(documentModel.documentId);
             })
             .then(function(terms) {
-              LHSModel.setTerms(terms);
-              console.log(terms);
-              documentModel.isTocLoaded = true;
+              setTerms(terms);
               $timeout(timeout, 0); //@see function timeout()
 
               function timeout() {
@@ -93,7 +88,6 @@
                 //calculate offsets for headers
                 //iterate over each term to find Y offset
                 // LHSModel.setYOffsetForTerms(LHSModel.smodel.terms);
-
                 documentModel.isProcessing = false;
               }
               return documentService.getIndex(documentModel.documentId);
@@ -106,11 +100,20 @@
         }
       }
 
+
+      function setTerms(terms) {
+        LHSModel.setTerms(terms);
+        console.log(terms);
+        documentModel.isTocLoaded = true;
+        LHSModel.setYOffsetForTerms(LHSModel.smodel.terms);
+      }
+
       function insertHtmlInIframe() {
         if (navigator.userAgent.indexOf('iPhone') > -1) {
           $('#docViewIframe').attr('scrolling', 'no');
           $('#docViewIframe').wrap('<md-content id="docViewIframeParent"></md-content>');
         }
+
 
         var iframe = $('#docViewIframe')[0];
         var iframeDoc = iframe.contentWindow.document;
@@ -138,7 +141,45 @@
             viewCtrl.resetFrameHeight();
           }, 200);
         });
+
+        if (navigator.userAgent.indexOf('Firefox') > -1) {
+          firefoxAnchorLinks(iframe);
+        }
+
+
       }
+
+      function firefoxAnchorLinks(iframe) {
+        var windowElement = iframe.contentWindow;
+        var bodyElement = $(iframe.contentWindow.document.body);
+        $("a", $(bodyElement)).each(function (){
+          var link = $(this);
+          var href = link.attr("href");
+          if(href && href[0] == "#")
+          {
+            var name = href.substring(1);
+            $(this).click(function() {
+              var nameElement = $("[name='"+name+"']", bodyElement);
+              var idElement = $("#"+name, bodyElement);
+              var element = null;
+              if(nameElement.length > 0) {
+                element = nameElement;
+              } else if(idElement.length > 0) {
+                element = idElement;
+              }
+
+              if(element) {
+                var offset = element.offset();
+                windowElement.scrollTo(offset.left, offset.top);
+              }
+
+              return false;
+            });
+          }
+
+});
+      }
+
     }
 
   }

@@ -32,6 +32,7 @@
 
     function importDocFromUrl(url) {
       console.log(url);
+      documentModel.reset();
       documentModel.isProcessing = true;
       var deferred = $q.defer();
       documentService.importDoc(url, true)
