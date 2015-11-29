@@ -47,7 +47,8 @@
       removeHighlightParagraph: removeHighlightParagraph,
       getJQParaElement: getJQParaElement,
       getRangySelection: getRangySelection,
-      getWindowSelection: getWindowSelection
+      getWindowSelection: getWindowSelection,
+      getIframeDocument: getIframeDocument
     }
 
     return service;

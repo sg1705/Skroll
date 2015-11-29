@@ -62,7 +62,12 @@
         category: 'cm.openCopySelection',
         label: selectionService.paragraphId
       });
-
+      console.log(vm.selectedText);
+      if (navigator.userAgent.indexOf('Firefox') > -1) {
+        document.getElementById("docViewIframe").contentDocument.execCommand('copy');
+        // selectionService.getIframeDocument().execCommand('copy');
+        // document.execCommand('copy');
+      }
       closeContextMenu();
       $mdToast.show({
         template: '<md-toast>Selection copied to clipboard</md-toast>',
