@@ -25,7 +25,6 @@
       serializedParagraphId = '',
       shortLink = '',
       searchSelectionRange = null,
-      iframeElement = null,
       vm = this;
 
     //-- service definition
@@ -54,17 +53,14 @@
     return service;
 
     function getJQParaElement(paraId) {
-      if (vm.iframeElement == null) {
-        vm.iframeElement = $(document.getElementById("docViewIframe").contentWindow.document.body);
-      }
-      return $('#' + paraId, vm.iframeElement);
+      var iframeElement = $(document.getElementById("docViewIframe").contentWindow.document.body);
+
+      return $('#' + paraId, iframeElement);
     }
 
     function getIframeElement() {
-      if (vm.iframeElement == null) {
-        vm.iframeElement = $(document.getElementById("docViewIframe").contentWindow.document.body);
-      }
-      return vm.iframeElement;
+      var iframeElement = $(document.getElementById("docViewIframe").contentWindow.document.body);
+      return iframeElement;
     }
 
     function getIframeDocument() {

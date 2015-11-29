@@ -110,12 +110,26 @@
     }
 
     function resizeFrame() {
+
       var iframeDiv = document.getElementById("docViewIframe");
       var toolbarDiv = document.getElementById("toolbar");
       var iframeBody = document.getElementById("docViewIframe").contentWindow.document.body;
+
+      //for iPhone, load the width first and then set the height
+      if (navigator.userAgent.indexOf('iPhone') > -1) {
+        $timeout(function() {
+          iframeDiv.width = toolbarDiv.offsetWidth + "px";
+          $timeout(function() {
+            iframeDiv.height = iframeBody.offsetHeight + "px";
+          }, 0);
+
+        }, 0);
+        return;
+      }
+
       iframeDiv.height = iframeBody.offsetHeight + "px";
-      console.log(toolbarDiv.offsetWidth);
       iframeDiv.width = toolbarDiv.offsetWidth + "px";
+      console.log(toolbarDiv.offsetWidth);
     }
 
     function resetFrameHeight() {

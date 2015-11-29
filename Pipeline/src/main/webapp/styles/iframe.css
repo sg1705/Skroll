@@ -39,14 +39,14 @@
       #skrollport #content {
         min-width: 600px;
         width: calc(80% + 120px);
-        max-width: 900px;
+        max-width: 800px;
         padding-left: 7.5%;
         padding-right: 6%; } }
     @media (min-width: 600px) and (max-width: 959px) {
       #skrollport #content {
         min-width: 600px;
         width: calc(80% + 120px);
-        max-width: 900px;
+        max-width: 800px;
         padding-left: 7.5%;
         padding-right: 6%; } }
     @media (max-width: 599px) {
