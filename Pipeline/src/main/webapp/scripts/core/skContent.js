@@ -14,7 +14,7 @@
     .directive('skContent', skContent);
 
   /* @ngInject */
-  function skContent(documentModel, documentService, LHSModel, selectionService, $timeout, $http, $analytics, $window) {
+  function skContent(documentModel, documentService, LHSModel, selectionService, $timeout, $http, $analytics, $window, $q) {
 
     var directive = {
       restricted: 'EA',
@@ -62,7 +62,7 @@
               documentModel.lunrIndex = lunr.Index.load(data);
             });
         } else {
-          documentService.loadDocument(documentModel.documentId)
+          loadDocument()
             .then(function(contentHtml) {
               documentModel.targetHtml = contentHtml;
               insertHtmlInIframe();
@@ -106,6 +106,16 @@
         console.log(terms);
         documentModel.isTocLoaded = true;
         LHSModel.setYOffsetForTerms(LHSModel.smodel.terms);
+      }
+
+      function loadDocument() {
+        if (documentModel.targetHtml === '') {
+          return documentService.loadDocument(documentModel.documentId)
+        } else {
+          var deferred = $q.defer();
+          deferred.resolve(documentModel.targetHtml);
+          return deferred.promise;
+        }
       }
 
       function insertHtmlInIframe() {
