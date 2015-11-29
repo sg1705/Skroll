@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Pipeline/Pipeline.iml" filepath="$PROJECT_DIR$/Pipeline/Pipeline.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Skroll.iml" filepath="$PROJECT_DIR$/Skroll.iml" />
+    </modules>
+  </component>
+</project>
