@@ -28,7 +28,6 @@
     vm.mouseMove = mouseMove;
     vm.paraClicked = paraClicked;
     vm.inferParagraphId = inferParagraphId;
-    vm.highlightParagraph = highlightParagraph;
     vm.resizeFrame = resizeFrame;
     vm.resetFrameHeight = resetFrameHeight;
 
@@ -40,13 +39,11 @@
     /////////////
 
     function mouseMove($event) {
-      //console.log('mouse moved');
       var paraId = vm.inferParagraphId($event);
 
     }
 
     function mouseDown($event) {
-      var selection = window.getSelection().toString();
       var paraId = vm.inferParagraphId($event);
       selectionService.mouseDownParaId = paraId;
     }
@@ -68,19 +65,18 @@
       var paraId = vm.inferParagraphId($event);
       if (paraId == null)
         return;
-      //save selection
-      selectionService.saveSelection(paraId, selection);
       textSelectionObserverService.notify({
         'paraId': paraId,
         'selectedText': selection
       });
+      selectionService.saveSelection(paraId, selection);
     }
 
 
     function paraClicked($event) {
       console.log("Paragraph clicked");
       //find out if this is a selection
-      var selection = window.getSelection().toString();
+      var selection = selectionService.getWindowSelection().toString();
       //check to see if mouseup should handle it
       if (selection != '' || (selection == undefined))
         return;
@@ -92,23 +88,11 @@
 
       //store in selectionService
       selectionService.paragraphId = paraId;
-      //highlight paragraph
-      vm.highlightParagraph(paraId);
-
       scrollObserverService.notify(paraId);
       clickObserverService.notify(paraId);
 
     }
 
-
-    function highlightParagraph(paraId) {
-      var paraElement = selectionService.getJQParaElement(paraId);
-      $(paraElement).css("background-color", "yellow");
-    }
-
-    // ViewPortCtrl.prototype.removeHighlightParagraph = function(paraId) {
-    //   $("#" + paraId).css("background-color", "");
-    // }
 
     function inferParagraphId($event) {
       var parents = $($event.target).parents("div[id^='p_']");
