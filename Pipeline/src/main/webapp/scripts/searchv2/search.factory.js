@@ -33,7 +33,8 @@
         currSelectedIndex: currSelectedIndex,
         clear: clear
       },
-      searchResults: searchResults
+      searchResults: searchResults,
+      clear: clear
     }
 
     return service;

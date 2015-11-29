@@ -22,7 +22,7 @@ import java.util.HashMap;
  */
 public class Parser {
 
-    public static final int VERSION = 3;
+    public static final int VERSION = 4;
     public static final Logger logger = LoggerFactory.getLogger(Parser.class);
     public static Injector injector = Guice.createInjector(new SkrollGuiceModule());
 

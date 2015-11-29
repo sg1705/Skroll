@@ -1,32 +1,5 @@
 /* variables */
-$icon-width: 24px;
-$skrollport-color : #e0e0e0;
-$sm-width: 600px;
-$md-width: 960px;
-$lg-width: 1200px;
-
-* {
-	outline: none;
-}
-
-@mixin phone {
-  @media (max-width: #{$sm-width - 1px}) {
-    @content;
-  }
-}
-
-
-@mixin tablet {
-  @media (min-width: #{$sm-width}) and (max-width: #{$md-width - 1px}) {
-    @content;
-  }
-}
-
-@mixin desktop {
-  @media (min-width: #{$md-width}) {
-    @content;
-  }
-}
+@import "_variables.scss";
 
 /**
 * icons
@@ -97,6 +70,7 @@ md-toast.skContextMenu {
 **/
 #content {
 
+
   @include desktop {
     min-width: 600px;
     width: calc(80% + 120px);
@@ -127,6 +101,11 @@ md-toast.skContextMenu {
 	padding-left: 7.5%;
 	padding-right: 6%;
 */
+	
+	#docViewIframe {
+		background-color: $docview-color;
+	}
+
 }
 
 
@@ -168,7 +147,7 @@ md-sidenav#navframe.md-locked-open {
 
 		.search-input {
 			border: none;
-			padding: 15px;
+			padding: 7px;
 			font-size: 22px;
 			outline: none;
 /*			width: 645px;*/
@@ -439,4 +418,13 @@ md-toolbar {
 
 	}
 
+}
+
+
+::-moz-selection {
+	background: #F8E0F7;
+}
+
+::selection {
+	background: #F8E0F7;
 }

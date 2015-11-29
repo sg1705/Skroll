@@ -46,34 +46,43 @@
   <!-- end sidebar -->
 
   <!-- content -->
-  <div layout="column" flex >
+  <div layout="column" flex>
 
-    <md-toolbar class="skroll-toolbar">
+    <md-toolbar id="toolbar" class="skroll-toolbar">
       <sk-toolbar />
     </md-toolbar>
 
-    <md-content id="skrollport" sk-observe-scroll md-scroll-y>
+    <iframe id="docViewIframe"
+      scrolling="yes"
+      frameborder="0"
+      noborder="noborder"
+      style="overflow: hidden;-webkit-overflow-scrolling: touch;"
+      src="about:blank"
+      sk-content>
+    </iframe>
+
+<!--     <md-content id="skrollport">
       <div layout="row" flex>
-        <!-- hide RHS when small media -->
         <div id="leftcurtain" hide-sm>
         </div>
 
-        <div ng-controller="ViewPortCtrl as viewCtrl" style="width:100%">
-          <md-content flex
-            id="content"
-            class="md-padding md-whiteframe-z3"
-            ng-mouseup="viewCtrl.mouseUp($event)" ng-mousedown="viewCtrl.mouseDown($event)"
-            ng-mousemove="viewCtrl.mouseMove($event)" ng-click="viewCtrl.paraClicked($event)"
-            layout-padding>
-              <sk-content/>
-            </md-content>
+        <div id="content" style="width:100%">
+          <iframe id="docViewIframe" class="md-whiteframe-z3"
+            width="100%"
+            scrolling="no"
+            frameborder="0"
+            noborder="noborder"
+            style="overflow: hidden"
+            src="about:blank"
+            layout-padding sk-content>
+          </iframe>
         </div>
         <div hide-sm hide-md>
         </div>
 
       </div>
     </md-content>
-
+ -->
   </div>
   <!-- end content -->
 

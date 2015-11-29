@@ -1,5 +1,8 @@
 (function() {
   /**
+   *
+   * TODO:To be DEPRECATED
+   *
    * @ngdoc directive
    * @name SkrollApp.directive:skObserveScroll
    * @description Observes for scrolling event

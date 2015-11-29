@@ -15,7 +15,6 @@
     vm.smodel = LHSModel.smodel;
     vm.classes = LHSModel.classes;
     vm.searchState = searchFactory.searchState;
-    console.log('sdsadasda');
     console.log(vm);
 
     //-- public methods

@@ -1,0 +1,96 @@
+/* variables */
+@import "_variables.scss";
+
+
+/**
+* SkrollPort
+**/
+#skrollport {
+
+	display: flex;
+	flex-direction: row;
+
+	background-color: $skrollport-color;
+
+	#leftcurtain {
+
+	  @include desktop {
+			width    : calc(10% - 60px);
+			min-width: 0px; max-width: 200px
+	  }
+
+	  @include tablet {
+			width    : calc(10% - 60px);
+			min-width: 0px; max-width: 200px
+	  }
+
+	  @include phone {
+			display:none;
+	  }
+
+	}
+
+	#rightcurtain {
+
+	  @include tablet {
+			display:none;
+	  }
+
+	  @include phone {
+			display:none;
+	  }
+	}
+
+
+
+	/**
+	* Docivew
+	**/
+	#content {
+
+	  @include desktop {
+	    min-width: 600px;
+	    width: calc(80% + 120px);
+	    max-width: 800px;
+	    padding-left: 7.5%;
+	    padding-right: 6%;  
+	  }
+
+	  @include tablet {
+	    min-width: 600px;
+	    width: calc(80% + 120px);
+	    max-width: 800px;
+	    padding-left: 7.5%;
+	    padding-right: 6%;  
+	  }
+
+
+	  @include phone {
+	    width: 100%;
+	    padding-left: 7.5%;
+	    padding-right: 6%;   
+	  }
+
+		background-color: $docview-color;
+		box-shadow: 0 4px 5px -2px rgba(0,0,0,.2),0 7px 10px 1px rgba(0,0,0,.14),0 2px 1pc 1px rgba(0,0,0,.12);
+	}
+
+}
+
+
+::-moz-selection {
+	background: #F8E0F7;
+}
+
+::selection {
+	background: #F8E0F7;
+}
+
+
+.selected-para-rhs {
+	background-color: #fff7e5;
+}
+
+.searched-text-rhs {
+  color: #FF6138;
+}
