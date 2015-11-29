@@ -178,6 +178,17 @@ gulp.task('inject', ['wiredep', 'styles', 'templatecache'], function() {
         .pipe(gulp.dest(config.client));
 });
 
+gulp.task('injectIframe', ['styles'], function() {
+    log('Wire up css into the html, after files are ready');
+
+    return gulp
+        .src(config.iframe)
+        .pipe(inject(config.css))
+        .pipe(gulp.dest(config.client));
+});
+
+
+
 /**
  * Run the spec runner
  * @return {Stream}
@@ -221,7 +232,7 @@ gulp.task('build-specs', ['templatecache'], function(done) {
  * This is separate so we can run tests on
  * optimize before handling image or fonts
  */
-gulp.task('build', ['optimize', 'images', 'other', 'fonts', 'copyWEBINF'], function() {
+gulp.task('build', ['optimize', 'images', 'other', 'fonts', 'copyWEBINF', 'optimizeIframe'], function() {
     log('Building everything');
 
     var msg = {
@@ -247,9 +258,9 @@ gulp.task('optimize', ['inject'], function() {
     var cssFilter = $.filter('**/*.css');
     var jsAppFilter = $.filter('**/' + config.optimized.app);
     var jslibFilter = $.filter('**/' + config.optimized.lib);
-
     var templateCache = config.temp + config.templateCache.file;
     log(templateCache);
+
     return gulp
         .src(config.index)
         .pipe($.plumber())
@@ -278,6 +289,39 @@ gulp.task('optimize', ['inject'], function() {
         .pipe($.revReplace())
         .pipe(gulp.dest(config.build));
 });
+
+
+/**
+ * Optimize all files, move to a build folder,
+ * and inject them into the new iframe.html
+ * @return {Stream}
+ */
+gulp.task('optimizeIframe', ['injectIframe'], function() {
+    log('Optimizing the js, css, and html');
+
+    var assets = $.useref.assets({searchPath: './'});
+    // Filters are named for the gulp-useref path
+    var cssFilter = $.filter('**/iframe.css');
+
+    return gulp
+        .src(config.iframe)
+        .pipe(assets)
+        // Get the css
+        .pipe(cssFilter)
+        .pipe($.minifyCss())
+        .pipe(cssFilter.restore())
+        // Take inventory of the file names for future rev numbers
+        .pipe($.rev())
+        // Apply the concat and file replacement with useref
+        .pipe(assets.restore())
+        .pipe($.useref())
+        // Replace the file names in the html with rev numbers
+        .pipe($.revReplace())
+        .pipe(gulp.dest(config.build));
+});
+
+
+
 
 /**
  * Remove all files from the build, temp, and reports folders

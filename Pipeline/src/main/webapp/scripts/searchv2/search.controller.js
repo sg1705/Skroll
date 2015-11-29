@@ -246,7 +246,8 @@
           if (typeof header !== 'undefined' && result.ref === header.paragraphId) {
             return;
           }
-          var resultElement = document.getElementById(result.ref);
+          // var resultElement = document.getElementById(result.ref);
+          var resultElement = selectionService.getJQParaElement(result.ref).get(0);
           var resultText = self.getSurroundingText(resultElement.textContent, searchText);
           var item = {
             'paragraphId': result.ref,

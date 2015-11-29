@@ -30,7 +30,6 @@
 
     //-- public methods
     ctrl.toggleSection = toggleSection;
-    ctrl.tocSelected = tocSelected;
 
     //-- register for notification
     scrollObserverService.register(observeScroll);
@@ -79,12 +78,6 @@
           nearestHeader = headerItems[ii].paragraphId;
         }
         ctrl.smodel.visibleHeaders.push(nearestHeader);
-      }
-    }
-
-    function tocSelected() {
-      if (!$mdSidenav('left').isLockedOpen()) {
-        $mdSidenav('left').close();
       }
     }
 

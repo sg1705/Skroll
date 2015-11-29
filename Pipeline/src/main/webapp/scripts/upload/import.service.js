@@ -16,7 +16,7 @@
 
 
   /** @ngInject **/
-  function ImportService($q, documentService) {
+  function ImportService($q, documentService, searchFactory) {
 
     //-- private variables
 
@@ -32,6 +32,8 @@
 
     function importDocFromUrl(url) {
       console.log(url);
+      documentModel.reset();
+      searchFactory.clear();
       documentModel.isProcessing = true;
       var deferred = $q.defer();
       documentService.importDoc(url, true)

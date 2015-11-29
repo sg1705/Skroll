@@ -13,7 +13,7 @@
     .directive('scrollToParagraph', scrollToParagraph);
 
   /* @ngInject */
-  function scrollToParagraph(selectionService, scrollObserverService, $analytics) {
+  function scrollToParagraph(selectionService, scrollObserverService, $analytics, $mdSidenav) {
 
     var directive = {
       restricted: 'A',
@@ -34,7 +34,10 @@
         });
         scrollObserverService.notify(paragraphId);
         selectionService.scrollToParagraph(paragraphId, searchText);
-        // scope.$apply();
+        if (!$mdSidenav('left').isLockedOpen()) {
+          $mdSidenav('left').close();
+        }
+
       });
     }
   }

@@ -1,12 +1,15 @@
 package com.skroll.document;
 
+import com.aliasi.util.Files;
 import com.google.common.base.CharMatcher;
 import com.google.common.io.Resources;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.Parser;
+import com.skroll.rest.WebServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -189,4 +192,12 @@ public class DocumentHelper {
         return content;
     }
 
+    public static String getProcessedHtml(Document document) throws Exception {
+        File file = new File(WebServer.BASE_URI + "/iframe.html");
+        String fileContent = Files.readFromFile(file, "UTF8");
+        String[] twoParts = fileContent.split("INSERTDOC");
+        StringBuilder response = new StringBuilder();
+        response.append(twoParts[0]).append(document.getTarget()).append(twoParts[1]);
+        return response.toString();
+    }
 }
