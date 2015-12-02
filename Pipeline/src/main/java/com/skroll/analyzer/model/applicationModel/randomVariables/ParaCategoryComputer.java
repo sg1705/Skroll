@@ -18,8 +18,9 @@ public class ParaCategoryComputer implements RVValueComputer {
         this.modelClassAndWeightStrategy = modelClassAndWeightStrategy;
     }
 
-    public int getValue(CoreMap m) {
-        return modelClassAndWeightStrategy.getClassIndexForModel(m, categoryIds);
+    // use the orignal para.
+    public int getValue(List<CoreMap> m) {
+        return modelClassAndWeightStrategy.getClassIndexForModel(m.get(0), categoryIds);
 
 
     }

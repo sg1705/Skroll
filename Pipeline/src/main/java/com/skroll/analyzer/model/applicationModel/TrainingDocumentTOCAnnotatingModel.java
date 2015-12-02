@@ -11,6 +11,8 @@ import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
 import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -24,6 +26,7 @@ import java.util.List;
 
 public class TrainingDocumentTOCAnnotatingModel extends TrainingTextAnnotatingModel {
 
+    public static final Logger logger = LoggerFactory.getLogger(TrainingDocumentTOCAnnotatingModel.class);
     @JsonProperty("secModel")
     TrainingTextAnnotatingModel secModel = null;
 
@@ -104,6 +107,7 @@ public class TrainingDocumentTOCAnnotatingModel extends TrainingTextAnnotatingMo
      * training involves updating Fij for each paragraph i and feature j.
      */
     public void updateWithDocumentAndWeight(Document doc) {
+        logger.info("starting traing doc " + doc.getId());
         List<CoreMap> originalParas = doc.getParagraphs();
 
         // todo: the following two lines can cause a lot of inefficiency with the current approach of
@@ -130,6 +134,7 @@ public class TrainingDocumentTOCAnnotatingModel extends TrainingTextAnnotatingMo
             secModel.updateWithProcessedParasAndWeight(sections.get(i), processedSections.get(i), data);
         }
 
+        logger.info("done traing doc " + doc.getId());
 
     }
 

@@ -6,6 +6,8 @@ import com.skroll.document.annotation.CoreAnnotations;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 
 public class NotInTableRVComputerTest {
@@ -30,12 +32,12 @@ public class NotInTableRVComputerTest {
 
     @Test
     public void testGetValue() throws Exception {
-        int value = nTC.getValue(m);
+        int value = nTC.getValue(Arrays.asList(m));
         System.out.println(value);
         assert (value == 0);
 
         m.set(CoreAnnotations.IsInTableAnnotation.class, false);
-        value = nTC.getValue(m);
+        value = nTC.getValue(Arrays.asList(m));
         assert (value == 1);
     }
 

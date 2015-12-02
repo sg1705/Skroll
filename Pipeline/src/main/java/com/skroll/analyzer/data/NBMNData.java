@@ -15,12 +15,7 @@ public class NBMNData {
     List<String[]>[] wordsLists;
     NBMNConfig config;
     SimpleDataTuple[] tuples;
-    int[] docFeatureValues;
-
-//    public DocData(Document doc, NBMNConfig config) {
-//        this.config = config;
-//        tuples = new SimpleDataTuple[doc.getParagraphs().size()];
-//    }
+    int[][] docFeatureValues;
 
 
     public void setParaFeatures(int[][] paraFeatures) {
@@ -43,7 +38,7 @@ public class NBMNData {
         return paraDocFeatures;
     }
 
-    public void setDocFeatureValues(int[] docFeatureValues) {
+    public void setDocFeatureValues(int[][] docFeatureValues) {
         this.docFeatureValues = docFeatureValues;
     }
 

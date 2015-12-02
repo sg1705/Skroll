@@ -6,7 +6,6 @@ import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
 import com.skroll.analyzer.model.bn.NBInferenceHelper;
 import com.skroll.analyzer.model.bn.NaiveBayesWithMultiNodes;
-import com.skroll.analyzer.model.bn.config.NBMNConfig;
 import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.analyzer.model.bn.node.DiscreteNode;
 import com.skroll.analyzer.model.bn.node.MultiplexNode;
@@ -18,7 +17,6 @@ import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
-import com.skroll.document.annotation.TypesafeMap;
 import com.skroll.util.Visualizer;
 
 import java.util.*;
@@ -29,8 +27,9 @@ import java.util.stream.Collectors;
  */
 public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
 
-    private static final int DEFAULT_NUM_ITERATIONS = 1;
-    private static final double[] DEFAULT_ANNOTATING_THRESHOLD = new double[]{0, .999999, 0.9999, 0.99999};
+    private static final int DEFAULT_NUM_ITERATIONS = 0;
+//    private static final double[] DEFAULT_ANNOTATING_THRESHOLD = new double[]{0, .999999, 0.99999, 0.99999};
+    private static final double[] DEFAULT_ANNOTATING_THRESHOLD = new double[]{0, .999999, 2, 0.99999}; //disable level 2 annotation in the doc model.
     List<CoreMap> paragraphs;
     // todo: should probably store paragraphs, otherwise, need to recreate it everytime when model has new observations
     List<CoreMap> processedParagraphs = new ArrayList<>();
@@ -38,6 +37,10 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
 
     private int numIterations = DEFAULT_NUM_ITERATIONS;
     private double[] annotatingThreshold = DEFAULT_ANNOTATING_THRESHOLD;
+    private int enforcingDominatingFeatureForClass = -1;
+    private boolean useFirstParaFormat = false;
+//    private double enforcingConsistencyStrength = Double.NEGATIVE_INFINITY; // the lower, the more consistent.
+    private double enforcingConsistencyStrength = -1000; // the lower, the more consistent.
 
 
     // indexed by feature number, paragraph number, category number
@@ -124,11 +127,19 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
         paragraphCategoryBelief = new double[numParagraphs][getParaCategory().getFeatureSize()];
         documentFeatureBelief = new double[docFeatures.size()][getParaCategory().getFeatureSize()][2];
 
+        List<CoreMap> observedParas = modelRVSetting.modelClassAndWeightStrategy.getObservedParagraphs(paragraphs);
+        int[][] docFeatureVals = DocProcessor.generateDocumentFeatures(observedParas, data.getParaDocFeatures(), nbmnConfig);
+
         // compute initial beliefs
         List<List<DiscreteNode>> docFeatureNodes = nbmnModel.getDocumentFeatureNodes();
         for (int f = 0; f < paraDocFeatures.size(); f++)
             for (int c = 0; c < getParaCategory().getFeatureSize(); c++)
-                documentFeatureBelief[f][c] = docFeatureNodes.get(f).get(c).getParameters().clone();
+                if (docFeatureVals[f][c] ==-1 )
+                    documentFeatureBelief[f][c] = docFeatureNodes.get(f).get(c).getParameters().clone();
+                else if (docFeatureVals[f][c] == 0)
+                    documentFeatureBelief[f][c] = new double[]{0, Double.NEGATIVE_INFINITY};
+                else if (docFeatureVals[f][c] == 1)
+                    documentFeatureBelief[f][c] = new double[]{Double.NEGATIVE_INFINITY, 0};
 
         List<DiscreteNode> fnl = nbmnModel.getFeatureNodes();
         DiscreteNode categoryNode = nbmnModel.getCategoryNode();
@@ -137,7 +148,7 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
         // May consider to use a separate method to get a list of observed paragrpahs.
         for (int p = 0; p < processedParagraphs.size(); p++) {
             if (DocProcessor.isParaObserved(paragraphs.get(p))) {
-                int observedVal = RVValues.getValue(paraCategory, paragraphs.get(p));
+                int observedVal = RVValues.getValue(paraCategory, Arrays.asList(paragraphs.get(p)));
 
                 for (int i = 0; i < paraCategory.getFeatureSize(); i++) {
                     if (i == observedVal) paragraphCategoryBelief[p][i] = 0;
@@ -164,7 +175,7 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
             List<WordNode> wordNodes = nbmnModel.getWordNodes();
             for (WordNode node : wordNodes) {
                 double[] message = NodeInferenceHelper.sumOutWordsWithObservation(node);
-                for (int j = 0; j < message.length; j++)
+               for (int j = 0; j < message.length; j++)
                     paragraphCategoryBelief[p][j] += message[j];
             }
 
@@ -290,6 +301,8 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
             }
         }
 
+
+        // todo: may need to take another look at the usage of normalization.
 //        BNInference.normalizeLog(documentFeatureBelief);
 
 //        for (double[][] beliefs : documentFeatureBelief) {
@@ -299,13 +312,62 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
 //        }
     }
 
-    public void updateBeliefs() {
-        int numIteration = 1;
-        for (int i = 0; i < numIteration; i++) {
+    int[] findDominatingFeatures(int classIndex){
+        int[] dominatingFeatures = null;
+        int numParagraphs = paragraphCategoryBelief.length;
+        if (useFirstParaFormat){
+            for (int p=0; p< numParagraphs; p++){
+                CoreMap paragraph = paragraphs.get(p);
+                double[] logPrioProbs = paragraphCategoryBelief[p].clone();
+                double[] paraProbs = logPrioProbs.clone();
+                BNInference.convertLogBeliefToProb(paraProbs);
+                if (paraProbs[classIndex] > annotatingThreshold[classIndex]) {
+                    dominatingFeatures = data.getParaDocFeatures()[paragraph.get(CoreAnnotations.IndexInteger.class)];
+                    break;
+                }
+            }
+        } else {
+            double maxProb = 0;
+             for (int p=0; p< numParagraphs; p++) {
+                 CoreMap paragraph = paragraphs.get(p);
+                 double[] logPrioProbs = paragraphCategoryBelief[p].clone();
+                 double[] paraProbs = logPrioProbs.clone();
+                 BNInference.convertLogBeliefToProb(paraProbs);
+                 if (paraProbs[classIndex] > annotatingThreshold[classIndex] && paraProbs[classIndex]>maxProb){
+                     maxProb = paraProbs[classIndex];
+                     dominatingFeatures = data.getParaDocFeatures()[paragraph.get(CoreAnnotations.IndexInteger.class)];
+                 }
+             }
+
+        }
+        return dominatingFeatures;
+    }
+
+    // dominating features will increase the strength of the consistent format features.
+    private void setDocFeatures(int classIndex, int[] dominatingFeatures){
+        for (int f = 0; f < dominatingFeatures.length; f++){
+            if (dominatingFeatures[f] == 1){
+                // increasing the consistent strength should be better than setting the strength.
+//                documentFeatureBelief[f][classIndex] = new double[]{enforcingConsistencyStrength, 0};
+                documentFeatureBelief[f][classIndex][0] += enforcingConsistencyStrength;
+            }
+
+        }
+    }
+
+    private void updateBeliefs() {
+        passMessagesToParagraphCategories();
+        if (enforcingDominatingFeatureForClass >-1) {
+            int[] dominatingFeatures = findDominatingFeatures(enforcingDominatingFeatureForClass);
+
+            // skip enforcing formating consistency if no dominating candidate found.
+            if (dominatingFeatures == null) return;
+            setDocFeatures(enforcingDominatingFeatureForClass, dominatingFeatures);
+        }
+        for (int i = 0; i < numIterations; i++) {
             passMessagesToParagraphCategories();
             passMessageToDocumentFeatures();
         }
-        passMessagesToParagraphCategories();
     }
 
 
@@ -332,6 +394,14 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
         this.processedParagraphs = processedParagraphs;
     }
 
+    public void setEnforcingDominatingFeatureForClass(int enforcingDominatingFeatureForClass) {
+        this.enforcingDominatingFeatureForClass = enforcingDominatingFeatureForClass;
+    }
+
+    public void setUseFirstParaFormat(boolean useFirstParaFormat) {
+        this.useFirstParaFormat = useFirstParaFormat;
+    }
+
     public void setAnnotatingThreshold(double[] annotatingThreshold) {
         this.annotatingThreshold = annotatingThreshold;
     }
@@ -339,12 +409,8 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
     public void annotateParagraphs() {
 
 
-        passMessagesToParagraphCategories();
+        updateBeliefs();
 
-        for (int i = 0; i < numIterations; i++) {
-            passMessageToDocumentFeatures();
-            passMessagesToParagraphCategories();
-        }
         int numParagraphs = paragraphCategoryBelief.length;
 
 
@@ -491,6 +557,11 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
         return documentFeatureBelief;
     }
 
+    @JsonIgnore
+    public ModelRVSetting getModelRVSetting(){
+        return modelRVSetting;
+    }
+
     public NaiveBayesWithMultiNodes getLpnbfModel() {
         return nbmnModel;
     }
@@ -519,6 +590,8 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
         applicationModelInfo.put(this.nbmnConfig.getCategoryVar().getName(),
                 Visualizer.toDoubleArrayToMap(this.getParaCategoryProbabilities(paraIndex)));
         for (int ii = 0; ii < documentFeatureBelief.length; ii++) {
+            applicationModelInfo.put(this.nbmnConfig.getFeatureExistsAtDocLevelVarList().get(ii).getName(),
+                    Visualizer.toDoubleArrayToMap(new double[]{.0 +data.getParaDocFeatures()[paraIndex][ii]}));
             for (int jj = 0; jj < documentFeatureBelief[0].length; jj++) {
                 applicationModelInfo.put(this.nbmnConfig.getDocumentFeatureVarList().get(ii).get(jj).getName(),
                         Visualizer.toDoubleArrayToMap(this.getDocumentFeatureProbabilities()[ii][jj]));
