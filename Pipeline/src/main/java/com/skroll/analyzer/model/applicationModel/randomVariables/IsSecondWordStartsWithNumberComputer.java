@@ -36,7 +36,7 @@ public class IsSecondWordStartsWithNumberComputer implements RVValueComputer {
         Token token = tokens.get(1);
         //logic to check if a number
         char c =token.getText().charAt(0);
-        return RVValues.booleanToInt( c > 0x30 && c < 0x39 );
+        return RVValues.booleanToInt( c >= 0x30 && c <= 0x39 );
 
     }
 
