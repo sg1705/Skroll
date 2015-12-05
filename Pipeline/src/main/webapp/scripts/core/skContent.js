@@ -65,7 +65,12 @@
           loadDocument()
             .then(function(contentHtml) {
               documentModel.targetHtml = contentHtml;
-              insertHtmlInIframe();
+
+              $timeout(function() {
+                insertHtmlInIframe();
+                documentModel.isProcessing = false;
+              }, 0);
+
               documentModel.isProcessing = false;
               $analytics.eventTrack(documentModel.documentId, {
                 category: 'doc.View',
