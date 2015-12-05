@@ -63,16 +63,30 @@ public abstract class FSModelFactoryImpl implements ModelFactory {
         ProbabilityTextAnnotatingModel bniModel;
 
         if (modelRVSetting instanceof TOCModelRVSetting) {
-            TrainingDocumentTOCAnnotatingModel tmpModel =
-                    (TrainingDocumentTOCAnnotatingModel) getTrainingModel(modelId, modelRVSetting);
+            TrainingDocumentTOCAnnotatingModel tmpModel;
+            try {
+                tmpModel = (TrainingDocumentTOCAnnotatingModel)  objectPersistUtil.copy(
+                        getTrainingModel(modelId, modelRVSetting), TrainingDocumentTOCAnnotatingModel.class);
+                logger.info("copying TrainingDocumentTOCAnnotatingModel model for BNI model: "  + String.valueOf(modelId));
+            } catch (ObjectPersistUtil.ObjectPersistException e) {
+                e.printStackTrace();
+                tmpModel = (TrainingDocumentTOCAnnotatingModel)  createModel(modelId, modelRVSetting);
+            }
             tmpModel.updateWithDocumentAndWeight(document);
             bniModel = new ProbabilityDocumentTOCAnnotatingModel(
                     modelId, tmpModel.getNbmnModel(), tmpModel.getHmm(),
                     tmpModel.getSecNbmnModel(), tmpModel.getSecHmm(),
                     document, (TOCModelRVSetting) modelRVSetting);
         } else {
-            TrainingTextAnnotatingModel tmpModel =
-                    getTrainingModel(modelId, modelRVSetting);
+            TrainingTextAnnotatingModel tmpModel;
+            try {
+                tmpModel = (TrainingTextAnnotatingModel)objectPersistUtil.copy(
+                        getTrainingModel(modelId, modelRVSetting), TrainingTextAnnotatingModel.class);
+                logger.info("copying TrainingTextAnnotatingModel model for BNI model: "  + String.valueOf(modelId));
+            } catch (ObjectPersistUtil.ObjectPersistException e) {
+                e.printStackTrace();
+                tmpModel = createModel(modelId, modelRVSetting);
+            }
             tmpModel.updateWithDocumentAndWeight(document);
             bniModel = new ProbabilityTextAnnotatingModel(
                     tmpModel.getNbmnModel(), tmpModel.getHmm(),

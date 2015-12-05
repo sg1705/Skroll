@@ -17,6 +17,14 @@ public class ParaStartsWithFeatureComputer implements RVValueComputer {
         wordFeature = wordAnnotation;
     }
 
+
+    // todo: use original or processed para?
+    public int getValue(List<CoreMap> ms){
+        return getValue(ms.get(1));
+    }
+
+
+
     /**
      * The paragraph has to be processed to have the first token meaningful, not a quote
      *

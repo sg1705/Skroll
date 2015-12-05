@@ -32,6 +32,7 @@ public class ClassifierFactory {
     public static final int TEN_K_TOC_CLASSIFIER_ID = 101;
     public static final int TEN_Q_TOC_CLASSIFIER_ID = 102;
     public static final int INDENTURE_TOC_CLASSIFIER_ID = 103;
+    public static final int S4_TOC_CLASSIFIER_ID = 104;
     private static final List<Integer> TOC_CATEGORY_IDS = new ArrayList<>(Arrays.asList(Category.NONE, Category.TOC_1, Category.TOC_2, Category.USER_TOC));
     public static final List<Integer> LOWER_TOC_CATEGORY_IDS = new ArrayList<>(Arrays.asList(Category.NONE, Category.TOC_2));
 
@@ -41,6 +42,7 @@ public class ClassifierFactory {
     public static final int TEN_K_DEF_CLASSIFIER_ID = 201;
     public static final int TEN_Q_DEF_CLASSIFIER_ID = 202;
     public static final int INDENTURE_DEF_CLASSIFIER_ID = 203;
+    public static final int S4_DEF_CLASSIFIER_ID = 204;
     private static final List<Integer> DEF_CATEGORY_IDS = new ArrayList<>(Arrays.asList(Category.NONE, Category.DEFINITION));
 
 
@@ -54,11 +56,11 @@ public class ClassifierFactory {
                 ClassifierProto docTypeClassifierProto = new ClassifierProto(DOCTYPE_CLASSIFIER_ID, DOCTYPE_IDS);
                 classifier = new ClassifierImpl (classifierId, docTypeClassifierProto, modelFactory, new DocTypeModelRVSetting(docTypeClassifierProto.getCategoryIds()));
                 break;
-            case TEN_K_TOC_CLASSIFIER_ID: case TEN_Q_TOC_CLASSIFIER_ID:case INDENTURE_TOC_CLASSIFIER_ID:case UNIVERSAL_TOC_CLASSIFIER_ID:
+            case TEN_K_TOC_CLASSIFIER_ID: case TEN_Q_TOC_CLASSIFIER_ID:case INDENTURE_TOC_CLASSIFIER_ID:case UNIVERSAL_TOC_CLASSIFIER_ID:case S4_TOC_CLASSIFIER_ID:
                 ClassifierProto tocClassifierProto = new ClassifierProto(classifierId, TOC_CATEGORY_IDS);
                 classifier = new ClassifierImpl(classifierId, tocClassifierProto, modelFactory, new TOCModelRVSetting(tocClassifierProto.getCategoryIds(), LOWER_TOC_CATEGORY_IDS));
                 break;
-            case TEN_K_DEF_CLASSIFIER_ID:case TEN_Q_DEF_CLASSIFIER_ID:case INDENTURE_DEF_CLASSIFIER_ID:case UNIVERSAL_DEF_CLASSIFIER_ID:
+            case TEN_K_DEF_CLASSIFIER_ID:case TEN_Q_DEF_CLASSIFIER_ID:case INDENTURE_DEF_CLASSIFIER_ID:case UNIVERSAL_DEF_CLASSIFIER_ID:case S4_DEF_CLASSIFIER_ID:
                 ClassifierProto defClassifierProto = new ClassifierProto(classifierId, DEF_CATEGORY_IDS);
                 classifier = new ClassifierImpl (classifierId, defClassifierProto, modelFactory, new DefModelRVSetting(defClassifierProto.getCategoryIds()));
                 break;

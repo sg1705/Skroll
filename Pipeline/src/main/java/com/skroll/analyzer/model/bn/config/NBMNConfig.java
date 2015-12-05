@@ -70,5 +70,10 @@ public class NBMNConfig extends NBConfig {
         return isEquals;
     }
 
-
+    @Override
+    public String toString() {
+        return "NBMNConfig{" +
+                "allParagraphFeatures=" + allParagraphFeatures +
+                '}';
+    }
 }

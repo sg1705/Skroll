@@ -90,7 +90,7 @@ public class TrainingTextAnnotatingModel extends DocumentAnnotatingModel {
 
 
         for (int i = 0; i < tokenType.length; i++) {
-            tokenType[i] = RVValues.getWordLevelRVValue(wordType, tokens.get(i), originalPara);
+            tokenType[i] = RVValues.getWordLevelRVValue(wordType, tokens.get(i), Arrays.asList(originalPara));
         }
 
         int length = Math.min(hmm.size(), tokens.size());
@@ -220,7 +220,7 @@ public class TrainingTextAnnotatingModel extends DocumentAnnotatingModel {
             int i = oPara.get(CoreAnnotations.IndexInteger.class);
             CoreMap pPara = processedParas.get(i);
             List<CoreMap> opParas = Arrays.asList(oPara, pPara);
-            int categoryValue = RVValues.getValue(getParaCategory(), oPara);
+            int categoryValue = RVValues.getValue(getParaCategory(), Arrays.asList(oPara));
             int[] paraFeatures = ParaProcessor.getFeatureVals(nbmnConfig.getFeatureVarList(), opParas);
             int[] paraDocFeatures =
                     ParaProcessor.getFeatureVals(nbmnConfig.getFeatureExistsAtDocLevelVarList(), opParas);

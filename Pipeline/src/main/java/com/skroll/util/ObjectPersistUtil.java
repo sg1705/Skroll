@@ -71,6 +71,50 @@ public class ObjectPersistUtil {
         }
     }
 
+    /**
+     * Returns a copy of the object, or null if the object cannot
+     * be serialized.
+     */
+    public static Object copy(Object obj, Type type) throws ObjectPersistException {
+        TrainingTextAnnotatingModel copyObj = null;
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        try {
+            // Write the object out to a byte array
+            ObjectOutputStream out = new ObjectOutputStream(bos);
+                Writer writer = null;
+                writer = new OutputStreamWriter(out, "UTF-8");
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+                mapper.writerWithDefaultPrettyPrinter().writeValue(writer, obj);
+                writer.close();
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new ObjectPersistException("UnsupportedEncodingException while reading the object: "+ obj);
+            }
+
+            // Make an input stream from the byte array and read
+            // a copy of the object back in.
+        try {
+            ObjectInputStream in = new ObjectInputStream(
+                    new ByteArrayInputStream(bos.toByteArray()));
+            Reader reader = null;
+
+                reader = new InputStreamReader(in, "UTF-8");
+
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+                copyObj = mapper.readValue(reader, (Class<TrainingTextAnnotatingModel>) type);
+                reader.close();
+                in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ObjectPersistException("UnsupportedEncodingException while copying object: "+ obj);
+        }
+
+        return copyObj;
+    }
+
     public Object readObject(Type type,String objectName) throws ObjectPersistException {
 
         // Read from disk using FileInputStream

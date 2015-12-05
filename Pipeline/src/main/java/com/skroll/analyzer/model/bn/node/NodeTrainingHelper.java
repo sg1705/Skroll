@@ -54,6 +54,7 @@ public class NodeTrainingHelper {
     }
 
     public static void updateCount(DiscreteNode node, double weight){
+        if (node.getObservation() == -1) return; // skip unobserved nodes
 
         RandomVariable[] variables = node.getFamilyVariables();
         int[] multiIndex= new int[variables.length];

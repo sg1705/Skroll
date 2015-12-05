@@ -15,20 +15,26 @@ public class ParaIsFeatureComputer implements RVValueComputer {
         wordFeature = wordAnnotation;
     }
 
+    public int getValue(List<CoreMap> ms){
+        return getValue(ms.get(0));
+    }
+
+
+
+
     /**
-     * The paragraph has to be processed to have the first token meaningful, not a quote
      *
-     * @param processedPara
+     * @param para
      * @return
      */
-    public int getValue(CoreMap processedPara) {
-        List<Token> tokens = processedPara.getTokens();
+    public int getValue(CoreMap para) {
+        List<Token> tokens = para.getTokens();
         if (tokens.size() == 0) return 0;
         Token firstToken = tokens.get(0);
 
         // for efficiency, checking only the first and the last token.
-        return RVValues.booleanToInt(processedPara.getTokens().get(0).<Boolean>get(wordFeature)) &
-                RVValues.booleanToInt(processedPara.getTokens().get(tokens.size() - 1).<Boolean>get(wordFeature)
+        return RVValues.booleanToInt(para.getTokens().get(0).<Boolean>get(wordFeature)) &
+                RVValues.booleanToInt(para.getTokens().get(tokens.size() - 1).<Boolean>get(wordFeature)
                 );
     }
 

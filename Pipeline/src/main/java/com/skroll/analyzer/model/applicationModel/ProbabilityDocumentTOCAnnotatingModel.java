@@ -1,20 +1,18 @@
 package com.skroll.analyzer.model.applicationModel;
 
 import com.skroll.analyzer.model.RandomVariable;
-import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
 import com.skroll.analyzer.model.bn.NBInferenceHelper;
 import com.skroll.analyzer.model.bn.NaiveBayesWithMultiNodes;
 import com.skroll.analyzer.model.bn.config.NBMNConfig;
-import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.analyzer.model.hmm.HiddenMarkovModel;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
-import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.util.Visualizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Probability model for annotating the Document headings.
@@ -22,9 +20,9 @@ import java.util.stream.Collectors;
  * Created by wei2learn on 2/16/2015.
  */
 public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnotatingModel {
-
-    static final int SEC_NUM_ITERATION = 80;
-    static double[] SEC_ANNOTATING_THRESHOLD = {0, 0.8};
+    public static final Logger logger = LoggerFactory.getLogger(ProbabilityDocumentTOCAnnotatingModel.class);
+    static final int SEC_NUM_ITERATION = 10;
+    static double[] SEC_ANNOTATING_THRESHOLD = {0, 0.9};
     Document doc;
     NaiveBayesWithMultiNodes secNbmn = null;
     HiddenMarkovModel secHmm = null;
@@ -51,6 +49,8 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
 
         // quick way to disable features without retraining.
 //        setting.disableParaDocFeature(n); // disable the nth paraDoc feature
+//        for (int i=0; i<setting.getNbmnConfig().getFeatureExistsAtDocLevelVarList().size(); i++)
+//            setting.disableParaDocFeature(i);
     }
 
     public ProbabilityDocumentTOCAnnotatingModel(int id,
@@ -94,6 +94,8 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
 
             // quick way to disable features without retraining.
 //            lowerTOCSetting.disableParaDocFeature(n); // disable the nth paraDoc feature
+//            for (int i=0; i<setting.getLowLevelNbmnConfig().getFeatureExistsAtDocLevelVarList().size(); i++)
+//                lowerTOCSetting.disableParaDocFeature(i);
 
             this.secModel = new ProbabilityTextAnnotatingModel(
                     secNbmn,
@@ -104,8 +106,9 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
                     lowerTOCSetting
             );
         }
-
+        logger.info("initializing model");
         super.initialize();
+        logger.info("finished initializing");
     }
 
     void preprocessData() {
@@ -120,27 +123,73 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
     @Override
     public void annotateParagraphs() {
 
+        logger.info("annotating top level headings");
         super.annotateParagraphs();
         annotateParaProbs(CoreAnnotations.TOCParaProbsDocLevel.class, processedParagraphs, paragraphCategoryBelief);
 
-//        List<Integer> lowerCatIds = ((TOCModelRVSetting) modelRVSetting).getLowLevelCategoryIds();
-//        if (lowerCatIds == null) return;
-//
-//        List<List<List<CoreMap>>> sectionsList = DocProcessor.createSections(paragraphs, processedParagraphs, getParaCategory());
-//        List<List<CoreMap>> sections = sectionsList.get(0);
-//        List<List<CoreMap>> processedSections = sectionsList.get(1);
-//
-//        for (int i = 0; i < sections.size(); i++) {
-//            secModel.setParagraphs(sections.get(i));
-//            secModel.setProcessedParagraphs(processedSections.get(i));
-//            secModel.setNumIterations(SEC_NUM_ITERATION);
-//            secModel.setAnnotatingThreshold(SEC_ANNOTATING_THRESHOLD);
-//            secModel.initialize();
-//            secModel.annotateParagraphs();
-//            annotateParaProbs(CoreAnnotations.TOCParaProbsSecLevel.class, processedSections.get(i), secModel.getParagraphCategoryBelief());
-//        }
+        List<Integer> lowerCatIds = ((TOCModelRVSetting) modelRVSetting).getLowLevelCategoryIds();
+        if (lowerCatIds == null) return;
+
+        logger.info("creating sections");
+        // remove duplicate annotations for level 1.
+        DocProcessor.removeDuplicateAnnotations(paragraphs, modelRVSetting.getCategoryIds().get(1));
+        List<List<List<CoreMap>>> sectionsList = DocProcessor.createSections(paragraphs, processedParagraphs, getParaCategory());
+        List<List<CoreMap>> sections = sectionsList.get(0);
+        List<List<CoreMap>> processedSections = sectionsList.get(1);
+
+        logger.info("annotating section level headings");
+        for (int i = 0; i < sections.size(); i++) {
+            secModel.setParagraphs(sections.get(i));
+            secModel.setProcessedParagraphs(processedSections.get(i));
+            secModel.setNumIterations(SEC_NUM_ITERATION);
+            secModel.setAnnotatingThreshold(SEC_ANNOTATING_THRESHOLD);
+            secModel.setEnforcingDominatingFeatureForClass(1); // class index 1 represent level 2 in the section model.
+            secModel.setUseFirstParaFormat(true);
+
+            secModel.initialize();
+            secModel.annotateParagraphs();
+            annotateParaProbs(CoreAnnotations.TOCParaProbsSecLevel.class, processedSections.get(i), secModel.getParagraphCategoryBelief());
+        }
+        logger.info("done annotating section level headings");
     }
 
+    /**
+     * todo: temporarily used display sec features on the right side for debugging purpose.
+     * @param paraIndex
+     * @return
+     */
+    public double[][][] getSecFeatureProbs(int paraIndex){
+        List<Integer> lowerCatIds = ((TOCModelRVSetting) modelRVSetting).getLowLevelCategoryIds();
+        if (lowerCatIds == null) return null;
+
+        // remove duplicate annotations for level 1.
+        DocProcessor.removeDuplicateAnnotations(paragraphs, modelRVSetting.getCategoryIds().get(1));
+        List<List<List<CoreMap>>> sectionsList = DocProcessor.createSections(paragraphs, processedParagraphs, getParaCategory());
+        List<List<CoreMap>> sections = sectionsList.get(0);
+        List<List<CoreMap>> processedSections = sectionsList.get(1);
+
+        int sectionNum = 0;
+        for (; sectionNum < sections.size(); sectionNum++){
+            List<CoreMap> paras = sections.get(sectionNum);
+            if (paras.size()==0) continue;
+            int lastParaIndexOfSec = paras.get(paras.size()-1).get(CoreAnnotations.IndexInteger.class);
+            if (lastParaIndexOfSec >= paraIndex) break;
+        }
+        secModel.setParagraphs(sections.get(sectionNum));
+        secModel.setProcessedParagraphs(processedSections.get(sectionNum));
+        secModel.setNumIterations(SEC_NUM_ITERATION);
+        secModel.setAnnotatingThreshold(SEC_ANNOTATING_THRESHOLD);
+
+        logger.info("annotating section level headings for section " + sectionNum);
+
+        secModel.initialize();
+        secModel.annotateParagraphs();
+
+        logger.info("done annotating section level headings");
+
+        return secModel.getDocumentFeatureProbabilities();
+
+    }
     /**
      * Returns a string representation of the BNI for viewer.
      *
@@ -160,12 +209,27 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
         if (probs != null)
             applicationModelInfo.put("sec level model " + this.nbmnConfig.getCategoryVar().getName(),
                     Visualizer.doubleListToMap(probs));
+        logger.info("paraDocFeatures for para " + paraIndex + "\n" + Arrays.toString(data.getParaDocFeatures()[paraIndex]));
         for (int ii = 0; ii < documentFeatureBelief.length; ii++) {
+            applicationModelInfo.put(this.nbmnConfig.getFeatureExistsAtDocLevelVarList().get(ii).getName(),
+                    Visualizer.toDoubleArrayToMap(new double[]{.0 + data.getParaDocFeatures()[paraIndex][ii]}));
             for (int jj = 0; jj < documentFeatureBelief[0].length; jj++) {
                 applicationModelInfo.put(this.nbmnConfig.getDocumentFeatureVarList().get(ii).get(jj).getName(),
                         Visualizer.toDoubleArrayToMap(this.getDocumentFeatureProbabilities()[ii][jj]));
             }
         }
+
+        double[][][] secFeatureProbs = getSecFeatureProbs(paraIndex);
+
+
+        if (secFeatureProbs != null)
+            for (int ii = 0; ii < secFeatureProbs.length; ii++) {
+                for (int jj = 0; jj < secFeatureProbs[0].length; jj++) {
+                    applicationModelInfo.put(this.secModel.getNbmnConfig().getDocumentFeatureVarList().get(ii).get(jj).getName(),
+                            Visualizer.toDoubleArrayToMap(secFeatureProbs[ii][jj]));
+                }
+            }
+
 
         map.put("applicationModelInfo", applicationModelInfo);
         return super.toVisualMap(map);

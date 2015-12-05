@@ -22,9 +22,10 @@ public class IsParaNumberComputer implements RVValueComputer {
         this.numVals = numVals;
     }
 
-    public int getValue(CoreMap m) {
+    // only check the original paragraph.
+    public int getValue(List<CoreMap> m) {
         //get first token
-        List<Token> tokens = m.getTokens();
+        List<Token> tokens = m.get(0).getTokens();
         if (tokens == null || tokens.size() != 1) return 0;
         Token token = tokens.get(0);
         //logic to check if a number

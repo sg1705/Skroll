@@ -52,6 +52,7 @@ public class TestHelper {
                     CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.NONE, (float) 1.0);
                 }
             }
+            doc.setId(file.getName());
             return doc;
         } catch (Exception e) {
             e.printStackTrace();

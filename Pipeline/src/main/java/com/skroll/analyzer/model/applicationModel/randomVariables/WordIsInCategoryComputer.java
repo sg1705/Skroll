@@ -19,7 +19,13 @@ public class WordIsInCategoryComputer implements WRVValueComputer {
         this.categoryIds=categoryIds;
         this.modelClassAndWeightStrategy = modelClassAndWeightStrategy;
     }
+
+    // use original para.
     @Override
+    public int getValue(Token word, List<CoreMap> paras){
+        return getValue(word, paras.get(0));
+    }
+
     public int getValue(Token word, CoreMap para) {
         int observedCategoryId = modelClassAndWeightStrategy.getCategoryIdForModel(para, categoryIds);
         List<List<Token>> tokens = CategoryAnnotationHelper.getTokensForCategory(para, observedCategoryId); //need one more field

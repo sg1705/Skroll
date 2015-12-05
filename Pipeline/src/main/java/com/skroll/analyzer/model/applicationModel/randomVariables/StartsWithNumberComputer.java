@@ -21,6 +21,12 @@ public class StartsWithNumberComputer implements RVValueComputer {
         this.numVals = numVals;
     }
 
+
+    // todo: use original or processed para?
+    public int getValue(List<CoreMap> ms){
+        return getValue(ms.get(0));
+    }
+
     public int getValue(CoreMap m) {
         //get first token
         List<Token> tokens = m.getTokens();

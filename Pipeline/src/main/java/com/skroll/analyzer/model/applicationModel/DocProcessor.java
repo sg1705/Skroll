@@ -286,7 +286,7 @@ public class DocProcessor {
             Arrays.fill(vals, -1);
         for (int p = 0; p < observedParas.size(); p++) {
             CoreMap paragraph = observedParas.get(p);
-            int categoryValue = RVValues.getValue(categoryVar, observedParas.get(p));
+            int categoryValue = RVValues.getValue(categoryVar, Arrays.asList(observedParas.get(p)));
             int paraIndex = paragraph.get(CoreAnnotations.IndexInteger.class);
             for (int f = 0; f < docFeatureValues.length; f++) {
                 docFeatureValues[f][categoryValue] &= allParaDocFeatures[paraIndex][f];
@@ -298,23 +298,24 @@ public class DocProcessor {
         return docFeatureValues;
     }
 
-//    public static int[] generateDocumentFeatures(List<CoreMap> originalParas, List<CoreMap> processedParagraphs,
-//                                                 NBMNConfig nbfcConfig) {
-//
-//        int[] docFeatureValues = new int[nbfcConfig.getDocumentFeatureVarList().size()];
-//
-//        Arrays.fill(docFeatureValues, 1);
-//        for (int p = 0; p < processedParagraphs.size(); p++) {
-//            CoreMap paragraph = processedParagraphs.get(p);
-//            for (int f = 0; f < docFeatureValues.length; f++) {
-//                if (RVValues.getValue(nbfcConfig.getCategoryVar(), originalParas.get(p)) == 1)
-//                    docFeatureValues[f] &= (ParaProcessor.getFeatureValue(
-//                            nbfcConfig.getFeatureExistsAtDocLevelVarList().get(f),
-//                            Arrays.asList(originalParas.get(p), paragraph)));
-//            }
-//        }
-//        return docFeatureValues;
-//    }
+    /**
+     * Remove annotations from paragraphs with duplicate text.
+     * @param paragraphs
+     * @param categoryId
+     */
+    public static void removeDuplicateAnnotations(List<CoreMap> paragraphs, int categoryId){
+
+        Set<String> headings = new HashSet<>();
+        for (CoreMap para:paragraphs){
+            if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(para, categoryId)){
+                if ( headings.contains( para.getText())) {
+                    CategoryAnnotationHelper.clearCategoryAnnotation(para, categoryId);
+                } else {
+                    headings.add(para.getText());
+                }
+            }
+        }
+    }
 
     public static List<List<List<CoreMap>>> createSections(List<CoreMap> paragraphs,
                                                            List<CoreMap> processedParas,
@@ -363,7 +364,7 @@ public class DocProcessor {
         for (int i = 0; i < paragraphs.size(); i++) {
             CoreMap para = paragraphs.get(i);
 
-            int paraClass = RVValues.getValue(paraCategory, para);
+            int paraClass = RVValues.getValue(paraCategory, Arrays.asList(para));
             if (paraClass == topHeading) mainBodyStarted = true;
             if (!mainBodyStarted) continue;
             if (sectionStarted) {

@@ -25,12 +25,12 @@ public class Benchmark {
 
     DocumentFactory documentFactory;
     ClassifierFactory classifierFactory;
-    ClassifierFactoryStrategy classifierFactoryStrategy;
+    ClassifierFactoryStrategy classifierFactoryStrategyForClassify;
 
     public Benchmark(DocumentFactory documentFactory, ClassifierFactory classifierFactory, ClassifierFactoryStrategy classifierFactoryStrategy){
         this.documentFactory = documentFactory;
         this.classifierFactory = classifierFactory;
-        this.classifierFactoryStrategy = classifierFactoryStrategy;
+        this.classifierFactoryStrategyForClassify = classifierFactoryStrategy;
     }
 
     public QC qcDocument(Document firstDoc, Document secondDoc, QC qc){
@@ -92,7 +92,7 @@ public class Benchmark {
         }
         DocumentHelper.clearObservedParagraphs(secondDoc);
         final Document finalSecondDoc =secondDoc;
-        classifierFactory.getClassifiers(classifierFactoryStrategy, secondDoc).forEach(c -> c.classify(finalSecondDoc.getId(), finalSecondDoc));
+        classifierFactory.getClassifiers(classifierFactoryStrategyForClassify, secondDoc).forEach(c -> c.classify(finalSecondDoc.getId(), finalSecondDoc));
         return qcDocument(firstDoc, secondDoc, qc);
     }
 

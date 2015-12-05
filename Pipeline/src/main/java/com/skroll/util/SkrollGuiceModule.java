@@ -1,9 +1,7 @@
 package com.skroll.util;
 
 import com.google.inject.AbstractModule;
-import com.skroll.classifier.ClassifierFactory;
-import com.skroll.classifier.ClassifierFactoryStrategy;
-import com.skroll.classifier.DefaultClassifierFactoryStrategy;
+import com.skroll.classifier.*;
 import com.skroll.classifier.factory.*;
 import com.skroll.document.factory.*;
 import com.skroll.parser.extractor.PhantomJsExtractor;
@@ -18,7 +16,9 @@ public class SkrollGuiceModule extends AbstractModule {
         bind(Configuration.class);
         bind(ClassifierFactory.class);
         bind(PhantomJsExtractor.class);
-        bind(ClassifierFactoryStrategy.class).to(DefaultClassifierFactoryStrategy.class);
+        bind(ClassifierFactoryStrategy.class).annotatedWith(ClassifierFactoryStrategyForClassify.class).to(DefaultClassifierFactoryStrategyForClassify.class);
+        bind(ClassifierFactoryStrategy.class).annotatedWith(ClassifierFactoryStrategyForTraining.class).to(DefaultClassifierFactoryStrategyForTraining.class);
+        bind(ClassifierFactoryStrategy.class).annotatedWith(ClassifierFactoryStrategyForDocType.class).to(DocTypeClassifierFactoryStrategy.class);
 
         //default binding for document factory
         bind(DocumentFactory.class)

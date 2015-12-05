@@ -5,10 +5,8 @@ import com.google.common.io.Files;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.skroll.classifier.Category;
-import com.skroll.classifier.ClassifierFactory;
-import com.skroll.classifier.ClassifierFactoryStrategy;
-import com.skroll.classifier.DefaultClassifierFactoryStrategy;
+import com.google.inject.Key;
+import com.skroll.classifier.*;
 import com.skroll.classifier.factory.CorpusFSModelFactoryImpl;
 import com.skroll.classifier.factory.ModelFactory;
 import com.skroll.document.CoreMap;
@@ -50,11 +48,11 @@ public class CategoryTrainer extends Trainer {
                     bind(ModelFactory.class)
                             .to(CorpusFSModelFactoryImpl.class);
                     bind(ClassifierFactory.class);
-                    bind(ClassifierFactoryStrategy.class).to(DefaultClassifierFactoryStrategy.class);
+                    bind(ClassifierFactoryStrategy.class).annotatedWith(ClassifierFactoryStrategyForTraining.class).to(DefaultClassifierFactoryStrategyForTraining.class);
                 }
             });
             classifierFactory = injector.getInstance(ClassifierFactory.class);
-            classifierFactoryStrategy = injector.getInstance(ClassifierFactoryStrategy.class);
+            classifierFactoryStrategy = injector.getInstance(Key.get(ClassifierFactoryStrategy.class, ClassifierFactoryStrategyForTraining.class));
             corpusDocumentFactory = injector.getInstance(DocumentFactory.class);
             configuration = injector.getInstance(Configuration.class);
             PRE_EVALUATED_FOLDER = configuration.get("preEvaluatedFolder", "/tmp/");

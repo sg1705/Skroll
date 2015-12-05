@@ -46,7 +46,9 @@ dependencies {
     compile "com.squarespace.jersey2-guice:jersey2-guice:0.10"
     compile 'org.reflections:reflections:0.9.9'
 }
-
+war {
+    zip64 true
+}
 
 task runBenchmark(type: JavaExec) {
     File workingDir = new File('Pipeline/')
@@ -128,12 +130,21 @@ task startProd(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
 }
 
+import org.apache.tools.ant.taskdefs.condition.Os
 task buildProdApp(type: Exec) {
-    commandLine 'gulp', '--gulpfile', 'src/main/webapp/gulpfile.js', 'build'
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        commandLine 'cmd', '/c', 'gulp', '--gulpfile', 'src/main/webapp/gulpfile.js', 'build'
+    }else {
+        commandLine 'gulp', '--gulpfile', 'src/main/webapp/gulpfile.js', 'build'
+    }
 }
 
 task npmInstall(type: Exec) {
-    commandLine 'npm', '--prefix', 'src/main/si', 'install'
+    if (Os.isFamily(Os.FAMILY_WINDOWS)){
+        commandLine 'cmd', '/c', 'npm', '--prefix', 'src/main/si', 'install'
+    } else {
+        commandLine 'npm', '--prefix', 'src/main/si', 'install'
+    }
 }
 
 task npmClean(type: Delete) {

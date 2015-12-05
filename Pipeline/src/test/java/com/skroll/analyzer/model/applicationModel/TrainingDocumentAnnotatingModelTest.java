@@ -32,7 +32,6 @@ public class TrainingDocumentAnnotatingModelTest {
 
     static {
         PhantomJsExtractor.TEST_MODE = TestMode.ON;
-        Parser.injector = Guice.createInjector(new SkrollTestGuiceModule());
     }
 
 
