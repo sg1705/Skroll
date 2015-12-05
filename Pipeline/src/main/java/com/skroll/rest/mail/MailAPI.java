@@ -36,12 +36,11 @@ public class MailAPI {
      * Sends feedback email
      */
     public Response sendFeedback(String json) throws Exception {
-
         Feedback feedback = new GsonBuilder().create().fromJson(json, Feedback.class);
 
         mailService.sendMail("no-reply+feedback@skroll.io",
                 "skrollioteamsep2015@gmail.com", "Feedback from user", feedback.toString());
-        Response r = Response.ok().status(Response.Status.OK).entity("{ status: 'ok'}").build();
+        Response r = Response.ok().status(Response.Status.OK).entity("").build();
         return r;
     }
 

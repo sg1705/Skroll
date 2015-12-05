@@ -4,16 +4,16 @@
   <div class="md-dialog-content-body" md-template="::dialog.mdContent">
    <md-input-container>
     <label>Email address</label>
-    <input type="text" ng-model="user.name">
+    <input type="text" ng-model="copydialogCtrl.address">
   </md-input-container>
   <md-input-container>
     <label>Feedback</label>
-    <textarea rows="4" cols="50" ng-model="user.description"></textarea>
+    <textarea rows="4" cols="50" ng-model="copydialogCtrl.feedbackMessage"></textarea>
   </md-input-container>
   </div>
 </md-dialog-content>
 <div class="md-actions">
-  <button class="md-primary md-button md-default-theme md-ink-ripple" ng-click="copydialogCtrl.hide()">
+  <button class="md-primary md-button md-default-theme md-ink-ripple" ng-click="copydialogCtrl.submitFeedback()">
     <span class="ng-binding ng-scope">Submit Feedback</span>
   </button>
 </div>
