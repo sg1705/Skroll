@@ -24,6 +24,18 @@ var documentModel = {
     this.isTocLoaded = false;
   },
 
+  reset: function() {
+    this.targetHtml = '';
+    this.isDocAvailable = false;
+    this.isProcessing = false;
+    this.fileName = '';
+    this.selectedParagraphId = '';
+    this.documentId = '';
+    this.isPartiallyParsed = false;
+    this.url = '';
+    this.lunrIndex = null;
+    this.isTocLoaded = false;
+  }
 
 };
 

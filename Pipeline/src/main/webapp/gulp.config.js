@@ -34,6 +34,7 @@ module.exports = function() {
         images: client + 'images/**/*.*',
         other: client + 'other/**/*',
         index: client + 'index.html',
+        iframe: client + 'iframe.html',
         // app js, with no specs
         js: [
             clientApp + '**/*.module.js',

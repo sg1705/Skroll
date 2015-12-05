@@ -16,7 +16,7 @@
   function ViewPortCtrl(selectionService, $log, $routeParams,
     scrollObserverService, clickObserverService,
     textSelectionObserverService,
-    mouseEnterObserverService, mouseLeaveObserverService) {
+    mouseEnterObserverService, mouseLeaveObserverService, $timeout) {
 
     //-- private variables
     var vm = this;
@@ -28,7 +28,8 @@
     vm.mouseMove = mouseMove;
     vm.paraClicked = paraClicked;
     vm.inferParagraphId = inferParagraphId;
-    vm.highlightParagraph = highlightParagraph;
+    vm.resizeFrame = resizeFrame;
+    vm.resetFrameHeight = resetFrameHeight;
 
     //-- initialization
     documentModel.documentId = $routeParams.docId;
@@ -38,14 +39,11 @@
     /////////////
 
     function mouseMove($event) {
-      //console.log('mouse moved');
       var paraId = vm.inferParagraphId($event);
 
     }
 
-
     function mouseDown($event) {
-      var selection = window.getSelection().toString();
       var paraId = vm.inferParagraphId($event);
       selectionService.mouseDownParaId = paraId;
     }
@@ -54,11 +52,11 @@
       console.log("mouseup clicked");
       //should mouse click handle it
       //find out if this is a selection
-      if (rangy.getSelection().toString() != '') {
+      if (selectionService.getRangySelection().toString() != '') {
         //rangy.getSelection().expand("word", { trim: true });
       }
 
-      var selection = window.getSelection().toString();
+      var selection = selectionService.getWindowSelection().toString();
       if ((selection == '') || (selection == undefined))
         return;
 
@@ -67,19 +65,18 @@
       var paraId = vm.inferParagraphId($event);
       if (paraId == null)
         return;
-      //save selection
-      selectionService.saveSelection(paraId, selection);
       textSelectionObserverService.notify({
         'paraId': paraId,
         'selectedText': selection
       });
+      selectionService.saveSelection(paraId, selection);
     }
 
 
     function paraClicked($event) {
       console.log("Paragraph clicked");
       //find out if this is a selection
-      var selection = window.getSelection().toString();
+      var selection = selectionService.getWindowSelection().toString();
       //check to see if mouseup should handle it
       if (selection != '' || (selection == undefined))
         return;
@@ -91,31 +88,15 @@
 
       //store in selectionService
       selectionService.paragraphId = paraId;
-      //highlight paragraph
-      vm.highlightParagraph(paraId);
-
       scrollObserverService.notify(paraId);
       clickObserverService.notify(paraId);
 
     }
 
 
-    function highlightParagraph(paraId) {
-      $("#" + paraId).css("background-color", "yellow");
-    }
-
-    // ViewPortCtrl.prototype.removeHighlightParagraph = function(paraId) {
-    //   $("#" + paraId).css("background-color", "");
-    // }
-
     function inferParagraphId($event) {
       var parents = $($event.target).parents("div[id^='p_']");
-      // for (var ii = 0; ii < parents.length; ii++) {
-      //   console.log($(parents[ii]).attr('id'));
-      // }
-
       var children = $($event.target).children("div[id^='p_']");
-      //console.log('children:' + children.length);
       if (parents.length > 1) {
         return $(parents[0]).attr('id');
       } else {
@@ -127,6 +108,37 @@
       }
 
     }
+
+    function resizeFrame() {
+
+      var iframeDiv = document.getElementById("docViewIframe");
+      var toolbarDiv = document.getElementById("toolbar");
+      var iframeBody = document.getElementById("docViewIframe").contentWindow.document.body;
+
+      //for iPhone, load the width first and then set the height
+      if (navigator.userAgent.indexOf('iPhone') > -1) {
+        $timeout(function() {
+          iframeDiv.width = toolbarDiv.offsetWidth + "px";
+          $timeout(function() {
+            iframeDiv.height = iframeBody.offsetHeight + "px";
+          }, 0);
+
+        }, 0);
+        return;
+      }
+
+      iframeDiv.height = iframeBody.offsetHeight + "px";
+      iframeDiv.width = toolbarDiv.offsetWidth + "px";
+      console.log(toolbarDiv.offsetWidth);
+    }
+
+    function resetFrameHeight() {
+      var iframeDiv = document.getElementById("docViewIframe");
+      iframeDiv.height = 0;
+      resizeFrame();
+    }
+
+
   }
 
 })();

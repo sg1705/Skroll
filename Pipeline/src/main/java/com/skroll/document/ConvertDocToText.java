@@ -68,7 +68,9 @@ public class ConvertDocToText {
 
                     //                try ( PrintWriter writer = new PrintWriter(OUTPUT_FOLDER + f.getName() + ".txt" , "UTF-8")) {
                     for (CoreMap paragraph : doc.getParagraphs()) {
-                        writer.println(paragraph.getText());
+                        String text = paragraph.getText();
+                        if (text.length() > 50)
+                            writer.println(paragraph.getText());
                     }
 
 

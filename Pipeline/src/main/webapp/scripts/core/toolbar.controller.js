@@ -26,6 +26,7 @@
     vm.openEmailDialog = openEmailDialog;
     vm.showShareDialog = showShareDialog;
     vm.showSendFeedbackDialog = showSendFeedbackDialog;
+    vm.openChromeExtensionLink = openChromeExtensionLink;
 
     /////////////
 
@@ -35,6 +36,14 @@
 
     function navigateToLanding() {
       $location.path('/');
+    }
+
+
+    function openChromeExtensionLink() {
+      window.open('https://chrome.google.com/webstore/detail/skroll/mjjpiinnkdcpdjijolfdbghdccjpehca', '',
+        'toolbar=no,location=no, status=no,menubar=no,scrollbars=yes,resizable=yes,top=300, left=300,width=950,height=720');
+
+
     }
 
     function openEmailDialog() {

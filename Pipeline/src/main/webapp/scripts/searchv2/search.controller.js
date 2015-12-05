@@ -14,7 +14,7 @@
     .controller('SearchCtrl', SearchCtrl);
 
   /* @ngInject */
-  function SearchCtrl($scope, $timeout, selectionService, documentModel, searchFactory) {
+  function SearchCtrl($scope, $timeout, selectionService, documentModel, searchFactory, $analytics) {
 
     //-- private variables
     /*jshint validthis: true */
@@ -112,6 +112,10 @@
     function settledSearch() {
       var searchText = vm.searchState.searchText;
       console.log('Settled on search after '+vm.settledSearchInterval+' ms:' + searchText);
+      $analytics.eventTrack(documentModel.documentId, {
+              category: 'searchText',
+              label: searchText
+            });
     }
 
     function onKeyUp(event, searchText) {
@@ -242,7 +246,8 @@
           if (typeof header !== 'undefined' && result.ref === header.paragraphId) {
             return;
           }
-          var resultElement = document.getElementById(result.ref);
+          // var resultElement = document.getElementById(result.ref);
+          var resultElement = selectionService.getJQParaElement(result.ref).get(0);
           var resultText = self.getSurroundingText(resultElement.textContent, searchText);
           var item = {
             'paragraphId': result.ref,

@@ -16,8 +16,8 @@ public class DocTypeClassifierFactoryStrategy implements ClassifierFactoryStrate
      * getCLassifierIds return list of doctype classifier ids.
      * @return
      */
+    @Override
     public List<Integer> getClassifierIds(Document document)   {
         return Lists.newArrayList(ClassifierFactory.DOCTYPE_CLASSIFIER_ID);
     }
-
 }

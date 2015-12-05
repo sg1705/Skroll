@@ -104,7 +104,11 @@ public class DocAPI {
             try {
                 content = CharStreams.toString(reader);
                 documentId = UniqueIdGenerator.generateId(content);
-                List<Classifier> classifiers = request.getClassifiers();
+                final String fDocumentId = documentId;
+                final Document fDoc = document;
+                DocTypeAnnotationHelper.classifyDocType(request.getClassifiersForDocType(document),document);
+                logger.info("DocType:" + DocTypeAnnotationHelper.getDocType(fDoc));
+                List<Classifier> classifiers = request.getClassifiersForClassify(fDoc);
                 document = fetchOrSaveDocument(documentId, content, request.getDocumentFactory(), classifiers);
                 reader.close();
             } catch (Exception e) {
@@ -140,7 +144,9 @@ public class DocAPI {
                     String fDocumentId = documentId;
                     document.setId(documentId);
                     Document fDoc = document;
-                    request.getClassifiers().forEach(c -> c.classify(fDocumentId, fDoc));
+                    DocTypeAnnotationHelper.classifyDocType(request.getClassifiersForDocType(document), fDoc);
+                    logger.info("DocType:" + DocTypeAnnotationHelper.getDocType(fDoc));
+                    request.getClassifiersForClassify(fDoc).forEach(c -> c.classify(fDocumentId, fDoc));
                     request.getDocumentFactory().putDocument(document);
                     request.getDocumentFactory().saveDocument(document);
                     logger.debug("Added document into the documentMap with a generated hash key:{}", documentId);
@@ -160,8 +166,8 @@ public class DocAPI {
         }
         return Response.status(Response.Status.OK)
                     .header("documentId", documentId)
-                    .header("inCache",inCache)
-                    .entity(document.getTarget().getBytes(Constants.DEFAULT_CHARSET))
+                    .header("inCache", inCache)
+                    .entity(DocumentHelper.getProcessedHtml(document).getBytes(Constants.DEFAULT_CHARSET))
                     .type(MediaType.TEXT_HTML).build();
     }
 
@@ -196,7 +202,7 @@ public class DocAPI {
 
 
 
-    private Document fetchOrSaveDocument(String documentId, String content, DocumentFactory documentFactory, List<Classifier> classifiers) throws Exception {
+    private Document fetchOrSaveDocument(String documentId, String content, DocumentFactory documentFactory, List<Classifier> classifiersForClassify) throws Exception {
         Document document;
 
         if (documentFactory.isDocumentExist(documentId)) {
@@ -205,7 +211,7 @@ public class DocAPI {
         } else {
             document = Parser.parseDocumentFromHtml(content);
             document.setId(documentId);
-            for (Classifier classifier : classifiers) {
+            for (Classifier classifier : classifiersForClassify) {
                 document = (Document) classifier.classify(documentId, document);
             }
             documentFactory.putDocument(document);
@@ -240,7 +246,7 @@ public class DocAPI {
     @GET
     @Path("/getDoc")
     @Produces(MediaType.TEXT_HTML)
-    public Response getDoc(@QueryParam("documentId") String documentId, @Context HttpHeaders hh, @BeanParam RequestBean request) {
+    public Response getDoc(@QueryParam("documentId") String documentId, @Context HttpHeaders hh, @BeanParam RequestBean request) throws Exception {
 
         logger.info("Opening [{}]", documentId);
         Document document = request.getDocument();
@@ -251,13 +257,15 @@ public class DocAPI {
         //Streams require final objects
         final Document finalDoc = document;
         try {
-            request.getClassifiers().forEach(c -> c.classify(documentId, finalDoc));
+            DocTypeAnnotationHelper.classifyDocType(request.getClassifiersForDocType(document), finalDoc);
+            logger.info("DocType:" + DocTypeAnnotationHelper.getDocType(finalDoc));
+            request.getClassifiersForClassify(finalDoc).forEach(c -> c.classify(documentId, finalDoc));
         } catch (Exception e) {
             return logErrorResponse("Failed to classify/store document", e);
         }
         return Response.status(Response.Status.OK)
                 .header("documentId", documentId)
-                .entity(document.getTarget().getBytes(Constants.DEFAULT_CHARSET))
+                .entity(DocumentHelper.getProcessedHtml(document).getBytes(Constants.DEFAULT_CHARSET))
                 .type(MediaType.TEXT_HTML).build();
     }
 
@@ -373,7 +381,7 @@ public class DocAPI {
         // persist the document using document id. Let's use the file name
         try {
             if (!parasForUpdateBNI.isEmpty()) {
-                for (Classifier classifier : request.getClassifiers()) {
+                for (Classifier classifier : request.getClassifiersForClassify(doc)) {
                     logger.debug("updateCategoryId: {}", updateCategoryId);
                     //if(classifier.getModelRVSetting().getCategoryId() == updateCategoryId) {
                         doc = (Document) classifier.updateBNI(documentId, doc, parasForUpdateBNI);
@@ -392,7 +400,7 @@ public class DocAPI {
     @GET
     @Path("/updateModel")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateModel(@Context HttpHeaders hh, @BeanParam RequestBean request) {
+    public Response updateModel(@Context HttpHeaders hh, @BeanParam RequestBean request) throws Exception {
 
         String documentId = request.getDocumentId();
         Document doc = request.getDocument();
@@ -400,19 +408,29 @@ public class DocAPI {
             return logErrorResponse("document cannot be found for document id: " + documentId);
         }
 
-        for (Classifier classifier : request.getClassifiers()) {
-            classifier.trainWithWeight(doc);
-            try {
-                classifier.persistModel();
-            } catch (Exception e) {
-                return logErrorResponse("Failed to persist the model:" + classifier.toString());
+        try {
+            for (Classifier classifier : request.getClassifiersForTraining(doc)) {
+                classifier.trainWithWeight(doc);
+                try {
+                    classifier.persistModel();
+                } catch (Exception e) {
+                    return logErrorResponse("Failed to persist the model:" + classifier.toString());
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         for (CoreMap paragraph : doc.getParagraphs()) {
             if (paragraph.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)) {
                 CategoryAnnotationHelper.copyCurrentCategoryWeightsToPrior(paragraph);
             }
         }
+
+        try {
+            DocTypeAnnotationHelper.trainDocType(request.getClassifiersForDocType(doc),doc);
+            } catch (Exception e) {
+                return logErrorResponse("Failed to train/persist the DocType model");
+            }
 
         try {
             request.getDocumentFactory().putDocument(doc);
@@ -500,7 +518,7 @@ public class DocAPI {
         }
         try {
             if (!parasForUpdateBNI.isEmpty()) {
-                for (Classifier classifier : request.getClassifiers()) {
+                for (Classifier classifier : request.getClassifiersForClassify(doc)) {
                     doc = (Document) classifier.updateBNI(documentId, doc, parasForUpdateBNI);
                 }
                 request.getDocumentFactory().putDocument(doc);

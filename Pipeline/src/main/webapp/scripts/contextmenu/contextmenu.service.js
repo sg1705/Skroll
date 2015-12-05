@@ -37,7 +37,8 @@
         return;
       }
       console.log('context menu invokved');
-      var s = window.getSelection();
+      // var s = window.getSelection();
+      var s = selectionService.getWindowSelection();
       var oRange = s.getRangeAt(0); //get the text range
       var oRect = oRange.getBoundingClientRect();
       $analytics.eventTrack(documentModel.documentId, {
@@ -72,7 +73,10 @@
         };
 
         /**  start below is the only part added to standard onShow method **/
-        var positionStyle = calculatePosition(oRect, options);
+        //TODO: commented due to move to iframe
+        // var positionStyle = calculatePosition(oRect, options);
+        var positionStyle = calculatePositionRelativeToIframe(oRect, options);
+
         $(element).css(positionStyle);
         options.hideBackdrop = showBackdrop(scope, element, options);
         /** end below is the only part added to standard onShow method **/
@@ -109,6 +113,7 @@
 
       //function added for onShow
       function calculatePosition(oRect, options) {
+
         //how many pixels above or below
         var CONTEXT_MENU_WIDTH = 200;
         var CONTEXT_MENU_HEIGHT = 40;
@@ -140,6 +145,51 @@
         return position;
 
       }
+
+
+      function calculatePositionRelativeToIframe(oRect, options) {
+        var iframeOffset = $(document.getElementById('docViewIframe')).offset()
+        var skrollPortTop = $(document.getElementById('skrollport')).scrollTop();
+        //$(document.getElementById('skrollport')).scrollTop()
+        var rTop = oRect.top - skrollPortTop + (iframeOffset.top + skrollPortTop);
+        var rBottom = oRect.bottom - skrollPortTop + (iframeOffset.top + skrollPortTop);
+        var rLeft = oRect.left + iframeOffset.left;
+        var rRight = oRect.right + iframeOffset.left;
+        //how many pixels above or below
+        var CONTEXT_MENU_WIDTH = 200;
+        var CONTEXT_MENU_HEIGHT = 40;
+        var SCREEN_WIDTH = screen.width;
+        var VERTICAL_OFFSET = 50;
+        var HORIZONTAL_OFFSET = CONTEXT_MENU_WIDTH / 2; //200 is the min width context bar
+
+        var position = {
+          position: 'fixed',
+          opacity: 1
+        }
+
+
+        if (rTop < 90) {
+          position.top = rBottom + VERTICAL_OFFSET - CONTEXT_MENU_HEIGHT;
+          options.position = 'top left';
+        } else {
+          position.top = rTop - VERTICAL_OFFSET;
+        }
+
+        //clear off the edges
+        var midpoint = rLeft + (rRight - rLeft) / 2;
+        if (midpoint < HORIZONTAL_OFFSET) {
+          position.left = 0;
+        } else if (midpoint > SCREEN_WIDTH) {
+          position.left = SCREEN_WIDTH - CONTEXT_MENU_WIDTH;
+        } else {
+          position.left = midpoint - HORIZONTAL_OFFSET;
+        }
+        return position;
+
+      }
+
+
+
 
       function onRemove(scope, element, options) {
         element.off(SWIPE_EVENTS, options.onSwipe);

@@ -10,7 +10,6 @@
     <div
       ng-if="term.classificationId == 2"
       ng-class="{'md-primary md-warn' : ctrl.smodel.visibleHeaders.indexOf(term.paragraphId) != -1, 'md-primary' : ctrl.smodel.visibleHeaders.indexOf(term.paragraphId) == -1}"
-      ng-click="ctrl.tocSelected()"
       scroll-to-paragraph="{{term.paragraphId}}"
       class="level-1">
       <md-divider ng-if="$index != 0"></md-divider>
