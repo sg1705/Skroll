@@ -330,10 +330,12 @@ public class DocAPI {
                     // log the existing definitions
                     CategoryAnnotationHelper.displayParagraphsAnnotatedWithAnyCategory(paragraph);
 
-                    List<List<Token>> addedTerms = new ArrayList<>();
+                    List<String> addedTerms = new ArrayList<>();
+
                     if (!(termProto.getClassificationId() == Category.NONE)) {
 
                         for (String modifiedTerm : termProtoMap.get(termProto)) {
+                            /*
                             List<Token> tokens = null;
                             try {
                                 Document tempDoc = Parser.parseDocumentFromHtml(modifiedTerm);
@@ -341,9 +343,11 @@ public class DocAPI {
                             } catch (ParserException e) {
                                 e.printStackTrace();
                             }
-                            addedTerms.add(tokens);
+                            */
+                            addedTerms.add(modifiedTerm);
                         }
                     }
+
                     updateCategoryId = termProto.getClassificationId();
                     // check whether the term is "" ro empty or not that received from client
                     //remove any existing annotations
@@ -352,11 +356,11 @@ public class DocAPI {
                     if (addedTerms.isEmpty()) {
                         CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.NONE, userWeight);
                     } else {
-                        for (List<Token> addedTerm : addedTerms) {
+                        for (String addedTerm : addedTerms) {
                             if (addedTerm == null || addedTerm.isEmpty()) {
                                 CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.NONE, userWeight);
                             } else {
-                                if (Joiner.on("").join(addedTerm).equals("")) {
+                                if (addedTerm.equals("")) {
                                     CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.NONE, userWeight);
                                 } else {
                                     if (CategoryAnnotationHelper.setMatchedText(paragraph, addedTerm, termProto.getClassificationId())) {
