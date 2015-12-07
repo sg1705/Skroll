@@ -14,7 +14,7 @@
     .directive('skContent', skContent);
 
   /* @ngInject */
-  function skContent(documentModel, documentService, LHSModel, selectionService, $timeout, $http, $analytics, $window, $q) {
+  function skContent(documentModel, documentService, LHSModel, selectionService, $timeout, $http, $analytics, $window, $q, viewportService) {
 
     var directive = {
       restricted: 'EA',
@@ -45,6 +45,7 @@
           $timeout(function() {
             insertHtmlInIframe();
             documentModel.isProcessing = false;
+            postInsertIframe();
           }, 0);
 
           documentService.importDoc(documentModel.url, false)
@@ -69,6 +70,7 @@
               $timeout(function() {
                 insertHtmlInIframe();
                 documentModel.isProcessing = false;
+                postInsertIframe();
               }, 0);
 
               documentModel.isProcessing = false;
@@ -137,7 +139,7 @@
         iframeDoc.write(documentModel.targetHtml);
         iframeDoc.close();
         // if (navigator.userAgent.indexOf('Chrome') > -1) {
-          viewCtrl.resizeFrame();
+        viewCtrl.resizeFrame();
         // }
 
         var elmt = angular.element(iframeDoc.body);
@@ -151,6 +153,12 @@
           viewCtrl.mouseUp($event)
         });
 
+        elmt.bind('mousedown', function($event) {
+          viewCtrl.mouseDown($event)
+        });
+
+
+
         angular.element($window).bind('resize', function($event) {
           $timeout(function() {
             viewCtrl.resetFrameHeight();
@@ -160,8 +168,16 @@
         if (navigator.userAgent.indexOf('Firefox') > -1) {
           firefoxAnchorLinks(iframe);
         }
+      }
 
-
+      /*
+      * Method to find out the bounding rect of the iframe
+      */
+      function postInsertIframe() {
+        var iframeoffset = $('#docViewIframe').offset();
+        iframeoffset.width = $('#docViewIframe').width();
+        viewportService.viewportOffset = iframeoffset;
+        console.log(viewCtrl.iframeOffset);
       }
 
       function firefoxAnchorLinks(iframe) {

@@ -15,7 +15,7 @@
     .factory('selectionService', SelectionService);
 
   /* @ngInject */
-  function SelectionService($ngSilentLocation) {
+  function SelectionService($ngSilentLocation, viewportService) {
 
     //-- private variables
     var paragraphId = '',
@@ -25,10 +25,15 @@
       serializedParagraphId = '',
       shortLink = '',
       searchSelectionRange = null,
+      mouseDownX = 0,
+      mouseDownY = 0,
+      mouseUpX = 0,
+      mouseUpY = 0,
       vm = this;
 
     //-- service definition
     var service = {
+
       //-- service variables
       paragraphId: paragraphId,
       selectedText: selectedText,
@@ -37,6 +42,11 @@
       serializedParagraphId: serializedParagraphId,
       shortLink: shortLink,
       searchSelectionRange: searchSelectionRange,
+      mouseDownX: mouseDownX,
+      mouseDownY: mouseDownY,
+      mouseUpX: mouseUpX,
+      mouseUpY: mouseUpY,
+
 
       //-- service functions
       scrollToParagraph: scrollToParagraph,
@@ -47,7 +57,8 @@
       getJQParaElement: getJQParaElement,
       getRangySelection: getRangySelection,
       getWindowSelection: getWindowSelection,
-      getIframeDocument: getIframeDocument
+      getIframeDocument: getIframeDocument,
+      getSelectionBoundingBox: getSelectionBoundingBox
     }
 
     return service;
@@ -92,6 +103,45 @@
         }
       }
       return scrollable;
+    }
+
+
+    function getSelectionBoundingBox() {
+      var selectionBoundingBox = {
+        top: viewportService.viewportOffset.top,
+        left: viewportService.viewportOffset.left,
+        width: viewportService.viewportOffset.width,
+        mouseDownX: this.mouseDownX,
+        mouseDownY: this.mouseDownY,
+        mouseUpX: this.mouseUpX,
+        mouseUpY: this.mouseUpY
+      }
+
+      selectionBoundingBox.top = viewportService.viewportOffset.top + this.mouseDownY;
+      selectionBoundingBox.bottom = viewportService.viewportOffset.top + this.mouseUpY;
+      selectionBoundingBox.left = viewportService.viewportOffset.left + this.mouseDownX;
+      selectionBoundingBox.right = viewportService.viewportOffset.left + this.mouseUpX;
+
+      //swap top and bottom, left and right if selection starts from bottom or right
+      if (selectionBoundingBox.top > selectionBoundingBox.bottom) {
+        var top = selectionBoundingBox.bottom;
+        var bottom = selectionBoundingBox.top;
+        selectionBoundingBox.top = top;
+        selectionBoundingBox.bottom = bottom;
+      }
+
+      if (selectionBoundingBox.left > selectionBoundingBox.right) {
+        var left = selectionBoundingBox.right;
+        var right = selectionBoundingBox.left;
+        selectionBoundingBox.left = left;
+        selectionBoundingBox.right = right;
+      }
+
+
+
+      console.log(selectionBoundingBox);
+
+      return selectionBoundingBox;
     }
 
 
@@ -200,7 +250,10 @@
       this.serializedSelection = '';
       this.serializedParagraphId = '';
       this.shortLink = '';
-
+      this.mouseDownX = 0;
+      this.mouseDownY = 0;
+      this.mouseUpX = 0;
+      this.mouseUpY = 0;
     }
 
     function removeHighlightParagraph(paraId) {
