@@ -53,6 +53,7 @@ public class QueryProcessor {
         filingKeyWords.put("10k", "10-K");
         filingKeyWords.put("10q", "10-Q");
         filingKeyWords.put("8k", "8-K");
+        filingKeyWords.put("S1", "S-1");
     }
 
 
