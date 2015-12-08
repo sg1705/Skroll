@@ -146,6 +146,7 @@
 
 
     function scrollToParagraph(paragraphId, selectedText) {
+
       var me = this;
       var para = getJQParaElement(paragraphId);
       if (SelectionModel.paragraphId !== '' && SelectionModel.paragraphId !== undefined) {
@@ -159,7 +160,6 @@
           }, 'slow');
 
 
-        // $('.selected-para-rhs').toggleClass('selected-para-rhs', false);
         $('.selected-para-rhs', getIframeElement()).toggleClass('selected-para-rhs', false);
         para.toggleClass('selected-para-rhs', true);
 
@@ -168,7 +168,7 @@
         // Remove existing highlights
         var prevRange = service.searchSelectionRange;
         var range = rangy.createRange(getIframeDocument());
-        var searchScopeRange = rangy.createRange();
+        var searchScopeRange = rangy.createRange(getIframeDocument());
         searchScopeRange.selectNodeContents(para[0]);
 
         var options = {
@@ -181,14 +181,17 @@
         if( prevRange !== null) {
           searchResultApplier.undoToRange(prevRange);
         }
+
         if (typeof selectedText !== 'undefined') {
           var escapedSearcedText = selectedText.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
           var searchTerm = new RegExp('\\b(' + escapedSearcedText + ')\\b', 'ig');
-
+          console.time('while');
           while (range.findText(searchTerm, options)) {
             searchResultApplier.applyToRange(range);
             range.collapse(false);
           }
+
+          console.timeEnd('while');
         }
         service.searchSelectionRange = searchScopeRange;
         SelectionModel.paragraphId = paragraphId;
