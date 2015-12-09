@@ -126,7 +126,7 @@
       }
 
       function insertHtmlInIframe() {
-        if (navigator.userAgent.indexOf('iPhone') > -1) {
+        if ((navigator.userAgent.indexOf('iPad') > -1) || (navigator.userAgent.indexOf('iPhone') > -1)){
           $('#docViewIframe').attr('scrolling', 'no');
           $('#docViewIframe').wrap('<md-content id="docViewIframeParent"></md-content>');
         }
@@ -156,7 +156,6 @@
         elmt.bind('mousedown', function($event) {
           viewCtrl.mouseDown($event)
         });
-
 
 
         angular.element($window).bind('resize', function($event) {
