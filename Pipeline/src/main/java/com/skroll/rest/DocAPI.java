@@ -335,15 +335,6 @@ public class DocAPI {
                     if (!(termProto.getClassificationId() == Category.NONE)) {
 
                         for (String modifiedTerm : termProtoMap.get(termProto)) {
-                            /*
-                            List<Token> tokens = null;
-                            try {
-                                Document tempDoc = Parser.parseDocumentFromHtml(modifiedTerm);
-                                tokens = DocumentHelper.getTokensOfADoc(tempDoc);
-                            } catch (ParserException e) {
-                                e.printStackTrace();
-                            }
-                            */
                             addedTerms.add(modifiedTerm);
                         }
                     }
