@@ -89,11 +89,11 @@ public class CategoryAnnotationHelperTest {
     public void testSetMatchedText() throws Exception {
         for(CoreMap paragraph: document.getParagraphs()){
             int categoryId = Category.DEFINITION;
-            CategoryAnnotationHelper.setMatchedText(paragraph, "becontinuing,", categoryId);
+            CategoryAnnotationHelper.setMatchedText(paragraph, "continuing,", categoryId);
             if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph, categoryId)) {
                 List<List<String>> definitionList = CategoryAnnotationHelper.getTokenStringsForCategory(paragraph, categoryId);
                 logger.info("{} \t definition: \t {}", paragraph.getId(), Joiner.on(" , ").join(definitionList));
-                assert(Joiner.on("").join(definitionList.get(0)).equals("becontinuing,"));
+                assert(Joiner.on("").join(definitionList.get(0)).equals("continuing,"));
             }
             CategoryAnnotationHelper.setMatchedText(paragraph, "Event of Default", categoryId);
             if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph, categoryId)) {
@@ -103,11 +103,11 @@ public class CategoryAnnotationHelperTest {
             }
 
             categoryId = Category.TOC_1;
-            CategoryAnnotationHelper.setMatchedText(paragraph, "becontinuing,", categoryId);
+            CategoryAnnotationHelper.setMatchedText(paragraph, "continuing,", categoryId);
             if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph, categoryId)) {
                 List<List<String>> definitionList = CategoryAnnotationHelper.getTokenStringsForCategory(paragraph, categoryId);
                 logger.info("{} \t toc: \t {}", paragraph.getId(), Joiner.on(" , ").join(definitionList));
-                assert(Joiner.on("").join(definitionList.get(0)).equals("becontinuing,"));
+                assert(Joiner.on("").join(definitionList.get(0)).equals("continuing,"));
             }
             CategoryAnnotationHelper.setMatchedText(paragraph, "Event of Default", categoryId);
             if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph, categoryId)) {
