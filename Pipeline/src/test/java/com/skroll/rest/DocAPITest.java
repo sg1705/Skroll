@@ -57,7 +57,7 @@ public class DocAPITest extends APITest {
         String preEvaluatedFolder = configuration.get("preEvaluatedFolder","/tmp/");
         Document doc = JsonDeserializer.fromJson(Files.toString(new File(preEvaluatedFolder + documentId), Constants.DEFAULT_CHARSET));
         for(CoreMap coreMap: doc.getParagraphs()){
-            CategoryAnnotationHelper.setMatchedText(coreMap, DocumentHelper.createTokens(Lists.newArrayList("Capital", "Stock")), Category.TOC_2);
+            CategoryAnnotationHelper.setMatchedText(coreMap, "Capital Stock", Category.TOC_2);
             if(CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(coreMap, Category.TOC_2)) {
                 System.out.println("TOC_2:" + CategoryAnnotationHelper.getTokenStringsForCategory(coreMap, Category.TOC_2));
             }

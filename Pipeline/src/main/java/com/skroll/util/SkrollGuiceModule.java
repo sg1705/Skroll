@@ -5,6 +5,9 @@ import com.skroll.classifier.*;
 import com.skroll.classifier.factory.*;
 import com.skroll.document.factory.*;
 import com.skroll.parser.extractor.PhantomJsExtractor;
+import com.skroll.services.mail.MailService;
+import com.skroll.services.mail.SendGridMailService;
+import com.skroll.services.mail.SendGridMailServiceImpl;
 
 /**
  * Created by saurabhagarwal on 4/26/15.
@@ -47,5 +50,10 @@ public class SkrollGuiceModule extends AbstractModule {
         bind(ModelFactory.class)
                 .annotatedWith(BenchmarkFSModelFactory.class)
                 .to(BenchmarkFSModelFactoryImpl.class);
+
+        bind(MailService.class)
+                .annotatedWith(SendGridMailService.class)
+                .to(SendGridMailServiceImpl.class);
+
     }
 }

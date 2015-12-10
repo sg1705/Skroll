@@ -34,7 +34,7 @@ public class DefaultModelClassAndWeightStrategyTest {
         paragraph = doc.getParagraphs().get(0);
         paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
         CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.TOC_1, 1);
-        CategoryAnnotationHelper.setMatchedText(paragraph, Lists.newArrayList(paragraph.getTokens().get(0)), Category.TOC_1);
+        CategoryAnnotationHelper.setMatchedText(paragraph, paragraph.getTokens().get(0).getText(), Category.TOC_1);
 
         /*
         paragraph = doc.getParagraphs().get(1);
