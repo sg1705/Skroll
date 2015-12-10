@@ -1,9 +1,9 @@
 <md-toast class="skContextMenu">
 
   <md-button
-	 	ng-click="ctrl.copySelection()"
+	 	ng-click="contextCtrl.copySelection()"
 	 	aria-label="Copy selected text"
-	 	ui-zeroclip zeroclip-copied="copied=true" zeroclip-model="ctrl.selectedText">
+	 	ui-zeroclip zeroclip-copied="copied=true" zeroclip-model="contextCtrl.selectedText">
 	 	<md-tooltip>
 	 		Copy selected text
     </md-tooltip>
@@ -11,7 +11,7 @@
   </md-button>
 
 
-  <md-button ng-click='ctrl.copyLink()'>
+  <md-button ng-click='contextCtrl.copyLink()'>
 		<md-tooltip>
  			Copy link
  		</md-tooltip>
@@ -21,7 +21,7 @@
 
 
   <md-button
-	 	ng-click='ctrl.openEmailDialog()'
+	 	ng-click='contextCtrl.openEmailDialog()'
 	 	aria-label="Email selected text">
 	 	<md-tooltip>
 	 		Email selected text
@@ -31,7 +31,7 @@
 
 
   <md-button
-	 	ng-click='ctrl.openTwitter()'
+	 	ng-click='contextCtrl.openTwitter()'
 	 	aria-label="Tweet this">
     <img src="images/icons/TwitterLogo_acee.png" width="24" height="24"
    			style="vertical-align:middle"/>

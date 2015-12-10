@@ -36,7 +36,12 @@
               category: 'landingPage.searchText',
               label: vm.searchText
             });
-        $location.path('/search/' + vm.searchText);
+
+        if ((vm.searchText.indexOf('http://') === 0) || (vm.searchText.indexOf('www.') === 0)) {
+          $location.path('/search/' + encodeURIComponent(vm.searchText));
+        } else {
+          $location.path('/search/' + vm.searchText);
+        }
       }
     }
 
@@ -59,6 +64,14 @@
 
     }
 
+    function httpURLInSearch(url) {
+      importService.importDocFromUrl(url)
+        .then(function(partial) {
+          $location.search({});
+          $location.path('/view/docId/' + documentModel.documentId);
+        })
+    }
+
     function search() {
       documentModel.isProcessing = true;
       if (((vm.searchText == null) || (vm.searchText == "undefined"))) {
@@ -66,6 +79,10 @@
         $location.path('/search/' + searchText);
         return;
       }
+      if ((vm.searchText.indexOf("http%3A") === 0) || ((vm.searchText.indexOf('www.') === 0))) {
+        httpURLInSearch(vm.searchText);
+      }
+
       vm.searchResults = new Array();
       secSearchService.getSearchResults(vm.searchText)
         .then(function(data) {

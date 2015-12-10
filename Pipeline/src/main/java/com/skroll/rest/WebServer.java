@@ -6,6 +6,7 @@ import com.google.inject.Module;
 import com.google.inject.servlet.GuiceFilter;
 import com.google.inject.servlet.ServletModule;
 import com.skroll.rest.benchmark.BenchmarkAPI;
+import com.skroll.rest.mail.MailAPI;
 import com.skroll.util.SkrollGuiceModule;
 import com.squarespace.jersey2.guice.BootstrapUtils;
 import org.apache.tomcat.InstanceManager;
@@ -179,6 +180,7 @@ public class WebServer {
         ResourceConfig config = new ResourceConfig();
         config.register(DocAPI.class);
         config.register(SearchAPI.class);
+        config.register(MailAPI.class);
         config.register(BenchmarkAPI.class);
         config.register(MultiPartFeature.class);
         config.register(InstrumentAPI.class);
