@@ -40,7 +40,6 @@ public class MailAPITest{
         }
     }
 
-
     @Test
     public void testSendFeedback() throws Exception {
         Feedback feedback = new Feedback("test@test.com", "feedbackMessage", "test", "test.com","test browser");

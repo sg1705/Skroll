@@ -15,6 +15,7 @@ import com.skroll.document.Document;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
+import com.skroll.util.ParaHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,9 +28,11 @@ import java.util.stream.Collectors;
  * Created by wei on 5/10/15.
  */
 public class DocProcessor {
+
     public static final Logger logger = LoggerFactory.getLogger(DocProcessor.class);
 
     static int numWordsToUse = ModelRVSetting.NUM_WORDS_TO_USE_PER_PARAGRAPH;
+    static final String IGNORE_PARA_CONTAINING_TEXT = "continued";
 
     static LoadingCache<Document, List<CoreMap>> processedParasCache = CacheBuilder.newBuilder()
             .maximumSize(2)
@@ -308,7 +311,8 @@ public class DocProcessor {
         Set<String> headings = new HashSet<>();
         for (CoreMap para:paragraphs){
             if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(para, categoryId)){
-                if ( headings.contains( para.getText())) {
+                if ( headings.contains( para.getText()) ||
+                        ParaHelper.getLastAlphaWord(para).toLowerCase().equals(IGNORE_PARA_CONTAINING_TEXT)) {
                     CategoryAnnotationHelper.clearCategoryAnnotation(para, categoryId);
                 } else {
                     headings.add(para.getText());

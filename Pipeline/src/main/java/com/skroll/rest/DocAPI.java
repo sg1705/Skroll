@@ -450,18 +450,12 @@ public class DocAPI {
 
         //iterate over each paragraph
         for (CoreMap paragraph : doc.getParagraphs()) {
-            boolean IsNoCategoryExist = true;
-            paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
-            paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
             for (int categoryId : Category.getCategories()) {
                 if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph, categoryId)) {
+                    paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
+                    paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
                     CategoryAnnotationHelper.annotateCategoryWeight(paragraph, categoryId, userWeight);
-                    IsNoCategoryExist = false;
                 }
-            }
-            if (IsNoCategoryExist) {
-                CategoryAnnotationHelper.clearCategoryAnnotations(paragraph);
-                CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.NONE, userWeight);
             }
         }
         try {
