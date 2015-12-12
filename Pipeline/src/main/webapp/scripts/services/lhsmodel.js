@@ -20,6 +20,7 @@ var LHSModel = {
     isSelected: Whether this is default selected or not
     isVisible: Whether to show it in the viewer
     isActive:
+    isTrainerLHS: Whether this will appear in trainerLHS, by default false
 
   */
   classes: [{
@@ -27,7 +28,8 @@ var LHSModel = {
       name: 'None',
       isSelected: false,
       isVisible: false,
-      isActive: false
+      isActive: false,
+      isTrainerLHS: false
     },
 
     {
@@ -35,7 +37,8 @@ var LHSModel = {
       name: 'Definition',
       isSelected: false,
       isVisible: true,
-      isActive: true
+      isActive: true,
+      isTrainerLHS: false
     },
 
 
@@ -44,13 +47,16 @@ var LHSModel = {
       name: 'Table of Contents',
       isSelected: true,
       isVisible: true,
-      isActive: true
+      isActive: true,
+      isTrainerLHS: false
+
     }, {
       id: 3,
       name: 'TOC Level 2',
       isSelected: false,
       isVisible: false,
-      isActive: false
+      isActive: false,
+      isTrainerLHS: false
     },
 
     {
@@ -58,7 +64,8 @@ var LHSModel = {
       name: 'User TOC',
       isSelected: false,
       isVisible: true,
-      isActive: false
+      isActive: false,
+      isTrainerLHS: true
     },
 
 
@@ -67,7 +74,8 @@ var LHSModel = {
       name: 'Bookmarks',
       isSelected: false,
       isVisible: true,
-      isActive: false
+      isActive: false,
+      isTrainerLHS: false
     }
 
   ],
