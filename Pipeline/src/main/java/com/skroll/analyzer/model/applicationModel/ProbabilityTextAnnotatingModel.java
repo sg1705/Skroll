@@ -434,7 +434,8 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
             List<Token> tokens = processedPara.getTokens();
 
             //todo: a hack for TOC and DocType annotation. should implement HMM for TOC and annotate base on HMM result
-            if (this.modelRVSetting instanceof TOCModelRVSetting || this.modelRVSetting instanceof DocTypeModelRVSetting) {
+            if (this.modelRVSetting instanceof TOCModelRVSetting || this.modelRVSetting instanceof DocTypeModelRVSetting){
+                if (this.modelRVSetting instanceof DocTypeModelRVSetting ) tokens = null;
                 annotateParagraph(paragraph, paraCategory, tokens, logPrioProbs);
                 if (true) continue;
             }

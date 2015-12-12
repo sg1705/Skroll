@@ -182,7 +182,7 @@
       console.log("fetching score");
 
       if (!featureFlags.isOn('trainer.benchmark')) {
-        trainerModel.trainerToolbar.isTrainModel = true;
+        trainerModel.trainerToolbar.isTrainModel = false;
         return;
       }
 
