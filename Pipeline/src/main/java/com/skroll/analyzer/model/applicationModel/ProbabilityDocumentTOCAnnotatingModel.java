@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model.applicationModel;
 
 import com.skroll.analyzer.model.RandomVariable;
+import com.skroll.analyzer.model.applicationModel.randomVariables.RVValues;
 import com.skroll.analyzer.model.bn.NBInferenceHelper;
 import com.skroll.analyzer.model.bn.NaiveBayesWithMultiNodes;
 import com.skroll.analyzer.model.bn.config.NBMNConfig;
@@ -148,6 +149,8 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
 
             secModel.initialize();
             secModel.annotateParagraphs();
+            // remove duplicate annotations for level 2.
+            DocProcessor.removeDuplicateAnnotations(sections.get(i), lowerCatIds.get(1));
             annotateParaProbs(CoreAnnotations.TOCParaProbsSecLevel.class, processedSections.get(i), secModel.getParagraphCategoryBelief());
         }
         logger.info("done annotating section level headings");
@@ -185,6 +188,8 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
         secModel.initialize();
         secModel.annotateParagraphs();
 
+        // remove duplicate annotations for level 2.
+        DocProcessor.removeDuplicateAnnotations(sections.get(sectionNum), lowerCatIds.get(1));
         logger.info("done annotating section level headings");
 
         return secModel.getDocumentFeatureProbabilities();

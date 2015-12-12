@@ -5,18 +5,8 @@ import com.google.common.io.Files;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.skroll.classifier.Classifier;
-import com.skroll.classifier.ClassifierFactory;
-import com.skroll.classifier.ClassifierFactoryStrategy;
-import com.skroll.classifier.factory.CorpusFSModelFactoryImpl;
-import com.skroll.classifier.factory.ModelFactory;
-import com.skroll.document.annotation.CategoryAnnotationHelper;
-import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.document.factory.CorpusFSDocumentFactoryImpl;
 import com.skroll.document.factory.DocumentFactory;
-import com.skroll.trainer.CategoryTrainer;
-import com.skroll.trainer.TrainerConfiguration;
-import com.skroll.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +28,7 @@ public class ConvertDocToText {
     static final String OUTPUT_FILE_NAME = "build/resources/main/preEvaluatedTxtOneFile.txt";
 
     public static void convertDocsToText () throws Exception {
-//
+
         try {
 
             Injector injector = Guice.createInjector(new AbstractModule() {
@@ -68,8 +58,9 @@ public class ConvertDocToText {
                     //                try ( PrintWriter writer = new PrintWriter(OUTPUT_FOLDER + f.getName() + ".txt" , "UTF-8")) {
                     for (CoreMap paragraph : doc.getParagraphs()) {
                         String text = paragraph.getText();
+                        String newText = text.replaceAll("\\n"," ");
                         if (text.length() > 50)
-                            writer.println(paragraph.getText());
+                            writer.println(newText);
                     }
 
 
