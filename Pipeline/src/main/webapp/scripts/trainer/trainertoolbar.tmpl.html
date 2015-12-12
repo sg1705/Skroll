@@ -18,12 +18,12 @@
 </md-menu>
 
 <md-button feature-flag="trainer" ng-click="ctrl.updateModelByTrainer()" aria-label="annotation"
-           ng-disabled="!ctrl.trainerToolbar.isTrainModel">
+           ng-disabled="ctrl.trainerToolbar.isTrainModel">
   <md-icon md-svg-icon="images/icons/ic_visibility_24px.svg"></md-icon>
 </md-button>
 
 <md-button feature-flag="trainer" ng-click="ctrl.convertToBenchmark()" aria-label="annotation"
-           ng-disabled="!ctrl.trainerToolbar.isBenchmark">
+           ng-disabled="ctrl.trainerToolbar.isBenchmark">
   <md-icon md-svg-icon="images/icons/ic_format_bold_24px.svg"></md-icon>
 </md-button>
 

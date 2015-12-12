@@ -38,8 +38,6 @@ public class Benchmark {
             logger.error("both benchamrk docuemnts can not pointing to the same document");
             return null;
         }
-        int type1Error = 0;
-        int type2Error = 0;
         for(CoreMap firstDocParagraph : firstDoc.getParagraphs()) {
             for(CoreMap secondDocParagraph : secondDoc.getParagraphs()) {
                 if (firstDocParagraph.getId().equalsIgnoreCase(secondDocParagraph.getId())) {
@@ -55,13 +53,11 @@ public class Benchmark {
                                 CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(secondDocParagraph, stats.categoyId))
                          {
                              // false positive
-                             type1Error++;
                              logger.debug("category [{}] type1Error [{}]", stats.categoyId, firstDocParagraph.getText());
                             stats.type1Error++;
                         } else if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(firstDocParagraph, stats.categoyId) &&
                                 !CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(secondDocParagraph, stats.categoyId)) {
                             // false negative
-                            type2Error++;
                             logger.debug("category [{}] type2Error [{}]", stats.categoyId, firstDocParagraph.getText());
                             stats.type2Error++;
                         }
@@ -71,8 +67,13 @@ public class Benchmark {
                 }
             }
         }
-        logger.info("type1Error [{}] for document {}", type1Error, firstDoc.getId());
-        logger.info("type2Error [{}] for document {}", type2Error, firstDoc.getId());
+        logger.info("level1 type1Error [{}] for document {}", qc.stats.get(0).type1Error, firstDoc.getId());
+        logger.info("level1 type2Error [{}] for document {}", qc.stats.get(0).type1Error, firstDoc.getId());
+        logger.info("level1 qcScore[{}] for document {}", qc.stats.get(0).qcScore, firstDoc.getId());
+        logger.info("level2 type1Error [{}] for document {}", qc.stats.get(1).type1Error, firstDoc.getId());
+        logger.info("level2 type2Error [{}] for document {}", qc.stats.get(1).type1Error, firstDoc.getId());
+        logger.info("level2 qcScore[{}] for document {}", qc.stats.get(1).qcScore, firstDoc.getId());
+
         return qc;
     }
 

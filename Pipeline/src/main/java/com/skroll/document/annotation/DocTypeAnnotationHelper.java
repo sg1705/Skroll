@@ -62,6 +62,16 @@ public class DocTypeAnnotationHelper {
      */
     public static void copyParaLevelCategoryAnnotationToDocLevel(CoreMap document, CoreMap paragraph) {
         document.set(CoreAnnotations.CategoryAnnotations.class, paragraph.get(CoreAnnotations.CategoryAnnotations.class));
+        HashMap<Integer, CoreMap> categoryAnnotation = document.get(CoreAnnotations.CategoryAnnotations.class);
+        if (categoryAnnotation!=null && categoryAnnotation.keySet().iterator().hasNext()) {
+            int doctype = categoryAnnotation.keySet().iterator().next();
+            CoreMap annotationCoreMap = categoryAnnotation.get(doctype);
+            if (annotationCoreMap!=null){
+                if(annotationCoreMap.size()!=0) {
+                    annotationCoreMap.set(CoreAnnotations.TermTokensAnnotation.class, null);
+                }
+            }
+        }
     }
     /**
      * For a document, from the document level annotation, get the weight of docType.

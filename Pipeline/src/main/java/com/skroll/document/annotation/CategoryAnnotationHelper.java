@@ -257,7 +257,11 @@ public class CategoryAnnotationHelper {
      * @return
      */
     public static boolean setMatchedText(CoreMap paragraph, String selectedTermString, int categoryId) {
+        // instead of matching for selected token, we are taking the whole para as TOC
+        annotateParagraphWithTokensAndCategory(paragraph, paragraph.getTokens(), categoryId);
+        return true;
 
+        /*
         List<Token> paragraphTokens = paragraph.getTokens();
         String paraTokenString = paragraph.getText(); // Joiner.on("").join(paragraphTokens).toLowerCase();
         //String selectedTermString = Joiner.on("").join(selectedTerm).toLowerCase();
@@ -292,6 +296,7 @@ public class CategoryAnnotationHelper {
         }
         annotateParagraphWithTextAndCategory(paragraph, selectedTermString, categoryId);
         return true;
+        */
     }
 
     /**
