@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -169,5 +170,16 @@ public class DocAPITest extends APITest {
         HashMap map = gson.fromJson(response, HashMap.class);
         assert (!map.isEmpty());
         assert (map.get("corpusTokens") != null);
+    }
+
+    @Test
+    public void testGetDocType() throws Exception {
+        String TARGET_URL = "http://localhost:8888/restServices/doc/getDocType";
+        Client client = ClientBuilder.newClient();
+        WebTarget webTarget = client.target(TARGET_URL).queryParam("documentId", documentId);
+        String response = webTarget.request().get(String.class);
+        HashMap<String, Integer> map = new GsonBuilder().create().fromJson(response, new TypeToken<HashMap<String, Integer>>() {}.getType());
+        assert(map.get("docTypeId").equals(100));
+
     }
 }

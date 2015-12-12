@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -106,10 +107,11 @@ public class DocAPI {
                 documentId = UniqueIdGenerator.generateId(content);
                 final String fDocumentId = documentId;
                 final Document fDoc = document;
-                DocTypeAnnotationHelper.classifyDocType(request.getClassifiersForDocType(document),document);
-                logger.info("DocType:" + DocTypeAnnotationHelper.getDocType(fDoc));
                 List<Classifier> classifiers = request.getClassifiersForClassify(fDoc);
                 document = fetchOrSaveDocument(documentId, content, request.getDocumentFactory(), classifiers);
+                DocTypeAnnotationHelper.classifyDocType(request.getClassifiersForDocType(document),document);
+                logger.info("DocType:" + DocTypeAnnotationHelper.getDocType(document));
+                DocTypeAnnotationHelper.classifyDocType(request.getClassifiersForDocType(document),document);
                 reader.close();
             } catch (Exception e) {
                 return logErrorResponse("Failed to classify", e);
@@ -542,4 +544,27 @@ public class DocAPI {
         logger.info("updateDocType {} using document id {}", docType, documentId);
         return Response.ok().status(Response.Status.OK).entity("").build();
     }
+
+    @GET
+    @Path("/getDocType")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getDocType(@Context HttpHeaders hh, @BeanParam RequestBean request) {
+
+        String documentId = request.getDocumentId();
+        Document doc = request.getDocument();
+
+        if (doc == null) {
+            return logErrorResponse("document cannot be found for document id: " + documentId);
+        }
+
+        int docType = DocTypeAnnotationHelper.getDocType(doc);
+
+        HashMap map = new HashMap();
+        map.put("docTypeId", docType);
+        String json = new GsonBuilder().create().toJson(map);
+
+        logger.info("DocType of documentId: {} is {}", documentId, docType);
+        return Response.ok().status(Response.Status.OK).entity(json).build();
+    }
+
 }
