@@ -374,6 +374,39 @@ public class CategoryAnnotationHelper {
     }
 
     /**
+     * Clear Prior training weight of all categories for a paragraph
+     * @param paragraph
+     */
+    public static void clearPriorCategoryWeight(CoreMap paragraph){
+        HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
+        if (categoryAnnotation==null) return;
+        for (int categoryId : Category.getCategories()) {
+            CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
+            if(annotationCoreMap!=null){
+                annotationCoreMap.set(CoreAnnotations.PriorCategoryWeightFloat.class, 0f);
+                logger.debug("Cleared \t {} \t {}", paragraph.getId(), categoryId);
+            }
+        }
+
+    }
+
+    /**
+     * Clear Prior training weight of all categories for a paragraph
+     * @param paragraph
+     */
+    public static void clearCurrentCategoryWeight(CoreMap paragraph){
+        HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
+        if (categoryAnnotation==null) return;
+        for (int categoryId : Category.getCategories()) {
+            CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
+            if(annotationCoreMap!=null){
+                annotationCoreMap.set(CoreAnnotations.CurrentCategoryWeightFloat.class, 0f);
+                logger.debug("Cleared \t {} \t {}", paragraph.getId(), categoryId);
+            }
+        }
+
+    }
+    /**
      * Copy annotations from one CoreMap into another
      *
      * @param copyFrom CoreMap to copy from
@@ -399,28 +432,10 @@ public class CategoryAnnotationHelper {
             String indexes = copyFrom.get(CoreAnnotations.SearchIndexAnnotation.class);
             copyInto.set(CoreAnnotations.SearchIndexAnnotation.class, indexes);
         }
-
-
     }
 
 
 
-    /**
-     * Clear Prior training weight of all categories for a paragraph
-     * @param paragraph
-     */
-    public static void clearPriorCategoryWeight(CoreMap paragraph){
-        HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
-        if (categoryAnnotation==null) return;
-        for (int categoryId : Category.getCategories()) {
-            CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
-            if(annotationCoreMap!=null){
-                annotationCoreMap.set(CoreAnnotations.PriorCategoryWeightFloat.class, (float)0);
-                logger.debug("Cleared \t {} \t {}", paragraph.getId(), categoryId);
-            }
-        }
-
-    }
 
     /**
      * Get the categoryAnnotation core map.
