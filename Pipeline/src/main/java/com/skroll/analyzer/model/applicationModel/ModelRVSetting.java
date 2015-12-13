@@ -38,6 +38,9 @@ public class ModelRVSetting {
     @JsonProperty("categoryIds")
     List<Integer> categoryIds=null;
 
+    double[] annotatingThreshold = null;
+
+
 
     boolean[] disabledParaDocFeatures = null;
     /* Various strategies for the model */
@@ -50,6 +53,14 @@ public class ModelRVSetting {
 
     public List<Integer> getCategoryIds() {
         return categoryIds;
+    }
+
+    public double[] getAnnotatingThreshold() {
+        return annotatingThreshold;
+    }
+
+    public void setAnnotatingThreshold(double[] annotatingThreshold) {
+        this.annotatingThreshold = annotatingThreshold;
     }
 
     /**
@@ -71,6 +82,8 @@ public class ModelRVSetting {
                           ) {
         initializeStrategies();
         this.categoryIds=categoryIds;
+        double[] threshold = new double[categoryIds.size()]; // The initialized 0's are good.
+        setAnnotatingThreshold(threshold);
         RandomVariable wordType = RVCreater.createWordLevelRVWithComputer(new WordIsInCategoryComputer(modelClassAndWeightStrategy, categoryIds), "wordIsInModelID-" + categoryIds);
         RandomVariable paraType = RVCreater.createDiscreteRVWithComputer(new ParaCategoryComputer(modelClassAndWeightStrategy,categoryIds), "paraTypeIsModelID-" + categoryIds);
         nbmnConfig = new NBMNConfig(paraType, paraFeatureVars, paraDocFeatureVars,
@@ -96,6 +109,8 @@ public class ModelRVSetting {
         this.wordType = wordType;
         this.wordFeatures = wordFeatures;
         this.categoryIds = categoryIds;
+        double[] threshold = new double[categoryIds.size()]; // The initialized 0's are good.
+        setAnnotatingThreshold(threshold);
         disabledParaDocFeatures = new boolean[nbmnConfig.getFeatureExistsAtDocLevelVarList().size()];
     }
 

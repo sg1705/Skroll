@@ -29,14 +29,14 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
 
     private static final int DEFAULT_NUM_ITERATIONS = 0;
 //    private static final double[] DEFAULT_ANNOTATING_THRESHOLD = new double[]{0, .999999, 0.99999, 0.99999};
-    private static final double[] DEFAULT_ANNOTATING_THRESHOLD = new double[]{0, .999999, 2, 0.99999}; //disable level 2 annotation in the doc model.
+//    private static final double[] DEFAULT_ANNOTATING_THRESHOLD = new double[]{0, .999999, 2, 0.99999}; //disable level 2 annotation in the doc model.
     List<CoreMap> paragraphs;
     // todo: should probably store paragraphs, otherwise, need to recreate it everytime when model has new observations
     List<CoreMap> processedParagraphs = new ArrayList<>();
     NBMNData data;
 
     private int numIterations = DEFAULT_NUM_ITERATIONS;
-    private double[] annotatingThreshold = DEFAULT_ANNOTATING_THRESHOLD;
+    private double[] annotatingThreshold = null; //DEFAULT_ANNOTATING_THRESHOLD;
     private int enforcingDominatingFeatureForClass = -1;
     private boolean useFirstParaFormat = false;
 //    private double enforcingConsistencyStrength = Double.NEGATIVE_INFINITY; // the lower, the more consistent.
@@ -92,6 +92,7 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
         this.nbmnModel = nbmn;
         this.hmm = hmm;
         if (hmm != null) hmm.updateProbabilities();
+        this.annotatingThreshold = setting.getAnnotatingThreshold();
 
 //        this.initialize();
     }
@@ -435,7 +436,7 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
 
             //todo: a hack for TOC and DocType annotation. should implement HMM for TOC and annotate base on HMM result
             if (this.modelRVSetting instanceof TOCModelRVSetting || this.modelRVSetting instanceof DocTypeModelRVSetting){
-                if (this.modelRVSetting instanceof DocTypeModelRVSetting ) tokens = null;
+                if (this.modelRVSetting instanceof DocTypeModelRVSetting ) tokens = new ArrayList<>();
                 annotateParagraph(paragraph, paraCategory, tokens, logPrioProbs);
                 if (true) continue;
             }
