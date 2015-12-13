@@ -30,13 +30,13 @@
 
     return service;
 
-    function importDocFromUrl(url) {
+    function importDocFromUrl(url, docType) {
       console.log(url);
       documentModel.reset();
       searchFactory.clear();
       documentModel.isProcessing = true;
       var deferred = $q.defer();
-      documentService.importDoc(url, true)
+      documentService.importDoc(url, true, docType)
         .then(function(response) {
           documentModel.url = url;
           documentModel.documentId = response.documentId

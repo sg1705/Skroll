@@ -48,6 +48,7 @@ public class DocAPITest extends APITest {
         try {
             Thread.sleep(1000);
             jettyServer.stop();
+            java.nio.file.Files.delete(new File(configuration.get("preEvaluatedFolder")+documentId).toPath());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -179,7 +180,7 @@ public class DocAPITest extends APITest {
         WebTarget webTarget = client.target(TARGET_URL).queryParam("documentId", documentId);
         String response = webTarget.request().get(String.class);
         HashMap<String, Integer> map = new GsonBuilder().create().fromJson(response, new TypeToken<HashMap<String, Integer>>() {}.getType());
-        assert(map.get("docTypeId").equals(100));
+        assert(map.get("docTypeId").equals(101));
 
     }
 }

@@ -127,9 +127,10 @@ public class DocAPI {
     @GET
     @Path("/importDoc")
     @Produces(MediaType.TEXT_HTML)
-    public Response importDoc(@QueryParam("documentId") String docURL, @QueryParam("partialParse") String partialParse, @Context HttpHeaders hh, @BeanParam RequestBean request) throws Exception {
+    public Response importDoc(@QueryParam("docType")String docType, @QueryParam("documentId") String docURL, @QueryParam("partialParse") String partialParse, @Context HttpHeaders hh, @BeanParam RequestBean request) throws Exception {
         Document document = null;
         String documentId = null;
+        logger.info("Document type [{}]", docType);
         boolean inCache = false;
         try {
             documentId = UniqueIdGenerator.generateId(docURL);
@@ -142,6 +143,7 @@ public class DocAPI {
                     document = Parser.parsePartialDocumentFromUrl(docURL);
                 } else {
                     document = Parser.parseDocumentFromUrl(docURL);
+                    //process options
                     //Streams require final objects
                     String fDocumentId = documentId;
                     document.setId(documentId);

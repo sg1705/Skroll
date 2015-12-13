@@ -74,6 +74,8 @@ public class APITest {
         try {
             Thread.sleep(1000);
             jettyServer.stop();
+            //delete file from preevaluated folder
+            java.nio.file.Files.delete(new File(configuration.get("preEvaluatedFolder")+documentId).toPath());
         } catch (Exception e) {
             e.printStackTrace();
         }

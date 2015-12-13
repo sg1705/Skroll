@@ -45,14 +45,14 @@
       }
     }
 
-    function onClickedFiling(link) {
+    function onClickedFiling(link, docType) {
       secSearchService.getIndexHtml(link)
         .then(function(data) {
           var html = $.parseHTML(data);
           var href = $(html).find('[href^="/Archives/edgar/data"]')[0];
           href = 'http://www.sec.gov' + $(href).attr('href');
           console.log(href);
-          importService.importDocFromUrl(href)
+          importService.importDocFromUrl(href, docType)
             .then(function(partial) {
               $location.search({});
               $location.path('/view/docId/' + documentModel.documentId);

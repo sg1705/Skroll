@@ -15,7 +15,7 @@
     </div>
     <md-list flex="50" class="list" hide show-gt-md>
       <md-list-item ng-repeat="result in ctrl.searchResults" md-ink>
-        <div flex layout="row" layout-align="space-between center" ng-click="ctrl.onClickedFiling('{{result.href}}')"
+        <div flex layout="row" layout-align="space-between center" ng-click="ctrl.onClickedFiling('{{result.href}}','{{result.formType}}')"
              class="list-item" flex>
           <h4 flex="65" style="padding-right: 10px">{{result.companyName}}</h2>
             <h4 flex="15" style="padding-right: 10px">{{result.formType}}</h2>
@@ -25,7 +25,7 @@
     </md-list>
 
     <div flex="50" show-sm show-md hide-gt-md style="width: 100%">
-      <md-card ng-repeat="result in ctrl.searchResults" ng-click="ctrl.onClickedFiling('{{result.href}}')">
+      <md-card ng-repeat="result in ctrl.searchResults" ng-click="ctrl.onClickedFiling('{{result.href}}', '{{result.formType}}')">
         <md-card-content>
           <h2>{{result.companyName}}</h2>
 
