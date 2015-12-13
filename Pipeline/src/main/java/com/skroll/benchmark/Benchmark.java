@@ -83,7 +83,7 @@ public class Benchmark {
             firstDoc = documentFactory.get(file);
             Thread.sleep(10);
             secondDoc = documentFactory.get(file);
-            if (firstDoc==secondDoc){
+            if (firstDoc == secondDoc){
                 logger.error("both benchamrk docuemnts can not pointing to the same document");
                 return null;
             }
