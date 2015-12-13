@@ -547,11 +547,12 @@ public class DocAPI {
         String documentId = request.getDocumentId();
         Document doc = request.getDocument();
 
+        int docType = 0;
         if (doc == null) {
-            return logErrorResponse("document cannot be found for document id: " + documentId);
+            docType = 0;
+        } else {
+            docType = DocTypeAnnotationHelper.getDocType(doc);
         }
-
-        int docType = DocTypeAnnotationHelper.getDocType(doc);
 
         HashMap map = new HashMap();
         map.put("docTypeId", docType);

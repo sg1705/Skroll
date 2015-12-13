@@ -146,11 +146,11 @@
 
 
         if ((navigator.userAgent.indexOf('iPad') > -1) || (navigator.userAgent.indexOf('iPhone') > -1) || (navigator.userAgent.indexOf('Android') > -1)) {
-          var hammertime = new Hammer(iframeDoc.getElementById('content'));
-          hammertime.on('tap', function(ev) {
-              selectionService.selectParagraph(selectionService.inferParagraphId(ev));
-              console.log('user tapped');
-          });
+          // var hammertime = new Hammer(iframeDoc.getElementById('content'));
+          // hammertime.on('tap', function(ev) {
+          //     selectionService.selectParagraph(selectionService.inferParagraphId(ev));
+          //     console.log('user tapped');
+          // });
         } else {
           elmt.bind('click', function($event) {
             viewCtrl.paraClicked($event)

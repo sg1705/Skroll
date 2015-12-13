@@ -25,7 +25,7 @@
     clickObserverService,
     textSelectionObserverService,
     LHSModel,
-    featureFlags, $window) {
+    featureFlags, $window, $timeout) {
 
     //-- private variables
     var vm = this;
@@ -219,7 +219,12 @@
         });
     }
 
-    getDocType();
+      $timeout(function() {
+        getDocType();
+      }, 0);
+
+
+
 
   }
 
