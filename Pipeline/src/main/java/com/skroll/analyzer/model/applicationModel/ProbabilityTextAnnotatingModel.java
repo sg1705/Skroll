@@ -31,8 +31,6 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
 
     public static final Logger logger = LoggerFactory.getLogger(ProbabilityTextAnnotatingModel.class);
     private static final int DEFAULT_NUM_ITERATIONS = 0;
-//    private static final double[] DEFAULT_ANNOTATING_THRESHOLD = new double[]{0, .999999, 0.99999, 0.99999};
-//    private static final double[] DEFAULT_ANNOTATING_THRESHOLD = new double[]{0, .999999, 2, 0.99999}; //disable level 2 annotation in the doc model.
     List<CoreMap> paragraphs;
     // todo: should probably store paragraphs, otherwise, need to recreate it everytime when model has new observations
     List<CoreMap> processedParagraphs = new ArrayList<>();
@@ -97,6 +95,8 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
         if (hmm != null) hmm.updateProbabilities();
         this.annotatingThreshold = setting.getAnnotatingThreshold();
 
+        // do not initialize because because section model is created just once for the whole doc,
+        // and each section reinitializes the section model.
 //        this.initialize();
     }
     /**
