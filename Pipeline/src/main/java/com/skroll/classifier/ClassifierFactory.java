@@ -34,7 +34,7 @@ public class ClassifierFactory {
     public static final int INDENTURE_TOC_CLASSIFIER_ID = 103;
     public static final int S4_TOC_CLASSIFIER_ID = 104;
     private static final List<Integer> TOC_CATEGORY_IDS = new ArrayList<>(Arrays.asList(Category.NONE, Category.TOC_1, Category.TOC_2, Category.USER_TOC));
-    private static final double[] TOC_ANNOTATING_THRESHOLD= new double[]{0, .999999, 2, 0.99999}; //disable level 2 annotation in the doc model.
+    private static final double[] TOC_ANNOTATING_THRESHOLD= new double[]{0, .9, 2, 0.99999}; //disable level 2 annotation in the doc model.
     public static final List<Integer> LOWER_TOC_CATEGORY_IDS = new ArrayList<>(Arrays.asList(Category.NONE, Category.TOC_2));
     private static final double[] LOWER_TOC_ANNOTATING_THRESHOLD= new double[]{0, .9}; //disable level 2 annotation in the doc model.
 
