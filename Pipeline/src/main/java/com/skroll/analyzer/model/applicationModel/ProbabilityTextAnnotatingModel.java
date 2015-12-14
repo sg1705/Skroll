@@ -18,6 +18,8 @@ import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.util.Visualizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,6 +29,7 @@ import java.util.stream.Collectors;
  */
 public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
 
+    public static final Logger logger = LoggerFactory.getLogger(ProbabilityTextAnnotatingModel.class);
     private static final int DEFAULT_NUM_ITERATIONS = 0;
 //    private static final double[] DEFAULT_ANNOTATING_THRESHOLD = new double[]{0, .999999, 0.99999, 0.99999};
 //    private static final double[] DEFAULT_ANNOTATING_THRESHOLD = new double[]{0, .999999, 2, 0.99999}; //disable level 2 annotation in the doc model.
@@ -495,8 +498,16 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
         int maxIndex = BNInference.maxIndex(logPrioProbs);
         double[] paraProbs = logPrioProbs.clone();
         BNInference.convertLogBeliefToProb(paraProbs);
-        if (paraProbs[maxIndex] > annotatingThreshold[maxIndex])
+        if (paraProbs[maxIndex] > annotatingThreshold[maxIndex]){
+
+            //todo: temporarily used for debug purpose for Akash. need to be removed later.
+            if (this.modelRVSetting instanceof TOCModelRVSetting && paraProbs[1]> 0.9 && paraProbs[1]< 0.999999) {
+                logger.info("paragraph " + paragraph.get(CoreAnnotations.IndexInteger.class) + " prob in (0.9, 0.999999)" +
+                        paragraph.getText());
+            }
+
             RVValues.addTerms(paraCategory, paragraph, tokens, maxIndex);
+        }
 
     }
 
