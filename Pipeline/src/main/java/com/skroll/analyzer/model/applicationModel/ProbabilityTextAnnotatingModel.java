@@ -18,6 +18,8 @@ import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.util.Visualizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,16 +29,15 @@ import java.util.stream.Collectors;
  */
 public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
 
+    public static final Logger logger = LoggerFactory.getLogger(ProbabilityTextAnnotatingModel.class);
     private static final int DEFAULT_NUM_ITERATIONS = 0;
-//    private static final double[] DEFAULT_ANNOTATING_THRESHOLD = new double[]{0, .999999, 0.99999, 0.99999};
-    private static final double[] DEFAULT_ANNOTATING_THRESHOLD = new double[]{0, .999999, 2, 0.99999}; //disable level 2 annotation in the doc model.
     List<CoreMap> paragraphs;
     // todo: should probably store paragraphs, otherwise, need to recreate it everytime when model has new observations
     List<CoreMap> processedParagraphs = new ArrayList<>();
     NBMNData data;
 
     private int numIterations = DEFAULT_NUM_ITERATIONS;
-    private double[] annotatingThreshold = DEFAULT_ANNOTATING_THRESHOLD;
+    private double[] annotatingThreshold = null; //DEFAULT_ANNOTATING_THRESHOLD;
     private int enforcingDominatingFeatureForClass = -1;
     private boolean useFirstParaFormat = false;
 //    private double enforcingConsistencyStrength = Double.NEGATIVE_INFINITY; // the lower, the more consistent.
@@ -92,7 +93,10 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
         this.nbmnModel = nbmn;
         this.hmm = hmm;
         if (hmm != null) hmm.updateProbabilities();
+        this.annotatingThreshold = setting.getAnnotatingThreshold();
 
+        // do not initialize because because section model is created just once for the whole doc,
+        // and each section reinitializes the section model.
 //        this.initialize();
     }
     /**
@@ -435,7 +439,7 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
 
             //todo: a hack for TOC and DocType annotation. should implement HMM for TOC and annotate base on HMM result
             if (this.modelRVSetting instanceof TOCModelRVSetting || this.modelRVSetting instanceof DocTypeModelRVSetting){
-                if (this.modelRVSetting instanceof DocTypeModelRVSetting ) tokens = null;
+                if (this.modelRVSetting instanceof DocTypeModelRVSetting ) tokens = new ArrayList<>();
                 annotateParagraph(paragraph, paraCategory, tokens, logPrioProbs);
                 if (true) continue;
             }
@@ -494,8 +498,16 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
         int maxIndex = BNInference.maxIndex(logPrioProbs);
         double[] paraProbs = logPrioProbs.clone();
         BNInference.convertLogBeliefToProb(paraProbs);
-        if (paraProbs[maxIndex] > annotatingThreshold[maxIndex])
+        if (paraProbs[maxIndex] > annotatingThreshold[maxIndex]){
+
+            //todo: temporarily used for debug purpose for Akash. need to be removed later.
+            if (this.modelRVSetting instanceof TOCModelRVSetting && paraProbs[1]> 0.9 && paraProbs[1]< 0.999999) {
+                logger.info("paragraph " + paragraph.get(CoreAnnotations.IndexInteger.class) + " prob in (0.9, 0.999999)" +
+                        paragraph.getText());
+            }
+
             RVValues.addTerms(paraCategory, paragraph, tokens, maxIndex);
+        }
 
     }
 
