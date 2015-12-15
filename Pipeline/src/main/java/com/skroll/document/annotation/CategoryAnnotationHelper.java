@@ -369,7 +369,9 @@ public class CategoryAnnotationHelper {
         HashMap<Integer, CoreMap> categoryAnnotation = createOrGetCategoryAnnotation(paragraph, categoryId);
         CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
         annotationCoreMap.set(CoreAnnotations.CurrentCategoryWeightFloat.class, currentCategoryWeight);
-        annotationCoreMap.set(CoreAnnotations.PriorCategoryWeightFloat.class, 0f);
+        if (annotationCoreMap.get(CoreAnnotations.PriorCategoryWeightFloat.class) == null) {
+            annotationCoreMap.set(CoreAnnotations.PriorCategoryWeightFloat.class, 0f);
+        }
         paragraph.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
     }
 

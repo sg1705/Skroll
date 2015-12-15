@@ -37,7 +37,6 @@
 </logger>
   <logger name="com.skroll.benchmark" additivity="false">
     <level value="info" />
-    <appender-ref ref="stdout" />
     <appender-ref ref="Benchmark" />
   </logger>
 

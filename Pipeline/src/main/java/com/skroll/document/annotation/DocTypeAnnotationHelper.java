@@ -111,17 +111,26 @@ public class DocTypeAnnotationHelper {
 
     /**
      * Annotated a given Paragraph with given List of token and a given categoryId
-     * @param doc
+     * @param document
      * @param docType
      */
-    public static void annotateDocTypeWithWeightAndUserObservation(Document doc,int docType, float currentCategoryWeight) {
-        HashMap<Integer, CoreMap> categoryAnnotation = new HashMap<>();
-        CoreMap annotationCoreMap  = new CoreMap();
-        annotationCoreMap.set(CoreAnnotations.CurrentCategoryWeightFloat.class, currentCategoryWeight);
-        annotationCoreMap.set(CoreAnnotations.PriorCategoryWeightFloat.class, 0f);
-        categoryAnnotation.put(docType,annotationCoreMap);
-        doc.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
-        doc.set(CoreAnnotations.IsUserObservationAnnotation.class,true);
+    public static void annotateDocTypeWithWeightAndUserObservation(Document document,int docType, float currentCategoryWeight) {
+        HashMap<Integer, CoreMap> categoryAnnotation = document.get(CoreAnnotations.CategoryAnnotations.class);
+            if (categoryAnnotation != null) {
+                if (categoryAnnotation.keySet().iterator().hasNext()) {
+                    if (docType == categoryAnnotation.keySet().iterator().next()) {
+                        return;
+                    }
+                }
+        } else {
+            categoryAnnotation = new HashMap<>();
+            CoreMap annotationCoreMap = new CoreMap();
+            annotationCoreMap.set(CoreAnnotations.CurrentCategoryWeightFloat.class, currentCategoryWeight);
+            annotationCoreMap.set(CoreAnnotations.PriorCategoryWeightFloat.class, 0f);
+            categoryAnnotation.put(docType, annotationCoreMap);
+            document.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
+            document.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
+        }
     }
 
     /**
