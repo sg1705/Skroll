@@ -62,7 +62,7 @@ public class TrainingDocumentTOCAnnotatingModel extends TrainingTextAnnotatingMo
                     nbmnConfig.getFeatureVarList(),
                     nbmnConfig.getFeatureExistsAtDocLevelVarList(),
                     nbmnConfig.getWordVarList(),
-                    lowerCatIds, null);
+                    lowerCatIds, null, null, null); // annotating thresholds not used in training, so set to null
             secModel = new TrainingTextAnnotatingModel(0, secNbmnModel, wordType, wordFeatures, modelRVSetting.getLowLevelNbmnConfig(), lowerTOCSetting);
         }
 
