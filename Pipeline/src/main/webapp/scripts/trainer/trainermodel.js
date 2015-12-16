@@ -23,7 +23,6 @@
       isTrainerMode: true,
       // isUpdateBNI          : false,
       isBenchmark: false,
-      isTrainModel: false,
       lastJson: "",
       lastSelectedParaId: '',
       level1TypeAError: 0,
