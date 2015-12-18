@@ -3,10 +3,7 @@ package com.skroll.benchmark;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
-import com.skroll.classifier.ClassifierFactory;
-import com.skroll.classifier.ClassifierFactoryStrategy;
-import com.skroll.classifier.ClassifierFactoryStrategyForClassify;
-import com.skroll.classifier.ClassifierFactoryStrategyForTraining;
+import com.skroll.classifier.*;
 import com.skroll.document.factory.BenchmarkFSDocumentFactoryImpl;
 import com.skroll.document.factory.DocumentFactory;
 import com.skroll.util.SkrollTestGuiceModule;
@@ -32,10 +29,10 @@ public class BenchmarkTest {
 
         try {
 
-            QC qc = benchmark.runQCOnBenchmarkFile("d629534d10k.htm");
+            QC qc = benchmark.runQCOnBenchmarkFile("5b6682f16aab7d74d423f0952f196481");
             System.out.println("QC output:"+ qc);
-            assertNotEquals(qc.stats.get(0).overallOccurance,0);
-            assertNotEquals(qc.stats.get(1).overallOccurance,0);
+            assertNotEquals(qc.stats.get(Category.TOC_1).overallOccurance,0);
+            assertNotEquals(qc.stats.get(Category.TOC_2).overallOccurance,0);
         } catch (Throwable e) {
             e.printStackTrace();
             fail(" failed to run benchmark");
@@ -47,8 +44,8 @@ public class BenchmarkTest {
         try {
             QC qc = benchmark.runQCOnBenchmarkFolder();
             System.out.println("QC output:"+ qc);
-            assertNotEquals(qc.stats.get(0).overallOccurance,0);
-            assertNotEquals(qc.stats.get(1).overallOccurance,0);
+            assertNotEquals(qc.stats.get(Category.TOC_1).overallOccurance,0);
+            assertNotEquals(qc.stats.get(Category.TOC_2).overallOccurance,0);
         } catch (Throwable e) {
             e.printStackTrace();
             fail(" failed to run benchmark");

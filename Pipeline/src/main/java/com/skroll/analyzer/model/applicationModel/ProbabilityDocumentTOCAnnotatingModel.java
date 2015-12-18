@@ -23,7 +23,7 @@ import java.util.*;
 public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnotatingModel {
     public static final Logger logger = LoggerFactory.getLogger(ProbabilityDocumentTOCAnnotatingModel.class);
     static final int SEC_NUM_ITERATION = 10;
-    static double[] SEC_ANNOTATING_THRESHOLD = {0, 0.9};
+
     Document doc;
     NaiveBayesWithMultiNodes secNbmn = null;
     HiddenMarkovModel secHmm = null;
@@ -90,7 +90,7 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
                     nbmnConfig.getFeatureVarList(),
                     nbmnConfig.getFeatureExistsAtDocLevelVarList(),
                     nbmnConfig.getWordVarList(),
-                    lowerCatIds, null);
+                    lowerCatIds, setting.getLowerAnnotatingThreshold(), null, null);
 
 
             // quick way to disable features without retraining.
@@ -106,6 +106,7 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
                     data,
                     lowerTOCSetting
             );
+            setAnnotatingThreshold(setting.getAnnotatingThreshold());
         }
         logger.info("initializing model");
         super.initialize();
@@ -143,7 +144,6 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
             secModel.setParagraphs(sections.get(i));
             secModel.setProcessedParagraphs(processedSections.get(i));
             secModel.setNumIterations(SEC_NUM_ITERATION);
-            secModel.setAnnotatingThreshold(SEC_ANNOTATING_THRESHOLD);
             secModel.setEnforcingDominatingFeatureForClass(1); // class index 1 represent level 2 in the section model.
             secModel.setUseFirstParaFormat(true);
 
@@ -181,7 +181,6 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
         secModel.setParagraphs(sections.get(sectionNum));
         secModel.setProcessedParagraphs(processedSections.get(sectionNum));
         secModel.setNumIterations(SEC_NUM_ITERATION);
-        secModel.setAnnotatingThreshold(SEC_ANNOTATING_THRESHOLD);
 
         logger.info("annotating section level headings for section " + sectionNum);
 

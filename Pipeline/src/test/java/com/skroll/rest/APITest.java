@@ -49,7 +49,6 @@ public class APITest {
 
     @Before
     public void setup () throws Exception {
-
         try {
             Injector injector = Guice.createInjector(new AbstractModule() {
                 @Override
@@ -59,7 +58,6 @@ public class APITest {
                     bind(Configuration.class).to(TestConfiguration.class);
                 }
             });
-
             factory = injector.getInstance(DocumentFactory.class);
             configuration = injector.getInstance(Configuration.class);
 

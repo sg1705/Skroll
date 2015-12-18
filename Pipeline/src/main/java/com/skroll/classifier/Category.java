@@ -34,7 +34,6 @@ public class Category {
         this.id =id;
         this.name=name;
     }
-
     public static List<Integer> getDocType()  {
         return Arrays.asList(TEN_K,TEN_Q,INDENTURE,S4);
     }
