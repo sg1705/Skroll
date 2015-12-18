@@ -33,6 +33,7 @@ import javax.ws.rs.core.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -528,7 +529,7 @@ public class DocAPI {
         Document doc = request.getDocument();
 
         if (doc == null) {
-            return logErrorResponse("document cannot be found for document id: " + documentId);
+            return logErrorResponse("document cannot be found for document id: " + documentId );
         }
 
         DocTypeAnnotationHelper.annotateDocTypeWithWeightAndUserObservation(doc,docType,userWeight);

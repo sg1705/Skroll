@@ -73,41 +73,6 @@ public class DocTypeAnnotationHelper {
             }
         }
     }
-    /**
-     * For a document, from the document level annotation, get the weight of docType.
-     * @param document
-     * @return weight
-     */
-    public static float getDocTypeTrainingWeight(CoreMap document) {
-        HashMap<Integer, CoreMap> categoryAnnotation = document.get(CoreAnnotations.CategoryAnnotations.class);
-        if (categoryAnnotation==null) return 0f;
-        if (categoryAnnotation.keySet().iterator().hasNext()) {
-            int doctype = categoryAnnotation.keySet().iterator().next();
-            CoreMap annotationCoreMap = categoryAnnotation.get(doctype);
-            if (annotationCoreMap!=null){
-                if(annotationCoreMap.size()!=0) {
-                    float currentWeight = annotationCoreMap.get(CoreAnnotations.CurrentCategoryWeightFloat.class);
-                    return currentWeight;
-                }
-            }
-        }
-        return 0f;
-    }
-
-    /**
-     * To find whether a given paragraph annotated with given category or not.
-     * @param paragraph
-     * @return
-     */
-    public static int extractDocTypeFromSingleParaDocument (CoreMap paragraph) throws Exception {
-        HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
-        if (categoryAnnotation==null) return Category.DOCTYPE_NONE;
-        if (categoryAnnotation.keySet().iterator().hasNext()) {
-            return categoryAnnotation.keySet().iterator().next();
-        }
-        return Category.DOCTYPE_NONE;
-    }
-
 
     /**
      * Annotated a given Paragraph with given List of token and a given categoryId
@@ -115,22 +80,13 @@ public class DocTypeAnnotationHelper {
      * @param docType
      */
     public static void annotateDocTypeWithWeightAndUserObservation(Document document,int docType, float currentCategoryWeight) {
-        HashMap<Integer, CoreMap> categoryAnnotation = document.get(CoreAnnotations.CategoryAnnotations.class);
-            if (categoryAnnotation != null) {
-                if (categoryAnnotation.keySet().iterator().hasNext()) {
-                    if (docType == categoryAnnotation.keySet().iterator().next()) {
-                        return;
-                    }
-                }
-        } else {
-            categoryAnnotation = new HashMap<>();
+        HashMap<Integer, CoreMap> categoryAnnotation = new HashMap<>();
             CoreMap annotationCoreMap = new CoreMap();
             annotationCoreMap.set(CoreAnnotations.CurrentCategoryWeightFloat.class, currentCategoryWeight);
             annotationCoreMap.set(CoreAnnotations.PriorCategoryWeightFloat.class, 0f);
             categoryAnnotation.put(docType, annotationCoreMap);
             document.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
             document.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
-        }
     }
 
     /**
@@ -163,7 +119,8 @@ public class DocTypeAnnotationHelper {
         }
         for (CoreMap paragraph : singleParaDoc.getParagraphs()) {
             if (paragraph.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)) {
-                CategoryAnnotationHelper.copyCurrentCategoryWeightsToPriorForDocType(paragraph);
+                if (paragraph.containsKey(CoreAnnotations.IsUserObservationAnnotation.class) == true)
+                            CategoryAnnotationHelper.copyCurrentCategoryWeightsToPriorForDocType(paragraph);
             }
         }
         copyParaLevelCategoryAnnotationToDocLevel(document,singleParaDoc.getParagraphs().get(0));
@@ -203,7 +160,9 @@ public class DocTypeAnnotationHelper {
         CategoryAnnotationHelper.annotateCategoryWeight(singleParagraph, docType,currentWeight);
         */
         boolean isUserObserved = entireDocument.containsKey(CoreAnnotations.IsUserObservationAnnotation.class);
-        singleParagraph.set(CoreAnnotations.IsUserObservationAnnotation.class, isUserObserved);
+        if (isUserObserved == true) {
+            singleParagraph.set(CoreAnnotations.IsUserObservationAnnotation.class, isUserObserved);
+        }
         singleParaDocument.set(CoreAnnotations.ParagraphsAnnotation.class, paraList);
         return singleParaDocument;
     }
