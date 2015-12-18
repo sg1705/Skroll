@@ -182,7 +182,6 @@
       console.log("fetching score");
 
       if (!featureFlags.isOn('trainer.benchmark')) {
-        trainerModel.trainerToolbar.isTrainModel = true;
         return;
       }
 
@@ -190,23 +189,16 @@
       documentService.getBenchmarkScore(documentModel.documentId).then(function(benchmarkScore) {
         trainerToolbar.benchmarkScore = benchmarkScore;
         console.log(benchmarkScore);
-        trainerToolbar.level1TypeAError = benchmarkScore.qc.stats[1].type1Error;
-        trainerToolbar.level1TypeBError = benchmarkScore.qc.stats[1].type2Error;
-        trainerToolbar.level1QcScore = benchmarkScore.qc.stats[1].qcScore;
-        trainerToolbar.level2TypeAError = benchmarkScore.qc.stats[2].type1Error;
-        trainerToolbar.level2TypeBError = benchmarkScore.qc.stats[2].type2Error;
-        trainerToolbar.level2QcScore = benchmarkScore.qc.stats[2].qcScore;
+        trainerToolbar.level1TypeAError = benchmarkScore.qc.stats[2].type1Error;
+        trainerToolbar.level1TypeBError = benchmarkScore.qc.stats[2].type2Error;
+        trainerToolbar.level1QcScore = benchmarkScore.qc.stats[2].qcScore;
+        trainerToolbar.level2TypeAError = benchmarkScore.qc.stats[3].type1Error;
+        trainerToolbar.level2TypeBError = benchmarkScore.qc.stats[3].type2Error;
+        trainerToolbar.level2QcScore = benchmarkScore.qc.stats[3].qcScore;
 
-        if (benchmarkScore.isFileBenchmarked && !benchmarkScore.isFileTrained) {
-          trainerToolbar.isBenchmark = true;
-          trainerToolbar.isTrainModel = false;
-        } else if (benchmarkScore.isFileTrained) {
-          trainerToolbar.isBenchmark = false;
-          trainerToolbar.isTrainModel = true;
-        } else if (!benchmarkScore.isFileBenchmarked && !benchmarkScore.isFileTrained) {
-          trainerToolbar.isBenchmark = true;
-          trainerToolbar.isTrainModel = true;
-        }
+               if (benchmarkScore.isFileBenchmarked) {
+                 trainerToolbar.isBenchmark = true;
+               }
       });
     }
 

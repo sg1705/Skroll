@@ -41,7 +41,7 @@ public class BenchmarkAPI {
 
     @GET
     @Path("/saveBenchmarkFile")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_HTML)
     public Response saveBenchmarkFile(@Context HttpHeaders hh, @BeanParam BenchmarkRequestBean request) {
 
         String documentId = request.getDocumentId();
@@ -78,27 +78,17 @@ public class BenchmarkAPI {
             return logErrorResponse("getBenchmarkScore failed: +" + e);
         }
         boolean isFileBenchmarked = false;
-        boolean isFileTrained = false;
+
         try {
             isFileBenchmarked = request.getBenchmarkDocumentFactory().isDocumentExist(request.getDocumentId());
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        try {
-            if (request.getCorpusDocumentFactory().isDocumentExist(request.getDocumentId())) {
-                isFileTrained = DocumentHelper.isObserved(request.getCorpusDocumentFactory().get(request.getDocumentId()));
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         logger.info("isFileBenchmarked: {}" ,isFileBenchmarked);
-        logger.info("isFileTrained: {}" ,isFileTrained);
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("qc", qc);
         resultMap.put("isFileBenchmarked", isFileBenchmarked);
-        resultMap.put("isFileTrained", isFileTrained);
         String resultJson = new GsonBuilder().create().toJson(resultMap);
         return Response.ok().status(Response.Status.OK).entity(resultJson).build();
     }

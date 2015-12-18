@@ -38,8 +38,6 @@ public class MailAPITest{
             e.printStackTrace();
         }
     }
-
-
 //    @Test
 //    public void testSendFeedback() throws Exception {
 //        Feedback feedback = new Feedback("test@skroll.io", "Test feedback");
@@ -52,4 +50,5 @@ public class MailAPITest{
 //        assert(r.readEntity(String.class).contains("ok"));
 //        client.close();
 //    }
+
 }
