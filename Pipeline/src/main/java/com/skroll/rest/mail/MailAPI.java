@@ -40,7 +40,7 @@ public class MailAPI {
 
         mailService.sendMail("no-reply+feedback@skroll.io",
                 "skrollioteamsep2015@gmail.com", "Feedback from user", feedback.toString());
-        Response r = Response.ok().status(Response.Status.OK).entity("").build();
+        Response r = Response.ok().status(Response.Status.OK).entity("{\"status\": \"ok\"}").build();
         return r;
     }
 

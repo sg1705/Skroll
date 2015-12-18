@@ -34,7 +34,7 @@ sk-viewport .blurry-text {
 
 md-sidenav.md-locked-open {
     width: 25%;
-    width: 250px; before we got levels
+    width: 250px;
     min-width: 240px;
     max-width: 350px;
 }

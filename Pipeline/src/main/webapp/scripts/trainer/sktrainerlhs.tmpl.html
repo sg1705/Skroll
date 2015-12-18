@@ -1,0 +1,25 @@
+<div ng-repeat="class in ctrl.classes">
+  <div ng-show="class.isTrainerLHS">
+    <br/>
+    <br/>
+    <md-button class="menu-toggle-button" ng-click="ctrl.toggleSection($index)">
+      <div layout="row" layout-align="space-between center">
+        <span>{{class.name}}</span>
+        <span>
+          <md-icon
+            ng-class="{'toggled' : class.isSelected}"
+            class="menu-toggle-icon"
+            md-svg-icon="images/icons/ic_expand_more_24px.svg" >
+          </md-icon>
+        </span>
+      </div>
+    </md-button>
+    <md-divider style="margin-bottom: 15px"></md-divider>
+    <ul ng-show="class.isSelected" class="menu-list">
+      <li ng-if="class.id != 2" ng-repeat="term in ctrl.smodel.terms | filter: {classificationId:class.id}">
+        <md-button class="md-button" scroll-to-paragraph="{{term.paragraphId}}">{{term.term}}</md-button>
+        <md-divider inset></md-divider>
+      </li>
+    </ul>
+  </div>
+</div>

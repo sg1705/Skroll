@@ -181,7 +181,7 @@
       });
 
       var elementsOrganizedInHeaders = {};
-      var headerItems = LHSModel.getParaFromClassIdRange(2, 4);
+      var headerItems = LHSModel.getParaFromClassIdRange(2, 3);
       var currHeader = headerItems[0];
       var nextHeaderIdx = 0,
         currHeaderIdx = 0;
