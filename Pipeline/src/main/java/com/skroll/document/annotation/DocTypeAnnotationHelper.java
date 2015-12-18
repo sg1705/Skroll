@@ -119,8 +119,7 @@ public class DocTypeAnnotationHelper {
         }
         for (CoreMap paragraph : singleParaDoc.getParagraphs()) {
             if (paragraph.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)) {
-                if (paragraph.containsKey(CoreAnnotations.IsUserObservationAnnotation.class) == true)
-                            CategoryAnnotationHelper.copyCurrentCategoryWeightsToPriorForDocType(paragraph);
+                CategoryAnnotationHelper.copyCurrentCategoryWeightsToPriorForDocType(paragraph);
             }
         }
         copyParaLevelCategoryAnnotationToDocLevel(document,singleParaDoc.getParagraphs().get(0));
