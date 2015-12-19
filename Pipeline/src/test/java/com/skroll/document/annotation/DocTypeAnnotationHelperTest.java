@@ -4,6 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
+import com.skroll.classifier.Category;
 import com.skroll.document.Document;
 import com.skroll.document.factory.CorpusFSDocumentFactoryImpl;
 import com.skroll.document.factory.DocumentFactory;
@@ -57,9 +58,9 @@ public class DocTypeAnnotationHelperTest {
     @Test
     public void testAnnotateDocTypeWithWeightAndUserObservation() throws Exception {
         document = corpusDocumentFactory.get("d629534d10k.htm");
-        DocTypeAnnotationHelper.annotateDocTypeWithWeightAndUserObservation(document, 101, 01f);
-        logger.info("updateDocType {} using document id {}", 101, document.getId());
+        DocTypeAnnotationHelper.annotateDocTypeWithWeightAndUserObservation(document, Category.TEN_Q, 01f);
+        logger.info("updateDocType {} using document id {}", Category.TEN_Q, document.getId());
         logger.info("DocType:" + DocTypeAnnotationHelper.getDocType(document));
-        assert (DocTypeAnnotationHelper.getDocType(document) == 101);
+        assert (DocTypeAnnotationHelper.getDocType(document) == Category.TEN_Q);
     }
 }

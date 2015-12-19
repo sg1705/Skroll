@@ -58,7 +58,9 @@
       getRangySelection: getRangySelection,
       getWindowSelection: getWindowSelection,
       getIframeDocument: getIframeDocument,
-      getSelectionBoundingBox: getSelectionBoundingBox
+      getSelectionBoundingBox: getSelectionBoundingBox,
+      inferParagraphId: inferParagraphId,
+      selectParagraph: selectParagraph
     }
 
     return service;
@@ -104,6 +106,23 @@
       }
       return scrollable;
     }
+
+
+    function inferParagraphId($event) {
+      var parents = $($event.target).parents("div[id^='p_']");
+      var children = $($event.target).children("div[id^='p_']");
+      if (parents.length > 1) {
+        return $(parents[0]).attr('id');
+      } else {
+
+        if ((children.length == 0) && (parents.length == 1)) {
+          return $(parents[0]).attr('id');
+        }
+        return null;
+      }
+
+    }
+
 
 
     function getSelectionBoundingBox() {
@@ -223,6 +242,15 @@
               scrollTop: (paraOffset - 200)
           }, 'slow');
       }
+    }
+
+    function selectParagraph(paragraphId) {
+      console.log(paragraphId);
+      var range = rangy.createRange(document.getElementById("docViewIframe"));
+      var el = getJQParaElement(paragraphId)[0];
+      range.selectNodeContents(el);
+      var sel = rangy.getSelection(document.getElementById("docViewIframe"));
+      sel.setSingleRange(range);
     }
 
     function saveSelection(paraId, selectedText) {

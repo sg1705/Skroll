@@ -1,5 +1,6 @@
 package com.skroll.rest.mail;
 
+import com.google.gson.GsonBuilder;
 import com.skroll.rest.WebServer;
 import com.skroll.util.SkrollTestGuiceModule;
 import org.glassfish.jersey.client.ClientResponse;
@@ -39,17 +40,17 @@ public class MailAPITest{
         }
     }
 
-
-//    @Test
-//    public void testSendFeedback() throws Exception {
-//        Feedback feedback = new Feedback("test@skroll.io", "Test feedback");
-//        String TARGET_URL = "http://localhost:8888/restServices/mail/sendFeedback";
-//        Client client = ClientBuilder.newClient();
-//        WebTarget webTarget = client.target(TARGET_URL);
-//        WebTarget webTargetWithQueryParam =
-//                webTarget.queryParam("documentId", "aaa");
-//        Response r = webTargetWithQueryParam.request(MediaType.APPLICATION_JSON).post(Entity.json("{ address:'testuser@xyz.com', feedbackMessage:'all is well'}"));
-//        assert(r.readEntity(String.class).contains("ok"));
-//        client.close();
-//    }
+    @Test
+    public void testSendFeedback() throws Exception {
+        Feedback feedback = new Feedback("test@test.com", "feedbackMessage", "test", "test.com","test browser");
+        String feedbackJson = new GsonBuilder().create().toJson(feedback);
+        String TARGET_URL = "http://localhost:8888/restServices/mail/sendFeedback";
+        Client client = ClientBuilder.newClient();
+        WebTarget webTarget = client.target(TARGET_URL);
+        WebTarget webTargetWithQueryParam =
+                webTarget.queryParam("documentId", "aaa");
+        Response r = webTargetWithQueryParam.request(MediaType.APPLICATION_JSON).post(Entity.json(feedbackJson));
+        assert(r.readEntity(String.class).contains("ok"));
+        client.close();
+    }
 }

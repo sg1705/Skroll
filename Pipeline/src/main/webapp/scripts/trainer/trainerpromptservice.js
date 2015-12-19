@@ -173,7 +173,11 @@
       return $mdBottomSheet.show({
         templateUrl: 'scripts/trainer/viewport-bottom-sheet.tmpl.html',
         controller: 'TrainerPromptCtrl',
-        parent: angular.element(":root")
+        disableParentScroll: false,
+        // parent: angular.element(":root")
+        // parent: angular.element(document.getElementsByClassName("main"))
+        parent: angular.element(document).find('body')
+
 
       });
     }

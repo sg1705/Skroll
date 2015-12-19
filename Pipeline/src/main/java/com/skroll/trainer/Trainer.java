@@ -176,29 +176,12 @@ public class Trainer {
         for (File f : iterable) {
             if (f.isFile()) {
                 displayHeapStats();
-                Document doc = singleParaDocumentFactory.get(f.getName());
-                //iterate over each paragraph
-                if (doc == null) {
-                    logger.error("Document can't be parsed. failed to train the model");
-                    return;
-                }
-                for (CoreMap paragraph : doc.getParagraphs()) {
-                    if (paragraph.containsKey(CoreAnnotations.IsUserObservationAnnotation.class)) {
-                        CategoryAnnotationHelper.clearPriorCategoryWeight(paragraph);
-                    }
-                }
-                try {
-                    for (Classifier classifier : classifierFactory.getClassifiers(classifierFactoryStrategy, doc)) {
-                        classifier.trainWithWeight(doc);
-                        classifier.persistModel();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                Document doc = corpusDocumentFactory.get(f.getName());
+                DocTypeAnnotationHelper.clearPriorCategoryWeight(doc);
+                DocTypeAnnotationHelper.trainDocType(classifierFactory.getClassifiers(classifierFactoryStrategy, doc), doc);
             }
         }
     }
-
 
     public  void annotateDocType(int docType, float weight) throws Exception {
         FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(PRE_EVALUATED_FOLDER));

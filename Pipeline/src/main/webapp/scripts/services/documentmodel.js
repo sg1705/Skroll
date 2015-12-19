@@ -19,6 +19,8 @@ var documentModel = {
   url: '',
   lunrIndex: null,
   isTocLoaded: false,
+  docTypeId: 0,
+  docTypeName: '',
 
   clearToc: function() {
     this.isTocLoaded = false;
@@ -35,6 +37,8 @@ var documentModel = {
     this.url = '';
     this.lunrIndex = null;
     this.isTocLoaded = false;
+    this.docTypeId = 0;
+    this.docTypeName = '';
   }
 
 };

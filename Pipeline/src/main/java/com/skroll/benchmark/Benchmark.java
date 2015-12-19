@@ -38,13 +38,12 @@ public class Benchmark {
             logger.error("both benchamrk docuemnts can not pointing to the same document");
             return null;
         }
-        int type1Error = 0;
-        int type2Error = 0;
+        QC localQC = new QC();
         for(CoreMap firstDocParagraph : firstDoc.getParagraphs()) {
             for(CoreMap secondDocParagraph : secondDoc.getParagraphs()) {
                 if (firstDocParagraph.getId().equalsIgnoreCase(secondDocParagraph.getId())) {
 
-                    for (QC.Stats stats : qc.stats) {
+                    for (QC.Stats stats : localQC.stats.values()) {
                         if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(firstDocParagraph, stats.categoyId)) {
                             stats.overallOccurance++;
                         }
@@ -55,14 +54,12 @@ public class Benchmark {
                                 CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(secondDocParagraph, stats.categoyId))
                          {
                              // false positive
-                             type1Error++;
-                             logger.debug("category [{}] type1Error [{}]", stats.categoyId, firstDocParagraph.getText());
+                             logger.info("Doc [{}] category [{}] type1Error [{}]", firstDoc.getId(), stats.categoyId, firstDocParagraph.getText());
                             stats.type1Error++;
                         } else if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(firstDocParagraph, stats.categoyId) &&
                                 !CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(secondDocParagraph, stats.categoyId)) {
                             // false negative
-                            type2Error++;
-                            logger.debug("category [{}] type2Error [{}]", stats.categoyId, firstDocParagraph.getText());
+                            logger.info("Doc [{}] category [{}] type2Error [{}]", firstDoc.getId(), stats.categoyId, firstDocParagraph.getText());
                             stats.type2Error++;
                         }
                     }
@@ -71,8 +68,9 @@ public class Benchmark {
                 }
             }
         }
-        logger.info("type1Error [{}] for document {}", type1Error, firstDoc.getId());
-        logger.info("type2Error [{}] for document {}", type2Error, firstDoc.getId());
+        localQC.calculateQCScore();
+        logger.info("Stats for {} : {} ", firstDoc.getId(),localQC);
+        qc.add(localQC);
         return qc;
     }
 
@@ -81,9 +79,9 @@ public class Benchmark {
         Document secondDoc = null;
         try {
             firstDoc = documentFactory.get(file);
-            Thread.sleep(10);
+            Thread.sleep(100);
             secondDoc = documentFactory.get(file);
-            if (firstDoc==secondDoc){
+            if (firstDoc == secondDoc){
                 logger.error("both benchamrk docuemnts can not pointing to the same document");
                 return null;
             }

@@ -97,10 +97,10 @@
     /**
      * Returns a promise to update terms for a given document
      **/
-    function importDoc(url, partiallyParse) {
+    function importDoc(url, partiallyParse, docType) {
       var deferred = $q.defer();
-      /** make a get request */
-      $http.get(documentServiceBase + 'importDoc' + '?&partialParse=' + partiallyParse + '&documentId=' + url)
+      /** make a post request */
+      $http.get(documentServiceBase + 'importDoc' + '?&partialParse=' + partiallyParse + '&documentId=' + url + '&docType=' + docType)
         .success(function(data, status, headers) {
           var resp = {};
           resp.html = data;
@@ -230,8 +230,6 @@
       // done with get request
       return deferred.promise;
     }
-
-
 
   };
 })();
