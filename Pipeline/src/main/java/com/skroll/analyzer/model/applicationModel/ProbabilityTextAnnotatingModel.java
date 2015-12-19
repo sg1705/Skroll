@@ -340,6 +340,7 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
                  if (paraProbs[classIndex] > annotatingThreshold[classIndex] && paraProbs[classIndex]>maxProb){
                      maxProb = paraProbs[classIndex];
                      dominatingFeatures = data.getParaDocFeatures()[paragraph.get(CoreAnnotations.IndexInteger.class)];
+//                     logger.info("paragraph " + p + " " + paragraph.getText());
                  }
              }
 
