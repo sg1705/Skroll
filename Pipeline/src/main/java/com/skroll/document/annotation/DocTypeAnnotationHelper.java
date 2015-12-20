@@ -96,19 +96,6 @@ public class DocTypeAnnotationHelper {
         document.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
     }
 
-    /**
-     * Annotated a given Paragraph with given List of token and a given categoryId
-     *
-     * @param doc
-     * @param docType
-     */
-    public static void annotateDocType(Document doc, int docType) {
-        HashMap<Integer, CoreMap> categoryAnnotation = new HashMap<>();
-        CoreMap annotationCoreMap = new CoreMap();
-        categoryAnnotation.put(docType, annotationCoreMap);
-        doc.set(CoreAnnotations.CategoryAnnotations.class, categoryAnnotation);
-    }
-
     public static void trainDocType(List<Classifier> classifiersForDocType, Document document) throws Exception {
         Document singleParaDoc = getEntireDocCollaspedAsSingleParagraph(document);
         //iterate over each paragraph
