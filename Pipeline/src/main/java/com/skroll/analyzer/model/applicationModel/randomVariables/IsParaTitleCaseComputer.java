@@ -1,6 +1,8 @@
 package com.skroll.analyzer.model.applicationModel.randomVariables;
 
 import com.skroll.document.CoreMap;
+import com.skroll.document.annotation.CoreAnnotation;
+import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.util.ParaHelper;
 
 import java.util.List;
@@ -29,10 +31,11 @@ public class IsParaTitleCaseComputer implements RVValueComputer {
         String lastWord = ParaHelper.getLastAlphaWord(m.get(0));
         if (lastWord == null || lastWord.length() == 0) return -1;
 
-        // return unobserved if there is only one word.
+        // return unobserved if It there is only one word.
         if (m.get(0).getTokens().size() == 1) return -1;
 
-        return RVValues.booleanToInt(Character.isUpperCase(lastWord.charAt(0)));
+        return RVValues.booleanToInt(Character.isUpperCase(lastWord.charAt(0)) ||
+                m.get(0).get(CoreAnnotations.StartsWithUpperCaseCountInteger.class)>1);
 
     }
 
