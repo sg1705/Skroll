@@ -147,7 +147,7 @@ public class DocAPI {
                     String fDocumentId = documentId;
                     document.setId(documentId);
                     Document fDoc = document;
-                    DocTypeAnnotationHelper.annotateDocTypeWithWeightAndUserObservation(document, Category.getDocTypeFromDocTypeLabel(docType), userWeight );
+                    DocTypeAnnotationHelper.annotateDocTypeWithWeightAndUserObservation(document, Category.getDocTypeId(docType), userWeight );
                     logger.info("DocType:" + DocTypeAnnotationHelper.getDocType(fDoc));
                     request.getClassifiersForClassify(fDoc).forEach(c -> c.classify(fDocumentId, fDoc));
                     request.getDocumentFactory().putDocument(document);

@@ -27,16 +27,16 @@ public class Category {
 
     private static final Map<String,Integer> docTypeLabelToIdMap = new HashMap<String, Integer>()
     {{
-            put("10-K", 101);
-            put("10-Q", 102);
-            put("Indenture", 103);
-            put("S4", 103);
+            put("10-K", TEN_K);
+            put("10-Q", TEN_Q);
+            put("Indenture", INDENTURE);
+            put("S4", S4);
         }};
 
     int id;
     String name;
 
-    public static Integer getDocTypeFromDocTypeLabel(String DocTypeLabel) {
+    public static int getDocTypeId (String DocTypeLabel) {
         if(docTypeLabelToIdMap.get(DocTypeLabel) == null){
             return DOCTYPE_NONE;
         }
