@@ -21,7 +21,7 @@ public class BenchmarkAPITest extends APITest {
         WebTarget webTarget = client.target(TARGET_URL);
         WebTarget webTargetWithQueryParam =
                 webTarget.queryParam("documentId", documentId);
-        String response = webTargetWithQueryParam.request(MediaType.APPLICATION_JSON).get(String.class);
+        String response = webTargetWithQueryParam.request(MediaType.TEXT_HTML).get(String.class);
         logger.debug("Here is the response: " + response);
         assert(response.contains("benchmark file"));
         client.close();
@@ -56,7 +56,7 @@ public class BenchmarkAPITest extends APITest {
                 webTarget.queryParam("documentId", documentId);
         String response = webTargetWithQueryParam.request().get(String.class);
         logger.info("Here is the response: " + response);
-        assert(response.contains("{\"stats\":[{\"categoyId\""));
+        assert(response.contains("{\"stats\":"));
         // test setup upload
         assert(response.contains("{\"isFileBenchmarked\":true"));
     }

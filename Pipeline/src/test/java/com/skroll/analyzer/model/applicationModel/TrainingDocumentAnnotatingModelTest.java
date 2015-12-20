@@ -56,7 +56,7 @@ public class TrainingDocumentAnnotatingModelTest {
         assert (model.getTrainingWeights(para0)[1] == 1.0); // weight of definition class for para0 is 1.
     }
 
-    @Test
+
     public void testUpdateWithDocumentAndWeight() throws Exception {
 
         model.updateWithDocumentAndWeight(document);
@@ -82,7 +82,7 @@ public class TrainingDocumentAnnotatingModelTest {
     }
 
 
-    @Test
+
     public void testGenerateDocumentFeatures() throws Exception {
         PhantomJsExtractor.TEST_MODE = TestMode.ON;
 //        String trainingFolderName = "src/test/resources/analyzer/evaluate/docclassifier/AMC Networks CA.html";
