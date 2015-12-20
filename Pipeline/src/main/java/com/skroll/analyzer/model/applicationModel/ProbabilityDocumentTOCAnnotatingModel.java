@@ -154,6 +154,26 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
             annotateParaProbs(CoreAnnotations.TOCParaProbsSecLevel.class, processedSections.get(i), secModel.getParagraphCategoryBelief());
         }
         logger.info("done annotating section level headings");
+
+        showDocSecProbDiff(processedParagraphs);
+    }
+
+    void showDocSecProbDiff(List<CoreMap> processedParagraphs){
+        for (CoreMap para: paragraphs){
+            int index = para.get(CoreAnnotations.IndexInteger.class);
+            CoreMap pp = processedParagraphs.get(index);
+            List<Double> docModelProbs = pp.get(CoreAnnotations.TOCParaProbsDocLevel.class);
+            List<Double> secModelProbs = pp.get(CoreAnnotations.TOCParaProbsSecLevel.class);
+            if (docModelProbs == null || secModelProbs == null) continue;
+            double docModelProb = docModelProbs.get(2);
+            double secModelProb = secModelProbs.get(1);
+            double diff = Math.abs(docModelProb-secModelProb);
+            if (diff > 0.9){
+                System.out.println("doc sec prob diff large for paragraph " + index+ ":" + para.getText());
+                System.out.println("doc model prob = "+docModelProb);
+                System.out.println("sec model prob = "+secModelProb);
+            }
+        }
     }
 
     /**

@@ -340,6 +340,7 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
                  if (paraProbs[classIndex] > annotatingThreshold[classIndex] && paraProbs[classIndex]>maxProb){
                      maxProb = paraProbs[classIndex];
                      dominatingFeatures = data.getParaDocFeatures()[paragraph.get(CoreAnnotations.IndexInteger.class)];
+//                     logger.info("paragraph " + p + " " + paragraph.getText());
                  }
              }
 
@@ -422,7 +423,7 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
         for (int p = 0; p < numParagraphs; p++) {
             CoreMap paragraph = paragraphs.get(p);
             if (DocProcessor.isParaObserved(paragraph)) continue; // skip observed paragraphs
-            RVValues.clearValue(paraCategory, paragraph);
+//            RVValues.clearValue(paraCategory, paragraph);
             if (paragraph.getTokens().size() == 0)
                 continue;
             CoreMap processedPara = processedParagraphs.get(p);
