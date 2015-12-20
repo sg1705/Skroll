@@ -25,7 +25,7 @@ public class Category {
     public static final int INDENTURE = 103;
     public static final int S4 = 104;
 
-    private static final Map<String,Integer> docTypeNameToIdMap = new HashMap<String, Integer>()
+    private static final Map<String,Integer> docTypeLabelToIdMap = new HashMap<String, Integer>()
     {{
             put("10-K", 101);
             put("10-Q", 102);
@@ -36,11 +36,11 @@ public class Category {
     int id;
     String name;
 
-    public static Integer getIDFromDocName(String DocTypeName) {
-        if(docTypeNameToIdMap.get(DocTypeName) == null){
+    public static Integer getDocTypeFromDocTypeLabel(String DocTypeLabel) {
+        if(docTypeLabelToIdMap.get(DocTypeLabel) == null){
             return DOCTYPE_NONE;
         }
-        return docTypeNameToIdMap.get(DocTypeName);
+        return docTypeLabelToIdMap.get(DocTypeLabel);
     }
 
     public static List<Integer> getCategories()  {
