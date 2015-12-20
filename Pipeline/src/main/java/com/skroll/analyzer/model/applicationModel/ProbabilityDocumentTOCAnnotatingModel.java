@@ -145,7 +145,7 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
             secModel.setProcessedParagraphs(processedSections.get(i));
             secModel.setNumIterations(SEC_NUM_ITERATION);
             secModel.setEnforcingDominatingFeatureForClass(1); // class index 1 represent level 2 in the section model.
-//            secModel.setUseFirstParaFormat(true);
+            secModel.setUseFirstParaFormat(true);
 
             secModel.initialize();
             secModel.annotateParagraphs();
