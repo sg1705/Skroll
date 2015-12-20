@@ -11,3 +11,4 @@ node_modules
 Pipeline/logs
 logs/
 Pipeline/src/test/resources/analyzer/train/models/
+Pipeline/webapp
