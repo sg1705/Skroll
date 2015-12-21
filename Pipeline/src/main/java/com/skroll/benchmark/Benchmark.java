@@ -6,6 +6,7 @@ import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
+import com.skroll.document.annotation.DocTypeAnnotationHelper;
 import com.skroll.document.factory.DocumentFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,7 @@ public class Benchmark {
             return null;
         }
         QC localQC = new QC();
+
         for(CoreMap firstDocParagraph : firstDoc.getParagraphs()) {
             for(CoreMap secondDocParagraph : secondDoc.getParagraphs()) {
                 if (firstDocParagraph.getId().equalsIgnoreCase(secondDocParagraph.getId())) {
@@ -69,7 +71,7 @@ public class Benchmark {
             }
         }
         localQC.calculateQCScore();
-        logger.info("Stats for {} : {} ", firstDoc.getId(),localQC);
+        logger.info("Stats for File {} : DocType {} : QC: {} ", firstDoc.getId(),DocTypeAnnotationHelper.getDocType(firstDoc), localQC);
         qc.add(localQC);
         return qc;
     }
@@ -109,6 +111,11 @@ public class Benchmark {
                 qc = runQCForBenchmark(docName, qc);
         }
         qc.calculateQCScore();
+        logger.info("*************************************************");
+        logger.info("Overall Benchmark Stats : QC: {} ", qc);
+        logger.info("*************************************************");
+        logger.info("*************************************************");
+        logger.info("*************************************************");
         return qc;
     }
 
