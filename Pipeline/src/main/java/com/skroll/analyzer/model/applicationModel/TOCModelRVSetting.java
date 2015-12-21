@@ -60,9 +60,10 @@ public class TOCModelRVSetting extends ModelRVSetting {
 
                     )
             );
-    static double[] DEFAULT_CONSISTENCY_STRENGTH = new double[]{
-            -1000, -1000, -1000, -1000, -1000, -1000, -1000, 0, -1000, -1000, -1000,
-            -1000, -1000, -1000, -1000, -1000, -1000, -1000, 0, -1000, -1000, -1000
+    static double DS = -300;
+    static double[] DEFAULT_FOLLOWING_DOMINANT_STRENGTH = new double[]{
+            DS, DS, DS, DS, DS, DS, DS, -50, DS, DS, DS,
+            DS, DS, DS, DS, DS, DS, DS, -50, DS, DS, DS
     };
 
     static final List<RandomVariable> DEFAULT_WORD_VARS = Arrays.asList(
@@ -102,7 +103,7 @@ public class TOCModelRVSetting extends ModelRVSetting {
         this.lowLevelCategoryIds = lowLevelCategoryIds;
         setAnnotatingThreshold(annotatingThreshold);
         setLowerAnnotatingThreshold(lowerLevelAnnotatingThreshold);
-        setConsistencyStrength(DEFAULT_CONSISTENCY_STRENGTH);
+        setFollowDominantStrength(DEFAULT_FOLLOWING_DOMINANT_STRENGTH);
 
         if (lowLevelCategoryIds != null) {
             RandomVariable lowLevelParaType = RVCreater.createDiscreteRVWithComputer(
@@ -128,7 +129,7 @@ public class TOCModelRVSetting extends ModelRVSetting {
         this.lowLevelCategoryIds = lowLevelCategoryIds;
         setAnnotatingThreshold(annotatingThreshold);
         setLowerAnnotatingThreshold(lowerLevelAnnotatingThreshold);
-        setConsistencyStrength(DEFAULT_CONSISTENCY_STRENGTH);
+        setFollowDominantStrength(DEFAULT_FOLLOWING_DOMINANT_STRENGTH);
     }
 
     @Override

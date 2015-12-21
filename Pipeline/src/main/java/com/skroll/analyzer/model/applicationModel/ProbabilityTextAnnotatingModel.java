@@ -351,7 +351,7 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
 
     // dominating features will increase the strength of the consistent format features.
     private void setDocFeatures(int classIndex, int[] dominatingFeatures){
-        double[] consistency = modelRVSetting.getConsistencyStrength();
+        double[] consistency = modelRVSetting.getFollowDominantStrength();
         for (int f = 0; f < dominatingFeatures.length; f++){
             if (dominatingFeatures[f] == 1){
                 // increasing the consistent strength should be better than setting the strength.

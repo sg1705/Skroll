@@ -39,7 +39,7 @@ public class ModelRVSetting {
     List<Integer> categoryIds=null;
 
     double[] annotatingThreshold = null;
-    double[] consistencyStrength = null;
+    double[] followDominantStrength = null;
 
 
     boolean[] disabledParaDocFeatures = null;
@@ -51,12 +51,12 @@ public class ModelRVSetting {
     @JsonIgnore
     protected ModelClassAndWeightStrategy modelClassAndWeightStrategy;
 
-    public double[] getConsistencyStrength() {
-        return consistencyStrength;
+    public double[] getFollowDominantStrength() {
+        return followDominantStrength;
     }
 
-    public void setConsistencyStrength(double[] consistencyStrength) {
-        this.consistencyStrength = consistencyStrength;
+    public void setFollowDominantStrength(double[] followDominantStrength) {
+        this.followDominantStrength = followDominantStrength;
     }
 
     public List<Integer> getCategoryIds() {
@@ -93,7 +93,7 @@ public class ModelRVSetting {
         double[] threshold = new double[categoryIds.size()]; // The initialized 0's are good.
         setAnnotatingThreshold(threshold);
         double[] consistency = new double[paraDocFeatureVars.size()];
-        setConsistencyStrength(consistency);
+        setFollowDominantStrength(consistency);
 
 
         RandomVariable wordType = RVCreater.createWordLevelRVWithComputer(new WordIsInCategoryComputer(modelClassAndWeightStrategy, categoryIds), "wordIsInModelID-" + categoryIds);

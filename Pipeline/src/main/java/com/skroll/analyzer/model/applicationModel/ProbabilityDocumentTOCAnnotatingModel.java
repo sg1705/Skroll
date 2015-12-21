@@ -22,7 +22,7 @@ import java.util.*;
  */
 public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnotatingModel {
     public static final Logger logger = LoggerFactory.getLogger(ProbabilityDocumentTOCAnnotatingModel.class);
-    static final int SEC_NUM_ITERATION = 10;
+    static final int SEC_NUM_ITERATION = 2 ;
 
     Document doc;
     NaiveBayesWithMultiNodes secNbmn = null;
