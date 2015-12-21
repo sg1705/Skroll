@@ -40,6 +40,7 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
     private double[] annotatingThreshold = null; //DEFAULT_ANNOTATING_THRESHOLD;
     private int enforcingDominatingFeatureForClass = -1;
     private boolean useFirstParaFormat = false;
+    private boolean keepExistingAnnotation = false;
 //    private double enforcingConsistencyStrength = Double.NEGATIVE_INFINITY; // the lower, the more consistent.
     private double enforcingConsistencyStrength = -1000; // the lower, the more consistent.
 
@@ -411,6 +412,10 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
         this.annotatingThreshold = annotatingThreshold;
     }
 
+    public void setKeepExistingAnnotation(boolean keepExistingAnnotation) {
+        this.keepExistingAnnotation = keepExistingAnnotation;
+    }
+
     public void annotateParagraphs() {
 
 
@@ -423,7 +428,7 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
         for (int p = 0; p < numParagraphs; p++) {
             CoreMap paragraph = paragraphs.get(p);
             if (DocProcessor.isParaObserved(paragraph)) continue; // skip observed paragraphs
-//            RVValues.clearValue(paraCategory, paragraph);
+            if (!keepExistingAnnotation) RVValues.clearValue(paraCategory, paragraph);
             if (paragraph.getTokens().size() == 0)
                 continue;
             CoreMap processedPara = processedParagraphs.get(p);
