@@ -48,10 +48,6 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
                 setting.getNbmnConfig()
         );
 
-        // quick way to disable features without retraining.
-//        setting.disableParaDocFeature(n); // disable the nth paraDoc feature
-//        for (int i=0; i<setting.getNbmnConfig().getFeatureExistsAtDocLevelVarList().size(); i++)
-//            setting.disableParaDocFeature(i);
     }
 
     public ProbabilityDocumentTOCAnnotatingModel(int id,
@@ -92,11 +88,6 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
                     nbmnConfig.getWordVarList(),
                     lowerCatIds, setting.getLowerAnnotatingThreshold(), null, null);
 
-
-            // quick way to disable features without retraining.
-//            lowerTOCSetting.disableParaDocFeature(n); // disable the nth paraDoc feature
-//            for (int i=0; i<setting.getLowLevelNbmnConfig().getFeatureExistsAtDocLevelVarList().size(); i++)
-//                lowerTOCSetting.disableParaDocFeature(i);
 
             this.secModel = new ProbabilityTextAnnotatingModel(
                     secNbmn,
@@ -145,7 +136,7 @@ public class ProbabilityDocumentTOCAnnotatingModel extends ProbabilityTextAnnota
             secModel.setProcessedParagraphs(processedSections.get(i));
             secModel.setNumIterations(SEC_NUM_ITERATION);
             secModel.setEnforcingDominatingFeatureForClass(1); // class index 1 represent level 2 in the section model.
-            secModel.setUseFirstParaFormat(true);
+//            secModel.setUseFirstParaFormat(true);
             secModel.setKeepExistingAnnotation(true);
 
             secModel.initialize();

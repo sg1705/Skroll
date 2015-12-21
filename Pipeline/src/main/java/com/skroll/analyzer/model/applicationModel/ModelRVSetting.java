@@ -39,7 +39,7 @@ public class ModelRVSetting {
     List<Integer> categoryIds=null;
 
     double[] annotatingThreshold = null;
-
+    double[] consistencyStrength = null;
 
 
     boolean[] disabledParaDocFeatures = null;
@@ -50,6 +50,14 @@ public class ModelRVSetting {
 
     @JsonIgnore
     protected ModelClassAndWeightStrategy modelClassAndWeightStrategy;
+
+    public double[] getConsistencyStrength() {
+        return consistencyStrength;
+    }
+
+    public void setConsistencyStrength(double[] consistencyStrength) {
+        this.consistencyStrength = consistencyStrength;
+    }
 
     public List<Integer> getCategoryIds() {
         return categoryIds;
@@ -84,6 +92,10 @@ public class ModelRVSetting {
         this.categoryIds=categoryIds;
         double[] threshold = new double[categoryIds.size()]; // The initialized 0's are good.
         setAnnotatingThreshold(threshold);
+        double[] consistency = new double[paraDocFeatureVars.size()];
+        setConsistencyStrength(consistency);
+
+
         RandomVariable wordType = RVCreater.createWordLevelRVWithComputer(new WordIsInCategoryComputer(modelClassAndWeightStrategy, categoryIds), "wordIsInModelID-" + categoryIds);
         RandomVariable paraType = RVCreater.createDiscreteRVWithComputer(new ParaCategoryComputer(modelClassAndWeightStrategy,categoryIds), "paraTypeIsModelID-" + categoryIds);
         nbmnConfig = new NBMNConfig(paraType, paraFeatureVars, paraDocFeatureVars,

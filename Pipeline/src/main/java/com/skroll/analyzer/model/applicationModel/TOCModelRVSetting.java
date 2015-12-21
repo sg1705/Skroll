@@ -23,6 +23,7 @@ public class TOCModelRVSetting extends ModelRVSetting {
         return lowerAnnotatingThreshold;
     }
 
+
     public void setLowerAnnotatingThreshold(double[] lowerAnnotatingThreshold) {
         this.lowerAnnotatingThreshold = lowerAnnotatingThreshold;
     }
@@ -59,6 +60,10 @@ public class TOCModelRVSetting extends ModelRVSetting {
 
                     )
             );
+    static double[] DEFAULT_CONSISTENCY_STRENGTH = new double[]{
+            -1000, -1000, -1000, -1000, -1000, -1000, -1000, 0, -1000, -1000, -1000,
+            -1000, -1000, -1000, -1000, -1000, -1000, -1000, 0, -1000, -1000, -1000
+    };
 
     static final List<RandomVariable> DEFAULT_WORD_VARS = Arrays.asList(
             RVCreater.createWordsRVWithComputer(new LowerCaseWordsComputer(), "lowerCaseWords"),
@@ -97,6 +102,7 @@ public class TOCModelRVSetting extends ModelRVSetting {
         this.lowLevelCategoryIds = lowLevelCategoryIds;
         setAnnotatingThreshold(annotatingThreshold);
         setLowerAnnotatingThreshold(lowerLevelAnnotatingThreshold);
+        setConsistencyStrength(DEFAULT_CONSISTENCY_STRENGTH);
 
         if (lowLevelCategoryIds != null) {
             RandomVariable lowLevelParaType = RVCreater.createDiscreteRVWithComputer(
@@ -122,6 +128,7 @@ public class TOCModelRVSetting extends ModelRVSetting {
         this.lowLevelCategoryIds = lowLevelCategoryIds;
         setAnnotatingThreshold(annotatingThreshold);
         setLowerAnnotatingThreshold(lowerLevelAnnotatingThreshold);
+        setConsistencyStrength(DEFAULT_CONSISTENCY_STRENGTH);
     }
 
     @Override
