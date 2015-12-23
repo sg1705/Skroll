@@ -16,15 +16,28 @@
         <param name="ConversionPattern" value="%d{dd MMM yyyy HH:mm:ss,SSS} %-4r %-5p %c{1}:%L - %M %x - %m%n"/>
     </layout>
   </appender>
+  <appender name="Benchmark" class="org.apache.log4j.RollingFileAppender">
+    <param name="file" value="webapp/benchmark.log"/>
+    <param name="MaxFileSize" value="200MB"/>
+    <!-- Keep one backup file -->
+    <param name="MaxBackupIndex" value="5"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%d{dd MMM yyyy HH:mm:ss,SSS} - %m%n"/>
+    </layout>
+  </appender>
   <root>
     <priority value ="warn" />
     <appender-ref ref="stdout" />
     <appender-ref ref="R" />
   </root>
   <logger name="com.skroll" additivity="false">
+  <level value="info" />
+  <appender-ref ref="stdout" />
+  <appender-ref ref="R" />
+</logger>
+  <logger name="com.skroll.benchmark" additivity="false">
     <level value="info" />
-    <appender-ref ref="stdout" />
-    <appender-ref ref="R" />
+    <appender-ref ref="Benchmark" />
   </logger>
 
 </log4j:configuration>

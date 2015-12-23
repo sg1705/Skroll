@@ -33,7 +33,9 @@ import javax.ws.rs.core.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -106,10 +108,11 @@ public class DocAPI {
                 documentId = UniqueIdGenerator.generateId(content);
                 final String fDocumentId = documentId;
                 final Document fDoc = document;
-                DocTypeAnnotationHelper.classifyDocType(request.getClassifiersForDocType(document),document);
-                logger.info("DocType:" + DocTypeAnnotationHelper.getDocType(fDoc));
                 List<Classifier> classifiers = request.getClassifiersForClassify(fDoc);
                 document = fetchOrSaveDocument(documentId, content, request.getDocumentFactory(), classifiers);
+                DocTypeAnnotationHelper.classifyDocType(request.getClassifiersForDocType(document),document);
+                logger.info("DocType:" + DocTypeAnnotationHelper.getDocType(document));
+                DocTypeAnnotationHelper.classifyDocType(request.getClassifiersForDocType(document),document);
                 reader.close();
             } catch (Exception e) {
                 return logErrorResponse("Failed to classify", e);
@@ -125,9 +128,10 @@ public class DocAPI {
     @GET
     @Path("/importDoc")
     @Produces(MediaType.TEXT_HTML)
-    public Response importDoc(@QueryParam("documentId") String docURL, @QueryParam("partialParse") String partialParse, @Context HttpHeaders hh, @BeanParam RequestBean request) throws Exception {
+    public Response importDoc(@QueryParam("docType")String docType, @QueryParam("documentId") String docURL, @QueryParam("partialParse") String partialParse, @Context HttpHeaders hh, @BeanParam RequestBean request) throws Exception {
         Document document = null;
         String documentId = null;
+        logger.info("Document type [{}]", docType);
         boolean inCache = false;
         try {
             documentId = UniqueIdGenerator.generateId(docURL);
@@ -140,11 +144,10 @@ public class DocAPI {
                     document = Parser.parsePartialDocumentFromUrl(docURL);
                 } else {
                     document = Parser.parseDocumentFromUrl(docURL);
-                    //Streams require final objects
                     String fDocumentId = documentId;
                     document.setId(documentId);
                     Document fDoc = document;
-                    DocTypeAnnotationHelper.classifyDocType(request.getClassifiersForDocType(document), fDoc);
+                    DocTypeAnnotationHelper.annotateDocTypeWithWeightAndUserObservation(document, Category.getDocTypeId(docType), userWeight );
                     logger.info("DocType:" + DocTypeAnnotationHelper.getDocType(fDoc));
                     request.getClassifiersForClassify(fDoc).forEach(c -> c.classify(fDocumentId, fDoc));
                     request.getDocumentFactory().putDocument(document);
@@ -330,20 +333,15 @@ public class DocAPI {
                     // log the existing definitions
                     CategoryAnnotationHelper.displayParagraphsAnnotatedWithAnyCategory(paragraph);
 
-                    List<List<Token>> addedTerms = new ArrayList<>();
+                    List<String> addedTerms = new ArrayList<>();
+
                     if (!(termProto.getClassificationId() == Category.NONE)) {
 
                         for (String modifiedTerm : termProtoMap.get(termProto)) {
-                            List<Token> tokens = null;
-                            try {
-                                Document tempDoc = Parser.parseDocumentFromHtml(modifiedTerm);
-                                tokens = DocumentHelper.getTokensOfADoc(tempDoc);
-                            } catch (ParserException e) {
-                                e.printStackTrace();
-                            }
-                            addedTerms.add(tokens);
+                            addedTerms.add(modifiedTerm);
                         }
                     }
+
                     updateCategoryId = termProto.getClassificationId();
                     // check whether the term is "" ro empty or not that received from client
                     //remove any existing annotations
@@ -352,11 +350,11 @@ public class DocAPI {
                     if (addedTerms.isEmpty()) {
                         CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.NONE, userWeight);
                     } else {
-                        for (List<Token> addedTerm : addedTerms) {
+                        for (String addedTerm : addedTerms) {
                             if (addedTerm == null || addedTerm.isEmpty()) {
                                 CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.NONE, userWeight);
                             } else {
-                                if (Joiner.on("").join(addedTerm).equals("")) {
+                                if (addedTerm.equals("")) {
                                     CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.NONE, userWeight);
                                 } else {
                                     if (CategoryAnnotationHelper.setMatchedText(paragraph, addedTerm, termProto.getClassificationId())) {
@@ -453,18 +451,12 @@ public class DocAPI {
 
         //iterate over each paragraph
         for (CoreMap paragraph : doc.getParagraphs()) {
-            boolean IsNoCategoryExist = true;
-            paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
-            paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
             for (int categoryId : Category.getCategories()) {
                 if (CategoryAnnotationHelper.isParagraphAnnotatedWithCategoryId(paragraph, categoryId)) {
+                    paragraph.set(CoreAnnotations.IsUserObservationAnnotation.class, true);
+                    paragraph.set(CoreAnnotations.IsTrainerFeedbackAnnotation.class, true);
                     CategoryAnnotationHelper.annotateCategoryWeight(paragraph, categoryId, userWeight);
-                    IsNoCategoryExist = false;
                 }
-            }
-            if (IsNoCategoryExist) {
-                CategoryAnnotationHelper.clearCategoryAnnotations(paragraph);
-                CategoryAnnotationHelper.annotateCategoryWeight(paragraph, Category.NONE, userWeight);
             }
         }
         try {
@@ -539,7 +531,7 @@ public class DocAPI {
         Document doc = request.getDocument();
 
         if (doc == null) {
-            return logErrorResponse("document cannot be found for document id: " + documentId);
+            return logErrorResponse("document cannot be found for document id: " + documentId );
         }
 
         DocTypeAnnotationHelper.annotateDocTypeWithWeightAndUserObservation(doc,docType,userWeight);
@@ -547,4 +539,28 @@ public class DocAPI {
         logger.info("updateDocType {} using document id {}", docType, documentId);
         return Response.ok().status(Response.Status.OK).entity("").build();
     }
+
+    @GET
+    @Path("/getDocType")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getDocType(@Context HttpHeaders hh, @BeanParam RequestBean request) {
+
+        String documentId = request.getDocumentId();
+        Document doc = request.getDocument();
+
+        int docType = 0;
+        if (doc == null) {
+            docType = 0;
+        } else {
+            docType = DocTypeAnnotationHelper.getDocType(doc);
+        }
+
+        HashMap map = new HashMap();
+        map.put("docTypeId", docType);
+        String json = new GsonBuilder().create().toJson(map);
+
+        logger.info("DocType of documentId: {} is {}", documentId, docType);
+        return Response.ok().status(Response.Status.OK).entity(json).build();
+    }
+
 }

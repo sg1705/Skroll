@@ -3,6 +3,8 @@ package com.skroll.document.annotation;
 import com.google.common.base.Joiner;
 import com.skroll.classifier.Category;
 import com.skroll.document.*;
+import com.skroll.parser.Parser;
+import com.skroll.parser.extractor.ParserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -196,12 +198,7 @@ public class CategoryAnnotationHelper {
      */
     public static void annotateParagraphWithTokensAndCategoryOfClassIndex(CoreMap paragraph, List<Token> newTokens, List<Integer> categoryIds, int classIndex) {
         // No weight will be set as this function will be used to infer the categories
-        if (classIndex == 0) {
-            categoryIds.forEach(categoryId -> clearCategoryAnnotation(paragraph, categoryId));
-        } else {
-            annotateParagraphWithTokensAndCategory(paragraph, newTokens, categoryIds.get(classIndex));
-        }
-
+        annotateParagraphWithTokensAndCategory(paragraph, newTokens, categoryIds.get(classIndex));
     }
 
     /**
@@ -250,15 +247,19 @@ public class CategoryAnnotationHelper {
      * Match the text of the given list of selected tokens with the text in the paragraphs. If the text is matched,
      * annotate Paragraph With Tokens And Category
      * @param paragraph
-     * @param selectedTerm
+     * @param selectedTermString
      * @param categoryId
      * @return
      */
-    public static boolean setMatchedText(CoreMap paragraph, List<Token> selectedTerm, int categoryId) {
+    public static boolean setMatchedText(CoreMap paragraph, String selectedTermString, int categoryId) {
+        // instead of matching for selected token, we are taking the whole para as TOC
+        annotateParagraphWithTokensAndCategory(paragraph, paragraph.getTokens(), categoryId);
+        return true;
 
+        /*
         List<Token> paragraphTokens = paragraph.getTokens();
-        String paraTokenString = Joiner.on("").join(paragraphTokens).toLowerCase();
-        String selectedTermString = Joiner.on("").join(selectedTerm).toLowerCase();
+        String paraTokenString = paragraph.getText(); // Joiner.on("").join(paragraphTokens).toLowerCase();
+        //String selectedTermString = Joiner.on("").join(selectedTerm).toLowerCase();
 
         if (!paraTokenString.contains(selectedTermString)) {
             logger.error("Existing document's paragraph {} does not contains Selected text {} ", paraTokenString,selectedTermString);
@@ -268,43 +269,46 @@ public class CategoryAnnotationHelper {
             annotateParagraphWithTokensAndCategory(paragraph, paragraph.getTokens(), categoryId);
             return true;
         }
+        if (!paraTokenString.equals(selectedTermString)) {
+            String[] origWords = paraTokenString.split(" ");
+            String[] compareWords =selectedTermString.split(" ");
 
-        List<Token> returnList = new ArrayList<>();
-        int lastTokenPointer=0;
-        int runner=0;
-        int remainingSelectedTermLength = 0;
-        //outer loop to find sequence of selected tokens in the para
-
-            while (remainingSelectedTermLength < selectedTermString.length()) {
-                //inner loop to find the first selectedToken in the paragraph
-                for (int current = runner; current < paragraphTokens.size(); current++) {
-                    int paragraphTokenLength = paragraphTokens.get(current).getText().length();
-                    //check if the selected text is not the complete word or token
-                    if (selectedTermString.length() < remainingSelectedTermLength + paragraphTokenLength) {
-                        logger.error("One of Selected text {} does not contain the complete word [{}] ", selectedTerm, paragraphTokens.get(current).getText());
-                        return false;
-                    }
-                    String selectedTermSubString = selectedTermString.substring(remainingSelectedTermLength, remainingSelectedTermLength + paragraphTokenLength);
-                    if (paragraphTokens.get(current).getText().equalsIgnoreCase(selectedTermSubString)) {
-                        remainingSelectedTermLength += paragraphTokenLength;
-                        if (lastTokenPointer == 0) {
-                            lastTokenPointer = current;
+            for (int firstOrgWordsCounter = 0; firstOrgWordsCounter < origWords.length; firstOrgWordsCounter++) {
+                if (origWords[firstOrgWordsCounter].equals(compareWords[0])) {
+                    int j;
+                    for (j = 0; j < compareWords.length; j++) {
+                        if (!origWords[firstOrgWordsCounter + j].equals(compareWords[j])) {
+                            break;
                         }
-                        if (current > lastTokenPointer + 1) {
-                            returnList.clear();
-                            lastTokenPointer = current;
-                            continue;
-                        }
-                        returnList.add(paragraphTokens.get(current));
-                        lastTokenPointer = current;
-                        runner++;
-                        break;
                     }
-                    runner++;
+                    if (j == compareWords.length) {
+                        annotateParagraphWithTextAndCategory(paragraph, selectedTermString, categoryId);
+                        return true;
+                    }
                 }
             }
-        annotateParagraphWithTokensAndCategory(paragraph, returnList, categoryId);
+            return false;
+        }
+        annotateParagraphWithTextAndCategory(paragraph, selectedTermString, categoryId);
         return true;
+        */
+    }
+
+    /**
+     * Annotated a given Paragraph with given words and a given categoryId
+     * @param paragraph
+     * @param words
+     * @param categoryId
+     */
+    public static void annotateParagraphWithTextAndCategory(CoreMap paragraph, String words, int categoryId) {
+        List<Token> tokens = null;
+        try {
+            Document tempDoc = Parser.parseDocumentFromHtml(words);
+            tokens = DocumentHelper.getTokensOfADoc(tempDoc);
+        } catch (ParserException e) {
+            e.printStackTrace();
+        }
+        annotateParagraphWithTokensAndCategory(paragraph, tokens, categoryId);
     }
 
     /**
@@ -370,6 +374,23 @@ public class CategoryAnnotationHelper {
     }
 
     /**
+     * Clear Prior training weight of all categories for a paragraph
+     * @param paragraph
+     */
+    public static void clearPriorCategoryWeight(CoreMap paragraph){
+        HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
+        if (categoryAnnotation==null) return;
+        for (int categoryId : Category.getCategories()) {
+            CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
+            if(annotationCoreMap!=null){
+                annotationCoreMap.set(CoreAnnotations.PriorCategoryWeightFloat.class, 0f);
+                logger.debug("Cleared \t {} \t {}", paragraph.getId(), categoryId);
+            }
+        }
+
+    }
+
+    /**
      * Copy annotations from one CoreMap into another
      *
      * @param copyFrom CoreMap to copy from
@@ -395,28 +416,10 @@ public class CategoryAnnotationHelper {
             String indexes = copyFrom.get(CoreAnnotations.SearchIndexAnnotation.class);
             copyInto.set(CoreAnnotations.SearchIndexAnnotation.class, indexes);
         }
-
-
     }
 
 
 
-    /**
-     * Clear Prior training weight of all categories for a paragraph
-     * @param paragraph
-     */
-    public static void clearPriorCategoryWeight(CoreMap paragraph){
-        HashMap<Integer, CoreMap> categoryAnnotation = paragraph.get(CoreAnnotations.CategoryAnnotations.class);
-        if (categoryAnnotation==null) return;
-        for (int categoryId : Category.getCategories()) {
-            CoreMap annotationCoreMap = categoryAnnotation.get(categoryId);
-            if(annotationCoreMap!=null){
-                annotationCoreMap.set(CoreAnnotations.PriorCategoryWeightFloat.class, (float)0);
-                logger.debug("Cleared \t {} \t {}", paragraph.getId(), categoryId);
-            }
-        }
-
-    }
 
     /**
      * Get the categoryAnnotation core map.

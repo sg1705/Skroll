@@ -18,6 +18,8 @@ import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.util.Visualizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,18 +29,18 @@ import java.util.stream.Collectors;
  */
 public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
 
+    public static final Logger logger = LoggerFactory.getLogger(ProbabilityTextAnnotatingModel.class);
     private static final int DEFAULT_NUM_ITERATIONS = 0;
-//    private static final double[] DEFAULT_ANNOTATING_THRESHOLD = new double[]{0, .999999, 0.99999, 0.99999};
-    private static final double[] DEFAULT_ANNOTATING_THRESHOLD = new double[]{0, .999999, 2, 0.99999}; //disable level 2 annotation in the doc model.
     List<CoreMap> paragraphs;
     // todo: should probably store paragraphs, otherwise, need to recreate it everytime when model has new observations
     List<CoreMap> processedParagraphs = new ArrayList<>();
     NBMNData data;
 
     private int numIterations = DEFAULT_NUM_ITERATIONS;
-    private double[] annotatingThreshold = DEFAULT_ANNOTATING_THRESHOLD;
+    private double[] annotatingThreshold = null; //DEFAULT_ANNOTATING_THRESHOLD;
     private int enforcingDominatingFeatureForClass = -1;
     private boolean useFirstParaFormat = false;
+    private boolean keepExistingAnnotation = false;
 //    private double enforcingConsistencyStrength = Double.NEGATIVE_INFINITY; // the lower, the more consistent.
     private double enforcingConsistencyStrength = -1000; // the lower, the more consistent.
 
@@ -92,7 +94,10 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
         this.nbmnModel = nbmn;
         this.hmm = hmm;
         if (hmm != null) hmm.updateProbabilities();
+        this.annotatingThreshold = setting.getAnnotatingThreshold();
 
+        // do not initialize because because section model is created just once for the whole doc,
+        // and each section reinitializes the section model.
 //        this.initialize();
     }
     /**
@@ -336,6 +341,7 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
                  if (paraProbs[classIndex] > annotatingThreshold[classIndex] && paraProbs[classIndex]>maxProb){
                      maxProb = paraProbs[classIndex];
                      dominatingFeatures = data.getParaDocFeatures()[paragraph.get(CoreAnnotations.IndexInteger.class)];
+//                     logger.info("paragraph " + p + " " + paragraph.getText());
                  }
              }
 
@@ -345,11 +351,13 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
 
     // dominating features will increase the strength of the consistent format features.
     private void setDocFeatures(int classIndex, int[] dominatingFeatures){
+        double[] consistency = modelRVSetting.getFollowDominantStrength();
         for (int f = 0; f < dominatingFeatures.length; f++){
             if (dominatingFeatures[f] == 1){
                 // increasing the consistent strength should be better than setting the strength.
 //                documentFeatureBelief[f][classIndex] = new double[]{enforcingConsistencyStrength, 0};
-                documentFeatureBelief[f][classIndex][0] += enforcingConsistencyStrength;
+//                documentFeatureBelief[f][classIndex][0] += enforcingConsistencyStrength;
+                documentFeatureBelief[f][classIndex][0] += consistency[f];
             }
 
         }
@@ -406,6 +414,10 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
         this.annotatingThreshold = annotatingThreshold;
     }
 
+    public void setKeepExistingAnnotation(boolean keepExistingAnnotation) {
+        this.keepExistingAnnotation = keepExistingAnnotation;
+    }
+
     public void annotateParagraphs() {
 
 
@@ -418,7 +430,7 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
         for (int p = 0; p < numParagraphs; p++) {
             CoreMap paragraph = paragraphs.get(p);
             if (DocProcessor.isParaObserved(paragraph)) continue; // skip observed paragraphs
-            RVValues.clearValue(paraCategory, paragraph);
+            if (!keepExistingAnnotation) RVValues.clearValue(paraCategory, paragraph);
             if (paragraph.getTokens().size() == 0)
                 continue;
             CoreMap processedPara = processedParagraphs.get(p);
@@ -434,7 +446,8 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
             List<Token> tokens = processedPara.getTokens();
 
             //todo: a hack for TOC and DocType annotation. should implement HMM for TOC and annotate base on HMM result
-            if (this.modelRVSetting instanceof TOCModelRVSetting || this.modelRVSetting instanceof DocTypeModelRVSetting) {
+            if (this.modelRVSetting instanceof TOCModelRVSetting || this.modelRVSetting instanceof DocTypeModelRVSetting){
+                if (this.modelRVSetting instanceof DocTypeModelRVSetting ) tokens = new ArrayList<>();
                 annotateParagraph(paragraph, paraCategory, tokens, logPrioProbs);
                 if (true) continue;
             }
@@ -493,8 +506,16 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
         int maxIndex = BNInference.maxIndex(logPrioProbs);
         double[] paraProbs = logPrioProbs.clone();
         BNInference.convertLogBeliefToProb(paraProbs);
-        if (paraProbs[maxIndex] > annotatingThreshold[maxIndex])
+        if (paraProbs[maxIndex] > annotatingThreshold[maxIndex]){
+
+            //todo: temporarily used for debug purpose for Akash. need to be removed later.
+            if (this.modelRVSetting instanceof TOCModelRVSetting && paraProbs[1]> 0.9 && paraProbs[1]< 0.999999) {
+                logger.info("paragraph " + paragraph.get(CoreAnnotations.IndexInteger.class) + " prob in (0.9, 0.999999)" +
+                        paragraph.getText());
+            }
+
             RVValues.addTerms(paraCategory, paragraph, tokens, maxIndex);
+        }
 
     }
 

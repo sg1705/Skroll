@@ -14,7 +14,7 @@
     .directive('skContent', skContent);
 
   /* @ngInject */
-  function skContent(documentModel, documentService, LHSModel, selectionService, $timeout, $http, $analytics, $window, $q) {
+  function skContent(documentModel, documentService, LHSModel, selectionService, $timeout, $http, $analytics, $window, $q, viewportService) {
 
     var directive = {
       restricted: 'EA',
@@ -45,6 +45,7 @@
           $timeout(function() {
             insertHtmlInIframe();
             documentModel.isProcessing = false;
+            postInsertIframe();
           }, 0);
 
           documentService.importDoc(documentModel.url, false)
@@ -65,7 +66,13 @@
           loadDocument()
             .then(function(contentHtml) {
               documentModel.targetHtml = contentHtml;
-              insertHtmlInIframe();
+
+              $timeout(function() {
+                insertHtmlInIframe();
+                documentModel.isProcessing = false;
+                postInsertIframe();
+              }, 0);
+
               documentModel.isProcessing = false;
               $analytics.eventTrack(documentModel.documentId, {
                 category: 'doc.View',
@@ -119,7 +126,7 @@
       }
 
       function insertHtmlInIframe() {
-        if (navigator.userAgent.indexOf('iPhone') > -1) {
+        if ((navigator.userAgent.indexOf('iPad') > -1) || (navigator.userAgent.indexOf('iPhone') > -1)){
           $('#docViewIframe').attr('scrolling', 'no');
           $('#docViewIframe').wrap('<md-content id="docViewIframeParent"></md-content>');
         }
@@ -132,19 +139,34 @@
         iframeDoc.write(documentModel.targetHtml);
         iframeDoc.close();
         // if (navigator.userAgent.indexOf('Chrome') > -1) {
-          viewCtrl.resizeFrame();
+        viewCtrl.resizeFrame();
         // }
 
         var elmt = angular.element(iframeDoc.body);
 
-        elmt.bind('click', function($event) {
-          viewCtrl.paraClicked($event)
-        });
+
+        if ((navigator.userAgent.indexOf('iPad') > -1) || (navigator.userAgent.indexOf('iPhone') > -1) || (navigator.userAgent.indexOf('Android') > -1)) {
+          // var hammertime = new Hammer(iframeDoc.getElementById('content'));
+          // hammertime.on('tap', function(ev) {
+          //     selectionService.selectParagraph(selectionService.inferParagraphId(ev));
+          //     console.log('user tapped');
+          // });
+        } else {
+          elmt.bind('click', function($event) {
+            viewCtrl.paraClicked($event)
+          });
+        }
 
 
         elmt.bind('mouseup', function($event) {
           viewCtrl.mouseUp($event)
         });
+
+        elmt.bind('mousedown', function($event) {
+          viewCtrl.mouseDown($event)
+        });
+
+
 
         angular.element($window).bind('resize', function($event) {
           $timeout(function() {
@@ -155,8 +177,16 @@
         if (navigator.userAgent.indexOf('Firefox') > -1) {
           firefoxAnchorLinks(iframe);
         }
+      }
 
-
+      /*
+      * Method to find out the bounding rect of the iframe
+      */
+      function postInsertIframe() {
+        var iframeoffset = $('#docViewIframe').offset();
+        iframeoffset.width = $('#docViewIframe').width();
+        viewportService.viewportOffset = iframeoffset;
+        console.log(viewCtrl.iframeOffset);
       }
 
       function firefoxAnchorLinks(iframe) {

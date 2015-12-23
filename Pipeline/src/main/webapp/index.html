@@ -13,6 +13,9 @@
  -->  <meta name="description" content="">
   <meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
   <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+  <!-- apple specific meta tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="blue">
 
   <!-- build:css(.) styles/vendor.css -->
   <!-- bower:css -->
@@ -93,12 +96,14 @@
 <script src="/scripts/core.services/documentservice.js"></script>
 <script src="/scripts/core.services/httpRequestError.interceptor.js"></script>
 <script src="/scripts/core.services/link.service.js"></script>
+<script src="/scripts/core.services/mailservice.service.js"></script>
 <script src="/scripts/core.services/mouseenterobserver.service.js"></script>
 <script src="/scripts/core.services/mouseleaveobserver.service.js"></script>
 <script src="/scripts/core.services/scrollobserverservice.js"></script>
 <script src="/scripts/core.services/selectionservice.js"></script>
 <script src="/scripts/core.services/skObserveScroll.js"></script>
 <script src="/scripts/core.services/textselectionobserverservice.js"></script>
+<script src="/scripts/core.services/viewport.service.js"></script>
 <script src="/scripts/core.util/ngEnter.directive.js"></script>
 <script src="/scripts/core.util/scrollToParagraph.js"></script>
 <script src="/scripts/core.util/skBackdrop.directive.js"></script>
@@ -123,6 +128,7 @@
 <script src="/scripts/toc/toc.controller.js"></script>
 <script src="/scripts/toc/tocterms.filter.js"></script>
 <script src="/scripts/trainer/enabletrainertoolbar.controller.js"></script>
+<script src="/scripts/trainer/skTrainerLhs.directive.js"></script>
 <script src="/scripts/trainer/skTrainerToolbar.js"></script>
 <script src="/scripts/trainer/trainermodel.js"></script>
 <script src="/scripts/trainer/trainerprompt.controller.js"></script>

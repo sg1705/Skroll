@@ -25,13 +25,14 @@
     clickObserverService,
     textSelectionObserverService,
     LHSModel,
-    featureFlags, $window) {
+    featureFlags, $window, $timeout) {
 
     //-- private variables
     var vm = this;
 
     //-- public variables
     vm.trainerToolbar = trainerModel.trainerToolbar;
+    vm.documentModel = documentModel;
 
     //-- public methods
     vm.convertToBenchmark = convertToBenchmark;
@@ -51,10 +52,21 @@
       console.log(docTypeId);
       trainerService.updateDocType(documentModel.documentId, docTypeId)
         .then(function(data) {
+          vm.documentModel.docTypeId = docTypeId;
           console.log(data);
         })
 
     }
+
+    function getDocType() {
+      trainerService.getDocType(documentModel.documentId)
+        .then(function(data) {
+          console.log(data);
+          vm.documentModel.docTypeId = data.docTypeId;
+        })
+
+    }
+
 
 
     function convertToBenchmark() {
@@ -206,6 +218,13 @@
           console.log(status);
         });
     }
+
+      $timeout(function() {
+        getDocType();
+      }, 0);
+
+
+
 
   }
 

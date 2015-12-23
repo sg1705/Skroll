@@ -20,15 +20,21 @@ import java.util.List;
 import static org.junit.Assert.fail;
 
 public class ObjectPersistUtilTest {
-    public static final Logger logger = LoggerFactory
-            .getLogger(ObjectPersistUtilTest.class);
-    ModelFactory modelFactory;
+
+    public static final Logger logger = LoggerFactory.getLogger(ObjectPersistUtilTest.class);
     static final List<Integer> TEST_DEF_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE, Category.DEFINITION));
+
+    ModelFactory modelFactory;
+    Configuration configuration;
+    String modelFolder;
+
     @Before
     public void setup(){
         try {
             Injector injector = Guice.createInjector(new SkrollTestGuiceModule());
             modelFactory = injector.getInstance(ModelFactory.class);
+            configuration = injector.getInstance(Configuration.class);
+            modelFolder = configuration.get("modelFolder");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -41,7 +47,7 @@ public class ObjectPersistUtilTest {
         ModelRVSetting modelRVSetting = new DefModelRVSetting(TEST_DEF_CATEGORY_IDS);
         TrainingTextAnnotatingModel model = modelFactory.createModel(ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID, modelRVSetting);
 
-        ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil("/tmp");
+        ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil(modelFolder);
 
         try {
             objectPersistUtil.persistObject(TrainingTextAnnotatingModel.class, model, "TrainingDocumentAnnotatingModel");
@@ -70,7 +76,7 @@ public class ObjectPersistUtilTest {
         ModelRVSetting modelRVSetting = new DefModelRVSetting(TEST_DEF_CATEGORY_IDS);
         TrainingTextAnnotatingModel model = modelFactory.createModel(ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID, modelRVSetting);
 
-        ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil("/tmp");
+        ObjectPersistUtil objectPersistUtil = new ObjectPersistUtil(modelFolder);
 
         try {
             objectPersistUtil.persistObject(TrainingTextAnnotatingModel.class, model, "TrainingDocumentAnnotatingModel");

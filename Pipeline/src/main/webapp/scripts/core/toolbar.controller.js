@@ -15,7 +15,7 @@
     .controller('ToolbarCtrl', ToolbarCtrl);
 
   /* @ngInject */
-  function ToolbarCtrl($mdSidenav, documentModel, $location, linkService, $mdDialog, $mdMedia) {
+  function ToolbarCtrl($mdSidenav, documentModel, $location, linkService, $mdDialog, $mdMedia, mailService) {
 
     //-- private variables
     var vm = this;
@@ -113,9 +113,14 @@
           //activeLink: vm.activeLink
         },
         /* @ngInject */
-        controller: function($mdDialog) {
-          this.hide = function() {
-            $mdDialog.hide();
+        controller: function($mdDialog, mailService, $location) {
+          var feedbackMessage;
+          var address;
+          var vm = this;
+          this.submitFeedback = function() {
+            $mdDialog.hide().then(function(){
+              mailService.sendFeedback(vm.address, vm.feedbackMessage, documentModel.documentId, $location.path())
+            });
           }
         },
         bindToController: true,
@@ -131,7 +136,6 @@
       $mdDialog
         .show(alert)
         .finally(function() {
-          console.log('hidden');
           alert = undefined;
         });
     }

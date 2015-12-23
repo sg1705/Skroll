@@ -16,11 +16,10 @@
   function ViewPortCtrl(selectionService, $log, $routeParams,
     scrollObserverService, clickObserverService,
     textSelectionObserverService,
-    mouseEnterObserverService, mouseLeaveObserverService, $timeout) {
+    mouseEnterObserverService, mouseLeaveObserverService, $timeout, viewportService) {
 
     //-- private variables
     var vm = this;
-
 
     //-- public methods
     vm.mouseDown = mouseDown;
@@ -45,11 +44,13 @@
 
     function mouseDown($event) {
       var paraId = vm.inferParagraphId($event);
+      selectionService.clearSelection();
       selectionService.mouseDownParaId = paraId;
+      selectionService.mouseDownX = $event.clientX;
+      selectionService.mouseDownY = $event.clientY;
     }
 
     function mouseUp($event) {
-      console.log("mouseup clicked");
       //should mouse click handle it
       //find out if this is a selection
       if (selectionService.getRangySelection().toString() != '') {
@@ -60,14 +61,18 @@
       if ((selection == '') || (selection == undefined))
         return;
 
-      //clear selection
-      selectionService.clearSelection();
       var paraId = vm.inferParagraphId($event);
+      selectionService.mouseUpX = $event.clientX;
+      selectionService.mouseUpY = $event.clientY;
+
+      var selectionBoundingBox = selectionService.getSelectionBoundingBox();
       if (paraId == null)
         return;
+
       textSelectionObserverService.notify({
         'paraId': paraId,
-        'selectedText': selection
+        'selectedText': selection,
+        'selectionBoundingBox': selectionBoundingBox
       });
       selectionService.saveSelection(paraId, selection);
     }
@@ -137,7 +142,6 @@
       iframeDiv.height = 0;
       resizeFrame();
     }
-
 
   }
 

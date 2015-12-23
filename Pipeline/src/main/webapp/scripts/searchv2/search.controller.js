@@ -181,7 +181,7 @@
       });
 
       var elementsOrganizedInHeaders = {};
-      var headerItems = LHSModel.getParaFromClassIdRange(2, 4);
+      var headerItems = LHSModel.getParaFromClassIdRange(2, 3);
       var currHeader = headerItems[0];
       var nextHeaderIdx = 0,
         currHeaderIdx = 0;
@@ -248,10 +248,21 @@
           }
           // var resultElement = document.getElementById(result.ref);
           var resultElement = selectionService.getJQParaElement(result.ref).get(0);
-          var resultText = self.getSurroundingText(resultElement.textContent, searchText);
+          var resultText;
+          var resultType = 0;
+          //different text for table
+          if (($('> table', resultElement).length) > 0) {
+            resultText = 'Table';
+            resultType = 1;
+          } else {
+            resultText = self.getSurroundingText(resultElement.textContent, searchText);
+          }
+
+          // var resultText = self.getSurroundingText(resultElement.textContent, searchText);
           var item = {
             'paragraphId': result.ref,
-            'displayText': resultText
+            'displayText': resultText,
+            'resultType': resultType
           };
           searchedItems.push(item);
         });

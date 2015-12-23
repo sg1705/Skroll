@@ -17,6 +17,16 @@ public class TOCModelRVSetting extends ModelRVSetting {
 
     NBMNConfig lowLevelNbmnConfig = null;
     List<Integer> lowLevelCategoryIds = null;
+    double[] lowerAnnotatingThreshold = null;
+
+    public double[] getLowerAnnotatingThreshold() {
+        return lowerAnnotatingThreshold;
+    }
+
+
+    public void setLowerAnnotatingThreshold(double[] lowerAnnotatingThreshold) {
+        this.lowerAnnotatingThreshold = lowerAnnotatingThreshold;
+    }
 
     static final List<RandomVariable> DEFAULT_WORD_FEATURES = Arrays.asList(
             RVCreater.createRVFromAnnotation(CoreAnnotations.InQuotesAnnotation.class),
@@ -50,6 +60,11 @@ public class TOCModelRVSetting extends ModelRVSetting {
 
                     )
             );
+    static double DS = -300;
+    static double[] DEFAULT_FOLLOWING_DOMINANT_STRENGTH = new double[]{
+            DS, DS, DS, DS, DS, DS, DS, -50, DS, DS, DS,
+            DS, DS, DS, DS, DS, DS, DS, -50, DS, DS, DS
+    };
 
     static final List<RandomVariable> DEFAULT_WORD_VARS = Arrays.asList(
             RVCreater.createWordsRVWithComputer(new LowerCaseWordsComputer(), "lowerCaseWords"),
@@ -58,15 +73,16 @@ public class TOCModelRVSetting extends ModelRVSetting {
             RVCreater.createWordsRVWithComputer(new LastAlphaWordComputer(), "lastAlphaWord")
     );
 
-    public TOCModelRVSetting(List<Integer> categoryIds, List<Integer> lowLevelCategoryIds) {
+    public TOCModelRVSetting(List<Integer> categoryIds, double[] annotatingThreshold,
+                             List<Integer> lowLevelCategoryIds, double[] lowerLevelAnnotatingThreshold) {
         this(DEFAULT_WORD_FEATURES,
                 DEFAULT_PARA_FEATURE_VARS, DEFAULT_SHARED_PARA_FEATURE_VARS,
                 DEFAULT_WORD_VARS,
                 categoryIds,
-                lowLevelCategoryIds
+                annotatingThreshold,
+                lowLevelCategoryIds,
+                lowerLevelAnnotatingThreshold
         );
-
-
     }
 
     public TOCModelRVSetting(
@@ -75,7 +91,9 @@ public class TOCModelRVSetting extends ModelRVSetting {
             List<RandomVariable> paraDocFeatureVars,
             List<RandomVariable> wordVars,
             List<Integer> categoryIds,
-            List<Integer> lowLevelCategoryIds
+            double[] annotatingThreshold,
+            List<Integer> lowLevelCategoryIds,
+            double[] lowerLevelAnnotatingThreshold
     ) {
         super(wordFeatures,
                 paraFeatureVars, paraDocFeatureVars,
@@ -83,6 +101,9 @@ public class TOCModelRVSetting extends ModelRVSetting {
                 categoryIds
         );
         this.lowLevelCategoryIds = lowLevelCategoryIds;
+        setAnnotatingThreshold(annotatingThreshold);
+        setLowerAnnotatingThreshold(lowerLevelAnnotatingThreshold);
+        setFollowDominantStrength(DEFAULT_FOLLOWING_DOMINANT_STRENGTH);
 
         if (lowLevelCategoryIds != null) {
             RandomVariable lowLevelParaType = RVCreater.createDiscreteRVWithComputer(
@@ -100,11 +121,15 @@ public class TOCModelRVSetting extends ModelRVSetting {
             @JsonProperty("wordType") RandomVariable wordType,
             @JsonProperty("wordFeatures") List<RandomVariable> wordFeatures,
             @JsonProperty("categoryIds") List<Integer> categoryIds,
-            @JsonProperty("lowLevelCategoryIds") List<Integer> lowLevelCategoryIds
+            @JsonProperty("annotatingThreshold") double[] annotatingThreshold,
+            @JsonProperty("lowLevelCategoryIds") List<Integer> lowLevelCategoryIds,
+            @JsonProperty("lowerLevelAnnotatingThreshold") double[] lowerLevelAnnotatingThreshold
     ) {
         super(nbmnConfig, wordType, wordFeatures, categoryIds);
         this.lowLevelCategoryIds = lowLevelCategoryIds;
-
+        setAnnotatingThreshold(annotatingThreshold);
+        setLowerAnnotatingThreshold(lowerLevelAnnotatingThreshold);
+        setFollowDominantStrength(DEFAULT_FOLLOWING_DOMINANT_STRENGTH);
     }
 
     @Override
