@@ -45,6 +45,7 @@ public class ConvertDocToText {
 
         try ( PrintWriter writer = new PrintWriter(OUTPUT_FILE_NAME, "UTF-8")) {
             FluentIterable<File> iterable = Files.fileTreeTraverser().breadthFirstTraversal(new File(INPUT_FOLDER));
+            int count =0;
             for (File f : iterable) {
                 if (f.isFile()) {
                     Document doc = corpusDocumentFactory.get(f.getName());
@@ -58,9 +59,14 @@ public class ConvertDocToText {
                     //                try ( PrintWriter writer = new PrintWriter(OUTPUT_FOLDER + f.getName() + ".txt" , "UTF-8")) {
                     for (CoreMap paragraph : doc.getParagraphs()) {
                         String text = paragraph.getText();
-                        String newText = text.replaceAll("\\n"," ");
-                        if (text.length() > 50)
-                            writer.println(newText);
+                        String newText = text.replaceAll("\n|\t"," ");
+
+                        if (text.length() > 50){
+                            count ++;
+//                            writer.println(newText);
+                            writer.println(count + "\t" + "0" + "\t" + newText); // for mallet
+
+                        }
                     }
 
 
