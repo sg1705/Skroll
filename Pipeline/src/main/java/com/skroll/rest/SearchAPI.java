@@ -22,8 +22,8 @@ import java.util.List;
 public class SearchAPI {
 
     private static final Logger logger = LoggerFactory.getLogger(SearchAPI.class);
-    private static final String SEARCH_URL = "http://www.sec.gov/cgi-bin/srch-edgar?&output=atom";
-    private static final String FULL_TEXT_SEARCH_URL = "https://searchwww.sec.gov/EDGARFSClient/jsp/EDGAR_MainAccess.jsp?" +
+    private static final String EDGER_BOOLEAN_SEARCH_URL = "http://www.sec.gov/cgi-bin/srch-edgar?&output=atom";
+    private static final String EDGER_FULL_TEXT_SEARCH_URL = "https://searchwww.sec.gov/EDGARFSClient/jsp/EDGAR_MainAccess.jsp?" +
             "&sort=Date&formType=1&isAdv=true&numResults=100";
     private static final String FETCH_INDEX_URL = "http://www.sec.gov/";
 
@@ -42,10 +42,13 @@ public class SearchAPI {
         String[] searchTextArray = queryList.get(0).split(" ");
         String rssUrl = null;
 
+        // Edger Full Text Search is used to search exhibit only. Edger boolean search is catch all and default search.
         if (searchTextArray!=null && searchTextArray.length > 1 && searchTextArray[1].toLowerCase().startsWith("ex-")) {
-            rssUrl = FULL_TEXT_SEARCH_URL + "&search_text=" + "\"" + searchTextArray[1] + "\"" + "&queryCik=" + searchTextArray[0] + "&fromDate=" + queryList.get(1) + "&toDate=" + queryList.get(2);
+            // Edger Full Text Search is only used for exhibit.
+            rssUrl = EDGER_FULL_TEXT_SEARCH_URL + "&queryCik=" + searchTextArray[0] + "&search_text=" + "\"" + searchTextArray[1] + "\"" + "&fromDate=" + queryList.get(1) + "&toDate=" + queryList.get(2);
         } else {
-            rssUrl = SEARCH_URL + "&text=" + searchText + "&first=" + queryList.get(1) + "&last=" + queryList.get(2);
+            // Edger boolean search is default search
+            rssUrl = EDGER_BOOLEAN_SEARCH_URL + "&text=" + searchText + "&first=" + queryList.get(1) + "&last=" + queryList.get(2);
         }
         logger.info("Search string for {}", rssUrl);
         String rssXml = DocumentHelper.fetchHtml(rssUrl);
