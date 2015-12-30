@@ -23,12 +23,13 @@ public class SearchAPI {
 
     private static final Logger logger = LoggerFactory.getLogger(SearchAPI.class);
     private static final String SEARCH_URL = "http://www.sec.gov/cgi-bin/srch-edgar?&output=atom";
-    private static final String FETCH_INDEX_URL = "http://www.sec.gov";
-
+    private static final String FULL_TEXT_SEARCH_URL = "https://searchwww.sec.gov/EDGARFSClient/jsp/EDGAR_MainAccess.jsp?" +
+            "&sort=Date&formType=1&isAdv=true&numResults=100";
+    private static final String FETCH_INDEX_URL = "http://www.sec.gov/";
 
     @GET
     @Path("/searchSec")
-    @Produces(MediaType.APPLICATION_ATOM_XML)
+    @Produces(MediaType.TEXT_HTML)
     /**
      * Returns results for landing page search
      */
@@ -38,7 +39,14 @@ public class SearchAPI {
 
         searchText = UrlEscapers.urlFormParameterEscaper().escape(queryList.get(0));
 
-        String rssUrl = SEARCH_URL + "&text=" + searchText + "&first=" + queryList.get(1) + "&last=" + queryList.get(2);
+        String[] searchTextArray = queryList.get(0).split(" ");
+        String rssUrl = null;
+
+        if (searchTextArray!=null && searchTextArray.length > 1 && searchTextArray[1].toLowerCase().startsWith("ex-")) {
+            rssUrl = FULL_TEXT_SEARCH_URL + "&search_text=" + "\"" + searchTextArray[1] + "\"" + "&queryCik=" + searchTextArray[0] + "&fromDate=" + queryList.get(1) + "&toDate=" + queryList.get(2);
+        } else {
+            rssUrl = SEARCH_URL + "&text=" + searchText + "&first=" + queryList.get(1) + "&last=" + queryList.get(2);
+        }
         logger.info("Search string for {}", rssUrl);
         String rssXml = DocumentHelper.fetchHtml(rssUrl);
         Response r = Response.ok().status(Response.Status.OK).entity(rssXml).build();
@@ -59,5 +67,4 @@ public class SearchAPI {
         Response r = Response.ok().status(Response.Status.OK).entity(rssXml).build();
         return r;
     }
-
 }
