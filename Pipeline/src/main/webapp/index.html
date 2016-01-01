@@ -20,6 +20,7 @@
   <!-- build:css(.) styles/vendor.css -->
   <!-- bower:css -->
   <link rel="stylesheet" href="bower_components/angular-material/angular-material.css" />
+  <link rel="stylesheet" href="bower_components/pdf.js-viewer/viewer.css" />
   <!-- endbower -->
   <!-- endbuild -->
 
@@ -69,6 +70,9 @@
 <script src="bower_components/moment/moment.js"></script>
 <script src="bower_components/lunr.js/lunr.js"></script>
 <script src="bower_components/angular-truncate/src/truncate.js"></script>
+<script src="bower_components/pdf.js-viewer/pdf.js"></script>
+<script src="bower_components/pdf.js-viewer/pdf.worker.js"></script>
+<script src="bower_components/angular-pdfjs-viewer/dist/angular-pdfjs-viewer.js"></script>
 <!-- endbower -->
 <!-- endbuild -->
 
@@ -77,6 +81,7 @@
 <script src="/scripts/app.module.js"></script>
 <script src="/scripts/contextmenu/contextmenu.module.js"></script>
 <script src="/scripts/core.html/core.html.module.js"></script>
+<script src="/scripts/core.pdf/core.pdf.module.js"></script>
 <script src="/scripts/core.services/core.services.module.js"></script>
 <script src="/scripts/core.util/core.util.module.js"></script>
 <script src="/scripts/core/app.core.module.js"></script>
@@ -95,6 +100,8 @@
 <script src="/scripts/core.config/routes.config.js"></script>
 <script src="/scripts/core.html/htmlviewport.controller.js"></script>
 <script src="/scripts/core.html/skHtmlContent.js"></script>
+<script src="/scripts/core.pdf/pdfviewport.controller.js"></script>
+<script src="/scripts/core.pdf/skPdfcontent.js"></script>
 <script src="/scripts/core.services/clickobserverservice.js"></script>
 <script src="/scripts/core.services/documentservice.js"></script>
 <script src="/scripts/core.services/httpRequestError.interceptor.js"></script>
