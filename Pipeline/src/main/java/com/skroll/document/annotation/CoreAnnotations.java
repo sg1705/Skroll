@@ -408,6 +408,15 @@ public class CoreAnnotations {
         }
     }
 
+    /**
+     * Annotation to indicate Document Format
+     */
+    public static class DocumentFormatAnnotationInteger implements CoreAnnotation<Integer> {
+        public Class<Integer> getType() {
+            return Integer.class;
+        }
+    }
+
 
 
 }
