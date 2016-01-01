@@ -25,6 +25,7 @@
   	'angulartics',
   	'angulartics.google.analytics',
   	'app.core',
+    'app.core.html',
   	'app.core.services',
   	'app.core.util',
   	'app.contextmenu',

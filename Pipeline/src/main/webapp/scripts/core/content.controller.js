@@ -14,7 +14,7 @@
     .controller('ContentCtrl', ContentCtrl);
 
   /* @ngInject */
-  function ContentCtrl(documentModel, documentService, $mdSidenav, $location, searchFactory, $scope) {
+  function ContentCtrl(documentModel, documentService, $mdSidenav, $location, searchFactory, $scope, $routeParams) {
 
     //-- private variables
     var vm = this;
@@ -30,6 +30,9 @@
     vm.loadDocument = loadDocument;
     vm.toggleSidenav = toggleSidenav;
     vm.overrideControlF = overrideControlF;
+
+    //-- initialization
+    vm.documentModel.documentId = $routeParams.docId;
 
     function loadDocument(documentId) {
       vm.documentModel.isProcessing = true;
