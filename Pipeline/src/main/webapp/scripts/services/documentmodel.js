@@ -9,18 +9,32 @@
  */
 
 var documentModel = {
-  targetHtml: '',
   isDocAvailable: false,
   isProcessing: false,
-  fileName: '',
-  selectedParagraphId: '',
-  documentId: '',
-  isPartiallyParsed: false,
-  url: '',
-  lunrIndex: null,
   isTocLoaded: false,
+
+  documentId: '',
   docTypeId: 0,
-  docTypeName: '',
+  url: '',
+  isPartiallyParsed: false,
+  targetHtml: '',
+  lunrIndex: null,
+
+  documentProto: {
+    id: null,
+    typeId: null,
+    format: null,
+    url: null,
+    isPartiallyParsed: false,
+  },
+
+  contentProto: {
+    content: ''
+  },
+
+  indexProto: {
+    index: ''
+  },
 
   clearToc: function() {
     this.isTocLoaded = false;

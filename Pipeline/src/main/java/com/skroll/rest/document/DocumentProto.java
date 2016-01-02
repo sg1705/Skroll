@@ -9,9 +9,10 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 public class DocumentProto {
 
     private String id;
-    private String type;
+    private String typeId;
     private String format;
     private String url;
+    private boolean isPartiallyParsed;
 
     public DocumentProto() {
 
@@ -46,15 +47,19 @@ public class DocumentProto {
         this.url = url;
     }
 
-    public String getType() {
-        return type;
+    public String getTypeId() {
+        return typeId;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setTypeId(String type) {
+        this.typeId = type;
     }
 
+    public boolean isPartiallyParsed() {
+        return isPartiallyParsed;
+    }
 
-
-
+    public void setPartiallyParsed(boolean isPartiallyParsed) {
+        this.isPartiallyParsed = isPartiallyParsed;
+    }
 }
