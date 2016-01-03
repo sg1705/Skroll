@@ -1,7 +1,6 @@
 package com.skroll.rest;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -9,9 +8,10 @@ import com.google.gson.reflect.TypeToken;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
-import com.skroll.document.DocumentHelper;
+import com.skroll.document.DocumentFormat;
 import com.skroll.document.JsonDeserializer;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
+import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.pipeline.util.Constants;
 import com.skroll.util.ObjectPersistUtil;
 import com.skroll.util.UniqueIdGenerator;
@@ -90,6 +90,55 @@ public class DocAPITest extends APITest {
                 logger.debug(paragraph.getId() + " " + Joiner.on(" ").join(definitionList));
         }
     }
+
+    @Test
+    public void testImportPartialPDF() throws Exception {
+        String docURL = "http://www.ge.com/ar2014/assets/pdf/GE_2014_Form_10K.pdf";
+        String partialParse = "true";
+        String id = importTestHelper(docURL, partialParse, DocumentFormat.PDF.id());
+        assert(factory.isDocumentExist(id));
+        Document doc = factory.get(id);
+        assert(doc.get(CoreAnnotations.DocumentFormatAnnotationInteger.class) == DocumentFormat.PDF.id());
+        assert(doc.get(CoreAnnotations.IsPartiallyParsedAnnotation.class));
+    }
+
+    @Test
+    public void testImportPartialHTML() throws Exception {
+        String docURL = "https://www.sec.gov/Archives/edgar/data/50863/000005086315000015/a10kdocument12272014.htm";
+        String partialParse = "true";
+        String id = importTestHelper(docURL, partialParse, DocumentFormat.HTML.id());
+        assert(!factory.isDocumentExist(id));
+    }
+
+    @Test
+    public void testImportHTML() throws Exception {
+        String docURL = "https://www.sec.gov/Archives/edgar/data/1288776/000119312513028362/d452134d10k.htm";
+        String partialParse = "false";
+        String id = importTestHelper(docURL, partialParse, DocumentFormat.HTML.id());
+        assert(factory.isDocumentExist(id));
+        Document doc = factory.get(id);
+        assert(doc.get(CoreAnnotations.DocumentFormatAnnotationInteger.class) == DocumentFormat.HTML.id());
+        assert(!doc.containsKey(CoreAnnotations.IsPartiallyParsedAnnotation.class));
+    }
+
+
+    public String importTestHelper(String docURL, String partialParse, int documentFormat) throws Exception {
+        String TARGET_URL = "http://localhost:8888/restServices/doc/importDoc";
+        Client client = ClientBuilder.newClient();
+        WebTarget webTarget = client.target(TARGET_URL).queryParam("documentId", docURL).queryParam("partialParse", partialParse);
+        Response response = webTarget.request(MediaType.TEXT_HTML).get();
+        response.readEntity(String.class);
+        String id = UniqueIdGenerator.generateId(docURL);
+        String headerId = response.getHeaderString("documentId");
+        String headerFormat = response.getHeaderString("format");
+        assert(response.getStatus()==(200));
+        assert(id.equals(headerId));
+        assert(headerFormat.equals(Integer.toString(documentFormat)));
+        Document doc = factory.get(id);
+        client.close();
+        return id;
+    }
+
 
     @Test
     public void testUpdateTerms() throws Exception {

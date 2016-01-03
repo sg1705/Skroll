@@ -14,7 +14,8 @@ public enum DocumentFormat {
         this.id = id;
     }
 
-    int id() {
+    public int id() {
         return id;
     }
+
 }

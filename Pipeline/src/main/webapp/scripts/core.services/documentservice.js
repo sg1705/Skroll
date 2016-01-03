@@ -102,10 +102,18 @@
       /** make a post request */
       $http.get(documentServiceBase + 'importDoc' + '?&partialParse=' + partiallyParse + '&documentId=' + url + '&docType=' + docType)
         .success(function(data, status, headers) {
+          documentModel.loadDocument(
+            headers('documentId'),
+            headers('typeId'),
+            headers('format'),
+            headers('url'),
+            headers('isPartiallyParsed'),
+            data);
           var resp = {};
           resp.html = data;
           resp.documentId = headers('documentId');
           resp.inCache = headers('inCache');
+          resp.format = headers('format');
           deferred.resolve(resp);
         })
         .error(function(msg, code) {
@@ -201,7 +209,14 @@
       var deferred = $q.defer();
       /** make a get request */
       $http.get(documentServiceBase + 'getDoc?documentId=' + documentId)
-        .success(function(data, status) {
+        .success(function(data, status, headers) {
+          documentModel.loadDocument(
+            documentId,
+            headers('typeId'),
+            headers('format'),
+            headers('url'),
+            headers('isPartiallyParsed'),
+            data);
           deferred.resolve(data);
         })
         .error(function(msg, code) {

@@ -47,6 +47,7 @@ dependencies {
     compile "com.squarespace.jersey2-guice:jersey2-guice:0.10"
     compile 'org.reflections:reflections:0.9.9'
     compile 'com.sendgrid:sendgrid-java:2.2.1'
+    compile 'com.google.http-client:google-http-client:1.21.0'
 }
 war {
     zip64 true

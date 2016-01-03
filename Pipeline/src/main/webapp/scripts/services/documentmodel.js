@@ -9,50 +9,55 @@
  */
 
 var documentModel = {
-  isDocAvailable: false,
-  isProcessing: false,
-  isTocLoaded: false,
+
+  viewState: {
+    isDocAvailable: false,
+    isProcessing: false,
+    isTocLoaded: false,
+  },
 
   documentId: '',
   docTypeId: 0,
+  format: 0,
   url: '',
   isPartiallyParsed: false,
-  targetHtml: '',
+
+  p: {
+    content: '',
+  },
+
   lunrIndex: null,
 
-  documentProto: {
-    id: null,
-    typeId: null,
-    format: null,
-    url: null,
-    isPartiallyParsed: false,
-  },
-
-  contentProto: {
-    content: ''
-  },
-
-  indexProto: {
-    index: ''
-  },
-
   clearToc: function() {
-    this.isTocLoaded = false;
+    this.viewState.isTocLoaded = false;
   },
 
   reset: function() {
-    this.targetHtml = '';
-    this.isDocAvailable = false;
-    this.isProcessing = false;
-    this.fileName = '';
-    this.selectedParagraphId = '';
+
+    this.p.content = '';
+
     this.documentId = '';
     this.isPartiallyParsed = false;
     this.url = '';
     this.lunrIndex = null;
-    this.isTocLoaded = false;
     this.docTypeId = 0;
-    this.docTypeName = '';
+
+    this.resetViewState();
+  },
+
+  resetViewState: function() {
+    this.viewState.isDocAvailable = false;
+    this.viewState.isProcessing = false;
+    this.viewState.isTocLoaded = false;
+  },
+
+  loadDocument: function(id, typeId, format, url, partiallyParsed, content) {
+    this.documentId = id;
+    this.docTypeId = typeId;
+    this.format = format;
+    this.url = url;
+    this.isPartiallyParsed = partiallyParsed;
+    this.p.content = content;
   }
 
 };

@@ -20,7 +20,7 @@
     var vm = this;
 
     //-- public variables
-    vm.isDocAvailable = documentModel.isDocAvailable;
+    vm.isDocAvailable = documentModel.viewState.isDocAvailable;
     vm.documentModel = documentModel;
     vm.userDocumentIds = [];
     vm.smodel = LHSModel.smodel;
@@ -35,7 +35,7 @@
     vm.documentModel.documentId = $routeParams.docId;
 
     function loadDocument(documentId) {
-      vm.documentModel.isProcessing = true;
+      vm.documentModel.viewState.isProcessing = true;
       $location.path('/view/docId/' + documentId);
     }
 
@@ -71,7 +71,7 @@
 // angular.module('SkrollApp')
 //   .controller('ContentCtrl', ['documentModel', 'documentService', '$scope', '$mdSidenav', '$http', '$mdMedia', '$location', 'searchService',
 //     function(documentModel, documentService, $scope, $mdSidenav, $http, $mdMedia, $location, searchService) {
-//       $scope.targetHtml = documentModel.targetHtml;
+//       $scope.targetHtml = documentModel.p.content;
 //       $scope.isDocAvailable = documentModel.isDocAvailable;
 //       $scope.fileName = documentModel.fileName;
 //       $scope.definitions = [];

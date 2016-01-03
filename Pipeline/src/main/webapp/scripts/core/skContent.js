@@ -25,19 +25,38 @@
 
     function link(scope, element, attrs, contentCtrl) {
       console.log('in skFirstContent with documentId:' + documentModel.documentId);
-      var htmlViewPort = '<iframe id="docViewIframe" \
-                            scrolling="yes" \
-                            frameborder="0" \
-                            noborder="noborder" \
-                            style="overflow: hidden;-webkit-overflow-scrolling: touch;" \
-                            src="about:blank" \
-                            sk-html-content> \
-                          </iframe>';
+      if (!documentModel.isPartiallyParsed) {
+        documentService
+          .loadDocument(documentModel.documentId)
+          .then(routeToViewPort);
+      } else {
+        routeToViewPort();
+      }
 
-      var e = $compile(htmlViewPort)(scope);
-      element.replaceWith(e);
+      function routeToViewPort() {
+        if (documentModel.format == 0) {
+          var htmlViewPort = '<iframe id="docViewIframe" \
+                                scrolling="yes" \
+                                frameborder="0" \
+                                noborder="noborder" \
+                                style="overflow: hidden;-webkit-overflow-scrolling: touch;" \
+                                src="about:blank" \
+                                sk-html-content> \
+                              </iframe>';
+
+          var e = $compile(htmlViewPort)(scope);
+          element.replaceWith(e);
+        } else {
+          console.log('processing pdf');
+          var pdfjs = '<div ng-controller="PdfViewPortCtrl as pdfviewportCtrl"><pdfjs-viewer src="/restServices/doc/getDoc?documentId=' + documentModel.documentId + '"  download="true" print="false" open="false" cmap-dir="/bower_components/pdf.js-viewer/cmaps" image-dir="/bower_components/pdf.js-viewer/images"></pdfjs-viewer></div>';
+          var e = $compile(pdfjs)(scope);
+          element.replaceWith(e);
+        }
+      }
+
 
     }
+
   }
 
 
@@ -110,7 +129,7 @@
 //         } else {
 //           loadDocument()
 //             .then(function(contentHtml) {
-//               documentModel.targetHtml = contentHtml;
+//               documentModel.p.content = contentHtml;
 
 //               $timeout(function() {
 //                 insertHtmlInIframe();
@@ -161,11 +180,11 @@
 //       }
 
 //       function loadDocument() {
-//         if (documentModel.targetHtml === '') {
+//         if (documentModel.p.content === '') {
 //           return documentService.loadDocument(documentModel.documentId)
 //         } else {
 //           var deferred = $q.defer();
-//           deferred.resolve(documentModel.targetHtml);
+//           deferred.resolve(documentModel.p.content);
 //           return deferred.promise;
 //         }
 //       }
@@ -181,7 +200,7 @@
 //         var iframeDoc = iframe.contentWindow.document;
 
 //         iframeDoc.open();
-//         iframeDoc.write(documentModel.targetHtml);
+//         iframeDoc.write(documentModel.p.content);
 //         iframeDoc.close();
 //         // if (navigator.userAgent.indexOf('Chrome') > -1) {
 //         viewCtrl.resizeFrame();

@@ -36,7 +36,7 @@
     </md-toolbar>
 
     <md-content md-scroll-y flex class="md-padding" ng-controller="LHSLevelsCtrl as lhsCtrl" ng-hide="lhsCtrl.searchState.searchActive" >
-      <sk-lhs ng-hide="!contentCtrl.documentModel.isTocLoaded"/>
+      <sk-lhs ng-hide="!contentCtrl.documentModel.viewState.isTocLoaded"/>
     </md-content>
   <md-content ng-keydown="searchCtrl.onKeyDown($event)" ng-show="contentCtrl.searchState.searchActive">
      <sk-search />

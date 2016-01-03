@@ -34,9 +34,8 @@
      **/
     function link(scope, element, attrs, viewCtrl) {
       if (documentModel.documentId != null) {
-        documentModel.isProcessing = true;
+        documentModel.viewState.isProcessing = true;
         if (documentModel.isPartiallyParsed) {
-          console.log('partially parsed');
           $analytics.eventTrack(documentModel.documentId, {
             category: 'doc.View',
             label: selectionService.paragraphId
@@ -44,13 +43,13 @@
 
           $timeout(function() {
             insertHtmlInIframe();
-            documentModel.isProcessing = false;
+            documentModel.viewState.isProcessing = false;
             postInsertIframe();
           }, 0);
 
           documentService.importDoc(documentModel.url, false)
             .then(function(data) {
-              documentModel.isPartiallyParsed = false;
+              // documentModel.isPartiallyParsed = false;
               return documentService.getTerms(documentModel.documentId);
             })
             .then(function(terms) {
@@ -65,15 +64,15 @@
         } else {
           loadDocument()
             .then(function(contentHtml) {
-              documentModel.targetHtml = contentHtml;
+              // documentModel.p.content = contentHtml;
 
               $timeout(function() {
                 insertHtmlInIframe();
-                documentModel.isProcessing = false;
+                documentModel.viewState.isProcessing = false;
                 postInsertIframe();
               }, 0);
 
-              documentModel.isProcessing = false;
+              documentModel.viewState.isProcessing = false;
               $analytics.eventTrack(documentModel.documentId, {
                 category: 'doc.View',
                 label: selectionService.paragraphId
@@ -91,11 +90,11 @@
                 } else {
                   selectionService.scrollToSelection(selectionService.serializedSelection);
                 }
-                documentModel.isProcessing = false;
+                documentModel.viewState.isProcessing = false;
                 //calculate offsets for headers
                 //iterate over each term to find Y offset
                 // LHSModel.setYOffsetForTerms(LHSModel.smodel.terms);
-                documentModel.isProcessing = false;
+                documentModel.viewState.isProcessing = false;
               }
               return documentService.getIndex(documentModel.documentId);
             }, function(data, status) {
@@ -111,16 +110,16 @@
       function setTerms(terms) {
         LHSModel.setTerms(terms);
         console.log(terms);
-        documentModel.isTocLoaded = true;
+        documentModel.viewState.isTocLoaded = true;
         LHSModel.setYOffsetForTerms(LHSModel.smodel.terms);
       }
 
       function loadDocument() {
-        if (documentModel.targetHtml === '') {
+        if (documentModel.p.content === '') {
           return documentService.loadDocument(documentModel.documentId)
         } else {
           var deferred = $q.defer();
-          deferred.resolve(documentModel.targetHtml);
+          deferred.resolve(documentModel.p.content);
           return deferred.promise;
         }
       }
@@ -136,7 +135,7 @@
         var iframeDoc = iframe.contentWindow.document;
 
         iframeDoc.open();
-        iframeDoc.write(documentModel.targetHtml);
+        iframeDoc.write(documentModel.p.content);
         iframeDoc.close();
         // if (navigator.userAgent.indexOf('Chrome') > -1) {
         viewCtrl.resizeFrame();

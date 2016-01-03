@@ -417,6 +417,13 @@ public class CoreAnnotations {
         }
     }
 
-
+    /**
+     * Annotation to indicate that this document is partiall parsed
+     */
+    public static class IsPartiallyParsedAnnotation implements CoreAnnotation<Boolean> {
+        public Class<Boolean> getType() {
+            return Boolean.class;
+        }
+    }
 
 }
