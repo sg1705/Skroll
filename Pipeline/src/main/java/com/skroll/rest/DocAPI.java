@@ -1,6 +1,6 @@
 package com.skroll.rest;
 
-import com.google.common.base.Joiner;
+
 import com.google.common.collect.FluentIterable;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Files;
@@ -36,7 +36,6 @@ import javax.xml.bind.DatatypeConverter;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -194,7 +193,7 @@ public class DocAPI {
         return response.build();
     }
 
-    private static DocumentProto getDocumentProto(Document document) {
+    public static DocumentProto getDocumentProto(Document document) {
         DocumentProto proto = new DocumentProto();
         proto.setId(document.getId());
         proto.setUrl(document.get(CoreAnnotations.SourceUrlAnnotation.class));
@@ -206,7 +205,7 @@ public class DocAPI {
     }
 
 
-    private static Response.ResponseBuilder injectDocumentProtoInHeader(DocumentProto proto, Response.ResponseBuilder response) {
+    public static Response.ResponseBuilder injectDocumentProtoInHeader(DocumentProto proto, Response.ResponseBuilder response) {
         response.header("documentId", proto.getId());
         response.header("typeId", proto.getTypeId());
         response.header("format", proto.getFormat());
@@ -321,6 +320,37 @@ public class DocAPI {
         Response.ResponseBuilder response = Response.status(Response.Status.OK);
         injectDocumentProtoInHeader(proto, response);
         if (document.get(CoreAnnotations.DocumentFormatAnnotationInteger.class) == DocumentFormat.PDF.id()) {
+//            response.entity(DatatypeConverter.parseBase64Binary(document.getSource())).type(MediaType.TEXT_PLAIN);
+        } else {
+            response.entity(DocumentHelper.getProcessedHtml(document).getBytes(Constants.DEFAULT_CHARSET))
+                    .type(MediaType.TEXT_HTML);
+        }
+
+        return response.build();
+    }
+
+
+    @GET
+    @Path("/content")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.TEXT_HTML)
+    public Response getDocumentContent(@QueryParam("documentId") String documentId,  @BeanParam RequestBean request) throws Exception {
+        logger.info("Opening [{}]", documentId);
+        Document document = request.getDocument();
+        if (document == null) {
+            logger.debug("Not found in documentMap, fetching from corpus: {}", documentId.toString());
+            throw new Exception("Failed to read/deserialize document from Pre Evaluated Folder");
+        }
+
+        if (document.get(CoreAnnotations.DocumentFormatAnnotationInteger.class) == null) {
+            document.set(CoreAnnotations.DocumentFormatAnnotationInteger.class, DocumentFormat.HTML.id());
+        }
+
+        //build a response
+        DocumentProto proto = DocAPI.getDocumentProto(document);
+        Response.ResponseBuilder response = Response.status(Response.Status.OK);
+        DocAPI.injectDocumentProtoInHeader(proto, response);
+        if (document.get(CoreAnnotations.DocumentFormatAnnotationInteger.class) == DocumentFormat.PDF.id()) {
             response.entity(DatatypeConverter.parseBase64Binary(document.getSource())).type(MediaType.TEXT_PLAIN);
         } else {
             response.entity(DocumentHelper.getProcessedHtml(document).getBytes(Constants.DEFAULT_CHARSET))
@@ -329,6 +359,8 @@ public class DocAPI {
 
         return response.build();
     }
+
+
 
     @GET
     @Path("/getDocumentId")
