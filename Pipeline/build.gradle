@@ -154,12 +154,29 @@ task npmClean(type: Delete) {
     delete "src/main/si/node_modules"
 }
 
+task gulpClean(type: Exec) {
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        commandLine 'cmd', '/c', 'gulp', '--gulpfile', 'src/main/webapp/gulpfile.js', 'clean'
+    }else {
+        commandLine 'gulp', '--gulpfile', 'src/main/webapp/gulpfile.js', 'clean'
+    }
+}
+
+task gulpPreparePdf(type: Exec) {
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        commandLine 'cmd', '/c', 'gulp', '--gulpfile', 'src/main/webapp/gulpfile.js', 'preparePdf'
+    }else {
+        commandLine 'gulp', '--gulpfile', 'src/main/webapp/gulpfile.js', 'preparePdf'
+    }
+}
+
 
 
 test.dependsOn npmInstall
 compileJava.dependsOn npmInstall
-
+compileJava.dependsOn gulpPreparePdf
 clean.dependsOn cleanModels
 clean.dependsOn npmClean
+clean.dependsOn gulpClean
 test.dependsOn createTestDirectories
 startProd.dependsOn(buildProdApp)

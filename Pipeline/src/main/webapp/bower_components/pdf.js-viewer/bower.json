@@ -1,9 +1,7 @@
 {
   "name": "pdf.js-viewer",
   "main": [
-    "pdf.js",
-    "pdf.worker.js"
-    // "viewer.css"
+    "pdf.js"
   ],
   "homepage": "http://github.com/legalthings/pdf.js-viewer",
   "authors": [

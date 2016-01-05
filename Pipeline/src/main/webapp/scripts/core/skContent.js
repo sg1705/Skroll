@@ -48,7 +48,10 @@
           element.replaceWith(e);
         } else {
           console.log('processing pdf');
-          var pdfjs = '<div ng-controller="PdfViewPortCtrl as pdfviewportCtrl"><pdfjs-viewer src="/restServices/doc/getDoc?documentId=' + documentModel.documentId + '"  download="true" print="false" open="false" cmap-dir="/bower_components/pdf.js-viewer/cmaps" image-dir="/bower_components/pdf.js-viewer/images"></pdfjs-viewer></div>';
+          var pdfjs = '<div ng-controller="PdfViewPortCtrl as pdfviewportCtrl"> \
+            <pdfjs-viewer src="/restServices/doc/getDoc?documentId=' + documentModel.documentId + '" \
+            download="true" print="false" open="false" cmap-dir="/pdf/cmaps" \
+            image-dir="/pdf/images"></pdfjs-viewer></div>';
           var e = $compile(pdfjs)(scope);
           element.replaceWith(e);
         }
