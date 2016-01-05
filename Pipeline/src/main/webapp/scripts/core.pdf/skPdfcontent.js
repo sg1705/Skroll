@@ -33,7 +33,7 @@
      * Or load the entire document
      **/
     function link(scope, element, attrs, viewCtrl) {
-
+      documentModel.viewState.isProcessing = false;
     }
 
   }

@@ -49,9 +49,9 @@
         } else {
           console.log('processing pdf');
           var pdfjs = '<div ng-controller="PdfViewPortCtrl as pdfviewportCtrl"> \
-            <pdfjs-viewer src="/restServices/doc/getDoc?documentId=' + documentModel.documentId + '" \
+            <pdfjs-viewer src="/restServices/doc/content?documentId=' + documentModel.documentId + '" \
             download="true" print="false" open="false" cmap-dir="/pdf/cmaps" \
-            image-dir="/pdf/images"></pdfjs-viewer></div>';
+            image-dir="/pdf/images" sk-pdf-content></pdfjs-viewer></div>';
           var e = $compile(pdfjs)(scope);
           element.replaceWith(e);
         }
