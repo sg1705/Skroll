@@ -56,7 +56,11 @@ var documentModel = {
     this.docTypeId = typeId;
     this.format = format;
     this.url = url;
-    this.isPartiallyParsed = partiallyParsed;
+    if (partiallyParsed == 'true') {
+      this.isPartiallyParsed = true;
+    } else {
+      this.isPartiallyParsed = false;
+    }
     this.p.content = content;
   }
 
