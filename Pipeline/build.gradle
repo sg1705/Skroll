@@ -174,7 +174,7 @@ task gulpPreparePdf(type: Exec) {
 
 test.dependsOn npmInstall
 compileJava.dependsOn npmInstall
-compileJava.dependsOn gulpPreparePdf
+start.dependsOn gulpPreparePdf
 clean.dependsOn cleanModels
 clean.dependsOn npmClean
 clean.dependsOn gulpClean
