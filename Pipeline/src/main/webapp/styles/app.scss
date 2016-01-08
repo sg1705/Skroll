@@ -429,3 +429,16 @@ md-toolbar {
 ::selection {
 	background: #F8E0F7;
 }
+
+
+.pdfjs {
+	#viewerContainer {
+		position: fixed;
+		top:48px;
+		left: 300px;
+	}
+
+	.toolbar {
+		display: none;
+	}
+}

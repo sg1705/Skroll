@@ -21,7 +21,7 @@
     if (url == null) {
       return;
     }
-    documentModel.isProcessing = true;
+    documentModel.viewState.isProcessing = true;
 
     //////////////
 

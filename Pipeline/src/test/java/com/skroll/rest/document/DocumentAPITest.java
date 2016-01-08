@@ -26,7 +26,6 @@ public class DocumentAPITest extends APITest {
     }
 
 
-    @Test
     public void testImportPartial() throws Exception {
         String TARGET_URL = "http://localhost:8888/restServices/document/importFromUrl";
         DocumentProto docProto = new DocumentProto();

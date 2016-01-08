@@ -70,16 +70,16 @@
 
 
     function convertToBenchmark() {
-      documentModel.isProcessing = true;
+      documentModel.viewState.isProcessing = true;
       var self = this;
       documentService.saveAsBenchmark(documentModel.documentId).then(function() {
-        documentModel.isProcessing = false;
+        documentModel.viewState.isProcessing = false;
         self.trainerToolbar.isBenchmark = true;
       }, function(data, status) {
         console.log(status);
       });
       trainerService.updateBenchmark();
-      documentModel.isProcessing = false;
+      documentModel.viewState.isProcessing = false;
     }
 
 

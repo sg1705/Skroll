@@ -34,18 +34,19 @@
       console.log(url);
       documentModel.reset();
       searchFactory.clear();
-      documentModel.isProcessing = true;
+      documentModel.viewState.isProcessing = true;
       var deferred = $q.defer();
       documentService.importDoc(url, true, docType)
         .then(function(response) {
-          documentModel.url = url;
-          documentModel.documentId = response.documentId
-          documentModel.targetHtml = response.html;
-          if ((response.inCache == null) || (response.inCache == 'false')) {
-            documentModel.isPartiallyParsed = true;
-          } else {
-            documentModel.isPartiallyParsed = false;
-          }
+          // documentModel.url = url;
+          // documentModel.documentId = response.documentId
+          // documentModel.p.content = response.html;
+          // documentModel.format = response.format;
+          // if ((response.inCache == null) || (response.inCache == 'false')) {
+          //   documentModel.isPartiallyParsed = true;
+          // } else {
+          //   documentModel.isPartiallyParsed = false;
+          // }
           deferred.resolve(documentModel.isPartiallyParsed);
         });
       return deferred.promise;

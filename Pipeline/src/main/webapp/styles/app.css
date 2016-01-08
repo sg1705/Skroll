@@ -283,4 +283,11 @@ md-toolbar .sk-logo {
 ::selection {
   background: #F8E0F7; }
 
+.pdfjs #viewerContainer {
+  position: fixed;
+  top: 48px;
+  left: 300px; }
+.pdfjs .toolbar {
+  display: none; }
+
 /*# sourceMappingURL=app.css.map */

@@ -27,7 +27,7 @@
     //-- public methods
     vm.onEnter = onEnter;
     vm.onClickedFiling = onClickedFiling;
-    
+
     search();
 
     function onEnter() {
@@ -80,7 +80,7 @@
     }
 
     function search() {
-      documentModel.isProcessing = true;
+      documentModel.viewState.isProcessing = true;
       if (((vm.searchText == null) || (vm.searchText == "undefined"))) {
         var searchText = 'goog 10-K 2012 2015';
         $location.path('/search/' + searchText);
@@ -113,10 +113,10 @@
               vm.searchResults.push(result);
             });
           }
-          documentModel.isProcessing = false;
+          documentModel.viewState.isProcessing = false;
         }, function(err) {
           console.log(err);
-          documentModel.isProcessing = false;
+          documentModel.viewState.isProcessing = false;
         });
 
     }
@@ -144,7 +144,7 @@
       var result = {
         'companyName': companyName,
         'formType': formType,
-        'filingDate': filingDate, 
+        'filingDate': filingDate,
         'href': href
       }
       return result;

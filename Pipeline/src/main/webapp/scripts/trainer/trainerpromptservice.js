@@ -67,7 +67,7 @@
               clicked = 0;
             }
             matchedItem.classificationId = LHSModel.getClassFromIndex(clicked);
-            documentModel.isProcessing = true;
+            documentModel.viewState.isProcessing = true;
             trainerService.addTermToPara(documentModel.documentId, matchedItem)
               .then(function(contentHtml) {
                 vm.updateDocument(contentHtml);
@@ -114,7 +114,7 @@
         LHSModel.setTerms(terms);
         console.log("Terms return by API");
         console.log(terms);
-        documentModel.isProcessing = false;
+        documentModel.viewState.isProcessing = false;
         //fetch score
         trainerService.updateBenchmark();
         trainerService.fetchProbabilities(documentModel.documentId, terms);
@@ -132,7 +132,7 @@
       //create a set of questions. In this case, yes or no
       var items = ['Yes', 'No', 'Unobserve ' + className];
       vm.showYesNoDialog(prompt, items).then(function(clicked) {
-        documentModel.isProcessing = true;
+        documentModel.viewState.isProcessing = true;
         if (clicked.toString() == 'true') {
           clicked = 0;
         }
