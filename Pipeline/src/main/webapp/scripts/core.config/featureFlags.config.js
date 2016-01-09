@@ -32,6 +32,16 @@
       "active": false,
       "name": "Use old autocomplete based search",
       "description": "no description"
+    }, {
+      "key": "searchbox.new",
+      "active": false,
+      "name": "Show new searchbox on landing page",
+      "description": "no description"
+    }, {
+      "key": "searchbox.old",
+      "active": true,
+      "name": "Show old searchbox on landing page",
+      "description": "no description"
     }];
     featureFlags.set(flags);
   }

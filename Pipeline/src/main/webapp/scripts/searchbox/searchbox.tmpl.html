@@ -1,24 +1,36 @@
-<md-chips
-  ng-model="autoCompleteCtrl.selectedChips"
-  md-autocomplete-snap=""
-  md-transform-chip="autoCompleteCtrl.transformChip($chip)"
-  md-require-match="autoCompleteCtrl.autocompleteDemoRequireMatch"
-  size="40">
+<div layout="row" layout-align="center center" style="width:100%">
+  <md-whiteframe class="md-whiteframe-z1"   flex-gt-md="66" flex-gt-sm="75"flex="90" style="background:white; max-width:800px">
+    <div layout="row" flex class="search-frame">
 
-  <md-autocomplete
-    md-selected-item="autoCompleteCtrl.selectedItem"
-    md-search-text="autoCompleteCtrl.searchState.searchText"
-    md-items="item in autoCompleteCtrl.querySearch(autoCompleteCtrl.searchState.searchText)"
-    md-item-text="item.name" placeholder="Search for SEC filing">
+      <md-chips
+        ng-model="autoCompleteCtrl.selectedChips"
+        md-autocomplete-snap=""
+        md-transform-chip="autoCompleteCtrl.transformChip($chip)"
+        md-require-match="autoCompleteCtrl.autocompleteDemoRequireMatch"
+        size="40">
 
-    <span md-highlight-text="autoCompleteCtrl.searchState.searchText">
-      {{item.name}} :: {{item.type}}
-    </span>
-  </md-autocomplete>
-  <md-chip-template>
-    <span>
-      <strong>{{$chip.name}}</strong>
-      <em>({{$chip.type}})</em>
-    </span>
-  </md-chip-template>
-</md-chips>
+        <md-autocomplete
+          md-selected-item="autoCompleteCtrl.selectedItem"
+          md-search-text="autoCompleteCtrl.searchState.searchText"
+          md-items="item in autoCompleteCtrl.querySearch(autoCompleteCtrl.searchState.searchText)"
+          md-item-text="item.name" placeholder="Search for SEC filing">
+
+          <span md-highlight-text="autoCompleteCtrl.searchState.searchText">
+            {{item.name}} :: {{item.type}}
+          </span>
+        </md-autocomplete>
+        <md-chip-template>
+          <span>
+            <strong>{{$chip.name}}</strong>
+            <em>({{$chip.type}})</em>
+          </span>
+        </md-chip-template>
+      </md-chips>
+
+      <md-button class="md-raised md-primary search-button" ng-click="ctrl.onEnter()">
+        <md-icon md-svg-icon="images/icons/ic_search_48px.svg" class="search-icon">
+        </md-icon>
+      </md-button>
+    </div>
+  </md-whiteframe>
+</div>
