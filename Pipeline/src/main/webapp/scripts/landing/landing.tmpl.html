@@ -1,12 +1,13 @@
 <div style="height:100%">
   <div layout="column" layout-align="center center" class="sk-landing-search" flex>
     <img src='images/icons/skroll-logo.png' class="sk-logo"/>
-    <div layout="row" layout-align="center center">
-      <md-whiteframe class="md-whiteframe-z1" style="width: 90%">
+    <div layout="row" layout-align="center center" style="width:100%">
+      <md-whiteframe class="md-whiteframe-z1"   flex-gt-md="66" flex-gt-sm="75"flex="90" style="background:white; max-width:800px">
         <div layout="row" flex class="search-frame">
-          <input style="width:100%;" ng-model="ctrl.searchText" ng-enter="ctrl.onEnter()" size="40"
+          <sk-search-box/>
+<!--           <input style="width:100%;" ng-model="ctrl.searchText" ng-enter="ctrl.onEnter()" size="40"
                  class="search-input" autofocus/>
-          <md-button class="md-raised md-primary search-button" ng-click="ctrl.onEnter()">
+ -->          <md-button class="md-raised md-primary search-button" ng-click="ctrl.onEnter()">
             <md-icon md-svg-icon="images/icons/ic_search_48px.svg" class="search-icon">
             </md-icon>
           </md-button>
