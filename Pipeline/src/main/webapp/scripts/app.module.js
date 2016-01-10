@@ -35,7 +35,8 @@
   	'app.trainer',
   	'app.toc',
   	'app.upload',
-    'pdfjsViewer'
+    'pdfjsViewer',
+    'app.searchbox'
   ]);
 
 })();
