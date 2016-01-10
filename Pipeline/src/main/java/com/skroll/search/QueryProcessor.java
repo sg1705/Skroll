@@ -87,8 +87,9 @@ public class QueryProcessor {
                 String fuzzyMatch = (String) companyNameMap.get(token.toLowerCase());
                 if (fuzzyMatch != null) {
                     newTokens.add(fuzzyMatch);
-                    newTokens.add("or");
-                    newTokens.add(token);
+                    //Commented to make it work for both boolean search and full text search
+                    // newTokens.add("or");
+                    //newTokens.add(token);
                 } else {
                     newTokens.add(token);
                 }
@@ -115,6 +116,7 @@ public class QueryProcessor {
 
         return result;
     }
+
 
     public static boolean isInteger(String str) {
         if (str == null) {

@@ -20,7 +20,7 @@
   function SkHttpProviderConfig($httpProvider) {
     $httpProvider.defaults.withCredentials = true;
     $httpProvider.defaults.useXDomain = true;
-    $httpProvider.interceptors.push('httpRequestErrorInterceptor');
+    // $httpProvider.interceptors.push('httpRequestErrorInterceptor');
     delete $httpProvider.defaults.headers.common['X-Requested-With'];
   }
 

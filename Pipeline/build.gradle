@@ -47,6 +47,7 @@ dependencies {
     compile "com.squarespace.jersey2-guice:jersey2-guice:0.10"
     compile 'org.reflections:reflections:0.9.9'
     compile 'com.sendgrid:sendgrid-java:2.2.1'
+    compile 'com.google.http-client:google-http-client:1.21.0'
 }
 war {
     zip64 true
@@ -153,12 +154,29 @@ task npmClean(type: Delete) {
     delete "src/main/si/node_modules"
 }
 
+task gulpClean(type: Exec) {
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        commandLine 'cmd', '/c', 'gulp', '--gulpfile', 'src/main/webapp/gulpfile.js', 'clean'
+    }else {
+        commandLine 'gulp', '--gulpfile', 'src/main/webapp/gulpfile.js', 'clean'
+    }
+}
+
+task gulpPreparePdf(type: Exec) {
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        commandLine 'cmd', '/c', 'gulp', '--gulpfile', 'src/main/webapp/gulpfile.js', 'preparePdf'
+    }else {
+        commandLine 'gulp', '--gulpfile', 'src/main/webapp/gulpfile.js', 'preparePdf'
+    }
+}
+
 
 
 test.dependsOn npmInstall
 compileJava.dependsOn npmInstall
-
+start.dependsOn gulpPreparePdf
 clean.dependsOn cleanModels
 clean.dependsOn npmClean
+clean.dependsOn gulpClean
 test.dependsOn createTestDirectories
 startProd.dependsOn(buildProdApp)

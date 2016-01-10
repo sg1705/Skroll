@@ -32,7 +32,7 @@
     function responseError(rejection) {
       // do something on error
       // if ((rejection.status === 500) || (rejection === 404) || (rejection === 0)){
-          documentModel.isProcessing = false;
+          documentModel.viewState.isProcessing = false;
           $location.path('/error/');
       // }
       return $q.reject(rejection);

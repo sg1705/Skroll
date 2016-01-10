@@ -4,6 +4,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
+import com.skroll.document.DocumentFormat;
 import com.skroll.document.DocumentHelper;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.document.annotation.CoreAnnotations;
@@ -14,8 +15,6 @@ import com.skroll.pipeline.util.Utils;
 import com.skroll.util.SkrollGuiceModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
 
 /**
  * Created by saurabh on 12/28/14.
@@ -35,6 +34,8 @@ public class Parser {
         phExtractor.setParseMode(parseMode);
         try {
             document = phExtractor.process(document);
+            setVersion(document);
+            setDocumentFormat(document);
         } catch (Exception e) {
             throw new ParserException(e);
         }
@@ -50,7 +51,6 @@ public class Parser {
                         .add(Pipes.TOKENIZE_PARAGRAPH_IN_HTML_DOC)
                         .build();
         document = pipeline.process(document);
-        setVersion(document);
         return document;
     }
 
@@ -111,6 +111,11 @@ public class Parser {
     private static void setVersion(Document doc) {
         doc.set(CoreAnnotations.ParserVersionAnnotationInteger.class, VERSION);
     }
+
+    private static void setDocumentFormat(Document doc) {
+        doc.set(CoreAnnotations.DocumentFormatAnnotationInteger.class, DocumentFormat.HTML.id());
+    }
+
 
     public static Document reParse(Document document) throws ParserException {
         //get the source html

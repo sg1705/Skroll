@@ -35,7 +35,7 @@
 
       function add(e, data) {
         scope.$apply(function() {
-          documentModel.isProcessing = true;
+          documentModel.viewState.isProcessing = true;
         })
         data.submit();
       }
@@ -56,9 +56,9 @@
           scope.isDocAvailable = true;
           scope.isProcessing = false;
           LHSModel.model = terms;
-          documentModel.isDocAvailable = true;
-          documentModel.targetHtml = data.result;
-          documentModel.isProcessing = false;
+          documentModel.viewState.isDocAvailable = true;
+          documentModel.p.content = data.result;
+          documentModel.viewState.isProcessing = false;
         });
         $location.path('/view/docId/' + documentModel.documentId);
       }

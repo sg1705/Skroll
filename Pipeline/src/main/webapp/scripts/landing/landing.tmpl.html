@@ -1,8 +1,9 @@
 <div style="height:100%">
   <div layout="column" layout-align="center center" class="sk-landing-search" flex>
     <img src='images/icons/skroll-logo.png' class="sk-logo"/>
-    <div layout="row" layout-align="center center">
-      <md-whiteframe class="md-whiteframe-z1" style="width: 90%">
+    <sk-search-box feature-flag="searchbox.new"></sk-search-box>
+    <div layout="row" layout-align="center center" feature-flag="searchbox.old">
+       <md-whiteframe class="md-whiteframe-z1" style="width: 90%">
         <div layout="row" flex class="search-frame">
           <input style="width:100%;" ng-model="ctrl.searchText" ng-enter="ctrl.onEnter()" size="40"
                  class="search-input" autofocus/>

@@ -40,7 +40,8 @@
       controllerAs: 'doclistCtrl'
     }).
     when('/open', {
-      templateUrl: 'scripts/core/app.core.tmpl.html',
+      // templateUrl: 'scripts/core/app.core.tmpl.html',
+      templateUrl: 'scripts/upload/open.tmpl.html',
       controller: 'ImportCtrl'
     }).
     when('/trainer', {

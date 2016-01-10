@@ -46,22 +46,29 @@
     }
 
     function onClickedFiling(link, docType) {
-      secSearchService.getIndexHtml(link)
-        .then(function(data) {
-          var html = $.parseHTML(data);
-          var href = $(html).find('[href^="/Archives/edgar/data"]')[0];
-          href = 'http://www.sec.gov' + $(href).attr('href');
-          console.log(href);
-          importService.importDocFromUrl(href, docType)
+      if ((link.indexOf("http://www.sec.gov")) >= 0) {
+        importService.importDocFromUrl(link, docType)
             .then(function(partial) {
               $location.search({});
               $location.path('/view/docId/' + documentModel.documentId);
+            });
+      } else {
+        secSearchService.getIndexHtml(link)
+          .then(function(data) {
+            var html = $.parseHTML(data);
+            var href = $(html).find('[href^="/Archives/edgar/data"]')[0];
+            href = 'http://www.sec.gov/' + $(href).attr('href');;
+            console.log(href);
+            importService.importDocFromUrl(href, docType)
+              .then(function(partial) {
+                $location.search({});
+                $location.path('/view/docId/' + documentModel.documentId);
             })
-          // $location.path('/open').search('q', href);
-        }, function(err) {
+            // $location.path('/open').search('q', href);
+          }, function(err) {
           console.log(err);
         });
-
+      }
     }
 
     function httpURLInSearch(url) {
@@ -73,9 +80,9 @@
     }
 
     function search() {
-      documentModel.isProcessing = true;
+      documentModel.viewState.isProcessing = true;
       if (((vm.searchText == null) || (vm.searchText == "undefined"))) {
-        var searchText = 'Google 10K 2012 2015';
+        var searchText = 'goog 10-K 2012 2015';
         $location.path('/search/' + searchText);
         return;
       }
@@ -86,17 +93,30 @@
       vm.searchResults = new Array();
       secSearchService.getSearchResults(vm.searchText)
         .then(function(data) {
-          var rss = $.parseXML(data);
-          var entries = $(rss).find("entry");
-          console.log(entries.length);
-          $.each(entries, function(index) {
-            var result = processXml(entries[index]);
-            vm.searchResults.push(result);
-          });
-          documentModel.isProcessing = false;
+          console.log(vm.searchText);
+          if(vm.searchText.toLowerCase().indexOf("ex-") >=0) {
+            var html = $.parseHTML(data);
+            var entries = $(html).find('a[class^="filing"]');
+            var filingDate = $(html).find('i[class^="blue"]');
+            console.log(filingDate);
+            $.each(entries, function(index) {
+              console.log("text:[" + index + "]" + entries[index].innerText);
+              var result = processFullTextResult(entries[index], filingDate[index].innerText);
+              vm.searchResults.push(result);
+            });
+          } else {
+            var rss = $.parseXML(data);
+            var entries = $(rss).find("entry");
+            console.log(entries.length);
+            $.each(entries, function(index) {
+              var result = processXml(entries[index]);
+              vm.searchResults.push(result);
+            });
+          }
+          documentModel.viewState.isProcessing = false;
         }, function(err) {
           console.log(err);
-          documentModel.isProcessing = false;
+          documentModel.viewState.isProcessing = false;
         });
 
     }
@@ -116,6 +136,37 @@
       return result;
     }
 
+    function processFullTextResult(entry, filingDate) {
+      var href = findUrls(entry.href)[0];
+      var splitEntry = entry.innerText.split('for');
+      var formType = splitEntry[0];
+      var companyName = splitEntry[1];
+      var result = {
+        'companyName': companyName,
+        'formType': formType,
+        'filingDate': filingDate,
+        'href': href
+      }
+      return result;
+    }
+
+    function findUrls(text) {
+      var source = (text || '').toString();
+      var urlArray = [];
+      var url;
+      var matchArray;
+
+      // Regular expression to find FTP, HTTP(S) and email URLs.
+      var regexToken = /(((ftp|https?):\/\/)[\-\w@:%_\+.~#?,&\/\/=]+)|((mailto:)?[_.\w-]+@([\w][\w\-]+\.)+[a-zA-Z]{2,3})/g;
+
+      // Iterate through any URLs in the text.
+      while( (matchArray = regexToken.exec( source )) !== null )
+      {
+        var token = matchArray[0];
+        urlArray.push( token );
+      }
+      return urlArray;
+    }
   }
 
 })();

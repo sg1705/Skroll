@@ -232,7 +232,7 @@ gulp.task('build-specs', ['templatecache'], function(done) {
  * This is separate so we can run tests on
  * optimize before handling image or fonts
  */
-gulp.task('build', ['optimize', 'images', 'other', 'fonts', 'copyWEBINF', 'optimizeIframe'], function() {
+gulp.task('build', ['optimize', 'images', 'other', 'fonts', 'copyWEBINF', 'optimizeIframe', 'buildPdf'], function() {
     log('Building everything');
 
     var msg = {
@@ -320,15 +320,29 @@ gulp.task('optimizeIframe', ['injectIframe'], function() {
         .pipe(gulp.dest(config.build));
 });
 
+gulp.task('preparePdf', function(){
+  log('Copying pdf resource /pdf folder');
+  return gulp.src(
+    ['./bower_components/pdf.js-viewer/{cmaps,images,locale}/*',
+     './bower_components/pdf.js-viewer/pdf.js',
+     './bower_components/pdf.js-viewer/pdf.worker.js',
+     './bower_components/pdf.js-viewer/viewer.css'])
+   .pipe(gulp.dest(config.pdf));
+});
 
 
+gulp.task('buildPdf', ['preparePdf'], function(){
+  log('Copying pdf resource /pdf folder');
+  return gulp.src(config.pdf + '/**/*')
+   .pipe(gulp.dest(config.build + '/pdf'));
+});
 
 /**
  * Remove all files from the build, temp, and reports folders
  * @param  {Function} done - callback when complete
  */
 gulp.task('clean', function(done) {
-    var delconfig = [].concat(config.build, config.temp, config.report);
+    var delconfig = [].concat(config.build, config.temp, config.report, config.pdf);
     log('Cleaning: ' + $.util.colors.blue(delconfig));
     del(delconfig, done);
 });

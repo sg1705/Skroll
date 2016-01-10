@@ -22,13 +22,14 @@ import java.util.List;
 public class SearchAPI {
 
     private static final Logger logger = LoggerFactory.getLogger(SearchAPI.class);
-    private static final String SEARCH_URL = "http://www.sec.gov/cgi-bin/srch-edgar?&output=atom";
-    private static final String FETCH_INDEX_URL = "http://www.sec.gov";
-
+    private static final String EDGER_BOOLEAN_SEARCH_URL = "http://www.sec.gov/cgi-bin/srch-edgar?&output=atom";
+    private static final String EDGER_FULL_TEXT_SEARCH_URL = "https://searchwww.sec.gov/EDGARFSClient/jsp/EDGAR_MainAccess.jsp?" +
+            "&sort=Date&formType=1&isAdv=true&numResults=100";
+    private static final String FETCH_INDEX_URL = "http://www.sec.gov/";
 
     @GET
     @Path("/searchSec")
-    @Produces(MediaType.APPLICATION_ATOM_XML)
+    @Produces(MediaType.TEXT_HTML)
     /**
      * Returns results for landing page search
      */
@@ -38,7 +39,17 @@ public class SearchAPI {
 
         searchText = UrlEscapers.urlFormParameterEscaper().escape(queryList.get(0));
 
-        String rssUrl = SEARCH_URL + "&text=" + searchText + "&first=" + queryList.get(1) + "&last=" + queryList.get(2);
+        String[] searchTextArray = queryList.get(0).split(" ");
+        String rssUrl = null;
+
+        // Edger Full Text Search is used to search exhibit only. Edger boolean search is catch all and default search.
+        if (searchTextArray!=null && searchTextArray.length > 1 && searchTextArray[1].toLowerCase().startsWith("ex-")) {
+            // Edger Full Text Search is only used for exhibit.
+            rssUrl = EDGER_FULL_TEXT_SEARCH_URL + "&queryCik=" + searchTextArray[0] + "&search_text=" + "\"" + searchTextArray[1] + "\"" + "&fromDate=" + queryList.get(1) + "&toDate=" + queryList.get(2);
+        } else {
+            // Edger boolean search is default search
+            rssUrl = EDGER_BOOLEAN_SEARCH_URL + "&text=" + searchText + "&first=" + queryList.get(1) + "&last=" + queryList.get(2);
+        }
         logger.info("Search string for {}", rssUrl);
         String rssXml = DocumentHelper.fetchHtml(rssUrl);
         Response r = Response.ok().status(Response.Status.OK).entity(rssXml).build();
@@ -59,5 +70,4 @@ public class SearchAPI {
         Response r = Response.ok().status(Response.Status.OK).entity(rssXml).build();
         return r;
     }
-
 }

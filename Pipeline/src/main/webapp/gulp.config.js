@@ -35,6 +35,7 @@ module.exports = function() {
         other: client + 'other/**/*',
         index: client + 'index.html',
         iframe: client + 'iframe.html',
+        pdf: client + 'pdf',
         // app js, with no specs
         js: [
             clientApp + '**/*.module.js',
@@ -143,6 +144,7 @@ module.exports = function() {
             directory: config.bower.directory,
             ignorePath: config.bower.ignorePath,
             exclude: [
+                    'bower_components/pdf.js-viewer/pdf.js',
                     'bower_components/angular-feature-flags/dist/featureFlags.js',
                     'bower_components/angulartics/src/angulartics-clicky.js',
                     'bower_components/angulartics/src/angulartics-cnzz.js',

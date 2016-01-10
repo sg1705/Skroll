@@ -6,6 +6,7 @@ import com.google.inject.Module;
 import com.google.inject.servlet.GuiceFilter;
 import com.google.inject.servlet.ServletModule;
 import com.skroll.rest.benchmark.BenchmarkAPI;
+import com.skroll.rest.document.DocumentAPI;
 import com.skroll.rest.mail.MailAPI;
 import com.skroll.util.SkrollGuiceModule;
 import com.squarespace.jersey2.guice.BootstrapUtils;
@@ -20,6 +21,7 @@ import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.glassfish.hk2.api.ServiceLocator;
+import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
@@ -184,6 +186,9 @@ public class WebServer {
         config.register(BenchmarkAPI.class);
         config.register(MultiPartFeature.class);
         config.register(InstrumentAPI.class);
+        config.register(MyObjectMapperProvider.class);
+        config.register(JacksonFeature.class);
+        config.register(DocumentAPI.class);
         ServletContainer container = new ServletContainer(config);
         return new ServletHolder(container);
     }

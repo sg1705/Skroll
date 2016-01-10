@@ -1,0 +1,10 @@
+{
+  "name": "angular-pdfjs-demo",
+  "description": "Angular PDF.js demo",
+  "license": "MIT",
+  "private": "true",
+  "dependencies": {
+    "angular": "~1.4.3",
+	  "pdf.js-viewer": "https://github.com/legalthings/pdf.js-viewer.git#0.1.0"
+  }
+}
