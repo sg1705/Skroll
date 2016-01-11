@@ -24,9 +24,9 @@
 
     //-- service definition
     var service = {
-      selectedChips: selectedChips,
       //-- service variables
       searchState: {
+        selectedChips: selectedChips,
         searchText : searchText
       },
       clear: clear,
