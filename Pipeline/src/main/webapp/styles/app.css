@@ -289,6 +289,9 @@ md-toolbar .sk-logo {
 ::selection {
   background: #F8E0F7; }
 
+::-ms-clear {
+  display: none; }
+
 .pdfjs #viewerContainer {
   position: fixed;
   top: 48px;

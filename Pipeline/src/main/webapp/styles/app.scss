@@ -440,6 +440,10 @@ md-toolbar {
 	background: #F8E0F7;
 }
 
+::-ms-clear {
+	display: none;
+}
+
 
 .pdfjs {
 	#viewerContainer {
