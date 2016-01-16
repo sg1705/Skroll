@@ -18,7 +18,7 @@
     // vm.numberBuffer = '';
     // vm.searchText = vm.searchState.searchText;
 
-    //-- public methods    
+    //-- public methods
     vm.querySearch = querySearch;
     vm.autocompleteRequireMatch = true;
     vm.transformChip = transformChip;
@@ -82,6 +82,47 @@
           'name': '2015',
           'type': 'year'
         },
+        {
+          'name': '2016',
+          'type': 'year'
+        },
+        {
+          'name': '2012',
+          'type': 'year'
+        },
+        {
+          'name': '2011',
+          'type': 'year'
+        },
+        {
+          'name': '2014',
+          'type': 'year'
+        },
+        {
+          'name': '2013',
+          'type': 'year'
+        },
+        {
+          'name': '2010',
+          'type': 'year'
+        },
+        {
+          'name': '2009',
+          'type': 'year'
+        },
+        {
+          'name': '2008',
+          'type': 'year'
+        },
+        {
+          'name': '2007',
+          'type': 'year'
+        },
+        {
+          'name': '2006',
+          'type': 'year'
+        },
+
         {
           'name': 'goog',
           'type': 'ticker'

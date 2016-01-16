@@ -165,6 +165,21 @@ md-sidenav#navframe.md-locked-open {
 			color: rgba(0, 0, 0, 0.87);
 		};
 
+		md-chips {
+
+			padding-left: 10px;
+			padding-right: 10px;
+			
+			md-chips-wrap {
+				display:flex;
+				flex-direction: row;
+
+				.md-chip-input-container {
+					width: 100%;
+				}
+			}
+		}
+
 		.search-button {
 			height:    100%;
 			margin:    0px;

@@ -122,6 +122,14 @@ md-sidenav#navframe.md-locked-open {
       outline: none;
       /*			width: 645px;*/
       color: rgba(0, 0, 0, 0.87); }
+    .sk-landing-search .search-frame md-chips {
+      padding-left: 10px;
+      padding-right: 10px; }
+      .sk-landing-search .search-frame md-chips md-chips-wrap {
+        display: flex;
+        flex-direction: row; }
+        .sk-landing-search .search-frame md-chips md-chips-wrap .md-chip-input-container {
+          width: 100%; }
     .sk-landing-search .search-frame .search-button {
       height: 100%;
       margin: 0px;
