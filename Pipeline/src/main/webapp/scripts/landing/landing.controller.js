@@ -14,7 +14,7 @@
     .controller('LandingCtrl', LandingCtrl);
 
   /* @ngInject */
-  function LandingCtrl($location, secSearchService, $routeParams, importService, documentModel, $analytics) {
+  function LandingCtrl($location, secSearchService, $routeParams, importService, documentModel, $analytics, searchBoxModel) {
 
     //-- private variables
     var searchResults = [];
@@ -31,6 +31,7 @@
     search();
 
     function onEnter() {
+      vm.searchText = searchBoxModel.getText();
       if (!((vm.searchText == null) || (vm.searchText == "undefined"))) {
       $analytics.eventTrack("main", {
               category: 'landingPage.searchText',
@@ -81,6 +82,7 @@
 
     function search() {
       documentModel.viewState.isProcessing = true;
+      //vm.searchText = searchBoxModel.getText();
       if (((vm.searchText == null) || (vm.searchText == "undefined"))) {
         var searchText = 'goog 10-K 2012 2015';
         $location.path('/search/' + searchText);

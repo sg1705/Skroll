@@ -24,9 +24,9 @@
 
     //-- service definition
     var service = {
-      selectedChips: selectedChips,
       //-- service variables
       searchState: {
+        selectedChips: selectedChips,
         searchText : searchText
       },
       clear: clear,
@@ -42,7 +42,7 @@
      * Clear search
      **/
     function getText() {
-      var wholeSearchText = service.selectedChips.map(function(elem) { return elem.name}).join(" ") +service.searchState.searchText;
+      var wholeSearchText = JSON.stringify(service.searchState); //.map);(function(elem) { return elem.field1 + "(" + elem.type + ")" }).join(":") + ":" + service.searchState.searchText;
       console.log( "wholeSearchText:" + wholeSearchText);
       return wholeSearchText;
     };

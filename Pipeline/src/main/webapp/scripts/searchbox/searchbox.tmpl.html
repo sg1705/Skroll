@@ -16,13 +16,14 @@
           md-item-text="item.name" placeholder="Search for SEC filing">
 
           <span md-highlight-text="autoCompleteCtrl.searchState.searchText">
-            {{item.name}} :: {{item.type}}
-          </span>
+            {{item.type}} : {{item.field1}} : {{item.field2}}
         </md-autocomplete>
         <md-chip-template>
           <span>
-            <strong>{{$chip.name}}</strong>
+            <strong>{{$chip.field1}}</strong>
             <em>({{$chip.type}})</em>
+            <em><style display:none>({{$chip.field2}})</em></style>
+            <em><style display:none>({{$chip.id}})</em></style>
           </span>
         </md-chip-template>
       </md-chips>

@@ -6,7 +6,7 @@
       .module('app.searchbox')
       .controller('AutoCompleteCtrl', AutoCompleteCtrl);
 
-  function AutoCompleteCtrl ($timeout, $q, searchBoxModel) {
+  function AutoCompleteCtrl ($timeout, $q, searchBoxModel, searchBoxService) {
     var vm = this;
 
     vm.readonly = false;
@@ -14,7 +14,7 @@
     vm.searchState = searchBoxModel.searchState;
     vm.querySearch = querySearch;
     vm.dataElements = loadData();
-    vm.selectedChips = searchBoxModel.selectedChips;
+    vm.selectedChips = searchBoxModel.searchState.selectedChips;
     vm.numberChips = [];
     vm.numberChips2 = [];
     vm.numberBuffer = '';
@@ -39,8 +39,24 @@
      * Search for sec filing.
      */
     function querySearch (query) {
-      var results = query ? vm.dataElements.filter(createFilterFor(query)) : [];
-      return results;
+      var self = this;
+      var results = [];
+      var k = 0;
+      return searchBoxService.getSuggestions(query).then(function(terms) {
+        var groups = terms.grouped.type.groups;
+        for (var i in groups) {
+          console.log(groups[i]);
+          var docs = groups[i].doclist.docs;
+          results.push.apply(results, docs);
+        }
+          console.log(results);
+          return results;
+      }, function(data, status) {
+        console.log(status);
+      });
+     
+      //var results = query ? vm.dataElements.filter(createFilterFor(query)) : [];
+      
     }
 
     /**
@@ -55,6 +71,7 @@
       };
 
     }
+
 
     function loadData() {
       var elements = [

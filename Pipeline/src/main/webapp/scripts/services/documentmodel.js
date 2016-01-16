@@ -66,7 +66,6 @@ var documentModel = {
 
 };
 
-
 angular
   .module('SkrollApp')
   .factory('documentModel', function() {
