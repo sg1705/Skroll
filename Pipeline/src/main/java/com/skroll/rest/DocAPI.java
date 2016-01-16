@@ -177,7 +177,10 @@ public class DocAPI {
             logger.error("Issue in parsing document: {}", documentId.toString());
             return logErrorResponse("Failed to read/deserialize document from Pre Evaluated Folder");
         }
-
+        //check if format annotation is null and if so then fix if
+        if (!document.containsKey(CoreAnnotations.DocumentFormatAnnotationInteger.class)) {
+            document.set(CoreAnnotations.DocumentFormatAnnotationInteger.class, DocumentFormat.HTML.id());
+        }
         //build a response object
         DocumentProto proto = getDocumentProto(document);
         Response.ResponseBuilder response = Response.status(Response.Status.OK);

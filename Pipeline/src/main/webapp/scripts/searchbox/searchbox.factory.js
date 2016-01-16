@@ -39,13 +39,22 @@
     //////////////
 
     /**
-     * Clear search
+     * Return query string text
      **/
     function getText() {
       var wholeSearchText = JSON.stringify(service.searchState); //.map);(function(elem) { return elem.field1 + "(" + elem.type + ")" }).join(":") + ":" + service.searchState.searchText;
       console.log( "wholeSearchText:" + wholeSearchText);
       return wholeSearchText;
     };
+
+    /**
+     * Set query string text
+     **/
+    function setText(text) {
+      this.searchText = text;
+    };
+
+
     /**
      * Clear search
      **/

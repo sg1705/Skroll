@@ -170,6 +170,11 @@ task gulpPreparePdf(type: Exec) {
     }
 }
 
+task cleanLogs(type: Delete) {
+    delete "../webapp"
+    delete "../logs"
+}
+
 
 
 test.dependsOn npmInstall
@@ -178,5 +183,6 @@ start.dependsOn gulpPreparePdf
 clean.dependsOn cleanModels
 clean.dependsOn npmClean
 clean.dependsOn gulpClean
+clean.dependsOn cleanLogs
 test.dependsOn createTestDirectories
 startProd.dependsOn(buildProdApp)

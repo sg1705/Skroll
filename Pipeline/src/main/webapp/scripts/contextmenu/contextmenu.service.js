@@ -52,7 +52,7 @@
         theme: 'default-dark',
         controller: 'ContextMenuCtrl',
         controllerAs: 'contextCtrl',
-        hasBackdrop: true
+        hasBackdrop: true,
       });
 
 
