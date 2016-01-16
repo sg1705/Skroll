@@ -27,7 +27,7 @@
     vm.numberChips = [];
     vm.numberChips2 = [];
     vm.numberBuffer = '';
-    vm.autocompleteRequireMatch = false;
+    vm.autocompleteRequireMatch = true;
     vm.transformChip = transformChip;
 
     //-- initialization
@@ -47,7 +47,7 @@
       }
 
       // Otherwise, create a new one
-      return { name: chip, type: 'new' }
+      return { field1: chip, type: 'new' }
     }
 
     /**
