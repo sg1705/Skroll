@@ -34,12 +34,12 @@
       "description": "no description"
     }, {
       "key": "searchbox.new",
-      "active": false,
+      "active": true,
       "name": "Show new searchbox on landing page",
       "description": "no description"
     }, {
       "key": "searchbox.old",
-      "active": true,
+      "active": false,
       "name": "Show old searchbox on landing page",
       "description": "no description"
     }];

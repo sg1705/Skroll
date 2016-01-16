@@ -24,9 +24,9 @@
 
     //-- service definition
     var service = {
-      selectedChips: selectedChips,
       //-- service variables
       searchState: {
+        selectedChips: selectedChips,
         searchText : searchText
       },
       clear: clear,
@@ -39,13 +39,22 @@
     //////////////
 
     /**
-     * Clear search
+     * Return query string text
      **/
     function getText() {
       var wholeSearchText = service.selectedChips.map(function(elem) { return elem.name}).join(" ") +service.searchState.searchText;
       console.log( "wholeSearchText:" + wholeSearchText);
       return wholeSearchText;
     };
+
+    /**
+     * Set query string text
+     **/
+    function setText(text) {
+      this.searchText = text;
+    };
+
+
     /**
      * Clear search
      **/

@@ -7,20 +7,28 @@
       .controller('AutoCompleteCtrl', AutoCompleteCtrl);
 
   function AutoCompleteCtrl ($timeout, $q, searchBoxModel) {
+    //-- private variables
     var vm = this;
 
+    //-- public variables
     vm.readonly = false;
     vm.selectedItem = null;
     vm.searchState = searchBoxModel.searchState;
+    // vm.numberChips = [];
+    // vm.numberBuffer = '';
+    // vm.searchText = vm.searchState.searchText;
+
+    //-- public methods
     vm.querySearch = querySearch;
-    vm.dataElements = loadData();
-    vm.selectedChips = searchBoxModel.selectedChips;
-    vm.numberChips = [];
-    vm.numberChips2 = [];
-    vm.numberBuffer = '';
-    vm.autocompleteDemoRequireMatch = false;
+    vm.autocompleteRequireMatch = true;
     vm.transformChip = transformChip;
-    //vm.searchText = vm.searchState.searchText;
+
+    //-- initialization
+    vm.dataElements = loadData();
+
+
+    //////////////////////////////////////
+
 
     /**
      * Return the proper object when the append is called.
@@ -74,6 +82,47 @@
           'name': '2015',
           'type': 'year'
         },
+        {
+          'name': '2016',
+          'type': 'year'
+        },
+        {
+          'name': '2012',
+          'type': 'year'
+        },
+        {
+          'name': '2011',
+          'type': 'year'
+        },
+        {
+          'name': '2014',
+          'type': 'year'
+        },
+        {
+          'name': '2013',
+          'type': 'year'
+        },
+        {
+          'name': '2010',
+          'type': 'year'
+        },
+        {
+          'name': '2009',
+          'type': 'year'
+        },
+        {
+          'name': '2008',
+          'type': 'year'
+        },
+        {
+          'name': '2007',
+          'type': 'year'
+        },
+        {
+          'name': '2006',
+          'type': 'year'
+        },
+
         {
           'name': 'goog',
           'type': 'ticker'
