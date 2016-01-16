@@ -21,8 +21,7 @@
     var vm = this;
 
     //-- public variables
-    vm.searchState = searchBoxModel.searchState;
-    vm.searchState.searchText = $routeParams.searchText;
+    vm.searchText = $routeParams.searchText;
     vm.searchResults = searchResults;
 
     //-- public methods
@@ -32,18 +31,17 @@
     search();
 
     function onEnter() {
-
       vm.searchText = searchBoxModel.getText();
-      if (!((vm.searchState.searchText == null) || (vm.searchState.searchText == "undefined"))) {
+      if (!((vm.searchText == null) || (vm.searchText == "undefined"))) {
       $analytics.eventTrack("main", {
               category: 'landingPage.searchText',
-              label: vm.searchState.searchText
+              label: vm.searchText
             });
 
-        if ((vm.searchState.searchText.indexOf('http://') === 0) || (vm.searchState.searchText.indexOf('www.') === 0)) {
-          $location.path('/search/' + encodeURIComponent(vm.searchState.searchText));
+        if ((vm.searchText.indexOf('http://') === 0) || (vm.searchText.indexOf('www.') === 0)) {
+          $location.path('/search/' + encodeURIComponent(vm.searchText));
         } else {
-          $location.path('/search/' + vm.searchState.searchText);
+          $location.path('/search/' + vm.searchText);
         }
       }
     }
@@ -84,20 +82,21 @@
 
     function search() {
       documentModel.viewState.isProcessing = true;
-      if (((vm.searchState.searchText == null) || (vm.searchState.searchText == "undefined"))) {
+      //vm.searchText = searchBoxModel.getText();
+      if (((vm.searchText == null) || (vm.searchText == "undefined"))) {
         var searchText = 'goog 10-K 2012 2015';
         $location.path('/search/' + searchText);
         return;
       }
-      if ((vm.searchState.searchText.indexOf("http%3A") === 0) || ((vm.searchState.searchText.indexOf('www.') === 0))) {
-        httpURLInSearch(vm.searchState.searchText);
+      if ((vm.searchText.indexOf("http%3A") === 0) || ((vm.searchText.indexOf('www.') === 0))) {
+        httpURLInSearch(vm.searchText);
       }
 
       vm.searchResults = new Array();
-      secSearchService.getSearchResults(vm.searchState.searchText)
+      secSearchService.getSearchResults(vm.searchText)
         .then(function(data) {
-          console.log(vm.searchState.searchText);
-          if(vm.searchState.searchText.toLowerCase().indexOf("ex-") >=0) {
+          console.log(vm.searchText);
+          if(vm.searchText.toLowerCase().indexOf("ex-") >=0) {
             var html = $.parseHTML(data);
             var entries = $(html).find('a[class^="filing"]');
             var filingDate = $(html).find('i[class^="blue"]');
