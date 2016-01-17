@@ -23,6 +23,8 @@
   <!-- endbower -->
   <!-- endbuild -->
 
+<link rel="stylesheet" href="pdf/viewer.css" />
+
   <!-- build:css styles/main.css -->
   <link rel="stylesheet" href="styles/main.css"/>
   <link rel="stylesheet" href="styles/app.css"/>
@@ -40,6 +42,8 @@
   </div>
 </body>
 
+<script src="/pdf/pdf.js"></script>
+
 <!-- build:js(.) scripts/lib.js -->
 <!-- bower:js -->
 <script src="bower_components/jquery/dist/jquery.js"></script>
@@ -48,6 +52,7 @@
 <script src="bower_components/angular-animate/angular-animate.js"></script>
 <script src="bower_components/angular-cookies/angular-cookies.js"></script>
 <script src="bower_components/angular-aria/angular-aria.js"></script>
+<script src="bower_components/angular-messages/angular-messages.js"></script>
 <script src="bower_components/angular-material/angular-material.js"></script>
 <script src="bower_components/angular-touch/angular-touch.js"></script>
 <script src="bower_components/underscore.string/dist/underscore.string.js"></script>
@@ -69,6 +74,7 @@
 <script src="bower_components/moment/moment.js"></script>
 <script src="bower_components/lunr.js/lunr.js"></script>
 <script src="bower_components/angular-truncate/src/truncate.js"></script>
+<script src="bower_components/angular-pdfjs-viewer/dist/angular-pdfjs-viewer.js"></script>
 <!-- endbower -->
 <!-- endbuild -->
 
@@ -76,10 +82,13 @@
 <!-- inject:js -->
 <script src="/scripts/app.module.js"></script>
 <script src="/scripts/contextmenu/contextmenu.module.js"></script>
+<script src="/scripts/core.html/core.html.module.js"></script>
+<script src="/scripts/core.pdf/core.pdf.module.js"></script>
 <script src="/scripts/core.services/core.services.module.js"></script>
 <script src="/scripts/core.util/core.util.module.js"></script>
 <script src="/scripts/core/app.core.module.js"></script>
 <script src="/scripts/landing/landing.module.js"></script>
+<script src="/scripts/searchbox/searchbox.module.js"></script>
 <script src="/scripts/searchv2/search.module.js"></script>
 <script src="/scripts/thirdparty/ngsilent.module.js"></script>
 <script src="/scripts/toc/toc.module.js"></script>
@@ -92,6 +101,10 @@
 <script src="/scripts/core.config/httpProvider.config.js"></script>
 <script src="/scripts/core.config/mdTheme.config.js"></script>
 <script src="/scripts/core.config/routes.config.js"></script>
+<script src="/scripts/core.html/htmlviewport.controller.js"></script>
+<script src="/scripts/core.html/skHtmlContent.js"></script>
+<script src="/scripts/core.pdf/pdfviewport.controller.js"></script>
+<script src="/scripts/core.pdf/skPdfcontent.js"></script>
 <script src="/scripts/core.services/clickobserverservice.js"></script>
 <script src="/scripts/core.services/documentservice.js"></script>
 <script src="/scripts/core.services/httpRequestError.interceptor.js"></script>
@@ -115,6 +128,9 @@
 <script src="/scripts/landing/doclist.controller.js"></script>
 <script src="/scripts/landing/landing.controller.js"></script>
 <script src="/scripts/landing/secsearch.service.js"></script>
+<script src="/scripts/searchbox/autocomplete.controller.js"></script>
+<script src="/scripts/searchbox/searchbox.factory.js"></script>
+<script src="/scripts/searchbox/skSearchBox.directive.js"></script>
 <script src="/scripts/searchv2/search.controller.js"></script>
 <script src="/scripts/searchv2/search.factory.js"></script>
 <script src="/scripts/searchv2/search.service.js"></script>

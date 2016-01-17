@@ -25,6 +25,8 @@
   	'angulartics',
   	'angulartics.google.analytics',
   	'app.core',
+    'app.core.html',
+    'app.core.pdf',
   	'app.core.services',
   	'app.core.util',
   	'app.contextmenu',
@@ -32,7 +34,9 @@
   	'app.search',
   	'app.trainer',
   	'app.toc',
-  	'app.upload'
+  	'app.upload',
+    'pdfjsViewer',
+    'app.searchbox'
   ]);
 
 })();

@@ -2,6 +2,6 @@
   'use strict';
 
   angular
-    .module('app.landing', []);
-    
+    .module('app.landing', ['app.searchbox']);
+
 })();

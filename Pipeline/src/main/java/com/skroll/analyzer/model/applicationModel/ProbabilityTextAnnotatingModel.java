@@ -453,9 +453,25 @@ public class ProbabilityTextAnnotatingModel extends DocumentAnnotatingModel {
             }
 
             annotateTermsWithHMM(paragraph, processedPara, paraCategory, tokens, logPrioProbs);
-
         }
+//        int i = mostLikelyPara(1);
+//        System.out.println("most likely paragraph for class 1 is paragraph "+ i+": "+paragraphs.get(i).getText());
 
+    }
+
+    int mostLikelyPara(int classIndex){
+        if (paragraphCategoryBelief.length == 0 ) return -1;
+        int maxIndex = 0;
+        double maxProb = 0;
+        for (int i=1; i<paragraphCategoryBelief.length; i++){
+            double[] prob =  getParaCategoryProbabilities(i);
+            if (prob[classIndex] > maxProb ){
+//            if (prob[classIndex] > maxProb && !DocumentHelper.isObserved(paragraphs.get(i))){
+                maxIndex = i;
+                maxProb = prob[classIndex];
+            }
+        }
+        return maxIndex;
     }
 
     void annotateTermsWithHMM(CoreMap paragraph, CoreMap processedPara, RandomVariable paraCategory,

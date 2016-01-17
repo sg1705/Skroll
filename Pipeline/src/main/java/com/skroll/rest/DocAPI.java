@@ -1,6 +1,6 @@
 package com.skroll.rest;
 
-import com.google.common.base.Joiner;
+
 import com.google.common.collect.FluentIterable;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Files;
@@ -15,9 +15,11 @@ import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.document.annotation.DocTypeAnnotationHelper;
 import com.skroll.document.factory.DocumentFactory;
 import com.skroll.index.IndexCreator;
+import com.skroll.parser.PDFParser;
 import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.ParserException;
 import com.skroll.pipeline.util.Constants;
+import com.skroll.rest.document.DocumentProto;
 import com.skroll.util.Configuration;
 import com.skroll.util.UniqueIdGenerator;
 import org.glassfish.jersey.media.multipart.BodyPart;
@@ -30,10 +32,10 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import javax.xml.bind.DatatypeConverter;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -132,47 +134,90 @@ public class DocAPI {
         Document document = null;
         String documentId = null;
         logger.info("Document type [{}]", docType);
-        boolean inCache = false;
+//        boolean inCache = false;
         try {
             documentId = UniqueIdGenerator.generateId(docURL);
             if (request.getDocumentFactory().isDocumentExist(documentId)) {
                 document = request.getDocumentFactory().get(documentId);
-                inCache = true;
-                logger.debug("Fetched the existing document: {}", documentId);
+//                inCache = true;
             } else {
-                if (partialParse.equals("true")) {
-                    document = Parser.parsePartialDocumentFromUrl(docURL);
-                } else {
-                    document = Parser.parseDocumentFromUrl(docURL);
-                    String fDocumentId = documentId;
+                //is document PDF
+                if (docURL.endsWith(".pdf")) {
+                    //for now partially parse it
+                    document = PDFParser.parsePartialPDFFromUrl(docURL);
                     document.setId(documentId);
-                    Document fDoc = document;
-                    DocTypeAnnotationHelper.annotateDocTypeWithWeightAndUserObservation(document, Category.getDocTypeId(docType), userWeight );
-                    logger.info("DocType:" + DocTypeAnnotationHelper.getDocType(fDoc));
-                    request.getClassifiersForClassify(fDoc).forEach(c -> c.classify(fDocumentId, fDoc));
+                    logger.debug("Saved document {}", documentId);
                     request.getDocumentFactory().putDocument(document);
                     request.getDocumentFactory().saveDocument(document);
-                    logger.debug("Added document into the documentMap with a generated hash key:{}", documentId);
+                } else {
+                    //document is an HTML
+                    if (partialParse.equals("true")) {
+                        document = Parser.parsePartialDocumentFromUrl(docURL);
+                        document.setId(documentId);
+                        document.set(CoreAnnotations.IsPartiallyParsedAnnotation.class, true);
+                    } else {
+                        document = Parser.parseDocumentFromUrl(docURL);
+                        String fDocumentId = documentId;
+                        document.setId(documentId);
+                        Document fDoc = document;
+                        DocTypeAnnotationHelper.annotateDocTypeWithWeightAndUserObservation(document, Category.getDocTypeId(docType), userWeight);
+                        request.getClassifiersForClassify(fDoc).forEach(c -> c.classify(fDocumentId, fDoc));
+                        request.getDocumentFactory().putDocument(document);
+                        request.getDocumentFactory().saveDocument(document);
+                    }
                 }
             }
-            }catch(ParserException e){
-                return logErrorResponse("Failed to parse the uploaded file", e);
-            }catch(Exception e){
-                return logErrorResponse("Failed to classify", e);
-            }
+        } catch(ParserException e){
+            return logErrorResponse("Failed to parse the uploaded file", e);
+        } catch(Exception e){
+            return logErrorResponse("Failed to classify", e);
+        }
 
-        logger.info("DocumentId:{}",documentId);
-        logger.info("InCache:{}",inCache);
         if (document == null) {
-            logger.debug("Issue in parsing document: {}", documentId.toString());
+            logger.error("Issue in parsing document: {}", documentId.toString());
             return logErrorResponse("Failed to read/deserialize document from Pre Evaluated Folder");
         }
-        return Response.status(Response.Status.OK)
-                    .header("documentId", documentId)
-                    .header("inCache", inCache)
+        //check if format annotation is null and if so then fix if
+        if (!document.containsKey(CoreAnnotations.DocumentFormatAnnotationInteger.class)) {
+            document.set(CoreAnnotations.DocumentFormatAnnotationInteger.class, DocumentFormat.HTML.id());
+        }
+        //build a response object
+        DocumentProto proto = getDocumentProto(document);
+        Response.ResponseBuilder response = Response.status(Response.Status.OK);
+        injectDocumentProtoInHeader(proto, response);
+        if (document.get(CoreAnnotations.DocumentFormatAnnotationInteger.class) == DocumentFormat.PDF.id()) {
+//            response.header("inCache", inCache);
+        } else {
+            response
+//                    .header("inCache", inCache)
                     .entity(DocumentHelper.getProcessedHtml(document).getBytes(Constants.DEFAULT_CHARSET))
-                    .type(MediaType.TEXT_HTML).build();
+                    .type(MediaType.TEXT_HTML);
+        }
+        return response.build();
     }
+
+    public static DocumentProto getDocumentProto(Document document) {
+        DocumentProto proto = new DocumentProto();
+        proto.setId(document.getId());
+        proto.setUrl(document.get(CoreAnnotations.SourceUrlAnnotation.class));
+        proto.setFormat(document.get(CoreAnnotations.DocumentFormatAnnotationInteger.class));
+        proto.setTypeId(DocTypeAnnotationHelper.getDocType(document));
+        if (document.containsKey(CoreAnnotations.IsPartiallyParsedAnnotation.class))
+            proto.setPartiallyParsed(document.get(CoreAnnotations.IsPartiallyParsedAnnotation.class));
+        return proto;
+    }
+
+
+    public static Response.ResponseBuilder injectDocumentProtoInHeader(DocumentProto proto, Response.ResponseBuilder response) {
+        response.header("documentId", proto.getId());
+        response.header("typeId", proto.getTypeId());
+        response.header("format", proto.getFormat());
+        response.header("url", proto.getUrl());
+        response.header("isPartiallyParsed", proto.isPartiallyParsed());
+
+        return response;
+    }
+
 
 
     @GET
@@ -257,6 +302,12 @@ public class DocAPI {
             logger.debug("Not found in documentMap, fetching from corpus: {}", documentId.toString());
             return logErrorResponse("Failed to read/deserialize document from Pre Evaluated Folder");
         }
+
+        if (document.get(CoreAnnotations.DocumentFormatAnnotationInteger.class) == null) {
+            document.set(CoreAnnotations.DocumentFormatAnnotationInteger.class, DocumentFormat.HTML.id());
+        }
+
+
         //Streams require final objects
         final Document finalDoc = document;
         try {
@@ -266,11 +317,53 @@ public class DocAPI {
         } catch (Exception e) {
             return logErrorResponse("Failed to classify/store document", e);
         }
-        return Response.status(Response.Status.OK)
-                .header("documentId", documentId)
-                .entity(DocumentHelper.getProcessedHtml(document).getBytes(Constants.DEFAULT_CHARSET))
-                .type(MediaType.TEXT_HTML).build();
+
+        //build a response
+        DocumentProto proto = getDocumentProto(document);
+        Response.ResponseBuilder response = Response.status(Response.Status.OK);
+        injectDocumentProtoInHeader(proto, response);
+        if (document.get(CoreAnnotations.DocumentFormatAnnotationInteger.class) == DocumentFormat.PDF.id()) {
+//            response.entity(DatatypeConverter.parseBase64Binary(document.getSource())).type(MediaType.TEXT_PLAIN);
+        } else {
+            response.entity(DocumentHelper.getProcessedHtml(document).getBytes(Constants.DEFAULT_CHARSET))
+                    .type(MediaType.TEXT_HTML);
+        }
+
+        return response.build();
     }
+
+
+    @GET
+    @Path("/content")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.TEXT_HTML)
+    public Response getDocumentContent(@QueryParam("documentId") String documentId,  @BeanParam RequestBean request) throws Exception {
+        logger.info("Opening [{}]", documentId);
+        Document document = request.getDocument();
+        if (document == null) {
+            logger.debug("Not found in documentMap, fetching from corpus: {}", documentId.toString());
+            throw new Exception("Failed to read/deserialize document from Pre Evaluated Folder");
+        }
+
+        if (document.get(CoreAnnotations.DocumentFormatAnnotationInteger.class) == null) {
+            document.set(CoreAnnotations.DocumentFormatAnnotationInteger.class, DocumentFormat.HTML.id());
+        }
+
+        //build a response
+        DocumentProto proto = DocAPI.getDocumentProto(document);
+        Response.ResponseBuilder response = Response.status(Response.Status.OK);
+        DocAPI.injectDocumentProtoInHeader(proto, response);
+        if (document.get(CoreAnnotations.DocumentFormatAnnotationInteger.class) == DocumentFormat.PDF.id()) {
+            response.entity(DatatypeConverter.parseBase64Binary(document.getSource())).type(MediaType.TEXT_PLAIN);
+        } else {
+            response.entity(DocumentHelper.getProcessedHtml(document).getBytes(Constants.DEFAULT_CHARSET))
+                    .type(MediaType.TEXT_HTML);
+        }
+
+        return response.build();
+    }
+
+
 
     @GET
     @Path("/getDocumentId")

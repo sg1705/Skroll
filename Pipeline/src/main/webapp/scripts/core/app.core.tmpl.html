@@ -16,7 +16,7 @@
       <div layout="row" layout-align="space-between center">
         <md-icon md-svg-icon="images/icons/ic_search_48px.svg" class="search-icon" style="margin-left: 10px; margin-right: 10px">
         </md-icon>
-         <md-input-container md-theme="default-dark" md-no-float style="padding-bottom: 12px; width:100%" >
+         <md-input-container md-theme="default-dark" md-no-float style="margin: auto; width:100%" >
              <input type="search"
                     name="searchInput"
                     autocomplete="off"
@@ -36,7 +36,7 @@
     </md-toolbar>
 
     <md-content md-scroll-y flex class="md-padding" ng-controller="LHSLevelsCtrl as lhsCtrl" ng-hide="lhsCtrl.searchState.searchActive" >
-      <sk-lhs ng-hide="!contentCtrl.documentModel.isTocLoaded"/>
+      <sk-lhs ng-hide="!contentCtrl.documentModel.viewState.isTocLoaded"/>
     </md-content>
   <md-content ng-keydown="searchCtrl.onKeyDown($event)" ng-show="contentCtrl.searchState.searchActive">
      <sk-search />
@@ -52,7 +52,9 @@
       <sk-toolbar />
     </md-toolbar>
 
-    <iframe id="docViewIframe"
+    <sk-content/>
+
+<!--     <iframe id="docViewIframe"
       scrolling="yes"
       frameborder="0"
       noborder="noborder"
@@ -60,7 +62,7 @@
       src="about:blank"
       sk-content>
     </iframe>
-
+ -->
 <!--     <md-content id="skrollport">
       <div layout="row" flex>
         <div id="leftcurtain" hide-sm>
@@ -82,7 +84,7 @@
 
       </div>
     </md-content>
- -->
+
   </div>
   <!-- end content -->
 

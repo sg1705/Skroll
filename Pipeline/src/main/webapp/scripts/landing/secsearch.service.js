@@ -11,22 +11,18 @@
     //-- private variables
     //context root of API
     var secSearchServiceBase = 'restServices/search/';
-    //var secSearchServiceBase   = 'http://www.sec.gov/cgi-bin/srch-edgar?&output=atom&first=2015&last=2015';
     //http://www.sec.gov/cgi-bin/srch-edgar?text=google&output=atom
     //http://www.sec.gov/cgi-bin/srch-edgar?text=google&start=1&count=80&first=2015&last=2015&output=atom
 
     //-- service definition
     var service = {
-
       getSearchResults: getSearchResults,
       getIndexHtml: getIndexHtml
-
     };
 
     return service;
 
     //////////////
-
 
     /**
      * Returns a promise to retrieve search results from SEC.gov
@@ -59,8 +55,5 @@
         })
       return deferred.promise;
     };
-
-
-
   };
 })();

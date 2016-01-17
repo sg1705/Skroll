@@ -35,7 +35,7 @@ import java.nio.charset.Charset;
 public class APITest {
     public static final Logger logger = LoggerFactory.getLogger(DocAPITest.class);
 
-    WebServer jettyServer = new WebServer(8888, new SkrollTestGuiceModule());
+    protected WebServer jettyServer = new WebServer(8888, new SkrollTestGuiceModule());
     protected String documentId = null;
 
     protected DocumentFactory factory;

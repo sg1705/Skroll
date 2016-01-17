@@ -1,0 +1,36 @@
+<div layout="row" layout-align="center center" style="width:100%;">
+  <md-whiteframe class="md-whiteframe-z1"  layout-align="center center" flex-gt-lg="50" flex-gt-md="66" flex="80" style="background:white;" >
+    <div layout="row" layout-align="center center" flex class="search-frame" style="background:white;">
+      <md-chips
+        ng-model="autoCompleteCtrl.searchState.selectedChips"
+        md-autocomplete-snap=""
+        md-transform-chip="autoCompleteCtrl.transformChip($chip)"
+        md-require-match="autoCompleteCtrl.autocompleteRequireMatch"
+        style="width:100%;"
+        size="40">
+
+        <md-autocomplete
+          md-selected-item="autoCompleteCtrl.selectedItem"
+          md-search-text="autoCompleteCtrl.searchState.searchText"
+          md-items="item in autoCompleteCtrl.querySearch(autoCompleteCtrl.searchState.searchText)"
+          md-item-text="item.name" placeholder="Search for SEC filing">
+
+          <span md-highlight-text="autoCompleteCtrl.searchState.searchText">
+            {{item.name}} :: {{item.type}}
+          </span>
+        </md-autocomplete>
+        <md-chip-template>
+          <span>
+            <strong>{{$chip.name}}</strong>
+            <em>({{$chip.type}})</em>
+          </span>
+        </md-chip-template>
+      </md-chips>
+
+      <md-button class="md-raised md-primary search-button" ng-click="ctrl.onEnter()">
+        <md-icon md-svg-icon="images/icons/ic_search_48px.svg" class="search-icon">
+        </md-icon>
+      </md-button>
+    </div>
+  </md-whiteframe>
+</div>
