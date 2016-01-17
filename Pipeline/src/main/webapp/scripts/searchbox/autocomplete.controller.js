@@ -6,7 +6,7 @@
       .module('app.searchbox')
       .controller('AutoCompleteCtrl', AutoCompleteCtrl);
 
-  function AutoCompleteCtrl ($timeout, $q, searchBoxModel, searchBoxService) {
+  function AutoCompleteCtrl ($timeout, $q, searchBoxModel, searchBoxService, featureFlags) {
 
     //-- private variables
 
@@ -16,17 +16,14 @@
     vm.readonly = false;
     vm.selectedItem = null;
     vm.searchState = searchBoxModel.searchState;
-    // vm.numberChips = [];
-    // vm.numberBuffer = '';
-    // vm.searchText = vm.searchState.searchText;
 
     //-- public methods
     vm.querySearch = querySearch;
     vm.dataElements = loadData();
     vm.selectedChips = searchBoxModel.searchState.selectedChips;
-    vm.numberChips = [];
-    vm.numberChips2 = [];
-    vm.numberBuffer = '';
+    // vm.numberChips = [];
+    // vm.numberChips2 = [];
+    // vm.numberBuffer = '';
     vm.autocompleteRequireMatch = true;
     vm.transformChip = transformChip;
 
@@ -54,23 +51,26 @@
      * Search for sec filing.
      */
     function querySearch (query) {
-      var self = this;
-      var results = [];
-      var k = 0;
-      return searchBoxService.getSuggestions(query).then(function(terms) {
-        var groups = terms.grouped.type.groups;
-        for (var i in groups) {
-          console.log(groups[i]);
-          var docs = groups[i].doclist.docs;
-          results.push.apply(results, docs);
-        }
-          console.log(results);
-          return results;
-      }, function(data, status) {
-        console.log(status);
-      });
-
-      //var results = query ? vm.dataElements.filter(createFilterFor(query)) : [];
+      if (featureFlags.isOn('solr.autocomplete')) {
+        var self = this;
+        var results = [];
+        var k = 0;
+        return searchBoxService.getSuggestions(query).then(function(terms) {
+          var groups = terms.grouped.type.groups;
+          for (var i in groups) {
+            console.log(groups[i]);
+            var docs = groups[i].doclist.docs;
+            results.push.apply(results, docs);
+          }
+            console.log(results);
+            return results;
+        }, function(data, status) {
+          console.log(status);
+        });
+      } else {
+        var results = query ? vm.dataElements.filter(createFilterFor(query)) : [];
+        return results;
+      }
 
     }
 
@@ -81,8 +81,8 @@
       var lowercaseQuery = angular.lowercase(query);
 
       return function filterFn(element) {
-        return (element._lowername.indexOf(lowercaseQuery) === 0) ||
-            (element._lowertype.indexOf(lowercaseQuery) === 0);
+        return (element._field1.indexOf(lowercaseQuery) === 0) ||
+            (element._field2.indexOf(lowercaseQuery) === 0);
       };
 
     }
@@ -91,71 +91,42 @@
     function loadData() {
       var elements = [
         {
-          'name': 'google',
-          'type': 'company'
+          'id'      : '0000000123434',
+          'field1'  : 'GOOG',
+          'field2'  : 'Google, Inc',
+          'type'    : 'company'
         },
         {
-          'name': '10-K',
-          'type': 'filing'
+          'id'      : '0001090872',
+          'field1'  : 'AGLN',
+          'field2'  : 'Agilent, Inc',
+          'type'    : 'company'
         },
         {
-          'name': 'ex-33.1',
-          'type': 'exbihit'
+          'id'      : '0001166691',
+          'field1'  : 'CMST',
+          'field2'  : 'Comcast, Inc',
+          'type'    : 'company'
         },
         {
-          'name': '2015',
-          'type': 'year'
+          'id'      : 'F-1',
+          'field1'  : '10-K',
+          'field2'  : '',
+          'type'    : 'formtype'
         },
         {
-          'name': '2016',
-          'type': 'year'
-        },
-        {
-          'name': '2012',
-          'type': 'year'
-        },
-        {
-          'name': '2011',
-          'type': 'year'
-        },
-        {
-          'name': '2014',
-          'type': 'year'
-        },
-        {
-          'name': '2013',
-          'type': 'year'
-        },
-        {
-          'name': '2010',
-          'type': 'year'
-        },
-        {
-          'name': '2009',
-          'type': 'year'
-        },
-        {
-          'name': '2008',
-          'type': 'year'
-        },
-        {
-          'name': '2007',
-          'type': 'year'
-        },
-        {
-          'name': '2006',
-          'type': 'year'
-        },
-
-        {
-          'name': 'goog',
-          'type': 'ticker'
+          'id'      : '1',
+          'field1'  : 'Financial',
+          'field2'  : '',
+          'type'    : 'category'
         }
       ];
 
+      // return elements;
+
       return elements.map(function (element) {
-        element._lowername = element.name.toLowerCase();
-        element._lowertype = element.type.toLowerCase();
+        element._field1 = element.field1.toLowerCase();
+        element._field2 = element.field2.toLowerCase();
         return element;
       });
     }
