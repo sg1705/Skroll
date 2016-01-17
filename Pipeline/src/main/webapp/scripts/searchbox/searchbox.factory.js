@@ -29,8 +29,9 @@
         selectedChips: selectedChips,
         searchText : searchText
       },
-      clear: clear,
-      getText : getText
+      clear   : clear,
+      getText : getText,
+      isEmpty : isEmpty
     }
 
     return service;
@@ -63,6 +64,12 @@
       service.searchState.searchText = '';
     };
 
+    function isEmpty() {
+      if ((this.searchState.selectedChips.length == 0) && (this.searchState.searchText == '')) {
+        return true;
+      }
+      return false;
+    }
   };
 
 })();
