@@ -91,7 +91,7 @@
     function loadData() {
       var elements = [
         {
-          'id'      : '0000000123434',
+          'id'      : '00001288776',
           'field1'  : 'GOOG',
           'field2'  : 'Google, Inc',
           'type'    : 'company'
