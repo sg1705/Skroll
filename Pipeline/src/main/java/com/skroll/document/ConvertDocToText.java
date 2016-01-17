@@ -5,6 +5,7 @@ import com.google.common.io.Files;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.skroll.document.annotation.DocTypeAnnotationHelper;
 import com.skroll.document.factory.CorpusFSDocumentFactoryImpl;
 import com.skroll.document.factory.DocumentFactory;
 import org.slf4j.Logger;
@@ -55,6 +56,7 @@ public class ConvertDocToText {
                         return;
                     }
 
+                    count = 0;
 
                     //                try ( PrintWriter writer = new PrintWriter(OUTPUT_FOLDER + f.getName() + ".txt" , "UTF-8")) {
                     for (CoreMap paragraph : doc.getParagraphs()) {
@@ -64,7 +66,8 @@ public class ConvertDocToText {
                         if (text.length() > 50){
                             count ++;
 //                            writer.println(newText);
-                            writer.println(count + "\t" + "0" + "\t" + newText); // for mallet
+                            writer.println(doc.getId()+"_"+count + "\t" +
+                                    DocTypeAnnotationHelper.getDocType(doc) + "\t" + newText); // for mallet
 
                         }
                     }

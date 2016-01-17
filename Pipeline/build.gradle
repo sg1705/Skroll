@@ -47,6 +47,8 @@ dependencies {
     compile "com.squarespace.jersey2-guice:jersey2-guice:0.10"
     compile 'org.reflections:reflections:0.9.9'
     compile 'com.sendgrid:sendgrid-java:2.2.1'
+    compile 'cc.mallet:mallet:2.0.7'
+    compile 'trove:trove:2.1.1'
 }
 war {
     zip64 true

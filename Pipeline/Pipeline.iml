@@ -99,5 +99,18 @@
     <orderEntry type="library" exported="" name="Gradle: com.google.guava:guava:16.0.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: junit:junit:4.11" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: org.hamcrest:hamcrest-core:1.3" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: cc.mallet:mallet:2.0.7" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: org.beanshell:bsh:2.0b4" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: jgrapht:jgrapht:0.6.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: net.sf.jwordnet:jwnl:1.4_rc3" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: net.sf.trove4j:trove4j:2.0.2" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: com.googlecode.matrix-toolkits-java:mtj:0.9.14" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: org.jdom:jdom:1.1" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: com.googlecode.netlib-java:netlib-java:0.9.3" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: net.sourceforge.f2j:arpack_combined_all:0.1" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: junit:junit:4.10" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: org.hamcrest:hamcrest-core:1.1" level="project" />
+    <orderEntry type="library" exported="" scope="RUNTIME" name="Gradle: trove:trove:2.1.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: trove:trove:2.1.1" level="project" />
   </component>
 </module>
