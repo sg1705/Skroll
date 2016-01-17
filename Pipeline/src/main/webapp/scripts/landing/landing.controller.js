@@ -17,13 +17,15 @@
   function LandingCtrl($location, secSearchService, $routeParams, importService, documentModel, $analytics, searchBoxModel) {
 
     //-- private variables
-    var searchResults = [];
     var vm = this;
+    var searchResults = [];
+    var companyPanelResults = [];
 
     //-- public variables
     vm.searchState = searchBoxModel.searchState;
     vm.searchState.searchText = $routeParams.searchText;
     vm.searchResults = searchResults;
+    vm.companyPanelResults = companyPanelResults;
 
     //-- public methods
     vm.onEnter = onEnter;
@@ -115,6 +117,8 @@
             });
           }
           documentModel.viewState.isProcessing = false;
+          vm.companyPanelResults = convertSearchResultsIntoCompanyPanel(vm.searchResults);
+          console.log(vm.companyPanelResults);
         }, function(err) {
           console.log(err);
           documentModel.viewState.isProcessing = false;
@@ -168,6 +172,72 @@
       }
       return urlArray;
     }
+  }
+
+  /**
+  * Filter out each company name
+  * Iterate over each company
+  * Filter out each category in sequence
+  * Append results
+  **/
+  function convertSearchResultsIntoCompanyPanel(originalResults) {
+    var CATEGORIES = ['Financial', 'News', 'Ownership'];
+    var FORMS = {
+      '10-K' : 'Financial',
+      '10-Q' : 'Financial',
+      '8-K'  : 'News',
+      '4'  : 'Ownership'
+    }
+    //create category for each search result
+    var results = _.map(originalResults, function(r) {
+      var category = FORMS[r.formType];
+      if (category == null) {
+        category = 'NONE'
+      }
+      r.category = category;
+      return r;
+    });
+    //filter out unique companies
+    var uniqCompanies = _.uniq(_.map(originalResults, function(c){ return c.companyName; }));
+    //convert into company array
+    var searchResults = _.map(uniqCompanies, function (c) {
+      var categories = [ ];
+      //filter each category
+      _.each(CATEGORIES, function(category) {
+        var filteredCategoryResults = _.filter(results, function(result) {
+          if ((result.companyName == c) && (result.category == category)) {
+            return result;
+          }
+        });
+        if (filteredCategoryResults.length < 1) {
+          return;
+        }
+
+        var filteredCategoryResults = _.first(filteredCategoryResults, 6);
+        var filings = _.map(filteredCategoryResults, function(f){
+            var fl = {};
+            fl.formType = f.formType;
+            fl.filingDate = f.filingDate;
+            fl.href = f.href;
+            return fl;
+          });
+        //now that we have filtered categories for category, let's create category proto
+        var categoryProto = {
+          categoryName: category,
+          filings: filings
+        }
+        categories.push(categoryProto);
+      });
+      if (categories.length > 0) {
+        return {
+          companyName: c,
+          categories: categories
+        }
+      } else {
+        return null;
+      }
+    });
+    return _.filter(searchResults, function(r) { if (r != null) return r });
   }
 
 })();
