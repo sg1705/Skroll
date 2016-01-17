@@ -94,16 +94,13 @@
             var html = $.parseHTML(data);
             var entries = $(html).find('a[class^="filing"]');
             var filingDate = $(html).find('i[class^="blue"]');
-            console.log(filingDate);
             $.each(entries, function(index) {
-              console.log("text:[" + index + "]" + entries[index].innerText);
               var result = processFullTextResult(entries[index], filingDate[index].innerText);
               vm.searchResults.push(result);
             });
           } else {
             var rss = $.parseXML(data);
             var entries = $(rss).find("entry");
-            console.log(entries.length);
             $.each(entries, function(index) {
               var result = processXml(entries[index]);
               vm.searchResults.push(result);
