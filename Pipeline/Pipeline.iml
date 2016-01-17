@@ -110,7 +110,7 @@
     <orderEntry type="library" exported="" name="Gradle: net.sourceforge.f2j:arpack_combined_all:0.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: junit:junit:4.10" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.hamcrest:hamcrest-core:1.1" level="project" />
-    <orderEntry type="library" exported="" scope="RUNTIME" name="Gradle: trove:trove:2.1.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: trove:trove:2.1.1" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: com.google.http-client:google-http-client:1.21.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: trove:trove:2.1.1" level="project" />
   </component>
 </module>
