@@ -20,30 +20,43 @@ import java.util.regex.Pattern;
  * and created from the docs in the preevaluated folder.
  */
 public class TopicModelCreater {
+	static final String INPUT_FILE = "build/resources/main/preEvaluatedTxtOneFile.txt";
+	static final int NUM_TOPICS = 100;
 
 	public static void main(String[] args) throws Exception {
-		String inputFileName = "build/resources/main/preEvaluatedTxtOneFile.txt";
-		String stopListFileName = "src/main/resources/stoplists/en.txt";
-		// Begin by importing documents from text to feature sequences
+
+		ParallelTopicModel model = TopicModelCreater.train(INPUT_FILE, NUM_TOPICS);
+		model.write(new File("build/resources/main/topicModel"));
+
+
+	}
+
+	public static ParallelTopicModel train(String inputFileName, int numTopics){
+
 		ArrayList<Pipe> pipeList = new ArrayList<Pipe>();
 
 		// Pipes: lowercase, tokenize, remove stopwords, map to features
 		pipeList.add( new CharSequenceLowercase() );
 		pipeList.add( new CharSequence2TokenSequence(Pattern.compile("\\p{L}[\\p{L}\\p{P}]+\\p{L}")) );
 //		pipeList.add( new TokenSequenceRemoveStopwords(new File("stoplists/en.txt"), "UTF-8", false, false, false) );
-		pipeList.add( new TokenSequenceRemoveStopwords(new File(stopListFileName), "UTF-8", false, false, false) );
+		pipeList.add( new TokenSequenceRemoveStopwords(
+				new File(SkrollTopicModel.STOP_LIST_PATH), "UTF-8", false, false, false) );
 		pipeList.add( new TokenSequence2FeatureSequence() );
 
 		InstanceList instances = new InstanceList(new SerialPipes(pipeList));
 
-		Reader fileReader = new InputStreamReader(new FileInputStream(new File(inputFileName)), "UTF-8");
-		instances.addThruPipe(new CsvIterator(fileReader, Pattern.compile("^(\\S*)[\\s,]*(\\S*)[\\s,]*(.*)$"),
-											   3, 2, 1)); // data, label, name fields
+		try {
+			Reader fileReader = new InputStreamReader(new FileInputStream(new File(inputFileName)), "UTF-8");
+			instances.addThruPipe(new CsvIterator(fileReader, Pattern.compile("^(\\S*)[\\s,]*(\\S*)[\\s,]*(.*)$"),
+					3, 2, 1)); // data, label, name fields
+		} catch(Exception e){
+			e.printStackTrace();
+		}
+
 
 		// Create a model with 100 topics, alpha_t = 0.01, beta_w = 0.01
 		//  Note that the first parameter is passed as the sum over topics, while
-		//  the second is 
-		int numTopics = 10;
+		//  the second is
 		ParallelTopicModel model = new ParallelTopicModel(numTopics, 1.0, 0.01);
 
 		model.addInstances(instances);
@@ -52,67 +65,19 @@ public class TopicModelCreater {
 		//  statistics after every iteration.
 		model.setNumThreads(2);
 
-		// Run the model for 50 iterations and stop (this is for testing only, 
+		// Run the model for 50 iterations and stop (this is for testing only,
 		//  for real applications, use 1000 to 2000 iterations)
 		model.setNumIterations(50);
-		model.estimate();
 
-		model.write(new File("build/resources/main/topicModel"));
-		// Show the words and topics in the first instance
+		model.setRandomSeed(07041);
 
-		// The data alphabet maps word IDs to strings
-		Alphabet dataAlphabet = instances.getDataAlphabet();
-		
-		FeatureSequence tokens = (FeatureSequence) model.getData().get(0).instance.getData();
-		LabelSequence topics = model.getData().get(0).topicSequence;
-		
-		Formatter out = new Formatter(new StringBuilder(), Locale.US);
-		for (int position = 0; position < tokens.getLength(); position++) {
-			out.format("%s-%d ", dataAlphabet.lookupObject(tokens.getIndexAtPosition(position)), topics.getIndexAtPosition(position));
-		}
-		System.out.println(out);
-		
-		// Estimate the topic distribution of the first instance, 
-		//  given the current Gibbs state.
-		double[] topicDistribution = model.getTopicProbabilities(0);
-
-		// Get an array of sorted sets of word ID/count pairs
-		ArrayList<TreeSet<IDSorter>> topicSortedWords = model.getSortedWords();
-		
-		// Show top 5 words in topics with proportions for the first document
-		for (int topic = 0; topic < numTopics; topic++) {
-			Iterator<IDSorter> iterator = topicSortedWords.get(topic).iterator();
-			
-			out = new Formatter(new StringBuilder(), Locale.US);
-			out.format("%d\t%.3f\t", topic, topicDistribution[topic]);
-			int rank = 0;
-			while (iterator.hasNext() && rank < 5) {
-				IDSorter idCountPair = iterator.next();
-				out.format("%s (%.0f) ", dataAlphabet.lookupObject(idCountPair.getID()), idCountPair.getWeight());
-				rank++;
-			}
-			System.out.println(out);
-		}
-	
-		// Create a new instance with high probability of topic 0
-		StringBuilder topicZeroText = new StringBuilder();
-		Iterator<IDSorter> iterator = topicSortedWords.get(0).iterator();
-
-		int rank = 0;
-		while (iterator.hasNext() && rank < 5) {
-			IDSorter idCountPair = iterator.next();
-			topicZeroText.append(dataAlphabet.lookupObject(idCountPair.getID()) + " ");
-			rank++;
+		try {
+			model.estimate();
+		} catch(Exception e){
+			e.printStackTrace();
 		}
 
-		// Create a new instance named "test instance" with empty target and source fields.
-		InstanceList testing = new InstanceList(instances.getPipe());
-		Instance instance = new Instance(topicZeroText.toString(), null, "test instance", null);
-		testing.addThruPipe(instance);
-
-		TopicInferencer inferencer = model.getInferencer();
-		double[] testProbabilities = inferencer.getSampledDistribution(testing.get(0), 10, 1, 5);
-		System.out.println("0\t" + Arrays.toString(testProbabilities));
+		return model;
 
 	}
 

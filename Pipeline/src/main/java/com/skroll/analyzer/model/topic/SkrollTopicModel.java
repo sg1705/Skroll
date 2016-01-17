@@ -2,9 +2,9 @@ package com.skroll.analyzer.model.topic;
 
 import cc.mallet.pipe.*;
 import cc.mallet.topics.ParallelTopicModel;
-import cc.mallet.types.Alphabet;
-import cc.mallet.types.FeatureSequence;
-import cc.mallet.types.LabelSequence;
+import cc.mallet.topics.TopicInferencer;
+import cc.mallet.types.*;
+import com.skroll.document.CoreMap;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -25,10 +25,28 @@ public class SkrollTopicModel {
 	}
 
 	public SkrollTopicModel(String inputModelName){
-		readModel(inputModelName);
+		model = readModel(inputModelName);
+		pipe = buildPipe(STOP_LIST_PATH, model.getAlphabet());
 	}
 
-	void readModel(String inputModelName){
+	public static Pipe buildPipe(Alphabet dataAlphabet){
+		return buildPipe(STOP_LIST_PATH, dataAlphabet);
+	}
+	public static Pipe buildPipe(String stopList, Alphabet dataAlphabet){
+        // Begin by importing documents from text to feature sequences
+		ArrayList<Pipe> pipeList = new ArrayList<Pipe>();
+
+		// Pipes: lowercase, tokenize, remove stopwords, map to features
+		pipeList.add( new CharSequenceLowercase() );
+		pipeList.add( new CharSequence2TokenSequence(Pattern.compile("\\p{L}[\\p{L}\\p{P}]+\\p{L}")) );
+		pipeList.add( new TokenSequenceRemoveStopwords(new File(stopList), "UTF-8", false, false, false) );
+		pipeList.add( new TokenSequence2FeatureSequence(dataAlphabet) );
+
+		return new SerialPipes(pipeList); // pipe for processing text to mallet
+	}
+
+	public static ParallelTopicModel readModel(String inputModelName){
+		ParallelTopicModel model = null;
 		try {
 		 	model = ParallelTopicModel.read(new File(inputModelName));
 
@@ -36,21 +54,14 @@ public class SkrollTopicModel {
 			e.printStackTrace();
 		};
 
-		// Begin by importing documents from text to feature sequences
-		ArrayList<Pipe> pipeList = new ArrayList<Pipe>();
+		return model;
 
-
-		// The data alphabet maps word IDs to strings
-		Alphabet dataAlphabet = model.getAlphabet();
-
-		// Pipes: lowercase, tokenize, remove stopwords, map to features
-		pipeList.add( new CharSequenceLowercase() );
-		pipeList.add( new CharSequence2TokenSequence(Pattern.compile("\\p{L}[\\p{L}\\p{P}]+\\p{L}")) );
-		pipeList.add( new TokenSequenceRemoveStopwords(new File(STOP_LIST_PATH), "UTF-8", false, false, false) );
-		pipeList.add( new TokenSequence2FeatureSequence(dataAlphabet) );
-
-		pipe = new SerialPipes(pipeList); // pipe for processing text to mallet
 	}
 
-
+	double[] infer(CoreMap para){
+		InstanceList instances = new InstanceList(pipe);
+		instances.addThruPipe(new Instance(para.getText(), null, null, null));
+		TopicInferencer inferencer = model.getInferencer();
+		return inferencer.getSampledDistribution(instances.get(0), 10, 1, 5);
+	}
 }
