@@ -3,11 +3,9 @@ package com.skroll.rest;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.net.UrlEscapers;
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.skroll.document.DocumentHelper;
-import com.skroll.document.TermProto;
 import com.skroll.search.QueryProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,8 +31,8 @@ public class SearchAPI {
     private static final String EDGER_FULL_TEXT_SEARCH_URL = "https://searchwww.sec.gov/EDGARFSClient/jsp/EDGAR_MainAccess.jsp?" +
             "&sort=Date&formType=1&isAdv=true&numResults=100";
     private static final String FETCH_INDEX_URL = "http://www.sec.gov/";
-    private static List<String> filing = Lists.newArrayList("Financial","Prospectus","Registration","Proxy","News");
-    private static List<String> exhibit = Lists.newArrayList("Underwriting Agreement",
+    private static final List<String> SEC_FILING_CATAGORIES = Lists.newArrayList("Financial","Prospectus","Registration","Proxy","News");
+    private static final List<String> SEC_EXHIBIT_CATAGORIES = Lists.newArrayList("Underwriting Agreement",
                 "Plans of Reorganization, Merger or Acquisition", "Articles of Incorporation and bylaw",
                 "Indenture",
                 "Legal Opinion",
@@ -42,14 +40,14 @@ public class SearchAPI {
                 "Voting Agreement",
                 "Material Contract",
                 "Credit Agreement");
-    private static Map<String, String> filingToFormType = ImmutableMap.<String, String>builder()
-            .put("Financial","10-K* or%2010-Q* or% 10-D*")
-            .put("Prospectus", "424* or%20FWP* or 144* or%20425")
-            .put("Registration","S-1* or S-4* or S-8* or 15-15* or 15-12* or D or D/A or S-3* or POS*")
-            .put("Proxy","DEF* or PX*")
+    private static final Map<String, String> FILING_TO_FORM_TYPE = ImmutableMap.<String, String>builder()
+            .put("Financial","10-K* or form-type=10-Q* or form-type=10-D*")
+            .put("Prospectus", "424* or form-type=FWP* or form-type=144* or form-type=425")
+            .put("Registration","S-1* or form-type=S-4* or form-type=S-8* or form-type=15-15* or form-type=15-12* or form-type=D or form-type=D/A or form-type=S-3* or form-type=POS*")
+            .put("Proxy","DEF* or form-type=PX*")
             .put("News","8-K*")
             .build();
-    private static Map<String, String> exhibitToFormType = ImmutableMap.<String, String>builder()
+    private static final Map<String, String> EXHIBIT_TO_FORM_TYPE = ImmutableMap.<String, String>builder()
             .put("Underwriting Agreement","\"EX\" NOT (\"EX-99.1\" OR \"EX-99.2\" OR \"EX-99.3\" OR \"EX-31.1\" OR \"EX-31.2\" OR \"EX-32.1\" OR \"EX-32.2\")")
             .put("Plans of Reorganization, Merger or Acquisition", "\"EX\" NOT (\"EX-99.1\" OR \"EX-99.2\" OR \"EX-99.3\" OR \"EX-31.1\" OR \"EX-31.2\" OR \"EX-32.1\" OR \"EX-32.2\")")
             .put("Articles of Incorporation and bylaw", "\"EX\" NOT (\"EX-99.1\" OR \"EX-99.2\" OR \"EX-99.3\" OR \"EX-31.1\" OR \"EX-31.2\" OR \"EX-32.1\" OR \"EX-32.2\")")
@@ -88,31 +86,32 @@ public class SearchAPI {
         List<LandingPageQueryProto.SelectedChip> startyearSelectedChip = landingPageQueryProto.selectedChips.stream().filter(p -> p.type.equals("startyear")).collect(Collectors.toList());
         List<LandingPageQueryProto.SelectedChip> endyearSelectedChip = landingPageQueryProto.selectedChips.stream().filter(p -> p.type.equals("endyear")).collect(Collectors.toList());
 
-        String rssUrl = null;
+        String rssUrl = "";
         // if more than one company
         if (companySelectedChip.isEmpty() || companySelectedChip.size() > 1) {
-            rssUrl = "ERROR: Use only one company to search";
-            logger.warn(rssUrl);
+            logger.warn("ERROR: Use only one company to search");
         } else {
             if (categorySelectedChip.isEmpty()){
                 if(formtypeSelectedChip.isEmpty()){
                     rssUrl = edgerBooleanSearch(companySelectedChip.get(0).id,startyearSelectedChip.get(0).field1,endyearSelectedChip.get(0).field1);
                 } else {
                     //Only one form type supported and for only boolean search
-                    rssUrl = edgerBooleanSearch(companySelectedChip.get(0).id,formtypeSelectedChip.get(0).field1,startyearSelectedChip.get(0).field1,endyearSelectedChip.get(0).field1);
+                    String formtypes = formtypeSelectedChip
+                            .stream()
+                            .map(p -> p.field1)
+                            .collect(Collectors.joining(" or form-type= "));
+                    rssUrl = edgerBooleanSearch(companySelectedChip.get(0).id,formtypes,startyearSelectedChip.get(0).field1,endyearSelectedChip.get(0).field1);
                 }
-            } else if (categorySelectedChip.size() >1) {
-                rssUrl = "ERROR: Use only one category to search";
-                logger.warn(rssUrl);
+            } else if (categorySelectedChip.size() > 1) {
+                logger.warn("ERROR: Use only one category to search");
             } else {
-                //check whether category is filing type
-                if(filing.contains(categorySelectedChip.get(0).field1)) {
-                    rssUrl = edgerBooleanSearch(companySelectedChip.get(0).id,filingToFormType.get(categorySelectedChip.get(0).field1),startyearSelectedChip.get(0).field1,endyearSelectedChip.get(0).field1);
-                } else if (exhibit.contains(categorySelectedChip.get(0).field1)){
-                    rssUrl = edgerFullTextSearch(companySelectedChip.get(0).id, exhibitToFormType.get(categorySelectedChip.get(0).field1), startyearSelectedChip.get(0).field1, endyearSelectedChip.get(0).field1);
+                //check whether category is SEC_FILING_CATAGORIES type
+                if(SEC_FILING_CATAGORIES.contains(categorySelectedChip.get(0).field1)) {
+                    rssUrl = edgerBooleanSearch(companySelectedChip.get(0).id, FILING_TO_FORM_TYPE.get(categorySelectedChip.get(0).field1), startyearSelectedChip.get(0).field1, endyearSelectedChip.get(0).field1);
+                } else if (SEC_EXHIBIT_CATAGORIES.contains(categorySelectedChip.get(0).field1)){
+                    rssUrl = edgerFullTextSearch(companySelectedChip.get(0).id, EXHIBIT_TO_FORM_TYPE.get(categorySelectedChip.get(0).field1), startyearSelectedChip.get(0).field1, endyearSelectedChip.get(0).field1);
                 } else {
-                    rssUrl = "ERROR: Unknown category";
-                    logger.warn(rssUrl);
+                    logger.warn("ERROR: Unknown category");
                 }
             }
         }
@@ -123,6 +122,14 @@ public class SearchAPI {
         return r;
     }
 
+    /**
+     * Form and return a URL for Edger full text search.
+     * @param cik
+     * @param formtype
+     * @param startYear
+     * @param endYear
+     * @return
+     */
     private String edgerFullTextSearch(String cik, String formtype, String startYear, String endYear){
         String tenDigitCik = String.format("%010d", Integer.parseInt(cik));
         String fullTestSeachURL = "&queryCik=" + tenDigitCik + "&search_text=" + "\"" + UrlEscapers.urlFormParameterEscaper().escape(formtype) + "\"" + "&fromDate=" +startYear + "&toDate=" + endYear;
@@ -130,16 +137,32 @@ public class SearchAPI {
         return EDGER_FULL_TEXT_SEARCH_URL + fullTestSeachURL;
     }
 
+    /**
+     * Form and return a URL for boolean Search using the input parameters
+     * @param cik
+     * @param startYear
+     * @param endYear
+     * @return
+     */
     private String edgerBooleanSearch(String cik, String startYear, String endYear){
         return edgerBooleanSearch(cik, null, startYear, endYear);
     }
+
+    /**
+     * Form and return a URL for boolean Search using the input parameters
+     * @param cik
+     * @param formtype
+     * @param startYear
+     * @param endYear
+     * @return
+     */
     private String edgerBooleanSearch(String cik, String formtype, String startYear, String endYear){
         String tenDigitCik = String.format("%010d", Integer.parseInt(cik));
         String booleanSearchURL = null;
         if (formtype==null) {
             booleanSearchURL = "&text=company-cik=" + tenDigitCik + "&first=" + startYear + "&last=" + endYear;
         } else {
-            booleanSearchURL = "&text=company-cik=" + tenDigitCik + UrlEscapers.urlFormParameterEscaper().escape(" and form-type=" + formtype) + "&first=" + startYear + "&last=" + endYear;
+            booleanSearchURL = "&text=company-cik=" + tenDigitCik + UrlEscapers.urlFormParameterEscaper().escape(" and ( form-type=" + formtype +")" ) + "&first=" + startYear + "&last=" + endYear;
         }
             logger.debug("booleanSearchURL:" + booleanSearchURL);
         return EDGER_BOOLEAN_SEARCH_URL +   booleanSearchURL;

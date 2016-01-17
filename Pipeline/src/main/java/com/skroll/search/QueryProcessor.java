@@ -77,6 +77,9 @@ public class QueryProcessor {
         List<Integer> year = new ArrayList<>();
         //match each token with number
         for (String token : tokens) {
+            if (token.equals("")){
+                break;
+            }
             if (isInteger(token)) {
                 int tokenInt = Integer.parseInt(token);
                 if ((tokenInt > 1980) && (tokenInt < 2020)) {
