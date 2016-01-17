@@ -2,7 +2,7 @@
  * Angular Material Design
  * https://github.com/angular/material
  * @license MIT
- * v1.0.0-rc1-master-325d83e
+ * v1.0.1
  */
 goog.provide('ng.material.components.fabShared');
 goog.require('ng.material.core');
@@ -15,7 +15,7 @@ goog.require('ng.material.core');
   function FabController($scope, $element, $animate, $mdUtil, $mdConstant, $timeout) {
     var vm = this;
 
-    // NOTE: We use async evals below to avoid conflicts with any existing digest loops
+    // NOTE: We use async eval(s) below to avoid conflicts with any existing digest loops
 
     vm.open = function() {
       $scope.$evalAsync("vm.isOpen = true");
@@ -37,6 +37,8 @@ goog.require('ng.material.core');
     setupDefaults();
     setupListeners();
     setupWatchers();
+
+    var initialAnimationAttempts = 0;
     fireInitialAnimations();
 
     function setupDefaults() {
@@ -48,15 +50,14 @@ goog.require('ng.material.core');
 
       // Start the keyboard interaction at the first action
       resetActionIndex();
+
+      // Add an animations waiting class so we know not to run
+      $element.addClass('md-animations-waiting');
     }
 
     function setupListeners() {
       var eventTypes = [
-        '$md.pressdown',
-
-        'click', // Fired via keyboard ENTER
-
-        'focusin', 'focusout'
+        'click', 'focusin', 'focusout'
       ];
 
       // Add our listeners
@@ -76,34 +77,25 @@ goog.require('ng.material.core');
       });
     }
 
-    var recentEvent;
+    var closeTimeout;
     function parseEvents(event) {
-      // If we've had a recent press/click event, or material is sending us an additional event,
-      // ignore it
-      if (recentEvent && (isClick(recentEvent) || recentEvent.$material)) {
-        return;
-      }
-
-      // Otherwise, handle our events
-      if (isClick(event)) {
+      // If the event is a click, just handle it
+      if (event.type == 'click') {
         handleItemClick(event);
-
-        // Store our recent click event
-        recentEvent = event;
-      } else if (event.type == 'focusin') {
-        vm.open();
-      } else if (event.type == 'focusout') {
-        vm.close();
       }
 
-      // Clear the recent event after all others have fired so we stop ignoring
-      $timeout(function() {
-        recentEvent = null;
-      }, 100, false);
-    }
+      // If we focusout, set a timeout to close the element
+      if (event.type == 'focusout' && !closeTimeout) {
+        closeTimeout = $timeout(function() {
+          vm.close();
+        }, 100, false);
+      }
 
-    function isClick(event) {
-      return event.type == '$md.pressdown' || event.type == 'click';
+      // If we see a focusin and there is a timeout about to run, cancel it so we stay open
+      if (event.type == 'focusin' && closeTimeout) {
+        $timeout.cancel(closeTimeout);
+        closeTimeout = null;
+      }
     }
 
     function resetActionIndex() {
@@ -154,27 +146,57 @@ goog.require('ng.material.core');
       });
     }
 
-    // Fire the animations once in a separate digest loop to initialize them
     function fireInitialAnimations() {
-      $mdUtil.nextTick(function() {
-        $animate.addClass($element, 'md-noop');
-      });
+      // If the element is actually visible on the screen
+      if ($element[0].scrollHeight > 0) {
+        // Fire our animation
+        $animate.addClass($element, 'md-animations-ready').then(function() {
+          // Remove the waiting class
+          $element.removeClass('md-animations-waiting');
+        });
+      }
+
+      // Otherwise, try for up to 1 second before giving up
+      else if (initialAnimationAttempts < 10) {
+        $timeout(fireInitialAnimations, 100);
+
+        // Increment our counter
+        initialAnimationAttempts = initialAnimationAttempts + 1;
+      }
     }
 
     function enableKeyboard() {
-      angular.element(document).on('keydown', keyPressed);
+      $element.on('keydown', keyPressed);
 
-      // TODO: On desktop, we should be able to reset the indexes so you cannot tab through
+      // On the next tick, setup a check for outside clicks; we do this on the next tick to avoid
+      // clicks/touches that result in the isOpen attribute changing (e.g. a bound radio button)
+      $mdUtil.nextTick(function() {
+        angular.element(document).on('click touchend', checkForOutsideClick);
+      });
+
+      // TODO: On desktop, we should be able to reset the indexes so you cannot tab through, but
+      // this breaks accessibility, especially on mobile, since you have no arrow keys to press
       //resetActionTabIndexes();
     }
 
     function disableKeyboard() {
-      angular.element(document).off('keydown', keyPressed);
+      $element.off('keydown', keyPressed);
+      angular.element(document).off('click touchend', checkForOutsideClick);
+    }
+
+    function checkForOutsideClick(event) {
+      if (event.target) {
+        var closestTrigger = $mdUtil.getClosest(event.target, 'md-fab-trigger');
+        var closestActions = $mdUtil.getClosest(event.target, 'md-fab-actions');
+
+        if (!closestTrigger && !closestActions) {
+          vm.close();
+        }
+      }
     }
 
     function keyPressed(event) {
       switch (event.which) {
-        case $mdConstant.KEY_CODE.SPACE: event.preventDefault(); return false;
         case $mdConstant.KEY_CODE.ESCAPE: vm.close(); event.preventDefault(); return false;
         case $mdConstant.KEY_CODE.LEFT_ARROW: doKeyLeft(event); return false;
         case $mdConstant.KEY_CODE.UP_ARROW: doKeyUp(event); return false;
@@ -286,6 +308,13 @@ goog.require('ng.material.core');
   'use strict';
 
   /**
+   * The duration of the CSS animation in milliseconds.
+   *
+   * @type {number}
+   */
+  var cssAnimationDuration = 300;
+
+  /**
    * @ngdoc module
    * @name material.components.fabSpeedDial
    */
@@ -387,8 +416,15 @@ goog.require('ng.material.core');
     }
   }
 
-  function MdFabSpeedDialFlingAnimation() {
+  function MdFabSpeedDialFlingAnimation($timeout) {
+    function delayDone(done) { $timeout(done, cssAnimationDuration, false); }
+
     function runAnimation(element) {
+      // Don't run if we are still waiting and we are not ready
+      if (element.hasClass('md-animations-waiting') && !element.hasClass('md-animations-ready')) {
+        return;
+      }
+
       var el = element[0];
       var ctrl = element.controller('mdFabSpeedDial');
       var items = el.querySelectorAll('.md-fab-action-item');
@@ -423,21 +459,27 @@ goog.require('ng.material.core');
           var newPosition, axis;
           var styles = item.style;
 
+          // Make sure to account for differences in the dimensions of the trigger verses the items
+          // so that we can properly center everything; this helps hide the item's shadows behind
+          // the trigger.
+          var triggerItemHeightOffset = (triggerElement.clientHeight - item.clientHeight) / 2;
+          var triggerItemWidthOffset = (triggerElement.clientWidth - item.clientWidth) / 2;
+
           switch (ctrl.direction) {
             case 'up':
-              newPosition = item.scrollHeight * (index + 1);
+              newPosition = (item.scrollHeight * (index + 1) + triggerItemHeightOffset);
               axis = 'Y';
               break;
             case 'down':
-              newPosition = -item.scrollHeight * (index + 1);
+              newPosition = -(item.scrollHeight * (index + 1) + triggerItemHeightOffset);
               axis = 'Y';
               break;
             case 'left':
-              newPosition = item.scrollWidth * (index + 1);
+              newPosition = (item.scrollWidth * (index + 1) + triggerItemWidthOffset);
               axis = 'X';
               break;
             case 'right':
-              newPosition = -item.scrollWidth * (index + 1);
+              newPosition = -(item.scrollWidth * (index + 1) + triggerItemWidthOffset);
               axis = 'X';
               break;
           }
@@ -453,17 +495,22 @@ goog.require('ng.material.core');
       addClass: function(element, className, done) {
         if (element.hasClass('md-fling')) {
           runAnimation(element);
+          delayDone(done);
+        } else {
           done();
         }
       },
       removeClass: function(element, className, done) {
         runAnimation(element);
-        done();
+        delayDone(done);
       }
     }
   }
+  MdFabSpeedDialFlingAnimation.$inject = ["$timeout"];
 
-  function MdFabSpeedDialScaleAnimation() {
+  function MdFabSpeedDialScaleAnimation($timeout) {
+    function delayDone(done) { $timeout(done, cssAnimationDuration, false); }
+
     var delay = 65;
 
     function runAnimation(element) {
@@ -494,15 +541,16 @@ goog.require('ng.material.core');
     return {
       addClass: function(element, className, done) {
         runAnimation(element);
-        done();
+        delayDone(done);
       },
 
       removeClass: function(element, className, done) {
         runAnimation(element);
-        done();
+        delayDone(done);
       }
     }
   }
+  MdFabSpeedDialScaleAnimation.$inject = ["$timeout"];
 })();
 
 ng.material.components.fabShared = angular.module("material.components.fabShared");

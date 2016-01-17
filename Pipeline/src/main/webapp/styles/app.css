@@ -26,19 +26,25 @@ md-icon {
 md-toast.skContextMenu {
   min-height: 40px;
   min-width: 160px;
-  z-index: 99;
+  z-index: 199;
   min-height: 30px;
   padding-right: 12px;
   padding-left: 12px;
-  background-color: #e0e0e0;
-  transition-property: all;
-  transition-duration: 0.1s;
-  /*transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);*/
-  transition-timing-function: ease-out;
-  transition-delay: 0s; }
+  right: inherit;
+  bottom: inherit;
+  width: inherit;
+  padding: inherit; }
   md-toast.skContextMenu .md-button {
     min-width: 24px;
     margin: 6px 0px; }
+  md-toast.skContextMenu .md-toast-content {
+    background-color: #e0e0e0;
+    min-height: 30px;
+    transition-property: all;
+    transition-duration: 0.1s;
+    /*transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);*/
+    transition-timing-function: ease-out;
+    transition-delay: 0s; }
 
 /**
 * SkrollPort
@@ -116,6 +122,14 @@ md-sidenav#navframe.md-locked-open {
       outline: none;
       /*			width: 645px;*/
       color: rgba(0, 0, 0, 0.87); }
+    .sk-landing-search .search-frame md-chips {
+      padding-left: 10px;
+      padding-right: 10px; }
+      .sk-landing-search .search-frame md-chips md-chips-wrap {
+        display: flex;
+        flex-direction: row; }
+        .sk-landing-search .search-frame md-chips md-chips-wrap .md-chip-input-container {
+          width: 100%; }
     .sk-landing-search .search-frame .search-button {
       height: 100%;
       margin: 0px;
@@ -282,6 +296,9 @@ md-toolbar .sk-logo {
 
 ::selection {
   background: #F8E0F7; }
+
+::-ms-clear {
+  display: none; }
 
 .pdfjs #viewerContainer {
   position: fixed;
