@@ -8,6 +8,7 @@ import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -23,7 +24,7 @@ public class SkrollTopicModel {
 
 
 	public SkrollTopicModel(){
-		new SkrollTopicModel(MODEL_PATH);
+		this(MODEL_PATH);
 	}
 
 	public SkrollTopicModel(String inputModelName){
@@ -31,9 +32,21 @@ public class SkrollTopicModel {
 		pipe = buildPipe(STOP_LIST_PATH, model.getAlphabet());
 	}
 
+	/**
+	 * Creates Pipe used by Mallet to processing input data
+	 * @param dataAlphabet specifies all possible words in the data
+	 * @return Pipe used by Mallet to processing input data
+     */
 	public static Pipe buildPipe(Alphabet dataAlphabet){
 		return buildPipe(STOP_LIST_PATH, dataAlphabet);
 	}
+
+	/**
+	 * Creates Pipe used by Mallet to processing input data
+	 * @param stopList text file containing stop words
+	 * @param dataAlphabet specifies all possible words in the data
+	 * @return Pipe used by Mallet to processing input data
+     */
 	public static Pipe buildPipe(String stopList, Alphabet dataAlphabet){
         // Begin by importing documents from text to feature sequences
 		ArrayList<Pipe> pipeList = new ArrayList<Pipe>();
@@ -47,12 +60,21 @@ public class SkrollTopicModel {
 		return new SerialPipes(pipeList); // pipe for processing text to mallet
 	}
 
+	/**
+	 * Loads a previously stored topic model
+	 * @param inputModelName
+	 * @return
+     */
 	public static ParallelTopicModel readModel(String inputModelName){
 		ParallelTopicModel model = null;
 		try {
 		 	model = ParallelTopicModel.read(new File(inputModelName));
 
-		} catch (Exception e){
+		}
+		catch (FileNotFoundException e){
+			System.err.println(inputModelName + " not found");
+		}
+		catch (Exception e){
 			e.printStackTrace();
 		};
 
@@ -60,6 +82,10 @@ public class SkrollTopicModel {
 
 	}
 
+	/**
+	 * Provides an reader-friendly overview of the topic model, by showing the top representative words for each model.
+	 * @return
+     */
 	public String representativeWordsForTopics(){
 
 		// The data alphabet maps word IDs to strings
@@ -82,16 +108,35 @@ public class SkrollTopicModel {
 		return out.toString();
 	}
 
+	/**
+	 * infer the topic distributions for the text in the paragraph
+	 * @param para
+	 * @return
+     */
 	public double[] infer(CoreMap para){
 		InstanceList instances = new InstanceList(pipe);
+		String text = para.getText();
+		if (text==null) return new double[model.getNumTopics()];
 		instances.addThruPipe(new Instance(para.getText(), null, null, null));
 		TopicInferencer inferencer = model.getInferencer();
 		inferencer.setRandomSeed(RANDOM_SEED);
 		return inferencer.getSampledDistribution(instances.get(0), 10, 1, 5);
 	}
+
+	/**
+	 * infer the topic distributions for the paragraphs
+	 * @param paras
+	 * @return
+     */
 	public double[][] infer(List<CoreMap> paras){
 		return  paras.stream().map(para -> infer(para)).toArray(size -> new double[size][]);
 	}
+
+	/**
+	 * infer the topic distributions for the paragraphs in the doc
+	 * @param doc
+	 * @return
+     */
 	public double[][] infer(Document doc){
 		return infer(doc.getParagraphs());
 	}

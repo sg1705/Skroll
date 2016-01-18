@@ -3,7 +3,6 @@ package com.skroll.analyzer.model.topic;
 import cc.mallet.pipe.*;
 import cc.mallet.pipe.iterator.CsvIterator;
 import cc.mallet.topics.ParallelTopicModel;
-import cc.mallet.topics.TopicInferencer;
 import cc.mallet.types.*;
 
 import java.io.File;
@@ -19,18 +18,24 @@ import java.util.regex.Pattern;
  * which should be a text file readable by mallet,
  * and created from the docs in the preevaluated folder.
  */
-public class TopicModelCreater {
+public class TopicModelCreator {
 	static final String INPUT_FILE = "build/resources/main/preEvaluatedTxtOneFile.txt";
 	static final int NUM_TOPICS = 100;
 
 	public static void main(String[] args) throws Exception {
 
-		ParallelTopicModel model = TopicModelCreater.train(INPUT_FILE, NUM_TOPICS);
+		ParallelTopicModel model = TopicModelCreator.train(INPUT_FILE, NUM_TOPICS);
 		model.write(new File("build/resources/main/topicModel"));
 
 
 	}
 
+	/**
+	 * trains topic model from a text file specified.
+	 * @param inputFileName input file. A text file read by Mallet and contains the text of the whole corpus.
+	 * @param numTopics number of topics to use
+     * @return Topic model trained
+     */
 	public static ParallelTopicModel train(String inputFileName, int numTopics){
 
 		ArrayList<Pipe> pipeList = new ArrayList<Pipe>();
@@ -53,7 +58,7 @@ public class TopicModelCreater {
 		}
 
 
-		// Create a model with 100 topics, alpha_t = 0.01, beta_w = 0.01
+		// Create a model, alpha_t = 0.01, beta_w = 0.01
 		//  Note that the first parameter is passed as the sum over topics, while
 		//  the second is
 		ParallelTopicModel model = new ParallelTopicModel(numTopics, 1.0, 0.01);

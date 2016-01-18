@@ -8,19 +8,17 @@ import org.junit.Test;
 
 import java.util.*;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by wei2l on 1/17/2016.
  */
-public class TopicModelCreaterTest {
+public class TopicModelCreatorTest {
     static final String TEST_FILE = "src/test/resources/analyzer/topics/testFile";
 	static final int NUM_TOPICS = 10;
 
     @Test
     public void testTrain() throws Exception {
 
-        ParallelTopicModel model = TopicModelCreater.train(TEST_FILE, NUM_TOPICS);
+        ParallelTopicModel model = TopicModelCreator.train(TEST_FILE, NUM_TOPICS);
 
 		// The data alphabet maps word IDs to strings
 		Alphabet dataAlphabet = model.getAlphabet();

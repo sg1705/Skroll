@@ -8,16 +8,14 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by wei2l on 1/18/2016.
  */
-public class RelatedParaWithInDocFinderTest {
+public class RelatedParaWithinDocFinderTest {
 
     static final String TEST_MODEL = "src/test/resources/analyzer/topics/testModelForInfer";
     Document doc = TestHelper.setUpTestDocForTopicModeling();
-    RelatedParaWithInDocFinder finder = new RelatedParaWithInDocFinder(doc, TEST_MODEL);
+    RelatedParaWithinDocFinder finder = new RelatedParaWithinDocFinder(doc, TEST_MODEL);
 
     @Test
     public void testComputeDistance() throws Exception {

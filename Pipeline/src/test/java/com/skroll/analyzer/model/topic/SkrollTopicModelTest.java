@@ -29,8 +29,6 @@ public class SkrollTopicModelTest {
 	@Test
     public void testReadModel() throws Exception {
 
-//		ParallelTopicModel trainedModel = TopicModelCreater.train(TEST_FILE, NUM_TOPICS);
-//		trainedModel.write(new File(TEST_MODEL));
         ParallelTopicModel model = SkrollTopicModel.readModel(TEST_MODEL);
 
 		// The data alphabet maps word IDs to strings
@@ -98,8 +96,6 @@ public class SkrollTopicModelTest {
 
     @Test
     public void testInfer() throws Exception {
-//		ParallelTopicModel trainedModel = TopicModelCreater.train(TEST_FILE, NUM_TOPICS);
-//		trainedModel.write(new File(TEST_MODEL));
 		CoreMap para = doc.getParagraphs().get(0);
 		double[] probs = stm.infer(para);
 		System.out.println(Arrays.toString(probs));
