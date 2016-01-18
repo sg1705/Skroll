@@ -4,6 +4,9 @@ import cc.mallet.pipe.Pipe;
 import cc.mallet.topics.ParallelTopicModel;
 import cc.mallet.topics.TopicInferencer;
 import cc.mallet.types.*;
+import com.skroll.document.CoreMap;
+import com.skroll.document.Document;
+import com.skroll.util.TestHelper;
 import org.junit.Test;
 
 import java.io.File;
@@ -17,14 +20,17 @@ import static org.junit.Assert.*;
 public class SkrollTopicModelTest {
 
 	static final String TEST_FILE = "src/test/resources/analyzer/topics/testFile";
-	static final String TEST_MODEL = "src/test/resources/analyzer/topics/testModel";
+	static final String TEST_MODEL = "src/test/resources/analyzer/topics/testModelForInfer";
 	static final int NUM_TOPICS = 10;
+
+	SkrollTopicModel stm = new SkrollTopicModel(TEST_MODEL);
+	Document doc = TestHelper.setUpTestDocForTopicModeling();
 
 	@Test
     public void testReadModel() throws Exception {
 
-		ParallelTopicModel trainedModel = TopicModelCreater.train(TEST_FILE, NUM_TOPICS);
-		trainedModel.write(new File(TEST_MODEL));
+//		ParallelTopicModel trainedModel = TopicModelCreater.train(TEST_FILE, NUM_TOPICS);
+//		trainedModel.write(new File(TEST_MODEL));
         ParallelTopicModel model = SkrollTopicModel.readModel(TEST_MODEL);
 
 		// The data alphabet maps word IDs to strings
@@ -87,11 +93,36 @@ public class SkrollTopicModelTest {
 		double[] testProbabilities = inferencer.getSampledDistribution(testing.get(0), 10, 1, 5);
 		System.out.println("0\t" + Arrays.toString(testProbabilities));
 
-		assert(testProbabilities[0]>0.5);
+		assert((int)(testProbabilities[0]*100) == 84);
     }
 
     @Test
     public void testInfer() throws Exception {
+//		ParallelTopicModel trainedModel = TopicModelCreater.train(TEST_FILE, NUM_TOPICS);
+//		trainedModel.write(new File(TEST_MODEL));
+		CoreMap para = doc.getParagraphs().get(0);
+		double[] probs = stm.infer(para);
+		System.out.println(Arrays.toString(probs));
+		assert(Arrays.toString(probs).equals("[0.016666666666666653, 0.016666666666666653, 0.016666666666666653, 0.016666666666666653, 0.8499999999999992, 0.016666666666666653, 0.016666666666666653, 0.016666666666666653, 0.016666666666666653, 0.016666666666666653]"));
+
 
     }
+
+	@Test
+	public void testInfer1() throws Exception {
+		doc.getParagraphs().stream().forEach(para -> System.out.println(para.getText()));
+		System.out.println(stm.representativeWordsForTopics());
+		double[][] probs = stm.infer(doc.getParagraphs());
+		Arrays.stream(probs).forEach(array -> System.out.println(Arrays.toString(array)));
+		assert((int)(probs[1][8]*100) == 61);
+	}
+
+	@Test
+	public void testInfer2() throws Exception {
+		doc.getParagraphs().stream().forEach(para -> System.out.println(para.getText()));
+		System.out.println(stm.representativeWordsForTopics());
+		double[][] probs = stm.infer(doc);
+		Arrays.stream(probs).forEach(array -> System.out.println(Arrays.toString(array)));
+		assert((int)(probs[1][8]*100) == 61);
+	}
 }

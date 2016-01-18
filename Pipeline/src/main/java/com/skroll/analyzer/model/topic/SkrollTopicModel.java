@@ -5,9 +5,10 @@ import cc.mallet.topics.ParallelTopicModel;
 import cc.mallet.topics.TopicInferencer;
 import cc.mallet.types.*;
 import com.skroll.document.CoreMap;
+import com.skroll.document.Document;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -16,6 +17,7 @@ import java.util.regex.Pattern;
 public class SkrollTopicModel {
 	static final String STOP_LIST_PATH = "src/main/resources/stoplists/en.txt";
 	static final String MODEL_PATH = "src/main/resources/topicModel";
+	static final int RANDOM_SEED = 07041;
     private ParallelTopicModel model;
 	private Pipe pipe; // pipe for processing text for mallet to read
 
@@ -58,10 +60,43 @@ public class SkrollTopicModel {
 
 	}
 
-	double[] infer(CoreMap para){
+	public String representativeWordsForTopics(){
+
+		// The data alphabet maps word IDs to strings
+		Alphabet dataAlphabet = model.getAlphabet();
+		Formatter out = new Formatter(new StringBuilder(), Locale.US);
+		ArrayList<TreeSet<IDSorter>> topicSortedWords = model.getSortedWords();
+		// Show top 5 words in topics with proportions for the first document
+		for (int topic = 0; topic < model.getNumTopics(); topic++) {
+			Iterator<IDSorter> iterator = topicSortedWords.get(topic).iterator();
+
+			out.format("%d\t", topic);
+			int rank = 0;
+			while (iterator.hasNext() && rank < 5) {
+				IDSorter idCountPair = iterator.next();
+				out.format("%s (%.0f) ", dataAlphabet.lookupObject(idCountPair.getID()), idCountPair.getWeight());
+				rank++;
+			}
+			out.format("\n");
+		}
+		return out.toString();
+	}
+
+	public double[] infer(CoreMap para){
 		InstanceList instances = new InstanceList(pipe);
 		instances.addThruPipe(new Instance(para.getText(), null, null, null));
 		TopicInferencer inferencer = model.getInferencer();
+		inferencer.setRandomSeed(RANDOM_SEED);
 		return inferencer.getSampledDistribution(instances.get(0), 10, 1, 5);
+	}
+	public double[][] infer(List<CoreMap> paras){
+		return  paras.stream().map(para -> infer(para)).toArray(size -> new double[size][]);
+	}
+	public double[][] infer(Document doc){
+		return infer(doc.getParagraphs());
+	}
+
+	public ParallelTopicModel getModel() {
+		return model;
 	}
 }
