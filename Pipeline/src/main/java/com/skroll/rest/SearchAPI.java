@@ -117,7 +117,10 @@ public class SearchAPI {
         }
 
         logger.info("Search string for {}", rssUrl);
-        String rssXml = DocumentHelper.fetchHtml(rssUrl);
+        String rssXml = "";
+        if (!rssUrl.isEmpty()) {
+            rssXml = DocumentHelper.fetchHtml(rssUrl);
+        }
         Response r = Response.ok().status(Response.Status.OK).entity(rssXml).build();
         return r;
     }
