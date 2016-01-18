@@ -29,8 +29,9 @@
         selectedChips: selectedChips,
         searchText : searchText
       },
-      clear: clear,
-      getText : getText
+      clear   : clear,
+      getText : getText,
+      isEmpty : isEmpty
     }
 
     return service;
@@ -42,7 +43,7 @@
      * Return query string text
      **/
     function getText() {
-      var wholeSearchText = service.selectedChips.map(function(elem) { return elem.name}).join(" ") +service.searchState.searchText;
+      var wholeSearchText = JSON.stringify(service.searchState); //.map);(function(elem) { return elem.field1 + "(" + elem.type + ")" }).join(":") + ":" + service.searchState.searchText;
       console.log( "wholeSearchText:" + wholeSearchText);
       return wholeSearchText;
     };
@@ -63,6 +64,12 @@
       service.searchState.searchText = '';
     };
 
+    function isEmpty() {
+      if ((this.searchState.selectedChips.length == 0) && (this.searchState.searchText == '')) {
+        return true;
+      }
+      return false;
+    }
   };
 
 })();

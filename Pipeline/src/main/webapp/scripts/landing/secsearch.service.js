@@ -28,7 +28,6 @@
      * Returns a promise to retrieve search results from SEC.gov
      **/
     function getSearchResults(searchString) {
-      $log.debug("Searching SEC.gov for:" + searchString);
       var deferred = $q.defer();
       $http.get(secSearchServiceBase + 'searchSec?text=' + searchString)
         .success(function(data) {
@@ -44,7 +43,6 @@
      * Returns a promise to retrieve index html
      **/
     function getIndexHtml(searchString) {
-      $log.debug("Fetching Indexhtml for:" + searchString);
       var deferred = $q.defer();
       $http.get(secSearchServiceBase + 'fetchIndex?url=' + searchString)
         .success(function(data) {

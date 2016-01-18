@@ -17,32 +17,29 @@
   function LandingCtrl($location, secSearchService, $routeParams, importService, documentModel, $analytics, searchBoxModel) {
 
     //-- private variables
-    var searchResults = [];
     var vm = this;
+    var searchResults = [];
 
     //-- public variables
     vm.searchState = searchBoxModel.searchState;
-    vm.searchState.searchText = $routeParams.searchText;
+    vm.searchTextInUrl = '';
     vm.searchResults = searchResults;
 
     //-- public methods
     vm.onEnter = onEnter;
     vm.onClickedFiling = onClickedFiling;
 
+    loadSearchState();
     search();
 
     function onEnter() {
-      if (!((vm.searchState.searchText == null) || (vm.searchState.searchText == "undefined"))) {
-      $analytics.eventTrack("main", {
-              category: 'landingPage.searchText',
-              label: vm.searchState.searchText
-            });
-
-        if ((vm.searchState.searchText.indexOf('http://') === 0) || (vm.searchState.searchText.indexOf('www.') === 0)) {
-          $location.path('/search/' + encodeURIComponent(vm.searchState.searchText));
-        } else {
-          $location.path('/search/' + vm.searchState.searchText);
-        }
+      vm.searchTextInUrl = searchBoxModel.getText();
+      if (!((vm.searchTextInUrl == null) || (vm.searchTextInUrl == "undefined"))) {
+        $analytics.eventTrack("main", {
+          category: 'landingPage.searchText',
+          label: vm.searchTextInUrl
+        });
+        $location.path('/search/' + encodeURIComponent(vm.searchTextInUrl));
       }
     }
 
@@ -82,39 +79,36 @@
 
     function search() {
       documentModel.viewState.isProcessing = true;
-      if (((vm.searchState.searchText == null) || (vm.searchState.searchText == "undefined"))) {
-        var searchText = 'goog 10-K 2012 2015';
-        $location.path('/search/' + searchText);
+      if (searchBoxModel.isEmpty()) {
+        documentModel.viewState.isProcessing = false;
         return;
       }
       if ((vm.searchState.searchText.indexOf("http%3A") === 0) || ((vm.searchState.searchText.indexOf('www.') === 0))) {
         httpURLInSearch(vm.searchState.searchText);
       }
-
+      //decode search text so that search state can be saved
       vm.searchResults = new Array();
-      secSearchService.getSearchResults(vm.searchState.searchText)
+      secSearchService.getSearchResults(vm.searchTextInUrl)
         .then(function(data) {
-          console.log(vm.searchState.searchText);
-          if(vm.searchState.searchText.toLowerCase().indexOf("ex-") >=0) {
+          if(vm.searchTextInUrl.toLowerCase().indexOf("ex-") >=0) {
             var html = $.parseHTML(data);
             var entries = $(html).find('a[class^="filing"]');
             var filingDate = $(html).find('i[class^="blue"]');
-            console.log(filingDate);
             $.each(entries, function(index) {
-              console.log("text:[" + index + "]" + entries[index].innerText);
               var result = processFullTextResult(entries[index], filingDate[index].innerText);
               vm.searchResults.push(result);
             });
           } else {
             var rss = $.parseXML(data);
             var entries = $(rss).find("entry");
-            console.log(entries.length);
             $.each(entries, function(index) {
               var result = processXml(entries[index]);
               vm.searchResults.push(result);
             });
           }
           documentModel.viewState.isProcessing = false;
+          //temporary workaround for angular bug
+          $('.md-scroll-mask').css('display', 'none');
         }, function(err) {
           console.log(err);
           documentModel.viewState.isProcessing = false;
@@ -167,6 +161,17 @@
         urlArray.push( token );
       }
       return urlArray;
+    }
+
+    function loadSearchState() {
+      vm.searchTextInUrl = $routeParams.searchText;
+      if (vm.searchTextInUrl != undefined) {
+        var searchState = JSON.parse(decodeURIComponent(vm.searchTextInUrl));
+        vm.searchState.selectedChips = searchState.selectedChips;
+        vm.searchState.searchText = searchState.searchText;
+      } else {
+        vm.searchTextInUrl = '';
+      }
     }
   }
 

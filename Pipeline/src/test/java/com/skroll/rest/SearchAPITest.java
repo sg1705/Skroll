@@ -44,7 +44,7 @@ public class SearchAPITest extends APITest {
     public void testSearchSec() throws Exception {
         String TARGET_URL = "http://localhost:8888/restServices/search/searchSec";
         Client client = ClientBuilder.newClient();
-        String query = "apple";
+        String query = "goog";
         WebTarget webTarget = client.target(TARGET_URL).queryParam("text", query);
 
         String response = webTarget.request().get(String.class);
