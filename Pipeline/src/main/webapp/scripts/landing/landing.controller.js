@@ -19,7 +19,7 @@
     //-- private variables
     var vm = this;
     var searchResults = [];
-    var FullTextSearchCatagories = ["Underwriting%20Agreement",
+    var FullTextSearchCategories = ["Underwriting%20Agreement",
                 "Reorganization", "Articles%20of%20Incorporation%20and%20bylaw",
                 "Indenture",
                 "Legal%20Opinion",
@@ -28,7 +28,7 @@
                 "Material%20Contract",
                 "Credit%20Agreement",
                 "ex-"];
-    var FullTextSearchCatagoriesPostFilter = ["ex-1.",
+    var FullTextSearchCategoriesPostFilter = ["ex-1.",
                 "ex-2.", "ex-3.",
                 "ex.4.",
                 "ex-5.",
@@ -109,9 +109,9 @@
       secSearchService.getSearchResults(vm.searchTextInUrl)
         .then(function(data) {
           var IsFullTextSearch = false;
-          var catagoryIndex = 0;
-          for (var catagoryIndex = 0; catagoryIndex < FullTextSearchCatagories.length; catagoryIndex++) {
-              if (vm.searchTextInUrl.toLowerCase().indexOf(FullTextSearchCatagories[catagoryIndex].toLowerCase()) >= 0){
+          var categoryIndex = 0;
+          for (var categoryIndex = 0; categoryIndex < FullTextSearchCategories.length; categoryIndex++) {
+              if (vm.searchTextInUrl.toLowerCase().indexOf(FullTextSearchCategories[categoryIndex].toLowerCase()) >= 0){
                   IsFullTextSearch = true;
                   break;
               }
@@ -122,7 +122,7 @@
             var filingDate = $(html).find('i[class^="blue"]');
             $.each(entries, function(index) {
               var result = processFullTextResult(entries[index], filingDate[index].innerText);
-              if (result.formType.toLowerCase().indexOf(FullTextSearchCatagoriesPostFilter[catagoryIndex]) >= 0) {
+              if (result.formType.toLowerCase().indexOf(FullTextSearchCategoriesPostFilter[categoryIndex]) >= 0) {
                 vm.searchResults.push(result);
               }
             });
