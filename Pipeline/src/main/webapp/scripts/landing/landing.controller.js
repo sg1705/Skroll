@@ -108,15 +108,15 @@
       vm.searchResults = new Array();
       secSearchService.getSearchResults(vm.searchTextInUrl)
         .then(function(data) {
-          var IsFullTestSearch = false;
+          var IsFullTextSearch = false;
           var catagoryIndex = 0;
           for (var catagoryIndex = 0; catagoryIndex < FullTextSearchCatagories.length; catagoryIndex++) {
               if (vm.searchTextInUrl.toLowerCase().indexOf(FullTextSearchCatagories[catagoryIndex].toLowerCase()) >= 0){
-                  IsFullTestSearch = true;
+                  IsFullTextSearch = true;
                   break;
               }
           }
-          if(IsFullTestSearch) {
+          if(IsFullTextSearch) {
             var html = $.parseHTML(data);
             var entries = $(html).find('a[class^="filing"]');
             var filingDate = $(html).find('i[class^="blue"]');
