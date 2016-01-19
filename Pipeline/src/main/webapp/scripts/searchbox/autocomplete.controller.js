@@ -116,10 +116,60 @@
         },
         {
           'id'      : '1',
-          'field1'  : 'Financial',
+          'field1'  : 'Proxy',
+          'field2'  : '',
+          'type'    : 'category'
+        },
+       {
+          'id'      : '2',
+          'field1'  : 'Underwriting Agreement',
+          'field2'  : '',
+          'type'    : 'category'
+        },
+       {
+          'id'      : '3',
+          'field1'  : 'Credit Agreement',
+          'field2'  : '',
+          'type'    : 'category'
+        },
+        {
+          'id'      : '4',
+          'field1'  : 'Plans of Reorganization, Merger or Acquisition',
+          'field2'  : '',
+          'type'    : 'category'
+        },
+        {
+          'id'      : '5',
+          'field1'  : 'Articles of Incorporation and bylaw',
+          'field2'  : '',
+          'type'    : 'category'
+        },
+        {
+          'id'      : '6',
+          'field1'  : 'Indenture',
+          'field2'  : '',
+          'type'    : 'category'
+        },
+        {
+          'id'      : '7',
+          'field1'  : 'Legal Opinion',
+          'field2'  : '',
+          'type'    : 'category'
+        },
+        {
+          'id'      : '8',
+          'field1'  : 'Tax Opinion',
+          'field2'  : '',
+          'type'    : 'category'
+        },
+,
+        {
+          'id'      : '9',
+          'field1'  : 'Material Contract',
           'field2'  : '',
           'type'    : 'category'
         }
+                        
       ];
 
       // return elements;
