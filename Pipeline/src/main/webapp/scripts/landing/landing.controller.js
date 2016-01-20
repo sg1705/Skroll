@@ -20,6 +20,25 @@
     var vm = this;
     var searchResults = [];
     var companyPanelResults = [];
+    var FullTextSearchCategories = ["Underwriting%20Agreement",
+                "Reorganization", "Articles%20of%20Incorporation%20and%20bylaw",
+                "Indenture",
+                "Legal%20Opinion",
+                "Tax%20Opinion",
+                "Voting%20Agreement",
+                "Material%20Contract",
+                "Credit%20Agreement",
+                "ex-"];
+    var FullTextSearchCategoriesPostFilter = ["ex-1.",
+                "ex-2.", "ex-3.",
+                "ex.4.",
+                "ex-5.",
+                "ex-8.",
+                "ex-9.",
+                "ex-10.",
+                "ex-10.",
+                "ex-"];
+
 
     //-- public variables
     vm.searchState = searchBoxModel.searchState;
@@ -93,13 +112,23 @@
       vm.searchResults = new Array();
       secSearchService.getSearchResults(vm.searchTextInUrl)
         .then(function(data) {
-          if(vm.searchTextInUrl.toLowerCase().indexOf("ex-") >=0) {
+          var IsFullTextSearch = false;
+          var categoryIndex = 0;
+          for (var categoryIndex = 0; categoryIndex < FullTextSearchCategories.length; categoryIndex++) {
+              if (vm.searchTextInUrl.toLowerCase().indexOf(FullTextSearchCategories[categoryIndex].toLowerCase()) >= 0){
+                  IsFullTextSearch = true;
+                  break;
+              }
+          }
+          if(IsFullTextSearch) {
             var html = $.parseHTML(data);
             var entries = $(html).find('a[class^="filing"]');
             var filingDate = $(html).find('i[class^="blue"]');
             $.each(entries, function(index) {
               var result = processFullTextResult(entries[index], filingDate[index].innerText);
-              vm.searchResults.push(result);
+              if (result.formType.toLowerCase().indexOf(FullTextSearchCategoriesPostFilter[categoryIndex]) >= 0) {
+                vm.searchResults.push(result);
+              }
             });
           } else {
             var rss = $.parseXML(data);

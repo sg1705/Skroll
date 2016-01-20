@@ -61,6 +61,44 @@ public class TestHelper {
         return null;
     }
 
+    public static Document setUpTestDocForTopicModeling() {
+        List<CoreMap> paraList = new ArrayList<>();
+
+        CoreMap para;
+        String text;
+
+        para = new CoreMap();
+        text = "plan benefit defined compensation plans";
+        para.set(CoreAnnotations.TextAnnotation.class, text);
+        para.set(CoreAnnotations.IndexInteger.class, 0);
+        paraList.add(para);
+
+        para = new CoreMap();
+        text = "securities assets liabilities level";
+        para.set(CoreAnnotations.TextAnnotation.class, text);
+        para.set(CoreAnnotations.IndexInteger.class, 1);
+        paraList.add(para);
+
+        para = new CoreMap();
+        text = "plan benefit defined compensation";
+        para.set(CoreAnnotations.TextAnnotation.class, text);
+        para.set(CoreAnnotations.IndexInteger.class, 2);
+        paraList.add(para);
+
+        para = new CoreMap();
+        text = "plan benefit defined assets";
+        para.set(CoreAnnotations.TextAnnotation.class, text);
+        para.set(CoreAnnotations.IndexInteger.class, 3);
+        paraList.add(para);
+
+
+        Document doc = new Document();
+        doc.setParagraphs(paraList);
+        doc.setId("test");
+        return doc;
+
+    }
+
 
     public static Document setUpTestDoc() {
         List<CoreMap> paraList = new ArrayList<>();
