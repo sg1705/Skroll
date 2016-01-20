@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 /**
  * Created by wei2l on 1/18/2016.
  */
-public class RelatedParaWithinDocFinder {
+public class RelatedParaWithInDocFinder {
 
     static SkrollTopicModel stm;
     static{
@@ -21,7 +21,7 @@ public class RelatedParaWithinDocFinder {
     Document doc;
     double[][] paraTopicProbs;
 
-    public RelatedParaWithinDocFinder(Document doc){
+    public RelatedParaWithInDocFinder(Document doc){
         this.doc = doc;
 //        this.stm = new SkrollTopicModel();
         paraTopicProbs = stm.infer(doc);
@@ -32,7 +32,7 @@ public class RelatedParaWithinDocFinder {
      * @param doc
      * @param modelPath
      */
-    public RelatedParaWithinDocFinder(Document doc, String modelPath){
+    public RelatedParaWithInDocFinder(Document doc, String modelPath){
         this.doc = doc;
         this.stm = new SkrollTopicModel(modelPath);
         paraTopicProbs = stm.infer(doc);
