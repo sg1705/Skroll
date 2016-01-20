@@ -42,6 +42,11 @@
       "active": false,
       "name": "Show old searchbox on landing page",
       "description": "no description"
+    }, {
+      "key": "solr.autocomplete",
+      "active": false,
+      "name": "Is autocomplete for Solr available",
+      "description": "no description"
     }];
     featureFlags.set(flags);
   }

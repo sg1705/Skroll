@@ -1,5 +1,5 @@
 <div style="height:100%">
-  <div layout="column" layout-align="center center" class="sk-landing-search" flex>
+  <div layout="column" layout-align="center center" class="sk-landing-search" flex  ng-if="ctrl.searchTextInUrl == ''">
     <img src='images/icons/skroll-logo.png' class="sk-logo"/>
     <div><h2>Search company filings in Edgar</h2></div>
     <sk-search-box feature-flag="searchbox.new" style="width:100%" ng-enter="ctrl.onEnter()"></sk-search-box>
@@ -44,7 +44,66 @@
     </div>
 
 
-  <div ng-repeat="result in ctrl.companyPanelResults" style="margin-top: 50px; margin-bottom: 15px; padding:15px; background-color: #F5F5F5 /** level 50**/">
+    <div ng-repeat="result in ctrl.companyPanelResults" style="margin-top: 50px; margin-bottom: 15px; padding:15px; background-color: #F5F5F5 /** level 50**/">
+      <h2>{{result.companyName}}</h2>
+      <div layout="row" layout-wrap style="width: 810px" layout-align="space-between">
+
+        <md-card ng-repeat="category in result.categories" style="width: 250px; color: #616161;">
+          <md-card-header style="margin: 6px; padding: 3px;border-bottom: 1px;border-bottom-color: #E0E0E0
+  ;border-bottom-style: solid;">
+            {{category.categoryName}}
+          </md-card-header>
+         <md-card-content layout="column" style="min-height: 200px">
+          <div ng-click="ctrl.onClickedFiling('{{filing.href}}','{{filing.formType}}')" ng-repeat="filing in category.filings" style="padding: 5px;border-bottom: 1px;border-bottom-color:#EEEEEE;border-bottom-style: solid;" layout="row">
+            <div flex="50">{{filing.formType}}</div>
+            <div flex="50" style="text-align: right;">{{filing.filingDate}}</div>
+          </div>
+        </md-card-content>
+         <md-card-actions layout="row" layout-align="end center">
+           <md-button>MORE</md-button>
+         </md-card-actions>
+        </md-card>
+      </div>
+    </div> <!-- end of company panel -->
+
+  </div>
+<div>
+
+<div ng-if="ctrl.searchTextInUrl != ''" layout="row" class="sk-landing-search-results" style="background-color:white">
+
+  <!-- left column -->
+  <div class="sk-landing-search-results-left" md-theme="greyTheme" style="width:100px; height: 60px; padding-left: 6px; text-align:center; background-color:#e0e0e0">
+    <img src='images/icons/skroll-logo.png' class="sk-logo" height="23px" />
+  </div>
+
+  <!-- main body -->
+  <div layout="column" style="width:100%;" class="sk-landing-search-results-body">
+
+    <!-- search box-->
+    <div style="height: 60px; background-color:#e0e0e0">
+      <sk-search-box feature-flag="searchbox.new" style="width:100%" ng-enter="ctrl.onEnter()"></sk-search-box>
+    </div>
+
+    <!-- refiner -->
+    <div style="margin-top: 6px; margin-bottom: 6px; border-bottom: 1px solid #e0e0e0">
+      <!-- refiner lines -->
+      <p>
+        <md-button style="margin: 0px; font-size: 12px; padding: 0px; line-height: 16px; min-height: 16px; min-width: auto; margin-right: 20px">Financials</md-button>
+        <md-button style="margin: 0px; font-size: 12px; padding: 0px; line-height: 16px; min-height: 16px; min-width: auto; margin-right: 20px">Proxy</md-button>
+        <md-button style="margin: 0px; font-size: 12px; padding: 0px; line-height: 16px; min-height: 16px; min-width: auto; margin-right: 20px">Ownership</md-button>
+        <md-button style="margin: 0px; font-size: 12px; padding: 0px; line-height: 16px; min-height: 16px; min-width: auto; margin-right: 20px">News</md-button>
+      </p>
+      <p>
+        <md-button style="margin: 0px; font-size: 12px; padding: 0px; line-height: 16px; min-height: 16px; min-width: auto; margin-right: 20px">2012</md-button>
+        <md-button style="margin: 0px; font-size: 12px; padding: 0px; line-height: 16px; min-height: 16px; min-width: auto; margin-right: 20px">2013</md-button>
+        <md-button style="margin: 0px; font-size: 12px; padding: 0px; line-height: 16px; min-height: 16px; min-width: auto; margin-right: 20px">2014</md-button>
+        <md-button style="margin: 0px; font-size: 12px; padding: 0px; line-height: 16px; min-height: 16px; min-width: auto; margin-right: 20px">2015</md-button>
+      </p>
+    </div>
+  <div>
+
+  <!-- results panel -->
+  <div ng-repeat="result in ctrl.companyPanelResults" style="margin-top: 30px; margin-bottom: 15px; padding:15px; background-color: #F5F5F5 /** level 50**/; max-width: 1000px">
     <h2>{{result.companyName}}</h2>
     <div layout="row" layout-wrap style="width: 810px" layout-align="space-between">
 
@@ -65,8 +124,13 @@
       </md-card>
     </div>
   </div> <!-- end of company panel -->
+<!--
 
 
+
+    </div>
 
   </div>
+ -->
 </div>
+
