@@ -208,6 +208,8 @@ sk-search-box .search-icon {
       border-bottom-color: #E0E0E0;
       border-bottom-style: solid;
       cursor: pointer; }
+    .sk-landing-search-results .sk-landing-search-results-panel .category-panel md-card md-card-content .content-div:hover {
+      background-color: rgba(25, 118, 210, 0.2); }
     .sk-landing-search-results .sk-landing-search-results-panel .category-panel md-card md-card-content .content-div:last-child {
       border: none; }
     .sk-landing-search-results .sk-landing-search-results-panel .category-panel md-card md-card-actions button {

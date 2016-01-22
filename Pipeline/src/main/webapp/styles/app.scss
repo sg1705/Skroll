@@ -304,7 +304,9 @@ sk-search-box {
 						border-bottom-style: solid;
 						cursor: pointer;
 					}
-
+					.content-div:hover {
+						background-color: rgba( $blue-700, .2 );
+					}
 					.content-div:last-child {
 						border: none;
 					}
