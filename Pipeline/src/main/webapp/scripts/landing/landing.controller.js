@@ -216,7 +216,7 @@
   * Append results
   **/
   function convertSearchResultsIntoCompanyPanel(originalResults) {
-    var CATEGORIES = ['Financial', 'News', 'Ownership'];
+    var CATEGORIES = ['Financial', 'News', 'Ownership', 'Other', 'Indenture'];
     var FORMS = {
       '10-K' : 'Financial',
       '10-Q' : 'Financial',
@@ -227,7 +227,7 @@
     var results = _.map(originalResults, function(r) {
       var category = FORMS[r.formType];
       if (category == null) {
-        category = 'NONE'
+        category = 'Other'
       }
       r.category = category;
       return r;
