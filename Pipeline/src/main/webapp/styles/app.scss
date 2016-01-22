@@ -233,6 +233,94 @@ sk-search-box {
 
 }
 
+/*
+*
+*/
+.sk-landing-search-results {
+
+	.sk-landing-search-results-left {
+		background-color: $grey-400;	
+		width:120px;
+		height: 80px;
+		padding-left: 6px;
+		text-align:center;
+	}
+	
+	.sk-landing-search-results-searchbox {
+		background-color: $grey-400;
+		height: 80px;
+	}
+
+	.sk-landing-search-results-refiner {
+		margin-top: 6px;
+		margin-bottom: 6px;
+		border-bottom: 1px solid #e0e0e0;
+
+		button {
+			margin: 0px;
+			font-size: 12px;
+			padding: 0px;
+			line-height: 16px;
+			min-height: 16px;
+			min-width: auto;
+			margin-right: 20px;
+			color: $grey-500;
+		}
+	}
+
+	.sk-landing-search-results-panel {
+		margin-top: 30px;
+		margin-bottom: 15px;
+		padding:15px;
+		background-color: $grey-100;
+		max-width: 1000px;
+
+		.md-title {
+			color: $grey-900;
+		}
+
+		.category-panel {
+			md-card {
+				width: 280px;
+				margin-top: 25px;
+				margin-right: 45px;
+				padding: 6px;
+
+				md-card-header {
+					padding: 2px;
+					font-size: 14px;
+					border-bottom: 1px;
+					border-bottom-color: $grey-500;
+					border-bottom-style: solid;
+				}
+
+				md-card-content {
+					.content-div {
+						padding: 5px;
+						font-size: 14px;
+						border-bottom: 1px;
+						color: $grey-500;
+						border-bottom-color: $grey-300;
+						border-bottom-style: solid;
+						cursor: pointer;
+					}
+
+					.content-div:last-child {
+						border: none;
+					}
+				}
+
+				md-card-actions {
+					button {
+						font-size: 12px;
+						color: $grey-500;
+					}
+				}
+			}
+		}
+	}
+}
+
 
 /*
 * LHS

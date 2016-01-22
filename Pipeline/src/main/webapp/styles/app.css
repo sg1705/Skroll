@@ -157,6 +157,64 @@ sk-search-box .search-icon {
   height: 45px; }
 
 /*
+*
+*/
+.sk-landing-search-results .sk-landing-search-results-left {
+  background-color: #BDBDBD;
+  width: 120px;
+  height: 80px;
+  padding-left: 6px;
+  text-align: center; }
+.sk-landing-search-results .sk-landing-search-results-searchbox {
+  background-color: #BDBDBD;
+  height: 80px; }
+.sk-landing-search-results .sk-landing-search-results-refiner {
+  margin-top: 6px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid #e0e0e0; }
+  .sk-landing-search-results .sk-landing-search-results-refiner button {
+    margin: 0px;
+    font-size: 12px;
+    padding: 0px;
+    line-height: 16px;
+    min-height: 16px;
+    min-width: auto;
+    margin-right: 20px;
+    color: #9E9E9E; }
+.sk-landing-search-results .sk-landing-search-results-panel {
+  margin-top: 30px;
+  margin-bottom: 15px;
+  padding: 15px;
+  background-color: #F5F5F5;
+  max-width: 1000px; }
+  .sk-landing-search-results .sk-landing-search-results-panel .md-title {
+    color: #212121; }
+  .sk-landing-search-results .sk-landing-search-results-panel .category-panel md-card {
+    width: 280px;
+    margin-top: 25px;
+    margin-right: 45px;
+    padding: 6px; }
+    .sk-landing-search-results .sk-landing-search-results-panel .category-panel md-card md-card-header {
+      padding: 2px;
+      font-size: 14px;
+      border-bottom: 1px;
+      border-bottom-color: #9E9E9E;
+      border-bottom-style: solid; }
+    .sk-landing-search-results .sk-landing-search-results-panel .category-panel md-card md-card-content .content-div {
+      padding: 5px;
+      font-size: 14px;
+      border-bottom: 1px;
+      color: #9E9E9E;
+      border-bottom-color: #E0E0E0;
+      border-bottom-style: solid;
+      cursor: pointer; }
+    .sk-landing-search-results .sk-landing-search-results-panel .category-panel md-card md-card-content .content-div:last-child {
+      border: none; }
+    .sk-landing-search-results .sk-landing-search-results-panel .category-panel md-card md-card-actions button {
+      font-size: 12px;
+      color: #9E9E9E; }
+
+/*
 * LHS
 */
 sk-lhs .menu-toggle-button {
