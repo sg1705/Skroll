@@ -19,14 +19,14 @@
     //-- private variables
     var vm = this;
     var searchResults = [];
-    var FullTextSearchCategories = ["Underwriting%20Agreement",
-                "Reorganization", "Articles%20of%20Incorporation%20and%20bylaw",
+    var FullTextSearchCategories = ["Underwriting Agreement",
+                "Plans of Reorganization, Merger or Acquisition", "Articles of Incorporation and bylaw",
                 "Indenture",
-                "Legal%20Opinion",
-                "Tax%20Opinion",
-                "Voting%20Agreement",
-                "Material%20Contract",
-                "Credit%20Agreement",
+                "Legal Opinion",
+                "Tax Opinion",
+                "Voting Agreement",
+                "Material Contract",
+                "Credit Agreement",
                 "ex-"];
     var FullTextSearchCategoriesPostFilter = ["ex-1.",
                 "ex-2.", "ex-3.",
@@ -36,7 +36,13 @@
                 "ex-9.",
                 "ex-10.",
                 "ex-10.",
-                "ex-"];            
+                "ex-"];
+    var BooleanSearchCategories  = ["Financial","Prospectus","Registration","Proxy","News"];
+    var BooleanSearchCategoriesPostFilter = ["10-K 10-Q 10-D",
+            "424 FWP 144 425",
+            "S-1 S-4 S-8 15-15 15-12 D D/A S-3 POS",
+            "DEF PX",
+            "8-K"];
 
     //-- public variables
     vm.searchState = searchBoxModel.searchState;
@@ -110,8 +116,9 @@
         .then(function(data) {
           var IsFullTextSearch = false;
           var categoryIndex = 0;
+          var searchTextFromURL = decodeURIComponent(vm.searchTextInUrl);
           for (var categoryIndex = 0; categoryIndex < FullTextSearchCategories.length; categoryIndex++) {
-              if (vm.searchTextInUrl.toLowerCase().indexOf(FullTextSearchCategories[categoryIndex].toLowerCase()) >= 0){
+              if (searchTextFromURL.toLowerCase().indexOf(FullTextSearchCategories[categoryIndex].toLowerCase()) >= 0){
                   IsFullTextSearch = true;
                   break;
               }
@@ -149,10 +156,22 @@
       var title = $(entry).find('title').text();
       var href = $(entry).find('link').attr('href');
       var formType = title.split(' - ')[0];
+      var category = "";
+      for (var categoryIndex = 0; categoryIndex < BooleanSearchCategoriesPostFilter.length; categoryIndex++) {
+         var formTypesInCategory = BooleanSearchCategoriesPostFilter[categoryIndex].toLowerCase().split(" ");
+          for (var i = 0; i < formTypesInCategory.length; i++) {
+              if (formType.toLowerCase().indexOf(formTypesInCategory[i]) >= 0){
+                  category = BooleanSearchCategories[categoryIndex];
+                  break;
+              }
+            }
+      }
+      console.log ("found category:"  + category + "for FormType: " + formType);
       var companyName = title.split(' - ')[1];
       var result = {
         'companyName': companyName,
         'formType': formType,
+        'category' : category,
         'filingDate': moment(filingDate).format('YYYY MMM DD'),
         'href': href
       }
@@ -163,10 +182,19 @@
       var href = findUrls(entry.href)[0];
       var splitEntry = entry.innerText.split('for');
       var formType = splitEntry[0];
+      var category = "";
+      for (var categoryIndex = 0; categoryIndex < FullTextSearchCategoriesPostFilter.length; categoryIndex++) {
+              if (formType.toLowerCase().indexOf(FullTextSearchCategoriesPostFilter[categoryIndex].toLowerCase()) >= 0){
+                  category = FullTextSearchCategories[categoryIndex];
+                  break;
+              }
+      }
+      console.log ("found category:"  + category + "for FormType: " + formType);
       var companyName = splitEntry[1];
       var result = {
         'companyName': companyName,
         'formType': formType,
+        'category' : category,
         'filingDate': filingDate,
         'href': href
       }
@@ -201,6 +229,6 @@
         vm.searchTextInUrl = '';
       }
     }
-  }
 
+  }
 })();
