@@ -33,7 +33,8 @@
       //-- service methods
       clear   : clear,
       getText : getText,
-      isEmpty : isEmpty
+      isEmpty : isEmpty,
+      updateChip : updateChip
 
     }
 
@@ -72,6 +73,20 @@
         return true;
       }
       return false;
+    }
+
+    /**
+    * Takes a chip with four variables and replaces the existing chip in the category
+    * with the new one.
+    *
+    * Chip fields: field1, type, field2, id
+    */
+    function updateChip(chip) {
+      //filter chip by types
+      var filteredChips = _.filter(vm.searchState.selectedChips, function(c) {
+        if (c.type != chip.type)
+          return c;
+      })
     }
   };
 
