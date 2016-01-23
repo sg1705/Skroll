@@ -238,23 +238,33 @@ sk-search-box {
 */
 .sk-landing-search-results {
 
+	$min-height-header: 80px;
+	$padding-main-body: 10px;
+
 	.sk-landing-search-results-left {
 		background-color: $grey-400;	
 		width:120px;
-		height: 80px;
+		height: $min-height-header;
 		padding-left: 6px;
 		text-align:center;
 	}
 	
 	.sk-landing-search-results-searchbox {
 		background-color: $grey-400;
-		height: 80px;
+		min-height: $min-height-header;
+		padding-left: $padding-main-body;
+
+		sk-search-box {
+			margin-bottom: 5px;
+	    margin-top: 5px;
+		}
 	}
 
 	.sk-landing-search-results-refiner {
 		margin-top: 6px;
 		margin-bottom: 6px;
 		border-bottom: 1px solid #e0e0e0;
+		padding-left: $padding-main-body;
 
 		button {
 			margin: 0px;

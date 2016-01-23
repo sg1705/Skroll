@@ -2,7 +2,7 @@
   <div layout="column" layout-align="center center" class="sk-landing-search" flex  ng-if="ctrl.searchTextInUrl == ''">
     <img src='images/icons/skroll-logo.png' class="sk-logo"/>
     <div><h3 style="font-weight: normal">Search company filings in Edgar</h3></div>
-    <sk-search-box feature-flag="searchbox.new" style="width:100%" ng-enter="ctrl.onEnter()"></sk-search-box>
+    <sk-search-box box-align="center" feature-flag="searchbox.new" style="width:100%;" ng-enter="ctrl.onEnter()"></sk-search-box>
     <div layout="row" layout-align="center center" feature-flag="searchbox.old">
        <md-whiteframe class="md-whiteframe-z1" style="width: 90%">
         <div layout="row" flex class="search-frame">
@@ -77,7 +77,7 @@
 
     <!-- search box-->
     <div class="sk-landing-search-results-searchbox" layout="column" layout-align="center">
-      <sk-search-box feature-flag="searchbox.new" style="width:100%" ng-enter="ctrl.onEnter()"></sk-search-box>
+      <sk-search-box box-align="start center" feature-flag="searchbox.new" style="width:100%" ng-enter="ctrl.onEnter()"></sk-search-box>
     </div>
 
     <!-- refiner -->

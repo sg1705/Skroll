@@ -167,11 +167,16 @@ sk-search-box .search-icon {
   text-align: center; }
 .sk-landing-search-results .sk-landing-search-results-searchbox {
   background-color: #BDBDBD;
-  height: 80px; }
+  min-height: 80px;
+  padding-left: 10px; }
+  .sk-landing-search-results .sk-landing-search-results-searchbox sk-search-box {
+    margin-bottom: 5px;
+    margin-top: 5px; }
 .sk-landing-search-results .sk-landing-search-results-refiner {
   margin-top: 6px;
   margin-bottom: 6px;
-  border-bottom: 1px solid #e0e0e0; }
+  border-bottom: 1px solid #e0e0e0;
+  padding-left: 10px; }
   .sk-landing-search-results .sk-landing-search-results-refiner button {
     margin: 0px;
     font-size: 12px;

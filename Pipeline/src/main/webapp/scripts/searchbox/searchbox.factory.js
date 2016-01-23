@@ -29,9 +29,12 @@
         selectedChips: selectedChips,
         searchText : searchText
       },
+
+      //-- service methods
       clear   : clear,
       getText : getText,
       isEmpty : isEmpty
+
     }
 
     return service;

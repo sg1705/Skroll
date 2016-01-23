@@ -6,7 +6,7 @@
       .module('app.searchbox')
       .controller('AutoCompleteCtrl', AutoCompleteCtrl);
 
-  function AutoCompleteCtrl ($timeout, $q, searchBoxModel, searchBoxService, featureFlags) {
+  function AutoCompleteCtrl ($timeout, $q, searchBoxModel, searchBoxService, featureFlags, $scope) {
 
     //-- private variables
 
@@ -16,7 +16,7 @@
     vm.readonly = false;
     vm.selectedItem = null;
     vm.searchState = searchBoxModel.searchState;
-
+    vm.$scope = $scope;
     //-- public methods
     vm.querySearch = querySearch;
     vm.dataElements = loadData();
@@ -30,6 +30,7 @@
     //-- initialization
     vm.dataElements = loadData();
 
+    console.log('Align='+ $scope.align);
 
     //////////////////////////////////////
 
@@ -181,7 +182,7 @@
           'field2'  : '',
           'type'    : 'category'
         }
-                        
+
       ];
 
       // return elements;
