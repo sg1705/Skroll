@@ -29,11 +29,11 @@
         <md-button ng-repeat="category in ctrl.refinerCategories" ng-click="ctrl.onClickRefineChip('category', '{{category.categoryName}}')">{{category.categoryName}}</md-button>
       </p>
       <p>
-        <md-button>2012</md-button>
-        <md-button>2013</md-button>
+        <md-button ng-repeat="year in ctrl.refinerYears" ng-click="ctrl.onClickRefineYear('{{year}}')">{{year}}</md-button>
+<!--         <md-button>2013</md-button>
         <md-button>2014</md-button>
         <md-button>2015</md-button>
-      </p>
+ -->      </p>
     </div>
   <div>
 

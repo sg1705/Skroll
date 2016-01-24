@@ -30,11 +30,13 @@
     vm.searchTextInUrl = '';
     vm.companyPanelResults = companyPanelResults;
     vm.refinerCategories = refinerCategories;
+    vm.refinerYears = ['2012', '2013', '2014', '2015'];
 
     //-- public methods
     vm.onEnter = onEnter;
     vm.onClickedFiling = onClickedFiling;
     vm.onClickRefineChip = onClickRefineChip;
+    vm.onClickRefineYear = onClickRefineYear;
     vm.onClickLogo = onClickLogo;
 
     loadSearchState();
@@ -84,6 +86,11 @@
     function onClickRefineChip(chipType, chipName) {
       var newChip = { id: '', field1: chipName, type: chipType, field2: '' };
       searchBoxModel.updateChip(newChip);
+      vm.onEnter();
+    }
+
+    function onClickRefineYear(year) {
+      vm.searchState.searchText = year;
       vm.onEnter();
     }
 

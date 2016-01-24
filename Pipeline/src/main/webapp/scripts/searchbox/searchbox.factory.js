@@ -48,7 +48,6 @@
      **/
     function getText() {
       var wholeSearchText = JSON.stringify(service.searchState); //.map);(function(elem) { return elem.field1 + "(" + elem.type + ")" }).join(":") + ":" + service.searchState.searchText;
-      console.log( "wholeSearchText:" + wholeSearchText);
       return wholeSearchText;
     };
 
