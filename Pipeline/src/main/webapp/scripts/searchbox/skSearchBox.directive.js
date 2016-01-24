@@ -20,7 +20,8 @@
         controller: 'AutoCompleteCtrl',
         controllerAs: 'autoCompleteCtrl',
         scope: {
-            boxAlign: '@boxAlign'
+            boxAlign: '@boxAlign',
+            onSearch: '&onSearch'
         }
 
       };

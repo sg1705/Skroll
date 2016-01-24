@@ -6,7 +6,7 @@
       .module('app.searchbox')
       .controller('AutoCompleteCtrl', AutoCompleteCtrl);
 
-  function AutoCompleteCtrl ($timeout, $q, searchBoxModel, searchBoxService, featureFlags) {
+  function AutoCompleteCtrl ($timeout, $q, searchBoxModel, searchBoxService, featureFlags, $scope) {
 
     //-- private variables
     var vm = this;
@@ -22,11 +22,16 @@
     vm.selectedChips = searchBoxModel.searchState.selectedChips;
     vm.autocompleteRequireMatch = true;
     vm.transformChip = transformChip;
+    vm.onEnter = onEnter;
 
     //-- initialization
     vm.dataElements = loadData();
 
     //////////////////////////////////////
+
+    function onEnter() {
+      $scope.onSearch();
+    }
 
 
     /**

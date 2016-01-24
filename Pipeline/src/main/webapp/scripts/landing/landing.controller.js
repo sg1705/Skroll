@@ -163,7 +163,6 @@
               }
             }
       }
-      console.log ("found category:"  + category + "for FormType: " + formType);
       var companyName = title.split(' - ')[1];
       var result = {
         'companyName': companyName,
@@ -286,11 +285,6 @@
         'postFilter'    : '10-K 10-Q 10-D',
         'categoryType'  : 'BooleanSearch',
         'inRefiner'     : true
-      }, {
-        'categoryName'  : 'Prospectus',
-        'postFilter'    : '424 FWP 144 425',
-        'categoryType'  : 'BooleanSearch',
-        'inRefiner'     : false
       }, {
         'categoryName'  : 'Registration',
         'postFilter'    : 'S-1 S-4 S-8 15-15 15-12 D D/A S-3 POS',
