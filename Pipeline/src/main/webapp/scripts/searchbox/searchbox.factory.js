@@ -64,7 +64,7 @@
      * Clear search
      **/
     function clear() {
-      service.selectedChips = [];
+      service.searchState.selectedChips = [];
       service.searchState.searchText = '';
     };
 

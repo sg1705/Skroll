@@ -165,6 +165,8 @@ sk-search-box .search-icon {
   height: 80px;
   padding-left: 6px;
   text-align: center; }
+  .sk-landing-search-results .sk-landing-search-results-left .sk-logo {
+    cursor: pointer; }
 .sk-landing-search-results .sk-landing-search-results-searchbox {
   background-color: #BDBDBD;
   min-height: 80px;
@@ -342,6 +344,8 @@ md-toolbar .sk-logo {
   cursor: pointer;
   width: 120px;
   height: 35px; }
+  md-toolbar .sk-logo :hover {
+    cursor: pointer; }
   @media (min-width: 960px) {
     md-toolbar .sk-logo {
       margin-left: 400px; } }

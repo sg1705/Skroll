@@ -238,6 +238,8 @@ sk-search-box {
 */
 .sk-landing-search-results {
 
+
+
 	$min-height-header: 80px;
 	$padding-main-body: 10px;
 
@@ -247,6 +249,11 @@ sk-search-box {
 		height: $min-height-header;
 		padding-left: 6px;
 		text-align:center;
+
+		.sk-logo  {
+			cursor: pointer;
+		}
+
 	}
 	
 	.sk-landing-search-results-searchbox {
@@ -518,6 +525,9 @@ md-toolbar {
 
 	.sk-logo  {
 
+		:hover {
+			cursor: pointer;
+		}
 		cursor: pointer;
 		width: 120px ;
 		height: 35px ;

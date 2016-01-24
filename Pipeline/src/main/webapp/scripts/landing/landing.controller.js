@@ -35,6 +35,7 @@
     vm.onEnter = onEnter;
     vm.onClickedFiling = onClickedFiling;
     vm.onClickRefineChip = onClickRefineChip;
+    vm.onClickLogo = onClickLogo;
 
     loadSearchState();
     search();
@@ -48,6 +49,11 @@
         });
         $location.path('/search/' + encodeURIComponent(vm.searchTextInUrl));
       }
+    }
+
+    function onClickLogo() {
+      vm.searchBoxModel.clear();
+      $location.path('/search/');
     }
 
     function onClickedFiling(link, docType) {
