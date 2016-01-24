@@ -69,7 +69,6 @@
             var html = $.parseHTML(data);
             var href = $(html).find('[href^="/Archives/edgar/data"]')[0];
             href = 'http://www.sec.gov/' + $(href).attr('href');;
-            console.log(href);
             importService.importDocFromUrl(href, docType)
               .then(function(partial) {
                 $location.search({});
@@ -138,7 +137,6 @@
           }
           documentModel.viewState.isProcessing = false;
           vm.companyPanelResults = convertSearchResultsIntoCompanyPanel(vm.searchResults);
-          console.log(vm.companyPanelResults);
           //temporary workaround for angular bug
           $('.md-scroll-mask').css('display', 'none');
         }, function(err) {
@@ -185,7 +183,6 @@
                   break;
               }
       }
-      console.log ("found category:"  + category + "for FormType: " + formType);
       var companyName = splitEntry[1];
       var result = {
         'companyName': companyName,
