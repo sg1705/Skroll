@@ -28,6 +28,7 @@
     vm.searchState = searchBoxModel.searchState;
     vm.searchBoxModel = searchBoxModel;
     vm.searchTextInUrl = '';
+    vm.progressBar = false;
     vm.companyPanelResults = companyPanelResults;
     vm.refinerCategories = refinerCategories;
     vm.refinerYears = ['2012', '2013', '2014', '2015'];
@@ -103,9 +104,10 @@
     }
 
     function search() {
-      documentModel.viewState.isProcessing = true;
+      vm.progressBar = true;
       if (searchBoxModel.isEmpty()) {
-        documentModel.viewState.isProcessing = false;
+
+        vm.progressBar = false;
         return;
       }
       if ((vm.searchState.searchText.indexOf("http%3A") === 0) || ((vm.searchState.searchText.indexOf('www.') === 0))) {
@@ -142,13 +144,13 @@
               vm.searchResults.push(result);
             });
           }
-          documentModel.viewState.isProcessing = false;
+          vm.progressBar = false;
           vm.companyPanelResults = convertSearchResultsIntoCompanyPanel(vm.searchResults);
           //temporary workaround for angular bug
           $('.md-scroll-mask').css('display', 'none');
         }, function(err) {
           console.log(err);
-          documentModel.viewState.isProcessing = false;
+          vm.progressBar = false;
         });
 
     }

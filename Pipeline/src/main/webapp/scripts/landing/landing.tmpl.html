@@ -21,6 +21,7 @@
     <div class="sk-landing-search-results-searchbox" layout="column" layout-align="center">
       <sk-search-box box-align="start center" on-search="ctrl.onEnter()" feature-flag="searchbox.new" style="width:100%" ng-enter="ctrl.onEnter()"></sk-search-box>
     </div>
+    <md-progress-linear ng-if="ctrl.progressBar"md-mode="indeterminate"></md-progress-linear>
 
     <!-- refiner -->
     <div class="sk-landing-search-results-refiner">
@@ -63,7 +64,7 @@
     </div>
   </div> <!-- end of company panel -->
 
-  <div ng-if="ctrl.searchResults.length == 0">
+  <div ng-if="(ctrl.companyPanelResults.length == 0) && (!ctrl.progressBar)">
     No results found. Please search by Ticker, Company Name, Filing Type and/or Filing Year Range. AND, OR, NOT can be used to refine the search.
   </div>
 
