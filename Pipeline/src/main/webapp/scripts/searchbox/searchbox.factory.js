@@ -77,16 +77,20 @@
 
     /**
     * Takes a chip with four variables and replaces the existing chip in the category
-    * with the new one.
+    * with the new one. If the chip doesn't exist then it creates a new one
     *
     * Chip fields: field1, type, field2, id
     */
     function updateChip(chip) {
       //filter chip by types
-      var filteredChips = _.filter(vm.searchState.selectedChips, function(c) {
+      var filteredChips = _.filter(this.searchState.selectedChips, function(c) {
         if (c.type != chip.type)
           return c;
       })
+
+      //insert new chip in the selected chips
+      filteredChips.push(chip);
+      this.searchState.selectedChips = filteredChips;
     }
   };
 

@@ -18,38 +18,23 @@
 
     //-- private variables
     var vm = this;
-    var searchResults = [];
     var companyPanelResults = [];
-    var FullTextSearchCategories = ["Underwriting%20Agreement",
-                "Reorganization", "Articles%20of%20Incorporation%20and%20bylaw",
-                "Indenture",
-                "Legal%20Opinion",
-                "Tax%20Opinion",
-                "Voting%20Agreement",
-                "Material%20Contract",
-                "Credit%20Agreement",
-                "ex-"];
-    var FullTextSearchCategoriesPostFilter = ["ex-1.",
-                "ex-2.", "ex-3.",
-                "ex.4.",
-                "ex-5.",
-                "ex-8.",
-                "ex-9.",
-                "ex-10.",
-                "ex-10.",
-                "ex-"];
-
+    var categories = new Categories();
+    var fullTextSearchCategories = categories.getFullTextSearchCategories();
+    var booleanSearchCategories = categories.getBooleanSearchCategories();
+    var refinerCategories = categories.getRefinerCategories();
 
     //-- public variables
     vm.searchState = searchBoxModel.searchState;
     vm.searchBoxModel = searchBoxModel;
     vm.searchTextInUrl = '';
-    vm.searchResults = searchResults;
     vm.companyPanelResults = companyPanelResults;
+    vm.refinerCategories = refinerCategories;
 
     //-- public methods
     vm.onEnter = onEnter;
     vm.onClickedFiling = onClickedFiling;
+    vm.onClickRefineChip = onClickRefineChip;
 
     loadSearchState();
     search();
@@ -91,6 +76,12 @@
       }
     }
 
+    function onClickRefineChip(chipType, chipName) {
+      var newChip = { id: '', field1: chipName, type: chipType, field2: '' };
+      searchBoxModel.updateChip(newChip);
+      vm.onEnter();
+    }
+
     function httpURLInSearch(url) {
       importService.importDocFromUrl(url)
         .then(function(partial) {
@@ -114,8 +105,9 @@
         .then(function(data) {
           var IsFullTextSearch = false;
           var categoryIndex = 0;
-          for (var categoryIndex = 0; categoryIndex < FullTextSearchCategories.length; categoryIndex++) {
-              if (vm.searchTextInUrl.toLowerCase().indexOf(FullTextSearchCategories[categoryIndex].toLowerCase()) >= 0){
+          var searchTextFromURL = decodeURIComponent(vm.searchTextInUrl);
+          for (var categoryIndex = 0; categoryIndex < fullTextSearchCategories.length; categoryIndex++) {
+              if (searchTextFromURL.toLowerCase().indexOf(fullTextSearchCategories[categoryIndex].categoryName.toLowerCase()) >= 0){
                   IsFullTextSearch = true;
                   break;
               }
@@ -126,7 +118,7 @@
             var filingDate = $(html).find('i[class^="blue"]');
             $.each(entries, function(index) {
               var result = processFullTextResult(entries[index], filingDate[index].innerText);
-              if (result.formType.toLowerCase().indexOf(FullTextSearchCategoriesPostFilter[categoryIndex]) >= 0) {
+              if (result.formType.toLowerCase().indexOf(fullTextSearchCategories[categoryIndex].postFilter) >= 0) {
                 vm.searchResults.push(result);
               }
             });
@@ -155,10 +147,22 @@
       var title = $(entry).find('title').text();
       var href = $(entry).find('link').attr('href');
       var formType = title.split(' - ')[0];
+      var category = "";
+      for (var categoryIndex = 0; categoryIndex < booleanSearchCategories.length; categoryIndex++) {
+         var formTypesInCategory = booleanSearchCategories[categoryIndex].postFilter.toLowerCase().split(" ");
+          for (var i = 0; i < formTypesInCategory.length; i++) {
+              if (formType.toLowerCase().indexOf(formTypesInCategory[i]) >= 0){
+                  category = booleanSearchCategories[categoryIndex].categoryName;
+                  break;
+              }
+            }
+      }
+      console.log ("found category:"  + category + "for FormType: " + formType);
       var companyName = title.split(' - ')[1];
       var result = {
         'companyName': companyName,
         'formType': formType,
+        'category' : category,
         'filingDate': moment(filingDate).format('YYYY MMM DD'),
         'href': href
       }
@@ -169,10 +173,19 @@
       var href = findUrls(entry.href)[0];
       var splitEntry = entry.innerText.split('for');
       var formType = splitEntry[0];
+      var category = "";
+      for (var categoryIndex = 0; categoryIndex < fullTextSearchCategories.length; categoryIndex++) {
+              if (formType.toLowerCase().indexOf(fullTextSearchCategories[categoryIndex].postFilter.toLowerCase()) >= 0){
+                  category = fullTextSearchCategories[categoryIndex].categoryName;
+                  break;
+              }
+      }
+      console.log ("found category:"  + category + "for FormType: " + formType);
       var companyName = splitEntry[1];
       var result = {
         'companyName': companyName,
         'formType': formType,
+        'category' : category,
         'filingDate': filingDate,
         'href': href
       }
@@ -207,72 +220,171 @@
         vm.searchTextInUrl = '';
       }
     }
-  }
 
-  /**
-  * Filter out each company name
-  * Iterate over each company
-  * Filter out each category in sequence
-  * Append results
-  **/
-  function convertSearchResultsIntoCompanyPanel(originalResults) {
-    var CATEGORIES = ['Financial', 'News', 'Ownership', 'Other', 'Indenture'];
-    var FORMS = {
-      '10-K' : 'Financial',
-      '10-Q' : 'Financial',
-      '8-K'  : 'News',
-      '4'  : 'Ownership'
-    }
-    //create category for each search result
-    var results = _.map(originalResults, function(r) {
-      var category = FORMS[r.formType];
-      if (category == null) {
-        category = 'Other'
-      }
-      r.category = category;
-      return r;
-    });
-    //filter out unique companies
-    var uniqCompanies = _.uniq(_.map(originalResults, function(c){ return c.companyName; }));
-    //convert into company array
-    var searchResults = _.map(uniqCompanies, function (c) {
-      var categories = [ ];
-      //filter each category
-      _.each(CATEGORIES, function(category) {
-        var filteredCategoryResults = _.filter(results, function(result) {
-          if ((result.companyName == c) && (result.category == category)) {
-            return result;
-          }
-        });
-        if (filteredCategoryResults.length < 1) {
-          return;
-        }
-
-        var filteredCategoryResults = _.first(filteredCategoryResults, 6);
-        var filings = _.map(filteredCategoryResults, function(f){
-            var fl = {};
-            fl.formType = f.formType;
-            fl.filingDate = f.filingDate;
-            fl.href = f.href;
-            return fl;
+    /**
+    * Filter out each company name
+    * Iterate over each company
+    * Filter out each category in sequence
+    * Append results
+    **/
+    function convertSearchResultsIntoCompanyPanel(originalResults) {
+      //filter out unique companies
+      var uniqCompanies = _.uniq(_.map(originalResults, function(c){ return c.companyName; }));
+      //convert into company array
+      var searchResults = _.map(uniqCompanies, function (c) {
+        var resultCategories = [ ];
+        //filter each category
+        _.each(categories.categories, function(category) {
+          var filteredCategoryResults = _.filter(originalResults, function(result) {
+            if ((result.companyName == c) && (result.category == category.categoryName)) {
+              return result;
+            }
           });
-        //now that we have filtered categories for category, let's create category proto
-        var categoryProto = {
-          categoryName: category,
-          filings: filings
+          if (filteredCategoryResults.length < 1) {
+            return;
+          }
+
+          var filteredCategoryResults = _.first(filteredCategoryResults, 6);
+          var filings = _.map(filteredCategoryResults, function(f){
+              var fl = {};
+              fl.formType = f.formType;
+              fl.filingDate = f.filingDate;
+              fl.href = f.href;
+              return fl;
+            });
+          //now that we have filtered categories for category, let's create category proto
+          var categoryProto = {
+            categoryName: category.categoryName,
+            filings: filings
+          }
+          resultCategories.push(categoryProto);
+        });
+        if (resultCategories.length > 0) {
+          return {
+            companyName: c,
+            categories: resultCategories
+          }
+        } else {
+          return null;
         }
-        categories.push(categoryProto);
       });
-      if (categories.length > 0) {
-        return {
-          companyName: c,
-          categories: categories
-        }
-      } else {
-        return null;
+      return _.filter(searchResults, function(r) { if (r != null) return r });
+    }
+
+
+
+    function Categories() {
+
+      this.categories = [{
+        'categoryName'  : 'Financial',
+        'postFilter'    : '10-K 10-Q 10-D',
+        'categoryType'  : 'BooleanSearch',
+        'inRefiner'     : true
+      }, {
+        'categoryName'  : 'Prospectus',
+        'postFilter'    : '424 FWP 144 425',
+        'categoryType'  : 'BooleanSearch',
+        'inRefiner'     : false
+      }, {
+        'categoryName'  : 'Registration',
+        'postFilter'    : 'S-1 S-4 S-8 15-15 15-12 D D/A S-3 POS',
+        'categoryType'  : 'BooleanSearch',
+        'inRefiner'     : true
+      },  {
+        'categoryName'  : 'Proxy',
+        'postFilter'    : 'DEF PX',
+        'categoryType'  : 'BooleanSearch',
+        'inRefiner'     : true
+      }, {
+        'categoryName'  : 'Prospectus',
+        'postFilter'    : '424 FWP 144 425',
+        'categoryType'  : 'BooleanSearch',
+        'inRefiner'     : true
+      }, {
+        'categoryName'  : 'News',
+        'postFilter'    : '8-K',
+        'categoryType'  : 'BooleanSearch',
+        'inRefiner'     : true
+      }, {
+        'categoryName'  : 'Underwriting Agreement',
+        'postFilter'    : 'ex-1.',
+        'categoryType'  : 'FullTextSearch',
+        'inRefiner'     : true
+      }, {
+        'categoryName'  : 'Plans of Reorganization',
+        'postFilter'    : 'ex-2.',
+        'categoryType'  : 'FullTextSearch',
+        'inRefiner'     : false
+      }, {
+        'categoryName'  : 'Merger or Acquisition',
+        'postFilter'    : 'ex-3.',
+        'categoryType'  : 'FullTextSearch',
+        'inRefiner'     : false
+      }, {
+        'categoryName'  : 'Articles of Incorporation and bylaw',
+        'postFilter'    : 'ex.4.',
+        'categoryType'  : 'FullTextSearch',
+        'inRefiner'     : false
+      }, {
+        'categoryName'  : 'Indenture',
+        'postFilter'    : 'ex-5.',
+        'categoryType'  : 'FullTextSearch',
+        'inRefiner'     : true
+      }, {
+        'categoryName'  : 'Legal Opinion',
+        'postFilter'    : 'ex.8.',
+        'categoryType'  : 'FullTextSearch',
+        'inRefiner'     : false
+      }, {
+        'categoryName'  : 'Tax Opinion',
+        'postFilter'    : 'ex.9.',
+        'categoryType'  : 'FullTextSearch',
+        'inRefiner'     : false
+      }, {
+        'categoryName'  : 'Voting Agreement',
+        'postFilter'    : 'ex.10.',
+        'categoryType'  : 'FullTextSearch',
+        'inRefiner'     : false
+      }, {
+        'categoryName'  : 'Material Contract',
+        'postFilter'    : 'ex.10.',
+        'categoryType'  : 'FullTextSearch',
+        'inRefiner'     : false
+      }, {
+        'categoryName'  : 'Credit Agreement',
+        'postFilter'    : 'ex-',
+        'categoryType'  : 'FullTextSearch',
+        'inRefiner'     : true
+      }];
+
+
+      this.getFullTextSearchCategories = function() {
+        return _.filter(this.categories, function(c) {
+          if (c.categoryType == 'FullTextSearch')
+            return c;
+        })
       }
-    });
-    return _.filter(searchResults, function(r) { if (r != null) return r });
+
+
+      this.getBooleanSearchCategories = function() {
+        return _.filter(this.categories, function(c) {
+          if (c.categoryType == 'BooleanSearch')
+            return c;
+        })
+      }
+
+      this.getRefinerCategories = function() {
+        return _.filter(this.categories, function(c) {
+          if (c.inRefiner)
+            return c;
+        })
+
+      }
+
+    }
+
+
+
   }
 
 })();

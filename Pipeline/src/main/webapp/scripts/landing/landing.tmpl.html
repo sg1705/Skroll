@@ -3,64 +3,6 @@
     <img src='images/icons/skroll-logo.png' class="sk-logo"/>
     <div><h3 style="font-weight: normal">Search company filings in Edgar</h3></div>
     <sk-search-box box-align="center" feature-flag="searchbox.new" style="width:100%;" ng-enter="ctrl.onEnter()"></sk-search-box>
-    <div layout="row" layout-align="center center" feature-flag="searchbox.old">
-       <md-whiteframe class="md-whiteframe-z1" style="width: 90%">
-        <div layout="row" flex class="search-frame">
-          <input style="width:100%;" ng-model="ctrl.searchText" ng-enter="ctrl.onEnter()" size="40"
-                 class="search-input" autofocus/>
-          <md-button class="md-raised md-primary search-button" ng-click="ctrl.onEnter()">
-            <md-icon md-svg-icon="images/icons/ic_search_48px.svg" class="search-icon">
-            </md-icon>
-          </md-button>
-        </div>
-      </md-whiteframe>
-    </div>
-    <md-list flex="50" class="list" hide show-gt-md feature-flag="searchbox.old">
-      <md-list-item ng-repeat="result in ctrl.searchResults" md-ink>
-        <div flex layout="row" layout-align="space-between center" ng-click="ctrl.onClickedFiling('{{result.href}}','{{result.formType}}')"
-             class="list-item" flex>
-          <h4 flex="65" style="padding-right: 10px">{{result.companyName}}</h2>
-            <h4 flex="15" style="padding-right: 10px">{{result.formType}}</h2>
-              <h4 flex="20" style="text-align: right;">{{result.filingDate}}</h2>
-        </div>
-        <md-divider/>
-    </md-list>
-
-    <div flex="50" show-sm show-md hide-gt-md style="width: 100%" feature-flag="searchbox.old">
-      <md-card ng-repeat="result in ctrl.searchResults" ng-click="ctrl.onClickedFiling('{{result.href}}', '{{result.formType}}')">
-        <md-card-content>
-          <h2>{{result.companyName}}</h2>
-
-          <p>{{result.formType}}</p>
-        </md-card-content>
-        <md-card-footer>
-          {{result.filingDate}}
-        </md-card-footer>
-      </md-card>
-    </div>
-
-    <div ng-repeat="result in ctrl.companyPanelResults" style="margin-top: 50px; margin-bottom: 15px; padding:15px; background-color: #F5F5F5 /** level 50**/">
-      <h2>{{result.companyName}}</h2>
-      <div layout="row" layout-wrap style="width: 810px" layout-align="space-between">
-
-        <md-card ng-repeat="category in result.categories" style="width: 250px; color: #616161;">
-          <md-card-header style="margin: 6px; padding: 3px;border-bottom: 1px;border-bottom-color: #E0E0E0
-  ;border-bottom-style: solid;">
-            {{category.categoryName}}
-          </md-card-header>
-         <md-card-content layout="column" style="min-height: 200px">
-          <div ng-click="ctrl.onClickedFiling('{{filing.href}}','{{filing.formType}}')" ng-repeat="filing in category.filings" style="padding: 5px;border-bottom: 1px;border-bottom-color:#EEEEEE;border-bottom-style: solid;" layout="row">
-            <div flex="50">{{filing.formType}}</div>
-            <div flex="50" style="text-align: right;">{{filing.filingDate}}</div>
-          </div>
-        </md-card-content>
-         <md-card-actions layout="row" layout-align="end center">
-           <md-button>MORE</md-button>
-         </md-card-actions>
-        </md-card>
-      </div>
-    </div> <!-- end of company panel -->
-
   </div>
 <div>
 
@@ -83,11 +25,8 @@
     <!-- refiner -->
     <div class="sk-landing-search-results-refiner">
       <!-- refiner lines -->
-      <p>
-        <md-button>Financials</md-button>
-        <md-button>Proxy</md-button>
-        <md-button>Ownership</md-button>
-        <md-button>News</md-button>
+      <p >
+        <md-button ng-repeat="category in ctrl.refinerCategories" ng-click="ctrl.onClickRefineChip('category', '{{category.categoryName}}')">{{category.categoryName}}</md-button>
       </p>
       <p>
         <md-button>2012</md-button>

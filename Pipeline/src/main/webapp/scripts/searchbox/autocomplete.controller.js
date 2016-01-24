@@ -6,31 +6,25 @@
       .module('app.searchbox')
       .controller('AutoCompleteCtrl', AutoCompleteCtrl);
 
-  function AutoCompleteCtrl ($timeout, $q, searchBoxModel, searchBoxService, featureFlags, $scope) {
+  function AutoCompleteCtrl ($timeout, $q, searchBoxModel, searchBoxService, featureFlags) {
 
     //-- private variables
-
     var vm = this;
 
     //-- public variables
     vm.readonly = false;
     vm.selectedItem = null;
     vm.searchState = searchBoxModel.searchState;
-    vm.$scope = $scope;
+
     //-- public methods
     vm.querySearch = querySearch;
     vm.dataElements = loadData();
     vm.selectedChips = searchBoxModel.searchState.selectedChips;
-    // vm.numberChips = [];
-    // vm.numberChips2 = [];
-    // vm.numberBuffer = '';
     vm.autocompleteRequireMatch = true;
     vm.transformChip = transformChip;
 
     //-- initialization
     vm.dataElements = loadData();
-
-    console.log('Align='+ $scope.align);
 
     //////////////////////////////////////
 
