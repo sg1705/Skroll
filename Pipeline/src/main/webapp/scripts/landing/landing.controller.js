@@ -175,7 +175,7 @@
         'companyName': companyName,
         'formType': formType,
         'category' : category,
-        'filingDate': moment(filingDate).format('YYYY MMM DD'),
+        'filingDate': moment(filingDate).format('MMM DD YYYY'),
         'href': href
       }
       return result;
