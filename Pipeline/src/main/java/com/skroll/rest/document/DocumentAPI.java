@@ -1,11 +1,13 @@
 package com.skroll.rest.document;
 
+import com.google.inject.Inject;
+import com.skroll.analyzer.model.topic.RelatedParaWithInDocFinder;
 import com.skroll.classifier.Category;
-import com.skroll.document.Document;
-import com.skroll.document.DocumentFormat;
-import com.skroll.document.DocumentHelper;
+import com.skroll.document.*;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.document.annotation.DocTypeAnnotationHelper;
+import com.skroll.document.factory.CorpusFSDocumentFactory;
+import com.skroll.document.factory.DocumentFactory;
 import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.ParserException;
 import com.skroll.pipeline.util.Constants;
@@ -15,10 +17,13 @@ import com.skroll.util.UniqueIdGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.DatatypeConverter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by saurabh on 12/30/15.
@@ -31,6 +36,12 @@ public class DocumentAPI {
     // by default,
     private float userWeight = 95;
 
+    @Inject
+    private RelatedParaWithInDocFinder relatedFinder;
+
+    @Inject
+    @CorpusFSDocumentFactory
+    private DocumentFactory documentFactory;
 
     @GET
     @Path("/{documentId}/content")
@@ -60,6 +71,19 @@ public class DocumentAPI {
         }
 
         return response.build();
+    }
+
+    @POST
+    @Path("/{documentId}/related/p/{paraId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ParaProto> findRelated(@PathParam("documentId")String documentId, @PathParam("paraId")String paraId) throws Exception {
+        Document doc = documentFactory.get(documentId);
+        CoreMap para = doc.getParagraphs().stream().filter( p -> p.getId().equals(paraId)).findFirst().get();
+        List<CoreMap> relatedParas = relatedFinder.sortParasByDistance(doc, para);
+        //create paraProto
+        List<ParaProto> paraProtos = relatedParas.stream().map(p -> new ParaProto(documentId, p.getId())).collect(Collectors.toList());
+        return paraProtos;
     }
 
 }

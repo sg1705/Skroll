@@ -6,7 +6,10 @@ import cc.mallet.topics.TopicInferencer;
 import cc.mallet.types.*;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
+import com.skroll.util.Configuration;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -15,30 +18,44 @@ import java.util.regex.Pattern;
 /**
  * Created by wei2l on 1/17/2016.
  */
+@Singleton
 public class SkrollTopicModel {
-	static final String STOP_LIST_PATH = "src/main/resources/stoplists/en.txt";
-	static final String MODEL_PATH = "src/main/resources/topicModel";
+
+    @Inject
+    private Configuration configuration;
+
+//	static final String STOP_LIST_PATH = "src/main/resources/stoplists/en.txt";
+//	static final String MODEL_PATH = "src/main/resources/topicModel";
 	static final int RANDOM_SEED = 07041;
     private ParallelTopicModel model;
-	private Pipe pipe; // pipe for processing text for mallet to read
+    // pipe for processing text for mallet to read
+    private Pipe pipe;
+
+    private String modelPath;
 
 
-	public SkrollTopicModel(){
-		this(MODEL_PATH);
+    private String stopListPath;
+
+    @Inject
+	public SkrollTopicModel(Configuration configuration) {
+        //get all the paths
+        this.modelPath = configuration.get("topicModelFile");
+        this.stopListPath = configuration.get("stopListFile");
+		this.buildModel(modelPath, stopListPath);
 	}
 
-	public SkrollTopicModel(String inputModelName){
-		model = readModel(inputModelName);
-		pipe = buildPipe(STOP_LIST_PATH, model.getAlphabet());
-	}
+    private void buildModel(String modelPath, String stopListPath) {
+        this.model = readModel(modelPath);
+        this.pipe = buildPipe(stopListPath, model.getAlphabet());
+    }
 
 	/**
 	 * Creates Pipe used by Mallet to processing input data
 	 * @param dataAlphabet specifies all possible words in the data
 	 * @return Pipe used by Mallet to processing input data
      */
-	public static Pipe buildPipe(Alphabet dataAlphabet){
-		return buildPipe(STOP_LIST_PATH, dataAlphabet);
+	public Pipe buildPipe(Alphabet dataAlphabet){
+		return buildPipe(this.stopListPath, dataAlphabet);
 	}
 
 	/**
@@ -47,7 +64,7 @@ public class SkrollTopicModel {
 	 * @param dataAlphabet specifies all possible words in the data
 	 * @return Pipe used by Mallet to processing input data
      */
-	public static Pipe buildPipe(String stopList, Alphabet dataAlphabet){
+	public Pipe buildPipe(String stopList, Alphabet dataAlphabet){
         // Begin by importing documents from text to feature sequences
 		ArrayList<Pipe> pipeList = new ArrayList<Pipe>();
 
@@ -65,7 +82,7 @@ public class SkrollTopicModel {
 	 * @param inputModelName
 	 * @return
      */
-	public static ParallelTopicModel readModel(String inputModelName){
+	public ParallelTopicModel readModel(String inputModelName){
 		ParallelTopicModel model = null;
 		try {
 		 	model = ParallelTopicModel.read(new File(inputModelName));
@@ -123,7 +140,12 @@ public class SkrollTopicModel {
 		return inferencer.getSampledDistribution(instances.get(0), 10, 1, 5);
 	}
 
-	/**
+    public String getStopListPath() {
+        return stopListPath;
+    }
+
+
+    /**
 	 * infer the topic distributions for the paragraphs
 	 * @param paras
 	 * @return

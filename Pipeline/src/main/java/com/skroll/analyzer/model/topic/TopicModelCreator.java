@@ -4,7 +4,9 @@ import cc.mallet.pipe.*;
 import cc.mallet.pipe.iterator.CsvIterator;
 import cc.mallet.topics.ParallelTopicModel;
 import cc.mallet.types.*;
+import com.skroll.util.Configuration;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
@@ -21,6 +23,9 @@ import java.util.regex.Pattern;
 public class TopicModelCreator {
 	static final String INPUT_FILE = "build/resources/main/preEvaluatedTxtOneFile.txt";
 	static final int NUM_TOPICS = 100;
+
+    @Inject
+    private static Configuration configuration;
 
 	public static void main(String[] args) throws Exception {
 
@@ -44,7 +49,7 @@ public class TopicModelCreator {
 		pipeList.add( new CharSequenceLowercase() );
 		pipeList.add( new CharSequence2TokenSequence(Pattern.compile("\\p{L}[\\p{L}\\p{P}]+\\p{L}")) );
 		pipeList.add( new TokenSequenceRemoveStopwords(
-				new File(SkrollTopicModel.STOP_LIST_PATH), "UTF-8", false, false, false) );
+				new File(configuration.get("stopListPath")), "UTF-8", false, false, false) );
 		pipeList.add( new TokenSequence2FeatureSequence() );
 
 		InstanceList instances = new InstanceList(new SerialPipes(pipeList));
