@@ -25,6 +25,12 @@
       })
       .dark();
 
+    $mdThemingProvider
+      .theme('greyTheme')
+      .primaryPalette('grey', {
+      });
+
+
     // $mdThemingProvider.theme('default')
     //  .primaryPalette('blue', {
 

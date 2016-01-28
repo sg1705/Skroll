@@ -29,9 +29,13 @@
         selectedChips: selectedChips,
         searchText : searchText
       },
+
+      //-- service methods
       clear   : clear,
       getText : getText,
-      isEmpty : isEmpty
+      isEmpty : isEmpty,
+      updateChip : updateChip
+
     }
 
     return service;
@@ -44,7 +48,6 @@
      **/
     function getText() {
       var wholeSearchText = JSON.stringify(service.searchState); //.map);(function(elem) { return elem.field1 + "(" + elem.type + ")" }).join(":") + ":" + service.searchState.searchText;
-      console.log( "wholeSearchText:" + wholeSearchText);
       return wholeSearchText;
     };
 
@@ -60,7 +63,7 @@
      * Clear search
      **/
     function clear() {
-      service.selectedChips = [];
+      service.searchState.selectedChips = [];
       service.searchState.searchText = '';
     };
 
@@ -69,6 +72,24 @@
         return true;
       }
       return false;
+    }
+
+    /**
+    * Takes a chip with four variables and replaces the existing chip in the category
+    * with the new one. If the chip doesn't exist then it creates a new one
+    *
+    * Chip fields: field1, type, field2, id
+    */
+    function updateChip(chip) {
+      //filter chip by types
+      var filteredChips = _.filter(this.searchState.selectedChips, function(c) {
+        if (c.type != chip.type)
+          return c;
+      })
+
+      //insert new chip in the selected chips
+      filteredChips.push(chip);
+      this.searchState.selectedChips = filteredChips;
     }
   };
 

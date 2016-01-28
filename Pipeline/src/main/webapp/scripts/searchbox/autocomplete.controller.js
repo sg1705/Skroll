@@ -6,10 +6,9 @@
       .module('app.searchbox')
       .controller('AutoCompleteCtrl', AutoCompleteCtrl);
 
-  function AutoCompleteCtrl ($timeout, $q, searchBoxModel, searchBoxService, featureFlags) {
+  function AutoCompleteCtrl ($timeout, $q, searchBoxModel, searchBoxService, featureFlags, $scope) {
 
     //-- private variables
-
     var vm = this;
 
     //-- public variables
@@ -21,17 +20,18 @@
     vm.querySearch = querySearch;
     vm.dataElements = loadData();
     vm.selectedChips = searchBoxModel.searchState.selectedChips;
-    // vm.numberChips = [];
-    // vm.numberChips2 = [];
-    // vm.numberBuffer = '';
     vm.autocompleteRequireMatch = true;
     vm.transformChip = transformChip;
+    vm.onEnter = onEnter;
 
     //-- initialization
     vm.dataElements = loadData();
 
-
     //////////////////////////////////////
+
+    function onEnter() {
+      $scope.onSearch();
+    }
 
 
     /**
@@ -168,8 +168,20 @@
           'field1'  : 'Material Contract',
           'field2'  : '',
           'type'    : 'category'
+        },
+        {
+          'id'      : '2',
+          'field1'  : 'Proxy',
+          'field2'  : '',
+          'type'    : 'category'
+        },
+        {
+          'id'      : '3',
+          'field1'  : 'Underwriting Agreement',
+          'field2'  : '',
+          'type'    : 'category'
         }
-                        
+
       ];
 
       // return elements;

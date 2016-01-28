@@ -1,6 +1,6 @@
-<div layout="row" layout-align="center center" style="width:100%;">
-  <md-whiteframe class="md-whiteframe-z1"  layout-align="center center" flex-gt-lg="50" flex-gt-md="66" flex="80" style="background:white;" >
-    <div layout="row" layout-align="center center" flex class="search-frame" style="background:white;">
+<div layout="row" layout-align="{{boxAlign}}" style="width:100%;">
+  <md-whiteframe class="md-whiteframe-z1"  layout-align="center center" flex-gt-lg="50" flex-gt-md="66" flex="80" style="background:white; border: 1px solid #e0e0e0;" >
+    <div layout="row"  flex class="search-frame" style="background:white;">
       <md-chips
         ng-model="autoCompleteCtrl.searchState.selectedChips"
         md-autocomplete-snap=""
@@ -12,6 +12,7 @@
         <md-autocomplete
           md-selected-item="autoCompleteCtrl.selectedItem"
           md-autofocus="true"
+          md-autoselect="true"
           md-search-text="autoCompleteCtrl.searchState.searchText"
           md-items="item in autoCompleteCtrl.querySearch(autoCompleteCtrl.searchState.searchText)"
           md-item-text="item.name" placeholder="Search for SEC filing">
@@ -22,14 +23,14 @@
         <md-chip-template>
           <span>
             <strong>{{$chip.field1}}</strong>
-            <em>({{$chip.type}})</em>
-            <em><style display:none>({{$chip.field2}})</em></style>
-            <em><style display:none>({{$chip.id}})</em></style>
+            <em><style display:none>({{$chip.type}})</style></em>
+            <em><style display:none>({{$chip.field2}})</style></em>
+            <em><style display:none>({{$chip.id}})</style></em>
           </span>
         </md-chip-template>
       </md-chips>
 
-      <md-button class="md-raised md-primary search-button" ng-click="ctrl.onEnter()">
+      <md-button class="md-raised md-primary search-button" ng-click="autoCompleteCtrl.onEnter()">
         <md-icon md-svg-icon="images/icons/ic_search_48px.svg" class="search-icon">
         </md-icon>
       </md-button>

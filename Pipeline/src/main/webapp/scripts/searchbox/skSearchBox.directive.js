@@ -18,8 +18,14 @@
         templateUrl: 'scripts/searchbox/searchbox.tmpl.html',
         restrict: 'E',
         controller: 'AutoCompleteCtrl',
-        controllerAs: 'autoCompleteCtrl'
+        controllerAs: 'autoCompleteCtrl',
+        scope: {
+            boxAlign: '@boxAlign',
+            onSearch: '&onSearch'
+        }
+
       };
+
 
     };
 })();

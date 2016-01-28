@@ -14,7 +14,7 @@ md-icon {
 * Skroll Main
 **/
 .main {
-	background-color: $skrollport-color;
+	/*background-color: $skrollport-color;*/
 	-webkit-overflow-scrolling: touch;
 	height:100%	
 }
@@ -148,10 +148,7 @@ md-sidenav#navframe.md-locked-open {
 		padding-top: 20px;	
 	};
 
-	background-color: #e0e0e0;
-
 	width: 100%;
-	/*background-color: rgb(246, 246, 246);*/
 
 	.search-frame {
 		height: 45px;
@@ -180,18 +177,6 @@ md-sidenav#navframe.md-locked-open {
 			}
 		}
 
-		.search-button {
-			height:    100%;
-			margin:    0px;
-			padding:   0px;
-			min-width: 60px;
-			opacity:   0.75;
-		}
-
-		.search-icon {
-			width: 45px;
-			height: 45px;
-		}
 	}
 
 	.sk-logo {
@@ -225,6 +210,134 @@ md-sidenav#navframe.md-locked-open {
 
 	}
 
+}
+
+
+/*
+* sk-search-box
+*/
+sk-search-box {
+
+	.search-button {
+		height:    100%;
+		margin:    0px;
+		padding:   0px;
+		min-width: 60px;
+		opacity:   0.75;
+	}
+
+	.search-icon {
+		width: 45px;
+		height: 45px;
+	}
+
+}
+
+/*
+*
+*/
+.sk-landing-search-results {
+
+
+
+	$min-height-header: 80px;
+	$padding-main-body: 10px;
+
+	.sk-landing-search-results-left {
+		background-color: $grey-400;	
+		width:120px;
+		height: $min-height-header;
+		padding-left: 6px;
+		text-align:center;
+
+		.sk-logo  {
+			cursor: pointer;
+		}
+
+	}
+	
+	.sk-landing-search-results-searchbox {
+		background-color: $grey-400;
+		min-height: $min-height-header;
+		padding-left: $padding-main-body;
+
+		sk-search-box {
+			margin-bottom: 5px;
+	    margin-top: 5px;
+		}
+	}
+
+	.sk-landing-search-results-refiner {
+		margin-top: 6px;
+		margin-bottom: 6px;
+		border-bottom: 1px solid #e0e0e0;
+		padding-left: $padding-main-body;
+
+		button {
+			margin: 0px;
+			font-size: 12px;
+			padding: 0px;
+			line-height: 16px;
+			min-height: 16px;
+			min-width: auto;
+			margin-right: 20px;
+			color: $grey-500;
+		}
+	}
+
+	.sk-landing-search-results-panel {
+		margin-top: 30px;
+		margin-bottom: 15px;
+		padding:15px;
+		background-color: $grey-100;
+		max-width: 1000px;
+
+		.md-title {
+			color: $grey-900;
+		}
+
+		.category-panel {
+			md-card {
+				width: 280px;
+				margin-top: 25px;
+				margin-right: 45px;
+				padding: 6px;
+
+				md-card-header {
+					padding: 2px;
+					font-size: 14px;
+					border-bottom: 1px;
+					border-bottom-color: $grey-500;
+					border-bottom-style: solid;
+				}
+
+				md-card-content {
+					.content-div {
+						padding: 5px;
+						font-size: 14px;
+						border-bottom: 1px;
+						color: $grey-500;
+						border-bottom-color: $grey-300;
+						border-bottom-style: solid;
+						cursor: pointer;
+					}
+					.content-div:hover {
+						background-color: rgba( $blue-700, .2 );
+					}
+					.content-div:last-child {
+						border: none;
+					}
+				}
+
+				md-card-actions {
+					button {
+						font-size: 12px;
+						color: $grey-500;
+					}
+				}
+			}
+		}
+	}
 }
 
 
@@ -412,6 +525,9 @@ md-toolbar {
 
 	.sk-logo  {
 
+		:hover {
+			cursor: pointer;
+		}
 		cursor: pointer;
 		width: 120px ;
 		height: 35px ;
