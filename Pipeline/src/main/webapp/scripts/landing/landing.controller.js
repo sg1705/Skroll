@@ -255,7 +255,7 @@
             return;
           }
 
-          var filteredCategoryResults = _.first(filteredCategoryResults, 6);
+          var filteredCategoryResults = _.first(filteredCategoryResults, 60);
           var filings = _.map(filteredCategoryResults, function(f){
               var fl = {};
               fl.formType = f.formType;
@@ -328,7 +328,7 @@
         'inRefiner'     : false
       }, {
         'categoryName'  : 'Articles of Incorporation and bylaw',
-        'postFilter'    : 'ex.4.',
+        'postFilter'    : 'ex-4.',
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : false
       }, {
@@ -338,22 +338,22 @@
         'inRefiner'     : true
       }, {
         'categoryName'  : 'Legal Opinion',
-        'postFilter'    : 'ex.8.',
+        'postFilter'    : 'ex-8.',
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : false
       }, {
         'categoryName'  : 'Tax Opinion',
-        'postFilter'    : 'ex.9.',
+        'postFilter'    : 'ex-9.',
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : false
       }, {
         'categoryName'  : 'Voting Agreement',
-        'postFilter'    : 'ex.10.',
+        'postFilter'    : 'ex-10.',
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : false
       }, {
         'categoryName'  : 'Material Contract',
-        'postFilter'    : 'ex.10.',
+        'postFilter'    : 'ex-10.',
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : false
       }, {
