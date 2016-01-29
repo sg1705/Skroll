@@ -11,6 +11,7 @@
     //-- private variables
     //context root of API
     var documentServiceBase = 'restServices/doc/';
+    var docServiceBase = 'restServices/document/';
     var instrumentServiceBase = 'restServices/instrument/';
 
 
@@ -26,6 +27,7 @@
       getTerms: getTerms,
       unObserve: unObserve,
       updateTerms: updateTerms,
+      getRelatedPara: getRelatedPara,
 
       getBenchmarkScore: getBenchmarkScore,
       saveAsBenchmark: saveAsBenchmark
@@ -245,6 +247,23 @@
       // done with get request
       return deferred.promise;
     }
+
+
+    /**
+     * Returns a promise to retrieves all related paragraphs as per ParaProto
+     **/
+    function getRelatedPara(documentId, paragraphId) {
+      var deferred = $q.defer();
+      $http.post(docServiceBase + documentId + '/related/p/' + paragraphId)
+        .success(function(data) {
+          deferred.resolve(data);
+        })
+        .error(function(msg, status) {
+          deferred.reject(msg);
+        })
+      return deferred.promise;
+    };
+
 
   };
 })();

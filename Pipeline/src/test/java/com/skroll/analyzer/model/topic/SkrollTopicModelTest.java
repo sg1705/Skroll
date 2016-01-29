@@ -4,9 +4,13 @@ import cc.mallet.pipe.Pipe;
 import cc.mallet.topics.ParallelTopicModel;
 import cc.mallet.topics.TopicInferencer;
 import cc.mallet.types.*;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
+import com.skroll.util.SkrollTestGuiceModule;
 import com.skroll.util.TestHelper;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
@@ -19,21 +23,29 @@ import static org.junit.Assert.*;
  */
 public class SkrollTopicModelTest {
 
-	static final String TEST_FILE = "src/test/resources/analyzer/topics/testFile";
-	static final String TEST_MODEL = "src/test/resources/analyzer/topics/testModelForInfer";
 	static final int NUM_TOPICS = 10;
 
-	SkrollTopicModel stm = new SkrollTopicModel(TEST_MODEL);
-	Document doc = TestHelper.setUpTestDocForTopicModeling();
+    SkrollTopicModel stm;
+	Document doc;
 
-	@Test
+    @Before
+    public void setup() throws Exception {
+        doc = TestHelper.setUpTestDocForTopicModeling();
+        Injector injector = Guice.createInjector(new SkrollTestGuiceModule());
+        stm = injector.getInstance(SkrollTopicModel.class);
+    }
+
+
+    @Test
     public void testReadModel() throws Exception {
 
-        ParallelTopicModel model = SkrollTopicModel.readModel(TEST_MODEL);
+//        ParallelTopicModel model = SkrollTopicModel.readModel(TEST_MODEL);
+        ParallelTopicModel model = stm.getModel();
 
 		// The data alphabet maps word IDs to strings
 		Alphabet dataAlphabet = model.getAlphabet();
-		Pipe pipe = SkrollTopicModel.buildPipe(dataAlphabet);
+//		Pipe pipe = SkrollTopicModel.buildPipe(dataAlphabet);
+        Pipe pipe = stm.buildPipe(dataAlphabet);
 
 		// Show the words and topics in the first instance
 		FeatureSequence tokens = (FeatureSequence) model.getData().get(0).instance.getData();

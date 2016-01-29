@@ -56,6 +56,7 @@ public class APITest {
                     bind(DocumentFactory.class)
                             .to(CorpusFSDocumentFactoryImpl.class);
                     bind(Configuration.class).to(TestConfiguration.class);
+                    install(new SkrollTestGuiceModule());
                 }
             });
             factory = injector.getInstance(DocumentFactory.class);

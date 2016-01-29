@@ -1,11 +1,13 @@
 package com.skroll.analyzer.model.topic;
 
 import cc.mallet.util.Maths;
+import com.google.inject.Inject;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,29 +16,26 @@ import java.util.stream.Collectors;
  */
 public class RelatedParaWithInDocFinder {
 
-    static SkrollTopicModel stm;
-    static{
-        stm = new SkrollTopicModel();
-    }
-    Document doc;
-    double[][] paraTopicProbs;
+    @Inject
+    private SkrollTopicModel stm;
 
-    public RelatedParaWithInDocFinder(Document doc){
-        this.doc = doc;
-//        this.stm = new SkrollTopicModel();
-        paraTopicProbs = stm.infer(doc);
+    static HashMap<String, double[][]> topicProbabilities = new HashMap();
+    //double[][] paraTopicProbs;
+
+    public RelatedParaWithInDocFinder() {
+//        paraTopicProbs = stm.infer(doc);
     }
 
-    /**
-     * This constructor also specifies a different topic model to use
-     * @param doc
-     * @param modelPath
-     */
-    public RelatedParaWithInDocFinder(Document doc, String modelPath){
-        this.doc = doc;
-        this.stm = new SkrollTopicModel(modelPath);
-        paraTopicProbs = stm.infer(doc);
-    }
+//    /**
+//     * This constructor also specifies a different topic model to use
+//     * @param doc
+//     * @param modelPath
+//     */
+//    public RelatedParaWithInDocFinder(Document doc, String modelPath){
+//        this.doc = doc;
+//        this.stm = new SkrollTopicModel(modelPath);
+//        paraTopicProbs = stm.infer(doc);
+//    }
 
 
     /**
@@ -44,7 +43,8 @@ public class RelatedParaWithInDocFinder {
      * @param para
      * @return
      */
-    Double[] computeDistances(CoreMap para){
+    protected Double[] computeDistances(CoreMap para, Document doc){
+        double[][] paraTopicProbs = getTopicProbabilitiesForDoc(doc);
         int i = para.get(CoreAnnotations.IndexInteger.class);
         Double[] distances =
                 Arrays.stream(paraTopicProbs)
@@ -58,12 +58,26 @@ public class RelatedParaWithInDocFinder {
      * @param para input para to compare with
      * @return the sorted list of paras
      */
-    public List<CoreMap> sortParasByDistance(CoreMap para){
-        Double[] distances = computeDistances(para);
+    public List<CoreMap> sortParasByDistance(Document doc, CoreMap para){
+        int n = 5;
+        if (doc.getParagraphs().size() < n) {
+            n = doc.getParagraphs().size();
+        }
+        Double[] distances = computeDistances(para, doc);
         return doc.getParagraphs().stream()
                 .sorted((p1,p2) -> Double.compare(
                         distances[p1.get(CoreAnnotations.IndexInteger.class)],
                         distances[p2.get(CoreAnnotations.IndexInteger.class)]))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList())
+                .subList(0, n);
+    }
+
+    private double[][] getTopicProbabilitiesForDoc(Document doc) {
+        double[][] topicProb = topicProbabilities.get(doc.getId());
+        if (topicProb == null) {
+            topicProb = stm.infer(doc);
+            topicProbabilities.put(doc.getId(), topicProb);
+        }
+        return topicProb;
     }
 }

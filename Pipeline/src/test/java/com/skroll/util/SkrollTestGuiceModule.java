@@ -2,6 +2,8 @@ package com.skroll.util;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
+import com.skroll.analyzer.model.topic.RelatedParaWithInDocFinder;
+import com.skroll.analyzer.model.topic.SkrollTopicModel;
 import com.skroll.classifier.*;
 import com.skroll.classifier.factory.*;
 import com.skroll.document.factory.*;
@@ -63,6 +65,9 @@ public class SkrollTestGuiceModule extends AbstractModule {
                 .annotatedWith(SendGridMailService.class)
                 .to(SendGridMailServiceImpl.class);
 
+
+        bind(SkrollTopicModel.class).asEagerSingleton();
+        bind(RelatedParaWithInDocFinder.class);
     }
 
 }
