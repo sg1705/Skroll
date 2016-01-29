@@ -2,7 +2,7 @@ package com.skroll.util;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
-import com.skroll.analyzer.model.topic.RelatedParaWithInDocFinder;
+import com.skroll.analyzer.model.topic.RelatedParaWithinDocFinder;
 import com.skroll.analyzer.model.topic.SkrollTopicModel;
 import com.skroll.classifier.*;
 import com.skroll.classifier.factory.*;
@@ -67,7 +67,7 @@ public class SkrollTestGuiceModule extends AbstractModule {
 
 
         bind(SkrollTopicModel.class).asEagerSingleton();
-        bind(RelatedParaWithInDocFinder.class);
+        bind(RelatedParaWithinDocFinder.class);
     }
 
 }

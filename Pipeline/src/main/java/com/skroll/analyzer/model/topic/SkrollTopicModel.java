@@ -131,10 +131,19 @@ public class SkrollTopicModel {
 	 * @return
      */
 	public double[] infer(CoreMap para){
-		InstanceList instances = new InstanceList(pipe);
 		String text = para.getText();
+		return infer(text);
+	}
+
+	/**
+	 * infer the topic distribution for the given text
+	 * @param text
+	 * @return
+     */
+	public double[] infer(String text){
+		InstanceList instances = new InstanceList(pipe);
 		if (text==null) return new double[model.getNumTopics()];
-		instances.addThruPipe(new Instance(para.getText(), null, null, null));
+		instances.addThruPipe(new Instance(text, null, null, null));
 		TopicInferencer inferencer = model.getInferencer();
 		inferencer.setRandomSeed(RANDOM_SEED);
 		return inferencer.getSampledDistribution(instances.get(0), 10, 1, 5);

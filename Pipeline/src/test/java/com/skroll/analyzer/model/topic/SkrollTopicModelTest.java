@@ -133,4 +133,9 @@ public class SkrollTopicModelTest {
 		Arrays.stream(probs).forEach(array -> System.out.println(Arrays.toString(array)));
 		assert((int)(probs[1][8]*100) == 61);
 	}
+
+	@Test
+	public void testInfer3() throws Exception {
+
+	}
 }

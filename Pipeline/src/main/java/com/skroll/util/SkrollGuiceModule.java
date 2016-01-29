@@ -1,7 +1,6 @@
 package com.skroll.util;
 
 import com.google.inject.AbstractModule;
-import com.skroll.analyzer.model.topic.RelatedParaWithInDocFinder;
 import com.skroll.analyzer.model.topic.SkrollTopicModel;
 import com.skroll.classifier.*;
 import com.skroll.classifier.factory.*;

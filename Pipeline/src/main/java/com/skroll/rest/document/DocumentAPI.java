@@ -1,23 +1,17 @@
 package com.skroll.rest.document;
 
 import com.google.inject.Inject;
-import com.skroll.analyzer.model.topic.RelatedParaWithInDocFinder;
-import com.skroll.classifier.Category;
+import com.skroll.analyzer.model.topic.RelatedParaWithinDocFinder;
 import com.skroll.document.*;
 import com.skroll.document.annotation.CoreAnnotations;
-import com.skroll.document.annotation.DocTypeAnnotationHelper;
 import com.skroll.document.factory.CorpusFSDocumentFactory;
 import com.skroll.document.factory.DocumentFactory;
-import com.skroll.parser.Parser;
-import com.skroll.parser.extractor.ParserException;
 import com.skroll.pipeline.util.Constants;
 import com.skroll.rest.DocAPI;
 import com.skroll.rest.RequestBean;
-import com.skroll.util.UniqueIdGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -37,7 +31,7 @@ public class DocumentAPI {
     private float userWeight = 95;
 
     @Inject
-    private RelatedParaWithInDocFinder relatedFinder;
+    private RelatedParaWithinDocFinder relatedFinder;
 
     @Inject
     @CorpusFSDocumentFactory
