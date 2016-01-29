@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 /**
  * Created by wei2l on 1/18/2016.
  */
-public class RelatedParaWithInDocFinder {
+public class RelatedParaWithinDocFinder {
 
     @Inject
     private SkrollTopicModel stm;
@@ -22,7 +22,7 @@ public class RelatedParaWithInDocFinder {
     static HashMap<String, double[][]> topicProbabilities = new HashMap();
     //double[][] paraTopicProbs;
 
-    public RelatedParaWithInDocFinder() {
+    public RelatedParaWithinDocFinder() {
 //        paraTopicProbs = stm.infer(doc);
     }
 
@@ -31,7 +31,7 @@ public class RelatedParaWithInDocFinder {
 //     * @param doc
 //     * @param modelPath
 //     */
-//    public RelatedParaWithInDocFinder(Document doc, String modelPath){
+//    public RelatedParaWithinDocFinder(Document doc, String modelPath){
 //        this.doc = doc;
 //        this.stm = new SkrollTopicModel(modelPath);
 //        paraTopicProbs = stm.infer(doc);
@@ -54,6 +54,22 @@ public class RelatedParaWithInDocFinder {
     }
 
     /**
+     * compute the distance from the text to all the para in the doc
+     * @param text
+     * @param doc
+     * @return
+     */
+    protected Double[] computeDistances(String text, Document doc){
+        double[][] paraTopicProbs = getTopicProbabilitiesForDoc(doc);
+        double[] textTopics = stm.infer(text);
+        Double[] distances =
+                Arrays.stream(paraTopicProbs)
+                        .map(probs -> Maths.jensenShannonDivergence(probs, textTopics))
+                        .toArray(Double[]::new);
+        return distances;
+    }
+
+    /**
      * sort the paras in the doc by their closeness to the given para
      * @param para input para to compare with
      * @return the sorted list of paras
@@ -64,6 +80,26 @@ public class RelatedParaWithInDocFinder {
             n = doc.getParagraphs().size();
         }
         Double[] distances = computeDistances(para, doc);
+        return doc.getParagraphs().stream()
+                .sorted((p1,p2) -> Double.compare(
+                        distances[p1.get(CoreAnnotations.IndexInteger.class)],
+                        distances[p2.get(CoreAnnotations.IndexInteger.class)]))
+                .collect(Collectors.toList())
+                .subList(0, n);
+    }
+
+    /**
+     * sort the paras in the doc by their closeness to the given text
+     * @param doc
+     * @param text
+     * @return
+     */
+    public List<CoreMap> sortParasByDistance(Document doc, String text){
+        int n = 5;
+        if (doc.getParagraphs().size() < n) {
+            n = doc.getParagraphs().size();
+        }
+        Double[] distances = computeDistances(text, doc);
         return doc.getParagraphs().stream()
                 .sorted((p1,p2) -> Double.compare(
                         distances[p1.get(CoreAnnotations.IndexInteger.class)],
