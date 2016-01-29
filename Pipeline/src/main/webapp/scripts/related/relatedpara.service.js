@@ -17,7 +17,7 @@
     .service('relatedParaService', RelatedParaService)
 
   /* @ngInject */
-  function RelatedParaService(textSelectionObserverService, documentService) {
+  function RelatedParaService(textSelectionObserverService, documentService, relatedParaFactory) {
 
     //-- private variables
     var service = this;
@@ -31,13 +31,13 @@
     /*
      * Invoke on text selection
      */
-    function onSelection(paragraphId) {
+    function onSelection(e) {
       console.log('on selection called in related para service');
-      documentService.getRelatedPara(documentModel.documentId, paraId).
+      documentService.getRelatedPara(documentModel.documentId, e.paraId).
       then(function(data) {
         console.log(data);
+        relatedParaFactory.loadResults(e.paraId, data);
       })
-
     }
 
   }
