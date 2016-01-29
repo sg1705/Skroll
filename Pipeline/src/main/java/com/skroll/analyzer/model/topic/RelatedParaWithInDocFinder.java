@@ -6,9 +6,7 @@ import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -107,6 +105,42 @@ public class RelatedParaWithinDocFinder {
                 .collect(Collectors.toList())
                 .subList(0, n);
     }
+
+    /**
+     * sort paras by their closeness, and return the sorted paras, and the distances to the given para.
+     * The distances to the given para are in the order of the original unsorted para.
+     * @param para
+     * @return
+     */
+    public Map.Entry<List<CoreMap>, Double[]> closeParasAndDistances(Document doc, CoreMap para){
+        Double[] distances = computeDistances(para, doc);
+        return new AbstractMap.SimpleEntry<List<CoreMap>, Double[]> (
+                doc.getParagraphs().stream()
+                .sorted((p1,p2) -> Double.compare(
+                        distances[p1.get(CoreAnnotations.IndexInteger.class)],
+                        distances[p2.get(CoreAnnotations.IndexInteger.class)]))
+                .collect(Collectors.toList()),
+                distances);
+    }
+
+    /**
+     * sort paras by their closeness, and return the sorted paras, and the distances to the given text.
+     * The distances to the given para are in the order of the original unsorted para.
+     * @param text
+     * @return
+     */
+    public Map.Entry<List<CoreMap>, Double[]> closeParasAndDistances(Document doc, String text){
+        Double[] distances = computeDistances(text, doc);
+        return new AbstractMap.SimpleEntry<List<CoreMap>, Double[]> (
+                doc.getParagraphs().stream()
+                .sorted((p1,p2) -> Double.compare(
+                        distances[p1.get(CoreAnnotations.IndexInteger.class)],
+                        distances[p2.get(CoreAnnotations.IndexInteger.class)]))
+                .collect(Collectors.toList()),
+                distances);
+    }
+
+
 
     private double[][] getTopicProbabilitiesForDoc(Document doc) {
         double[][] topicProb = topicProbabilities.get(doc.getId());
