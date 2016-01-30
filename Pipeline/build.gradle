@@ -1,3 +1,5 @@
+apply plugin: 'java'
+apply plugin: 'war'
 buildscript {
     repositories {
         jcenter()
@@ -8,9 +10,6 @@ buildscript {
 }
 
 apply plugin: 'de.undercouch.download'
-apply plugin: 'java'
-apply plugin: 'war'
-
 version = '1.0'
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
