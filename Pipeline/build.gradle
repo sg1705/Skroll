@@ -1,3 +1,13 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'de.undercouch:gradle-download-task:2.1.0'
+    }
+}
+
+apply plugin: 'de.undercouch.download'
 apply plugin: 'java'
 apply plugin: 'war'
 
@@ -175,6 +185,31 @@ task cleanLogs(type: Delete) {
     delete "../logs"
 }
 
+import de.undercouch.gradle.tasks.download.Download
+task downloadSolr(type: Download) {
+    src 'http://apache.spinellicreations.com/lucene/solr/5.4.1/solr-5.4.1.zip'
+    dest new File(buildDir, 'solr-5.4.1.zip')
+}
+
+task downloadAndUnzipSolr(dependsOn: downloadSolr, type: Copy) {
+    from zipTree(downloadSolr.dest)
+    into buildDir
+}
+
+task startSolr(type: Exec) {
+    workingDir 'build/solr-5.4.1/bin/'
+    commandLine './solr', 'start'
+}
+
+task stopSolr(type: Exec) {
+    workingDir 'build/solr-5.4.1/bin/'
+    commandLine './solr', 'stop'
+}
+
+task buildAutoCompleteSolrIndex(type: Exec) {
+    workingDir 'src/main/scripts'
+    commandLine './buildAutoCompleteSolrIndex.sh', '../../../build/solr-5.4.1', '../resources'
+}
 
 
 test.dependsOn npmInstall
