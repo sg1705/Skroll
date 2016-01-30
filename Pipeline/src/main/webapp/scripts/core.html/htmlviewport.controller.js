@@ -16,7 +16,7 @@
   function HtmlViewPortCtrl(selectionService, $log, $routeParams,
     scrollObserverService, clickObserverService,
     textSelectionObserverService,
-    mouseEnterObserverService, mouseLeaveObserverService, $timeout, viewportService) {
+    mouseEnterObserverService, mouseLeaveObserverService, $timeout, viewportService, documentService, documentModel) {
 
     //-- private variables
     var vm = this;
