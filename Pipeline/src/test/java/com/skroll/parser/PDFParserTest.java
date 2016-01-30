@@ -25,7 +25,7 @@ public class PDFParserTest {
         byte[] byteArrayFromDoc = DatatypeConverter.parseBase64Binary(pdfDoc.getSource());
         assert(Arrays.equals(byteArrayFromDoc, originalPdf));
         assert(byteArrayFromDoc.length == originalPdf.length);
-        assert(byteArrayFromDoc.length == 4079152);
+        assert(byteArrayFromDoc.length > 100);
         assert(pdfDoc.get(CoreAnnotations.ParserVersionAnnotationInteger.class) == PDFParser.VERSION);
         assert(pdfDoc.get(CoreAnnotations.SourceUrlAnnotation.class).equals(pdfUrl));
         assert(pdfDoc.get(CoreAnnotations.IsPartiallyParsedAnnotation.class));

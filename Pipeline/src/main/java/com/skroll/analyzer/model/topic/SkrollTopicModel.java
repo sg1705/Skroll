@@ -93,8 +93,7 @@ public class SkrollTopicModel {
 		}
 		catch (Exception e){
 			e.printStackTrace();
-		};
-
+		}
 		return model;
 
 	}
