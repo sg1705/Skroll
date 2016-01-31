@@ -158,7 +158,20 @@ public class RelatedParaWithinDocFinder {
                 distances);
     }
 
-
+    /**
+     * sort paras by their closeness, and return the top n paras, and the word distances to the given para.
+     * The distances to the given para are in the order of the original unsorted para.
+     * @param inputPara
+     * @return
+     */
+    public Map.Entry<List<CoreMap>, List<Double[]>> closeParasWithWordDistances(Document doc, CoreMap inputPara, int n){
+        n = Math.min(n, doc.getParagraphs().size());
+        List<CoreMap> resultParas = sortParasByDistance(doc, inputPara).subList(0,n);
+        List<Double[]> distances = resultParas.stream()
+                .map(para -> computeDistances(para, inputPara, doc))
+                .collect(Collectors.toList());
+        return new AbstractMap.SimpleEntry(resultParas, distances);
+    }
 
     private double[][] getTopicProbabilitiesForDoc(Document doc) {
         double[][] topicProb = topicProbabilities.get(doc.getId());
