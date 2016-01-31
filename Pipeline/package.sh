@@ -30,11 +30,8 @@ cp -R src/main/si/* $HOME_DIR/si/
 mkdir $HOME_DIR/phantomjs
 cp src/main/resources/parser/extractor/* $HOME_DIR/phantomjs/
 
-mkdir $HOME_DIR/autocomplete
-cp -r src/main/resources/solrconf/ $HOME_DIR/autocomplete/solrconf/
-cp src/main/resources/cik_ticker.csv $HOME_DIR/autocomplete/
-cp src/main/resources/categories.csv $HOME_DIR/autocomplete/
-cp src/main/resources/formtype.csv $HOME_DIR/autocomplete/
+mkdir $HOME_DIR/solr
+cp -r src/main/resources/solr/ $HOME_DIR/solr/
 
 rm $PACKAGE_ROOT_DIR/skroll-package.tar.gz
 tar -czvf $PACKAGE_ROOT_DIR/skroll-package.tar.gz -C $PACKAGE_ROOT_DIR $PACKAGE_DIR

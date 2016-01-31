@@ -1,15 +1,9 @@
+plugins {
+    id "de.undercouch.download" version "2.1.0"
+}
 apply plugin: 'java'
 apply plugin: 'war'
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'de.undercouch:gradle-download-task:2.1.0'
-    }
-}
 
-apply plugin: 'de.undercouch.download'
 version = '1.0'
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -192,7 +186,7 @@ task downloadSolr(type: Download) {
     dest new File(buildDir, 'solr-5.4.1.zip')
 }
 
-task downloadAndUnzipSolr(dependsOn: downloadSolr, type: Copy) {
+task installSolr(dependsOn: downloadSolr, type: Copy) {
     from zipTree(downloadSolr.dest)
     into buildDir
 }
@@ -209,7 +203,7 @@ task stopSolr(type: Exec) {
 
 task buildAutoCompleteSolrIndex(type: Exec) {
     workingDir 'src/main/scripts'
-    commandLine './buildAutoCompleteSolrIndex.sh', '../../../build/solr-5.4.1', '../resources'
+    commandLine './buildAutoCompleteSolrIndex.sh', '../../../build/solr-5.4.1', '../resources/solr'
 }
 
 

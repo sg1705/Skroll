@@ -1,7 +1,6 @@
 package com.skroll.search;
 
 import com.google.common.base.Charsets;
-import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
@@ -32,7 +31,7 @@ public class QueryProcessor {
      */
     static {
         //read files
-        URL url = Resources.getResource("cik_ticker.csv");
+        URL url = Resources.getResource("solr/cik_ticker.csv");
         try {
             String text = Resources.toString(url, Charsets.UTF_8);
             Splitter.on('\n').split(text).forEach(line -> {
