@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model.applicationModel;
 
 import com.google.inject.Guice;
+import com.skroll.BaseTest;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.analyzer.model.applicationModel.randomVariables.ParaInCategoryComputer;
 import com.skroll.analyzer.model.applicationModel.randomVariables.RVCreater;
@@ -20,7 +21,8 @@ import java.util.Arrays;
 import java.util.List;
 
 //todo: prior count is not set properly, making the probability favoring positive class.
-public class ProbabilityDocumentAnnotatingModelTest {
+public class ProbabilityDocumentAnnotatingModelTest extends BaseTest {
+
     private static final List<Integer> TEST_DEF_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE,Category.DEFINITION));
     private static final int TEST_DEF_CLASSIFIER_ID = 2;
     ModelRVSetting setting = new DefModelRVSetting(TEST_DEF_CATEGORY_IDS);
@@ -48,9 +50,9 @@ public class ProbabilityDocumentAnnotatingModelTest {
 
 
     @Before
-    public void setup() throws Exception {
+    public void setup() {
         file = new File(testingFileName);
-        doc = TestHelper.makeTrainingDoc(file);
+        doc = TestHelper.makeTrainingDoc(parser, file);
         paraType = RVCreater.createDiscreteRVWithComputer(new ParaInCategoryComputer(Category.DEFINITION), "paraTypeIsCategory-" + Category.DEFINITION);
 
         if (doneSetup) return;

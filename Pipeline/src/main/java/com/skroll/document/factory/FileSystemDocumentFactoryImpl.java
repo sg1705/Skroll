@@ -28,6 +28,7 @@ public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory, 
     protected Configuration configuration;
     protected String folder;
     protected int cacheSize;
+    protected Parser parser;
 
     public Document load(String documentId) throws Exception {
             Document doc = null;
@@ -127,7 +128,7 @@ public abstract class FileSystemDocumentFactoryImpl implements DocumentFactory, 
         //doc is not the latest
         //now need to parse and return the latest
         try {
-            document = Parser.reParse(document);
+            document = parser.reParse(document);
             //save it back since it is reparsed
             this.putDocument(document);
             this.saveDocument(document);

@@ -1,5 +1,6 @@
 package com.skroll.parser.tokenizer;
 
+import com.skroll.BaseTest;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
@@ -15,7 +16,7 @@ import java.util.List;
 /**
  * Created by saurabh on 3/8/15.
  */
-public class PageBreakAnnotationTest {
+public class PageBreakAnnotationTest extends BaseTest {
 
     @Test
     public void testPageBreak() throws Exception {
@@ -27,7 +28,7 @@ public class PageBreakAnnotationTest {
 
         Document htmlDoc= new Document();
         htmlDoc.setSource(htmlString);
-        htmlDoc = Parser.parseDocumentFromHtml(htmlString);
+        htmlDoc = parser.parseDocumentFromHtml(htmlString);
 
         //iterate over each paragraph
         List<CoreMap> paragraphs = htmlDoc.getParagraphs();
@@ -51,7 +52,7 @@ public class PageBreakAnnotationTest {
 
         Document htmlDoc= new Document();
         htmlDoc.setSource(htmlString);
-        htmlDoc = Parser.parseDocumentFromHtml(htmlString);
+        htmlDoc = parser.parseDocumentFromHtml(htmlString);
 
         //iterate over each paragraph
         List<CoreMap> paragraphs = htmlDoc.getParagraphs();

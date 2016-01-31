@@ -294,22 +294,6 @@ public class CategoryAnnotationHelper {
         */
     }
 
-    /**
-     * Annotated a given Paragraph with given words and a given categoryId
-     * @param paragraph
-     * @param words
-     * @param categoryId
-     */
-    public static void annotateParagraphWithTextAndCategory(CoreMap paragraph, String words, int categoryId) {
-        List<Token> tokens = null;
-        try {
-            Document tempDoc = Parser.parseDocumentFromHtml(words);
-            tokens = DocumentHelper.getTokensOfADoc(tempDoc);
-        } catch (ParserException e) {
-            e.printStackTrace();
-        }
-        annotateParagraphWithTokensAndCategory(paragraph, tokens, categoryId);
-    }
 
     /**
      * For a given paragraph, for each categories, copy the current category weight into the prior category weight.

@@ -3,6 +3,7 @@ package com.skroll.classifier.factory;
 import com.google.common.io.Files;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.skroll.BaseTest;
 import com.skroll.analyzer.model.applicationModel.DefModelRVSetting;
 import com.skroll.analyzer.model.applicationModel.ModelRVSetting;
 import com.skroll.analyzer.model.applicationModel.ProbabilityTextAnnotatingModel;
@@ -26,7 +27,7 @@ import java.util.List;
 import static org.junit.Assert.fail;
 
 
-public class CorpusFSModelFactoryImplTest {
+public class CorpusFSModelFactoryImplTest extends BaseTest {
 
     static final List<Integer> TEST_DEF_CATEGORY_IDS =  new ArrayList<>(Arrays.asList(Category.NONE, Category.DEFINITION));
     protected ModelFactory factory;
@@ -68,7 +69,7 @@ public class CorpusFSModelFactoryImplTest {
 
     @Test
     public void testGetBNIModel() throws Exception {
-        Document doc =  Parser.parseDocumentFromHtml(Files.toString(new File("src/test/resources/classifier/smaller-indenture.html"), Constants.DEFAULT_CHARSET));
+        Document doc =  parser.parseDocumentFromHtml(Files.toString(new File("src/test/resources/classifier/smaller-indenture.html"), Constants.DEFAULT_CHARSET));
         doc.setId("test");
         ProbabilityTextAnnotatingModel model = factory.createBNIModel(classifierId, bniId, setting, doc);
         if(model==null){

@@ -1,5 +1,6 @@
 package com.skroll.parser.tokenizer;
 
+import com.skroll.BaseTest;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 /**
  * Created by saurabh on 5/9/15.
  */
-public class TablesAnnotationTest {
+public class TablesAnnotationTest extends BaseTest {
 
     @Test
     public void testSimpleTablesAnnotation() throws Exception {
@@ -23,7 +24,7 @@ public class TablesAnnotationTest {
         String htmlString = "<table><tr><td>Only 1 column</td></tr></table";
         Document htmlDoc= new Document();
         htmlDoc.setSource(htmlString);
-        htmlDoc = Parser.parseDocumentFromHtml(htmlString);
+        htmlDoc = parser.parseDocumentFromHtml(htmlString);
 
         //find out how many tokens have bold
         List<CoreMap> tables = htmlDoc.get(CoreAnnotations.TablesAnnotation.class);
@@ -46,7 +47,7 @@ public class TablesAnnotationTest {
         String htmlString = "<table><tr><td><b>Only 1</b> column</td></tr></table";
         Document htmlDoc= new Document();
         htmlDoc.setSource(htmlString);
-        htmlDoc = Parser.parseDocumentFromHtml(htmlString);
+        htmlDoc = parser.parseDocumentFromHtml(htmlString);
 
         //find out how many tokens have bold
         List<CoreMap> tables = htmlDoc.get(CoreAnnotations.TablesAnnotation.class);
@@ -71,7 +72,7 @@ public class TablesAnnotationTest {
         String htmlString = Utils.readStringFromFile(fileName);
         Document htmlDoc= new Document();
         htmlDoc.setSource(htmlString);
-        htmlDoc = Parser.parseDocumentFromHtml(htmlString);
+        htmlDoc = parser.parseDocumentFromHtml(htmlString);
 
         //find out how many tokens have bold
         List<CoreMap> tables = htmlDoc.get(CoreAnnotations.TablesAnnotation.class);
@@ -95,7 +96,7 @@ public class TablesAnnotationTest {
         String htmlString = "<table><tr><td></td><td></td></tr><tr><td><b>Only 1 column</b></td><td><b>Only 1 column</b></td></tr></table>";
         Document htmlDoc= new Document();
         htmlDoc.setSource(htmlString);
-        htmlDoc = Parser.parseDocumentFromHtml(htmlString);
+        htmlDoc = parser.parseDocumentFromHtml(htmlString);
 
         //find out how many paragraphs have bold annotation
         List<CoreMap> paragraphs = htmlDoc.getParagraphs();

@@ -1,18 +1,17 @@
 package com.skroll.analyzer.train.definition.data;
 
 import com.google.common.base.Joiner;
+import com.skroll.BaseTest;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
-import com.skroll.parser.Parser;
 import com.skroll.pipeline.Pipeline;
 import com.skroll.pipeline.Pipes;
 import com.skroll.pipeline.util.Utils;
-import junit.framework.TestCase;
 import org.junit.Test;
 
-public class ExtractDefinitionsFromTermProtoInHtmlDocumentPipeTest extends TestCase {
+public class ExtractDefinitionsFromTermProtoInHtmlDocumentPipeTest extends BaseTest {
 
     @Test
     public void testProcess() throws Exception {
@@ -21,7 +20,7 @@ public class ExtractDefinitionsFromTermProtoInHtmlDocumentPipeTest extends TestC
 
         Document htmlDoc = new Document(htmlText);
         //parse html into a document object
-        htmlDoc = Parser.parseDocumentFromHtml(htmlText);
+        htmlDoc = parser.parseDocumentFromHtml(htmlText);
         //pipeline to filter out paragraphs that start with quote
         Pipeline<Document, Document> pipeline =
                 new Pipeline.Builder()

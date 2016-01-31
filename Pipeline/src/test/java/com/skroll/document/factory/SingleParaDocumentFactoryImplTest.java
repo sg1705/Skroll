@@ -4,8 +4,10 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
+import com.skroll.BaseTest;
 import com.skroll.document.Document;
 import com.skroll.util.Configuration;
+import com.skroll.util.SkrollTestGuiceModule;
 import com.skroll.util.TestConfiguration;
 import com.skroll.util.TestHelper;
 import org.junit.Before;
@@ -14,12 +16,14 @@ import org.junit.Test;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SingleParaDocumentFactoryImplTest {
+public class SingleParaDocumentFactoryImplTest extends BaseTest {
 
     Document document;
     protected DocumentFactory factory;
     protected Configuration configuration;
     protected DocumentFactory singleParaDocumentFactory;
+    protected DocumentFactory corpusFSDocumentFactory;
+
     @Before
     public void setUp() throws Exception {
         try {
@@ -33,10 +37,12 @@ public class SingleParaDocumentFactoryImplTest {
                     bind(DocumentFactory.class)
                             .annotatedWith(SingleParaFSDocumentFactory.class)
                             .to(SingleParaDocumentFactoryImpl.class);
+                    install(new SkrollTestGuiceModule());
 
                 }
             });
             singleParaDocumentFactory = injector.getInstance(Key.get(DocumentFactory.class, SingleParaFSDocumentFactory.class));
+            corpusFSDocumentFactory = injector.getInstance(Key.get(DocumentFactory.class, CorpusFSDocumentFactory.class));
             factory = injector.getInstance(DocumentFactory.class);
             configuration = injector.getInstance(Configuration.class);
         } catch (Exception e) {
@@ -47,7 +53,7 @@ public class SingleParaDocumentFactoryImplTest {
 
     @Test
     public void testGetEntireDocCollaspedAsSingleParagraph() throws Exception {
-        CorpusFSDocumentFactoryImpl corpusFSDocumentFactory = new CorpusFSDocumentFactoryImpl(configuration);
+//        CorpusFSDocumentFactoryImpl corpusFSDocumentFactory = new CorpusFSDocumentFactoryImpl(configuration);
         corpusFSDocumentFactory.putDocument(document);
         corpusFSDocumentFactory.saveDocument(document);
         System.out.println("document:Number of Para:" + document.getParagraphs().size());

@@ -1,6 +1,7 @@
 package com.skroll.parser;
 
 import com.google.common.collect.Lists;
+import com.skroll.BaseTest;
 import com.skroll.classifier.Category;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
@@ -10,7 +11,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-public class ParserTest {
+public class ParserTest extends BaseTest {
 
     @Test
     public void testReParse() throws Exception {
@@ -19,7 +20,7 @@ public class ParserTest {
         String htmlString = Utils.readStringFromFile(fileName);
         Document htmlDoc= new Document();
         htmlDoc.setSource(htmlString);
-        htmlDoc = Parser.parseDocumentFromHtml(htmlString);
+        htmlDoc = parser.parseDocumentFromHtml(htmlString);
         htmlDoc.setId(fileName);
         htmlDoc.getParagraphs().get(0).set(CoreAnnotations.IsUserObservationAnnotation.class, true);
         List<Float> weights = Lists.newArrayList(1.0f, 2.0f, 3.0f);
@@ -27,7 +28,7 @@ public class ParserTest {
         CategoryAnnotationHelper.annotateCategoryWeight(htmlDoc.getParagraphs().get(1), Category.DEFINITION, 1.0f);
         //remove version
         htmlDoc.set(CoreAnnotations.ParserVersionAnnotationInteger.class, 0);
-        Document doc = Parser.reParse(htmlDoc);
+        Document doc = parser.reParse(htmlDoc);
         doc.setId(fileName);
         System.out.println("New Version:" + doc.get(CoreAnnotations.ParserVersionAnnotationInteger.class));
         assert (doc.get(CoreAnnotations.ParserVersionAnnotationInteger.class) == Parser.VERSION);
@@ -39,13 +40,13 @@ public class ParserTest {
     public void testParseDocumentFromUrl() throws Exception {
         String url = "http://www.sec.gov/Archives/edgar/data/1418091/000095012314003031/twtr-10k_20131231.htm";
         String fileName = "aa";
-        Document htmlDoc = Parser.parseDocumentFromUrl(url);
+        Document htmlDoc = parser.parseDocumentFromUrl(url);
         htmlDoc.setId(fileName);
         htmlDoc.getParagraphs().get(0).set(CoreAnnotations.IsUserObservationAnnotation.class, true);
         CategoryAnnotationHelper.annotateCategoryWeight(htmlDoc.getParagraphs().get(1), Category.DEFINITION, 1.0f);
         //remove version
         htmlDoc.set(CoreAnnotations.ParserVersionAnnotationInteger.class, 0);
-        Document doc = Parser.reParse(htmlDoc);
+        Document doc = parser.reParse(htmlDoc);
         doc.setId(fileName);
         System.out.println("New Version:" + doc.get(CoreAnnotations.ParserVersionAnnotationInteger.class));
         assert (doc.get(CoreAnnotations.ParserVersionAnnotationInteger.class) == Parser.VERSION);
@@ -59,7 +60,7 @@ public class ParserTest {
     public void testParsePartialDocumentFromUrl() throws Exception {
         String url = "http://www.sec.gov/Archives/edgar/data/1418091/000095012314003031/twtr-10k_20131231.htm";
         String fileName = "aa";
-        Document htmlDoc = Parser.parsePartialDocumentFromUrl(url);
+        Document htmlDoc = parser.parsePartialDocumentFromUrl(url);
         htmlDoc.setId(fileName);
         assert (htmlDoc.get(CoreAnnotations.SourceUrlAnnotation.class).equals(url));
         assert (htmlDoc.getParagraphs().size() == 0);

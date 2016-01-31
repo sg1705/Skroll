@@ -3,16 +3,16 @@ package com.skroll.classifier;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
+import com.skroll.BaseTest;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.DocTypeAnnotationHelper;
-import com.skroll.parser.Parser;
 import com.skroll.util.SkrollTestGuiceModule;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
 
-public class ClassifierFactoryTest {
+public class ClassifierFactoryTest extends BaseTest {
 
     ClassifierFactory classifierFactory = null;
     ClassifierFactoryStrategy classifierFactoryStrategyForClassify = null;
@@ -20,13 +20,14 @@ public class ClassifierFactoryTest {
 
     @Before
     public void setup(){
+
         try {
             Injector injector = Guice.createInjector(new SkrollTestGuiceModule());
             classifierFactory = injector.getInstance(ClassifierFactory.class);
             classifierFactoryStrategyForClassify = injector.getInstance(Key.get(ClassifierFactoryStrategy.class, ClassifierFactoryStrategyForClassify.class));
 
             //create a new document
-            doc = Parser.parseDocumentFromHtml("<div><u>This is a awesome</u></div>" +
+            doc = parser.parseDocumentFromHtml("<div><u>This is a awesome</u></div>" +
                     "<div><u>This is a awesome</u></div>" +
                     "<div><u>This is a awesome</u></div");
             DocTypeAnnotationHelper.annotateDocTypeWithWeightAndUserObservation(doc,Category.TEN_K,1f);

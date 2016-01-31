@@ -25,22 +25,22 @@ public class Parser {
 
     public static final int VERSION = 4;
     public static final Logger logger = LoggerFactory.getLogger(Parser.class);
-    public static Injector injector = Guice.createInjector(new SkrollGuiceModule());
+//    public static Injector injector = Guice.createInjector(new SkrollGuiceModule());
 
     @Inject
-    PhantomJsExtractor extractor;
+    PhantomJsExtractor phExtractor;
 
 
     @Inject
     public Parser(PhantomJsExtractor extractor) {
-        this.extractor = extractor;
+        this.phExtractor = extractor;
     }
 
     private Document parseInDoc(Document document, int fetchMode, int parseMode)
             throws ParserException {
 
         //create phantomjs extractor
-        PhantomJsExtractor phExtractor = injector.getInstance(PhantomJsExtractor.class);
+//        PhantomJsExtractor phExtractor = injector.getInstance(PhantomJsExtractor.class);
         phExtractor.setFetchMode(fetchMode);
         phExtractor.setParseMode(parseMode);
         try {
