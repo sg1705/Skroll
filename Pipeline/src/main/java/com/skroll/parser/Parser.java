@@ -16,6 +16,8 @@ import com.skroll.util.SkrollGuiceModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+
 /**
  * Created by saurabh on 12/28/14.
  */
@@ -25,7 +27,16 @@ public class Parser {
     public static final Logger logger = LoggerFactory.getLogger(Parser.class);
     public static Injector injector = Guice.createInjector(new SkrollGuiceModule());
 
-    private static Document parseInDoc(Document document, int fetchMode, int parseMode)
+    @Inject
+    PhantomJsExtractor extractor;
+
+
+    @Inject
+    public Parser(PhantomJsExtractor extractor) {
+        this.extractor = extractor;
+    }
+
+    private Document parseInDoc(Document document, int fetchMode, int parseMode)
             throws ParserException {
 
         //create phantomjs extractor
@@ -60,7 +71,7 @@ public class Parser {
      * @param url
      * @return document
      */
-    public static Document parsePartialDocumentFromUrl(String url) throws ParserException {
+    public Document parsePartialDocumentFromUrl(String url) throws ParserException {
         Document document = new Document();
         document.set(CoreAnnotations.SourceUrlAnnotation.class, url);
         return parseInDoc(document, FetchMode.URL, ParseMode.PARTIAL);
@@ -72,7 +83,7 @@ public class Parser {
      * @param htmlText
      * @return document
      */
-    public static Document parseDocumentFromHtml(String htmlText) throws ParserException {
+    public Document parseDocumentFromHtml(String htmlText) throws ParserException {
         Document document = new Document();
         document.setSource(htmlText);
         return parseInDoc(document, FetchMode.FILE, ParseMode.FULL);
@@ -84,7 +95,7 @@ public class Parser {
      * @param url
      * @return document
      */
-    public static Document parseDocumentFromUrl(String url) throws ParserException {
+    public Document parseDocumentFromUrl(String url) throws ParserException {
         Document document = new Document();
         document.set(CoreAnnotations.SourceUrlAnnotation.class, url);
         return parseInDoc(document, FetchMode.URL, ParseMode.FULL);
@@ -96,7 +107,7 @@ public class Parser {
      * @param fileName
      * @return document
      */
-    public static Document parseDocumentFromHtmlFile(String fileName) throws ParserException {
+    public Document parseDocumentFromHtmlFile(String fileName) throws ParserException {
 
         String htmlText = "";
         try {
@@ -108,16 +119,16 @@ public class Parser {
         return document;
     }
 
-    private static void setVersion(Document doc) {
+    private void setVersion(Document doc) {
         doc.set(CoreAnnotations.ParserVersionAnnotationInteger.class, VERSION);
     }
 
-    private static void setDocumentFormat(Document doc) {
+    private void setDocumentFormat(Document doc) {
         doc.set(CoreAnnotations.DocumentFormatAnnotationInteger.class, DocumentFormat.HTML.id());
     }
 
 
-    public static Document reParse(Document document) throws ParserException {
+    public Document reParse(Document document) throws ParserException {
         //get the source html
         if (document.getSource() == null) {
             //source is null
@@ -138,7 +149,7 @@ public class Parser {
             }
             // will try to fetch from SourceUrl
         }
-        Document newDoc = Parser.parseDocumentFromHtml(document.getSource());
+        Document newDoc = this.parseDocumentFromHtml(document.getSource());
         newDoc.setId(document.getId());
         // if parsed documents has different paragraphs then log error
         if (newDoc.getParagraphs().size() != document.getParagraphs().size()) {
