@@ -37,6 +37,15 @@ public class RelatedParaWithinDocFinderTest {
     }
 
     @Test
+    public void testComputeDistancesToWords() throws Exception {
+        Double[] distances = finder.computeDistances(doc.getParagraphs().get(0), doc.getParagraphs().get(3), doc);
+        System.out.println(doc.getParagraphs().get(0).getText());
+        System.out.println(doc.getParagraphs().get(3).getText());
+        System.out.println(Arrays.toString(distances));
+        assert((int)(distances[1]*100) == 7);
+    }
+
+    @Test
     public void testSortParasByDistance() throws Exception {
         List<CoreMap> rankedParas = finder.sortParasByDistance(doc, doc.getParagraphs().get(0));
         rankedParas.stream().forEach(p -> System.out.println(p.getText()));
