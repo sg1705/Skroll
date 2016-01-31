@@ -59,6 +59,7 @@
       getWindowSelection: getWindowSelection,
       getIframeDocument: getIframeDocument,
       getSelectionBoundingBox: getSelectionBoundingBox,
+      getParagraphText : getParagraphText,
       inferParagraphId: inferParagraphId,
       selectParagraph: selectParagraph
     }
@@ -290,6 +291,12 @@
     function removeHighlightParagraph(paraId) {
       getJQParaElement(paraId).css('background-color', '');
     }
+
+    function getParagraphText(paraId) {
+      var para = getJQParaElement(paraId);
+      return para.text();
+    }
+
 
   };
 
