@@ -21,13 +21,6 @@ public enum Pipes {
     TOKENIZE_PARAGRAPH_IN_HTML_DOC("com.skroll.parser.tokenizer.TokenizeParagraphInHtmlDocumentPipe"),
     FILTER_STARTS_WITH_QUOTE_IN_HTML_DOC("com.skroll.parser.tokenizer.FilterStartsWithQuoteInHtmlDocumentPipe"),
 
-
-    //evaluate.definition
-//    FILE_NAIVE_BAYES_TESTER("com.skroll.analyzer.evaluate.definition.FileNaiveBayesTesterPipe"),
-//    FOLDER_NAIVE_BAYES_TESTER("com.skroll.analyzer.evaluate.definition.FolderNaiveBayesTesterPipe"),
-//    FOLDER_HTML_HIDDEN_MARKOV_MODEL_TESTING_PIPE("com.skroll.analyzer.evaluate.definition.FolderHTMLHiddenMarkovModelTesterPipe"),
-//    HTML_DOCUMENT_HIDDEN_MARKOV_MODEL_TESTING_PIPE("com.skroll.analyzer.evaluate.definition.HtmlDocumentHMMTester"),
-
     // data.definition
     STRINGS_TO_NAIVE_BAYES_DATA_TUPLE("com.skroll.analyzer.data.definition.StringsToNaiveBayesDataTuplePipe"),
 
@@ -37,16 +30,8 @@ public enum Pipes {
     HTML_HIDDEN_MARKOV_MODEL_TESTING_PIPE("com.skroll.analyzer.model.hmm.HTMLHiddenMarkovModelTestingPipe"),
     HTML_HIDDEN_MARKOV_MODEL_STATE_SEQUENCE_TESTING_PIPE("com.skroll.analyzer.model.hmm.HTMLHiddenMarkovModelStateSequenceTestingPipe"),
 
-    //train.definition
-//    FILE_NAIVE_BAYES_TRAINER("com.skroll.analyzer.train.definition.FileNaiveBayesTrainerPipe"),
-//    FOLDER_NAIVE_BAYES_TRAINER("com.skroll.analyzer.train.definition.FolderNaiveBayesTrainerPipe"),
-//    FOLDER_HTML_HIDDEN_MARKOV_MODEL_TRAINING_PIPE("com.skroll.analyzer.train.definition.FolderHTMLHiddenMarkovModelTrainerPipe"),
-//    FOLDER_HTML_HIDDEN_MARKOV_MODEL_STATE_SEQUENCE_TESTING_PIPE("com.skroll.analyzer.evaluate.definition.FolderHTMLHiddenMarkovModelStateSequenceTesterPipe"),
-
-
     //train.definition.data
     EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC("com.skroll.analyzer.train.definition.data.ExtractDefinitionsFromParagraphInHtmlDocumentPipe"),
-
 
     //parser pipes
     REPLACE_SPECIAL_QUOTES_WITH_QUOTES("com.skroll.pipeline.pipes.text.ReplaceSpecialQuotesWithQuotes"),
