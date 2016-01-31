@@ -14,7 +14,7 @@
     .controller('ContentCtrl', ContentCtrl);
 
   /* @ngInject */
-  function ContentCtrl(documentModel, documentService, $mdSidenav, $location, searchFactory, $scope, $routeParams) {
+  function ContentCtrl(documentModel, documentService, $mdSidenav, $location, searchFactory, $scope, $routeParams, relatedParaFactory, featureFlags) {
 
     //-- private variables
     var vm = this;
@@ -25,6 +25,8 @@
     vm.userDocumentIds = [];
     vm.smodel = LHSModel.smodel;
     vm.searchState = searchFactory.searchState;
+    vm.relatedParaState = relatedParaFactory.relatedParaState;
+    vm.featureFlags = featureFlags;
 
     //-- public methods
     vm.loadDocument = loadDocument;

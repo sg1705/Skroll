@@ -7,12 +7,6 @@
               ng-swipe-left="contentCtrl.toggleSidenav('left')">
 
     <md-toolbar class="skroll-toolbar">
-      <!-- <sk-search ng-controller="SearchCtrl as ctrl" feature-flag="search.old" /> -->
-  <!--       <input name="searchInput" placeholder="Search" ng-model="contentCtrl.searchState.searchText"/>
-          <md-icon md-svg-icon="images/icons/ic_search_48px.svg" class="search-icon">
-          </md-icon>
-   -->
-
       <div layout="row" layout-align="space-between center">
         <md-icon md-svg-icon="images/icons/ic_search_48px.svg" class="search-icon" style="margin-left: 10px; margin-right: 10px">
         </md-icon>
@@ -35,12 +29,14 @@
 
     </md-toolbar>
 
-    <md-content md-scroll-y flex class="md-padding" ng-controller="LHSLevelsCtrl as lhsCtrl" ng-hide="lhsCtrl.searchState.searchActive" >
+    <md-content md-scroll-y flex class="md-padding" ng-controller="LHSLevelsCtrl as lhsCtrl" ng-hide="lhsCtrl.searchState.searchActive || (contentCtrl.relatedParaState.active && contentCtrl.featureFlags.isOn('related.lhs'))" >
       <sk-lhs ng-hide="!contentCtrl.documentModel.viewState.isTocLoaded"/>
     </md-content>
   <md-content ng-keydown="searchCtrl.onKeyDown($event)" ng-show="contentCtrl.searchState.searchActive">
      <sk-search />
   </md-content>
+
+    <sk-related-para ng-show="contentCtrl.relatedParaState.active" feature-flag="related.lhs"/>
 
   </md-sidenav>
   <!-- end sidebar -->

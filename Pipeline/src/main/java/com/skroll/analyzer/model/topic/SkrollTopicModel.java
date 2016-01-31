@@ -4,6 +4,7 @@ import cc.mallet.pipe.*;
 import cc.mallet.topics.ParallelTopicModel;
 import cc.mallet.topics.TopicInferencer;
 import cc.mallet.types.*;
+import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.util.Configuration;
@@ -93,8 +94,7 @@ public class SkrollTopicModel {
 		}
 		catch (Exception e){
 			e.printStackTrace();
-		};
-
+		}
 		return model;
 
 	}
@@ -123,6 +123,28 @@ public class SkrollTopicModel {
 			out.format("\n");
 		}
 		return out.toString();
+	}
+
+	double[] getWordTopicCounts(String word){
+		Alphabet dataAlphabet = model.getAlphabet();
+		int wordIndex = dataAlphabet.lookupIndex(word);
+		int[] topicCounts = model.typeTopicCounts[wordIndex];
+		double[] result = new double[model.getNumTopics()];
+
+		int index = 0;
+		while (index < topicCounts.length &&
+				topicCounts[index] > 0) {
+
+			int topic = topicCounts[index] & model.topicMask;
+			int count = topicCounts[index] >> model.topicBits;
+			result[topic] = count;
+			index++;
+		}
+		return result;
+	}
+
+	public double[] getTopicDistribution(String word){
+		return BNInference.normalize(getWordTopicCounts(word), 1);
 	}
 
 	/**

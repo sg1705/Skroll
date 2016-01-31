@@ -47,6 +47,11 @@
       "active": false,
       "name": "Is autocomplete for Solr available",
       "description": "no description"
+    }, {
+      "key": "related.lhs",
+      "active": true,
+      "name": "Show related para in LHS",
+      "description": "no description"
     }];
     featureFlags.set(flags);
   }
