@@ -5,6 +5,7 @@ import com.skroll.analyzer.model.topic.SkrollTopicModel;
 import com.skroll.classifier.*;
 import com.skroll.classifier.factory.*;
 import com.skroll.document.factory.*;
+import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.PhantomJsExtractor;
 import com.skroll.services.mail.MailService;
 import com.skroll.services.mail.SendGridMailService;
@@ -57,6 +58,8 @@ public class SkrollGuiceModule extends AbstractModule {
                 .to(SendGridMailServiceImpl.class);
 
         bind(SkrollTopicModel.class).asEagerSingleton();
+
+        bind(Parser.class);
 
     }
 }

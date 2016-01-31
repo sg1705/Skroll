@@ -1,19 +1,20 @@
 package com.skroll.parser.tokenizer;
 
+import com.skroll.BaseTest;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
-import com.skroll.parser.Parser;
 import com.skroll.pipeline.util.Utils;
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.util.List;
 
 /**
  * Created by saurabh on 3/8/15.
  */
-public class AnchorAnnotationTest extends TestCase {
+public class AnchorAnnotationTest extends BaseTest {
 
+    @Test
     public void testSimpleAnchorAnnotation() throws Exception {
         // read a sample file
         String fileName = "src/test/resources/document/simple-html-text.html";
@@ -22,7 +23,7 @@ public class AnchorAnnotationTest extends TestCase {
 
         Document htmlDoc= new Document();
         htmlDoc.setSource(htmlString);
-        htmlDoc = Parser.parseDocumentFromHtml(htmlString);
+        htmlDoc = parser.parseDocumentFromHtml(htmlString);
 
         //iterate over each paragraph
         List<CoreMap> paragraphs = htmlDoc.getParagraphs();
@@ -37,6 +38,7 @@ public class AnchorAnnotationTest extends TestCase {
         assert ( countAnchorTags == 1);
     }
 
+    @Test
     public void testAnchorAnnotationOn10k() throws Exception {
         // read a sample file
         String fileName = "src/test/resources/document/random10k.html";
@@ -45,7 +47,7 @@ public class AnchorAnnotationTest extends TestCase {
 
         Document htmlDoc= new Document();
         htmlDoc.setSource(htmlString);
-        htmlDoc = Parser.parseDocumentFromHtml(htmlString);
+        htmlDoc = parser.parseDocumentFromHtml(htmlString);
 
         //iterate over each paragraph
         List<CoreMap> paragraphs = htmlDoc.getParagraphs();

@@ -4,6 +4,7 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.io.Files;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.skroll.BaseTest;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CategoryAnnotationHelper;
 import com.skroll.parser.Parser;
@@ -22,7 +23,7 @@ import java.io.File;
 
 import static org.junit.Assert.fail;
 
-public class ClassifierImplTest {
+public class ClassifierImplTest extends BaseTest {
 
     //The following line needs to be added to enable log4j
     public static final Logger logger = LoggerFactory
@@ -52,7 +53,7 @@ public class ClassifierImplTest {
         String testingFile = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
         Document document = null;
         try {
-            document = (Document)documentClassifier.classify(testingFile,Parser.parseDocumentFromHtmlFile(testingFile));
+            document = (Document)documentClassifier.classify(testingFile,parser.parseDocumentFromHtmlFile(testingFile));
             document.setId("1");
         } catch (ParserException e) {
             e.printStackTrace();
@@ -80,7 +81,7 @@ public class ClassifierImplTest {
                 //parse the file into document
                 Document doc = null;
                 try {
-                    doc = Parser.parseDocumentFromHtml(htmlText);
+                    doc = parser.parseDocumentFromHtml(htmlText);
                     doc.setId("");
                 } catch (ParserException e) {
                     e.printStackTrace();
@@ -99,39 +100,4 @@ public class ClassifierImplTest {
         }
     }
 
-    @Test
-    public void testTrainFile()  {
-        String fileName = "src/main/resources/trainingDocuments/indentures/AMC Networks Indenture.html";
-
-        String htmlText = null;
-        try {
-            htmlText = Utils.readStringFromFile(fileName);
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("failed to read file");
-        }
-        //parse the file into document
-        Document doc = null;
-        try {
-            doc = Parser.parseDocumentFromHtml(htmlText);
-            doc.setId("test");
-        } catch (ParserException e) {
-            e.printStackTrace();
-            fail("failed to parse the file");
-        }
-        try {
-        // extract the definition from paragraph from html doc.
-        Pipeline<Document, Document> pipeline =
-                new Pipeline.Builder()
-                        .add(Pipes.EXTRACT_DEFINITION_FROM_PARAGRAPH_IN_HTML_DOC)
-                        .build();
-        doc = pipeline.process(doc);
-            doc.setId("test");
-            documentClassifier.train(doc);
-            documentClassifier.persistModel();
-        } catch (Throwable e) {
-            e.printStackTrace();
-            fail("failed to train/persist the model");
-        }
-    }
 }

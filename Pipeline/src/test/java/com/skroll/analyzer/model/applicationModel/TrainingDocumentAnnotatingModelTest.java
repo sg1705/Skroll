@@ -1,6 +1,7 @@
 package com.skroll.analyzer.model.applicationModel;
 
 import com.google.inject.Guice;
+import com.skroll.BaseTest;
 import com.skroll.analyzer.data.NBMNData;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TrainingDocumentAnnotatingModelTest {
+public class TrainingDocumentAnnotatingModelTest extends BaseTest {
     int maxNumWords = 20;
     String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining/mini-indenture.html";
     //    String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTesting/random-indenture.html";
@@ -36,7 +37,7 @@ public class TrainingDocumentAnnotatingModelTest {
 
 
     @Before
-    public void setup() throws Exception {
+    public void setup()  {
         model = new TrainingTextAnnotatingModel(TEST_DEF_CLASSIFIER_ID, setting);
         File f = new File(trainingFolderName);
         document = TestHelper.setUpTestDoc();
@@ -70,7 +71,7 @@ public class TrainingDocumentAnnotatingModelTest {
         String trainingFolderName = "src/test/resources/analyzer/evaluate/docclassifier/AMC Networks CA.html";
         System.out.println("initial model: \n" + model.getNbmnModel());
         File f = new File(trainingFolderName);
-        document = TestHelper.makeTrainingDoc(f);
+        document = TestHelper.makeTrainingDoc(parser, f);
         model.updateWithDocument(document);
         model.getHmm().updateProbabilities();
         System.out.println("trained model: \n" + model);

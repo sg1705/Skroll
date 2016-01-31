@@ -2,11 +2,12 @@ package com.skroll.util;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
-import com.skroll.analyzer.model.topic.RelatedParaWithinDocFinder;
+import com.skroll.analyzer.model.topic.RelatedParaWithInDocFinder;
 import com.skroll.analyzer.model.topic.SkrollTopicModel;
 import com.skroll.classifier.*;
 import com.skroll.classifier.factory.*;
 import com.skroll.document.factory.*;
+import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.PhantomJsExtractor;
 import com.skroll.services.mail.MailService;
 import com.skroll.services.mail.SendGridMailService;
@@ -67,7 +68,8 @@ public class SkrollTestGuiceModule extends AbstractModule {
 
 
         bind(SkrollTopicModel.class).asEagerSingleton();
-        bind(RelatedParaWithinDocFinder.class);
+        bind(RelatedParaWithInDocFinder.class);
+        bind(Parser.class);
     }
 
 }

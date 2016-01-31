@@ -2,6 +2,7 @@ package com.skroll.util;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import com.skroll.BaseTest;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -16,13 +17,13 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class ConvertTrainingWeightTest {
+public class ConvertTrainingWeightTest extends BaseTest {
     private Document document;
-    public static final Logger logger = LoggerFactory
-            .getLogger(ConvertTrainingWeightTest.class);
+    public static final Logger logger = LoggerFactory.getLogger(ConvertTrainingWeightTest.class);
+
     @Before
     public void setUp() throws Exception {
-        document = Parser.parseDocumentFromHtmlFile("src/test/resources/classifier/smaller-indenture.html");
+        document = parser.parseDocumentFromHtmlFile("src/test/resources/classifier/smaller-indenture.html");
 
     }
 

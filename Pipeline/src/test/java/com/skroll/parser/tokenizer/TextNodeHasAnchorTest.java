@@ -1,5 +1,6 @@
 package com.skroll.parser.tokenizer;
 
+import com.skroll.BaseTest;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
 import com.skroll.document.Token;
@@ -7,14 +8,16 @@ import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.Parser;
 import com.skroll.pipeline.util.Utils;
 import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.util.List;
 
 /**
  * Created by saurabh on 3/8/15.
  */
-public class TextNodeHasAnchorTest extends TestCase {
+public class TextNodeHasAnchorTest extends BaseTest {
 
+    @Test
     public void testTextNodeHasAnchor() throws Exception {
         // read a sample file
         String fileName = "src/test/resources/document/text-node-has-anchor.html";
@@ -23,7 +26,7 @@ public class TextNodeHasAnchorTest extends TestCase {
 
         Document htmlDoc= new Document();
         htmlDoc.setSource(htmlString);
-        htmlDoc = Parser.parseDocumentFromHtml(htmlString);
+        htmlDoc = parser.parseDocumentFromHtml(htmlString);
 
         //find out how many tokens have bold
         List<Token> tokens = DocumentHelper.getDocumentTokens(htmlDoc);

@@ -3,6 +3,7 @@ package com.skroll.document.factory;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.skroll.BaseTest;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.Parser;
@@ -12,7 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class CorpusFSDocumentFactoryImplTest {
+public class CorpusFSDocumentFactoryImplTest extends BaseTest {
 
     protected DocumentFactory factory;
     protected DocumentFactory factory_for_SingletonTest;
@@ -24,10 +25,11 @@ public class CorpusFSDocumentFactoryImplTest {
             Injector injector = Guice.createInjector(new AbstractModule() {
                 @Override
                 protected void configure() {
+                    bind(Configuration.class).to(TestConfiguration.class);
                     bind(DocumentFactory.class)
                             .to(CorpusFSDocumentFactoryImpl.class);
 
-                    bind(Configuration.class).to(TestConfiguration.class);
+
                 }
             });
 
@@ -46,10 +48,10 @@ public class CorpusFSDocumentFactoryImplTest {
 
     @Test
     public void testSaveOnCacheEviction() throws Exception {
-        Document doc1 = Parser.parseDocumentFromHtml("<div><u>this is a awesome</u></div>" +
+        Document doc1 = parser.parseDocumentFromHtml("<div><u>this is a awesome</u></div>" +
                 "<div>This is second paragraph</div>" +
                 "<div>This is third paragraph</div");
-        Document doc2 = Parser.parseDocumentFromHtml("<div><u>this is a awesome</u></div>" +
+        Document doc2 = parser.parseDocumentFromHtml("<div><u>this is a awesome</u></div>" +
                 "<div>This is second paragraph</div>" +
                 "<div>This is third paragraph</div");
         // this doc has three paragraphs
@@ -67,10 +69,10 @@ public class CorpusFSDocumentFactoryImplTest {
 
     @Test
     public void testSingleton() throws Exception {
-        Document doc1 = Parser.parseDocumentFromHtml("<div><u>this is a awesome</u></div>" +
+        Document doc1 = parser.parseDocumentFromHtml("<div><u>this is a awesome</u></div>" +
                 "<div>This is second paragraph</div>" +
                 "<div>This is third paragraph</div");
-        Document doc2 = Parser.parseDocumentFromHtml("<div><u>this is a awesome</u></div>" +
+        Document doc2 = parser.parseDocumentFromHtml("<div><u>this is a awesome</u></div>" +
                 "<div>This is second paragraph</div>" +
                 "<div>This is third paragraph</div");
         // this doc has three paragraphs
@@ -99,7 +101,7 @@ public class CorpusFSDocumentFactoryImplTest {
 
     @Test
     public void testPutDocument() throws Exception {
-        Document doc = Parser.parseDocumentFromHtml("<div><u>this is a awesome</u></div>" +
+        Document doc = parser.parseDocumentFromHtml("<div><u>this is a awesome</u></div>" +
                 "<div>This is second paragraph</div>" +
                 "<div>This is third paragraph</div");
         doc.setId("xyz");
@@ -112,7 +114,7 @@ public class CorpusFSDocumentFactoryImplTest {
 
     @Test(expected=Exception.class)
     public void testPutDocumentWithNullId() throws Exception {
-        Document doc = Parser.parseDocumentFromHtml("<div><u>this is a awesome</u></div>" +
+        Document doc = parser.parseDocumentFromHtml("<div><u>this is a awesome</u></div>" +
                 "<div>This is second paragraph</div>" +
                 "<div>This is third paragraph</div");
         // this doc has three paragraphs
@@ -123,7 +125,7 @@ public class CorpusFSDocumentFactoryImplTest {
 
     @Test(expected=Exception.class)
     public void testSaveDocumentWithNullId() throws Exception {
-        Document doc = Parser.parseDocumentFromHtml("<div><u>this is a awesome</u></div>" +
+        Document doc = parser.parseDocumentFromHtml("<div><u>this is a awesome</u></div>" +
                 "<div>This is second paragraph</div>" +
                 "<div>This is third paragraph</div");
         // this doc has three paragraphs
@@ -133,7 +135,7 @@ public class CorpusFSDocumentFactoryImplTest {
 
     @Test
     public void testSaveDocument() throws Exception {
-        Document doc = Parser.parseDocumentFromHtml("<div><u>this is a awesome</u></div>" +
+        Document doc = parser.parseDocumentFromHtml("<div><u>this is a awesome</u></div>" +
                 "<div>This is second paragraph</div>" +
                 "<div>This is third paragraph</div");
         // this doc has three paragraphs
