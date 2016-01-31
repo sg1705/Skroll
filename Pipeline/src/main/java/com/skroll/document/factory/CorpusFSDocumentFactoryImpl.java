@@ -1,6 +1,7 @@
 package com.skroll.document.factory;
 
 import com.skroll.document.Document;
+import com.skroll.parser.Parser;
 import com.skroll.util.Configuration;
 import org.eclipse.jetty.util.ConcurrentHashSet;
 
@@ -28,10 +29,11 @@ public class CorpusFSDocumentFactoryImpl extends
     }
 
     @Inject
-    public CorpusFSDocumentFactoryImpl(Configuration configuration) {
+    public CorpusFSDocumentFactoryImpl(Configuration configuration, Parser parser) {
         this.configuration = configuration;
         this.folder = configuration.get("preEvaluatedFolder");
         this.cacheSize = Integer.parseInt(configuration.get("preEvaluatedDocumentCacheSize", "10"));
+        this.parser = parser;
         logger.info("Document Cache Size : {}", cacheSize);
         documentCache = new CacheService(this,cacheSize);
         logger.info(folder);

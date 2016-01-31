@@ -6,6 +6,7 @@ import com.skroll.classifier.ClassifierFactory;
 import com.skroll.document.Document;
 import com.skroll.parser.Parser;
 import com.skroll.parser.extractor.ParserException;
+import com.skroll.parser.extractor.PhantomJsExtractor;
 import com.skroll.pipeline.util.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +49,7 @@ public class FileUploadServlet extends HttpServlet {
 
             try {
                 //parse the document
-                Document document = Parser.parseDocumentFromHtml(content);
+                Document document = new Parser(new PhantomJsExtractor()).parseDocumentFromHtml(content);
                 //create a classifier
                 ClassifierFactory classifierFactory = new ClassifierFactory();
                 Classifier classifier = classifierFactory.getClassifier(ClassifierFactory.UNIVERSAL_DEF_CLASSIFIER_ID);

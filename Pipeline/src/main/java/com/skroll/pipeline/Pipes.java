@@ -23,11 +23,10 @@ public enum Pipes {
 
 
     //evaluate.definition
-    FILE_NAIVE_BAYES_TESTER("com.skroll.analyzer.evaluate.definition.FileNaiveBayesTesterPipe"),
-    FOLDER_NAIVE_BAYES_TESTER("com.skroll.analyzer.evaluate.definition.FolderNaiveBayesTesterPipe"),
-
-    FOLDER_HTML_HIDDEN_MARKOV_MODEL_TESTING_PIPE("com.skroll.analyzer.evaluate.definition.FolderHTMLHiddenMarkovModelTesterPipe"),
-    HTML_DOCUMENT_HIDDEN_MARKOV_MODEL_TESTING_PIPE("com.skroll.analyzer.evaluate.definition.HtmlDocumentHMMTester"),
+//    FILE_NAIVE_BAYES_TESTER("com.skroll.analyzer.evaluate.definition.FileNaiveBayesTesterPipe"),
+//    FOLDER_NAIVE_BAYES_TESTER("com.skroll.analyzer.evaluate.definition.FolderNaiveBayesTesterPipe"),
+//    FOLDER_HTML_HIDDEN_MARKOV_MODEL_TESTING_PIPE("com.skroll.analyzer.evaluate.definition.FolderHTMLHiddenMarkovModelTesterPipe"),
+//    HTML_DOCUMENT_HIDDEN_MARKOV_MODEL_TESTING_PIPE("com.skroll.analyzer.evaluate.definition.HtmlDocumentHMMTester"),
 
     // data.definition
     STRINGS_TO_NAIVE_BAYES_DATA_TUPLE("com.skroll.analyzer.data.definition.StringsToNaiveBayesDataTuplePipe"),
@@ -39,11 +38,10 @@ public enum Pipes {
     HTML_HIDDEN_MARKOV_MODEL_STATE_SEQUENCE_TESTING_PIPE("com.skroll.analyzer.model.hmm.HTMLHiddenMarkovModelStateSequenceTestingPipe"),
 
     //train.definition
-    FILE_NAIVE_BAYES_TRAINER("com.skroll.analyzer.train.definition.FileNaiveBayesTrainerPipe"),
-    FOLDER_NAIVE_BAYES_TRAINER("com.skroll.analyzer.train.definition.FolderNaiveBayesTrainerPipe"),
-
-    FOLDER_HTML_HIDDEN_MARKOV_MODEL_TRAINING_PIPE("com.skroll.analyzer.train.definition.FolderHTMLHiddenMarkovModelTrainerPipe"),
-    FOLDER_HTML_HIDDEN_MARKOV_MODEL_STATE_SEQUENCE_TESTING_PIPE("com.skroll.analyzer.evaluate.definition.FolderHTMLHiddenMarkovModelStateSequenceTesterPipe"),
+//    FILE_NAIVE_BAYES_TRAINER("com.skroll.analyzer.train.definition.FileNaiveBayesTrainerPipe"),
+//    FOLDER_NAIVE_BAYES_TRAINER("com.skroll.analyzer.train.definition.FolderNaiveBayesTrainerPipe"),
+//    FOLDER_HTML_HIDDEN_MARKOV_MODEL_TRAINING_PIPE("com.skroll.analyzer.train.definition.FolderHTMLHiddenMarkovModelTrainerPipe"),
+//    FOLDER_HTML_HIDDEN_MARKOV_MODEL_STATE_SEQUENCE_TESTING_PIPE("com.skroll.analyzer.evaluate.definition.FolderHTMLHiddenMarkovModelStateSequenceTesterPipe"),
 
 
     //train.definition.data

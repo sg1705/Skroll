@@ -55,6 +55,9 @@ public class DocAPI {
     private ClassifierFactory classifierFactory;
 
     @Inject
+    private Parser parser;
+
+    @Inject
     private Configuration configuration;
     //private String preEvaluatedFolder = configuration.get("preEvaluatedFolder", "/tmp/");
     //private String preEvaluatedFolder = null;
@@ -152,11 +155,11 @@ public class DocAPI {
                 } else {
                     //document is an HTML
                     if (partialParse.equals("true")) {
-                        document = Parser.parsePartialDocumentFromUrl(docURL);
+                        document = this.parser.parsePartialDocumentFromUrl(docURL);
                         document.setId(documentId);
                         document.set(CoreAnnotations.IsPartiallyParsedAnnotation.class, true);
                     } else {
-                        document = Parser.parseDocumentFromUrl(docURL);
+                        document = this.parser.parseDocumentFromUrl(docURL);
                         String fDocumentId = documentId;
                         document.setId(documentId);
                         Document fDoc = document;
@@ -257,7 +260,7 @@ public class DocAPI {
             document = documentFactory.get(documentId);
             logger.debug("Fetched the existing document: {}", documentId);
         } else {
-            document = Parser.parseDocumentFromHtml(content);
+            document = this.parser.parseDocumentFromHtml(content);
             document.setId(documentId);
             for (Classifier classifier : classifiersForClassify) {
                 document = (Document) classifier.classify(documentId, document);

@@ -2,6 +2,7 @@ package com.skroll.document.annotation;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import com.skroll.BaseTest;
 import com.skroll.classifier.Category;
 import com.skroll.document.*;
 import com.skroll.parser.Parser;
@@ -15,14 +16,14 @@ import java.util.List;
 
 import static org.junit.Assert.fail;
 
-public class CategoryAnnotationHelperTest {
+public class CategoryAnnotationHelperTest extends BaseTest {
 
     private Document document;
     public static final Logger logger = LoggerFactory
             .getLogger(CategoryAnnotationHelperTest.class);
     @Before
     public void setUp() throws Exception {
-        document = Parser.parseDocumentFromHtmlFile("src/test/resources/classifier/miniture-indenture.html");
+        document = parser.parseDocumentFromHtmlFile("src/test/resources/classifier/miniture-indenture.html");
 
     }
 

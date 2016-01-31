@@ -1,5 +1,6 @@
 package com.skroll.util;
 
+import com.skroll.BaseTest;
 import com.skroll.analyzer.model.RandomVariable;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
@@ -25,7 +26,7 @@ public class TestHelper {
     static String trainingFolderName = "src/test/resources/analyzer/definedTermExtractionTraining";
     static String trainingFileName = "src/test/resources/analyzer/definedTermExtractionTraining/AMC Networks CA.html";
 
-    public static Document makeTrainingDoc(File file) {
+    public static Document makeTrainingDoc(Parser parser, File file) {
         String htmlString = null;
         try {
             htmlString = Utils.readStringFromFile(file);
@@ -36,7 +37,7 @@ public class TestHelper {
 
         try {
             Document htmlDoc = new Document();
-            htmlDoc = Parser.parseDocumentFromHtml(htmlString);
+            htmlDoc = parser.parseDocumentFromHtml(htmlString);
             //create a pipeline
 
             Pipeline<Document, Document> pipeline =

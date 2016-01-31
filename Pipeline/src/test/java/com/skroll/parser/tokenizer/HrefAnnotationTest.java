@@ -1,5 +1,6 @@
 package com.skroll.parser.tokenizer;
 
+import com.skroll.BaseTest;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.annotation.CoreAnnotations;
@@ -12,7 +13,7 @@ import java.util.List;
 /**
  * Created by saurabh on 6/6/15.
  */
-public class HrefAnnotationTest {
+public class HrefAnnotationTest extends BaseTest {
 
     @Test
     public void testHrefAnnotation() throws Exception {
@@ -23,7 +24,7 @@ public class HrefAnnotationTest {
 
         Document htmlDoc= new Document();
         htmlDoc.setSource(htmlString);
-        htmlDoc = Parser.parseDocumentFromHtml(htmlString);
+        htmlDoc = parser.parseDocumentFromHtml(htmlString);
 
         //iterate over each paragraph
         List<CoreMap> paragraphs = htmlDoc.getParagraphs();

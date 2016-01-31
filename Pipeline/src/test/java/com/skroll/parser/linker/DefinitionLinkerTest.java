@@ -1,5 +1,6 @@
 package com.skroll.parser.linker;
 
+import com.skroll.BaseTest;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -13,13 +14,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class DefinitionLinkerTest {
+public class DefinitionLinkerTest extends BaseTest {
 
     public void testLinkRandomDocument() throws Exception {
         //search for regex
         String validateString = "<a href=\"#p_2240\">";
         //load up a doc
-        Document document = Parser.parseDocumentFromHtmlFile("src/test/resources/parser/linker/test-linker-random.html");
+        Document document = parser.parseDocumentFromHtmlFile("src/test/resources/parser/linker/test-linker-random.html");
         // the paragraph for Agent's group is 2240
         //setup fake definition and tokens
         int linkCount = 0;
