@@ -66,27 +66,51 @@ public class TestHelper {
 
         CoreMap para;
         String text;
+        List<String> strings;
+        List<Token> tokens;
+        List<List<Token>> tokenList;
 
         para = new CoreMap();
         text = "plan benefit defined compensation plans";
+        strings = Arrays.asList("plan", "benefit", "defined", "compensation", "plans");
+        tokens = DocumentHelper.createTokens(strings);
+        tokenList = new ArrayList<>();
+        tokenList.add(tokens);
+        para.set(CoreAnnotations.TokenAnnotation.class, tokens);
         para.set(CoreAnnotations.TextAnnotation.class, text);
         para.set(CoreAnnotations.IndexInteger.class, 0);
         paraList.add(para);
 
+
         para = new CoreMap();
         text = "securities assets liabilities level";
+        strings = Arrays.asList("securities", "assets", "liabilities", "level");
+        tokens = DocumentHelper.createTokens(strings);
+        tokenList = new ArrayList<>();
+        tokenList.add(tokens);
+        para.set(CoreAnnotations.TokenAnnotation.class, tokens);
         para.set(CoreAnnotations.TextAnnotation.class, text);
         para.set(CoreAnnotations.IndexInteger.class, 1);
         paraList.add(para);
 
         para = new CoreMap();
         text = "plan benefit defined compensation";
+        strings = Arrays.asList("plan", "benefit", "defined", "compensation");
+        tokens = DocumentHelper.createTokens(strings);
+        tokenList = new ArrayList<>();
+        tokenList.add(tokens);
+        para.set(CoreAnnotations.TokenAnnotation.class, tokens);
         para.set(CoreAnnotations.TextAnnotation.class, text);
         para.set(CoreAnnotations.IndexInteger.class, 2);
         paraList.add(para);
 
         para = new CoreMap();
         text = "plan benefit defined assets";
+        strings = Arrays.asList("plan", "benefit", "defined", "assets");
+        tokens = DocumentHelper.createTokens(strings);
+        tokenList = new ArrayList<>();
+        tokenList.add(tokens);
+        para.set(CoreAnnotations.TokenAnnotation.class, tokens);
         para.set(CoreAnnotations.TextAnnotation.class, text);
         para.set(CoreAnnotations.IndexInteger.class, 3);
         paraList.add(para);
