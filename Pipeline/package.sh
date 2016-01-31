@@ -2,9 +2,9 @@
 
 #--------------------
 #GCloud setting
-export USER_ID=skrollioteamnov2015
+export USER_ID=skrollioteam2016
 export GCLOUD_INSTANCE_NAME=instance-1
-export GCLOUD_ZONE=us-east1-c
+export GCLOUD_ZONE=us-east1-b
 #---------------------
 
 export PACKAGE_ROOT_DIR=build
@@ -29,6 +29,9 @@ cp -R src/main/si/* $HOME_DIR/si/
 
 mkdir $HOME_DIR/phantomjs
 cp src/main/resources/parser/extractor/* $HOME_DIR/phantomjs/
+
+mkdir $HOME_DIR/solr
+cp -r src/main/resources/solr/ $HOME_DIR/solr/
 
 rm $PACKAGE_ROOT_DIR/skroll-package.tar.gz
 tar -czvf $PACKAGE_ROOT_DIR/skroll-package.tar.gz -C $PACKAGE_ROOT_DIR $PACKAGE_DIR
