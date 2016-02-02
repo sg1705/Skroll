@@ -1,7 +1,7 @@
 package com.skroll.rest.document;
 
 import com.google.inject.Inject;
-import com.skroll.analyzer.model.topic.RelatedParaWithinDocFinder;
+import com.skroll.analyzer.model.topic.RelatedParaFinder;
 import com.skroll.document.*;
 import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.document.factory.CorpusFSDocumentFactory;
@@ -30,7 +30,7 @@ public class DocumentAPI {
     private float userWeight = 95;
 
     @Inject
-    private RelatedParaWithinDocFinder relatedFinder;
+    private RelatedParaFinder relatedFinder;
 
     @Inject
     @CorpusFSDocumentFactory

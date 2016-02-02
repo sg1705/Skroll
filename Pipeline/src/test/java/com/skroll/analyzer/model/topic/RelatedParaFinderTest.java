@@ -16,17 +16,17 @@ import java.util.Map;
 /**
  * Created by wei2l on 1/18/2016.
  */
-public class RelatedParaWithinDocFinderTest {
+public class RelatedParaFinderTest {
 
     Document doc;
-    RelatedParaWithinDocFinder finder;
+    RelatedParaFinder finder;
 
 
     @Before
     public void setup() throws Exception {
         doc = TestHelper.setUpTestDocForTopicModeling();
         Injector injector = Guice.createInjector(new SkrollTestGuiceModule());
-        finder = injector.getInstance(RelatedParaWithinDocFinder.class);
+        finder = injector.getInstance(RelatedParaFinder.class);
     }
 
 
