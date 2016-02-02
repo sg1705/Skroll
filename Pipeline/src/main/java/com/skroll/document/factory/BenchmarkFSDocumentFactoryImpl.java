@@ -1,6 +1,7 @@
 package com.skroll.document.factory;
 
 import com.skroll.document.Document;
+import com.skroll.parser.Parser;
 import com.skroll.util.Configuration;
 import org.eclipse.jetty.util.ConcurrentHashSet;
 
@@ -28,9 +29,10 @@ public class BenchmarkFSDocumentFactoryImpl extends
         return saveLaterDocumentIds;
     }
     @Inject
-    public BenchmarkFSDocumentFactoryImpl(Configuration configuration) {
+    public BenchmarkFSDocumentFactoryImpl(Configuration configuration, Parser parser) {
         this.configuration = configuration;
         this.folder = configuration.get("benchmarkFolder");
+        this.parser = parser;
         documentCache = new CacheService(this,0);
     }
 

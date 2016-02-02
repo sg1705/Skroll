@@ -1,6 +1,7 @@
 package com.skroll.parser.tokenizer;
 
 import com.google.common.base.Joiner;
+import com.skroll.BaseTest;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
@@ -20,13 +21,13 @@ import java.util.List;
 /**
  * Created by saurabh on 12/23/14.
  */
-public class DocumentAllPipesTest extends TestCase {
+public class DocumentAllPipesTest extends BaseTest {
 
     @Test
     public void testAllProcess() throws Exception {
         String fileName = "src/test/resources/parser/tokenizer/experiment-jsoup-node-extraction.html";
         PhantomJsExtractor.TEST_MODE = TestMode.ON;
-        Document doc = Parser.parseDocumentFromHtmlFile(fileName);
+        Document doc = parser.parseDocumentFromHtmlFile(fileName);
         //find out how many tokens have bold
         List<Token> tokens = DocumentHelper.getDocumentTokens(doc);
         int count = 0;

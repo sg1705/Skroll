@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.skroll.BaseTest;
 import com.skroll.document.Document;
 import com.skroll.document.JsonDeserializer;
 import com.skroll.document.annotation.CoreAnnotations;
@@ -20,13 +21,13 @@ import java.io.File;
 import java.util.HashMap;
 
 
-public class IndexCreatorTest {
+public class IndexCreatorTest extends BaseTest {
 
 
     Configuration configuration;
 
     @Before
-    public void setup() throws Exception {
+    public void setup()  {
         Injector injector = Guice.createInjector(new SkrollTestGuiceModule());
         configuration = injector.getInstance(Configuration.class);
     }
@@ -37,7 +38,7 @@ public class IndexCreatorTest {
         String random10k = "./src/test/resources/document/random10k.html";
         String html = Files.toString(new File(random10k), Constants.DEFAULT_CHARSET);
         String fileName = "aa";
-        Document doc = Parser.parseDocumentFromHtml(html);
+        Document doc = parser.parseDocumentFromHtml(html);
         doc.setId(fileName);
         String json = JsonDeserializer.getJson(doc);
         String flName = "/tmp/" + Long.toString(System.currentTimeMillis()) + ".json";

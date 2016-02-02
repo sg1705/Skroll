@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
+import com.skroll.BaseTest;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.JsonDeserializer;
@@ -22,7 +23,7 @@ import java.nio.file.NoSuchFileException;
 /**
  * Created by saurabh on 6/14/15.
  */
-public class ClassifierLogicTest {
+public class ClassifierLogicTest extends BaseTest {
 
     ClassifierFactory classifierFactory = null;
     ClassifierFactoryStrategy classifierFactoryStrategyForClassify = null;
@@ -56,7 +57,7 @@ public class ClassifierLogicTest {
     @Test
     public void testOneParaTrained() throws Exception {
         //create a new document
-        Document doc = Parser.parseDocumentFromHtml("<div><u>This is a awesome</u></div>" +
+        Document doc = parser.parseDocumentFromHtml("<div><u>This is a awesome</u></div>" +
                 "<div><u>This is a awesome</u></div>" +
                 "<div><u>This is a awesome</u></div");
 
@@ -92,7 +93,7 @@ public class ClassifierLogicTest {
         assert (doc.equals(newDoc));
         assert (newJson.equals(json));
         //test reparsing
-        Document reParsed = Parser.reParse(newDoc);
+        Document reParsed = parser.reParse(newDoc);
         doc.setId("test");
         assert (newDoc.equals(reParsed));
     }
@@ -100,7 +101,7 @@ public class ClassifierLogicTest {
     @Test
     public void testAllUserObserved() throws Exception {
         //create a new document
-        Document doc = Parser.parseDocumentFromHtml("<div><u>this is a awesome</u></div>" +
+        Document doc = parser.parseDocumentFromHtml("<div><u>this is a awesome</u></div>" +
                 "<div>This is second paragraph</div>" +
                 "<div>This is third paragraph</div");
 

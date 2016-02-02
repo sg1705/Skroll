@@ -1,5 +1,6 @@
 package com.skroll.parser.tokenizer;
 
+import com.skroll.BaseTest;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.DocumentHelper;
@@ -8,14 +9,16 @@ import com.skroll.document.annotation.CoreAnnotations;
 import com.skroll.parser.Parser;
 import com.skroll.pipeline.util.Utils;
 import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.util.List;
 
 /**
  * Created by saurabh on 3/8/15.
  */
-public class BoldAnnotationTest extends TestCase {
+public class BoldAnnotationTest extends BaseTest {
 
+    @Test
     public void testSimpleBoldAnnotation() throws Exception {
         // read a sample file
         String fileName = "src/test/resources/document/simple-html-text.html";
@@ -24,7 +27,7 @@ public class BoldAnnotationTest extends TestCase {
 
         Document htmlDoc= new Document();
         htmlDoc.setSource(htmlString);
-        htmlDoc = Parser.parseDocumentFromHtml(htmlString);
+        htmlDoc = parser.parseDocumentFromHtml(htmlString);
 
         //find out how many tokens have bold
         //List<Token> tokens = htmlDoc.get(CoreAnnotations.TokenAnnotation.class);

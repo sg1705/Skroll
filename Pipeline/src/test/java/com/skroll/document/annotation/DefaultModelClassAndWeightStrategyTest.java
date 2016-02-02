@@ -1,6 +1,7 @@
 package com.skroll.document.annotation;
 
 import com.google.common.collect.Lists;
+import com.skroll.BaseTest;
 import com.skroll.classifier.Category;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
@@ -12,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 
-public class DefaultModelClassAndWeightStrategyTest {
+public class DefaultModelClassAndWeightStrategyTest extends BaseTest {
 
     ManagedCategoryStrategy managedCategoryStrategy = new DefaultManagedCategoryStrategy();
     UnManagedCategoryStrategy unManagedCategoryStrategy = new DefaultUnManagedCategoryStrategy();
@@ -23,7 +24,7 @@ public class DefaultModelClassAndWeightStrategyTest {
 
     @Before
     public void setUp() throws Exception {
-        Document doc = Parser.parseDocumentFromHtml("<div><u>this is a awesome</u></div>" +
+        Document doc = parser.parseDocumentFromHtml("<div><u>this is a awesome</u></div>" +
                 "<div>This is second paragraph</div>" +
                 "<div>This is third paragraph</div");
 
