@@ -168,7 +168,7 @@ public class RelatedParaWithinDocFinder {
         n = Math.min(n, doc.getParagraphs().size());
         List<CoreMap> resultParas = sortParasByDistance(doc, inputPara).subList(0,n);
         List<Double[]> distances = resultParas.stream()
-                .map(para -> computeDistances(para, inputPara, doc))
+                .map(para -> computeDistances(inputPara, para, doc))
                 .collect(Collectors.toList());
         return new AbstractMap.SimpleEntry(resultParas, distances);
     }

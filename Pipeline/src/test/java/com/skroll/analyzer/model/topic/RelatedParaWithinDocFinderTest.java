@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by wei2l on 1/18/2016.
@@ -67,4 +68,13 @@ public class RelatedParaWithinDocFinderTest {
         assert(rankedParas.get(3).getText().startsWith("securities"));
     }
 
+    @Test
+    public void testCloseParasWithWordDistances() throws Exception {
+        Map.Entry<List<CoreMap>, List<Double[]>> paraWordDistances =
+                finder.closeParasWithWordDistances(doc,doc.getParagraphs().get(0), 4);
+        paraWordDistances.getKey().stream().forEach(p -> System.out.println(p.getText()));
+        paraWordDistances.getValue().stream().forEach(d -> System.out.println(Arrays.toString(d)));
+
+        assert(((int)(paraWordDistances.getValue().get(3)[3]*100)) == 93);
+    }
 }
