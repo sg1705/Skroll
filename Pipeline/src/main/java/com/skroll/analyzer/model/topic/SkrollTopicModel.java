@@ -4,6 +4,7 @@ import cc.mallet.pipe.*;
 import cc.mallet.topics.ParallelTopicModel;
 import cc.mallet.topics.TopicInferencer;
 import cc.mallet.types.*;
+import com.skroll.analyzer.model.bn.inference.BNInference;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.util.Configuration;
@@ -124,16 +125,47 @@ public class SkrollTopicModel {
 		return out.toString();
 	}
 
+	double[] getWordTopicCounts(String word){
+		Alphabet dataAlphabet = model.getAlphabet();
+		int wordIndex = dataAlphabet.lookupIndex(word);
+		int[] topicCounts = model.typeTopicCounts[wordIndex];
+		double[] result = new double[model.getNumTopics()];
+
+		int index = 0;
+		while (index < topicCounts.length &&
+				topicCounts[index] > 0) {
+
+			int topic = topicCounts[index] & model.topicMask;
+			int count = topicCounts[index] >> model.topicBits;
+			result[topic] = count;
+			index++;
+		}
+		return result;
+	}
+
+	public double[] getTopicDistribution(String word){
+		return BNInference.normalize(getWordTopicCounts(word), 1);
+	}
+
 	/**
 	 * infer the topic distributions for the text in the paragraph
 	 * @param para
 	 * @return
      */
 	public double[] infer(CoreMap para){
-		InstanceList instances = new InstanceList(pipe);
 		String text = para.getText();
+		return infer(text);
+	}
+
+	/**
+	 * infer the topic distribution for the given text
+	 * @param text
+	 * @return
+     */
+	public double[] infer(String text){
+		InstanceList instances = new InstanceList(pipe);
 		if (text==null) return new double[model.getNumTopics()];
-		instances.addThruPipe(new Instance(para.getText(), null, null, null));
+		instances.addThruPipe(new Instance(text, null, null, null));
 		TopicInferencer inferencer = model.getInferencer();
 		inferencer.setRandomSeed(RANDOM_SEED);
 		return inferencer.getSampledDistribution(instances.get(0), 10, 1, 5);
