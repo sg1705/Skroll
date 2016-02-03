@@ -207,25 +207,34 @@ sk-search-box md-chips {
     padding: 6px; }
     .sk-landing-search-results .sk-landing-search-results-panel .category-panel md-card md-card-header {
       padding: 2px;
-      font-size: 14px;
-      border-bottom: 1px;
-      border-bottom-color: #9E9E9E;
-      border-bottom-style: solid; }
-    .sk-landing-search-results .sk-landing-search-results-panel .category-panel md-card md-card-content .content-div {
-      padding: 5px;
+      padding-bottom: 4px;
       font-size: 14px;
       border-bottom: 1px;
       color: #9E9E9E;
-      border-bottom-color: #E0E0E0;
-      border-bottom-style: solid;
-      cursor: pointer; }
-    .sk-landing-search-results .sk-landing-search-results-panel .category-panel md-card md-card-content .content-div:hover {
-      background-color: rgba(25, 118, 210, 0.2); }
-    .sk-landing-search-results .sk-landing-search-results-panel .category-panel md-card md-card-content .content-div:last-child {
-      border: none; }
+      border-bottom-color: #9E9E9E;
+      border-bottom-style: solid; }
+    .sk-landing-search-results .sk-landing-search-results-panel .category-panel md-card md-card-content {
+      padding-top: 8px;
+      padding-bottom: 16px;
+      padding-left: 0px;
+      padding-right: 0px; }
+      .sk-landing-search-results .sk-landing-search-results-panel .category-panel md-card md-card-content .content-div {
+        padding: 7px;
+        padding-left: 8px;
+        padding-right: 8px;
+        font-size: 14px;
+        border-bottom: 1px;
+        border-bottom-color: #E0E0E0;
+        border-bottom-style: solid;
+        cursor: pointer; }
+      .sk-landing-search-results .sk-landing-search-results-panel .category-panel md-card md-card-content .content-div:hover {
+        background-color: rgba(25, 118, 210, 0.2); }
+      .sk-landing-search-results .sk-landing-search-results-panel .category-panel md-card md-card-content .content-div:last-child {
+        border: none; }
     .sk-landing-search-results .sk-landing-search-results-panel .category-panel md-card md-card-actions button {
       font-size: 12px;
-      color: #9E9E9E; }
+      color: #9E9E9E;
+      min-width: inherit; }
 
 /*
 * LHS

@@ -175,7 +175,7 @@
         'companyName': companyName,
         'formType': formType,
         'category' : category,
-        'filingDate': moment(filingDate).format('MMM DD YYYY'),
+        'filingDate': moment(filingDate).format('MMM DD, YYYY'),
         'href': href
       }
       return result;
@@ -255,7 +255,7 @@
             return;
           }
 
-          var filteredCategoryResults = _.first(filteredCategoryResults, 60);
+          var filteredCategoryResults = _.first(filteredCategoryResults, 6);
           var filings = _.map(filteredCategoryResults, function(f){
               var fl = {};
               fl.formType = f.formType;
