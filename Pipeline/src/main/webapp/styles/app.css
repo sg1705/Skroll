@@ -155,6 +155,10 @@ sk-search-box .search-button {
 sk-search-box .search-icon {
   width: 45px;
   height: 45px; }
+sk-search-box md-chips {
+  box-shadow: none; }
+  sk-search-box md-chips .md-chips.md-focused {
+    box-shadow: none; }
 
 /*
 *

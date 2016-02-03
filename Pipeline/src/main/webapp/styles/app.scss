@@ -166,7 +166,7 @@ md-sidenav#navframe.md-locked-open {
 
 			padding-left: 10px;
 			padding-right: 10px;
-			
+						
 			md-chips-wrap {
 				display:flex;
 				flex-direction: row;
@@ -175,6 +175,7 @@ md-sidenav#navframe.md-locked-open {
 					width: 100%;
 				}
 			}
+
 		}
 
 	}
@@ -231,6 +232,14 @@ sk-search-box {
 		height: 45px;
 	}
 
+	md-chips {
+		box-shadow: none;
+
+		.md-chips.md-focused {
+			box-shadow: none;
+		}
+
+	}
 }
 
 /*
