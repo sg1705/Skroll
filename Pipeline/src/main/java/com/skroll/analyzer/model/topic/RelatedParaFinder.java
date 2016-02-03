@@ -1,13 +1,20 @@
 package com.skroll.analyzer.model.topic;
 
 import cc.mallet.util.Maths;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
 import com.skroll.document.CoreMap;
 import com.skroll.document.Document;
 import com.skroll.document.Token;
 import com.skroll.document.annotation.CoreAnnotations;
+import com.sun.research.ws.wadl.Doc;
 
 import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 /**
@@ -20,6 +27,11 @@ public class RelatedParaFinder {
 
     static HashMap<String, double[][]> topicProbabilities = new HashMap();
     //double[][] paraTopicProbs;
+
+    // cache stroing para topic distributions for doc represented by doc ID
+   static Cache<String, double[][]> paraTopicProbCache = CacheBuilder.newBuilder()
+            .maximumSize(2)
+            .build();
 
     public RelatedParaFinder() {
 //        paraTopicProbs = stm.infer(doc);
@@ -173,12 +185,26 @@ public class RelatedParaFinder {
         return new AbstractMap.SimpleEntry(resultParas, distances);
     }
 
-    private double[][] getTopicProbabilitiesForDoc(Document doc) {
-        double[][] topicProb = topicProbabilities.get(doc.getId());
-        if (topicProb == null) {
-            topicProb = stm.infer(doc);
-            topicProbabilities.put(doc.getId(), topicProb);
+//    private double[][] getTopicProbabilitiesForDoc(Document doc) {
+//        double[][] topicProb = topicProbabilities.get(doc.getId());
+//        if (topicProb == null) {
+//            topicProb = stm.infer(doc);
+//            topicProbabilities.put(doc.getId(), topicProb);
+//        }
+//        return topicProb;
+//    }
+
+    private double[][] getTopicProbabilitiesForDoc(Document doc){
+        try {
+            return paraTopicProbCache.get(doc.getId(), new Callable<double[][]>(){
+                @Override
+                public double[][] call() throws Exception {
+                    return stm.infer(doc);
+                }
+            });
+        } catch (ExecutionException e){
+            e.printStackTrace(System.err);
         }
-        return topicProb;
+        return null;
     }
 }
