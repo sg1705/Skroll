@@ -44,7 +44,7 @@
       "description": "no description"
     }, {
       "key": "solr.autocomplete",
-      "active": false,
+      "active": true,
       "name": "Is autocomplete for Solr available",
       "description": "no description"
     }, {
