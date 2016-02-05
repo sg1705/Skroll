@@ -31,12 +31,11 @@
       </p>
       <p>
         <md-button ng-repeat="year in ctrl.refinerYears" ng-click="ctrl.onClickRefineYear('{{year}}')">{{year}}</md-button>
-<!--         <md-button>2013</md-button>
-        <md-button>2014</md-button>
-        <md-button>2015</md-button>
- -->      </p>
+      </p>
     </div>
-  <div>
+    <div style="margin: 6px">
+      Total results {{ctrl.totalResults}}
+    </div>
 
   <!-- results panel -->
   <div class="sk-landing-search-results-panel" ng-repeat="result in ctrl.companyPanelResults">
@@ -52,12 +51,12 @@
           {{category.categoryName}}
         </md-card-header>
        <md-card-content layout="column" style="min-height: 200px">
-        <div class="content-div" ng-click="ctrl.onClickedFiling('{{filing.href}}','{{filing.formType}}')" ng-repeat="filing in category.filings" layout="row">
+        <div class="content-div" ng-click="ctrl.onClickedFiling('{{filing.href}}','{{filing.formType}}')" ng-repeat="filing in category.filings | card:result.isSingleCategory" layout="row">
           <div flex="50">{{filing.formType}}</div>
           <div flex="50" style="text-align: right;">{{filing.filingDate}}</div>
         </div>
       </md-card-content>
-       <md-card-actions layout="row" layout-align="end center">
+       <md-card-actions layout="row" layout-align="end center" ng-if="!result.isSingleCategory">
          <md-button ng-click="ctrl.onClickRefineChip('category', '{{category.categoryName}}')">MORE...</md-button>
        </md-card-actions>
       </md-card>
