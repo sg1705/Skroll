@@ -19,6 +19,7 @@
     //-- private variables
     var vm = this;
     var companyPanelResults = [];
+    var totalResults = 0;
     var categories = new Categories();
     var fullTextSearchCategories = categories.getFullTextSearchCategories();
     var booleanSearchCategories = categories.getBooleanSearchCategories();
@@ -30,6 +31,7 @@
     vm.searchTextInUrl = '';
     vm.progressBar = false;
     vm.companyPanelResults = companyPanelResults;
+    vm.totalResults = totalResults;
     vm.refinerCategories = refinerCategories;
     vm.refinerYears = ['2012', '2013', '2014', '2015'];
 
@@ -239,6 +241,7 @@
     * Append results
     **/
     function convertSearchResultsIntoCompanyPanel(originalResults) {
+      vm.totalResults = originalResults.length;
       //filter out unique companies
       var uniqCompanies = _.uniq(_.map(originalResults, function(c){ return c.companyName; }));
       //convert into company array
@@ -254,8 +257,7 @@
           if (filteredCategoryResults.length < 1) {
             return;
           }
-
-          var filteredCategoryResults = _.first(filteredCategoryResults, 6);
+          // var filteredCategoryResults = _.first(filteredCategoryResults, 60);
           var filings = _.map(filteredCategoryResults, function(f){
               var fl = {};
               fl.formType = f.formType;
@@ -265,23 +267,57 @@
             });
           //now that we have filtered categories for category, let's create category proto
           var categoryProto = {
-            categoryName: category.categoryName,
-            filings: filings
+            'categoryName': category.categoryName,
+            'filings': filings
           }
           resultCategories.push(categoryProto);
         });
         if (resultCategories.length > 0) {
           return {
-            companyName: c,
-            categories: resultCategories
+            'companyName': c,
+            'categories': resultCategories
           }
         } else {
           return null;
         }
       });
+      convertSearchResultsIntoCompanyPanelForOneCard(searchResults);
       return _.filter(searchResults, function(r) { if (r != null) return r });
     }
 
+
+    function convertSearchResultsIntoCompanyPanelForOneCard(results) {
+      var results = _.map(results, function(result){
+        if (result.categories.length == 1) {
+          console.log('found only 1 category');
+          //organize in years
+          //get uniq years
+          var uniqYears = _.uniq(result.categories[0].filings, function(f) {
+            f.filingYear = moment(f.filingDate).format('YYYY');
+            return moment(f.filingDate).format('YYYY');
+          });
+
+          var newCategories = [ ];
+          _.each(uniqYears, function(u) {
+            var filteredForYear = _.filter(result.categories[0].filings, function(f) {
+              if (u.filingYear === moment(f.filingDate).format('YYYY')) {
+                return f;
+              }
+            })
+            newCategories.push( {
+              'categoryName' : u.filingYear,
+              'filings' : filteredForYear,
+            })
+          });
+          result.categories = newCategories;
+          result.isSingleCategory = true;
+          console.log(result);
+        } else {
+          result.isSingleCategory = false;
+        }
+        return result;
+      });
+    }
 
 
     function Categories() {
