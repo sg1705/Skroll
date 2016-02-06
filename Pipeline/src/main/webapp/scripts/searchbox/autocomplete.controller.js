@@ -67,9 +67,11 @@
         return autocompleteService.getSuggestions(query).then(function(terms) {
           var groups = terms.grouped.type.groups;
           for (var i in groups) {
-            console.log(groups[i]);
-            var docs = groups[i].doclist.docs;
-            results.push.apply(results, docs);
+            if (!searchBoxModel.isChipTypeSelected(groups[i].groupValue)) {
+              console.log(groups[i]);
+              var docs = groups[i].doclist.docs;
+              results.push.apply(results, docs);
+            }
           }
             console.log(results);
             vm.previousAutocompleteSearch.items = results;
@@ -93,6 +95,7 @@
           var item = vm.previousAutocompleteSearch.items[0]
           searchBoxModel.updateChip(item);
           vm.searchState.searchText = vm.searchState.searchText.slice(-1);
+          onItemSelectedInAutocomplete();
         }
       }
     }
@@ -120,17 +123,8 @@
       //1. only "company" is selected
       //2. only "category" is selected
       //3. both are selected
-      var isCompanySelected = _.filter(vm.searchState.selectedChips, function(s) {
-        if (s.type == 'company')
-          return true;
-      });
-      isCompanySelected = (isCompanySelected.length > 0);
-
-      var isCategorySelected = _.filter(vm.searchState.selectedChips, function(s) {
-        if (s.type == 'category')
-          return true;
-      });
-      isCategorySelected = (isCategorySelected.length > 0);
+      var isCompanySelected = searchBoxModel.isChipTypeSelected('company');
+      var isCategorySelected = searchBoxModel.isChipTypeSelected('category');
 
       if (isCategorySelected && isCompanySelected) {
         vm.placeholdertext = '2014-2016';
