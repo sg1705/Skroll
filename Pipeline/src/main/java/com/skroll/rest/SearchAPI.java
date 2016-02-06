@@ -31,9 +31,9 @@ public class SearchAPI {
     private static final String EDGER_FULL_TEXT_SEARCH_URL = "https://searchwww.sec.gov/EDGARFSClient/jsp/EDGAR_MainAccess.jsp?" +
             "&sort=Date&formType=1&isAdv=true&numResults=100";
     private static final String FETCH_INDEX_URL = "http://www.sec.gov/";
-    private static final List<String> SEC_FILING_CATAGORIES = Lists.newArrayList("Financial","Prospectus","Registration","Proxy","News");
+    private static final List<String> SEC_FILING_CATAGORIES = Lists.newArrayList("Financials","Prospectus","Registration Statement","Proxy","News", "FWP");
     private static final List<String> SEC_EXHIBIT_CATAGORIES = Lists.newArrayList("Underwriting Agreement",
-                "Plans of Reorganization, Merger or Acquisition", "Articles of Incorporation and bylaw",
+                "Plans of Reorganization, Mergers or Acquisition", "Articles of Incorporation and Bylaws",
                 "Indenture",
                 "Legal Opinion",
                 "Tax Opinion",
