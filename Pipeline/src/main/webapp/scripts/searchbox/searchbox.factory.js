@@ -34,7 +34,9 @@
       clear   : clear,
       getText : getText,
       isEmpty : isEmpty,
-      updateChip : updateChip
+      updateChip : updateChip,
+      getChipTypes: getChipTypes,
+      isChipTypeSelected: isChipTypeSelected
 
     }
 
@@ -91,6 +93,24 @@
       filteredChips.push(chip);
       this.searchState.selectedChips = filteredChips;
     }
+
+    function getChipTypes() {
+      return _.map(this.searchState.selectedChips, function(c) {
+        return c.type;
+      })
+    }
+
+    function isChipTypeSelected(type) {
+      var chip = _.find(this.searchState.selectedChips, function(c) {
+        if (c.type == type)
+          return true;
+      })
+
+      if (chip != undefined)
+        return true;
+      return false;
+    }
+
   };
 
 })();
