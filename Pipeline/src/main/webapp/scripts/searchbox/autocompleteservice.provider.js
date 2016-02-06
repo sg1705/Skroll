@@ -11,13 +11,20 @@
     //-- private variables
     var vm = this;
     var hostname = 'http://localhost:8983';
-    vm.contextPath = '/a?wt=json&indent=true&group=true&group.field=type&group.limit=5&omitHeader=true&q=name_autocomplete%3A';
+    vm.prodContextPath = '/a?wt=json&indent=true&group=true&group.field=type&group.limit=5&omitHeader=true&q=name_autocomplete%3A';
+    vm.devContextPath = '/solr/autocomplete/select?wt=json&indent=true&group=true&group.field=type&group.limit=5&omitHeader=true&q=name_autocomplete%3A';
+    vm.contextPath = '';
 
 
     //-- public
     this.setHostName = function(hostName) {
       vm.hostName = hostName;
     }
+
+    this.setContextPath = function(contextPath) {
+      vm.contextPath = contextPath;
+    }
+
 
     this.$get = function($http, $q, $log) {
       return {
