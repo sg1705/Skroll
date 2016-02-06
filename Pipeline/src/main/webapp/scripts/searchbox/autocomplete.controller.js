@@ -10,12 +10,17 @@
 
     //-- private variables
     var vm = this;
+    var previousAutocompleteSearch = {
+      'items': [],
+      'query': ''
+    }
 
     //-- public variables
     vm.readonly = false;
     vm.selectedItem = null;
     vm.searchState = searchBoxModel.searchState;
     vm.placeholdertext = 'Search for SEC filing (ex. Google Financials 2015)';
+    vm.previousAutocompleteSearch = previousAutocompleteSearch;
 
     //-- public methods
     vm.querySearch = querySearch;
@@ -25,6 +30,7 @@
     vm.transformChip = transformChip;
     vm.onEnter = onEnter;
     vm.onItemSelectedInAutocomplete = onItemSelectedInAutocomplete;
+    vm.onAutocompleteSearchTextChange = onAutocompleteSearchTextChange;
 
     //-- initialization
     //vm.dataElements = loadData();
@@ -66,6 +72,8 @@
             results.push.apply(results, docs);
           }
             console.log(results);
+            vm.previousAutocompleteSearch.items = results;
+            vm.previousAutocompleteSearch.query = query;
             return results;
         }, function(data, status) {
           console.log(status);
@@ -76,6 +84,30 @@
       }
 
     }
+
+    function onAutocompleteSearchTextChange() {
+      if (vm.previousAutocompleteSearch.query != '' && (vm.previousAutocompleteSearch.items.length == 1)) {
+        var index = vm.searchState.searchText.indexOf(vm.previousAutocompleteSearch.query + ' ');
+        if (index == 0) {
+          //create a chip
+          var item = vm.previousAutocompleteSearch.items[0]
+          var newChip = { id: '', field1: item.field1, type: item.type, field2: item.field2 };
+          searchBoxModel.updateChip(newChip);
+          vm.searchState.searchText = vm.searchState.searchText.slice(-1);
+        }
+        // if (vm.searchState.searchText  === vm.previousAutocompleteSearch.query + ' ') {
+        //   //create a chip
+        //   console.log(vm.previousAutocompleteSearch.items);
+        //   return;
+        //   // var chip = {
+        //   //   'field1' :
+        //   //   'field2' :
+        //   // }
+        // }
+          //(Chip fields: field1, type, field2, id)
+      }
+    }
+
 
     /**
      * Create filter function for a query string

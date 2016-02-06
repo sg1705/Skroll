@@ -16,7 +16,9 @@
           md-autofocus="true"
           md-autoselect="true"
           md-search-text="autoCompleteCtrl.searchState.searchText"
+          md-search-text-change="autoCompleteCtrl.onAutocompleteSearchTextChange()"
           md-items="item in autoCompleteCtrl.querySearch(autoCompleteCtrl.searchState.searchText)"
+          md-no-cache="true"
           md-item-text="item.name"
           placeholder="{{autoCompleteCtrl.placeholdertext}}">
           <md-item-template  style="border-box: 2px solid">
