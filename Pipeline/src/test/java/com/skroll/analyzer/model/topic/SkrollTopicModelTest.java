@@ -127,10 +127,10 @@ public class SkrollTopicModelTest {
 
 	@Test
 	public void testInfer2() throws Exception {
-		doc.getParagraphs().stream().forEach(para -> System.out.println(para.getText()));
-		System.out.println(stm.representativeWordsForTopics());
-		double[][] probs = stm.infer(doc);
-		Arrays.stream(probs).forEach(array -> System.out.println(Arrays.toString(array)));
-		assert((int)(probs[1][8]*100) == 61);
+		String paraText = doc.getParagraphs().get(0).getText();
+		double[] probs = stm.infer(paraText);
+		System.out.println(Arrays.toString(probs));
+		assert(Arrays.toString(probs).equals("[0.016666666666666653, 0.016666666666666653, 0.016666666666666653, 0.016666666666666653, 0.8499999999999992, 0.016666666666666653, 0.016666666666666653, 0.016666666666666653, 0.016666666666666653, 0.016666666666666653]"));
 	}
+
 }

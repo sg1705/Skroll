@@ -186,9 +186,19 @@ task downloadSolr(type: Download) {
     dest new File(buildDir, 'solr-5.4.1.zip')
 }
 
-task installSolr(dependsOn: downloadSolr, type: Copy) {
+task unZipSolr(dependsOn: downloadSolr, type: Copy) {
     from zipTree(downloadSolr.dest)
     into buildDir
+}
+
+task installSolr(dependsOn: unZipSolr, type: Copy) {
+    from 'src/main/resources/solr/web.xml'
+    into 'build/solr-5.4.1/server/solr-webapp/webapp/WEB-INF/'
+}
+
+task buildAutoCompleteSolrIndex(type: Exec) {
+    workingDir 'src/main/scripts'
+    commandLine './buildAutoCompleteSolrIndex.sh', '../../../build/solr-5.4.1', '../resources/solr'
 }
 
 task startSolr(type: Exec) {
@@ -200,12 +210,6 @@ task stopSolr(type: Exec) {
     workingDir 'build/solr-5.4.1/bin/'
     commandLine './solr', 'stop'
 }
-
-task buildAutoCompleteSolrIndex(type: Exec) {
-    workingDir 'src/main/scripts'
-    commandLine './buildAutoCompleteSolrIndex.sh', '../../../build/solr-5.4.1', '../resources/solr'
-}
-
 
 test.dependsOn npmInstall
 compileJava.dependsOn npmInstall

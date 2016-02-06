@@ -52,6 +52,17 @@ public class BNInference {
             for (int i=0;i<probs.length;i++) probs[i]= vals[i]/sum*weight;
         return probs;
     }
+
+     public static double[] normalize(int[] vals, double weight){
+        double sum=0;
+        for (double p:vals) sum+=p;
+        double[] probs = new double[vals.length];
+
+        if (sum!=0)
+            for (int i=0;i<probs.length;i++) probs[i]= vals[i]/sum*weight;
+        return probs;
+    }
+
     public static double[] normalize(Float[] vals, double weight){
         double sum=0;
         for (double p:vals) sum+=p;
