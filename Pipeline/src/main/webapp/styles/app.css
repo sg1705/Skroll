@@ -214,6 +214,13 @@ md-sidenav#navframe.md-locked-open {
     min-width: auto;
     margin-right: 20px;
     color: #9E9E9E; }
+.sk-landing-search-results .sk-landing-search-results-message {
+  margin: 6px;
+  line-height: 16px;
+  font-size: 12px;
+  margin-right: 20px;
+  color: #9E9E9E;
+  font-style: italic; }
 .sk-landing-search-results .sk-landing-search-results-panel {
   margin-top: 30px;
   margin-bottom: 15px;

@@ -131,7 +131,7 @@
       } else if (isCategorySelected && !isCompanySelected) {
         vm.placeholdertext = 'Google 2014-2016';
       } else if (isCompanySelected && !isCategorySelected) {
-        vm.placeholdertext = 'Financial 2014';
+        vm.placeholdertext = 'Financial 2014-2016';
       } else if (!isCategorySelected && !isCompanySelected) {
         vm.placeholdertext = 'Search for SEC filing (ex. Google Financials 2014-2016)';
       }

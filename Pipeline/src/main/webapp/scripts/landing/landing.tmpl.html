@@ -33,7 +33,9 @@
         <md-button ng-repeat="year in ctrl.refinerYears" ng-click="ctrl.onClickRefineYear('{{year}}')">{{year}}</md-button>
       </p>
     </div>
-    <div style="margin: 6px">
+
+    <!-- result message -->
+    <div class="sk-landing-search-results-message" style="margin: 6px">
       Total results {{ctrl.totalResults}}
     </div>
 
