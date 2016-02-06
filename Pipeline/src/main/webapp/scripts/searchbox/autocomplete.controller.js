@@ -120,13 +120,13 @@
       //1. only "company" is selected
       //2. only "category" is selected
       //3. both are selected
-      var isCompanySelected = _.filter(vm.selectedChips, function(s) {
+      var isCompanySelected = _.filter(vm.searchState.selectedChips, function(s) {
         if (s.type == 'company')
           return true;
       });
       isCompanySelected = (isCompanySelected.length > 0);
 
-      var isCategorySelected = _.filter(vm.selectedChips, function(s) {
+      var isCategorySelected = _.filter(vm.searchState.selectedChips, function(s) {
         if (s.type == 'category')
           return true;
       });
