@@ -6,6 +6,7 @@
         md-autocomplete-snap=""
         md-transform-chip="autoCompleteCtrl.transformChip($chip)"
         md-require-match="autoCompleteCtrl.autocompleteRequireMatch"
+        md-on-add="autoCompleteCtrl.onItemSelectedInAutocomplete(item)"
         style="width:100%;"
         size="40">
 
@@ -15,10 +16,13 @@
           md-autoselect="true"
           md-search-text="autoCompleteCtrl.searchState.searchText"
           md-items="item in autoCompleteCtrl.querySearch(autoCompleteCtrl.searchState.searchText)"
-          md-item-text="item.name" placeholder="Search for SEC filing">
-
-          <span md-highlight-text="autoCompleteCtrl.searchState.searchText">
-            {{item.field2}} [{{item.field1}}]
+          md-item-text="item.name"
+          placeholder="{{autoCompleteCtrl.placeholdertext}}">
+          <md-item-template  style="border-box: 2px solid">
+          <span ng-class="{ticker : item.type == 'company', category : item.type == 'category', formtype : item.type == 'formtype' }" md-highlight-text="autoCompleteCtrl.searchState.searchText">
+             {{item.field2}} [{{item.field1}}]
+          </span>
+          </md-item-template>
         </md-autocomplete>
         <md-chip-template>
           <span>
