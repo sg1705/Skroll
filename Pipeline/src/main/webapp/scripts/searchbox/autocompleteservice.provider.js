@@ -11,7 +11,7 @@
     //-- private variables
     var vm = this;
     var hostname = 'http://localhost:8983';
-    vm.contextPath = '/solr/autocomplete/select?wt=json&indent=true&group=true&group.field=type&group.limit=5&omitHeader=true&q=name_autocomplete%3A';
+    vm.contextPath = '/a?wt=json&indent=true&group=true&group.field=type&group.limit=5&omitHeader=true&q=name_autocomplete%3A';
 
 
     //-- public
