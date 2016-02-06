@@ -27,7 +27,8 @@
     vm.onItemSelectedInAutocomplete = onItemSelectedInAutocomplete;
 
     //-- initialization
-    vm.dataElements = loadData();
+    //vm.dataElements = loadData();
+    setPlaceholderText();
 
     //////////////////////////////////////
 
@@ -90,6 +91,10 @@
     }
 
     function onItemSelectedInAutocomplete(item) {
+      setPlaceholderText();
+    }
+
+    function setPlaceholderText() {
       //three possibilities on search text
       //1. only "company" is selected
       //2. only "category" is selected
@@ -115,7 +120,6 @@
       } else if (!isCategorySelected && !isCompanySelected) {
         vm.placeholdertext = 'Search for SEC filing (ex. Google Financials 2015)';
       }
-
     }
 
 
