@@ -197,8 +197,8 @@ task installSolr(dependsOn: unZipSolr, type: Copy) {
 }
 
 task buildAutoCompleteSolrIndex(type: Exec) {
-    workingDir 'src/main/scripts'
-    commandLine './buildAutoCompleteSolrIndex.sh', '../../../build/solr-5.4.1', '../resources/solr'
+    workingDir 'src/main/scripts/solr'
+    commandLine './buildAutoCompleteSolrIndex.sh', '../../../../build/solr-5.4.1', '../../resources/solr'
 }
 
 task startSolr(type: Exec) {
