@@ -10,12 +10,17 @@
 
     //-- private variables
     var vm = this;
+    var previousAutocompleteSearch = {
+      'items': [],
+      'query': ''
+    }
 
     //-- public variables
     vm.readonly = false;
     vm.selectedItem = null;
     vm.searchState = searchBoxModel.searchState;
-    vm.placeholdertext = 'Search for SEC filing (ex. Google Financials 2015)';
+    vm.placeholdertext = '';
+    vm.previousAutocompleteSearch = previousAutocompleteSearch;
 
     //-- public methods
     vm.querySearch = querySearch;
@@ -25,6 +30,7 @@
     vm.transformChip = transformChip;
     vm.onEnter = onEnter;
     vm.onItemSelectedInAutocomplete = onItemSelectedInAutocomplete;
+    vm.onAutocompleteSearchTextChange = onAutocompleteSearchTextChange;
 
     //-- initialization
     //vm.dataElements = loadData();
@@ -61,11 +67,15 @@
         return autocompleteService.getSuggestions(query).then(function(terms) {
           var groups = terms.grouped.type.groups;
           for (var i in groups) {
-            console.log(groups[i]);
-            var docs = groups[i].doclist.docs;
-            results.push.apply(results, docs);
+            if (!searchBoxModel.isChipTypeSelected(groups[i].groupValue)) {
+              console.log(groups[i]);
+              var docs = groups[i].doclist.docs;
+              results.push.apply(results, docs);
+            }
           }
             console.log(results);
+            vm.previousAutocompleteSearch.items = results;
+            vm.previousAutocompleteSearch.query = query;
             return results;
         }, function(data, status) {
           console.log(status);
@@ -76,6 +86,20 @@
       }
 
     }
+
+    function onAutocompleteSearchTextChange() {
+      if (vm.previousAutocompleteSearch.query != '' && (vm.previousAutocompleteSearch.items.length == 1)) {
+        var index = vm.searchState.searchText.indexOf(vm.previousAutocompleteSearch.query + ' ');
+        if (index == 0) {
+          //create a chip
+          var item = vm.previousAutocompleteSearch.items[0]
+          searchBoxModel.updateChip(item);
+          vm.searchState.searchText = vm.searchState.searchText.slice(-1);
+          onItemSelectedInAutocomplete();
+        }
+      }
+    }
+
 
     /**
      * Create filter function for a query string
@@ -99,26 +123,17 @@
       //1. only "company" is selected
       //2. only "category" is selected
       //3. both are selected
-      var isCompanySelected = _.filter(vm.selectedChips, function(s) {
-        if (s.type == 'company')
-          return true;
-      });
-      isCompanySelected = (isCompanySelected.length > 0);
-
-      var isCategorySelected = _.filter(vm.selectedChips, function(s) {
-        if (s.type == 'category')
-          return true;
-      });
-      isCategorySelected = (isCategorySelected.length > 0);
+      var isCompanySelected = searchBoxModel.isChipTypeSelected('company');
+      var isCategorySelected = searchBoxModel.isChipTypeSelected('category');
 
       if (isCategorySelected && isCompanySelected) {
-        vm.placeholdertext = '2014';
+        vm.placeholdertext = '2014-2016';
       } else if (isCategorySelected && !isCompanySelected) {
-        vm.placeholdertext = 'Google 2014';
+        vm.placeholdertext = 'Google 2014-2016';
       } else if (isCompanySelected && !isCategorySelected) {
         vm.placeholdertext = 'Financial 2014';
       } else if (!isCategorySelected && !isCompanySelected) {
-        vm.placeholdertext = 'Search for SEC filing (ex. Google Financials 2015)';
+        vm.placeholdertext = 'Search for SEC filing (ex. Google Financials 2014-2016)';
       }
     }
 
