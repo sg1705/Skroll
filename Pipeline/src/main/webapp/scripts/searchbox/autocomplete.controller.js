@@ -6,7 +6,7 @@
       .module('app.searchbox')
       .controller('AutoCompleteCtrl', AutoCompleteCtrl);
 
-  function AutoCompleteCtrl ($timeout, $q, searchBoxModel, searchBoxService, featureFlags, $scope) {
+  function AutoCompleteCtrl ($timeout, $q, searchBoxModel, autocompleteService, featureFlags, $scope) {
 
     //-- private variables
     var vm = this;
@@ -55,7 +55,7 @@
         var self = this;
         var results = [];
         var k = 0;
-        return searchBoxService.getSuggestions(query).then(function(terms) {
+        return autocompleteService.getSuggestions(query).then(function(terms) {
           var groups = terms.grouped.type.groups;
           for (var i in groups) {
             console.log(groups[i]);
