@@ -19,7 +19,7 @@
     vm.readonly = false;
     vm.selectedItem = null;
     vm.searchState = searchBoxModel.searchState;
-    vm.placeholdertext = 'Search for SEC filing (ex. Google Financials 2015)';
+    vm.placeholdertext = '';
     vm.previousAutocompleteSearch = previousAutocompleteSearch;
 
     //-- public methods
@@ -91,20 +91,9 @@
         if (index == 0) {
           //create a chip
           var item = vm.previousAutocompleteSearch.items[0]
-          var newChip = { id: '', field1: item.field1, type: item.type, field2: item.field2 };
-          searchBoxModel.updateChip(newChip);
+          searchBoxModel.updateChip(item);
           vm.searchState.searchText = vm.searchState.searchText.slice(-1);
         }
-        // if (vm.searchState.searchText  === vm.previousAutocompleteSearch.query + ' ') {
-        //   //create a chip
-        //   console.log(vm.previousAutocompleteSearch.items);
-        //   return;
-        //   // var chip = {
-        //   //   'field1' :
-        //   //   'field2' :
-        //   // }
-        // }
-          //(Chip fields: field1, type, field2, id)
       }
     }
 
@@ -144,13 +133,13 @@
       isCategorySelected = (isCategorySelected.length > 0);
 
       if (isCategorySelected && isCompanySelected) {
-        vm.placeholdertext = '2014';
+        vm.placeholdertext = '2014-2016';
       } else if (isCategorySelected && !isCompanySelected) {
-        vm.placeholdertext = 'Google 2014';
+        vm.placeholdertext = 'Google 2014-2016';
       } else if (isCompanySelected && !isCategorySelected) {
         vm.placeholdertext = 'Financial 2014';
       } else if (!isCategorySelected && !isCompanySelected) {
-        vm.placeholdertext = 'Search for SEC filing (ex. Google Financials 2015)';
+        vm.placeholdertext = 'Search for SEC filing (ex. Google Financials 2014-2016)';
       }
     }
 
