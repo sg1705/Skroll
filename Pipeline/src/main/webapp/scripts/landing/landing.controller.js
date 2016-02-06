@@ -323,18 +323,18 @@
     function Categories() {
 
       this.categories = [{
-        'categoryName'  : 'Financial',
+        'categoryName'  : 'Financials',
         'postFilter'    : '10-K 10-Q 10-D',
         'categoryType'  : 'BooleanSearch',
         'inRefiner'     : true
       }, {
-        'categoryName'  : 'Registration',
-        'postFilter'    : 'S-1 S-4 S-8 15-15 15-12 D D/A S-3 POS',
-        'categoryType'  : 'BooleanSearch',
-        'inRefiner'     : true
-      },  {
         'categoryName'  : 'Proxy',
         'postFilter'    : 'DEF PX',
+        'categoryType'  : 'BooleanSearch',
+        'inRefiner'     : true
+      }, {
+        'categoryName'  : 'News',
+        'postFilter'    : '8-K',
         'categoryType'  : 'BooleanSearch',
         'inRefiner'     : true
       }, {
@@ -343,8 +343,8 @@
         'categoryType'  : 'BooleanSearch',
         'inRefiner'     : true
       }, {
-        'categoryName'  : 'News',
-        'postFilter'    : '8-K',
+        'categoryName'  : 'Registration Statement',
+        'postFilter'    : 'S-1 S-4 S-8 15-15 15-12 D D/A S-3 POS',
         'categoryType'  : 'BooleanSearch',
         'inRefiner'     : true
       }, {
