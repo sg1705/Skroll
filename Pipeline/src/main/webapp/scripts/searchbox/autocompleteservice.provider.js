@@ -15,8 +15,8 @@
 
 
     //-- public
-    this.setHostName = function(hostName1) {
-      vm.hostName = hostName1
+    this.setHostName = function(hostName) {
+      vm.hostName = hostName;
     }
 
     this.$get = function($http, $q, $log) {
