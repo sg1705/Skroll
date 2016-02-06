@@ -353,38 +353,33 @@
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : true
       }, {
-        'categoryName'  : 'Plans of Reorganization',
+        'categoryName'  : 'Plans of Reorganization Merger or Acquisition',
         'postFilter'    : 'ex-2.',
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : false
       }, {
-        'categoryName'  : 'Merger or Acquisition',
+        'categoryName'  : 'Articles of Incorporation and bylaw',
         'postFilter'    : 'ex-3.',
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : false
       }, {
-        'categoryName'  : 'Articles of Incorporation and bylaw',
-        'postFilter'    : 'ex-4.',
-        'categoryType'  : 'FullTextSearch',
-        'inRefiner'     : false
-      }, {
         'categoryName'  : 'Indenture',
-        'postFilter'    : 'ex-5.',
+        'postFilter'    : 'ex-4.',
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : true
       }, {
         'categoryName'  : 'Legal Opinion',
-        'postFilter'    : 'ex-8.',
+        'postFilter'    : 'ex-5.',
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : false
       }, {
         'categoryName'  : 'Tax Opinion',
-        'postFilter'    : 'ex-9.',
+        'postFilter'    : 'ex-8.',
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : false
       }, {
         'categoryName'  : 'Voting Agreement',
-        'postFilter'    : 'ex-10.',
+        'postFilter'    : 'ex-9.',
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : false
       }, {
@@ -394,7 +389,7 @@
         'inRefiner'     : false
       }, {
         'categoryName'  : 'Credit Agreement',
-        'postFilter'    : 'ex-',
+        'postFilter'    : 'ex-10',
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : true
       }];
