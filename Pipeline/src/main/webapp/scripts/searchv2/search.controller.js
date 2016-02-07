@@ -182,9 +182,14 @@
 
       var elementsOrganizedInHeaders = {};
       var headerItems = LHSModel.getParaFromClassIdRange(2, 3);
+      //check if there are no header items and create a fake header
+      if (headerItems.length == 0) {
+        //create a fake header
+        headerItems.push({'term' : '', paragraphId: 'p_1236'});
+      }
       var currHeader = headerItems[0];
       var nextHeaderIdx = 0,
-        currHeaderIdx = 0;
+      currHeaderIdx = 0;
       nextHeaderIdx++;
       var searchResultsIdx = 0;
       var nextHeader = headerItems[nextHeaderIdx];
