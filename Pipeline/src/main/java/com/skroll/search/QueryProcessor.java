@@ -86,6 +86,9 @@ public class QueryProcessor {
                             if ((tokenInt > 1950) && (tokenInt < 2050)) {
                                 year.add(tokenInt);
                             }}});
+                if (!year.isEmpty()){
+                    break;
+                }
             }
             if (isInteger(token)) {
                 int tokenInt = Integer.parseInt(token);
