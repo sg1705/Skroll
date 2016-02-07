@@ -23,7 +23,7 @@
           placeholder="{{autoCompleteCtrl.placeholdertext}}">
           <md-item-template  style="border-box: 2px solid">
           <span ng-class="{ticker : item.type == 'company', category : item.type == 'category', formtype : item.type == 'formtype' }" md-highlight-text="autoCompleteCtrl.searchState.searchText">
-             {{item.field1}}</span><span ng-if="item.type == 'company'"> [{{item.field2}}]</span>
+             {{item.field1}}</span><span ng-if="item.type == 'company'">&nbsp;[{{item.field2}}]</span>
           </span>
           </md-item-template>
         </md-autocomplete>
