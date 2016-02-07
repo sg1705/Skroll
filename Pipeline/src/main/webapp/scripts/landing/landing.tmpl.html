@@ -52,7 +52,7 @@
         <md-card-header>
           {{category.categoryName}}
         </md-card-header>
-       <md-card-content layout="column" style="min-height: 200px">
+       <md-card-content layout="column">
         <div class="content-div" ng-click="ctrl.onClickedFiling('{{filing.href}}','{{filing.formType}}')" ng-repeat="filing in category.filings | card:result.isSingleCategory" layout="row">
           <div flex="50">{{filing.formType}}</div>
           <div flex="50" style="text-align: right;">{{filing.filingDate}}</div>

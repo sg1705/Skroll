@@ -47,6 +47,16 @@ md-toast.skContextMenu {
     transition-delay: 0s; }
 
 /**
+* Sidenav
+**/
+md-sidenav.md-locked-open {
+  width: 25%;
+  width: 250px;
+  min-width: 240px;
+  max-width: 350px;
+  background-color: #E0E0E0; }
+
+/**
 * SkrollPort
 **/
 #skrollport {
@@ -204,18 +214,20 @@ md-sidenav#navframe.md-locked-open {
   margin-bottom: 15px;
   padding: 15px;
   background-color: #F5F5F5;
-  max-width: 1000px; }
+  max-width: 750px; }
   .sk-landing-search-results .sk-landing-search-results-panel .md-title {
     color: #212121; }
   .sk-landing-search-results .sk-landing-search-results-panel .category-panel md-card {
-    width: 280px;
-    margin-top: 25px;
-    margin-right: 45px;
+    width: 325px;
+    margin: 25px;
+    /*				margin-top: 25px;
+    				margin-right: 45px;
+    */
     padding: 6px; }
     .sk-landing-search-results .sk-landing-search-results-panel .category-panel md-card md-card-header {
-      padding: 2px;
-      padding-bottom: 4px;
-      font-size: 14px;
+      padding: 3px;
+      padding-bottom: 5px;
+      font-size: 16px;
       border-bottom: 1px;
       color: #9E9E9E;
       border-bottom-color: #9E9E9E;
@@ -224,12 +236,13 @@ md-sidenav#navframe.md-locked-open {
       padding-top: 8px;
       padding-bottom: 16px;
       padding-left: 0px;
-      padding-right: 0px; }
+      padding-right: 0px;
+      min-height: 240px; }
       .sk-landing-search-results .sk-landing-search-results-panel .category-panel md-card md-card-content .content-div {
-        padding: 7px;
+        padding: 8px;
         padding-left: 8px;
         padding-right: 8px;
-        font-size: 14px;
+        font-size: 16px;
         border-bottom: 1px;
         border-bottom-color: #E0E0E0;
         border-bottom-style: solid;
