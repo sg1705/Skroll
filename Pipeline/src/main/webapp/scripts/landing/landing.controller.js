@@ -323,23 +323,13 @@
     function Categories() {
 
       this.categories = [{
-        'categoryName'  : 'Financial',
+        'categoryName'  : 'Financials',
         'postFilter'    : '10-K 10-Q 10-D',
         'categoryType'  : 'BooleanSearch',
         'inRefiner'     : true
-      }, {
-        'categoryName'  : 'Registration',
-        'postFilter'    : 'S-1 S-4 S-8 15-15 15-12 D D/A S-3 POS',
-        'categoryType'  : 'BooleanSearch',
-        'inRefiner'     : true
       },  {
-        'categoryName'  : 'Proxy',
+        'categoryName'  : 'Proxies',
         'postFilter'    : 'DEF PX',
-        'categoryType'  : 'BooleanSearch',
-        'inRefiner'     : true
-      }, {
-        'categoryName'  : 'Prospectus',
-        'postFilter'    : '424 FWP 144 425',
         'categoryType'  : 'BooleanSearch',
         'inRefiner'     : true
       }, {
@@ -348,47 +338,52 @@
         'categoryType'  : 'BooleanSearch',
         'inRefiner'     : true
       }, {
-        'categoryName'  : 'Underwriting Agreement',
+        'categoryName'  : 'Prospectuses',
+        'postFilter'    : 'S-1 S-4 S-8 15-15 15-12 D D/A S-3 POS 424 FWP 144 425',
+        'categoryType'  : 'BooleanSearch',
+        'inRefiner'     : true
+      }, {
+        'categoryName'  : 'Underwriting Agreements',
         'postFilter'    : 'ex-1.',
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : true
       }, {
-        'categoryName'  : 'Plans of Reorganization Merger or Acquisition',
+        'categoryName'  : 'Plans of Reorganization, Merger or Acquisitions',
         'postFilter'    : 'ex-2.',
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : false
       }, {
-        'categoryName'  : 'Articles of Incorporation and bylaw',
+        'categoryName'  : 'Articles of Incorporation and Bylaws',
         'postFilter'    : 'ex-3.',
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : false
       }, {
-        'categoryName'  : 'Indenture',
+        'categoryName'  : 'Indentures',
         'postFilter'    : 'ex-4.',
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : true
       }, {
-        'categoryName'  : 'Legal Opinion',
+        'categoryName'  : 'Legal Opinions',
         'postFilter'    : 'ex-5.',
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : false
       }, {
-        'categoryName'  : 'Tax Opinion',
+        'categoryName'  : 'Tax Opinions',
         'postFilter'    : 'ex-8.',
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : false
       }, {
-        'categoryName'  : 'Voting Agreement',
+        'categoryName'  : 'Voting Agreements',
         'postFilter'    : 'ex-9.',
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : false
       }, {
-        'categoryName'  : 'Material Contract',
+        'categoryName'  : 'Material Contracts',
         'postFilter'    : 'ex-10.',
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : false
       }, {
-        'categoryName'  : 'Credit Agreement',
+        'categoryName'  : 'Credit Agreements',
         'postFilter'    : 'ex-10',
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : true
