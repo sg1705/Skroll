@@ -13,6 +13,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Processes query string and converts into a string that is
@@ -79,9 +80,16 @@ public class QueryProcessor {
             if (token.equals("")){
                 break;
             }
+            if(token.contains("-")){
+                Lists.newArrayList(Splitter.on('-').split(token)).stream().forEach(t -> { if (isInteger(t)) {
+                            int tokenInt = Integer.parseInt(t);
+                            if ((tokenInt > 1950) && (tokenInt < 2050)) {
+                                year.add(tokenInt);
+                            }}});
+            }
             if (isInteger(token)) {
                 int tokenInt = Integer.parseInt(token);
-                if ((tokenInt > 1980) && (tokenInt < 2020)) {
+                if ((tokenInt > 1950) && (tokenInt < 2050)) {
                     year.add(tokenInt);
                 } else {
                     //newTokens.add(token);
@@ -108,7 +116,7 @@ public class QueryProcessor {
         }
         //rejoin all tokens
        // String newToken = Joiner.on(' ').join(newTokens);
-        String startYear = "2010";
+        String startYear = "2006";
         String endYear = "2015";
         //process year
         if (year.size() == 1) {
@@ -123,7 +131,7 @@ public class QueryProcessor {
 
         }
         landingPageQueryProto.addChip("",startYear,"","startyear");
-        landingPageQueryProto.addChip("",endYear,"","endyear");
+        landingPageQueryProto.addChip("", endYear, "", "endyear");
     }
 
 

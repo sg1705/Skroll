@@ -17,7 +17,7 @@ export HOME_DIR=$PACKAGE_ROOT_DIR/$PACKAGE_DIR
 rm -rf $HOME_DIR
 mkdir $HOME_DIR
 cp build/libs/Pipeline-all-1.0.jar $HOME_DIR/
-cp -r src/main/scripts/ $HOME_DIR/scripts
+cp -r src/main/scripts/ $HOME_DIR/
 cp -r src/main/webapp/build/ $HOME_DIR/webapp
 
 mkdir $HOME_DIR/config
