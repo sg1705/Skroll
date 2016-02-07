@@ -33,7 +33,7 @@
     vm.companyPanelResults = companyPanelResults;
     vm.totalResults = totalResults;
     vm.refinerCategories = refinerCategories;
-    vm.refinerYears = ['2012', '2013', '2014', '2015'];
+    vm.refinerYears = ['2012', '2013', '2014', '2015', '2016'];
 
     //-- public methods
     vm.onEnter = onEnter;

@@ -13,6 +13,14 @@
 
     <div style="margin-right: 5px">
 
+      <!-- print -->
+      <md-button id="sk-toolbar-send-feedback-button" ng-click="toolbarCtrl.openPrintDialog()">
+        <md-icon md-svg-icon="images/icons/ic_print_24px.svg"></md-icon>
+        <md-tooltip md-direction="bottom">
+          Print document
+        </md-tooltip>
+      </md-button>
+
       <!-- Chrome extension -->
       <md-button id="sk-toolbar-chromeextension-button" ng-click="toolbarCtrl.openChromeExtensionLink()">
         <md-icon md-svg-icon="images/icons/ic_extension_24px.svg"></md-icon>
