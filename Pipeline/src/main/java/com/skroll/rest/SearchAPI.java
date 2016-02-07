@@ -41,16 +41,17 @@ public class SearchAPI {
                 "Material Contract",
                 "Credit Agreement");
     private static final Map<String, String> FILING_TO_FORM_TYPE = ImmutableMap.<String, String>builder()
-            .put("Financial","10-K* or form-type=10-Q* or form-type=10-D*")
+            .put("Financials","10-K* or form-type=10-Q* or form-type=10-D*")
             .put("Prospectus", "424* or form-type=FWP* or form-type=144* or form-type=425")
-            .put("Registration","S-1* or form-type=S-4* or form-type=S-8* or form-type=15-15* or form-type=15-12* or form-type=D or form-type=D/A or form-type=S-3* or form-type=POS*")
+            .put("Registration Statement","S-1* or form-type=S-4* or form-type=S-8* or form-type=15-15* or form-type=15-12* or form-type=D or form-type=D/A or form-type=S-3* or form-type=POS*")
             .put("Proxy","DEF* or form-type=PX*")
             .put("News","8-K*")
+            .put("FWP","8-K*")
             .build();
     private static final Map<String, String> EXHIBIT_TO_FORM_TYPE = ImmutableMap.<String, String>builder()
             .put("Underwriting Agreement","\"EX\" NOT (\"EX-99.1\" OR \"EX-99.2\" OR \"EX-99.3\" OR \"EX-31.1\" OR \"EX-31.2\" OR \"EX-32.1\" OR \"EX-32.2\")")
-            .put("Plans of Reorganization, Merger or Acquisition", "\"EX\" NOT (\"EX-99.1\" OR \"EX-99.2\" OR \"EX-99.3\" OR \"EX-31.1\" OR \"EX-31.2\" OR \"EX-32.1\" OR \"EX-32.2\")")
-            .put("Articles of Incorporation and bylaw", "\"EX\" NOT (\"EX-99.1\" OR \"EX-99.2\" OR \"EX-99.3\" OR \"EX-31.1\" OR \"EX-31.2\" OR \"EX-32.1\" OR \"EX-32.2\")")
+            .put("Plans of Reorganization, Mergers or Acquisition", "\"EX\" NOT (\"EX-99.1\" OR \"EX-99.2\" OR \"EX-99.3\" OR \"EX-31.1\" OR \"EX-31.2\" OR \"EX-32.1\" OR \"EX-32.2\")")
+            .put("Articles of Incorporation and Bylaws", "\"EX\" NOT (\"EX-99.1\" OR \"EX-99.2\" OR \"EX-99.3\" OR \"EX-31.1\" OR \"EX-31.2\" OR \"EX-32.1\" OR \"EX-32.2\")")
             .put("Indenture", "\"EX\" NOT (\"EX-99.1\" OR \"EX-99.2\" OR \"EX-99.3\" OR \"EX-31.1\" OR \"EX-31.2\" OR \"EX-32.1\" OR \"EX-32.2\")")
             .put("Legal Opinion","\"EX\" NOT (\"EX-99.1\" OR \"EX-99.2\" OR \"EX-99.3\" OR \"EX-31.1\" OR \"EX-31.2\" OR \"EX-32.1\" OR \"EX-32.2\")")
             .put("Tax Opinion","\"EX\" NOT (\"EX-99.1\" OR \"EX-99.2\" OR \"EX-99.3\" OR \"EX-31.1\" OR \"EX-31.2\" OR \"EX-32.1\" OR \"EX-32.2\")")
