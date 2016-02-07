@@ -27,6 +27,7 @@
     vm.showShareDialog = showShareDialog;
     vm.showSendFeedbackDialog = showSendFeedbackDialog;
     vm.openChromeExtensionLink = openChromeExtensionLink;
+    vm.openPrintDialog = openPrintDialog;
 
     /////////////
 
@@ -42,9 +43,13 @@
     function openChromeExtensionLink() {
       window.open('https://chrome.google.com/webstore/detail/skroll/mjjpiinnkdcpdjijolfdbghdccjpehca', '',
         'toolbar=no,location=no, status=no,menubar=no,scrollbars=yes,resizable=yes,top=300, left=300,width=950,height=720');
-
-
     }
+
+    function openPrintDialog() {
+      var w = window.open('/restServices/document/' + documentModel.documentId + '/print');
+      w.window.print();
+    }
+
 
     function openEmailDialog() {
       var activeLink = linkService.getActiveLink(documentModel.documentId);

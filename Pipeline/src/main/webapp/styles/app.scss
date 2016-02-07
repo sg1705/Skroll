@@ -61,6 +61,18 @@ md-toast.skContextMenu {
 }
 
 
+/**
+* Sidenav
+**/
+md-sidenav.md-locked-open {
+    width: 25%;
+    width: 250px;
+    min-width: 240px;
+    max-width: 350px;
+    background-color: $grey-300;
+}
+
+
 
 /**
 * SkrollPort
@@ -228,15 +240,15 @@ md-sidenav#navframe.md-locked-open {
 }
 
 .ticker {
-	color: blue;
+	color: rgb(63,81,181);
 }
 
 .category {
-	color: orange;
+	color: #E76E39;
 }
 
 .formtype {
-	color: green;
+	color: #5AA138;
 }
 
 
@@ -307,7 +319,7 @@ md-sidenav#navframe.md-locked-open {
 		margin-bottom: 15px;
 		padding:15px;
 		background-color: $grey-100;
-		max-width: 1000px;
+		max-width: 750px;
 
 		.md-title {
 			color: $grey-900;
@@ -315,15 +327,16 @@ md-sidenav#navframe.md-locked-open {
 
 		.category-panel {
 			md-card {
-				width: 280px;
-				margin-top: 25px;
+				width: 325px;
+				margin: 25px;
+/*				margin-top: 25px;
 				margin-right: 45px;
-				padding: 6px;
+*/				padding: 6px;
 
 				md-card-header {
-					padding: 2px;
-					padding-bottom: 4px;
-					font-size: 14px;
+					padding: 3px;
+					padding-bottom: 5px;
+					font-size: 16px;
 					border-bottom: 1px;
 					color: $grey-500;
 					border-bottom-color: $grey-500;
@@ -335,12 +348,13 @@ md-sidenav#navframe.md-locked-open {
 					padding-bottom: 16px;
 					padding-left: 0px;
 					padding-right: 0px;
+					min-height: 240px;
 
 					.content-div {
-						padding: 7px;
+						padding: 8px;
 						padding-left: 8px;
 						padding-right: 8px;
-						font-size: 14px;
+						font-size: 16px;
 						border-bottom: 1px;
 						border-bottom-color: $grey-300;
 						border-bottom-style: solid;

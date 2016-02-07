@@ -1,5 +1,6 @@
 package com.skroll.rest.document;
 
+import com.skroll.pipeline.util.Utils;
 import com.skroll.rest.APITest;
 import org.junit.After;
 import org.junit.Test;
@@ -11,6 +12,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.File;
 import java.util.List;
 
 public class DocumentAPITest extends APITest {
@@ -55,4 +57,23 @@ public class DocumentAPITest extends APITest {
         System.out.println(paraProtos.size());
         assert (paraProtos.size() == 5);
     }
+
+    @Test
+    public void testPrintDocument() throws Exception {
+        //read test file
+        String sourceHtml = Utils.readStringFromFile(new File(TEST_FILE_NAME));
+
+        String TARGET_URL = "http://localhost:8888/restServices/document/" + documentId + "/print";
+        Client client = ClientBuilder.newClient();
+        WebTarget webTarget = client.target(TARGET_URL);
+        Response response = webTarget.request().get();
+        assert (response.getStatus() == 200);
+        String printHtml = response.readEntity(String.class);
+        System.out.println(printHtml);
+        assert (printHtml.equals(sourceHtml));
+        assert (!printHtml.equals(sourceHtml + "aaa"));
+    }
+
+
+
 }

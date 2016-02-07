@@ -29,10 +29,10 @@
 
     </md-toolbar>
 
-    <md-content md-scroll-y flex class="md-padding" ng-controller="LHSLevelsCtrl as lhsCtrl" ng-hide="lhsCtrl.searchState.searchActive || (contentCtrl.relatedParaState.active && contentCtrl.featureFlags.isOn('related.lhs'))" >
+    <md-content md-scroll-y flex class="md-padding" ng-controller="LHSLevelsCtrl as lhsCtrl" ng-hide="lhsCtrl.searchState.searchActive || (contentCtrl.relatedParaState.active && contentCtrl.featureFlags.isOn('related.lhs')) || (lhsCtrl.smodel.terms |tocTerms).length == 0" >
       <sk-lhs ng-hide="!contentCtrl.documentModel.viewState.isTocLoaded"/>
     </md-content>
-  <md-content ng-keydown="searchCtrl.onKeyDown($event)" ng-show="contentCtrl.searchState.searchActive">
+  <md-content ng-keydown="searchCtrl.onKeyDown($event)" ng-show="contentCtrl.searchState.searchActive" style="flex-grow: 2">
      <sk-search />
   </md-content>
 
