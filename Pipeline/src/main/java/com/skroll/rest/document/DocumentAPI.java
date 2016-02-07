@@ -79,4 +79,13 @@ public class DocumentAPI {
         return paraProtos;
     }
 
+    @GET
+    @Path("/{documentId}/print")
+    @Produces(MediaType.TEXT_HTML)
+    public String print(@PathParam("documentId")String documentId) throws Exception {
+        Document doc = documentFactory.get(documentId);
+        return doc.getSource();
+    }
+
+
 }
