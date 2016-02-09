@@ -128,7 +128,7 @@ public class SearchAPI {
      */
     private String edgerFullTextSearch(String cik, String formtype, String startYear, String endYear){
         String tenDigitCik = String.format("%010d", Integer.parseInt(cik));
-        String fullTestSeachURL = "&queryCik=" + tenDigitCik + "&search_text=" + "\"" + UrlEscapers.urlFormParameterEscaper().escape(formtype) + "\"" + "&fromDate=" +startYear + "&toDate=" + endYear;
+        String fullTestSeachURL = "&queryCik=" + tenDigitCik + "&search_text=" + UrlEscapers.urlFormParameterEscaper().escape(formtype) + "&fromDate=01/01/" +startYear + "&toDate=12/31/" + endYear;
         logger.debug("fullTestSeachURL:" + fullTestSeachURL);
         return EDGER_FULL_TEXT_SEARCH_URL + fullTestSeachURL;
     }
