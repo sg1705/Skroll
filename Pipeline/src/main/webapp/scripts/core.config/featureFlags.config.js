@@ -49,7 +49,7 @@
       "description": "no description"
     }, {
       "key": "related.lhs",
-      "active": true,
+      "active": false,
       "name": "Show related para in LHS",
       "description": "no description"
     }];

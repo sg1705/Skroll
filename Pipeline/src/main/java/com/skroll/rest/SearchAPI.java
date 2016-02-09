@@ -27,37 +27,29 @@ import java.util.stream.Collectors;
 public class SearchAPI {
 
     private static final Logger logger = LoggerFactory.getLogger(SearchAPI.class);
-    private static final String EDGER_BOOLEAN_SEARCH_URL = "http://www.sec.gov/cgi-bin/srch-edgar?&output=atom";
+    private static final String EDGER_BOOLEAN_SEARCH_URL = "http://www.sec.gov/cgi-bin/srch-edgar?&output=atom&count=100";
     private static final String EDGER_FULL_TEXT_SEARCH_URL = "https://searchwww.sec.gov/EDGARFSClient/jsp/EDGAR_MainAccess.jsp?" +
             "&sort=Date&formType=1&isAdv=true&numResults=100";
     private static final String FETCH_INDEX_URL = "http://www.sec.gov/";
-    private static final List<String> SEC_FILING_CATAGORIES = Lists.newArrayList("Financials","Prospectus","Registration Statement","Proxy","News", "FWP");
-    private static final List<String> SEC_EXHIBIT_CATAGORIES = Lists.newArrayList("Underwriting Agreement",
-                "Plans of Reorganization, Mergers or Acquisition", "Articles of Incorporation and Bylaws",
-                "Indenture",
-                "Legal Opinion",
-                "Tax Opinion",
-                "Voting Agreement",
-                "Material Contract",
-                "Credit Agreement");
+    private static final List<String> SEC_FILING_CATAGORIES = Lists.newArrayList("Financials","Prospectuses","Proxies","News");
+    private static final List<String> SEC_EXHIBIT_CATAGORIES = Lists.newArrayList("Underwriting Agreements",
+                "Plans of Reorganization, Merger or Acquisitions", "Articles of Incorporation and Bylaws",
+                "Indentures",
+                "Legal Opinions",
+                "Tax Opinions",
+                "Voting Agreements",
+                "Material Contracts",
+                "Credit Agreements");
     private static final Map<String, String> FILING_TO_FORM_TYPE = ImmutableMap.<String, String>builder()
-            .put("Financials","10-K* or form-type=10-Q* or form-type=10-D*")
-            .put("Prospectus", "424* or form-type=FWP* or form-type=144* or form-type=425")
-            .put("Registration Statement","S-1* or form-type=S-4* or form-type=S-8* or form-type=15-15* or form-type=15-12* or form-type=D or form-type=D/A or form-type=S-3* or form-type=POS*")
-            .put("Proxy","DEF* or form-type=PX*")
+            .put("Financials", "10-K* or form-type=10-Q* or form-type=10-D*")
+            .put("Prospectuses", "424* or form-type=FWP* or form-type=144* or form-type=425 or form-type=S-1* or form-type=S-4* or form-type=S-8* or form-type=15-15* or form-type=15-12* or form-type=D or form-type=D/A or form-type=S-3* or form-type=POS*")
+            .put("Proxies","DEF* or form-type=PX*")
             .put("News","8-K*")
-            .put("FWP","8-K*")
             .build();
-    private static final Map<String, String> EXHIBIT_TO_FORM_TYPE = ImmutableMap.<String, String>builder()
-            .put("Underwriting Agreement","\"EX\" NOT (\"EX-99.1\" OR \"EX-99.2\" OR \"EX-99.3\" OR \"EX-31.1\" OR \"EX-31.2\" OR \"EX-32.1\" OR \"EX-32.2\")")
-            .put("Plans of Reorganization, Mergers or Acquisition", "\"EX\" NOT (\"EX-99.1\" OR \"EX-99.2\" OR \"EX-99.3\" OR \"EX-31.1\" OR \"EX-31.2\" OR \"EX-32.1\" OR \"EX-32.2\")")
-            .put("Articles of Incorporation and Bylaws", "\"EX\" NOT (\"EX-99.1\" OR \"EX-99.2\" OR \"EX-99.3\" OR \"EX-31.1\" OR \"EX-31.2\" OR \"EX-32.1\" OR \"EX-32.2\")")
-            .put("Indenture", "\"EX\" NOT (\"EX-99.1\" OR \"EX-99.2\" OR \"EX-99.3\" OR \"EX-31.1\" OR \"EX-31.2\" OR \"EX-32.1\" OR \"EX-32.2\")")
-            .put("Legal Opinion","\"EX\" NOT (\"EX-99.1\" OR \"EX-99.2\" OR \"EX-99.3\" OR \"EX-31.1\" OR \"EX-31.2\" OR \"EX-32.1\" OR \"EX-32.2\")")
-            .put("Tax Opinion","\"EX\" NOT (\"EX-99.1\" OR \"EX-99.2\" OR \"EX-99.3\" OR \"EX-31.1\" OR \"EX-31.2\" OR \"EX-32.1\" OR \"EX-32.2\")")
-            .put("Material Contract","\"EX\" NOT (\"EX-99.1\" OR \"EX-99.2\" OR \"EX-99.3\" OR \"EX-31.1\" OR \"EX-31.2\" OR \"EX-32.1\" OR \"EX-32.2\")" )
-            .put("Credit Agreement","\"EX\" NOT (\"EX-99.1\" OR \"EX-99.2\" OR \"EX-99.3\" OR \"EX-31.1\" OR \"EX-31.2\" OR \"EX-32.1\" OR \"EX-32.2\")")
-            .build();
+    private static final String EXHIBIT_TO_FORM_TYPE = "\"EX\" NOT (\"EX-99.1\" OR \"EX-99.2\" OR \"EX-99.3\" OR \"EX-31.1\" OR \"EX-31.2\" OR \"EX-32.1\" OR \"EX-32.2\")";
+
+    private static final String DEFAULT_FORM_TYPE_BOOLEAN_SEARCH = " and not (form-type=4 or form-type=3 or form-type=5 or form-type=3/a or form-type=4/a or form-type=5/a or form-type=\"SC 13D\" or form-type=\"SC 13D/a\" or form-type=\"SC 13G\" or form-type=\"SC 13G/a\" )";
+
 
     @GET
     @Path("/searchSec")
@@ -110,7 +102,7 @@ public class SearchAPI {
                 if(SEC_FILING_CATAGORIES.contains(categorySelectedChip.get(0).field1)) {
                     rssUrl = edgerBooleanSearch(companySelectedChip.get(0).id, FILING_TO_FORM_TYPE.get(categorySelectedChip.get(0).field1), startyearSelectedChip.get(0).field1, endyearSelectedChip.get(0).field1);
                 } else if (SEC_EXHIBIT_CATAGORIES.contains(categorySelectedChip.get(0).field1)){
-                    rssUrl = edgerFullTextSearch(companySelectedChip.get(0).id, EXHIBIT_TO_FORM_TYPE.get(categorySelectedChip.get(0).field1), startyearSelectedChip.get(0).field1, endyearSelectedChip.get(0).field1);
+                    rssUrl = edgerFullTextSearch(companySelectedChip.get(0).id, EXHIBIT_TO_FORM_TYPE, startyearSelectedChip.get(0).field1, endyearSelectedChip.get(0).field1);
                 } else {
                     logger.warn("ERROR: Unknown category");
                 }
@@ -136,7 +128,7 @@ public class SearchAPI {
      */
     private String edgerFullTextSearch(String cik, String formtype, String startYear, String endYear){
         String tenDigitCik = String.format("%010d", Integer.parseInt(cik));
-        String fullTestSeachURL = "&queryCik=" + tenDigitCik + "&search_text=" + "\"" + UrlEscapers.urlFormParameterEscaper().escape(formtype) + "\"" + "&fromDate=" +startYear + "&toDate=" + endYear;
+        String fullTestSeachURL = "&queryCik=" + tenDigitCik + "&search_text=" + UrlEscapers.urlFormParameterEscaper().escape(formtype) + "&fromDate=01/01/" +startYear + "&toDate=12/31/" + endYear;
         logger.debug("fullTestSeachURL:" + fullTestSeachURL);
         return EDGER_FULL_TEXT_SEARCH_URL + fullTestSeachURL;
     }
@@ -164,7 +156,7 @@ public class SearchAPI {
         String tenDigitCik = String.format("%010d", Integer.parseInt(cik));
         String booleanSearchURL = null;
         if (formtype==null) {
-            booleanSearchURL = "&text=company-cik=" + tenDigitCik + "&first=" + startYear + "&last=" + endYear;
+            booleanSearchURL = "&text=company-cik=" + tenDigitCik + UrlEscapers.urlFormParameterEscaper().escape(DEFAULT_FORM_TYPE_BOOLEAN_SEARCH) + "&first=" + startYear + "&last=" + endYear;
         } else {
             booleanSearchURL = "&text=company-cik=" + tenDigitCik + UrlEscapers.urlFormParameterEscaper().escape(" and ( form-type=" + formtype +")" ) + "&first=" + startYear + "&last=" + endYear;
         }
