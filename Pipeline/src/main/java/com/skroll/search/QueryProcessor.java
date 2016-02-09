@@ -87,7 +87,7 @@ public class QueryProcessor {
                                 year.add(tokenInt);
                             }}});
                 if (!year.isEmpty()){
-                    break;
+                    continue;
                 }
             }
             if (isInteger(token)) {
