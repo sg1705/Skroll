@@ -358,10 +358,10 @@
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : false
       }, {
-        'categoryName'  : 'Articles of Incorporation and bylaw',
+        'categoryName'  : 'Articles of Incorporation and Bylaws',
         'postFilter'    : 'ex-3.',
         'categoryType'  : 'FullTextSearch',
-        'inRefiner'     : false
+        'inRefiner'     : true
       }, {
         'categoryName'  : 'Indenture',
         'postFilter'    : 'ex-4.',
