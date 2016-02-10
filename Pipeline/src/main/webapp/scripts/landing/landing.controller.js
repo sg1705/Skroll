@@ -134,6 +134,7 @@
             var filingDate = $(html).find('i[class^="blue"]');
             $.each(entries, function(index) {
               var result = processFullTextResult(entries[index], filingDate[index].innerText);
+              console.log(result);
               if (result.formType.toLowerCase().indexOf(fullTextSearchCategories[categoryIndex].postFilter) >= 0) {
                 vm.searchResults.push(result);
               }
@@ -321,14 +322,13 @@
 
 
     function Categories() {
-
-      this.categories = [{
+ this.categories = [{
         'categoryName'  : 'Financials',
         'postFilter'    : '10-K 10-Q 10-D',
         'categoryType'  : 'BooleanSearch',
         'inRefiner'     : true
-      }, {
-        'categoryName'  : 'Proxy',
+      },  {
+        'categoryName'  : 'Proxies',
         'postFilter'    : 'DEF PX',
         'categoryType'  : 'BooleanSearch',
         'inRefiner'     : true
@@ -338,22 +338,17 @@
         'categoryType'  : 'BooleanSearch',
         'inRefiner'     : true
       }, {
-        'categoryName'  : 'Prospectus',
-        'postFilter'    : '424 FWP 144 425',
+        'categoryName'  : 'Prospectuses',
+        'postFilter'    : 'S-1 S-4 S-8 15-15 15-12 D/A S-3 POS 424 FWP 144 425',
         'categoryType'  : 'BooleanSearch',
         'inRefiner'     : true
       }, {
-        'categoryName'  : 'Registration Statement',
-        'postFilter'    : 'S-1 S-4 S-8 15-15 15-12 D D/A S-3 POS',
-        'categoryType'  : 'BooleanSearch',
-        'inRefiner'     : true
-      }, {
-        'categoryName'  : 'Underwriting Agreement',
+        'categoryName'  : 'Underwriting Agreements',
         'postFilter'    : 'ex-1.',
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : true
       }, {
-        'categoryName'  : 'Plans of Reorganization Merger or Acquisition',
+        'categoryName'  : 'Plans of Reorganization, Merger or Acquisitions',
         'postFilter'    : 'ex-2.',
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : false
@@ -363,37 +358,36 @@
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : true
       }, {
-        'categoryName'  : 'Indenture',
+        'categoryName'  : 'Indentures',
         'postFilter'    : 'ex-4.',
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : true
       }, {
-        'categoryName'  : 'Legal Opinion',
+        'categoryName'  : 'Legal Opinions',
         'postFilter'    : 'ex-5.',
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : false
       }, {
-        'categoryName'  : 'Tax Opinion',
+        'categoryName'  : 'Tax Opinions',
         'postFilter'    : 'ex-8.',
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : false
       }, {
-        'categoryName'  : 'Voting Agreement',
+        'categoryName'  : 'Voting Agreements',
         'postFilter'    : 'ex-9.',
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : false
       }, {
-        'categoryName'  : 'Material Contract',
+        'categoryName'  : 'Material Contracts',
         'postFilter'    : 'ex-10.',
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : false
       }, {
-        'categoryName'  : 'Credit Agreement',
+        'categoryName'  : 'Credit Agreements',
         'postFilter'    : 'ex-10',
         'categoryType'  : 'FullTextSearch',
         'inRefiner'     : true
       }];
-
 
       this.getFullTextSearchCategories = function() {
         return _.filter(this.categories, function(c) {
