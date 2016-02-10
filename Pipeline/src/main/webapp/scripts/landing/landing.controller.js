@@ -381,12 +381,12 @@
         'categoryName'  : 'Material Contracts',
         'postFilter'    : 'ex-10.',
         'categoryType'  : 'FullTextSearch',
-        'inRefiner'     : false
+        'inRefiner'     : true
       }, {
         'categoryName'  : 'Credit Agreements',
         'postFilter'    : 'ex-10',
         'categoryType'  : 'FullTextSearch',
-        'inRefiner'     : true
+        'inRefiner'     : false
       }];
 
       this.getFullTextSearchCategories = function() {
