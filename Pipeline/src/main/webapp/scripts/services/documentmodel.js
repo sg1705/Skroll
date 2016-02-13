@@ -13,7 +13,7 @@ var documentModel = {
   viewState: {
     isDocAvailable: false,
     isProcessing: false,
-    isTocLoaded: false,
+    isTocLoaded: false
   },
 
   documentId: '',

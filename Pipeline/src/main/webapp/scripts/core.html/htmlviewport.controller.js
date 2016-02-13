@@ -16,10 +16,17 @@
   function HtmlViewPortCtrl(selectionService, $log, $routeParams,
     scrollObserverService, clickObserverService,
     textSelectionObserverService,
-    mouseEnterObserverService, mouseLeaveObserverService, $timeout, viewportService, documentService, documentModel) {
+    mouseEnterObserverService, mouseLeaveObserverService, $timeout, viewportService, documentService, documentModel, featureFlags) {
 
     //-- private variables
     var vm = this;
+    var hoverParagraph = {
+      paraId: '',
+      box: null,
+      clientY: 0,
+      timeelapsed: 0,
+    };
+
 
     //-- public methods
     vm.mouseDown = mouseDown;
@@ -38,7 +45,54 @@
     /////////////
 
     function mouseMove($event) {
+      if (!featureFlags.isOn('fab.link'))
+        return;
+      //clientY is what we are looking for in event
+      //logic
       var paraId = vm.inferParagraphId($event);
+      var mouseEnterEventPayLoad = {};
+      //paragraph is null when a) when page loads, or b) cursor goes outside a paragraph
+      //hoverbox is null when a) when page loads or b) cursor goes out of Y bound of paragraph in curtains
+      if (paraId == null) {
+        if (hoverParagraph.box == null) {
+          return;
+        } else {
+          if (isClickInsideParaBox($event.clientY, hoverParagraph.box.top, hoverParagraph.box.bottom)) {
+            //do nothing
+            // console.log('click within range, keep display');
+            return;
+          } else {
+            // console.log('hide icon');
+            mouseEnterEventPayLoad.command = 'hide';
+            hoverParagraph.box = null;
+            hoverParagraph.paraId = null;
+          }
+        }
+      } else {
+        // user is in the same para zone, keep displaying
+        if (hoverParagraph.paraId == paraId) {
+          return;
+        } else {
+          // user has changed paragraph zone, display fab at a new location
+          hoverParagraph.box = selectionService.getJQParaElement(paraId)[0].getBoundingClientRect();
+          hoverParagraph.paraId = paraId;
+          hoverParagraph.timeelapsed = new Date().getTime();
+          mouseEnterEventPayLoad.command = 'display';
+          mouseEnterEventPayLoad.clientY = hoverParagraph.box.top;
+          // console.log('different paraId, change display');
+        }
+      }
+
+      mouseEnterObserverService.notify(mouseEnterEventPayLoad);
+
+      function isClickInsideParaBox(clickY, paraTop, paraBottom) {
+        if ((clickY >= paraTop) && (clickY <= paraBottom)) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+
 
     }
 

@@ -37,7 +37,8 @@
   	'app.upload',
     'pdfjsViewer',
     'app.searchbox',
-    'app.related'
+    'app.related',
+    'app.link'
   ]);
 
 })();
