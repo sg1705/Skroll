@@ -13,7 +13,11 @@ var documentModel = {
   viewState: {
     isDocAvailable: false,
     isProcessing: false,
-    isTocLoaded: false
+    isTocLoaded: false,
+    fabMenu: {
+      currentParaId: '',
+      currentParaZone: null
+    }
   },
 
   documentId: '',
@@ -49,6 +53,11 @@ var documentModel = {
     this.viewState.isDocAvailable = false;
     this.viewState.isProcessing = false;
     this.viewState.isTocLoaded = false;
+
+    this.fabMenu = {
+      currentParaId: '',
+      currentParaZone: null
+    };
   },
 
   loadDocument: function(id, typeId, format, url, partiallyParsed, content) {

@@ -25,6 +25,7 @@
     vm.userDocumentIds = [];
     vm.smodel = LHSModel.smodel;
     vm.searchState = searchFactory.searchState;
+    vm.viewState = documentModel.viewState;
     vm.relatedParaState = relatedParaFactory.relatedParaState;
     vm.featureFlags = featureFlags;
 

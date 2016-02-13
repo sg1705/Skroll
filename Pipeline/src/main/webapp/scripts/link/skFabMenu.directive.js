@@ -21,8 +21,36 @@
                         ng-click="fabMenuCtrl.clickLink()"> \
                         <md-icon md-svg-src="images/icons/ic_link_24px.svg"></md-icon> \
                       </md-button>',
-        restrict: 'E'
+        restrict: 'E',
+        controller: 'FabMenuCtrl',
+        controllerAs: 'fabMenuCtrl',
+        scope: {},
+        bindToController: {
+          fabmenu: '='
+        }
       };
     };
+
+  angular
+    .module('app.link')
+    .controller('FabMenuCtrl', FabMenuCtrl);
+
+    /* @ngInject */
+    function FabMenuCtrl(selectionService) {
+    //-- private variables
+    var vm = this;
+
+    //-- public variables
+    vm.clickLink = clickLink;
+
+
+    //-- methods
+
+    function clickLink() {
+      console.log('clicked paraId='+ this.fabmenu.currentParaId);
+      selectionService.selectParagraph(this.fabmenu.currentParaId);
+    }
+  }
+
 
 })();

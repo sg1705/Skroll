@@ -22,9 +22,7 @@
     var vm = this;
     var hoverParagraph = {
       paraId: '',
-      box: null,
-      clientY: 0,
-      timeelapsed: 0,
+      box: null
     };
 
 
@@ -36,6 +34,7 @@
     vm.inferParagraphId = inferParagraphId;
     vm.resizeFrame = resizeFrame;
     vm.resetFrameHeight = resetFrameHeight;
+    vm.fabMenu = documentModel.viewState.fabMenu;
 
     //-- initialization
     // documentModel.documentId = $routeParams.docId;
@@ -54,31 +53,31 @@
       //paragraph is null when a) when page loads, or b) cursor goes outside a paragraph
       //hoverbox is null when a) when page loads or b) cursor goes out of Y bound of paragraph in curtains
       if (paraId == null) {
-        if (hoverParagraph.box == null) {
+        if (vm.fabMenu.currentParaZone == null) {
+        // if (hoverParagraph.box == null) {
           return;
         } else {
-          if (isClickInsideParaBox($event.clientY, hoverParagraph.box.top, hoverParagraph.box.bottom)) {
+          if (isClickInsideParaBox($event.clientY, vm.fabMenu.currentParaZone.top, vm.fabMenu.currentParaZone.bottom)) {
             //do nothing
             // console.log('click within range, keep display');
             return;
           } else {
             // console.log('hide icon');
             mouseEnterEventPayLoad.command = 'hide';
-            hoverParagraph.box = null;
-            hoverParagraph.paraId = null;
+            vm.fabMenu.currentParaZone = null;
+            vm.fabMenu.currentParaId = null;
           }
         }
       } else {
         // user is in the same para zone, keep displaying
-        if (hoverParagraph.paraId == paraId) {
+        if (vm.fabMenu.currentParaId == paraId) {
           return;
         } else {
           // user has changed paragraph zone, display fab at a new location
-          hoverParagraph.box = selectionService.getJQParaElement(paraId)[0].getBoundingClientRect();
-          hoverParagraph.paraId = paraId;
-          hoverParagraph.timeelapsed = new Date().getTime();
+          vm.fabMenu.currentParaZone = selectionService.getJQParaElement(paraId)[0].getBoundingClientRect();
+          vm.fabMenu.currentParaId = paraId;
           mouseEnterEventPayLoad.command = 'display';
-          mouseEnterEventPayLoad.clientY = hoverParagraph.box.top;
+          mouseEnterEventPayLoad.clientY = vm.fabMenu.currentParaZone.top;
           // console.log('different paraId, change display');
         }
       }

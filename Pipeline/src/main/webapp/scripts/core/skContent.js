@@ -43,7 +43,11 @@
                                 src="about:blank" \
                                 sk-html-content> \
                               </iframe> \
-                              <sk-fab-menu feature-flag="fab.link" style="position:fixed; opacity: 0" id="skFabMenu"><sk-fab-menu/>';
+                              <sk-fab-menu \
+                                feature-flag="fab.link" \
+                                style="position:fixed; opacity: 0" \
+                                fabmenu="contentCtrl.viewState.fabMenu" \
+                                id="skFabMenu"><sk-fab-menu/>';
 
           var e = $compile(htmlViewPort)(scope);
           element.replaceWith(e);
