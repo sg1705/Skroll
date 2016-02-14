@@ -8,7 +8,8 @@ import java.util.List;
  * Created by saurabhagarwal on 1/14/16.
  */
 public class LandingPageQueryProto {
-    public List<SelectedChip> selectedChips = new ArrayList<>();
+
+    List<SelectedChip> selectedChips = new ArrayList<>();
     String searchText ="";
 
     public LandingPageQueryProto() {
@@ -18,6 +19,11 @@ public class LandingPageQueryProto {
         SelectedChip selectedChip = new SelectedChip(id,field1,field2,type);
         selectedChips.add(selectedChip);
     }
+
+    public List<SelectedChip> getSelectedChips() {
+        return selectedChips;
+    }
+
     @Override
     public String toString() {
         return "LandingPageQueryProto{" +

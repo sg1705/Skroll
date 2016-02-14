@@ -80,7 +80,7 @@ public class QueryProcessor {
         List<Integer> year = new ArrayList<>();
         //match each token with number
 
-        List<LandingPageQueryProto.SelectedChip> companySelectedChip = landingPageQueryProto.selectedChips.stream().filter(p -> p.getType().equals("company")).collect(Collectors.toList());
+        List<LandingPageQueryProto.SelectedChip> companySelectedChip = landingPageQueryProto.getSelectedChips().stream().filter(p -> p.getType().equals("company")).collect(Collectors.toList());
         if(!companySelectedChip.isEmpty()){
             companySelectedChip.stream().forEach(p -> {
                 if (companyNameMap.get(p.getField2()) != null) {
