@@ -2,7 +2,9 @@ package com.skroll.search;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Multimap;
 import com.google.common.io.Resources;
 import com.google.common.primitives.Ints;
 import com.skroll.rest.LandingPageQueryProto;
@@ -24,7 +26,8 @@ import java.util.stream.Collectors;
 public class QueryProcessor {
 
     private static final Logger logger = LoggerFactory.getLogger(QueryProcessor.class);
-    static HashMap companyNameMap = new HashMap();
+    // create multimap to store key and values
+    static Multimap<String, String> companyNameMap = ArrayListMultimap.create();
     static HashMap<String, String> filingKeyWords = new HashMap();
 
     /**
@@ -76,6 +79,17 @@ public class QueryProcessor {
         //List<String> newTokens = new ArrayList<>();
         List<Integer> year = new ArrayList<>();
         //match each token with number
+
+        List<LandingPageQueryProto.SelectedChip> companySelectedChip = landingPageQueryProto.selectedChips.stream().filter(p -> p.getType().equals("company")).collect(Collectors.toList());
+        if(!companySelectedChip.isEmpty()){
+            companySelectedChip.stream().forEach(p -> {
+                if (companyNameMap.get(p.getField2()) != null) {
+                    for (String cik : companyNameMap.get(p.getField2().toLowerCase())) {
+                        landingPageQueryProto.addChip(cik, p.getField2().toLowerCase(), "", "company");
+                    }
+                }
+            });
+        }
         for (String token : tokens) {
             if (token.equals("")){
                 break;
@@ -103,15 +117,11 @@ public class QueryProcessor {
                 landingPageQueryProto.addChip("",filingKeyWords.get(token.toLowerCase()),"","formtype");
             } else {
                 //get fuzzy match
-                String fuzzyMatch = (String) companyNameMap.get(token.toLowerCase());
-                if (fuzzyMatch != null) {
-                    //newTokens.add(fuzzyMatch);
-                    landingPageQueryProto.addChip(fuzzyMatch,token.toLowerCase(),"","company");
-                    //Commented to make it work for both boolean search and full text search
-                    // newTokens.add("or");
-                    //newTokens.add(token);
+                if (companyNameMap.get(token.toLowerCase())!=null) {
+                    for ( String cik : companyNameMap.get(token.toLowerCase())) {
+                        landingPageQueryProto.addChip(cik,token.toLowerCase(),"","company");
+                    }
                 } else {
-                    //newTokens.add(token);
                     landingPageQueryProto.addChip("",token,"","formtype");
                 }
 
@@ -120,7 +130,7 @@ public class QueryProcessor {
         //rejoin all tokens
        // String newToken = Joiner.on(' ').join(newTokens);
         String startYear = "2006";
-        String endYear = "2015";
+        String endYear = "2016";
         //process year
         if (year.size() == 1) {
             startYear = year.get(0).toString();
