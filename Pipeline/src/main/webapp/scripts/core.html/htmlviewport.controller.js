@@ -20,11 +20,6 @@
 
     //-- private variables
     var vm = this;
-    var hoverParagraph = {
-      paraId: '',
-      box: null
-    };
-
 
     //-- public methods
     vm.mouseDown = mouseDown;
@@ -54,15 +49,12 @@
       //hoverbox is null when a) when page loads or b) cursor goes out of Y bound of paragraph in curtains
       if (paraId == null) {
         if (vm.fabMenu.currentParaZone == null) {
-        // if (hoverParagraph.box == null) {
           return;
         } else {
           if (isClickInsideParaBox($event.clientY, vm.fabMenu.currentParaZone.top, vm.fabMenu.currentParaZone.bottom)) {
             //do nothing
-            // console.log('click within range, keep display');
             return;
           } else {
-            // console.log('hide icon');
             mouseEnterEventPayLoad.command = 'hide';
             vm.fabMenu.currentParaZone = null;
             vm.fabMenu.currentParaId = null;
@@ -78,7 +70,6 @@
           vm.fabMenu.currentParaId = paraId;
           mouseEnterEventPayLoad.command = 'display';
           mouseEnterEventPayLoad.clientY = vm.fabMenu.currentParaZone.top;
-          // console.log('different paraId, change display');
         }
       }
 
