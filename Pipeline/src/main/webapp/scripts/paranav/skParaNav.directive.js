@@ -19,12 +19,12 @@
         restrict: 'E',
         controller: 'AutoCompleteCtrl',
         controllerAs: 'autoCompleteCtrl',
-        scope: {
-            boxAlign: '@boxAlign',
-            onSearch: '&onSearch'
-        }
-
+        scope: {},
       };
+
+      function template(element, attrs) {
+
+      }
 
 
     };

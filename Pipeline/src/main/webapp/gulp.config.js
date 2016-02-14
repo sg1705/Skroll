@@ -52,7 +52,10 @@ module.exports = function() {
             '**/*.js'
         ],
         less: client + 'styles/*.less',
-        sass: client + 'styles/*.scss',
+        sass: [
+            client + 'styles/*.scss',
+            clientApp + '**/*.scss',
+        ],
         report: report,
         root: root,
         server: server,
