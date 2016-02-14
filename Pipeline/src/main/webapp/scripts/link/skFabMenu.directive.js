@@ -36,7 +36,7 @@
     .controller('FabMenuCtrl', FabMenuCtrl);
 
     /* @ngInject */
-    function FabMenuCtrl(selectionService) {
+    function FabMenuCtrl(selectionService, linkService) {
     //-- private variables
     var vm = this;
 
@@ -49,6 +49,7 @@
     function clickLink() {
       console.log('clicked paraId='+ this.fabmenu.currentParaId);
       selectionService.selectParagraph(this.fabmenu.currentParaId);
+      linkService.copyLink();
     }
   }
 

@@ -6,7 +6,7 @@
     .service('linkService', LinkService);
 
   /* @ngInject */
-  function LinkService($log, $q, featureFlags, viewportService, documentModel, $animateCss) {
+  function LinkService($log, $q, featureFlags, viewportService, documentModel, $animateCss, selectionService, $analytics, $mdDialog, $mdToast) {
 
     //-- private variables
     //context root of API
@@ -18,12 +18,48 @@
 
       getActiveLink: getActiveLink,
       shortenLink: shortenLink,
-      onMouseEnter: onMouseEnter
+      onMouseEnter: onMouseEnter,
+      copyLink: copyLink
     };
 
     return service;
 
     //////////////
+
+
+    /**
+     * Copy link to clipboard
+     **/
+    function copyLink() {
+      $analytics.eventTrack(documentModel.documentId, {
+        category: 'cm.copyLink',
+        label: selectionService.paragraphId
+      });
+      var activeLink = this.getActiveLink(documentModel.documentId, selectionService.serializedSelection);
+      var shortenedUrl = '';
+      this.shortenLink(activeLink)
+        .then(function(response) {
+          shortenedUrl = response.result.id;
+        }, function(reason) {
+          $log.error(reason);
+        }).then(function() {
+          return $mdToast.hide();
+        }).then(function() {
+          var alert = $mdDialog.alert({
+            title: 'Copy URL for Selected Text',
+            content: shortenedUrl,
+            ok: 'Close'
+          });
+          $mdDialog
+            .show(alert)
+            .finally(function() {
+              alert = undefined;
+            });
+
+        });
+    }
+
+
 
     /**
     * Callback when mouse enters a new paragraph

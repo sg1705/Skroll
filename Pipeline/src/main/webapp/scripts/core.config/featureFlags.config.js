@@ -54,7 +54,7 @@
       "description": "no description"
     }, {
       "key": "fab.link",
-      "active": false,
+      "active": true,
       "name": "Show related para in LHS",
       "description": "no description"
     }];
