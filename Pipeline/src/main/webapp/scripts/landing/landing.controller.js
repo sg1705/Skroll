@@ -356,7 +356,7 @@
         'categoryName'  : 'Articles of Incorporation and Bylaws',
         'postFilter'    : 'ex-3.',
         'categoryType'  : 'FullTextSearch',
-        'inRefiner'     : false
+        'inRefiner'     : true
       }, {
         'categoryName'  : 'Indentures',
         'postFilter'    : 'ex-4.',
@@ -381,12 +381,12 @@
         'categoryName'  : 'Material Contracts',
         'postFilter'    : 'ex-10.',
         'categoryType'  : 'FullTextSearch',
-        'inRefiner'     : false
+        'inRefiner'     : true
       }, {
         'categoryName'  : 'Credit Agreements',
         'postFilter'    : 'ex-10',
         'categoryType'  : 'FullTextSearch',
-        'inRefiner'     : true
+        'inRefiner'     : false
       }];
 
       this.getFullTextSearchCategories = function() {

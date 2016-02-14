@@ -74,6 +74,11 @@
             }
           }
             console.log(results);
+            // if (results.length  == 1) {
+            //   searchBoxModel.updateChip(results[0]);
+            //   vm.searchState.searchText = '';
+            //   return;
+            // }
             vm.previousAutocompleteSearch.items = results;
             vm.previousAutocompleteSearch.query = query;
             return results;
