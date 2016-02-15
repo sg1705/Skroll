@@ -27,9 +27,11 @@ import java.util.stream.Collectors;
 public class SearchAPI {
 
     private static final Logger logger = LoggerFactory.getLogger(SearchAPI.class);
-    private static final String EDGER_BOOLEAN_SEARCH_URL = "http://www.sec.gov/cgi-bin/srch-edgar?&output=atom&count=100";
-    private static final String EDGER_FULL_TEXT_SEARCH_URL = "https://searchwww.sec.gov/EDGARFSClient/jsp/EDGAR_MainAccess.jsp?" +
+    private static final String EDGAR_BOOLEAN_SEARCH_URL = "http://www.sec.gov/cgi-bin/srch-edgar?&output=atom&count=100";
+    private static final String EDGAR_FULL_TEXT_SEARCH_URL = "https://searchwww.sec.gov/EDGARFSClient/jsp/EDGAR_MainAccess.jsp?" +
             "&sort=Date&formType=1&isAdv=true&numResults=100";
+    private static final String EDGAR_COMPANY_SEARCH_URL = "http://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&type=&dateb=&owner=exclude&start=0&count=100&output=atom&CIK=";
+
     private static final String FETCH_INDEX_URL = "http://www.sec.gov/";
     private static final List<String> SEC_FILING_CATAGORIES = Lists.newArrayList("Financials","Prospectuses","Proxies","News");
     private static final List<String> SEC_EXHIBIT_CATAGORIES = Lists.newArrayList("Underwriting Agreements",
@@ -81,28 +83,33 @@ public class SearchAPI {
 
         String rssUrl = "";
         // if more than one company
-        if (companySelectedChip.isEmpty() || companySelectedChip.size() > 1) {
-            logger.warn("ERROR: Use only one company to search");
+        if (companySelectedChip.isEmpty()) {
+            logger.warn("ERROR: Use atleast one company to search");
         } else {
+            String companyCIKs = companySelectedChip
+                    .stream()
+                    .map(p -> p.id)
+                    .collect(Collectors.joining(" or company-cik= "));
             if (categorySelectedChip.isEmpty()){
                 if(formtypeSelectedChip.isEmpty()){
-                    rssUrl = edgerBooleanSearch(companySelectedChip.get(0).id,startyearSelectedChip.get(0).field1,endyearSelectedChip.get(0).field1);
+                    rssUrl = edgarBooleanSearch(companyCIKs, startyearSelectedChip.get(0).field1, endyearSelectedChip.get(0).field1);
                 } else {
                     //Only one form type supported and for only boolean search
                     String formtypes = formtypeSelectedChip
                             .stream()
                             .map(p -> p.field1)
                             .collect(Collectors.joining(" or form-type= "));
-                    rssUrl = edgerBooleanSearch(companySelectedChip.get(0).id,formtypes,startyearSelectedChip.get(0).field1,endyearSelectedChip.get(0).field1);
+
+                    rssUrl = edgarBooleanSearch(companyCIKs, formtypes, startyearSelectedChip.get(0).field1, endyearSelectedChip.get(0).field1);
                 }
             } else if (categorySelectedChip.size() > 1) {
                 logger.warn("ERROR: Use only one category to search");
             } else {
                 //check whether category is SEC_FILING_CATAGORIES type
                 if(SEC_FILING_CATAGORIES.contains(categorySelectedChip.get(0).field1)) {
-                    rssUrl = edgerBooleanSearch(companySelectedChip.get(0).id, FILING_TO_FORM_TYPE.get(categorySelectedChip.get(0).field1), startyearSelectedChip.get(0).field1, endyearSelectedChip.get(0).field1);
+                    rssUrl = edgarBooleanSearch(companyCIKs, FILING_TO_FORM_TYPE.get(categorySelectedChip.get(0).field1), startyearSelectedChip.get(0).field1, endyearSelectedChip.get(0).field1);
                 } else if (SEC_EXHIBIT_CATAGORIES.contains(categorySelectedChip.get(0).field1)){
-                    rssUrl = edgerFullTextSearch(companySelectedChip.get(0).id, EXHIBIT_TO_FORM_TYPE, startyearSelectedChip.get(0).field1, endyearSelectedChip.get(0).field1);
+                    rssUrl = edgarFullTextSearch(companySelectedChip.get(0).id, EXHIBIT_TO_FORM_TYPE, startyearSelectedChip.get(0).field1, endyearSelectedChip.get(0).field1);
                 } else {
                     logger.warn("ERROR: Unknown category");
                 }
@@ -126,11 +133,11 @@ public class SearchAPI {
      * @param endYear
      * @return
      */
-    private String edgerFullTextSearch(String cik, String formtype, String startYear, String endYear){
+    private String edgarFullTextSearch(String cik, String formtype, String startYear, String endYear){
         String tenDigitCik = String.format("%010d", Integer.parseInt(cik));
         String fullTestSeachURL = "&queryCik=" + tenDigitCik + "&search_text=" + UrlEscapers.urlFormParameterEscaper().escape(formtype) + "&fromDate=01/01/" +startYear + "&toDate=12/31/" + endYear;
         logger.debug("fullTestSeachURL:" + fullTestSeachURL);
-        return EDGER_FULL_TEXT_SEARCH_URL + fullTestSeachURL;
+        return EDGAR_FULL_TEXT_SEARCH_URL + fullTestSeachURL;
     }
 
     /**
@@ -140,8 +147,8 @@ public class SearchAPI {
      * @param endYear
      * @return
      */
-    private String edgerBooleanSearch(String cik, String startYear, String endYear){
-        return edgerBooleanSearch(cik, null, startYear, endYear);
+    private String edgarBooleanSearch(String cik, String startYear, String endYear){
+        return edgarBooleanSearch(cik, null, startYear, endYear);
     }
 
     /**
@@ -152,16 +159,25 @@ public class SearchAPI {
      * @param endYear
      * @return
      */
-    private String edgerBooleanSearch(String cik, String formtype, String startYear, String endYear){
-        String tenDigitCik = String.format("%010d", Integer.parseInt(cik));
+    private String edgarBooleanSearch(String cik, String formtype, String startYear, String endYear){
         String booleanSearchURL = null;
         if (formtype==null) {
-            booleanSearchURL = "&text=company-cik=" + tenDigitCik + UrlEscapers.urlFormParameterEscaper().escape(DEFAULT_FORM_TYPE_BOOLEAN_SEARCH) + "&first=" + startYear + "&last=" + endYear;
+            booleanSearchURL = "&text=company-cik=" +  UrlEscapers.urlFormParameterEscaper().escape(cik + DEFAULT_FORM_TYPE_BOOLEAN_SEARCH) + "&first=" + startYear + "&last=" + endYear;
         } else {
-            booleanSearchURL = "&text=company-cik=" + tenDigitCik + UrlEscapers.urlFormParameterEscaper().escape(" and ( form-type=" + formtype +")" ) + "&first=" + startYear + "&last=" + endYear;
+            booleanSearchURL = "&text=company-cik=" + UrlEscapers.urlFormParameterEscaper().escape(cik + " and ( form-type=" + formtype +")" ) + "&first=" + startYear + "&last=" + endYear;
         }
             logger.debug("booleanSearchURL:" + booleanSearchURL);
-        return EDGER_BOOLEAN_SEARCH_URL +   booleanSearchURL;
+        return EDGAR_BOOLEAN_SEARCH_URL +   booleanSearchURL;
+    }
+
+    /**
+     * Form and edgarCompanySearch.
+     * @param cik
+     * @return
+     */
+    private String edgarCompanySearch(String cik){
+        String tenDigitCik = String.format("%010d", Integer.parseInt(cik));
+        return EDGAR_COMPANY_SEARCH_URL + tenDigitCik;
     }
 
     @GET
