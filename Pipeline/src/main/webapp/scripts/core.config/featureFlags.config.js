@@ -52,6 +52,11 @@
       "active": false,
       "name": "Show related para in LHS",
       "description": "no description"
+    }, {
+      "key": "fab.link",
+      "active": true,
+      "name": "Show link button on right edge of doc",
+      "description": "no description"
     }];
     featureFlags.set(flags);
   }

@@ -16,7 +16,7 @@
 
 
   /* @ngInject */
-  function RelatedParaFactory() {
+  function RelatedParaFactory(selectionService) {
 
     //-- private variables
 
@@ -25,6 +25,7 @@
       //-- service variables
       relatedParaState: {
         inputParaId: '',
+        inputParaText: '',
         active: false,
         paraProto: []
       },
@@ -42,11 +43,13 @@
      **/
     function clear() {
       service.relatedParaState.inputParaId = '';
+      service.relatedParaState.inputParaText = '';
       service.relatedParaState.active = false;
       service.relatedParaState.paraProto = [];
     };
 
     function loadResults(inputParaId, relatedParas) {
+      service.relatedParaState.inputParaText = selectionService.getParagraphText(inputParaId);
       service.relatedParaState.paraProto = relatedParas;
       service.relatedParaState.inputParaId = inputParaId;
       service.relatedParaState.active = true;

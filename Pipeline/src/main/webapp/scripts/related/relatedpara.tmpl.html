@@ -1,12 +1,33 @@
-<md-button ng-click="relatedParaCtrl.clear()">
-  <md-icon md-svg-icon="images/icons/ic_close_24px.svg"></md-icon>
-</md-button>
-<p/>
-<md-list>
-  <md-list-item ng-repeat="paraProto in relatedParaCtrl.relatedParaFactory.relatedParaState.paraProto">
-    <p scroll-to-paragraph="{{paraProto.paraId}}">
-      {{paraProto.paraText}}
-    </p>
-    <md-divider/>
-  </md-list-item>
-</md-list>
+<div style="margin: 10px">
+  <sk-para-nav
+    ng-show="contentCtrl.relatedParaState.active"
+    feature-flag="related.lhs"
+    on-close="relatedParaCtrl.close()"
+    items="relatedParaCtrl.relatedParaFactory.relatedParaState.paraProto">
+    <sk-nav-header>
+        <span style="font-size: 18px;">Related</span>
+    </sk-nav-header>
+    <sk-para-template>
+      <sk-header>
+      </sk-header>
+      <sk-para-body>
+        <div style="font-size:16px" scroll-to-paragraph="{{item.paraId}}">
+          {{item.paraText | words: 35}}
+        </div>
+      </sk-para-body>
+      <sk-footer>
+
+      </sk-footer>
+
+    </sk-para-template>
+
+    <sk-nav-footer>
+    </sk-nav-Footer>
+  </sk-para-nav>
+  <div style="width: 90%" scroll-to-paragraph="{{relatedParaCtrl.relatedParaFactory.relatedParaState.inputParaId}}">
+    <span  class="md-caption" style="margin: 10px"><i style="font-size: 12px;">{{relatedParaCtrl.relatedParaFactory.relatedParaState.inputParaText | words: 50}}</i></span>
+  </div>
+</div>
+
+
+

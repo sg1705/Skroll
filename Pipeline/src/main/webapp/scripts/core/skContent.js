@@ -34,6 +34,9 @@
       }
 
       function routeToViewPort() {
+        var navFrame = $('#navframe');
+        $('md-sidenav md-toolbar').width(navFrame.width());
+
         if (documentModel.format == 0) {
           var htmlViewPort = '<iframe id="docViewIframe" \
                                 scrolling="yes" \
@@ -42,7 +45,12 @@
                                 style="overflow: hidden;-webkit-overflow-scrolling: touch;" \
                                 src="about:blank" \
                                 sk-html-content> \
-                              </iframe>';
+                              </iframe> \
+                              <sk-fab-menu \
+                                feature-flag="fab.link" \
+                                style="position:fixed; opacity: 0" \
+                                fabmenu="contentCtrl.viewState.fabMenu" \
+                                id="skFabMenu"><sk-fab-menu/>';
 
           var e = $compile(htmlViewPort)(scope);
           element.replaceWith(e);

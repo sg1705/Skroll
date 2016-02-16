@@ -29,6 +29,7 @@
     'app.core.pdf',
   	'app.core.services',
   	'app.core.util',
+    'app.paranav',
   	'app.contextmenu',
   	'app.landing',
   	'app.search',
@@ -37,7 +38,8 @@
   	'app.upload',
     'pdfjsViewer',
     'app.searchbox',
-    'app.related'
+    'app.related',
+    'app.link'
   ]);
 
 })();

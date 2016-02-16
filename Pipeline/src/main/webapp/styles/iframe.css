@@ -11,8 +11,8 @@
   flex-direction: row;
   background-color: #e0e0e0;
   /**
-  * Docivew
-  **/ }
+	* Docivew
+	**/ }
   @media (min-width: 960px) {
     #skrollport #leftcurtain {
       width: calc(10% - 60px);
@@ -66,5 +66,3 @@
 
 .searched-text-rhs {
   color: #FF6138; }
-
-/*# sourceMappingURL=iframe.css.map */

@@ -1,0 +1,53 @@
+/*
+* sk-search-box
+*/
+.sk-search-box {
+
+	.search-button {
+		height:    50px;
+		width:		50px;
+		margin:    0px;
+		padding:   0px;
+		min-width: 60px;
+		opacity:   0.75;
+	}
+
+	.search-icon {
+		width: 45px;
+		height: 45px;
+	}
+
+	md-chips {
+		box-shadow: none;
+
+		padding-left: 10px;
+		padding-right: 10px;
+
+		md-chips-wrap {
+			display:flex;
+			flex-direction: row;
+
+			.md-chip-input-container {
+				width: 100%;
+			}
+		}
+
+		.md-chips.md-focused {
+			box-shadow: none;
+		}
+
+
+	}
+}
+
+.ticker {
+	color: rgb(63,81,181);
+}
+
+.category {
+	color: #E76E39;
+}
+
+.formtype {
+	color: #5AA138;
+}
