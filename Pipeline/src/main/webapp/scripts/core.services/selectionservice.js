@@ -252,6 +252,7 @@
       range.selectNodeContents(el);
       var sel = rangy.getSelection(document.getElementById("docViewIframe"));
       sel.setSingleRange(range);
+      this.saveSelection(paragraphId, $(el).text());
     }
 
     function saveSelection(paraId, selectedText) {

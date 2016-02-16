@@ -16,7 +16,7 @@
   function HtmlViewPortCtrl(selectionService, $log, $routeParams,
     scrollObserverService, clickObserverService,
     textSelectionObserverService,
-    mouseEnterObserverService, mouseLeaveObserverService, $timeout, viewportService, documentService, documentModel) {
+    mouseEnterObserverService, mouseLeaveObserverService, $timeout, viewportService, documentService, documentModel, featureFlags) {
 
     //-- private variables
     var vm = this;
@@ -29,6 +29,7 @@
     vm.inferParagraphId = inferParagraphId;
     vm.resizeFrame = resizeFrame;
     vm.resetFrameHeight = resetFrameHeight;
+    vm.fabMenu = documentModel.viewState.fabMenu;
 
     //-- initialization
     // documentModel.documentId = $routeParams.docId;
@@ -38,8 +39,12 @@
     /////////////
 
     function mouseMove($event) {
+      if (!featureFlags.isOn('fab.link'))
+        return;
+      //clientY is what we are looking for in event
+      //logic
       var paraId = vm.inferParagraphId($event);
-
+      showFab(paraId, $event);
     }
 
     function mouseDown($event) {
@@ -53,15 +58,17 @@
     function mouseUp($event) {
       //should mouse click handle it
       //find out if this is a selection
-      if (selectionService.getRangySelection().toString() != '') {
-        //rangy.getSelection().expand("word", { trim: true });
-      }
+      // if (selectionService.getRangySelection().toString() != '') {
+      //   //rangy.getSelection().expand("word", { trim: true });
+      // }
+
 
       var selection = selectionService.getWindowSelection().toString();
       if ((selection == '') || (selection == undefined))
         return;
 
       var paraId = vm.inferParagraphId($event);
+      // showFab(paraId, $event);
       selectionService.mouseUpX = $event.clientX;
       selectionService.mouseUpY = $event.clientY;
 
@@ -88,6 +95,7 @@
       //clear highlight
       selectionService.clearSelection();
       var paraId = vm.inferParagraphId($event);
+
       if (paraId == null)
         return;
 
@@ -131,16 +139,59 @@
         }, 0);
         return;
       }
-
       iframeDiv.height = iframeBody.offsetHeight + "px";
       iframeDiv.width = toolbarDiv.offsetWidth + "px";
       console.log(toolbarDiv.offsetWidth);
+
+      var navFrame = $('#navframe');
+      $('md-sidenav md-toolbar').width(navFrame.width());
     }
 
     function resetFrameHeight() {
       var iframeDiv = document.getElementById("docViewIframe");
       iframeDiv.height = 0;
       resizeFrame();
+    }
+
+    function showFab(paraId, $event) {
+      var mouseEnterEventPayLoad = {};
+      //paragraph is null when a) when page loads, or b) cursor goes outside a paragraph
+      //hoverbox is null when a) when page loads or b) cursor goes out of Y bound of paragraph in curtains
+      if (paraId == null) {
+        if (vm.fabMenu.currentParaZone == null) {
+          return;
+        } else {
+          if (isClickInsideParaBox($event.clientY, vm.fabMenu.currentParaZone.top, vm.fabMenu.currentParaZone.bottom)) {
+            //do nothing
+            return;
+          } else {
+            mouseEnterEventPayLoad.command = 'hide';
+            vm.fabMenu.currentParaZone = null;
+            vm.fabMenu.currentParaId = null;
+          }
+        }
+      } else {
+        // user is in the same para zone, keep displaying
+        if (vm.fabMenu.currentParaId == paraId) {
+          return;
+        } else {
+          // user has changed paragraph zone, display fab at a new location
+          vm.fabMenu.currentParaZone = selectionService.getJQParaElement(paraId)[0].getBoundingClientRect();
+          vm.fabMenu.currentParaId = paraId;
+          mouseEnterEventPayLoad.command = 'display';
+          mouseEnterEventPayLoad.clientY = vm.fabMenu.currentParaZone.top;
+        }
+      }
+
+      mouseEnterObserverService.notify(mouseEnterEventPayLoad);
+
+      function isClickInsideParaBox(clickY, paraTop, paraBottom) {
+        if ((clickY >= paraTop) && (clickY <= paraBottom)) {
+          return true;
+        } else {
+          return false;
+        }
+      }
     }
 
   }

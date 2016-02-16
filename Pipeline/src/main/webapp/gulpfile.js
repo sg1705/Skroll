@@ -6,6 +6,7 @@ var glob = require('glob');
 var gulp = require('gulp');
 var sass = require('gulp-sass');
 var path = require('path');
+var concat = require('gulp-concat');
 var _ = require('lodash');
 var $ = require('gulp-load-plugins')({lazy: true});
 
@@ -123,7 +124,8 @@ gulp.task('less-watcher', function() {
 gulp.task('sass', function () {
   gulp.src(config.sass)
     .pipe(sass().on('error', sass.logError))
-    .pipe(gulp.dest('./styles'));
+    .pipe(concat('app.css'))
+    .pipe(gulp.dest('./styles/'));
 });
 
 gulp.task('sass:watch', function () {
@@ -232,7 +234,7 @@ gulp.task('build-specs', ['templatecache'], function(done) {
  * This is separate so we can run tests on
  * optimize before handling image or fonts
  */
-gulp.task('build', ['optimize', 'images', 'other', 'fonts', 'copyWEBINF', 'optimizeIframe', 'buildPdf'], function() {
+gulp.task('build', ['sass', 'optimize', 'images', 'other', 'fonts', 'copyWEBINF', 'optimizeIframe', 'buildPdf'], function() {
     log('Building everything');
 
     var msg = {

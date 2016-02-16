@@ -6,8 +6,9 @@
               md-component-id="left" md-is-locked-open="$mdMedia('gt-md')"
               ng-swipe-left="contentCtrl.toggleSidenav('left')">
 
-    <md-toolbar class="skroll-toolbar" >
-      <div layout="row" layout-align="space-between center" style="max-width:100%">
+    <md-toolbar class="skroll-toolbar">
+      <!-- width of toolbar is adjusted in skContent.js as a hack -->
+      <div layout="row" layout-align="space-between center">
         <md-icon md-svg-icon="images/icons/ic_search_48px.svg" class="search-icon" style="margin-left: 10px; margin-right: 10px">
         </md-icon>
          <md-input-container md-theme="default-dark" md-no-float style="margin: auto; width:100%" >
@@ -32,11 +33,14 @@
     <md-content md-scroll-y flex class="md-padding" ng-controller="LHSLevelsCtrl as lhsCtrl" ng-hide="lhsCtrl.searchState.searchActive || (contentCtrl.relatedParaState.active && contentCtrl.featureFlags.isOn('related.lhs')) || (lhsCtrl.smodel.terms |tocTerms).length == 0" >
       <sk-lhs ng-hide="!contentCtrl.documentModel.viewState.isTocLoaded"/>
     </md-content>
+
   <md-content ng-keydown="searchCtrl.onKeyDown($event)" ng-show="contentCtrl.searchState.searchActive" style="flex-grow: 2">
      <sk-search />
   </md-content>
 
-    <sk-related-para ng-show="contentCtrl.relatedParaState.active" feature-flag="related.lhs"/>
+  <md-content ng-show="contentCtrl.relatedParaState.active" feature-flag="related.lhs" style="flex-grow: 1">
+    <sk-related-para />
+  </md-content>
 
   </md-sidenav>
   <!-- end sidebar -->
@@ -48,7 +52,7 @@
       <sk-toolbar />
     </md-toolbar>
 
-    <sk-content/>
+    <sk-content></sk-content>
 
 <!--     <iframe id="docViewIframe"
       scrolling="yes"
@@ -97,5 +101,11 @@
 
   <!-- end sidebar -->
 
+
 </div>
-<!-- end layout
+<!-- end layout -->
+<!--   <md-button class="md-fab" aria-label="Comment" style="position: absolute;top: 300px;left: 520px;">
+    <md-icon md-svg-src="images/icons/ic_link_24px.svg"></md-icon>
+  </md-button>
+ -->
+

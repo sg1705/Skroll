@@ -1,0 +1,40 @@
+/* variables */
+@import "../../styles/_variables.scss";
+
+
+/**
+* sk-para-nav
+**/
+
+.sk-para-nav {
+
+	$sk-nav-header-margin-y: 15px;
+
+	margin: 10px;		
+
+	.sk-nav-header {
+
+		border-bottom: 1px solid $grey-500;
+		
+		.sk-nav-header-template {
+			width: 100%;
+			display:inline-block;
+			text-align: center;
+			flex-grow: 1;
+		}
+
+		.sk-nav-back-icon {
+			float:right;
+			display:inline-block;
+		}
+	}
+
+	.sk-para-item {
+		padding-top: $sk-nav-header-margin-y;
+		padding-bottom: $sk-nav-header-margin-y;
+		width: 90%;
+		border-bottom: 1px solid $grey-300;
+		word-wrap: break-word;
+	}
+}
+

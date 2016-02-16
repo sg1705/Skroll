@@ -27,11 +27,16 @@
 
     //-- public methods
     vm.clear = clear;
+    vm.close = close;
 
     ////////////
 
     function clear() {
       relatedParaFactory.clear();
+    }
+
+    function close() {
+      vm.relatedParaFactory.relatedParaState.active = false;
     }
 
   }

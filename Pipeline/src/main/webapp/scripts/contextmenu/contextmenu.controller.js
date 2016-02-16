@@ -81,42 +81,9 @@
     /**
      * Copy link to clipboard
      **/
-    function copyLink(link) {
-      $analytics.eventTrack(documentModel.documentId, {
-        category: 'cm.copyLink',
-        label: selectionService.paragraphId
-      });
-      var activeLink = linkService.getActiveLink(documentModel.documentId, selectionService.serializedSelection);
-      var shortenedUrl = '';
-      linkService.shortenLink(activeLink)
-        .then(function(response) {
-          shortenedUrl = response.result.id;
-        }, function(reason) {
-          $log.error(reason);
-        }).then(function() {
-          return $mdToast.hide();
-        }).then(function() {
-          showAlert(shortenedUrl);
-        });
+    function copyLink() {
+      linkService.copyLink();
     }
-
-
-    /**
-     * Show dialog
-     **/
-    function showAlert(shortenedUrl) {
-      var alert = $mdDialog.alert({
-        title: 'Copy URL for Selected Text',
-        content: shortenedUrl,
-        ok: 'Close'
-      });
-      $mdDialog
-        .show(alert)
-        .finally(function() {
-          alert = undefined;
-        });
-    }
-
 
     /**
      * Close context menu

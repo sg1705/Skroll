@@ -25,9 +25,9 @@
     //////////
 
     function link(scope, element, attrs) {
-      var paragraphId = attrs.scrollToParagraph;
       var searchText = attrs.searchText;
       var para = $(element).click(function() {
+        var paragraphId = attrs.scrollToParagraph;
         $analytics.eventTrack(documentModel.documentId, {
           category: 'toc.navClick',
           label: paragraphId

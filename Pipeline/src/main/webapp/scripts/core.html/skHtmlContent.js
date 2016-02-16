@@ -125,6 +125,7 @@
       }
 
       function insertHtmlInIframe() {
+        console.log(navigator.userAgent);
         if ((navigator.userAgent.indexOf('iPad') > -1) || (navigator.userAgent.indexOf('iPhone') > -1)){
           $('#docViewIframe').attr('scrolling', 'no');
           $('#docViewIframe').wrap('<md-content id="docViewIframeParent"></md-content>');
@@ -166,6 +167,13 @@
         });
 
 
+        //no mouse over for IE and Edge
+        if (!(navigator.userAgent.indexOf('Trident') > -1) && !(navigator.userAgent.indexOf('Edge') > -1)) {
+          elmt.bind('mousemove', function($event) {
+            viewCtrl.mouseMove($event);
+          });
+        }
+
 
         angular.element($window).bind('resize', function($event) {
           $timeout(function() {
@@ -183,9 +191,21 @@
       */
       function postInsertIframe() {
         var iframeoffset = $('#docViewIframe').offset();
-        iframeoffset.width = $('#docViewIframe').width();
         viewportService.viewportOffset = iframeoffset;
-        console.log(viewCtrl.iframeOffset);
+        // set viewport dimensions
+        $timeout(function() {
+          var iframeElement = selectionService.getIframeDocument();
+          var contentDiv = $('#content', $(iframeElement.body));
+          var leftcurtain = $('#leftcurtain', $(iframeElement.body));
+          var rightcurtain = $('#rightcurtain', $(iframeElement.body));
+          viewportService.content.width = contentDiv.width();
+          viewportService.content.paddingLeft = parseInt(contentDiv.css('paddingLeft'));
+          viewportService.content.paddingRight = parseInt(contentDiv.css('paddingRight'));
+          viewportService.leftCurtainWidth = leftcurtain.width();
+          viewportService.rightCurtainWidth = rightcurtain.width();
+          console.log('viewportservice=' + JSON.stringify(viewportService));
+        }, 1000);
+
       }
 
       function firefoxAnchorLinks(iframe) {
