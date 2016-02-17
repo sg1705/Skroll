@@ -22,7 +22,6 @@
     trainerService,
     trainerModel,
     trainerPromptService,
-    clickObserverService,
     textSelectionObserverService,
     LHSModel,
     featureFlags, $window, $timeout) {

@@ -86,13 +86,13 @@
      * Handles a paragraph selection when user is in training mode
      *
      **/
-    function handleTrainerParaSelection(paraId) {
+    function handleTrainerParaSelection(clickPayLoad) {
       trainerModel.trainerToolbar.lastJson = '';
       var text = "Is this paragraph a %s";
       var prompt = '';
       //find if any term matches
       var matchedItem = _.find(LHSModel.smodel.terms, function(obj) {
-        return ((obj.paragraphId == paraId) && (obj.term));
+        return ((obj.paragraphId == clickPayLoad.paraId) && (obj.term));
       });
 
       if (matchedItem != null) {
