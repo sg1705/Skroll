@@ -2,7 +2,7 @@ dependencies:
   cache_directories:
     - ~/.gradle
     - .gradle
-java:
+  java:
     version: oraclejdk8
 
 test:
