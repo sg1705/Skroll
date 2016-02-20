@@ -15,4 +15,4 @@ test:
   pre:
     - sudo add-apt-repository ppa:cwchien/gradle -y
     - sudo apt-get update
-    - sudo apt-get install gradle-2.6
+    - sudo apt-get install gradle-2.1
