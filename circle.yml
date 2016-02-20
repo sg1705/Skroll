@@ -11,7 +11,7 @@ test:
   override:
     - ./gradlew test
   post:
-    - cp build/test-results/*.xml $CIRCLE_TEST_REPORTS
+    - cp Pipeline/build/test-results/*.xml $CIRCLE_TEST_REPORTS
 
 
   pre:
