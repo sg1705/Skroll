@@ -6,7 +6,7 @@
     .factory('linkService', LinkService);
 
   /* @ngInject */
-  function LinkService($log, $q, featureFlags, viewportService, documentModel, $animateCss, selectionService, $analytics, $mdDialog, $mdToast) {
+  function LinkService($log, $q, featureFlags, viewportService, documentModel, $animateCss, selectionService, $analytics, $mdDialog, $mdToast, clickObserverService) {
 
     //-- private variables
     //context root of API
@@ -19,6 +19,7 @@
       getActiveLink: getActiveLink,
       shortenLink: shortenLink,
       onMouseEnter: onMouseEnter,
+      onMouseClick: onMouseClick,
       copyLink: copyLink
     };
 
@@ -64,7 +65,10 @@
     /**
     * Callback when mouse enters a new paragraph
     **/
-    function onMouseEnter(event) {
+    function onMouseEnter(mousemovePayLoad) {
+      var event = showFab(mousemovePayLoad.paraId, mousemovePayLoad.$event);
+      if (event == null)
+        return;
       var element = angular.element('#skFabMenu');
       if (event.command == 'display') {
         var top = event.clientY + viewportService.viewportOffset.top;
@@ -82,7 +86,10 @@
     /**
     * Callback when mouse enters a new paragraph
     **/
-    function onMouseClick(event) {
+    function onMouseClick(clickPayLoad) {
+      var event = showFab(clickPayLoad.paraId, clickPayLoad.$event);
+      if (event == null)
+        return;
       var element = angular.element('#skFabMenu');
       if (event.command == 'display') {
         var top = event.clientY + viewportService.viewportOffset.top;
@@ -90,12 +97,56 @@
         //hide
         hide(element)
         .then(move(element, top, left))
-        .then(display(element));
+        .then(displayImmediately(element));
 
       } else if (event.command == 'hide') {
         hide(element);
       }
     }
+
+
+    function showFab(paraId, $event) {
+      var mouseEnterEventPayLoad = {};
+      var fabMenu = documentModel.viewState.fabMenu;
+      //paragraph is null when a) when page loads, or b) cursor goes outside a paragraph
+      //hoverbox is null when a) when page loads or b) cursor goes out of Y bound of paragraph in curtains
+      if (paraId == null) {
+        if (fabMenu.currentParaZone == null) {
+          return null;
+        } else {
+          if (isClickInsideParaBox($event.clientY, fabMenu.currentParaZone.top, fabMenu.currentParaZone.bottom)) {
+            //do nothing
+            return null;
+          } else {
+            mouseEnterEventPayLoad.command = 'hide';
+            fabMenu.currentParaZone = null;
+            fabMenu.currentParaId = null;
+          }
+        }
+      } else {
+        // user is in the same para zone, keep displaying
+        if ((fabMenu.currentParaId == paraId) && ($event.type == 'mousemove')) {
+          return null;
+        } else {
+          // user has changed paragraph zone, display fab at a new location
+          fabMenu.currentParaZone = selectionService.getJQParaElement(paraId)[0].getBoundingClientRect();
+          fabMenu.currentParaId = paraId;
+          mouseEnterEventPayLoad.command = 'display';
+          mouseEnterEventPayLoad.clientY = fabMenu.currentParaZone.top;
+        }
+      }
+
+      return mouseEnterEventPayLoad;
+
+      function isClickInsideParaBox(clickY, paraTop, paraBottom) {
+        if ((clickY >= paraTop) && (clickY <= paraBottom)) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+
 
 
 
@@ -176,6 +227,24 @@
       }).start();
     }
 
+    function displayImmediately(fabElement) {
+      //show
+      return $animateCss(fabElement, {
+        // duration: 1,
+        from: {
+          transitionDelay: '0.2s',
+        },
+        to: {
+          opacity: 0.5
+        },
+        easing: 'cubic-bezier(.14,1.09,.58,.9)',
+        // duration: 2.3,
+
+      }).start();
+    }
+
+
+
     /**
      * Returns active link in the browser
      **/
@@ -217,8 +286,9 @@
 
   angular
     .module('app.link')
-    .run(function(mouseEnterObserverService, linkService) {
+    .run(function(mouseEnterObserverService, linkService, clickObserverService) {
       mouseEnterObserverService.register(linkService.onMouseEnter);
+      clickObserverService.register(linkService.onMouseClick);
     });
 
 

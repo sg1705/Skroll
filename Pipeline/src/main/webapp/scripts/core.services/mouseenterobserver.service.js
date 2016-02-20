@@ -3,9 +3,9 @@
 
   /**
    * @ngdoc service
-   * @name SkrollApp.clickObserverService
+   * @name SkrollApp.mouseEnterObserverService
    * @description
-   * # clickObserverService
+   * # mouseEnterObserverService
    * Manages all click, touch events on a paragraph
    */
 

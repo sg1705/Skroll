@@ -45,6 +45,7 @@
             insertHtmlInIframe();
             documentModel.viewState.isProcessing = false;
             postInsertIframe();
+
           }, 0);
 
           documentService.importDoc(documentModel.url, false)
@@ -62,17 +63,18 @@
               documentModel.lunrIndex = lunr.Index.load(data);
             });
         } else {
+          documentModel.viewState.isProcessing = true;
           loadDocument()
             .then(function(contentHtml) {
               // documentModel.p.content = contentHtml;
 
               $timeout(function() {
                 insertHtmlInIframe();
-                documentModel.viewState.isProcessing = false;
                 postInsertIframe();
+                documentModel.viewState.isProcessing = false;
               }, 0);
 
-              documentModel.viewState.isProcessing = false;
+              // documentModel.viewState.isProcessing = false;
               $analytics.eventTrack(documentModel.documentId, {
                 category: 'doc.View',
                 label: selectionService.paragraphId
